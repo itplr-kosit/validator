@@ -12,7 +12,6 @@
             <directory>${project.parent.basedir}</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>README*</include>
                 <include>LICENSE*</include>
                 <include>NOTICE*</include>
             </includes>
