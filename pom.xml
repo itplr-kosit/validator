@@ -57,18 +57,6 @@
         <module>dist</module>
     </modules>
 
-
-
-    <profiles>
-        <profile>
-            <id>full-distribution</id>
-
-        </profile>
-        <profile>
-            <id>standalone</id>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
             <plugin>
@@ -79,9 +67,10 @@
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
-
-
         </plugins>
     </build>
+    <scm>
+        <connection>https://github.com/itplr-kosit/validationtool.git</connection>
+    </scm>
 
 </project>

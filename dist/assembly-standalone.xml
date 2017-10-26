@@ -1,7 +1,7 @@
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
-    <id>distribution</id>
+    <id>standalone</id>
     <formats>
         <format>dir</format>
         <format>zip</format>
@@ -14,6 +14,7 @@
             <includes>
                 <include>README*</include>
                 <include>LICENSE*</include>
+                <include>NOTICE*</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -26,11 +27,11 @@
             <outputDirectory>/</outputDirectory>
             <useProjectArtifact>false</useProjectArtifact>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>
+            <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}-${artifact.classifier}.${artifact.extension}</outputFileNameMapping>
             <includes>
-                <include>${project.groupId}:validationtool</include>
+                <include>${project.groupId}:validationtool:jar:*:standalone</include>
+                <include>${project.groupId}:validationtool:jar:*:sources</include>
             </includes>
         </dependencySet>
     </dependencySets>
-
 </assembly>

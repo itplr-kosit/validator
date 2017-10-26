@@ -31,7 +31,8 @@
     </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>${project.build.outputDirectory}</directory>
+            <directory>${project.build.directory}/classes</directory>
+            <outputDirectory>/</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>

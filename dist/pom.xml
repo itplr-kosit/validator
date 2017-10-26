@@ -43,12 +43,26 @@
             <groupId>de.kosit</groupId>
             <artifactId>validationtool</artifactId>
             <version>${project.version}</version>
-            <classifier>standalone</classifier>
-
         </dependency>
-
+        <dependency>
+            <groupId>de.kosit</groupId>
+            <artifactId>validationtool</artifactId>
+            <version>${project.version}</version>
+            <classifier>standalone</classifier>
+        </dependency>
+        <dependency>
+            <groupId>de.kosit</groupId>
+            <artifactId>validationtool</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>de.kosit</groupId>
+            <artifactId>validationtool</artifactId>
+            <version>${project.version}</version>
+            <classifier>full</classifier>
+        </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
@@ -82,24 +96,39 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>assemble</id>
+                        <id>standalone</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>assembly.xml</descriptor>
+                                <descriptor>assembly-standalone.xml</descriptor>
                             </descriptors>
                             <attach>true</attach>
                             <appendAssemblyId>true</appendAssemblyId>
                             <outputDirectory>target/</outputDirectory>
-                            <workDirectory>target/assembly/work</workDirectory>
+                            <workDirectory>target/assembly/standalone</workDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>full</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>assembly-full.xml</descriptor>
+                            </descriptors>
+                            <attach>true</attach>
+                            <appendAssemblyId>true</appendAssemblyId>
+                            <outputDirectory>target/</outputDirectory>
+                            <workDirectory>target/assembly/full</workDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
