@@ -25,26 +25,17 @@
     <prerequisites>
         <maven>3.0</maven>
     </prerequisites>
-    <groupId>de.kosit</groupId>
-    <artifactId>validationtool</artifactId>
-    <version>1.0.0</version>
-    <name>KoSIT XML Prüftool</name>
-    <description>KoSIT XML Prüftool zur Prüfung von XML Dateien gegenüber definierten Szenarien.</description>
-    <developers>
-        <developer>
-            <id>andreas.penski</id>
-            <name>Andreas Penski</name>
-            <organization>]init[ AG</organization>
-            <organizationUrl>https://www.init.de</organizationUrl>
-        </developer>
-        <developer>
-            <id>fabian.buettner</id>
-            <name>Fabian Büttner</name>
-            <organization>KoSIT</organization>
-            <organizationUrl>http://www.kosit.de</organizationUrl>
-        </developer>
-    </developers>
 
+    <name>KoSIT XML Prüftool Implementierung</name>
+
+    <parent>
+        <groupId>de.kosit</groupId>
+        <artifactId>validationtool-base</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../</relativePath>
+    </parent>
+    <artifactId>validationtool</artifactId>
+    <description>KoSIT XML Prüftool zur Prüfung von XML Dateien gegenüber definierten Szenarien.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,7 +43,6 @@
         <version.lombok>1.16.16</version.lombok>
         <version.saxon-he>9.7.0-15</version.saxon-he>
         <version.slf4j>1.7.25</version.slf4j>
-
     </properties>
 
     <dependencies>
