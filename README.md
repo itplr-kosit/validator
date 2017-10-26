@@ -1,10 +1,10 @@
-% Prüftool und Prüftool-Konfiguration XRechnung
+## Inhaltsverzeichnis
 
-Autor: Fabian Büttner (KoSIT)
-
-Stand: 21.09.2017
-
-Status: draft
+- [Über das Prüftool und die Prüftool-Konfiguration XRechnung](#über-das-prueftool-und-die-prüftool-konfiguration-xrechnung)
+- [Status der Bestandteile](#status-der-estandteile)
+- [Verwendung](#verwendung)
+- [Build-Anweisungen](#build-anweisungen)
+- [Konfiguration xRechnung](#konfiguration-xrechnung)
 
 # Über das Prüftool und die Prüftool-Konfiguration XRechnung
 Das Prüftool ist ein Programm, welches XML-Dateien (Dokumente) in Abhängigkeit von ihren Dokumenttypen gegen verschiedene 
@@ -57,12 +57,12 @@ Eine zu prüfende Datei durchläuft die folgenden Schritte
       [Beispiel](xrechnung/test/reports/ubl002-report.html)). Die Details dieser HTML-Aufbereitung können
       bei Bedarf [angepasst](#anpassung-der-html-ausgabe) werden.
     
-## Verwendung
+# Verwendung
 Das Prüftool steht in zwei Varianten zur Verfügung:
 - als [Standalone-Version](#verwendung-als-anwendung), die von der Kommandozeile aus aufgerufen werden kann 
 - als [Bibliothek](#verwendung-als-bibliothek), die in eigene Anwendungen integriert werden kann 
 
-### Verwendung als Standalone-Anwendung
+## Verwendung als Standalone-Anwendung
 ```java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...```
 
 Eine Liste der möglichen Optionen kann mit den Schalter `--help` angezeigt werden.
@@ -81,7 +81,7 @@ Eine Übersicht über die Eigenschaften der Testdateien in
 [xrechnung/test/instances](xrechnung/test/instances/) findet sich in
 [xrechnung/test/assertions.xlsx](xrechnung/test/assertions.xlsx).  
 
-### Verwendung als Bibliothek
+## Verwendung als Bibliothek
 Daneben kann das Prüftool auch in eigene Anwendungen integriert werden. 
 
 Die Bibliothek steht im Maven-Central-Repository zur Verfügung und kann mit kompatiblen Build-Tools genutzt werden. 
@@ -150,7 +150,7 @@ verwendete Algorithmus ist über die `read`-Methoden der `InputFactory` definier
 verwendet
 
 
-## Build-Anweisungen
+# Build-Anweisungen
 Das Projekt wird mit Apache Maven gebaut. 
 
 Mittels `mvn install` wird standardmäßig die Bibliotheks-Variante gebaut. Diese enthält nur die Klassen und
@@ -160,7 +160,7 @@ Ein `mvn install -Pstandalone` baut die Standalone-Variante. Diese Variante enth
 von Eingaben aus der Kommandozeile, sowie für Ausgabeoptionen für Ergebnisse. Darüber hinaus ist diese als sog. 
 Uber-Jar gebaut, sodass sämtliche Abhängigkeiten im Jar gebundlet sind und das Jar-File somit 'lauffähig' ist.
 
-## Konfiguration des Prüftools
+# Konfiguration des Prüftools
 Eine Konfiguration besteht aus einer Konfigurationsdatei (XML-Dokument im Namensraum
 http://www.xoev.de/de/validator/framework/1/scenarios) sowie Resourcen (XML Schemata und XSLT-Dateien), auf welche die
 Konfigurationsdatei verweist.
