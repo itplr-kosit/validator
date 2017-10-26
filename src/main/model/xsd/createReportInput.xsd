@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Koordinierungsstelle für IT-Standards (KoSIT) under
+  ~ one or more contributor license agreements. See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  KoSIT licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<!-- $Id$ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:in="http://www.xoev.de/de/validator/framework/1/createreportinput"
+    xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios" targetNamespace="http://www.xoev.de/de/validator/framework/1/createreportinput" version="1.0.0"
+    elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <xs:import namespace="http://www.xoev.de/de/validator/framework/1/scenarios" schemaLocation="scenarios.xsd"/>
+
+    <xs:element name="createReportInput">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="engine" type="in:EngineType"/>
+                <xs:element name="timestamp" type="xs:dateTime"/>
+                <xs:element name="documentIdentification" type="in:DocumentIdentificationType"/>
+                <xs:element ref="s:scenario" minOccurs="0"/>
+                <xs:element name="validationResultsWellformedness" type="in:ValidationResultsWellformedness" minOccurs="0"/>
+                <xs:element name="validationResultsXmlSchema" type="in:ValidationResultsXmlSchema" minOccurs="0"/>
+                <xs:element name="validationResultsSchematron" type="in:ValidationResultsSchematron" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="processingError" type="in:ProcessingError" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="frameworkVersion" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="Document">
+        <xs:sequence>
+            <xs:any processContents="skip" namespace="##any"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValidationResultsWellformedness">
+        <xs:sequence>
+            <xs:element name="xmlSyntaxError" type="in:XMLSyntaxError" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValidationResultsXmlSchema">
+        <xs:sequence>
+            <xs:element ref="s:resource" maxOccurs="unbounded"/>
+            <xs:element name="xmlSyntaxError" type="in:XMLSyntaxError" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:annotation>
+        <xs:documentation>In alignment with 
+            http://docs.oracle.com/javase/8/docs/api/org/xml/sax/ErrorHandler.html and 
+            http://docs.oracle.com/javase/8/docs/api/org/xml/sax/SAXParseException.html</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="XMLSyntaxError">
+        <xs:sequence>
+            <xs:element name="message" type="xs:normalizedString"/>
+            <xs:element name="severity" type="in:XMLSyntaxErrorSeverity"/>
+            <xs:element name="rowNumber" type="xs:int" minOccurs="0"/>
+            <xs:element name="columnNumber" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="XMLSyntaxErrorSeverity">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="SEVERITY_WARNING"/>
+            <xs:enumeration value="SEVERITY_ERROR"/>
+            <xs:enumeration value="SEVERITY_FATAL_ERROR"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="ValidationResultsSchematron">
+        <xs:sequence>
+            <xs:element ref="s:resource"/>
+            <xs:element name="results">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:any namespace="##any" processContents="skip"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DocumentIdentificationType">
+        <xs:annotation>
+            <xs:documentation>Dient der eindeutigen Identifikation des geprüften Dokuments anhand seines Hashwertes, der durch eine Dokumentenreferenz
+                ergänzt werden kann.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="documentHash">
+                <xs:annotation>
+                    <xs:documentation>Angaben zum Hashwert des geprüften Dokuments.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="hashAlgorithm" type="xs:normalizedString">
+                            <xs:annotation>
+                                <xs:documentation>Benennung eines Algorithmus zur Berechnung des Hashwerts.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="hashValue" type="xs:base64Binary">
+                            <xs:annotation>
+                                <xs:documentation>Der Hashwert des geprüften Dokuments bei Anwendung des bezeichneten Algorithmus.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="documentReference" type="xs:normalizedString">
+                <xs:annotation>
+                    <xs:documentation>Eine von der prüfenden Organisationseinheit festgelegte, möglichst eindeutige Referenz des geprüften
+                        Dokuments.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="EngineType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:normalizedString"/>
+            <xs:element name="info" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:normalizedString">
+                            <xs:attribute name="key" type="xs:NMTOKEN" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="ProcessingError">
+        <xs:sequence>
+            <xs:element name="error" type="xs:string" minOccurs="1" maxOccurs="unbounded"/> 
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

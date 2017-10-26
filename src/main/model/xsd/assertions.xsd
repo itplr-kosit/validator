@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Koordinierungsstelle für IT-Standards (KoSIT) under
+  ~ one or more contributor license agreements. See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  KoSIT licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<!-- $Id: assertions.xsd 7554 2017-09-13 14:27:21Z fbuettner $ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:a="http://www.xoev.de/de/validator/framework/1/assertions"
+           targetNamespace="http://www.xoev.de/de/validator/framework/1/assertions" version="1.0.0"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:element name="assertions">
+        <xs:annotation>
+            <xs:documentation>In diesem Dokument werden zum Test einer Prüftoolkonfiguration Zusicherungen zu einzelnen
+                Prüfberichten beschrieben. Ein
+                solches Dokument kann der Kommandozeilenversion des Prüftools über --check-assertions übergeben werden.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="namespace" type="a:NamespaceType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="assertion" type="a:AssertionType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="NamespaceType">
+        <xs:annotation>
+            <xs:documentation>Definition eines Präfix für einen Namensraum, zur Verwendung in nachfolgenden
+                assertion-Elementen.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:anyURI">
+                <xs:attribute name="prefix" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="AssertionType">
+        <xs:annotation>
+            <xs:documentation>Zusicherung: für das in report-doc angegebene Dokument (relativ zum aktuellen
+                Ausgabeverzeichnis) hat der angebene
+                XPath-Test den "Effective Truth Value" true(). Im Textknoten kann eine textuelle Zusammenfassung des
+                Tests stehen.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:token">
+                <xs:attribute name="report-doc" type="xs:anyURI" use="required"/>
+                <xs:attribute name="test" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+</xs:schema>

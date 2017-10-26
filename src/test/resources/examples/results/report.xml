@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Koordinierungsstelle für IT-Standards (KoSIT) under
+  ~ one or more contributor license agreements. See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  KoSIT licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<rep:report xmlns:rep="http://www.xoev.de/de/validator/varl/1 " valid="false" varlVersion="1.0.0">
+    <rep:engine>
+        <rep:name>KoSIT POC</rep:name>
+    </rep:engine>
+    <rep:timestamp>2017-09-01T13:13:59.055+02:00</rep:timestamp>
+    <rep:documentIdentification>
+        <rep:documentHash>
+            <rep:hashAlgorithm>SHA-256</rep:hashAlgorithm>
+            <rep:hashValue>4exhW9EJxAbhlZLHZ3mYZ3/hWGG5e6mIpiTAlGTpQ7s=</rep:hashValue>
+        </rep:documentHash>
+        <rep:documentReference>
+            /C:/Developer/source/init/eRechnung-Check/src/test/resources/examples/UBLReady/UBLReady_EU_UBL-NL_20170102_FULL.xml
+        </rep:documentReference>
+    </rep:documentIdentification>
+    <ns2:scenario xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
+                  xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
+        <ns2:name>UBL 2.1 Invoice</ns2:name>
+        <ns2:namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</ns2:namespace>
+        <ns2:match>/invoice:Invoice</ns2:match>
+        <ns2:validateWithXmlSchema>
+            <ns2:resource>
+                <ns2:name>UBL 2.1 Invoice</ns2:name>
+                <ns2:location>resources/eRechnung/UBL-2.1/xsdrt/maindoc/UBL-Invoice-2.1.xsd</ns2:location>
+            </ns2:resource>
+        </ns2:validateWithXmlSchema>
+        <ns2:validateWithSchematron>
+            <ns2:resource>
+                <ns2:name>BII Rules for Invoice</ns2:name>
+                <ns2:location>resources/eRechnung/UBL-2.1/xsl/BIIRULES-UBL-T10.xsl</ns2:location>
+            </ns2:resource>
+        </ns2:validateWithSchematron>
+        <ns2:validateWithSchematron>
+            <ns2:resource>
+                <ns2:name>openPEPPOL Rules for Invoice</ns2:name>
+                <ns2:location>resources/eRechnung/UBL-2.1/xsl/OPENPEPPOL-UBL-T10.xsl</ns2:location>
+            </ns2:resource>
+        </ns2:validateWithSchematron>
+        <ns2:createReport>
+            <ns2:resource>
+                <ns2:name>Report für eRechnung</ns2:name>
+                <ns2:location>resources/eRechnung/report.xsl</ns2:location>
+            </ns2:resource>
+        </ns2:createReport>
+    </ns2:scenario>
+    <rep:validationResult>
+        <rep:validationStepResult id="step_1" valid="true">
+            <ns2:resource xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
+                          xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
+                <ns2:name>UBL 2.1 Invoice</ns2:name>
+                <ns2:location>resources/eRechnung/UBL-2.1/xsdrt/maindoc/UBL-Invoice-2.1.xsd</ns2:location>
+            </ns2:resource>
+        </rep:validationStepResult>
+        <rep:validationStepResult id="step_2" valid="false">
+            <ns2:resource xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
+                          xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
+                <ns2:name>BII Rules for Invoice</ns2:name>
+                <ns2:location>resources/eRechnung/UBL-2.1/xsl/BIIRULES-UBL-T10.xsl</ns2:location>
+            </ns2:resource>
+            <rep:message code="CL-T10-R010" id="message_2.1" level="warning"
+                         xpathLocation="/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]/*:AllowanceCharge[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][3]/*:AllowanceChargeReasonCode[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'][1]">
+                [CL-T10-R010]-Coded allowance and charge reasons SHOULD belong to the UNCL 4465 code list BII2 subset
+            </rep:message>
+        </rep:validationStepResult>
+        <rep:validationStepResult id="step_3" valid="false">
+            <ns2:resource xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
+                          xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
+                <ns2:name>openPEPPOL Rules for Invoice</ns2:name>
+                <ns2:location>resources/eRechnung/UBL-2.1/xsl/OPENPEPPOL-UBL-T10.xsl</ns2:location>
+            </ns2:resource>
+            <rep:message code="EUGEN-T10-R026" id="message_3.1" level="error"
+                         xpathLocation="/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]/*:DocumentCurrencyCode[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'][1]">
+                [EUGEN-T10-R026]-A currency code element MUST have a list identifier attribute 'ISO4217'.
+            </rep:message>
+            <rep:message code="EUGEN-T10-R041" id="message_3.2" level="warning"
+                         xpathLocation="/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]/*:AccountingSupplierParty[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]">
+                [EUGEN-T10-R041]-The VAT identifier for the supplier SHOULD be prefixed with country code for companies
+                with VAT registration in EU countries
+            </rep:message>
+            <rep:message code="EUGEN-T10-R054" id="message_3.3" level="warning"
+                         xpathLocation="/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]/*:AccountingSupplierParty[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]/*:Party[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]/*:PartyLegalEntity[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]/*:CompanyID[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'][1]">
+                [EUGEN-T10-R054]-A party legal entity company identifier SHOULD have a scheme identifier attribute.
+            </rep:message>
+            <rep:message code="EUGEN-T10-R029" id="message_3.4" level="error"
+                         xpathLocation="/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]/*:AllowanceCharge[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]/*:AllowanceChargeReasonCode[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'][1]">
+                [EUGEN-T10-R029]-An allowance charge reason code MUST have a list identifier attribute 'UNCL4465'.
+            </rep:message>
+            <rep:message code="EUGEN-T10-R029" id="message_3.5" level="error"
+                         xpathLocation="/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]/*:AllowanceCharge[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][2]/*:AllowanceChargeReasonCode[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'][1]">
+                [EUGEN-T10-R029]-An allowance charge reason code MUST have a list identifier attribute 'UNCL4465'.
+            </rep:message>
+            <rep:message code="EUGEN-T10-R029" id="message_3.6" level="error"
+                         xpathLocation="/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]/*:AllowanceCharge[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][3]/*:AllowanceChargeReasonCode[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'][1]">
+                [EUGEN-T10-R029]-An allowance charge reason code MUST have a list identifier attribute 'UNCL4465'.
+            </rep:message>
+        </rep:validationStepResult>
+    </rep:validationResult>
+    <rep:assessment>
+        <rep:reject>
+            <rep:explanation>
+                <html xmlns="http://www.w3.org/1999/xhtml" data-report-type="devreport-reject">
+                    <head>
+                        <title>Pruefbericht der KoSIT</title>
+                        <style>
+                            body{
+                            font-family: Calibri;
+                            width: 230mm;
+                            }
+
+                            table{
+                            border-collapse: collapse;
+                            width: 100%;
+                            }
+
+                            table.tbl-errors{
+                            font-size: 10pt;
+                            }
+
+                            .tbl-errors td{
+                            border: 1px solid lightgray;
+                            padding: 2px;
+                            vertical-align: top;
+                            }
+
+                            thead{
+                            font-weight: bold;
+                            background-color: #f0f0f0;
+                            padding-top: 6pt;
+                            padding-bottom: 2pt;
+                            }
+
+                            .tbl-meta td{
+                            padding-right: 1em;
+                            }
+
+
+                            tr{
+                            vertical-align: bottom;
+                            border-bottom: 1px solid #c0c0c0;
+                            }
+
+                            tr.error{
+                            font-weight: bold;
+                            color: red;
+                            }
+
+                            tr.warning{
+                            font-weight: bold;
+                            }
+
+
+                            tr.pos{
+                            font-weight: bold;
+                            }
+
+                            p.important{
+                            font-weight: bold;
+                            text-align: left;
+                            background-color: #e0e0e0;
+                            padding: 3pt;
+                            }
+
+                            td.right{
+                            text-align: right
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Prüfbericht der KoSIT</h1>
+                        <h2>Angaben zum geprüften Dokument</h2>
+                        <table class="tbl-meta">
+                            <tr>
+                                <td colspan="2">Dokument:</td>
+                                <td colspan="3">
+                                    /C:/Developer/source/init/eRechnung-Check/src/test/resources/examples/UBLReady/UBLReady_EU_UBL-NL_20170102_FULL.xml
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Szenario:</td>
+                                <td colspan="3"/>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Zeitpunkt:</td>
+                                <td colspan="3">1.9.2017 13:13:59</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Validierungsschritte:</td>
+                                <td>Fehler</td>
+                                <td>Warnung</td>
+                                <td>Information</td>
+                            </tr>
+                        </table>
+                        <p class="important"><b>Konformitätsprüfung:</b>Das geprüfte Dokument enthält 4 Fehler / 3
+                            Warnungen. Es ist <b>nicht konform</b> zu den formalen Vorgaben.
+                        </p>
+                        <table class="tbl-errors">
+                            <thead>
+                                <tr>
+                                    <th>Pos</th>
+                                    <th>Code</th>
+                                    <th>CustomLevel (Level)</th>
+                                    <th>Step</th>
+                                    <th>Text</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="warning">
+                                    <td>1</td>
+                                    <td>CL-T10-R010</td>
+                                    <td>warning</td>
+                                    <td/>
+                                    <td>[CL-T10-R010]-Coded allowance and charge reasons SHOULD belong to the UNCL 4465
+                                        code list BII2 subset
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"/>
+                                    <td/>
+                                </tr>
+                                <tr class="error">
+                                    <td>2</td>
+                                    <td>EUGEN-T10-R026</td>
+                                    <td>error</td>
+                                    <td/>
+                                    <td>[EUGEN-T10-R026]-A currency code element MUST have a list identifier attribute
+                                        'ISO4217'.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"/>
+                                    <td/>
+                                </tr>
+                                <tr class="warning">
+                                    <td>3</td>
+                                    <td>EUGEN-T10-R041</td>
+                                    <td>warning</td>
+                                    <td/>
+                                    <td>[EUGEN-T10-R041]-The VAT identifier for the supplier SHOULD be prefixed with
+                                        country code for companies with VAT registration in EU countries
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"/>
+                                    <td/>
+                                </tr>
+                                <tr class="warning">
+                                    <td>4</td>
+                                    <td>EUGEN-T10-R054</td>
+                                    <td>warning</td>
+                                    <td/>
+                                    <td>[EUGEN-T10-R054]-A party legal entity company identifier SHOULD have a scheme
+                                        identifier attribute.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"/>
+                                    <td/>
+                                </tr>
+                                <tr class="error">
+                                    <td>5</td>
+                                    <td>EUGEN-T10-R029</td>
+                                    <td>error</td>
+                                    <td/>
+                                    <td>[EUGEN-T10-R029]-An allowance charge reason code MUST have a list identifier
+                                        attribute 'UNCL4465'.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"/>
+                                    <td/>
+                                </tr>
+                                <tr class="error">
+                                    <td>6</td>
+                                    <td>EUGEN-T10-R029</td>
+                                    <td>error</td>
+                                    <td/>
+                                    <td>[EUGEN-T10-R029]-An allowance charge reason code MUST have a list identifier
+                                        attribute 'UNCL4465'.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"/>
+                                    <td/>
+                                </tr>
+                                <tr class="error">
+                                    <td>7</td>
+                                    <td>EUGEN-T10-R029</td>
+                                    <td>error</td>
+                                    <td/>
+                                    <td>[EUGEN-T10-R029]-An allowance charge reason code MUST have a list identifier
+                                        attribute 'UNCL4465'.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"/>
+                                    <td/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="important"><b>Bewertung:</b>Es wird empfohlen das Dokument zurückzuweisen.
+                        </p>
+                        <p class="info">Erstellt mit: KoSIT POC für das InstructionSet
+                            <em/>
+                            vom .
+                        </p>
+                    </body>
+                </html>
+            </rep:explanation>
+        </rep:reject>
+    </rep:assessment>
+</rep:report>

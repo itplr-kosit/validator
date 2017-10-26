@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Koordinierungsstelle für IT-Standards (KoSIT) under
+  ~ one or more contributor license agreements. See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  KoSIT licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/1/scenarios" frameworkVersion="1.1.0">
+    <name>XInneres</name>
+    <date>2017-08-08</date>
+    <description>
+        <p>Prüft XInneres Nachrichten anhand der von uns offiziell herausgegebenen XML Schemata und Beispielen für mögliche weitergehende Prüfungen mit Schematron. </p>
+        <p>Prüft elektronische Rechnungen im Format UBL 2.1 </p>
+    </description>
+
+    <scenario>
+        <name>UBL 2.1 Invoice</name>
+        <namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace>
+        <match>/invoice:Invoice</match>
+        <newElementFeature>toTest</newElementFeature>
+        <validateWithXmlSchema>
+            <resource>
+                <name>UBL 2.1 Invoice</name>
+                <location>resources/eRechnung/UBL-2.1/xsdrt/maindoc/UBL-Invoice-2.1.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+        <validateWithSchematron>
+            <resource>
+                <name>BII Rules for Invoice</name>
+                <location>resources/eRechnung/UBL-2.1/xsl/BIIRULES-UBL-T10.xsl</location>
+            </resource>
+        </validateWithSchematron>
+        <validateWithSchematron>
+            <resource>
+                <name>openPEPPOL Rules for Invoice</name>
+                <location>resources/eRechnung/UBL-2.1/xsl/OPENPEPPOL-UBL-T10.xsl</location>
+            </resource>
+        </validateWithSchematron>
+        <createReport>
+            <resource>
+                <name>Report für eRechnung</name>
+                <location>resources/eRechnung/report.xsl</location>
+            </resource>
+        </createReport>
+    </scenario>
+
+</scenarios>
