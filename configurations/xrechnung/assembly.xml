@@ -8,12 +8,43 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
         <fileSet>
-            <directory>${project.basedir}</directory>
-            <outputDirectory>/</outputDirectory>
+            <directory>${project.basedir}/resources</directory>
+            <outputDirectory>/xsd</outputDirectory>
             <includes>
                 <include>test/report.sch</include>
                 <include>test/report.sch.xsl</include>
-                <include>resources/report.xsd</include>
+                <include>report.xsd</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/test</directory>
+            <outputDirectory>/xsd</outputDirectory>
+            <includes>
+                <include>report.sch</include>
+                <include>report.sch.xsl</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/validationtool/src/main/model/xsd</directory>
+            <outputDirectory>/xsd</outputDirectory>
+            <includes>
+                <include>scenarios.xsd</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>/xrechnung</outputDirectory>
+            <includes>
+                <include>scenarios.xml</include>
+                <include>resources/**</include>
+                <include>test/readme.txt</include>
+                <include>test/saxon9he.jar</include>
+                <include>test/build.xml</include>
+                <include>test/scenarios.xml</include>
+                <include>test/instances/**</include>
+                <include>test/reports/**</include>
+                <include>test/assertions.xlsx</include>
+                <include>test/assertions.xml</include>
             </includes>
         </fileSet>
     </fileSets>
