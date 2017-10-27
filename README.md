@@ -1,16 +1,17 @@
 ## Inhaltsverzeichnis
 
 - [Über das Prüftool und die Prüftool-Konfiguration XRechnung](#über-das-prueftool-und-die-prüftool-konfiguration-xrechnung)
-- [Status der Bestandteile](#status-der-estandteile)
+- [Status der Bestandteile](#status-der-bestandteile)
+- [Grundsätzlicher Ablauf der Prüfung](#grundsätzlicher-ablauf-der-prüfung)
 - [Verwendung](#verwendung)
 - [Build-Anweisungen](#build-anweisungen)
-- [Konfiguration xRechnung](#konfiguration-xrechnung)
+- [Die Konfiguration XRechnung](#die-konfiguration-xrechnung)
+- [Qualitätssicherung](#qualitätssicherung)
 
 # Über das Prüftool und die Prüftool-Konfiguration XRechnung
 Das Prüftool ist ein Programm, welches XML-Dateien (Dokumente) in Abhängigkeit von ihren Dokumenttypen gegen verschiedene 
 Validierungsregeln (XML Schema und Schematron) prüft und das Ergebnis zu einem Konformitätsbericht (Konformitätsstatus
 *valid* oder *invalid*) mit einer Empfehlung zur Weiterverarbeitung (*accept*) oder Ablehnung (*reject*) aggregiert.  Mittels  Konfiguration kann bestimmt werden, welche der Konformitätsregeln durch ein Dokument, das zur Weiterverarbeitung empfohlen (*accept*) wird, verletzt sein dürfen. 
-
 
 Das Prüftool selbst ist fachunabhängig und kennt keine spezifischen Dokumenttypen. 
 Diese werden im Rahmen einer [Prüftool-Konfiguration](#konfiguration-des-prüftools) definiert, welche zur Anwendung des Prüftools
@@ -52,9 +53,9 @@ Eine zu prüfende Datei durchläuft die folgenden Schritte
       sie für die Bewertung einer [anderen Meldungsart](#anpassung-der-fehlergrade-für-die-bewertung) zuzuordnen sind
       (z. B. *warning* anstelle von *error*).  
     * Der Prüfbericht ist ein für die maschinelle Auswertung geeignetes XML-Dokument (hier ein
-      [Beispiel](xrechnung/test/reports/ubl002-report.xml)). Darin eingebettet ist auch eine 
+      [Beispiel](configurations/xrechnung/test/reports/ubl002-report.xml)). Darin eingebettet ist auch eine 
       für menschliche Leser bestimmte HTML-Aufbereitung des Prüfergebnisses (hier ein
-      [Beispiel](xrechnung/test/reports/ubl002-report.html)). Die Details dieser HTML-Aufbereitung können
+      [Beispiel](configurations/xrechnung/test/reports/ubl002-report.html)). Die Details dieser HTML-Aufbereitung können
       bei Bedarf [angepasst](#anpassung-der-html-ausgabe) werden.
     
 # Verwendung
@@ -68,18 +69,18 @@ Das Prüftool steht in zwei Varianten zur Verfügung:
 Eine Liste der möglichen Optionen kann mit den Schalter `--help` angezeigt werden.
 
 Aufruf, um die mitgelieferten Test-Dokumente zu validieren und dabei neben den XML-Prüfberichten auch die eingebetteten
-HTML-Dokumente als eingeständige Dateien auszugeben:
+HTML-Dokumente als eingeständige Dateien auszugeben (im ausgepackten Distributable):
 
 ```
 cd xrechnung
 java -jar ../validationtool-<version>-standalone.jar -s scenarios.xml -o test/reports -h test/instances/*.xml
 ```
 
-Der Aufruf erzeugt im Verzeichnis [xrechnung/test/reports](xrechnung/test/reports/) für jede validierte Eingabedatei
+Der Aufruf erzeugt im Verzeichnis [xrechnung/test/reports](configurations/xrechnung/test/reports/) für jede validierte Eingabedatei
 einen gleichnamige [Prüfbericht]-Datei.  
 Eine Übersicht über die Eigenschaften der Testdateien in
-[xrechnung/test/instances](xrechnung/test/instances/) findet sich in
-[xrechnung/test/assertions.xlsx](xrechnung/test/assertions.xlsx).  
+[xrechnung/test/instances](configurations/xrechnung/test/instances/) findet sich in
+[xrechnung/test/assertions.xlsx](configurations/xrechnung/test/assertions.xlsx).  
 
 ## Verwendung als Bibliothek
 Daneben kann das Prüftool auch in eigene Anwendungen integriert werden. 
@@ -165,23 +166,15 @@ Eine Konfiguration besteht aus einer Konfigurationsdatei (XML-Dokument im Namens
 http://www.xoev.de/de/validator/framework/1/scenarios) sowie Resourcen (XML Schemata und XSLT-Dateien), auf welche die
 Konfigurationsdatei verweist.
 
-Der Aufbau der Konfigurationsdatei ist im entsprechenden Schema [scenarios.xsd](doc/xsd/scenarios.html) erläutert.
+Der Aufbau der Konfigurationsdatei ist im entsprechenden Schema [scenarios.xsd](validationtool/src/main/model/xsd/scenarios.xsd) erläutert.
 
 
-## Prüfbericht
-Der Aufbau des Prüfberichts ist im entsprechenden Schema [report.xsd](doc/xsd/report.html) erläutert.
-Die für die maschinelle Auswertung des Prüfberichts wesentlichsten Angaben sind
-
-* der [Konformitätsstatus](doc/xsd/report_xsd.html#report_valid) des geprüften Dokuments - *valid* oder *invalid*
-* die Empfehlung zur Annahme ([accept](doc/xsd/report_xsd.html#AssessmentType_accept)) oder Ablehnung
-  ([reject](doc/xsd/report_xsd.html#AssessmentType_reject)) des geprüften
-  Dokuments.  
 
 
 # Die Konfiguration XRechnung
-Die Konfiguration XRechnung findet sich im Verzeichnis [xrechnung/](xrechnung/).
-Für den produktiven Betrieb benötigt werden die Konfigurationsdatei [xrechnung/scenarios.xml](xrechnung/scenarios.xml) und das
-Ressourcen-Verzeichnis [xrechnung/resources/](xrechnung/resources/). 
+Die Konfiguration XRechnung findet sich im Verzeichnis [xrechnung/](configurations/xrechnung/).
+Für den produktiven Betrieb benötigt werden die Konfigurationsdatei [xrechnung/scenarios.xml](configurations/xrechnung/scenarios.xml) und das
+Ressourcen-Verzeichnis [xrechnung/resources/](configurations/xrechnung/resources/). 
 
 Die Konfiguration beinhaltet Prüfszenarien für die folgenden Dokumenttypen:
 
@@ -191,6 +184,16 @@ Die Konfiguration beinhaltet Prüfszenarien für die folgenden Dokumenttypen:
 
 Jedes Szenario prüft die Konformität zu der zugrunde liegenden XML-Schema-Datei, den Schematron-Regeln der EN16931 und
 den Schematron-Regeln der XRechnung CIUS.
+
+## Prüfbericht
+Der Aufbau des Prüfberichts ist im entsprechenden Schema [report.xsd](configurations/xrechnung/resources/report.xsd) erläutert.
+Die für die maschinelle Auswertung des Prüfberichts wesentlichsten Angaben sind
+
+* der *Konformitätsstatus* (*valid* oder *invalid*, Attribut rep:report/@valid)
+* die Empfehlung zur Annahme (*accept* - Element rep:report/rep:assessment/rep:accept) oder Ablehnung
+  (*reject* - Element rep:report/rep:assessment/rep:reject) des geprüften
+  Dokuments.  
+
 
 ## Anpassung der Fehlergrade für die Bewertung
 Grundsätzlich werden für die Verarbeitungen alle Meldungen, welche aus den einzelnen
@@ -279,7 +282,7 @@ verwiesen.
 * Diese Zusicherungen können vom Prüftool selbst mittels des Schalter `--check-assertions` automatisch geprüft werden.
 * Zudem wird die Integrität aller erstellten Prüfberichte automatisch gegen das Schema (XML Schema und
   Schematron-Regeln) des Prüfberichts getestet. 
-* Für weitere Details siehe [xrechnung/test/readme.txt](xrechnung/test/readme.txt).   
+* Für weitere Details siehe [xrechnung/test/readme.txt](configurations/xrechnung/test/readme.txt).   
 
 
 ## Noch nicht umgesetzte QS-Maßnahmen

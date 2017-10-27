@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." name="test-xrechnung" default="test-xrechnung">
    
-    <property name="prueftool.jar"  value="${basedir}/../../validationtool-1.0.0-SNAPSHOT-standalone.jar"/>
+    <property name="prueftool.jar"  value="${basedir}/../../validationtool-1.0.0-standalone.jar"/>
     <property name="schema.dir"  value="${basedir}/../../xsd"/>
     <property name="testfiles.dir"  value="${basedir}/instances"/>
     <property name="reports.dir"  value="${basedir}/reports"/>
