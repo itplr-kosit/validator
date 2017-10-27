@@ -6,10 +6,8 @@
 # Log file
 *.log
 .idea
+.settings
 *.iml
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
 
 # Package Files #
 *.jar
