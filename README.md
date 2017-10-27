@@ -153,12 +153,13 @@ verwendet
 # Build-Anweisungen
 Das Projekt wird mit Apache Maven gebaut. 
 
-Mittels `mvn install` wird standardmäßig die Bibliotheks-Variante gebaut. Diese enthält nur die Klassen und
-Komponenten für die Prüfung. Abhängigkeiten müssen durch die einbindende Anwendung aufgelöst werden (maven).
+Mittels `mvn install` werden im Unterverzeichnis `dist` zwei Pakete gebaut:
 
-Ein `mvn install -Pstandalone` baut die Standalone-Variante. Diese Variante enthält zusätzlich Klassen zur Verarbeitung
-von Eingaben aus der Kommandozeile, sowie für Ausgabeoptionen für Ergebnisse. Darüber hinaus ist diese als sog. 
-Uber-Jar gebaut, sodass sämtliche Abhängigkeiten im Jar gebundlet sind und das Jar-File somit 'lauffähig' ist.
+* die *Standalone-Distribution*  enthält das Uber-Jar mit allen Klassen zur Verarbeitung von Eingaben aus der Kommandozeile, 
+sowie für Ausgabeoptionen für Ergebnisse. Sämtliche Abhängigkeiten sind im Jar gebundlet  und das Jar-File ist 'ausführbar'.
+Weiterhin ist die Konfiguration und Testumgebung für XRechnung enthalten.
+
+* die *Full-Distribution* enthält darüber sämtlichen weiteren Varianten des `validationtools` sowie die benötigten Abhängigkeiten.
 
 # Konfiguration des Prüftools
 Eine Konfiguration besteht aus einer Konfigurationsdatei (XML-Dokument im Namensraum
