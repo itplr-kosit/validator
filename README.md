@@ -9,6 +9,8 @@
 - [Qualitätssicherung](#qualitätssicherung)
 
 # Über das Prüftool und die Prüftool-Konfiguration XRechnung
+In seiner 23. Sitzung hat der [IT-Planungsrat](https://www.it-planungsrat.de) mit [Beschluss 2017/22 (6a)](https://www.it-planungsrat.de/SharedDocs/Sitzungen/DE/2017/Sitzung_23.html?pos=3) die Koordinierungsstelle für IT-Standards (KoSIT) im Rahmen des Betriebs des Standards XRechnung mit der dauerhaften„…Bereitstellung eines Moduls zur Konformitätsprüfung elektronischer Rechnungen als offene Referenzimplementierung sowie …“ aller zugehöriger Artefakte beauftragt. Im Rahmen dieser Beauftragung wurde die hier bereitgestellte Software "Prüftool" entwickelt und (vor-) konfiguriert.
+
 Das Prüftool ist ein Programm, welches XML-Dateien (Dokumente) in Abhängigkeit von ihren Dokumenttypen gegen verschiedene 
 Validierungsregeln (XML Schema und Schematron) prüft und das Ergebnis zu einem Konformitätsbericht (Konformitätsstatus
 *valid* oder *invalid*) mit einer Empfehlung zur Weiterverarbeitung (*accept*) oder Ablehnung (*reject*) aggregiert.  Mittels  Konfiguration kann bestimmt werden, welche der Konformitätsregeln durch ein Dokument, das zur Weiterverarbeitung empfohlen (*accept*) wird, verletzt sein dürfen. 
