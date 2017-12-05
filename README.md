@@ -245,7 +245,7 @@ HTML-Ausgabe anzupassen. Dazu ist eine neue XSTL-Datei (z. B. `my-xrechnung-repo
 Konfigurationsdatei einzutragen. In der neuen XSLT-Datei kann nun das XSLT-Template `html:html` oder eines der von
 diesem eingebundenen Unter-Templates `html:*` überschrieben werden.  
 
-Für weiterführende Erläuterungen wird auf die Dokumentation in der XSLT `xrechung\resources\default-report.xsl`
+Für weiterführende Erläuterungen wird auf die Dokumentation in der XSLT [default-report.xsl](configurations/xrechnung/resources/default-report.xsl).
 verwiesen.  
 
 # Qualitätssicherung
