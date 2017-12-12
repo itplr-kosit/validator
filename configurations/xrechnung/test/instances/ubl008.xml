@@ -7,7 +7,7 @@
     <cbc:CustomizationID>urn:cen.eu:en16931:2017</cbc:CustomizationID>
     <cbc:ID>12115118</cbc:ID>
     <cbc:IssueDate>2015-01-09</cbc:IssueDate>
-    <cbc:CreditNoteTypeCode>070</cbc:CreditNoteTypeCode>
+    <cbc:CreditNoteTypeCode>326</cbc:CreditNoteTypeCode>
     <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
     
     <cac:AccountingSupplierParty>
