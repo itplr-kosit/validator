@@ -169,7 +169,7 @@ Weiterhin ist die Konfiguration und Testumgebung für XRechnung enthalten.
 
 # Konfiguration des Prüftools
 Eine Konfiguration besteht aus einer Konfigurationsdatei (XML-Dokument im Namensraum
-http://www.xoev.de/de/validator/framework/1/scenarios) sowie Resourcen (XML Schemata und XSLT-Dateien), auf welche die
+`http://www.xoev.de/de/validator/framework/1/scenarios`) sowie Resourcen (XML Schemata und XSLT-Dateien), auf welche die
 Konfigurationsdatei verweist.
 
 Der Aufbau der Konfigurationsdatei ist im entsprechenden Schema [scenarios.xsd](validationtool/src/main/model/xsd/scenarios.xsd) erläutert.
