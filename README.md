@@ -87,7 +87,10 @@ Eine Übersicht über die Eigenschaften der Testdateien in
 ## Verwendung als Bibliothek
 Daneben kann das Prüftool auch in eigene Anwendungen integriert werden. 
 
-Die Bibliothek steht im Maven-Central-Repository zur Verfügung und kann mit kompatiblen Build-Tools genutzt werden. 
+Die Bibliothek steht derzeit noch *nicht* im Maven-Central-Repository zur Verfügung. Sie muss manuell im lokalen oder 
+unternehmensweiten Maven-Repository bereitgestellt werden (siehe [vgl. Maven Dokumentation](https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html)).  
+
+ 
 
 * Maven 
 ```
