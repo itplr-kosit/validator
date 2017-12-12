@@ -53,7 +53,7 @@
                     <xsl:choose>
                         <xsl:when test="s:scenario">
                             <rep:scenarioMatched>
-                                <xsl:sequence select="s:scenario"/>
+                                <xsl:apply-templates select="s:scenario" mode="copy"/>
                                 <xsl:call-template name="documentData"/>
                                 <xsl:sequence select="$validationStepResults"/>
                             </rep:scenarioMatched>
@@ -83,6 +83,18 @@
     </xd:doc>
     <xsl:template name="documentData"/>
     
+    <xsl:template mode="copy" match="node()|attribute()">
+        <xsl:copy>
+            <xsl:apply-templates select="node()|attribute()" mode="copy"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template mode="copy" match="s:*">
+        <xsl:element name="s:{local-name()}">
+            <xsl:apply-templates select="node()|attribute()" mode="copy"/>
+        </xsl:element>
+    </xsl:template>
+    
     
     <!-- ************************************************************************************** -->
     <!-- *                                                                                    * -->
@@ -99,7 +111,7 @@
         </xsl:variable>
         <rep:validationStepResult id="val-xml"
             valid="{if ($messages[@level = ('warning', 'error')]) then false() else true()}">
-            <xsl:sequence select="s:resource"/>
+            <xsl:apply-templates select="s:resource" mode="copy"/>
             <xsl:sequence select="$messages"/>
         </rep:validationStepResult>
     </xsl:template>
@@ -113,7 +125,7 @@
         </xsl:variable>
         <rep:validationStepResult id="val-xsd"
             valid="{if ($messages[@level = ('warning', 'error')]) then false() else true()}">
-            <xsl:sequence select="s:resource"/>
+            <xsl:apply-templates select="s:resource" mode="copy"/>
             <xsl:sequence select="$messages"/>
         </rep:validationStepResult>
     </xsl:template>
@@ -171,7 +183,7 @@
             </xsl:apply-templates>
         </xsl:variable>
         <rep:validationStepResult id="{$id}" valid="{if ($messages[@level = ('warning', 'error')]) then false() else true()}">
-            <xsl:sequence select="s:resource"/>
+            <xsl:apply-templates select="s:resource" mode="copy"/>
             <xsl:sequence select="$messages"/>
         </rep:validationStepResult>
     </xsl:template>
