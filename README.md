@@ -19,7 +19,7 @@ Das Prüftool selbst ist fachunabhängig und kennt keine spezifischen Dokumentty
 Diese werden im Rahmen einer [Prüftool-Konfiguration](#konfiguration-des-prüftools) definiert, welche zur Anwendung des Prüftools
 erforderlich ist. 
 Mit ausgeliefert wird in diesem Kontext eine Entwurfsversion der [Prüftool-Konfiguration
-XRechnung](#die-konfiguration-xrechnung), welche die Prüfartefakte der EN16931 und die Prüfartefakte des Standards
+XRechnung](#die-konfiguration-xrechnung), welche die Prüfartefakte zu der EN16931 (https://github.com/CenPC434/validation) und die Prüfartefakte des Standards
 [XRechnung](http://www.xoev.de/de/xrechnung) in ihren aktuellen Entwurfsversionen beinhaltet. 
 
 # Status der Bestandteile
