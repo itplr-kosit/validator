@@ -45,7 +45,7 @@ Eine zu prüfende Datei durchläuft die folgenden Schritte
     Schemas sein, andernfalls werden keine weiteren Prüfungen durchgeführt und ein [Prüfbericht] mit Status *invalid*
     und Empfehlung *reject* generiert.
 4. *Prüfung gegen die Schematron-Regeln des identifizierten Dokumenttyps*
-5. *Aggregation und Bewertung der einzelnen Prüfungen zu einem [Prüfbericht]*: Die Ergebnisse der
+5. *Aggregation und Bewertung der einzelnen Prüfungen* zu einem [Prüfbericht]: Die Ergebnisse der
     vorherigen Schritte werden in einem einheitlichen Berichtsformat zusammengefasst und bewertet:
     * Sofern mindestens einer der zuvor durchgeführten Prüfschritte einen Fehler (*error*) oder eine Warnung (*warning*)
       geliefert hat, erhält der Prüfbericht den Status *invalid*, andernfalls erhält er den Status *valid*.
