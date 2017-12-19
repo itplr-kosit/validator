@@ -31,7 +31,7 @@
     <parent>
         <groupId>de.kosit</groupId>
         <artifactId>validationtool-base</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1</version>
         <relativePath>../</relativePath>
     </parent>
     <artifactId>validationtool</artifactId>

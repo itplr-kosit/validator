@@ -25,7 +25,7 @@
     <parent>
         <groupId>de.kosit</groupId>
         <artifactId>validationtool-base</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1</version>
         <relativePath>../</relativePath>
     </parent>
     <artifactId>validationtool-dist</artifactId>
@@ -66,7 +66,7 @@
 
     <build>
         <plugins>
-            <plugin>
+<!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.9</version>
@@ -90,7 +90,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>

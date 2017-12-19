@@ -16,10 +16,10 @@
                 <include>NOTICE*</include>
             </includes>
         </fileSet>
-        <fileSet>
+<!--        <fileSet>
             <directory>${project.build.directory}/xrechnung</directory>
             <outputDirectory>/</outputDirectory>
-        </fileSet>
+        </fileSet> -->
     </fileSets>
     <dependencySets>
         <dependencySet>
