@@ -14,7 +14,7 @@
         <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
         <namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace>
         <match>/invoice:Invoice[starts-with(cbc:CustomizationID, 'urn:cen.eu:en16931:2017') or
-                                starts-with(cbc:CustomizationID, 'urn:ce.eu:en16931:2017']</match>
+                                starts-with(cbc:CustomizationID, 'urn:ce.eu:en16931:2017')]</match>
         <validateWithXmlSchema>
             <resource>
                 <name>XML Schema for UBL 2.1 Invoice</name>
