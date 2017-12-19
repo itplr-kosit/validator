@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rep:report xmlns:rep="http://www.xoev.de/de/validator/varl/1"
-            xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
-            xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
             xmlns:html="http://www.w3.org/1999/xhtml"
             xmlns:in="http://www.xoev.de/de/validator/framework/1/createreportinput"
             xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios"
             xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-            xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
             xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             valid="false"
@@ -14,136 +11,120 @@
    <rep:engine>
       <rep:name>KoSIT Prüftool</rep:name>
    </rep:engine>
-   <rep:timestamp>2017-09-21T11:08:05.949+02:00</rep:timestamp>
+   <rep:timestamp>2017-12-19T15:50:49.595+01:00</rep:timestamp>
    <rep:documentIdentification>
       <rep:documentHash>
          <rep:hashAlgorithm>SHA-256</rep:hashAlgorithm>
-         <rep:hashValue>AOefPeWvVAS0lMISrG+1jxGNU6C/3W4zi1rbXQRoKoo=</rep:hashValue>
+         <rep:hashValue>8XlAzTl+VbCoxYLM5ne8r7f1qmQ1sXpfczUM0eUdeRI=</rep:hashValue>
       </rep:documentHash>
-      <rep:documentReference>c:\fb\svn\xoev\produkte\prueftool\trunk\xrechnung\test\instances\ubl008.xml</rep:documentReference>
+      <rep:documentReference>c:\fb\git\validationtool\configurations\xrechnung\test\instances\ubl008.xml</rep:documentReference>
    </rep:documentIdentification>
    <rep:scenarioMatched>
-      <ns2:scenario xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
-                    xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
-         <ns2:name>EN16931 CIUS XRechnung (UBL CreditNote)</ns2:name>
-         <ns2:namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</ns2:namespace>
-         <ns2:namespace prefix="creditnote">urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2</ns2:namespace>
-         <ns2:match>/creditnote:CreditNote[starts-with(cbc:CustomizationID, 'urn:cen.eu:en16931:2017')]</ns2:match>
-         <ns2:validateWithXmlSchema>
-            <ns2:resource>
-               <ns2:name>XML Schema for UBL 2.1 CreditNote</ns2:name>
-               <ns2:location>resources/xrechnung/ubl21/xsdrt/maindoc/UBL-CreditNote-2.1.xsd</ns2:location>
-            </ns2:resource>
-         </ns2:validateWithXmlSchema>
-         <ns2:validateWithSchematron>
-            <ns2:resource>
-               <ns2:name>Schematron rules for EN16931 (UBL)</ns2:name>
-               <ns2:location>resources/xrechnung/ubl21/xsl/EN16931-UBL-validation.xsl</ns2:location>
-            </ns2:resource>
-         </ns2:validateWithSchematron>
-         <ns2:validateWithSchematron>
-            <ns2:resource>
-               <ns2:name>Schematron rules for CreditNote - CIUS XRechnung (UBL)</ns2:name>
-               <ns2:location>resources/xrechnung/ubl21/xsl/XRechnung-UBL-validation-CreditNote.xsl</ns2:location>
-            </ns2:resource>
-         </ns2:validateWithSchematron>
-         <ns2:createReport>
-            <ns2:resource>
-               <ns2:name>Prüfbericht für XRechnung</ns2:name>
-               <ns2:location>resources/xrechnung/xrechnung-report.xsl</ns2:location>
-            </ns2:resource>
-         </ns2:createReport>
-      </ns2:scenario>
-      <rep:documentData xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+      <s:scenario>
+         <s:name>EN16931 CIUS XRechnung (UBL CreditNote)</s:name>
+         <s:namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</s:namespace>
+         <s:namespace prefix="creditnote">urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2</s:namespace>
+         <s:match>/creditnote:CreditNote[starts-with(cbc:CustomizationID, 'urn:cen.eu:en16931:2017')]</s:match>
+         <s:validateWithXmlSchema>
+            <s:resource>
+               <s:name>XML Schema for UBL 2.1 CreditNote</s:name>
+               <s:location>resources/xrechnung/ubl21/xsdrt/maindoc/UBL-CreditNote-2.1.xsd</s:location>
+            </s:resource>
+         </s:validateWithXmlSchema>
+         <s:validateWithSchematron>
+            <s:resource>
+               <s:name>Schematron rules for EN16931 (UBL)</s:name>
+               <s:location>resources/xrechnung/ubl21/xsl/EN16931-UBL-validation.xsl</s:location>
+            </s:resource>
+         </s:validateWithSchematron>
+         <s:validateWithSchematron>
+            <s:resource>
+               <s:name>Schematron rules for CreditNote - CIUS XRechnung (UBL)</s:name>
+               <s:location>resources/xrechnung/ubl21/xsl/XRechnung-UBL-validation-CreditNote.xsl</s:location>
+            </s:resource>
+         </s:validateWithSchematron>
+         <s:createReport>
+            <s:resource>
+               <s:name>Prüfbericht für XRechnung</s:name>
+               <s:location>resources/xrechnung/xrechnung-report.xsl</s:location>
+            </s:resource>
+         </s:createReport>
+      </s:scenario>
+      <rep:documentData xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+                        xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+                        xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
                         xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                        xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
                         xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
          <seller>De Koksmaat</seller>
          <id>12115118</id>
          <issueDate>2015-01-09</issueDate>
       </rep:documentData>
       <rep:validationStepResult id="val-xsd" valid="true">
-         <ns2:resource xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
-                       xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
-            <ns2:name>XML Schema for UBL 2.1 CreditNote</ns2:name>
-            <ns2:location>resources/xrechnung/ubl21/xsdrt/maindoc/UBL-CreditNote-2.1.xsd</ns2:location>
-         </ns2:resource>
+         <s:resource>
+            <s:name>XML Schema for UBL 2.1 CreditNote</s:name>
+            <s:location>resources/xrechnung/ubl21/xsdrt/maindoc/UBL-CreditNote-2.1.xsd</s:location>
+         </s:resource>
       </rep:validationStepResult>
       <rep:validationStepResult id="val-sch.1" valid="false">
-         <ns2:resource xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
-                       xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
-            <ns2:name>Schematron rules for EN16931 (UBL)</ns2:name>
-            <ns2:location>resources/xrechnung/ubl21/xsl/EN16931-UBL-validation.xsl</ns2:location>
-         </ns2:resource>
+         <s:resource>
+            <s:name>Schematron rules for EN16931 (UBL)</s:name>
+            <s:location>resources/xrechnung/ubl21/xsl/EN16931-UBL-validation.xsl</s:location>
+         </s:resource>
          <rep:message code="BR-S-01"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote">[BR-S-01]-An Invoice that contains a line, a document level allowance or a document level charge where the Invoiced
-						item VAT category code (BT-151, BT-95 or BT-102) is “Standard rated” shall contain in the VAT breakdown (BG-23) at least one
-						VAT category code (BT-118) equal with "Standard rated".</rep:message>
+                      xpathLocation="/CreditNote">[BR-S-01]-An Invoice that contains an Invoice line (BG-25), a Document level allowance (BG-20) or a Document level charge (BG-21) where the VAT category code (BT-151, BT-95 or BT-102) is “Standard rated” shall contain in the VATBReakdown (BG-23) at least one VAT category code (BT-118) equal with "Standard rated".</rep:message>
          <rep:message code="BR-S-08"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory">[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard
-						rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts
-						(BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where
-						the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT
-						category rate (BT-119).</rep:message>
+                      xpathLocation="/CreditNote/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory">[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VATBReakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</rep:message>
          <rep:message code="BR-S-08"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:TaxTotal/cac:TaxSubtotal[2]/cac:TaxCategory">[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard
-						rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts
-						(BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where
-						the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT
-						category rate (BT-119).</rep:message>
+                      xpathLocation="/CreditNote/cac:TaxTotal/cac:TaxSubtotal[2]/cac:TaxCategory">[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VATBReakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</rep:message>
          <rep:message code="BR-CO-10"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:LegalMonetaryTotal">[BR-CO-10]-Sum of Invoice line net amount = Σ Invoice line net amount. </rep:message>
+                      xpathLocation="/CreditNote/cac:LegalMonetaryTotal">[BR-CO-10]-Sum of Invoice line net amount (BT-106) = Σ Invoice line net amount (BT-131).</rep:message>
          <rep:message code="BR-CO-25"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:LegalMonetaryTotal/cbc:PayableAmount">[BR-CO-25]-In case the Amount due for payment (BT-115) is positive, either the Payment due date (BT-9) or the Payment
-						terms (BT-20) shall be present.</rep:message>
+                      xpathLocation="/CreditNote/cac:LegalMonetaryTotal/cbc:PayableAmount">[BR-CO-25]-In case the Amount due for payment (BT-115) is positive, either the Payment due date (BT-9) or the Payment terms (BT-20) shall be present.</rep:message>
          <rep:message code="BR-22"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-22]-Each Invoice line shall have an Invoiced quantity. </rep:message>
+                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-22]-Each Invoice line (BG-25) shall have an Invoiced quantity (BT-129).</rep:message>
          <rep:message code="BR-23"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-23]-An invoiced quantity shall have an Invoice quantity unit of measure. </rep:message>
+                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-23]-An Invoice line (BG-25) shall have an Invoiced quantity unit of measure code (BT-130).</rep:message>
          <rep:message code="BR-24"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-24]-Each Invoice line shall have an Invoice line net amount. </rep:message>
+                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-24]-Each Invoice line (BG-25) shall have an Invoice line net amount (BT-131).</rep:message>
          <rep:message code="BR-25"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-25]-Each Invoice line shall contain the Item name. </rep:message>
+                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-25]-Each Invoice line (BG-25) shall contain the Item name (BT-153).</rep:message>
          <rep:message code="BR-26"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-26]-Each Invoice line shall contain the Item net price. </rep:message>
+                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-26]-Each Invoice line (BG-25) shall contain the Item net price (BT-146).</rep:message>
          <rep:message code="BR-27"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-27]-The item net price shall NOT be negative. </rep:message>
+                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-27]-The Item net price (BT-146) shall NOT be negative.</rep:message>
          <rep:message code="BR-CO-04"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-CO-04]-Each Invoice line shall be categorized with an Invoiced item VAT category code. </rep:message>
-         <rep:message code="BR-CL-16"
-                      id="val-sch.1.1"
-                      level="error"
-                      xpathLocation="/CreditNote/cbc:CreditNoteTypeCode">[BR-CL-16]-Credit Note type code MUST be coded using UNCL1001 credit note codes.</rep:message>
+                      xpathLocation="/CreditNote/cac:CreditNoteLine">[BR-CO-04]-Each Invoice line (BG-25) shall be categorized with an Invoiced item VAT category code (BT-151).</rep:message>
       </rep:validationStepResult>
       <rep:validationStepResult id="val-sch.2" valid="false">
-         <ns2:resource xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
-                       xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
-            <ns2:name>Schematron rules for CreditNote - CIUS XRechnung (UBL)</ns2:name>
-            <ns2:location>resources/xrechnung/ubl21/xsl/XRechnung-UBL-validation-CreditNote.xsl</ns2:location>
-         </ns2:resource>
+         <s:resource>
+            <s:name>Schematron rules for CreditNote - CIUS XRechnung (UBL)</s:name>
+            <s:location>resources/xrechnung/ubl21/xsl/XRechnung-UBL-validation-CreditNote.xsl</s:location>
+         </s:resource>
          <rep:message code="BR-DE-15"
                       id="val-sch.2.1"
                       level="error"
@@ -287,14 +268,17 @@
                      <p class="important">Angaben zum geprüften Dokument</p>
                      <dl>
                         <dt>Referenz:</dt>
-                        <dd>c:\fb\svn\xoev\produkte\prueftool\trunk\xrechnung\test\instances\ubl008.xml</dd>
+                        <dd>c:\fb\git\validationtool\configurations\xrechnung\test\instances\ubl008.xml</dd>
                         <dt>Zeitpunkt der Prüfung:</dt>
-                        <dd>21.9.2017 11:08:05</dd>
+                        <dd>19.12.2017 15:50:49</dd>
                         <dt>Erkannter Dokumenttyp:</dt>
                         <dd>EN16931 CIUS XRechnung (UBL CreditNote)</dd>
                      </dl>
-                     <dl xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+                     <dl xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+                         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+                         xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
                          xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                         xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
                          xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
                         <dt>Erkannter Rechnungssteller:</dt>
                         <dd>De Koksmaat</dd>
@@ -305,7 +289,7 @@
                      </dl>
                   </div>
                   <p class="important">
-                     <b>Konformitätsprüfung: </b>Das geprüfte Dokument enthält 14 Fehler / 0 Warnungen. Es ist <b>nicht konform</b> zu den formalen Vorgaben.</p>
+                     <b>Konformitätsprüfung: </b>Das geprüfte Dokument enthält 13 Fehler / 0 Warnungen. Es ist <b>nicht konform</b> zu den formalen Vorgaben.</p>
                   <p>Übersicht der Validierungsergebnisse:</p>
                   <table class="tbl-errors">
                      <thead>
@@ -325,7 +309,7 @@
                         </tr>
                         <tr>
                            <td>Schematron rules for EN16931 (UBL) (val-sch.1)</td>
-                           <td style="width: 30mm;">13</td>
+                           <td style="width: 30mm;">12</td>
                            <td style="width: 30mm;">0</td>
                            <td style="width: 30mm;">0</td>
                         </tr>
@@ -352,7 +336,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-S-01</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-S-01]-An Invoice that contains a line, a document level allowance or a document level charge where the Invoiced item VAT category code (BT-151, BT-95 or BT-102) is “Standard rated” shall contain in the VAT breakdown (BG-23) at least one VAT category code (BT-118) equal with "Standard rated".</td>
+                           <td>[BR-S-01]-An Invoice that contains an Invoice line (BG-25), a Document level allowance (BG-20) or a Document level charge (BG-21) where the VAT category code (BT-151, BT-95 or BT-102) is “Standard rated” shall contain in the VATBReakdown (BG-23) at least one VAT category code (BT-118) equal with "Standard rated".</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote</td>
@@ -361,7 +345,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-S-08</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</td>
+                           <td>[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VATBReakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory</td>
@@ -370,7 +354,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-S-08</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</td>
+                           <td>[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VATBReakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:TaxTotal/cac:TaxSubtotal[2]/cac:TaxCategory</td>
@@ -379,7 +363,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-CO-10</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-CO-10]-Sum of Invoice line net amount = Σ Invoice line net amount.</td>
+                           <td>[BR-CO-10]-Sum of Invoice line net amount (BT-106) = Σ Invoice line net amount (BT-131).</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:LegalMonetaryTotal</td>
@@ -397,7 +381,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-22</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-22]-Each Invoice line shall have an Invoiced quantity.</td>
+                           <td>[BR-22]-Each Invoice line (BG-25) shall have an Invoiced quantity (BT-129).</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:CreditNoteLine</td>
@@ -406,7 +390,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-23</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-23]-An invoiced quantity shall have an Invoice quantity unit of measure.</td>
+                           <td>[BR-23]-An Invoice line (BG-25) shall have an Invoiced quantity unit of measure code (BT-130).</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:CreditNoteLine</td>
@@ -415,7 +399,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-24</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-24]-Each Invoice line shall have an Invoice line net amount.</td>
+                           <td>[BR-24]-Each Invoice line (BG-25) shall have an Invoice line net amount (BT-131).</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:CreditNoteLine</td>
@@ -424,7 +408,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-25</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-25]-Each Invoice line shall contain the Item name.</td>
+                           <td>[BR-25]-Each Invoice line (BG-25) shall contain the Item name (BT-153).</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:CreditNoteLine</td>
@@ -433,7 +417,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-26</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-26]-Each Invoice line shall contain the Item net price.</td>
+                           <td>[BR-26]-Each Invoice line (BG-25) shall contain the Item net price (BT-146).</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:CreditNoteLine</td>
@@ -442,7 +426,7 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-27</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-27]-The item net price shall NOT be negative.</td>
+                           <td>[BR-27]-The Item net price (BT-146) shall NOT be negative.</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:CreditNoteLine</td>
@@ -451,19 +435,10 @@
                            <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-CO-04</td>
                            <td rowspan="2">error</td>
-                           <td>[BR-CO-04]-Each Invoice line shall be categorized with an Invoiced item VAT category code.</td>
+                           <td>[BR-CO-04]-Each Invoice line (BG-25) shall be categorized with an Invoiced item VAT category code (BT-151).</td>
                         </tr>
                         <tr class="error">
                            <td>Pfad: /CreditNote/cac:CreditNoteLine</td>
-                        </tr>
-                        <tr class="error">
-                           <td rowspan="2">val-sch.1.1</td>
-                           <td rowspan="2">BR-CL-16</td>
-                           <td rowspan="2">error</td>
-                           <td>[BR-CL-16]-Credit Note type code MUST be coded using UNCL1001 credit note codes.</td>
-                        </tr>
-                        <tr class="error">
-                           <td>Pfad: /CreditNote/cbc:CreditNoteTypeCode</td>
                         </tr>
                         <tr class="error">
                            <td rowspan="2">val-sch.2.1</td>
@@ -532,7 +507,7 @@
                      <tr class="row" id="0005">
                         <td class="pos">0005</td>
                         <td class="element level2" title="CreditNoteTypeCode">
-                           <div class="val">070</div>
+                           <div class="val">326</div>
                         </td>
                      </tr>
                      <tr class="row" id="0006">

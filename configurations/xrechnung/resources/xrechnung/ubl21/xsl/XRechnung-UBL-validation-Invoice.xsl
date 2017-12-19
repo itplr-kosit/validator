@@ -207,7 +207,7 @@
 
 
 	  <!--RULE -->
-   <xsl:template match="/ubl:Invoice" priority="1007" mode="M8">
+   <xsl:template match="//ubl:Invoice" priority="1007" mode="M8">
 
 		<!--ASSERT -->
       <xsl:choose>
@@ -266,7 +266,7 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text>[BR-DE-17] TODO REGEL BT-3 ggf. mit anderer ID</svrl:text>
+               <svrl:text>[BR-DE-17] Mit dem Element "Invoice type code" (BT-3) sollen ausschließlich folgende Codes aus der Codeliste UNTDID 1001a übermittelt werden: 326 (Partial invoice), 380 (Commercial invoice), 384 (Corrected invoice) und 381 (Credit note).</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
       </xsl:choose>
@@ -278,11 +278,11 @@
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
                                 test="every $line in tokenize(cac:PaymentTerms/cbc:Note,'\n\r?') satisfies if(count(tokenize($line,'#')) &gt; 1) then tokenize($line,'#')[1]='' and (tokenize($line,'#')[2]='SKONTO' or tokenize($line,'#')[2]='VERZUG') and string-length(replace(tokenize($line,'#')[3],'TAGE=[0-9]+',''))=0 and string-length(replace(tokenize($line,'#')[4],'PROZENT=[0-9]+\.[0-9]{2}',''))=0 and (tokenize($line,'#')[5]='' and empty(tokenize($line,'#')[6]) or string-length(replace(tokenize($line,'#')[5],'BASISBETRAG=[0-9]+\.[0-9]{2}',''))=0 and tokenize($line,'#')[6]='' and empty(tokenize($line,'#')[7])) else true()">
                <xsl:attribute name="id">BR-DE-18</xsl:attribute>
-               <xsl:attribute name="flag">warning</xsl:attribute>
+               <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text>[BR-DE-18] TODO REGEL BT-20 ggf. mit anderer ID</svrl:text>
+               <svrl:text>[BR-DE-18] Informationen zur Gewährung von Skonto oder zur Berechnung von Verzugszinsen müssen wie folgt im Element "Payment terms" (BT-20) jeweils in einer eigenen Zeile übermittelt werden: Anzugeben ist im ersten Segment "SKONTO" oder "VERZUG", im zweiten "TAGE=n", im dritten "PROZENT=n", wobei die Segmente jeweils von einer "#" umfasst sind. Prozentzahlen sind mit Punkt getrennt von zwei Nachkommastellen anzugeben. Liegt dem zu berechnenden Betrag nicht BT-115, "fälliger Betrag" zugrunde, sondern nur ein Teil des fälligen Betrags der Rechnung, ist der Grundwert zur Berechnung von Skonto oder Verzugszins als viertes Segment "BASISBETRAG=n" mit dem semantischen Datentyp Amount anzugeben.</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
       </xsl:choose>
@@ -290,7 +290,7 @@
    </xsl:template>
 
 	  <!--RULE -->
-   <xsl:template match="/ubl:Invoice/cac:AccountingSupplierParty"
+   <xsl:template match="//ubl:Invoice/cac:AccountingSupplierParty"
                  priority="1006"
                  mode="M8">
 
@@ -312,7 +312,7 @@
    </xsl:template>
 
 	  <!--RULE -->
-   <xsl:template match="/ubl:Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress"
+   <xsl:template match="//ubl:Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress"
                  priority="1005"
                  mode="M8">
 
@@ -349,7 +349,7 @@
    </xsl:template>
 
 	  <!--RULE -->
-   <xsl:template match="/ubl:Invoice/cac:AccountingSupplierParty/cac:Party/cac:Contact"
+   <xsl:template match="//ubl:Invoice/cac:AccountingSupplierParty/cac:Party/cac:Contact"
                  priority="1004"
                  mode="M8">
 
@@ -401,7 +401,7 @@
    </xsl:template>
 
 	  <!--RULE -->
-   <xsl:template match="/ubl:Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress"
+   <xsl:template match="//ubl:Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress"
                  priority="1003"
                  mode="M8">
 
@@ -438,7 +438,7 @@
    </xsl:template>
 
 	  <!--RULE -->
-   <xsl:template match="/ubl:Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address"
+   <xsl:template match="//ubl:Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address"
                  priority="1002"
                  mode="M8">
 
@@ -475,7 +475,7 @@
    </xsl:template>
 
 	  <!--RULE -->
-   <xsl:template match="/ubl:Invoice/cac:PaymentMeans" priority="1001" mode="M8">
+   <xsl:template match="//ubl:Invoice/cac:PaymentMeans" priority="1001" mode="M8">
 
 		<!--ASSERT -->
       <xsl:choose>
@@ -496,7 +496,7 @@
    </xsl:template>
 
 	  <!--RULE -->
-   <xsl:template match="/ubl:Invoice/cac:TaxTotal/cac:TaxSubtotal"
+   <xsl:template match="//ubl:Invoice/cac:TaxTotal/cac:TaxSubtotal"
                  priority="1000"
                  mode="M8">
 

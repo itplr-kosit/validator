@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenarios xmlns="http://www.xoev.de/de/validator/framework/1/scenarios" frameworkVersion="1.0.0">
-    <name>Prüftool-Konfiguration XRechnung (Entwurf)</name>
+    <name>Prüftool-Konfiguration XRechnung 1.1</name>
     <author>KoSIT</author>
-    <date>2017-09-20</date>
+    <date>2017-12-19</date>
     <description>
-        <p>Prüfung von Dokumenten auf Konformität zum Standard XRechnung (www.xoev.de/de/xrechnung)</p>
+        <p>Prüfung von Dokumenten auf Konformität zum Standard XRechnung 1.1 (https://www.xoev.de/de/xrechnung/1_1).</p>
+        <p>Diese Konfiguration enthält die Schematron-Regeln der EN16931 mit dem Stand 19.12.2017 (https://github.com/CenPC434/validation/commit/5a82a74d239efea67bcc4381a2facad3bc524758).</p>
+        <p>Diese Konfiguration enthält die Schematron-Regeln der CIUS XRechnung 1.1 mit dem Stand 19.12.2017 (https://github.com/itplr-kosit/xrechnung-artefacts/releases/tag/xrechnung-1_1-schematron-2017-12-19).</p>
     </description>
 
     <scenario>
         <name>EN16931 CIUS XRechnung (UBL Invoice)</name>
         <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
         <namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace>
-        <match>/invoice:Invoice[starts-with(cbc:CustomizationID, 'urn:cen.eu:en16931:2017')]</match>
+        <match>/invoice:Invoice[starts-with(cbc:CustomizationID, 'urn:cen.eu:en16931:2017') or
+                                starts-with(cbc:CustomizationID, 'urn:ce.eu:en16931:2017']</match>
         <validateWithXmlSchema>
             <resource>
                 <name>XML Schema for UBL 2.1 Invoice</name>
@@ -42,7 +45,8 @@
         <name>EN16931 CIUS XRechnung (UBL CreditNote)</name>
         <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
         <namespace prefix="creditnote">urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2</namespace>
-        <match>/creditnote:CreditNote[starts-with(cbc:CustomizationID, 'urn:cen.eu:en16931:2017')]</match>
+        <match>/creditnote:CreditNote[starts-with(cbc:CustomizationID, 'urn:cen.eu:en16931:2017') or
+                                      starts-with(cbc:CustomizationID, 'urn:ce.eu:en16931:2017')]</match>
         <validateWithXmlSchema>
             <resource>
                 <name>XML Schema for UBL 2.1 CreditNote</name>
@@ -73,7 +77,8 @@
         <name>EN16931 CIUS XRechnung (CII)</name>
         <namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace>
         <namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace>
-        <match>/rsm:CrossIndustryInvoice[starts-with(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID, 'urn:cen.eu:en16931:2017')]</match>
+        <match>/rsm:CrossIndustryInvoice[starts-with(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID, 'urn:cen.eu:en16931:2017') or
+                                         starts-with(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID, 'urn:ce.eu:en16931:2017')]</match>
         <validateWithXmlSchema>
             <resource>
                 <name>XML Schema for UN/CEFACT XML (SCRDM - CII)</name>

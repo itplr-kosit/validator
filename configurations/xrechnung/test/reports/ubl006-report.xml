@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rep:report xmlns:rep="http://www.xoev.de/de/validator/varl/1"
-            xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
-            xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
             xmlns:html="http://www.w3.org/1999/xhtml"
             xmlns:in="http://www.xoev.de/de/validator/framework/1/createreportinput"
             xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios"
             xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-            xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
             xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             valid="false"
@@ -14,13 +11,13 @@
    <rep:engine>
       <rep:name>KoSIT Prüftool</rep:name>
    </rep:engine>
-   <rep:timestamp>2017-09-21T11:08:05.849+02:00</rep:timestamp>
+   <rep:timestamp>2017-12-19T15:50:49.486+01:00</rep:timestamp>
    <rep:documentIdentification>
       <rep:documentHash>
          <rep:hashAlgorithm>SHA-256</rep:hashAlgorithm>
          <rep:hashValue>BKKOJO/vyijaAlUZ4l/3JmjUeo9RKNjDn9rfo5XmDu8=</rep:hashValue>
       </rep:documentHash>
-      <rep:documentReference>c:\fb\svn\xoev\produkte\prueftool\trunk\xrechnung\test\instances\ubl006.xml</rep:documentReference>
+      <rep:documentReference>c:\fb\git\validationtool\configurations\xrechnung\test\instances\ubl006.xml</rep:documentReference>
    </rep:documentIdentification>
    <rep:noScenarioMatched>
       <rep:validationStepResult id="val-xml" valid="true"/>
@@ -162,9 +159,9 @@
                      <p class="important">Angaben zum geprüften Dokument</p>
                      <dl>
                         <dt>Referenz:</dt>
-                        <dd>c:\fb\svn\xoev\produkte\prueftool\trunk\xrechnung\test\instances\ubl006.xml</dd>
+                        <dd>c:\fb\git\validationtool\configurations\xrechnung\test\instances\ubl006.xml</dd>
                         <dt>Zeitpunkt der Prüfung:</dt>
-                        <dd>21.9.2017 11:08:05</dd>
+                        <dd>19.12.2017 15:50:49</dd>
                         <dt>Erkannter Dokumenttyp:</dt>
                         <dd>
                            <b class="error">unbekannt</b>

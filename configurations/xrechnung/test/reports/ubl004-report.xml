@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rep:report xmlns:rep="http://www.xoev.de/de/validator/varl/1"
-            xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
-            xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
             xmlns:html="http://www.w3.org/1999/xhtml"
             xmlns:in="http://www.xoev.de/de/validator/framework/1/createreportinput"
             xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios"
             xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-            xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
             xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             valid="false"
@@ -14,74 +11,73 @@
    <rep:engine>
       <rep:name>KoSIT Prüftool</rep:name>
    </rep:engine>
-   <rep:timestamp>2017-09-21T11:08:05.617+02:00</rep:timestamp>
+   <rep:timestamp>2017-12-19T15:50:49.252+01:00</rep:timestamp>
    <rep:documentIdentification>
       <rep:documentHash>
          <rep:hashAlgorithm>SHA-256</rep:hashAlgorithm>
          <rep:hashValue>EsZfD9vQAuYIs60kxtOUoraNWHEboDi+SPY3YQswqqs=</rep:hashValue>
       </rep:documentHash>
-      <rep:documentReference>c:\fb\svn\xoev\produkte\prueftool\trunk\xrechnung\test\instances\ubl004.xml</rep:documentReference>
+      <rep:documentReference>c:\fb\git\validationtool\configurations\xrechnung\test\instances\ubl004.xml</rep:documentReference>
    </rep:documentIdentification>
    <rep:scenarioMatched>
-      <ns2:scenario xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
-                    xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
-         <ns2:name>EN16931 CIUS XRechnung (UBL Invoice)</ns2:name>
-         <ns2:namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</ns2:namespace>
-         <ns2:namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</ns2:namespace>
-         <ns2:match>/invoice:Invoice[starts-with(cbc:CustomizationID, 'urn:cen.eu:en16931:2017')]</ns2:match>
-         <ns2:validateWithXmlSchema>
-            <ns2:resource>
-               <ns2:name>XML Schema for UBL 2.1 Invoice</ns2:name>
-               <ns2:location>resources/xrechnung/ubl21/xsdrt/maindoc/UBL-Invoice-2.1.xsd</ns2:location>
-            </ns2:resource>
-         </ns2:validateWithXmlSchema>
-         <ns2:validateWithSchematron>
-            <ns2:resource>
-               <ns2:name>Schematron rules for EN16931 (UBL)</ns2:name>
-               <ns2:location>resources/xrechnung/ubl21/xsl/EN16931-UBL-validation.xsl</ns2:location>
-            </ns2:resource>
-         </ns2:validateWithSchematron>
-         <ns2:validateWithSchematron>
-            <ns2:resource>
-               <ns2:name>Schematron rules for Invoice - CIUS XRechnung (UBL)</ns2:name>
-               <ns2:location>resources/xrechnung/ubl21/xsl/XRechnung-UBL-validation-Invoice.xsl</ns2:location>
-            </ns2:resource>
-         </ns2:validateWithSchematron>
-         <ns2:createReport>
-            <ns2:resource>
-               <ns2:name>Prüfbericht für XRechnung</ns2:name>
-               <ns2:location>resources/xrechnung/xrechnung-report.xsl</ns2:location>
-            </ns2:resource>
-            <ns2:customLevel level="warning">BR-CL-04</ns2:customLevel>
-         </ns2:createReport>
-      </ns2:scenario>
-      <rep:documentData xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+      <s:scenario>
+         <s:name>EN16931 CIUS XRechnung (UBL Invoice)</s:name>
+         <s:namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</s:namespace>
+         <s:namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</s:namespace>
+         <s:match>/invoice:Invoice[starts-with(cbc:CustomizationID, 'urn:cen.eu:en16931:2017')]</s:match>
+         <s:validateWithXmlSchema>
+            <s:resource>
+               <s:name>XML Schema for UBL 2.1 Invoice</s:name>
+               <s:location>resources/xrechnung/ubl21/xsdrt/maindoc/UBL-Invoice-2.1.xsd</s:location>
+            </s:resource>
+         </s:validateWithXmlSchema>
+         <s:validateWithSchematron>
+            <s:resource>
+               <s:name>Schematron rules for EN16931 (UBL)</s:name>
+               <s:location>resources/xrechnung/ubl21/xsl/EN16931-UBL-validation.xsl</s:location>
+            </s:resource>
+         </s:validateWithSchematron>
+         <s:validateWithSchematron>
+            <s:resource>
+               <s:name>Schematron rules for Invoice - CIUS XRechnung (UBL)</s:name>
+               <s:location>resources/xrechnung/ubl21/xsl/XRechnung-UBL-validation-Invoice.xsl</s:location>
+            </s:resource>
+         </s:validateWithSchematron>
+         <s:createReport>
+            <s:resource>
+               <s:name>Prüfbericht für XRechnung</s:name>
+               <s:location>resources/xrechnung/xrechnung-report.xsl</s:location>
+            </s:resource>
+            <s:customLevel level="warning">BR-CL-04</s:customLevel>
+         </s:createReport>
+      </s:scenario>
+      <rep:documentData xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+                        xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+                        xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
                         xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                        xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
                         xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
          <seller>De Koksmaat</seller>
          <id>12115118</id>
          <issueDate>2015-01-09</issueDate>
       </rep:documentData>
       <rep:validationStepResult id="val-xsd" valid="true">
-         <ns2:resource xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
-                       xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
-            <ns2:name>XML Schema for UBL 2.1 Invoice</ns2:name>
-            <ns2:location>resources/xrechnung/ubl21/xsdrt/maindoc/UBL-Invoice-2.1.xsd</ns2:location>
-         </ns2:resource>
+         <s:resource>
+            <s:name>XML Schema for UBL 2.1 Invoice</s:name>
+            <s:location>resources/xrechnung/ubl21/xsdrt/maindoc/UBL-Invoice-2.1.xsd</s:location>
+         </s:resource>
       </rep:validationStepResult>
       <rep:validationStepResult id="val-sch.1" valid="true">
-         <ns2:resource xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
-                       xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
-            <ns2:name>Schematron rules for EN16931 (UBL)</ns2:name>
-            <ns2:location>resources/xrechnung/ubl21/xsl/EN16931-UBL-validation.xsl</ns2:location>
-         </ns2:resource>
+         <s:resource>
+            <s:name>Schematron rules for EN16931 (UBL)</s:name>
+            <s:location>resources/xrechnung/ubl21/xsl/EN16931-UBL-validation.xsl</s:location>
+         </s:resource>
       </rep:validationStepResult>
       <rep:validationStepResult id="val-sch.2" valid="false">
-         <ns2:resource xmlns:ns2="http://www.xoev.de/de/validator/framework/1/scenarios"
-                       xmlns="http://www.xoev.de/de/validator/framework/1/createreportinput">
-            <ns2:name>Schematron rules for Invoice - CIUS XRechnung (UBL)</ns2:name>
-            <ns2:location>resources/xrechnung/ubl21/xsl/XRechnung-UBL-validation-Invoice.xsl</ns2:location>
-         </ns2:resource>
+         <s:resource>
+            <s:name>Schematron rules for Invoice - CIUS XRechnung (UBL)</s:name>
+            <s:location>resources/xrechnung/ubl21/xsl/XRechnung-UBL-validation-Invoice.xsl</s:location>
+         </s:resource>
          <rep:message code="BR-DE-3"
                       id="val-sch.2.1"
                       level="error"
@@ -225,14 +221,17 @@
                      <p class="important">Angaben zum geprüften Dokument</p>
                      <dl>
                         <dt>Referenz:</dt>
-                        <dd>c:\fb\svn\xoev\produkte\prueftool\trunk\xrechnung\test\instances\ubl004.xml</dd>
+                        <dd>c:\fb\git\validationtool\configurations\xrechnung\test\instances\ubl004.xml</dd>
                         <dt>Zeitpunkt der Prüfung:</dt>
-                        <dd>21.9.2017 11:08:05</dd>
+                        <dd>19.12.2017 15:50:49</dd>
                         <dt>Erkannter Dokumenttyp:</dt>
                         <dd>EN16931 CIUS XRechnung (UBL Invoice)</dd>
                      </dl>
-                     <dl xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+                     <dl xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+                         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+                         xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
                          xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                         xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
                          xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
                         <dt>Erkannter Rechnungssteller:</dt>
                         <dd>De Koksmaat</dd>
