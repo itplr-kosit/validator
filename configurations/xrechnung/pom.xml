@@ -24,6 +24,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <packaging>pom</packaging>
+	<version>1_1-20171219</version>
+        
     <parent>
         <groupId>de.kosit</groupId>
         <artifactId>validationtool-base</artifactId>
