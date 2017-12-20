@@ -27,7 +27,7 @@
     </prerequisites>
     <groupId>de.kosit</groupId>
     <artifactId>validationtool-base</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>KoSIT XML Prüftool</name>
     <description>KoSIT XML Prüftool zur Prüfung von XML Dateien gegenüber definierten Szenarien.</description>
