@@ -71,9 +71,11 @@ Das Prüftool steht in zwei Varianten zur Verfügung:
 Eine Liste der möglichen Optionen kann mit den Schalter `--help` angezeigt werden.
 
 Aufruf, um die mitgelieferten Test-Dokumente zu validieren und dabei neben den XML-Prüfberichten auch die eingebetteten
-HTML-Dokumente als eingeständige Dateien auszugeben (im ausgepackten Distributable):
+HTML-Dokumente als eingeständige Dateien auszugeben:
 
 ```
+unzip validationtool-dist-<version>-standalone.zip
+unzip xrechnung-<version>.zip
 cd xrechnung
 java -jar ../validationtool-<version>-standalone.jar -s scenarios.xml -o test/reports -h test/instances/*.xml
 ```
@@ -163,17 +165,15 @@ Mittels `mvn install` werden im Unterverzeichnis `dist` zwei Pakete gebaut:
 
 * die *Standalone-Distribution*  enthält das Uber-Jar mit allen Klassen zur Verarbeitung von Eingaben aus der Kommandozeile, 
 sowie für Ausgabeoptionen für Ergebnisse. Sämtliche Abhängigkeiten sind im Jar gebundlet  und das Jar-File ist 'ausführbar'.
-Weiterhin ist die Konfiguration und Testumgebung für XRechnung enthalten.
 
 * die *Full-Distribution* enthält darüber sämtlichen weiteren Varianten des `validationtools` sowie die benötigten Abhängigkeiten.
 
 # Konfiguration des Prüftools
-Eine Konfiguration besteht aus einer Konfigurationsdatei (XML-Dokument im Namensraum
+Die Konfiguration besteht aus einer Konfigurationsdatei (XML-Dokument im Namensraum
 `http://www.xoev.de/de/validator/framework/1/scenarios`) sowie Resourcen (XML Schemata und XSLT-Dateien), auf welche die
 Konfigurationsdatei verweist.
 
 Der Aufbau der Konfigurationsdatei ist im entsprechenden Schema [scenarios.xsd](validationtool/src/main/model/xsd/scenarios.xsd) erläutert.
-
 
 
 
