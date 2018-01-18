@@ -65,6 +65,10 @@ Das Prüftool steht in zwei Varianten zur Verfügung:
 - als [Standalone-Version](#verwendung-als-anwendung), die von der Kommandozeile aus aufgerufen werden kann 
 - als [Bibliothek](#verwendung-als-bibliothek), die in eigene Anwendungen integriert werden kann 
 
+# Voraussetzungen
+Zur Ausführung und zum Durchführen des Maven-Builds wird Java 8 Update 111 oder höher benötigt.
+
+
 ## Verwendung als Standalone-Anwendung
 ```java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...```
 
