@@ -204,7 +204,10 @@
                 </xsl:choose>
             </xsl:attribute>
             <xsl:apply-templates select="@location"/>
-            <xsl:apply-templates select="(@id,@flag)[1]"/>
+            <xsl:apply-templates select="@id"/>
+            <xsl:if test="empty(@id)">
+                <xsl:attribute name="code">UNSPECIFIC</xsl:attribute>
+            </xsl:if>
             <xsl:value-of select="svrl:text"/>
         </rep:message> 
     </xsl:template>
