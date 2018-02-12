@@ -11,13 +11,13 @@
    <rep:engine>
       <rep:name>KoSIT Prüftool</rep:name>
    </rep:engine>
-   <rep:timestamp>2017-12-19T15:50:48.456+01:00</rep:timestamp>
+   <rep:timestamp>2018-02-12T13:10:42.378+01:00</rep:timestamp>
    <rep:documentIdentification>
       <rep:documentHash>
          <rep:hashAlgorithm>SHA-256</rep:hashAlgorithm>
-         <rep:hashValue>I380LFZjDxRMY8cygtS3z+WYtHLkctg0SRBnIv4Nuuc=</rep:hashValue>
+         <rep:hashValue>hw+FSex4Fqxoq6J1aqZsOxyXYwAGQM0NF3ilYksKSLE=</rep:hashValue>
       </rep:documentHash>
-      <rep:documentReference>c:\fb\git\validationtool\configurations\xrechnung\test\instances\cii001.xml</rep:documentReference>
+      <rep:documentReference>D:\git-repos\kosit-validator\configurations\xrechnung\test\instances\cii001.xml</rep:documentReference>
    </rep:documentIdentification>
    <rep:scenarioMatched>
       <s:scenario>
@@ -71,10 +71,18 @@
             <s:name>Schematron rules for EN16931 (CII)</s:name>
             <s:location>resources/xrechnung/cii/xsl/EN16931-CII-validation.xsl</s:location>
          </s:resource>
+         <rep:message code="BR-CO-17"
+                      id="val-sch.1.1"
+                      level="error"
+                      xpathLocation="/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax[2]">[BR-CO-17]-VAT category tax amount (BT-117) = VAT category taxable amount (BT-116) x (VAT category rate (BT-119) / 100), rounded to two decimals.</rep:message>
          <rep:message code="BR-S-08"
                       id="val-sch.1.1"
                       level="error"
-                      xpathLocation="/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax/ram:CategoryCode">[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</rep:message>
+                      xpathLocation="/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax[2]/ram:CategoryCode">[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</rep:message>
+         <rep:message code="BR-S-09"
+                      id="val-sch.1.1"
+                      level="error"
+                      xpathLocation="/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax[2]/ram:CategoryCode">[BR-S-09]-The VAT category tax amount (BT-117) in a VAT breakdown (BG-23) where VAT category code (BT-118) is "Standard rated" shall equal the VAT category taxable amount (BT-116) multiplied by the VAT category rate (BT-119).</rep:message>
          <rep:message code="warning"
                       id="val-sch.1.1"
                       level="warning"
@@ -89,6 +97,10 @@
                       id="val-sch.2.1"
                       level="error"
                       xpathLocation="/rsm:CrossIndustryInvoice">[BR-DE-15] Das Element "Buyer reference" (BT-10) ist zwingend zu übermitteln.</rep:message>
+         <rep:message code="BR-DE-17"
+                      id="val-sch.2.1"
+                      level="warning"
+                      xpathLocation="/rsm:CrossIndustryInvoice">[BR-DE-17] Mit dem Element "Invoice type code" (BT-3) sollen ausschließlich folgende Codes aus der Codeliste UNTDID 1001a übermittelt werden: 326 (Partial invoice), 380 (Commercial invoice), 384 (Corrected invoice) und 381 (Credit note).</rep:message>
          <rep:message code="BR-DE-2"
                       id="val-sch.2.1"
                       level="error"
@@ -232,9 +244,9 @@
                      <p class="important">Angaben zum geprüften Dokument</p>
                      <dl>
                         <dt>Referenz:</dt>
-                        <dd>c:\fb\git\validationtool\configurations\xrechnung\test\instances\cii001.xml</dd>
+                        <dd>D:\git-repos\kosit-validator\configurations\xrechnung\test\instances\cii001.xml</dd>
                         <dt>Zeitpunkt der Prüfung:</dt>
-                        <dd>19.12.2017 15:50:48</dd>
+                        <dd>12.2.2018 13:10:42</dd>
                         <dt>Erkannter Dokumenttyp:</dt>
                         <dd>EN16931 CIUS XRechnung (CII)</dd>
                      </dl>
@@ -253,7 +265,7 @@
                      </dl>
                   </div>
                   <p class="important">
-                     <b>Konformitätsprüfung: </b>Das geprüfte Dokument enthält 3 Fehler / 1 Warnungen. Es ist <b>nicht konform</b> zu den formalen Vorgaben.</p>
+                     <b>Konformitätsprüfung: </b>Das geprüfte Dokument enthält 5 Fehler / 2 Warnungen. Es ist <b>nicht konform</b> zu den formalen Vorgaben.</p>
                   <p>Übersicht der Validierungsergebnisse:</p>
                   <table class="tbl-errors">
                      <thead>
@@ -273,14 +285,14 @@
                         </tr>
                         <tr>
                            <td>Schematron rules for EN16931 (CII) (val-sch.1)</td>
-                           <td style="width: 30mm;">1</td>
+                           <td style="width: 30mm;">3</td>
                            <td style="width: 30mm;">1</td>
                            <td style="width: 30mm;">0</td>
                         </tr>
                         <tr>
                            <td>Schematron rules for CIUS XRechnung (CII) (val-sch.2)</td>
                            <td style="width: 30mm;">2</td>
-                           <td style="width: 30mm;">0</td>
+                           <td style="width: 30mm;">1</td>
                            <td style="width: 30mm;">0</td>
                         </tr>
                      </tbody>
@@ -298,12 +310,30 @@
                      <tbody>
                         <tr class="error">
                            <td rowspan="2">val-sch.1.1</td>
+                           <td rowspan="2">BR-CO-17</td>
+                           <td rowspan="2">error</td>
+                           <td>[BR-CO-17]-VAT category tax amount (BT-117) = VAT category taxable amount (BT-116) x (VAT category rate (BT-119) / 100), rounded to two decimals.</td>
+                        </tr>
+                        <tr class="error">
+                           <td>Pfad: /rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax[2]</td>
+                        </tr>
+                        <tr class="error">
+                           <td rowspan="2">val-sch.1.1</td>
                            <td rowspan="2">BR-S-08</td>
                            <td rowspan="2">error</td>
                            <td>[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is “Standard rated” and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</td>
                         </tr>
                         <tr class="error">
-                           <td>Pfad: /rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax/ram:CategoryCode</td>
+                           <td>Pfad: /rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax[2]/ram:CategoryCode</td>
+                        </tr>
+                        <tr class="error">
+                           <td rowspan="2">val-sch.1.1</td>
+                           <td rowspan="2">BR-S-09</td>
+                           <td rowspan="2">error</td>
+                           <td>[BR-S-09]-The VAT category tax amount (BT-117) in a VAT breakdown (BG-23) where VAT category code (BT-118) is "Standard rated" shall equal the VAT category taxable amount (BT-116) multiplied by the VAT category rate (BT-119).</td>
+                        </tr>
+                        <tr class="error">
+                           <td>Pfad: /rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:ApplicableTradeTax[2]/ram:CategoryCode</td>
                         </tr>
                         <tr class="warning">
                            <td rowspan="2">val-sch.1.1</td>
@@ -321,6 +351,15 @@
                            <td>[BR-DE-15] Das Element "Buyer reference" (BT-10) ist zwingend zu übermitteln.</td>
                         </tr>
                         <tr class="error">
+                           <td>Pfad: /rsm:CrossIndustryInvoice</td>
+                        </tr>
+                        <tr class="warning">
+                           <td rowspan="2">val-sch.2.1</td>
+                           <td rowspan="2">BR-DE-17</td>
+                           <td rowspan="2">warning</td>
+                           <td>[BR-DE-17] Mit dem Element "Invoice type code" (BT-3) sollen ausschließlich folgende Codes aus der Codeliste UNTDID 1001a übermittelt werden: 326 (Partial invoice), 380 (Commercial invoice), 384 (Corrected invoice) und 381 (Credit note).</td>
+                        </tr>
+                        <tr class="warning">
                            <td>Pfad: /rsm:CrossIndustryInvoice</td>
                         </tr>
                         <tr class="error">
@@ -399,7 +438,7 @@
                      <tr class="row" id="0007">
                         <td class="pos">0007</td>
                         <td class="element level3" title="TypeCode">
-                           <div class="val">380</div>
+                           <div class="val">382</div>
                         </td>
                      </tr>
                      <tr class="row" id="0008">
@@ -3919,7 +3958,7 @@
                      <tr class="row" id="0417">
                         <td class="pos">0417</td>
                         <td class="element level5" title="BasisAmount">
-                           <div class="val">46.37</div>
+                           <div class="val">46.57</div>
                         </td>
                      </tr>
                      <tr class="row" id="0418">

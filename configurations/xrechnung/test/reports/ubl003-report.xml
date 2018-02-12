@@ -11,13 +11,13 @@
    <rep:engine>
       <rep:name>KoSIT Prüftool</rep:name>
    </rep:engine>
-   <rep:timestamp>2017-12-19T15:50:49.111+01:00</rep:timestamp>
+   <rep:timestamp>2018-02-12T13:10:42.939+01:00</rep:timestamp>
    <rep:documentIdentification>
       <rep:documentHash>
          <rep:hashAlgorithm>SHA-256</rep:hashAlgorithm>
          <rep:hashValue>vnhEaK4dbrJMInPkDxtngdDZgdgeB5nffUxqXC3gzEY=</rep:hashValue>
       </rep:documentHash>
-      <rep:documentReference>c:\fb\git\validationtool\configurations\xrechnung\test\instances\ubl003.xml</rep:documentReference>
+      <rep:documentReference>D:\git-repos\kosit-validator\configurations\xrechnung\test\instances\ubl003.xml</rep:documentReference>
    </rep:documentIdentification>
    <rep:scenarioMatched>
       <s:scenario>
@@ -221,9 +221,9 @@
                      <p class="important">Angaben zum geprüften Dokument</p>
                      <dl>
                         <dt>Referenz:</dt>
-                        <dd>c:\fb\git\validationtool\configurations\xrechnung\test\instances\ubl003.xml</dd>
+                        <dd>D:\git-repos\kosit-validator\configurations\xrechnung\test\instances\ubl003.xml</dd>
                         <dt>Zeitpunkt der Prüfung:</dt>
-                        <dd>19.12.2017 15:50:49</dd>
+                        <dd>12.2.2018 13:10:42</dd>
                         <dt>Erkannter Dokumenttyp:</dt>
                         <dd>EN16931 CIUS XRechnung (UBL Invoice)</dd>
                      </dl>

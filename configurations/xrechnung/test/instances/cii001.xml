@@ -13,7 +13,7 @@
     </rsm:ExchangedDocumentContext>
     <rsm:ExchangedDocument>
         <ram:ID>12115118</ram:ID>
-        <ram:TypeCode>380</ram:TypeCode>
+        <ram:TypeCode>382</ram:TypeCode>
         <ram:IssueDateTime>
             <udt:DateTimeString format="102">20150109</udt:DateTimeString>
         </ram:IssueDateTime>
@@ -619,7 +619,7 @@
             <ram:ApplicableTradeTax>
                 <ram:CalculatedAmount>9.74</ram:CalculatedAmount>
                 <ram:TypeCode>VAT</ram:TypeCode>
-                <ram:BasisAmount>46.37</ram:BasisAmount>
+                <ram:BasisAmount>46.57</ram:BasisAmount>
                 <ram:CategoryCode>S</ram:CategoryCode>
                 <ram:RateApplicablePercent>21</ram:RateApplicablePercent>
             </ram:ApplicableTradeTax>
