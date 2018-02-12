@@ -2,10 +2,10 @@
 <scenarios xmlns="http://www.xoev.de/de/validator/framework/1/scenarios" frameworkVersion="1.0.0">
     <name>Prüftool-Konfiguration XRechnung 1.1</name>
     <author>KoSIT</author>
-    <date>2017-12-19</date>
+    <date>2018-02-12</date>
     <description>
         <p>Prüfung von Dokumenten auf Konformität zum Standard XRechnung 1.1 (https://www.xoev.de/de/xrechnung/1_1).</p>
-        <p>Diese Konfiguration enthält die Schematron-Regeln der EN16931 mit dem Stand 19.12.2017 (https://github.com/CenPC434/validation/commit/5a82a74d239efea67bcc4381a2facad3bc524758).</p>
+        <p>Diese Konfiguration enthält die Schematron-Regeln der EN16931 mit dem Stand 08.02.2018 (https://github.com/CenPC434/validation/releases/tag/validation-1.0.0).</p>
         <p>Diese Konfiguration enthält die Schematron-Regeln der CIUS XRechnung 1.1 mit dem Stand 19.12.2017 (https://github.com/itplr-kosit/xrechnung-artefacts/releases/tag/xrechnung-1_1-schematron-2017-12-19).</p>
     </description>
 
