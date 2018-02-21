@@ -8,7 +8,7 @@
 - [Die Konfiguration XRechnung](#die-konfiguration-xrechnung)
 - [Qualitätssicherung](#qualitätssicherung)
 
-# Über das Prüftool und die Prüftool-Konfiguration XRechnung
+# Über das Prüftool
 In seiner 23. Sitzung hat der [IT-Planungsrat](https://www.it-planungsrat.de) mit [Beschluss 2017/22 (6a)](https://www.it-planungsrat.de/SharedDocs/Sitzungen/DE/2017/Sitzung_23.html?pos=3) die Koordinierungsstelle für IT-Standards (KoSIT) im Rahmen des Betriebs des Standards XRechnung mit der dauerhaften„…Bereitstellung eines Moduls zur Konformitätsprüfung elektronischer Rechnungen als offene Referenzimplementierung sowie …“ aller zugehöriger Artefakte beauftragt. Im Rahmen dieser Beauftragung wurde die hier bereitgestellte Software "Prüftool" entwickelt und (vor-) konfiguriert.
 
 Das Prüftool ist ein Programm, welches XML-Dateien (Dokumente) in Abhängigkeit von ihren Dokumenttypen gegen verschiedene 
@@ -18,18 +18,12 @@ Validierungsregeln (XML Schema und Schematron) prüft und das Ergebnis zu einem 
 Das Prüftool selbst ist fachunabhängig und kennt keine spezifischen Dokumenttypen. 
 Diese werden im Rahmen einer [Prüftool-Konfiguration](#konfiguration-des-prüftools) definiert, welche zur Anwendung des Prüftools
 erforderlich ist. 
-Mit ausgeliefert wird in diesem Kontext eine Entwurfsversion der [Prüftool-Konfiguration
-XRechnung](#die-konfiguration-xrechnung), welche die Prüfartefakte zu der EN16931 (https://github.com/CenPC434/validation) und die Prüfartefakte des Standards
-[XRechnung](http://www.xoev.de/de/xrechnung) in ihren aktuellen Entwurfsversionen beinhaltet. 
 
-# Status der Bestandteile
+# Status des Prüftools
 Das Prüftool hat den Status "proposal". Sofern keine Rückmeldungen aus der Pilotierungsphase eingehen, wird diese
 Fassung zur finalen Version "1.0.0". Der geregelte Betrieb dieser Referenzimplementierung des Prüftools wird im Rahmen des Betriebs des Standards XRechnung erfolgen.
 
-Die Prüftool-Konfiguration XRechnung hat den Status "draft", da auch die darin enthaltenen Prüfartefakte der EN16931 und
-des Standards XRechnung aktuell nur als "draft" vorliegen.
-
-Alle Bestandteile des Pakets werden unter der Apache License Version 2.0, January 2004 (http://www.apache.org/licenses/) bereitgestellt.
+Das Prüftool wird unter der Apache License Version 2.0, January 2004 (http://www.apache.org/licenses/) bereitgestellt.
 
 # Grundsätzlicher Ablauf der Prüfung
 Eine zu prüfende Datei durchläuft die folgenden Schritte   
@@ -74,21 +68,6 @@ Zur Ausführung und zum Durchführen des Maven-Builds wird Java 8 Update 111 ode
 
 Eine Liste der möglichen Optionen kann mit den Schalter `--help` angezeigt werden.
 
-Aufruf, um die mitgelieferten Test-Dokumente zu validieren und dabei neben den XML-Prüfberichten auch die eingebetteten
-HTML-Dokumente als eingeständige Dateien auszugeben:
-
-```
-unzip validationtool-dist-<version>-standalone.zip
-unzip xrechnung-<version>.zip
-cd xrechnung
-java -jar ../validationtool-<version>-standalone.jar -s scenarios.xml -o test/reports -h test/instances/*.xml
-```
-
-Der Aufruf erzeugt im Verzeichnis [xrechnung/test/reports](configurations/xrechnung/test/reports/) für jede validierte Eingabedatei
-einen gleichnamige [Prüfbericht]-Datei.  
-Eine Übersicht über die Eigenschaften der Testdateien in
-[xrechnung/test/instances](configurations/xrechnung/test/instances/) findet sich in
-[xrechnung/test/assertions.xlsx](configurations/xrechnung/test/assertions.xlsx).  
 
 ## Verwendung als Bibliothek
 Daneben kann das Prüftool auch in eigene Anwendungen integriert werden. 
@@ -179,78 +158,6 @@ Konfigurationsdatei verweist.
 
 Der Aufbau der Konfigurationsdatei ist im entsprechenden Schema [scenarios.xsd](validationtool/src/main/model/xsd/scenarios.xsd) erläutert.
 
-
-
-# Die Konfiguration XRechnung
-Die Konfiguration XRechnung findet sich im Verzeichnis [xrechnung/](configurations/xrechnung/).
-Für den produktiven Betrieb benötigt werden die Konfigurationsdatei [xrechnung/scenarios.xml](configurations/xrechnung/scenarios.xml) und das
-Ressourcen-Verzeichnis [xrechnung/resources/](configurations/xrechnung/resources/). 
-
-Die Konfiguration beinhaltet Prüfszenarien für die folgenden Dokumenttypen:
-
-* EN16931 CIUS XRechnung (UBL Invoice)
-* EN16931 CIUS XRechnung (UBL CreditNote)
-* EN16931 CIUS XRechnung (CII)
-
-Jedes Szenario prüft die Konformität zu der zugrunde liegenden XML-Schema-Datei, den Schematron-Regeln der EN16931 und
-den Schematron-Regeln der XRechnung CIUS.
-
-## Prüfbericht
-Der Aufbau des Prüfberichts ist im entsprechenden Schema [report.xsd](configurations/xrechnung/resources/report.xsd) erläutert.
-Die für die maschinelle Auswertung des Prüfberichts wesentlichsten Angaben sind
-
-* der *Konformitätsstatus* (*valid* oder *invalid*, Attribut rep:report/@valid)
-* die Empfehlung zur Annahme (*accept* - Element rep:report/rep:assessment/rep:accept) oder Ablehnung
-  (*reject* - Element rep:report/rep:assessment/rep:reject) des geprüften
-  Dokuments.  
-
-
-## Anpassung der Fehlergrade für die Bewertung
-Grundsätzlich werden für die Verarbeitungen alle Meldungen, welche aus den einzelnen
-[Prüfschritten](#grundsätzlicher-ablauf-der-prüfung) resultieren, in die Rollen *error*,
-*warning* und *information* übersetzt. Der Prüfbericht erhält den Konformitätstatus *valid* genau dann, wenn in der
-Konfiguration ein Prüfszenario für den Dokumenttyp des zu testenden Dokuments gefunden wurde und keine Meldung mit
-Status *error* oder *warning* vorliegt. 
-
-Die Erstellung dieser Bewertung ist nicht konfigurierbar.
-
-In der Standardkonfiguration erhält der Prüfbericht genau dann die Empfehlung *accept*, wenn in der Konfiguration ein
-Prüfszenario für den Dokumenttyp des zu testenden Dokuments gefunden wurde und keine Meldung mit Status *error* vorliegt.
-
-Die Erstellung dieser Empfehlung kann *je Prüfszenario* konfiguriert werden, in dem im jeweiligen Prüfszenario in
-`createReport` ein `customLevel` aufgenommen wird:
-
-```
-      <scenario>
-        <name>EN16931 CIUS XRechnung (UBL Invoice)</name>
-        ...
-        <createReport>
-            <resource>
-                <name>Prüfbericht für XRechnung</name>
-                <location>resources/xrechnung/xrechnung-report.xsl</location>
-            </resource>
-            <customLevel level="warning">BR-15 BR-DE-3</customLevel>
-        </createReport>
-    </scenario>
-```
-
-In diesem Beispiel werden die Fehlercodes `BR-15` (Teil der EN) und `BR-DE-3` (Teil der CIUS XRechnung) für den
-Bewertungsschritt von ihrem eigentlicher Rolle *error* auf *warning* geändert. Ein Dokument, welches eine oder
-beide dieser Regeln verletzt (und ansonsten keine *error*-Meldungen erzeugt) erhielte damit abweichend vom
-Standardverhalten die Bewertung *accept*.   
-
-## Anpassung der HTML-Ausgabe
-Die Konfiguration XRechnung erstellt XML-Prüfberichte, welche für jede Bewertung (*accept* oder *reject*-Kindelement im
-Prüfbericht) genau eine HTML5-Darstellung enthalten.  
-
-Diese wird durch das XSLT-Skript `xrechnung-report.xsl` erstellt. Dieses Skript kann überschrieben werden um die
-HTML-Ausgabe anzupassen. Dazu ist eine neue XSTL-Datei (z. B. `my-xrechnung-report.xsl`) zu erstellen, welche
-`xrechnung-report.xsl` per `xsl:import` einbindet. Die neue XSLT-Datei ist anstelle von `xrechnung-report.xsl` in der
-Konfigurationsdatei einzutragen. In der neuen XSLT-Datei kann nun das XSLT-Template `html:html` oder eines der von
-diesem eingebundenen Unter-Templates `html:*` überschrieben werden.  
-
-Für weiterführende Erläuterungen wird auf die Dokumentation in der XSLT `xrechung\resources\default-report.xsl`
-verwiesen.  
 
 # Qualitätssicherung
 
