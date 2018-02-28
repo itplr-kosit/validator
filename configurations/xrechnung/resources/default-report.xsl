@@ -133,7 +133,7 @@
     
     <xsl:template match="in:xmlSyntaxError">
         <xsl:param name="parent-id" as="xs:string" required="yes"/>
-        <xsl:variable name="id" select="concat($parent-id, '.', count(preceding-sibling::xmlSyntaxError) + 1)"/>
+        <xsl:variable name="id" select="concat($parent-id, '.', count(preceding-sibling::in:xmlSyntaxError) + 1)"/>
         <xsl:variable name="level" select="if (@severity = 'SEVERITY_WARNING') then 'warning' else 'error'"/>
         <rep:message id="{$id}" level="{$level}">
             <xsl:apply-templates select="*"/>
@@ -191,7 +191,7 @@
     
     <xsl:template match="svrl:failed-assert|svrl:successful-report">
         <xsl:param name="parent-id" as="xs:string" required="yes"/>
-        <xsl:variable name="id" select="concat($parent-id, '.', count(preceding-sibling::failed-assert | preceding-sibling::successful-report) + 1)"/>
+        <xsl:variable name="id" select="concat($parent-id, '.', count(preceding-sibling::svrl:failed-assert | preceding-sibling::svrl:successful-report) + 1)"/>
         <rep:message id="{$id}">
             <xsl:apply-templates select="in:location/*"/>
             <xsl:attribute name="level">
