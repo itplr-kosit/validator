@@ -18,9 +18,9 @@ Validierungsregeln (XML Schema und Schematron) prüft und das Ergebnis zu einem 
 Das Prüftool selbst ist fachunabhängig und kennt keine spezifischen Dokumenttypen. 
 Diese werden im Rahmen einer [Prüftool-Konfiguration](#konfiguration-des-prüftools) definiert, welche zur Anwendung des Prüftools
 erforderlich ist. 
-Mit ausgeliefert wird in diesem Kontext eine Entwurfsversion der [Prüftool-Konfiguration
-XRechnung](#die-konfiguration-xrechnung), welche die Prüfartefakte zu der EN16931 (https://github.com/CenPC434/validation) und die Prüfartefakte des Standards
-[XRechnung](http://www.xoev.de/de/xrechnung) in ihren aktuellen Entwurfsversionen beinhaltet. 
+
+Eine Entwurfsversion der [Prüftool-Konfiguration XRechnung](#die-konfiguration-xrechnung), welche die Prüfartefakte zu der EN16931 (https://github.com/CenPC434/validation) und die Prüfartefakte des Standards
+[XRechnung](http://www.xoev.de/de/xrechnung) in ihren aktuellen Entwurfsversionen beinhaltet, kann unter [hier](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases) bezogen werden.
 
 # Status der Bestandteile
 Das Prüftool hat den Status "proposal". Sofern keine Rückmeldungen aus der Pilotierungsphase eingehen, wird diese
@@ -54,10 +54,8 @@ Eine zu prüfende Datei durchläuft die folgenden Schritte
     * In der [Konfigurationsdatei](#konfiguration-des-prüftools) kann für einzelne Prüfregeln festgelegt werden, dass
       sie für die Bewertung einer [anderen Meldungsart](#anpassung-der-fehlergrade-für-die-bewertung) zuzuordnen sind
       (z. B. *warning* anstelle von *error*).  
-    * Der Prüfbericht ist ein für die maschinelle Auswertung geeignetes XML-Dokument (hier ein
-      [Beispiel](configurations/xrechnung/test/reports/ubl002-report.xml)). Darin eingebettet ist auch eine 
-      für menschliche Leser bestimmte HTML-Aufbereitung des Prüfergebnisses (hier ein
-      [Beispiel](configurations/xrechnung/test/reports/ubl002-report.html)). Die Details dieser HTML-Aufbereitung können
+    * Der Prüfbericht ist ein für die maschinelle Auswertung geeignetes XML-Dokument. Darin eingebettet ist auch eine 
+      für menschliche Leser bestimmte HTML-Aufbereitung des Prüfergebnisses. Die Details dieser HTML-Aufbereitung können
       bei Bedarf [angepasst](#anpassung-der-html-ausgabe) werden.
     
 # Verwendung
@@ -79,16 +77,15 @@ HTML-Dokumente als eingeständige Dateien auszugeben:
 
 ```
 unzip validationtool-dist-<version>-standalone.zip
-unzip xrechnung-<version>.zip
-cd xrechnung
-java -jar ../validationtool-<version>-standalone.jar -s scenarios.xml -o test/reports -h test/instances/*.xml
+unzip validator-configuration-xrechnung-<version>.zip
+java -jar validationtool-<version>-standalone.jar -s scenarios.xml -o test/reports -h test/instances/*.xml
 ```
 
-Der Aufruf erzeugt im Verzeichnis [xrechnung/test/reports](configurations/xrechnung/test/reports/) für jede validierte Eingabedatei
+Der Aufruf erzeugt im Verzeichnis xrechnung/test/reports für jede validierte Eingabedatei
 einen gleichnamige [Prüfbericht]-Datei.  
 Eine Übersicht über die Eigenschaften der Testdateien in
-[xrechnung/test/instances](configurations/xrechnung/test/instances/) findet sich in
-[xrechnung/test/assertions.xlsx](configurations/xrechnung/test/assertions.xlsx).  
+[/validator-configuration-xrechnung/src/test/instances](/validator-configuration-xrechnung/src/test/instances) findet sich in
+[/validator-configuration-xrechnung/src/test/instances/assertions.xlsx](/validator-configuration-xrechnung/src/test/assertions.xlsx).  
 
 ## Verwendung als Bibliothek
 Daneben kann das Prüftool auch in eigene Anwendungen integriert werden. 
