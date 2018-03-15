@@ -1,37 +1,46 @@
-## Inhaltsverzeichnis
+# Inhaltsverzeichnis
 
-- [Über das Prüftool und die Prüftool-Konfiguration XRechnung](#über-das-prueftool-und-die-prüftool-konfiguration-xrechnung)
-- [Status der Bestandteile](#status-der-bestandteile)
-- [Grundsätzlicher Ablauf der Prüfung](#grundsätzlicher-ablauf-der-prüfung)
+- [Über das Prüftool](#über-das-prüftool)
+- [Konfigurationsmodule](#konfigurationsmodule)
+- [Grundsätzlicher Ablauf einer Prüfung](#grundsätzlicher-ablauf-einer-prüfung)
 - [Verwendung](#verwendung)
 - [Build-Anweisungen](#build-anweisungen)
-- [Die Konfiguration XRechnung](#die-konfiguration-xrechnung)
+- [Konfiguration des Prüftools](#konfiguration-des-prüftools)
 - [Qualitätssicherung](#qualitätssicherung)
 
-# Über das Prüftool und die Prüftool-Konfiguration XRechnung
-In seiner 23. Sitzung hat der [IT-Planungsrat](https://www.it-planungsrat.de) mit [Beschluss 2017/22 (6a)](https://www.it-planungsrat.de/SharedDocs/Sitzungen/DE/2017/Sitzung_23.html?pos=3) die Koordinierungsstelle für IT-Standards (KoSIT) im Rahmen des Betriebs des Standards XRechnung mit der dauerhaften„…Bereitstellung eines Moduls zur Konformitätsprüfung elektronischer Rechnungen als offene Referenzimplementierung sowie …“ aller zugehöriger Artefakte beauftragt. Im Rahmen dieser Beauftragung wurde die hier bereitgestellte Software "Prüftool" entwickelt und (vor-) konfiguriert.
+# Über das Prüftool
+
+In seiner 23. Sitzung hat der [IT-Planungsrat](https://www.it-planungsrat.de) mit [Beschluss 2017/22 (6a)](https://www.it-planungsrat.de/SharedDocs/Sitzungen/DE/2017/Sitzung_23.html?pos=3) die [Koordinierungsstelle für IT-Standards (KoSIT)](https://www.xoev.de/) im Rahmen des Betriebs des Standards XRechnung mit der dauerhaften„…Bereitstellung eines Moduls zur Konformitätsprüfung elektronischer Rechnungen als offene Referenzimplementierung sowie …“ aller zugehöriger Artefakte beauftragt. Im Rahmen dieser Beauftragung wurde die hier bereitgestellte Software "Prüftool" entwickelt und (vor-) konfiguriert.
 
 Das Prüftool ist ein Programm, welches XML-Dateien (Dokumente) in Abhängigkeit von ihren Dokumenttypen gegen verschiedene 
 Validierungsregeln (XML Schema und Schematron) prüft und das Ergebnis zu einem Konformitätsbericht (Konformitätsstatus
 *valid* oder *invalid*) mit einer Empfehlung zur Weiterverarbeitung (*accept*) oder Ablehnung (*reject*) aggregiert.  Mittels  Konfiguration kann bestimmt werden, welche der Konformitätsregeln durch ein Dokument, das zur Weiterverarbeitung empfohlen (*accept*) wird, verletzt sein dürfen. 
 
-Das Prüftool selbst ist fachunabhängig und kennt keine spezifischen Dokumenttypen. 
-Diese werden im Rahmen einer [Prüftool-Konfiguration](#konfiguration-des-prüftools) definiert, welche zur Anwendung des Prüftools
-erforderlich ist. 
+Das Prüftool selbst ist fachunabhängig und kennt keine spezifischen Dokumentinhalte noch Validierungsregeln. 
+Diese werden im Rahmen einer [Prüftool-Konfiguration](#konfiguration-des-prüftools) definiert, welche zur Anwendung des Prüftools erforderlich ist. 
 
-Eine Entwurfsversion der [Prüftool-Konfiguration XRechnung](#die-konfiguration-xrechnung), welche die Prüfartefakte zu der EN16931 (https://github.com/CenPC434/validation) und die Prüfartefakte des Standards
-[XRechnung](http://www.xoev.de/de/xrechnung) in ihren aktuellen Entwurfsversionen beinhaltet, kann unter [hier](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases) bezogen werden.
+# Konfigurationsmodule
 
-# Status der Bestandteile
-Das Prüftool hat den Status "proposal". Sofern keine Rückmeldungen aus der Pilotierungsphase eingehen, wird diese
-Fassung zur finalen Version "1.0.0". Der geregelte Betrieb dieser Referenzimplementierung des Prüftools wird im Rahmen des Betriebs des Standards XRechnung erfolgen.
+Fach- bzw. Standardspezifische Prüfkonfigurationen sind in eigene Module ausgelagert.
 
-Die Prüftool-Konfiguration XRechnung hat den Status "draft", da auch die darin enthaltenen Prüfartefakte der EN16931 und
-des Standards XRechnung aktuell nur als "draft" vorliegen.
+## Prüfkonfiguration XRechnung
 
-Alle Bestandteile des Pakets werden unter der Apache License Version 2.0, January 2004 (http://www.apache.org/licenses/) bereitgestellt.
+Eine eigenständige Konfiguration für den Standard XRechnung wird ebenfalls auf [GitHub bereitgestellt](/itplr-kosit/validator-configuration-xrechnung). Diese enthält alle notwendigen Resourcen zu der Norm EN16931 (XML-Schema und [Schematron Regeln] (https://github.com/CenPC434/validation) u.a.) und die Resourcen des Standards
+[XRechnung](http://www.xoev.de/de/xrechnung) in ihren aktuellen Entwurfsversionen. 
 
-# Grundsätzlicher Ablauf der Prüfung
+Diese Konfiguration kann von der [Release-Seite der Prüftool-Konfiguration XRechnung](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases) bezogen werden.
+
+## Prüfkonfiguration XGewerbeanzeige
+
+TODO
+
+Der geregelte Betrieb dieser Referenzimplementierung des Prüftools wird im Rahmen des Betriebs des Standards XRechnung erfolgen.
+
+Alle Bestandteile werden unter der Apache License Version 2.0, January 2004 (http://www.apache.org/licenses/) bereitgestellt.
+
+
+# Grundsätzlicher Ablauf einer Prüfung
+
 Eine zu prüfende Datei durchläuft die folgenden Schritte   
 
 1. *Grundsätzliche XML-Prüfung*: Es muss sich bei der zu prüfenden Datei um wohlgeformtes XML handeln, andernfalls
@@ -59,16 +68,20 @@ Eine zu prüfende Datei durchläuft die folgenden Schritte
       bei Bedarf [angepasst](#anpassung-der-html-ausgabe) werden.
     
 # Verwendung
+
 Das Prüftool steht in zwei Varianten zur Verfügung:
 - als [Standalone-Version](#verwendung-als-anwendung), die von der Kommandozeile aus aufgerufen werden kann 
 - als [Bibliothek](#verwendung-als-bibliothek), die in eigene Anwendungen integriert werden kann 
 
-# Voraussetzungen
+## Voraussetzungen
 Zur Ausführung und zum Durchführen des Maven-Builds wird Java 8 Update 111 oder höher benötigt.
 
 
 ## Verwendung als Standalone-Anwendung
-```java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...```
+
+```shell
+java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...
+```
 
 Eine Liste der möglichen Optionen kann mit den Schalter `--help` angezeigt werden.
 
@@ -77,11 +90,11 @@ HTML-Dokumente als eingeständige Dateien auszugeben:
 
 ```
 unzip validationtool-dist-<version>-standalone.zip
-unzip validator-configuration-xrechnung-<version>.zip
+unzip validator-configuration-xrechnung_<xrechnung-version>_<release-datum>.zip
 java -jar validationtool-<version>-standalone.jar -s scenarios.xml -o test/reports -h test/instances/*.xml
 ```
 
-Der Aufruf erzeugt im Verzeichnis xrechnung/test/reports für jede validierte Eingabedatei
+Der Aufruf erzeugt im Verzeichnis test/reports für jede validierte Eingabedatei
 einen gleichnamige [Prüfbericht]-Datei.  
 Eine Übersicht über die Eigenschaften der Testdateien in
 [/validator-configuration-xrechnung/src/test/instances](/validator-configuration-xrechnung/src/test/instances) findet sich in
@@ -158,8 +171,8 @@ erzeugen lässt. Die InputFactory erzeugt für jedes Eingabe-Objekt eine Prüfsu
 verwendete Algorithmus ist über die `read`-Methoden der `InputFactory` definierbar. Standardmäßig wird _SHA-256_ des JDK 
 verwendet
 
-
 # Build-Anweisungen
+
 Das Projekt wird mit Apache Maven gebaut. 
 
 Mittels `mvn install` werden im Unterverzeichnis `dist` zwei Pakete gebaut:
@@ -170,27 +183,11 @@ sowie für Ausgabeoptionen für Ergebnisse. Sämtliche Abhängigkeiten sind im J
 * die *Full-Distribution* enthält darüber sämtlichen weiteren Varianten des `validationtools` sowie die benötigten Abhängigkeiten.
 
 # Konfiguration des Prüftools
+
 Die Konfiguration besteht aus einer Konfigurationsdatei (XML-Dokument im Namensraum
-`http://www.xoev.de/de/validator/framework/1/scenarios`) sowie Resourcen (XML Schemata und XSLT-Dateien), auf welche die
-Konfigurationsdatei verweist.
+`http://www.xoev.de/de/validator/framework/1/scenarios`) sowie Resourcen (XML Schemata und XSLT-Dateien) in einem "Repository" genanntem Verzeichnis, auf welche die Konfigurationsdatei verweist.
 
 Der Aufbau der Konfigurationsdatei ist im entsprechenden Schema [scenarios.xsd](validationtool/src/main/model/xsd/scenarios.xsd) erläutert.
-
-
-
-# Die Konfiguration XRechnung
-Die Konfiguration XRechnung findet sich im Verzeichnis [xrechnung/](configurations/xrechnung/).
-Für den produktiven Betrieb benötigt werden die Konfigurationsdatei [xrechnung/scenarios.xml](configurations/xrechnung/scenarios.xml) und das
-Ressourcen-Verzeichnis [xrechnung/resources/](configurations/xrechnung/resources/). 
-
-Die Konfiguration beinhaltet Prüfszenarien für die folgenden Dokumenttypen:
-
-* EN16931 CIUS XRechnung (UBL Invoice)
-* EN16931 CIUS XRechnung (UBL CreditNote)
-* EN16931 CIUS XRechnung (CII)
-
-Jedes Szenario prüft die Konformität zu der zugrunde liegenden XML-Schema-Datei, den Schematron-Regeln der EN16931 und
-den Schematron-Regeln der XRechnung CIUS.
 
 ## Prüfbericht
 Der Aufbau des Prüfberichts ist im entsprechenden Schema [report.xsd](configurations/xrechnung/resources/report.xsd) erläutert.
@@ -237,6 +234,7 @@ beide dieser Regeln verletzt (und ansonsten keine *error*-Meldungen erzeugt) erh
 Standardverhalten die Bewertung *accept*.   
 
 ## Anpassung der HTML-Ausgabe
+
 Die Konfiguration XRechnung erstellt XML-Prüfberichte, welche für jede Bewertung (*accept* oder *reject*-Kindelement im
 Prüfbericht) genau eine HTML5-Darstellung enthalten.  
 
@@ -266,6 +264,7 @@ verwiesen.
   werden. 
 
 ### Automatische Code-Analyse (Java-Code)
+
 * Der Quellcode wird dauerhaft und automatisch durch das weit verbreitete System [Sonar](https://www.sonarqube.org/) zur
   statischen Code-Analyse geprüft.    
 * Das Prüftool wird von Sonar mit aktuell ca 1.800 Zeilen Quellcode als klein (S) eingestuft. 
@@ -277,11 +276,13 @@ verwiesen.
   [Rating](https://docs.sonarqube.org/display/SONAR/Metric+Definitions) "A" bewertet.   
 
 ### Berücksichtigung von Best Practices für XML-Security
+
 * Es wurden explizit Best Practices für die sichere XML-Verarbeitung mit Java (XML, XML Schema, XSLT) berücksichtigt, um
   beispielsweise XXE (XML eXternal Entity) Attacken und allgemein externe Referenzierungen (Entities, XIncludes)
   auzuschließen. 
  
 ### End-to-End-Testsuite für die Prüftool-Konfiguration XRechnung
+
 * Um die korrekte Funktion der Prüftool-Konfiguration XRechnung zu testen, wurde eine Suite aus 10 Testdokumenten und
   insgesamt 310 prüfbaren Aussagen (Assertions) über die resultierenden Prüfberichte erstellt.
 * Durch diese Testsuite werden, ausgehend von dem Prüfbericht-Schemas alle möglichen Optionen und Auswahlmöglichkeiten
