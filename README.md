@@ -1,7 +1,7 @@
 # Inhaltsverzeichnis
 
 - [Über das Prüftool](#über-das-prüftool)
-- [Konfigurationsmodule](#konfigurationsmodule)
+- [Konfigurationen](#konfigurationen)
 - [Grundsätzlicher Ablauf einer Prüfung](#grundsätzlicher-ablauf-einer-prüfung)
 - [Verwendung](#verwendung)
 - [Build-Anweisungen](#build-anweisungen)
@@ -19,9 +19,9 @@ Validierungsregeln (XML Schema und Schematron) prüft und das Ergebnis zu einem 
 Das Prüftool selbst ist fachunabhängig und kennt keine spezifischen Dokumentinhalte noch Validierungsregeln. 
 Diese werden im Rahmen einer [Prüftool-Konfiguration](#konfiguration-des-prüftools) definiert, welche zur Anwendung des Prüftools erforderlich ist. 
 
-# Konfigurationsmodule
+# Konfigurationen
 
-Fach- bzw. Standardspezifische Prüfkonfigurationen sind in eigene Module ausgelagert.
+Fach- bzw. Standardspezifische Prüfkonfigurationen sind in eigene Module bzw. Repositories ausgelagert.
 
 ## Prüfkonfiguration XRechnung
 
