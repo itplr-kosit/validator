@@ -32,7 +32,7 @@ Der geregelte Betrieb dieser Konfiguration wird im Rahmen des Betriebs des Stand
 
 ## Prüfkonfiguration XGewerbeanzeige
 
-Eine eigenständige Konfiguration für den Standard XGewerbeanzeige wird ebenfalls auf [GitHub bereitgestellt](/itplr-kosit/validator-configuration-xgewerbeanzeige) ([Releases](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige/releases).
+Eine eigenständige Konfiguration für den Standard XGewerbeanzeige wird ebenfalls auf [GitHub bereitgestellt](/itplr-kosit/validator-configuration-xgewerbeanzeige) ([Releases](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige/releases)).
 
 Der geregelte Betrieb dieser Konfiguration wird im Rahmen des Betriebs des Standards XGewerbeanzeige erfolgen.
 
