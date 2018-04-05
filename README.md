@@ -25,18 +25,16 @@ Fach- bzw. Standardspezifische Prüfkonfigurationen sind in eigene Module bzw. R
 
 ## Prüfkonfiguration XRechnung
 
-Eine eigenständige Konfiguration für den Standard XRechnung wird ebenfalls auf [GitHub bereitgestellt](/itplr-kosit/validator-configuration-xrechnung). Diese enthält alle notwendigen Resourcen zu der Norm EN16931 (XML-Schema und [Schematron Regeln] (https://github.com/CenPC434/validation) u.a.) und die Resourcen des Standards
-[XRechnung](http://www.xoev.de/de/xrechnung) in ihren aktuellen Entwurfsversionen. 
+Eine eigenständige Konfiguration für den Standard XRechnung wird ebenfalls auf [GitHub bereitgestellt](/itplr-kosit/validator-configuration-xrechnung) [Releases](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases)). Diese enthält alle notwendigen Resourcen zu der Norm EN16931 (XML-Schema und [Schematron Regeln] (https://github.com/CenPC434/validation) u.a.) und die Resourcen des Standards
+[XRechnung](http://www.xoev.de/de/xrechnung) in ihren aktuellen Entwurfsversionen.
 
-Diese Konfiguration kann von der [Release-Seite der Prüftool-Konfiguration XRechnung](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases) bezogen werden.
+Der geregelte Betrieb dieser Konfiguration wird im Rahmen des Betriebs des Standards XRechnung erfolgen.
 
 ## Prüfkonfiguration XGewerbeanzeige
 
-TODO
+Eine eigenständige Konfiguration für den Standard XGewerbeanzeige wird ebenfalls auf [GitHub bereitgestellt](/itplr-kosit/validator-configuration-xgewerbeanzeige) ([Releases](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige/releases).
 
-Der geregelte Betrieb dieser Referenzimplementierung des Prüftools wird im Rahmen des Betriebs des Standards XRechnung erfolgen.
-
-Alle Bestandteile werden unter der Apache License Version 2.0, January 2004 (http://www.apache.org/licenses/) bereitgestellt.
+Der geregelte Betrieb dieser Konfiguration wird im Rahmen des Betriebs des Standards XGewerbeanzeige erfolgen.
 
 
 # Grundsätzlicher Ablauf einer Prüfung
