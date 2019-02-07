@@ -19,16 +19,12 @@
 
 package de.kosit.validationtool.cmd;
 
+import lombok.extern.slf4j.Slf4j;
+
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.DefaultCheck;
-import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszwerten und auszugeben.
@@ -39,12 +35,16 @@ import java.util.stream.Collectors;
 @Slf4j
 class InternalCheck extends DefaultCheck {
 
+    private int checkAssertions = 0;
+
+    private int failedAssertions = 0;
+
     /**
      * Erzeugt eine neue Instanz mit der angegebenen Konfiguration.
      *
      * @param configuration die Konfiguration
      */
-    public InternalCheck(CheckConfiguration configuration) {
+    InternalCheck(CheckConfiguration configuration) {
         super(configuration);
     }
 
@@ -54,24 +54,16 @@ class InternalCheck extends DefaultCheck {
      * @param input die Prüflinge
      * @return false wenn es Assertion-Fehler gibt, sonst true
      */
-    public boolean checkInput(List<Input> input) {
-        List<CheckAction.Bag> results = new ArrayList<>();
-        input.forEach(i -> {
-            CheckAction.Bag bag = new CheckAction.Bag(i, createReport());
-            runCheckInternal(bag);
-            results.add(bag);
-        });
-
-        return printAndEvaluate(results);
-
+    void checkInput(Input input) {
+        CheckAction.Bag bag = new CheckAction.Bag(input, createReport());
+        runCheckInternal(bag);
+        if (bag.getAssertionResult() != null) {
+            checkAssertions += bag.getAssertionResult().getObject();
+            failedAssertions += bag.getAssertionResult().getErrors().size();
+        }
     }
 
-    private boolean printAndEvaluate(List<CheckAction.Bag> results) {
-        final List<Result<Integer, String>> asserts = results.stream().filter(r -> r.getAssertionResult() != null)
-                .map(CheckAction.Bag::getAssertionResult).collect(Collectors.toList());
-        int checkAssertions = asserts.stream().mapToInt(e -> e.getObject()).sum();
-        int failedAssertions = asserts.stream().mapToInt(e -> e.getErrors().size()).sum();
-
+    public boolean printAndEvaluate() {
         if (failedAssertions > 0) {
             log.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", checkAssertions, failedAssertions);
         } else if (checkAssertions > 0) {

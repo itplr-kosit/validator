@@ -28,10 +28,15 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -151,9 +156,12 @@ public class CommandLineApplication {
 
             final Collection<Path> targets = determineTestTargets(cmd);
             start = System.currentTimeMillis();
-            final List<Input> input = targets.stream().map(InputFactory::read).collect(Collectors.toList());
-            boolean result = check.checkInput(input);
-            log.info("Processing {} object(s) completed in {}ms", input.size(), System.currentTimeMillis() - start);
+            for (Path p : targets) {
+                final Input input = InputFactory.read(p);
+                check.checkInput(input);
+            }
+            boolean result = check.printAndEvaluate();
+            log.info("Processing {} object(s) completed in {}ms", targets.size(), System.currentTimeMillis() - start);
             return result ? 0 : 1;
 
         } catch (Exception e) {
