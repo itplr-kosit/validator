@@ -19,18 +19,16 @@
 
 package de.kosit.validationtool.cmd;
 
-import de.kosit.validationtool.impl.ObjectFactory;
-import de.kosit.validationtool.impl.tasks.CheckAction;
+import java.nio.file.Path;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.nio.file.Path;
+import de.kosit.validationtool.impl.ObjectFactory;
+import de.kosit.validationtool.impl.tasks.CheckAction;
+
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
 
 /**
  * Schreibt das Prüfergebnis als XML-Dokument an eine definierte Stelle.
@@ -48,11 +46,9 @@ public class SerializeReportAction implements CheckAction {
         final Path file = outputDirectory.resolve(results.getName() + "-report.xml");
         try {
             log.info("Serializing result to {}", file.toAbsolutePath());
-            Transformer transformer = ObjectFactory.createTransformer(true);
-            Result output = new StreamResult(file.toFile());
-            Source input = new DOMSource(results.getReport());
-            transformer.transform(input, output);
-        } catch (TransformerException e) {
+            final Serializer serializer = ObjectFactory.createProcessor().newSerializer(file.toFile());
+            serializer.serializeNode(results.getReport());
+        } catch (SaxonApiException e) {
             log.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
         }
     }

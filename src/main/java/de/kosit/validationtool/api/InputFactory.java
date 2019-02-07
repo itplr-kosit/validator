@@ -21,7 +21,12 @@ package de.kosit.validationtool.api;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +56,7 @@ public class InputFactory {
 
     private static final int DEFAULT_BUFFER_SIZE = 4096;
 
-    public static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
+    private static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
 
     @Getter
     private final String algorithm;

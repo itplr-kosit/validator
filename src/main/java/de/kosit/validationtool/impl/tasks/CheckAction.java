@@ -19,17 +19,21 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.w3c.dom.Document;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
-import lombok.Getter;
-import lombok.Setter;
-import org.w3c.dom.Document;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Interface, welches von allen Prüfschritten implementiert wird. Der Parameter vom Typ {@link Bag} dient dabei sowohl
@@ -72,7 +76,7 @@ public interface CheckAction {
         private CreateReportInput reportInput;
 
         /** Das finale Ergebnis */
-        private Document report;
+        private XdmNode report;
 
         private boolean finished;
 

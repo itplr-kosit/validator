@@ -69,7 +69,6 @@ public class SchemaValidatorActionTest {
     @Test
     public void testSimple() {
         CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(VALID_EXAMPLE), new CreateReportInput());
-        bag.setParserResult(Helper.load(VALID_EXAMPLE));
         ScenarioType t = new ScenarioType();
         ValidateWithXmlSchema v = new ValidateWithXmlSchema();
         ResourceType r = new ResourceType();
@@ -88,7 +87,6 @@ public class SchemaValidatorActionTest {
     @Test
     public void testValidationFailure() throws MalformedURLException {
         CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(INVALID_EXAMPLE.toURL()), new CreateReportInput());
-        bag.setParserResult(Helper.load(INVALID_EXAMPLE.toURL()));
         ScenarioType t = new ScenarioType();
         ValidateWithXmlSchema v = new ValidateWithXmlSchema();
         ResourceType r = new ResourceType();

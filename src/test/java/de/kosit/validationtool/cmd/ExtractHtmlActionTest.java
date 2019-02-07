@@ -64,7 +64,7 @@ public class ExtractHtmlActionTest {
     public void testSimple() throws IOException {
         CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(REPORT));
         assertThat(action.isSkipped(b)).isTrue();
-        b.setReport(Helper.load(REPORT).getObject());
+        b.setReport(Helper.load(REPORT));
         action.check(b);
         assertThat(action.isSkipped(b)).isFalse();
         action.check(b);

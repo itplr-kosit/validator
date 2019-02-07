@@ -23,15 +23,19 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.transform.dom.DOMSource;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
-import net.sf.saxon.s9api.*;
+import net.sf.saxon.s9api.QName;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.XPathExecutable;
+import net.sf.saxon.s9api.XPathSelector;
+import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Extrahiert HTML-Dokumente aus dem Report und persistiert diese im konfigurierten Ausgabe-Verzeichnis.
@@ -54,9 +58,7 @@ public class ExtractHtmlContentAction implements CheckAction {
     public void check(Bag results) {
         try {
             final XPathSelector selector = getSelector();
-            DocumentBuilder documentBuilder = repository.getProcessor().newDocumentBuilder();
-
-            final XdmNode xdmSource = documentBuilder.build(new DOMSource(results.getReport()));
+            final XdmNode xdmSource = results.getReport();
             selector.setContextItem(xdmSource);
             selector.forEach(m -> print(results.getName(), m));
 

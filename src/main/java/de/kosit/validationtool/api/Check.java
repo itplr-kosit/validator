@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 
+import net.sf.saxon.s9api.XdmNode;
+
 /**
  * Zentrale Schnittstellendefinition für das Prüf-Tool.
  * 
@@ -37,7 +39,7 @@ public interface Check {
      * @param input die Resource / XML-Datei, die geprüft werden soll.
      * @return ein Ergebnis-{@link Document}
      */
-    Document check(Input input);
+    XdmNode check(Input input);
 
 
     /**
@@ -46,8 +48,8 @@ public interface Check {
      * @param input die Eingabe
      * @return Liste mit Ergebnis-Dokumenten
      */
-    default List<Document> check(List<Input> input) {
-        return input.stream().map(i -> check(i)).collect(Collectors.toList());
+    default List<XdmNode> check(List<Input> input) {
+        return input.stream().map(this::check).collect(Collectors.toList());
     }
 
 }
