@@ -31,7 +31,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +77,8 @@ public class CommandLineApplication {
 
     private static final Option CHECK_ASSERTIONS = Option.builder("c").longOpt("check-assertions").hasArg()
             .desc("Check the result using defined assertions").argName("assertions-file").build();
+
+    private static final Option PRINT_MEM_STATS = Option.builder("m").longOpt("memory-stats").desc("Prints some memory stats").build();
 
     private CommandLineApplication() {
         // main class -> hide constructor
@@ -145,6 +153,9 @@ public class CommandLineApplication {
             if (cmd.hasOption(CHECK_ASSERTIONS.getOpt())) {
                 Assertions assertions = loadAssertions(cmd.getOptionValue(CHECK_ASSERTIONS.getOpt()));
                 check.getCheckSteps().add(new CheckAssertionAction(assertions, ObjectFactory.createProcessor()));
+            }
+            if (cmd.hasOption(PRINT_MEM_STATS.getOpt())) {
+                check.getCheckSteps().add(new PrintMemoryStats());
             }
 
             log.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
@@ -285,6 +296,7 @@ public class CommandLineApplication {
         options.addOption(EXTRACT_HTML);
         options.addOption(DEBUG);
         options.addOption(CHECK_ASSERTIONS);
+        options.addOption(PRINT_MEM_STATS);
         return options;
     }
 }
