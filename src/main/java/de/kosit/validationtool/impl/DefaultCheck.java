@@ -24,21 +24,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.w3c.dom.Document;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
-import de.kosit.validationtool.impl.tasks.*;
+import de.kosit.validationtool.impl.tasks.CheckAction;
+import de.kosit.validationtool.impl.tasks.CreateReportAction;
+import de.kosit.validationtool.impl.tasks.DocumentParseAction;
+import de.kosit.validationtool.impl.tasks.ScenarioSelectionAction;
+import de.kosit.validationtool.impl.tasks.SchemaValidationAction;
+import de.kosit.validationtool.impl.tasks.SchematronValidationAction;
+import de.kosit.validationtool.impl.tasks.ValidateReportInputAction;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
 import de.kosit.validationtool.model.reportInput.EngineType;
 import de.kosit.validationtool.model.reportInput.ProcessingError;
 
 import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Die Referenz-Implementierung für den Prüfprozess. Nach initialer Konfiguration ist diese Klasse threadsafe und kann
@@ -95,22 +100,24 @@ public class DefaultCheck implements Check {
     }
 
     @Override
-    public Document check(Input input) {
+    public XdmNode check(Input input) {
         CheckAction.Bag t = new CheckAction.Bag(input, createReport());
         return runCheckInternal(t);
     }
 
-    protected Document runCheckInternal(CheckAction.Bag t) {
+    protected XdmNode runCheckInternal(CheckAction.Bag t) {
         long started = System.currentTimeMillis();
         log.info("Checking content of {}", t.getInput().getName());
         Iterator<CheckAction> it = checkSteps.iterator();
 
 
         while (it.hasNext()) {
+            long start = System.currentTimeMillis();
             final CheckAction action = it.next();
             if (!action.isSkipped(t)) {
                 action.check(t);
             }
+            log.info("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
             if (t.isStopped()) {
                 final ProcessingError processingError = t.getReportInput().getProcessingError();
                 log.error("Error processing input {}: {}", t.getInput().getName(),
