@@ -34,7 +34,7 @@ import de.kosit.validationtool.model.scenarios.Scenarios;
 
 /**
  * Testet die Versionierung von Scenario-Dateien aka Konfigurationsdaten.
- * 
+ *
  * @author Andreas Penski
  */
 public class VersioningTest {
@@ -45,7 +45,7 @@ public class VersioningTest {
 
     private static final URL NEW_FEATURE = VersioningTest.class.getResource("/examples/versioning/scenarios-newfeature.xml");
 
-    private static final URL NEW_VERSION = VersioningTest.class.getResource("/examples/versioning/scenarios-newVersion.xml");
+    private static final URL NEW_VERSION = VersioningTest.class.getResource("/examples/versioning/scenarios-newversion.xml");
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
