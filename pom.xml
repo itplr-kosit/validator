@@ -49,7 +49,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.jacoco>0.7.9</version.jacoco>
         <version.lombok>1.16.16</version.lombok>
-        <version.saxon-he>9.9.0-1</version.saxon-he>
+        <version.saxon-he>9.9.1-1</version.saxon-he>
         <version.slf4j>1.7.25</version.slf4j>
     </properties>
 
