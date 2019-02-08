@@ -70,10 +70,9 @@ public class CreateReportAction implements CheckAction {
         final DocumentBuilder documentBuilder = processor.newDocumentBuilder();
         try {
 
-            final Document inputDoc = results.getParserResult().isValid() ? results.getParserResult().getObject()
-                    : ObjectFactory.createDocumentBuilder(true).newDocument();
+            final XdmNode parsedDocument = results.getParserResult().isValid() ? results.getParserResult().getObject()
+                    : ObjectFactory.createProcessor().newDocumentBuilder().newBuildingContentHandler().getDocumentNode();
 
-            final XdmNode parsedDocument = documentBuilder.build(new DOMSource(inputDoc));
             final Document reportInput = conversionService.writeDocument(results.getReportInput());
             final XdmNode root = documentBuilder.build(new DOMSource(reportInput));
             final XsltTransformer transformer = getTransformation(results).load();

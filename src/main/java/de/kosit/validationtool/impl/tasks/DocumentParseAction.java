@@ -19,23 +19,26 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+
+import javax.xml.transform.stream.StreamSource;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import de.kosit.validationtool.api.Input;
-import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.ValidationResultsWellformedness;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
+import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Setzt Parsing-Funktionalitäten um. Prüft auf well-formedness
@@ -53,22 +56,18 @@ public class DocumentParseAction implements CheckAction {
      * @param content ein Dokument
      * @return Ergebnis des Parsings inklusive etwaiger Fehler
      */
-    public Result<Document, XMLSyntaxError> parseDocument(Input content) {
+    public Result<XdmNode, XMLSyntaxError> parseDocument(Input content) {
         if (content == null) {
-            throw new IllegalArgumentException("Url may not be null");
+            throw new IllegalArgumentException("Input may not be null");
         }
-        Result<Document, XMLSyntaxError> result;
-        CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
+        Result<XdmNode, XMLSyntaxError> result;
         try ( InputStream input = new ByteArrayInputStream(content.getContent()) ) {
-            DocumentBuilder db = ObjectFactory.createDocumentBuilder(false);
-            db.setErrorHandler(errorHandler);
-            Document doc = db.parse(input);
-            result = new Result<>(doc, errorHandler.getErrors());
-        } catch (SAXException e) {
-            log.debug("SAXException while parsing {}", content.getName(), e);
-            result = new Result<>(errorHandler.getErrors());
-        } catch (IOException e) {
-            log.debug("IOException while parsing {}", content, e);
+            final DocumentBuilder builder = ObjectFactory.createProcessor().newDocumentBuilder();
+            builder.setLineNumbering(true);
+            XdmNode doc = builder.build(new StreamSource(input));
+            result = new Result<>(doc, Collections.emptyList());
+        } catch (SaxonApiException | IOException e) {
+            log.debug("Exception while parsing {}", content.getName(), e);
             XMLSyntaxError error = new XMLSyntaxError();
             error.setSeverity(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
             error.setMessage(String.format("IOException while reading resource %s", content.getName()));
@@ -80,7 +79,7 @@ public class DocumentParseAction implements CheckAction {
 
     @Override
     public void check(Bag results) {
-        Result<Document, XMLSyntaxError> parserResult = parseDocument(results.getInput());
+        Result<XdmNode, XMLSyntaxError> parserResult = parseDocument(results.getInput());
         ValidationResultsWellformedness v = new ValidationResultsWellformedness();
         results.setParserResult(parserResult);
         v.getXmlSyntaxError().addAll(parserResult.getErrors());
