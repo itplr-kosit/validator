@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.StringUtils.startsWith;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,7 @@ import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XdmNodeKind;
 import net.sf.saxon.s9api.XsltExecutable;
 
 /**
@@ -72,10 +74,21 @@ public class ScenarioRepository {
     private Scenarios scenarios;
 
     private static boolean isSupportedDocument(XdmNode doc) {
-        final XdmNode root = doc.children().iterator().next();
+        final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
         return startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
                 && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
+    }
+
+    private static XdmNode findRoot(final XdmNode doc) {
+        final Iterator<XdmNode> it = doc.children().iterator();
+        while (it.hasNext()) {
+            final XdmNode node = it.next();
+            if (node.getNodeKind() == XdmNodeKind.ELEMENT) {
+                return node;
+            }
+        }
+        throw new IllegalArgumentException("Kein root element gefunden");
     }
 
     private static void checkVersion(URI scenarioDefinition) {
