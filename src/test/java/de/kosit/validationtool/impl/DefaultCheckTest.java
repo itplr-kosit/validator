@@ -31,6 +31,7 @@ import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
 
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
@@ -62,14 +63,28 @@ public class DefaultCheckTest {
 
     @Test
     public void testHappyCase() throws Exception {
-        final XdmNode doc = implementation.check(read(VALID_EXAMPLE));
+        final XdmNode doc = implementation.checkInput(read(VALID_EXAMPLE));
+        assertThat(doc).isNotNull();
+    }
+
+    @Test
+    public void testHappyCaseDocument() throws Exception {
+        final Document doc = implementation.check(read(VALID_EXAMPLE));
         assertThat(doc).isNotNull();
     }
 
     @Test
     public void testMultipleCase() throws Exception {
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(VALID_EXAMPLE)).collect(Collectors.toList());
-        final List<XdmNode> docs = implementation.check(input);
+        final List<XdmNode> docs = implementation.checkInput(input);
+        assertThat(docs).isNotNull();
+        assertThat(docs).hasSize(MULTI_COUNT);
+    }
+
+    @Test
+    public void testMultipleCaseDocument() throws Exception {
+        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(VALID_EXAMPLE)).collect(Collectors.toList());
+        final List<Document> docs = implementation.check(input);
         assertThat(docs).isNotNull();
         assertThat(docs).hasSize(MULTI_COUNT);
     }

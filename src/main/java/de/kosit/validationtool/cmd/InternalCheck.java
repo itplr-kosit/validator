@@ -26,6 +26,8 @@ import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
+import net.sf.saxon.s9api.XdmNode;
+
 /**
  * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszwerten und auszugeben.
  * Diese Klasse stellt keine fachlicher Erweiterung des eigentlichen Prüfvorganges dar!
@@ -54,16 +56,17 @@ class InternalCheck extends DefaultCheck {
      * @param input die Prüflinge
      * @return false wenn es Assertion-Fehler gibt, sonst true
      */
-    void checkInput(Input input) {
+    public XdmNode checkInput(Input input) {
         CheckAction.Bag bag = new CheckAction.Bag(input, createReport());
-        runCheckInternal(bag);
+        XdmNode result = runCheckInternal(bag);
         if (bag.getAssertionResult() != null) {
             checkAssertions += bag.getAssertionResult().getObject();
             failedAssertions += bag.getAssertionResult().getErrors().size();
         }
+        return result;
     }
 
-    public boolean printAndEvaluate() {
+    boolean printAndEvaluate() {
         if (failedAssertions > 0) {
             log.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", checkAssertions, failedAssertions);
         } else if (checkAssertions > 0) {

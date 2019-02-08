@@ -100,7 +100,7 @@ public class DefaultCheck implements Check {
     }
 
     @Override
-    public XdmNode check(Input input) {
+    public XdmNode checkInput(Input input) {
         CheckAction.Bag t = new CheckAction.Bag(input, createReport());
         return runCheckInternal(t);
     }
