@@ -344,6 +344,8 @@
     </build>
     <scm>
         <connection>https://github.com/itplr-kosit/validationtool.git</connection>
+        <developerConnection>scm:git:https://github.com/itplr-kosit/validationtool.git</developerConnection>
+        <tag>v1.0.0</tag>
     </scm>
 
 </project>
