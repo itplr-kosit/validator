@@ -27,7 +27,7 @@
     <name>KoSIT XML Prüftool Implementierung</name>
 
         <groupId>de.kosit</groupId>
-        <version>1.0.2</version>
+        <version>1.0.3-SNAPSHOT</version>
 
     <artifactId>validationtool</artifactId>
     <description>KoSIT XML Prüftool zur Prüfung von XML Dateien gegenüber definierten Szenarien.</description>
@@ -343,7 +343,7 @@
     <scm>
         <connection>https://github.com/itplr-kosit/validationtool.git</connection>
         <developerConnection>scm:git:https://github.com/itplr-kosit/validationtool.git</developerConnection>
-        <tag>v1.0.2</tag>
+        <tag>v1.0.0</tag>
     </scm>
 
 </project>
