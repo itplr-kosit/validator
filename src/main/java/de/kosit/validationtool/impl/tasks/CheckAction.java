@@ -22,8 +22,6 @@ package de.kosit.validationtool.impl.tasks;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.w3c.dom.Document;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -85,7 +83,7 @@ public interface CheckAction {
         /** Das zu prüfende Dokument */
         private Input input;
 
-        private Result<Document, XMLSyntaxError> parserResult;
+        private Result<XdmNode, XMLSyntaxError> parserResult;
 
         private Result<Integer, String> assertionResult;
 

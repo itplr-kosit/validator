@@ -29,11 +29,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.w3c.dom.Document;
 
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * @author Andreas Penski
@@ -60,7 +61,7 @@ public class DocumentParserTest {
 
     @Test
     public void testSimple() throws IOException {
-        final Result<Document, XMLSyntaxError> result = parser.parseDocument(read(CONTENT));
+        final Result<XdmNode, XMLSyntaxError> result = parser.parseDocument(read(CONTENT));
         assertThat(result).isNotNull();
         assertThat(result.getObject()).isNotNull();
         assertThat(result.getErrors()).isEmpty();
@@ -70,7 +71,7 @@ public class DocumentParserTest {
 
     @Test
     public void testIllformed() throws IOException {
-        final Result<Document, XMLSyntaxError> result = parser.parseDocument(read(ILLFORMED));
+        final Result<XdmNode, XMLSyntaxError> result = parser.parseDocument(read(ILLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
         assertThat(result.getObject()).isNull();
