@@ -24,25 +24,29 @@ import java.text.NumberFormat;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ *
+ * Prints some memory usage information for debugging purposes.
+ * 
  * @author Andreas Penski
  */
 @Slf4j
 public class PrintMemoryStats implements de.kosit.validationtool.impl.tasks.CheckAction {
 
+    private static final int BYTES_PER_K = 1024;
+
     @Override
     public void check(final Bag results) {
-        Runtime.getRuntime().gc();
         final Runtime runtime = Runtime.getRuntime();
-        StringBuilder sb = new StringBuilder();
         long maxMemory = runtime.maxMemory();
         long allocatedMemory = runtime.totalMemory();
         long freeMemory = runtime.freeMemory();
-        NumberFormat format = NumberFormat.getInstance();
 
-        sb.append("free memory: " + format.format(freeMemory / 1024));
-        sb.append("MB allocated memory: " + format.format(allocatedMemory / 1024));
-        sb.append("MB max memory: " + format.format(maxMemory / 1024));
-        sb.append("MB total free memory: " + format.format((freeMemory + (maxMemory - allocatedMemory)) / 1024) + "MB");
-        log.info("{}", sb.toString());
+        NumberFormat format = NumberFormat.getInstance();
+        final String freeStr = format.format(freeMemory / BYTES_PER_K);
+        final String allocStr = format.format(allocatedMemory / BYTES_PER_K);
+        final String maxStr = format.format(maxMemory / BYTES_PER_K);
+        final String totalFreeStr = format.format((freeMemory + (maxMemory - allocatedMemory)) / BYTES_PER_K);
+        log.info("free memory: {}MB; allocated memory: {}MB", freeStr, allocStr);
+        log.info("max memory: {}MB; total free memory: {}MB", maxStr, totalFreeStr);
     }
 }
