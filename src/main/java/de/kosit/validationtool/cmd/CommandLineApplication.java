@@ -231,7 +231,7 @@ public class CommandLineApplication {
         try {
             return Files.list(d).filter(path -> path.toString().endsWith(".xml")).collect(Collectors.toList());
         } catch (IOException e) {
-            throw new IllegalStateException("IOException while liste directory content. Can not determine test targets.", e);
+            throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }
 
     }
