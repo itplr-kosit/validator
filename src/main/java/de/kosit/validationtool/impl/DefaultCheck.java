@@ -20,9 +20,7 @@
 package de.kosit.validationtool.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -108,12 +106,9 @@ public class DefaultCheck implements Check {
     protected XdmNode runCheckInternal(CheckAction.Bag t) {
         long started = System.currentTimeMillis();
         log.info("Checking content of {}", t.getInput().getName());
-        Iterator<CheckAction> it = checkSteps.iterator();
 
-
-        while (it.hasNext()) {
+        for (final CheckAction action : checkSteps) {
             long start = System.currentTimeMillis();
-            final CheckAction action = it.next();
             if (!action.isSkipped(t)) {
                 action.check(t);
             }
@@ -121,7 +116,7 @@ public class DefaultCheck implements Check {
             if (t.isStopped()) {
                 final ProcessingError processingError = t.getReportInput().getProcessingError();
                 log.error("Error processing input {}: {}", t.getInput().getName(),
-                        processingError != null ? processingError.getError().stream().collect(Collectors.joining("\n")) : "");
+                        processingError != null ? String.join("\n", processingError.getError()) : "");
                 break;
             }
         }
