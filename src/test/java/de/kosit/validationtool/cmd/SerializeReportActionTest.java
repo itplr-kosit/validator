@@ -19,20 +19,21 @@
 
 package de.kosit.validationtool.cmd;
 
-import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.impl.Helper;
-import de.kosit.validationtool.impl.tasks.CheckAction;
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.impl.Helper;
+import de.kosit.validationtool.impl.tasks.CheckAction;
 
 /**
  * @author Andreas Penski
@@ -60,7 +61,7 @@ public class SerializeReportActionTest {
     public void testSimpleSerialize() {
         CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(REPORT));
         assertThat(action.isSkipped(b)).isTrue();
-        b.setReport(Helper.load(REPORT).getObject());
+        b.setReport(Helper.load(REPORT));
         assertThat(action.isSkipped(b)).isFalse();
         action.check(b);
         assertThat(b.isStopped()).isFalse();

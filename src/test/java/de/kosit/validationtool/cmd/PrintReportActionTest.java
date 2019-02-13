@@ -58,7 +58,7 @@ public class PrintReportActionTest {
     @Test
     public void testSimpleSerialize() {
         CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(REPORT));
-        b.setReport(Helper.load(REPORT).getObject());
+        b.setReport(Helper.load(REPORT));
         assertThat(action.isSkipped(b)).isFalse();
         action.check(b);
         assertThat(b.isStopped()).isFalse();

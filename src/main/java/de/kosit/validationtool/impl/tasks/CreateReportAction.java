@@ -27,11 +27,22 @@ import org.w3c.dom.Document;
 
 import lombok.RequiredArgsConstructor;
 
-import de.kosit.validationtool.impl.*;
+import de.kosit.validationtool.impl.CollectingErrorEventHandler;
+import de.kosit.validationtool.impl.ConversionService;
+import de.kosit.validationtool.impl.ObjectFactory;
+import de.kosit.validationtool.impl.RelativeUriResolver;
+import de.kosit.validationtool.impl.ScenarioRepository;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
-import net.sf.saxon.s9api.*;
+import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.QName;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmDestination;
+import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XsltExecutable;
+import net.sf.saxon.s9api.XsltTransformer;
 
 /**
  * Erzeugt den Report auf Basis der gesammelten Informationen über den Prüfling. Sollte kein Szenario identifiziert
@@ -59,10 +70,9 @@ public class CreateReportAction implements CheckAction {
         final DocumentBuilder documentBuilder = processor.newDocumentBuilder();
         try {
 
-            final Document inputDoc = results.getParserResult().isValid() ? results.getParserResult().getObject()
-                    : ObjectFactory.createDocumentBuilder(true).newDocument();
+            final XdmNode parsedDocument = results.getParserResult().isValid() ? results.getParserResult().getObject()
+                    : ObjectFactory.createProcessor().newDocumentBuilder().newBuildingContentHandler().getDocumentNode();
 
-            final XdmNode parsedDocument = documentBuilder.build(new DOMSource(inputDoc));
             final Document reportInput = conversionService.writeDocument(results.getReportInput());
             final XdmNode root = documentBuilder.build(new DOMSource(reportInput));
             final XsltTransformer transformer = getTransformation(results).load();
@@ -73,10 +83,10 @@ public class CreateReportAction implements CheckAction {
             transformer.setURIResolver(resolver);
             transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
             transformer.setParameter(new QName("input-document"), parsedDocument);
-            Document result = ObjectFactory.createDocumentBuilder(false).newDocument();
-            transformer.setDestination(new DOMDestination(result));
+            final XdmDestination destination = new XdmDestination();
+            transformer.setDestination(destination);
             transformer.transform();
-            results.setReport(result);
+            results.setReport(destination.getXdmNode());
 
         } catch (SaxonApiException e) {
             throw new IllegalStateException("Can not create final report", e);

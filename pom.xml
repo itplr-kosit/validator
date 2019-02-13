@@ -27,7 +27,7 @@
     <name>KoSIT XML Prüftool Implementierung</name>
 
         <groupId>de.kosit</groupId>
-        <version>1.0.3-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
 
     <artifactId>validationtool</artifactId>
     <description>KoSIT XML Prüftool zur Prüfung von XML Dateien gegenüber definierten Szenarien.</description>
@@ -49,7 +49,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.jacoco>0.7.9</version.jacoco>
         <version.lombok>1.16.16</version.lombok>
-        <version.saxon-he>9.7.0-15</version.saxon-he>
+        <version.saxon-he>9.9.1-1</version.saxon-he>
         <version.slf4j>1.7.25</version.slf4j>
     </properties>
 
@@ -126,15 +126,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.20</version>
-                <configuration>
-
-                    <forkMode>always</forkMode>
                 </configuration>
             </plugin>
             <plugin>

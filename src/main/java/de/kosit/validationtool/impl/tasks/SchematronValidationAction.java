@@ -23,8 +23,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.xml.transform.dom.DOMSource;
-
 import org.w3c.dom.Document;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +35,11 @@ import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
-import net.sf.saxon.s9api.*;
+import net.sf.saxon.s9api.DOMDestination;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XsltTransformer;
 
 /**
  * Ausführung von konfigurierten Schematron Validierungen eines Szenarios.
@@ -51,16 +53,14 @@ public class SchematronValidationAction implements CheckAction {
 
     private final URI repository;
 
-    private List<ValidationResultsSchematron> validate(Document document, ScenarioType scenario) {
+    private List<ValidationResultsSchematron> validate(XdmNode document, ScenarioType scenario) {
         return scenario.getSchematronValidations().stream().map(v -> validate(document, v)).collect(Collectors.toList());
     }
 
-    private ValidationResultsSchematron validate(Document document, BaseScenario.Transformation validation) {
-        final DocumentBuilder documentBuilder = processor.newDocumentBuilder();
+    private ValidationResultsSchematron validate(XdmNode document, BaseScenario.Transformation validation) {
         try {
-            final XdmNode root = documentBuilder.build(new DOMSource(document));
             final XsltTransformer transformer = validation.getExecutable().load();
-            //resolving nur relative zum Repository
+            // resolving nur relative zum Repository
             final RelativeUriResolver resolver = new RelativeUriResolver(repository);
             transformer.setURIResolver(resolver);
             CollectingErrorEventHandler e = new CollectingErrorEventHandler();
@@ -68,7 +68,7 @@ public class SchematronValidationAction implements CheckAction {
 
             Document result = ObjectFactory.createDocumentBuilder(false).newDocument();
             transformer.setDestination(new DOMDestination(result));
-            transformer.setInitialContextNode(root);
+            transformer.setInitialContextNode(document);
             transformer.transform();
             ValidationResultsSchematron s = new ValidationResultsSchematron();
             s.setResource(validation.getResourceType());
@@ -85,9 +85,9 @@ public class SchematronValidationAction implements CheckAction {
     @Override
     public void check(Bag results) {
         final CreateReportInput report = results.getReportInput();
-        final List<ValidationResultsSchematron> bla = validate(results.getParserResult().getObject(),
+        final List<ValidationResultsSchematron> validationResult = validate(results.getParserResult().getObject(),
                 results.getScenarioSelectionResult().getObject());
-        report.getValidationResultsSchematron().addAll(bla);
+        report.getValidationResultsSchematron().addAll(validationResult);
     }
 
     @Override

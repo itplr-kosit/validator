@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 
+import net.sf.saxon.dom.NodeOverNodeInfo;
+import net.sf.saxon.s9api.XdmNode;
+
 /**
  * Zentrale Schnittstellendefinition für das Prüf-Tool.
  * 
@@ -33,21 +36,46 @@ public interface Check {
 
     /**
      * Führt die konfigurierte Prüfung für die übergebene Resource aus.
-     * 
+     *
+     * @param input die Resource / XML-Datei, die geprüft werden soll.
+     * @return ein Ergebnis-{@link Document}
+     * @deprecated use {@link #checkInput(Input)}
+     */
+    @Deprecated
+    default Document check(Input input) {
+        final XdmNode node = checkInput(input);
+        // readonly view of the document!!!
+        return (Document) NodeOverNodeInfo.wrap(node.getUnderlyingNode());
+    }
+
+    /**
+     * Führt die konfigurierte Prüfung für die übergebene Resource aus.
+     *
      * @param input die Resource / XML-Datei, die geprüft werden soll.
      * @return ein Ergebnis-{@link Document}
      */
-    Document check(Input input);
-
+    XdmNode checkInput(Input input);
 
     /**
      * Führt eine Prüfung im Batch-Mode durch. Die Default-Implementierung führt die Prüfung sequentiell aus.
      * 
      * @param input die Eingabe
      * @return Liste mit Ergebnis-Dokumenten
+     * @deprecated use {@link #checkInput(List)}
      */
+    @Deprecated
     default List<Document> check(List<Input> input) {
-        return input.stream().map(i -> check(i)).collect(Collectors.toList());
+        return input.stream().map(this::check).collect(Collectors.toList());
+    }
+
+    /**
+     * Führt eine Prüfung im Batch-Mode durch. Die Default-Implementierung führt die Prüfung sequentiell aus.
+     *
+     * @param input die Eingabe
+     * @return Liste mit Ergebnis-Dokumenten
+     */
+    default List<XdmNode> checkInput(List<Input> input) {
+        return input.stream().map(this::checkInput).collect(Collectors.toList());
     }
 
 }

@@ -66,7 +66,7 @@ public class CheckAssertionActionTest {
     @Test
     public void testSimple() throws URISyntaxException {
         final CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(SAMPLE), new CreateReportInput());
-        bag.setReport(Helper.load(SAMPLE_REPORT).getObject());
+        bag.setReport(Helper.load(SAMPLE_REPORT));
 
         final Assertions assertions = Helper.load(SAMPLE_ASSERTIONS, Assertions.class);
         CheckAssertionAction a = new CheckAssertionAction(assertions, ObjectFactory.createProcessor());

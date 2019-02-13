@@ -20,18 +20,17 @@
 package de.kosit.validationtool.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
-import org.w3c.dom.Document;
+import javax.xml.transform.stream.StreamSource;
 
-import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.impl.tasks.CheckAction;
-import de.kosit.validationtool.impl.tasks.DocumentParseAction;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Helferlein für Test-Artefakte
@@ -50,24 +49,23 @@ public class Helper {
 
     public static final URI TEST_ROOT = Paths.get("src/test/resources").toUri();
 
-
-
     public static final URI EXAMPLES_DIR = TEST_ROOT.resolve("examples/");
+
     public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
 
     public static final URI SCENARIO_FILE = EXAMPLES_DIR.resolve("UBLReady/scenarios-2.xml");
-
 
     public static final URI REPOSITORY = EXAMPLES_DIR.resolve("repository/");
 
     public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
 
     public static final URI SAMPLE_DIR = EXAMPLES_DIR.resolve("UBLReady/");
+
     public static final URI SAMPLE_XSLT = EXAMPLES_DIR.resolve("repository/resources/eRechnung/report.xsl");
+
     public static final URI SAMPLE = SAMPLE_DIR.resolve("UBLReady_EU_UBL-NL_20170102_FULL.xml");
 
     public static final URI SAMPLE2 = SAMPLE_DIR.resolve("UBLReady_EU_UBL-NL_20170102_FULL-invalid.xml");
-
 
     /**
      * Lädt ein XML-Dokument von der gegebenen URL
@@ -75,11 +73,14 @@ public class Helper {
      * @param url die url die geladen werden soll
      * @return ein result objekt mit Dokument
      */
-    public static Result<Document, XMLSyntaxError> load(URL url) {
-        DocumentParseAction a = new DocumentParseAction();
-        CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(url));
-        a.check(b);
-        return b.getParserResult();
+    public static XdmNode load(URL url) {
+        try ( InputStream input = url.openStream() ) {
+            return ObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
+        } catch (SaxonApiException | IOException e) {
+            throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
+
+        }
+
     }
 
     public static <T> T load(URL url, Class<T> type) throws URISyntaxException {
@@ -98,5 +99,5 @@ public class Helper {
     public static ContentRepository loadTestRepository() {
         return new ContentRepository(ObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI());
     }
-}
 
+}
