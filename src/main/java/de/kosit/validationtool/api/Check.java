@@ -27,21 +27,21 @@ import org.w3c.dom.Document;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.XdmNode;
 
+
 /**
  * Zentrale Schnittstellendefinition für das Prüf-Tool.
- * 
+ *
  * @author Andreas Penski
  */
 public interface Check {
 
     /**
-     * Führt die konfigurierte Prüfung für die übergebene Resource aus.
+     * Führt die konfigurierte Prüfung für die übergebene Resource aus. Das Ergebnis-{@link Document} ist readonly. Soll es
+     * weiterverarbeitet werden, so muss es kopiert werden.
      *
      * @param input die Resource / XML-Datei, die geprüft werden soll.
-     * @return ein Ergebnis-{@link Document}
-     * @deprecated use {@link #checkInput(Input)}
+     * @return ein Ergebnis-{@link Document} (readonly)
      */
-    @Deprecated
     default Document check(Input input) {
         final XdmNode node = checkInput(input);
         // readonly view of the document!!!
@@ -57,13 +57,12 @@ public interface Check {
     XdmNode checkInput(Input input);
 
     /**
-     * Führt eine Prüfung im Batch-Mode durch. Die Default-Implementierung führt die Prüfung sequentiell aus.
-     * 
+     * Führt eine Prüfung im Batch-Mode durch. Die Default-Implementierung führt die Prüfung sequentiell aus. Die Ergebnis
+     * -{@link Document Dokumente} sind readonly. Sollen sie weiterverarbeitet werden, so müssen Kopien erstellt werden.
+     *
      * @param input die Eingabe
-     * @return Liste mit Ergebnis-Dokumenten
-     * @deprecated use {@link #checkInput(List)}
+     * @return Liste mit Ergebnis-Dokumenten (readonly)
      */
-    @Deprecated
     default List<Document> check(List<Input> input) {
         return input.stream().map(this::check).collect(Collectors.toList());
     }
