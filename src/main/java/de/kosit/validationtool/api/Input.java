@@ -19,10 +19,7 @@
 
 package de.kosit.validationtool.api;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 /**
  * Eine Datei in eingelesener Form.

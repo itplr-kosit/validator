@@ -18,7 +18,8 @@
   ~ under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <prerequisites>
         <maven>3.0</maven>
@@ -26,7 +27,7 @@
 
     <name>KoSIT XML Prüftool Implementierung</name>
 
-        <groupId>de.kosit</groupId>
+    <groupId>de.kosit</groupId>
     <version>1.1.0-SNAPSHOT</version>
 
     <artifactId>validationtool</artifactId>
@@ -51,6 +52,7 @@
         <version.lombok>1.16.16</version.lombok>
         <version.saxon-he>9.9.1-1</version.saxon-he>
         <version.slf4j>1.7.25</version.slf4j>
+        <docker.host>localhost</docker.host>
     </properties>
 
     <dependencies>
@@ -107,6 +109,12 @@
             <version>1.3.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -128,6 +136,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
@@ -210,6 +219,86 @@
                             <appendAssemblyId>true</appendAssemblyId>
                             <outputDirectory>target/</outputDirectory>
                             <workDirectory>target/assembly/full</workDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.28.0</version>
+                <configuration>
+                    <dockerHost>tcp://localhost:2375</dockerHost>
+                    <showLogs>true</showLogs>
+                    <startParallel>true</startParallel>
+                    <verbose>false</verbose>
+                    <images>
+                        <image>
+                            <alias>daemon</alias>
+                            <name>daemon</name>
+                            <build>
+                                <dockerFileDir>daemon</dockerFileDir>
+                                <assembly>
+                                    <inline>
+                                        <files>
+                                            <file>
+                                                <source>${project.build.directory}/validationtool-${project.version}-standalone.jar</source>
+                                                <destName>validationtool-standalone.jar</destName>
+                                            </file>
+                                        </files>
+                                    </inline>
+                                </assembly>
+                            </build>
+                            <run>
+                                <network>
+                                    <mode>bridge</mode>
+                                </network>
+                                <ports>
+                                    <port>8080:8080</port>
+                                </ports>
+                                <wait>
+                                    <time>5000</time>
+                                </wait>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>up</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Failsafe Plugin to run integration tests  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <!--suppress MavenModelInspection -->
+                            <argLine>
+                                -Ddaemon.port=8080
+                                -Ddaemon.host=http://localhost/
+                            </argLine>
                         </configuration>
                     </execution>
                 </executions>
