@@ -67,7 +67,7 @@ Eine zu prüfende Datei durchläuft die folgenden Schritte
 # Verwendung
 
 Das Prüftool steht in zwei Varianten zur Verfügung:
-- als [Standalone-Version](#verwendung-als-anwendung), die von der Kommandozeile aus aufgerufen werden kann 
+- als [Standalone-Version](#verwendung-als-standalone-anwendung), die von der Kommandozeile aus aufgerufen werden kann 
 - als [Bibliothek](#verwendung-als-bibliothek), die in eigene Anwendungen integriert werden kann 
 
 ## Voraussetzungen
