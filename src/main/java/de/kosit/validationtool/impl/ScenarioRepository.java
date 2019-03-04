@@ -70,7 +70,7 @@ public class ScenarioRepository {
 
     private XsltExecutable noScenarioReport;
 
-    @Getter(value = AccessLevel.PACKAGE)
+    @Getter
     private Scenarios scenarios;
 
     private static boolean isSupportedDocument(XdmNode doc) {

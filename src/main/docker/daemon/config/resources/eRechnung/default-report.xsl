@@ -30,19 +30,19 @@
                 exclude-result-prefixes="xs"
                 version="2.0">
 
-    <xsl:output method="xml" indent="yes"/>
+    <xsl:output method="xml" indent="yes" />
 
-    <xsl:param name="input-document" required="yes"/>
+    <xsl:param name="input-document" required="yes" />
 
-    <xsl:variable name="custom-levels" as="element(s:customLevel)*" select="//s:customLevel"/>
+    <xsl:variable name="custom-levels" as="element(s:customLevel)*" select="//s:customLevel" />
 
 
     <xsl:template match="in:createReportInput">
 
         <xsl:variable name="validationStepResults" as="element(rep:validationStepResult)*">
-            <xsl:apply-templates select="in:validationResultsWellformedness"/>
-            <xsl:apply-templates select="in:validationResultsXmlSchema"/>
-            <xsl:apply-templates select="in:validationResultsSchematron"/>
+            <xsl:apply-templates select="in:validationResultsWellformedness" />
+            <xsl:apply-templates select="in:validationResultsXmlSchema" />
+            <xsl:apply-templates select="in:validationResultsSchematron" />
         </xsl:variable>
 
         <xsl:variable name="report" as="document-node(element(rep:report))">
@@ -55,17 +55,17 @@
                             <xsl:otherwise>true</xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
-                    <xsl:apply-templates select="in:engine" mode="copy-to-report-ns"/>
-                    <xsl:apply-templates select="in:timestamp" mode="copy-to-report-ns"/>
-                    <xsl:apply-templates select="in:documentIdentification" mode="copy-to-report-ns"/>
+                    <xsl:apply-templates select="in:engine" mode="copy-to-report-ns" />
+                    <xsl:apply-templates select="in:timestamp" mode="copy-to-report-ns" />
+                    <xsl:apply-templates select="in:documentIdentification" mode="copy-to-report-ns" />
 
                     <xsl:choose>
                         <xsl:when test="s:scenario">
                             <rep:scenarioMatched>
-                                <xsl:sequence select="s:scenario"/>
-                                <xsl:call-template name="document-data"/>
+                                <xsl:sequence select="s:scenario" />
+                                <xsl:call-template name="document-data" />
                                 <rep:validationResult>
-                                    <xsl:sequence select="$validationStepResults"/>
+                                    <xsl:sequence select="$validationStepResults" />
                                 </rep:validationResult>
                             </rep:scenarioMatched>
                         </xsl:when>
@@ -80,14 +80,14 @@
         </xsl:variable>
 
         <rep:report varlVersion="1.0.0">
-            <xsl:copy-of select="$report/rep:report/(node()|@*)"/>
-            <xsl:apply-templates select="$report" mode="assessment"/>
+            <xsl:copy-of select="$report/rep:report/(node()|@*)" />
+            <xsl:apply-templates select="$report" mode="assessment" />
         </rep:report>
 
     </xsl:template>
 
     <!-- Overwrite this template in customisation layer to generate a documentData element -->
-    <xsl:template name="document-data"/>
+    <xsl:template name="document-data" />
 
 
     <!-- ************************************************************************************** -->
@@ -98,41 +98,41 @@
 
     <xsl:template match="in:validationResultsWellformedness|in:validationResultsXmlSchema">
         <xsl:variable name="id" as="xs:string"
-                      select="if (self::inValidationResultsWellformedness) then 'val-xml' else 'val-xsd'"/>
+                      select="if (self::inValidationResultsWellformedness) then 'val-xml' else 'val-xsd'" />
         <xsl:variable name="messages" as="element(rep:message)*">
             <xsl:apply-templates select="in:xmlSyntaxError">
-                <xsl:with-param name="parent-id" select="$id"/>
+                <xsl:with-param name="parent-id" select="$id" />
             </xsl:apply-templates>
         </xsl:variable>
         <!-- Skip output for implicit validation steps (i. e., wellformedness implemenation) unless there is anything to tell -->
         <xsl:if test="exists($messages) or exists(s:resource)">
             <rep:validationStepResult id="{$id}"
                                       valid="{if ($messages[@level = ('warning', 'error')]) then false() else true()}">
-                <xsl:sequence select="s:resource"/>
-                <xsl:sequence select="$messages"/>
+                <xsl:sequence select="s:resource" />
+                <xsl:sequence select="$messages" />
             </rep:validationStepResult>
         </xsl:if>
     </xsl:template>
 
     <xsl:template match="in:xmlSyntaxError">
-        <xsl:param name="parent-id" as="xs:string" required="yes"/>
-        <xsl:variable name="id" select="concat($parent-id, '.', count(preceding-sibling::xmlSyntaxError) + 1)"/>
-        <xsl:variable name="level" select="if (@severity = 'SEVERITY_WARNING') then 'warning' else 'error'"/>
+        <xsl:param name="parent-id" as="xs:string" required="yes" />
+        <xsl:variable name="id" select="concat($parent-id, '.', count(preceding-sibling::xmlSyntaxError) + 1)" />
+        <xsl:variable name="level" select="if (@severity = 'SEVERITY_WARNING') then 'warning' else 'error'" />
         <rep:message id="{$id}" level="{$level}">
-            <xsl:apply-templates select="*"/>
-            <xsl:value-of select="in:message"/>
+            <xsl:apply-templates select="*" />
+            <xsl:value-of select="in:message" />
         </rep:message>
     </xsl:template>
 
-    <xsl:template match="in:xmlSyntaxError/in:*" priority="-1"/>
+    <xsl:template match="in:xmlSyntaxError/in:*" priority="-1" />
 
 
     <xsl:template match="in:xmlSyntaxError/in:rowNumber[. != '-1']">
-        <xsl:attribute name="lineNumber" select="."/>
+        <xsl:attribute name="lineNumber" select="." />
     </xsl:template>
 
     <xsl:template match="in:xmlSyntaxError/in:columnNumber[. != '-1']">
-        <xsl:attribute name="columnNumber" select="."/>
+        <xsl:attribute name="columnNumber" select="." />
     </xsl:template>
 
     <!-- ************************************************************************************** -->
@@ -144,33 +144,33 @@
 
     <xsl:template match="in:validationResultsSchematron">
         <xsl:variable name="schematron-output" as="element(svrl:schematron-output)?"
-                      select="in:results/svrl:schematron-output"/>
+                      select="in:results/svrl:schematron-output" />
         <xsl:if test="empty($schematron-output)">
             <xsl:message terminate="yes">Unexpected result from schematron validation - there is no
                 svrl:schematron-output element!
             </xsl:message>
         </xsl:if>
         <xsl:variable name="id" as="xs:string"
-                      select="concat('val-sch.',1 + count(preceding-sibling::in:validationResultsSchematron))"/>
+                      select="concat('val-sch.',1 + count(preceding-sibling::in:validationResultsSchematron))" />
         <xsl:variable name="messages" as="element(rep:message)*">
             <xsl:apply-templates select="$schematron-output/(svrl:failed-assert|svrl:successful-report)">
-                <xsl:with-param name="parent-id" select="$id"/>
+                <xsl:with-param name="parent-id" select="$id" />
             </xsl:apply-templates>
         </xsl:variable>
         <rep:validationStepResult id="{$id}"
                                   valid="{if ($messages[@level = ('warning', 'error')]) then false() else true()}">
-            <xsl:sequence select="s:resource"/>
-            <xsl:sequence select="$messages"/>
+            <xsl:sequence select="s:resource" />
+            <xsl:sequence select="$messages" />
         </rep:validationStepResult>
     </xsl:template>
 
 
     <xsl:template match="svrl:failed-assert|svrl:successful-report">
-        <xsl:param name="parent-id" as="xs:string" required="yes"/>
+        <xsl:param name="parent-id" as="xs:string" required="yes" />
         <xsl:variable name="id"
-                      select="concat($parent-id, '.', count(preceding-sibling::failed-assert | preceding-sibling::successful-report) + 1)"/>
+                      select="concat($parent-id, '.', count(preceding-sibling::failed-assert | preceding-sibling::successful-report) + 1)" />
         <rep:message id="{$id}">
-            <xsl:apply-templates select="in:location/*"/>
+            <xsl:apply-templates select="in:location/*" />
             <xsl:attribute name="level">
                 <xsl:choose>
                     <xsl:when test="(@flag,@role) = ('fatal', 'error')">error</xsl:when>
@@ -180,22 +180,22 @@
                     <xsl:otherwise>error</xsl:otherwise>
                 </xsl:choose>
             </xsl:attribute>
-            <xsl:apply-templates select="@location"/>
-            <xsl:apply-templates select="@id"/>
-            <xsl:value-of select="svrl:text"/>
+            <xsl:apply-templates select="@location" />
+            <xsl:apply-templates select="@id" />
+            <xsl:value-of select="svrl:text" />
         </rep:message>
     </xsl:template>
 
     <xsl:template match="svrl:*/@location">
-        <xsl:attribute name="xpathLocation" select="."/>
+        <xsl:attribute name="xpathLocation" select="." />
     </xsl:template>
 
     <xsl:template match="svrl:failed-assert/@id">
-        <xsl:attribute name="code" select="."/>
+        <xsl:attribute name="code" select="." />
     </xsl:template>
 
     <xsl:template match="svrl:successful-report/@id">
-        <xsl:attribute name="code" select="."/>
+        <xsl:attribute name="code" select="." />
     </xsl:template>
 
     <!-- ************************************************************************************** -->
@@ -204,12 +204,12 @@
 
     <!-- Identity template -->
     <xsl:template mode="copy-to-report-ns" match="@*">
-        <xsl:copy/>
+        <xsl:copy />
     </xsl:template>
 
     <xsl:template mode="copy-to-report-ns" match="element()" priority="5">
         <xsl:element name="rep:{local-name()}">
-            <xsl:apply-templates mode="copy-to-report-ns" select="node()|@*"/>
+            <xsl:apply-templates mode="copy-to-report-ns" select="node()|@*" />
         </xsl:element>
     </xsl:template>
 
@@ -238,7 +238,7 @@
                 </xsl:choose>
             </xsl:variable>
             <xsl:element name="rep:{$element-name}" exclude-result-prefixes="#all">
-                <xsl:call-template name="explanations"/>
+                <xsl:call-template name="explanations" />
             </xsl:element>
         </rep:assessment>
     </xsl:template>
@@ -253,7 +253,7 @@
                 erhalten (siehe Attribut <xd:i>@level</xd:i>). Im Regelfall entspricht die
                 benutzerspezifische Qualifizierung unverändert diesem Level. Nutzer können jedoch im
                 Rahmen der Bewertung eigene Qualifizierungen vereinbaren und in dem als Parameter
-                <xd:ref name="assessment" type="parameter"/>
+                <xd:ref name="assessment" type="parameter" />
                 übergebenen
                 <xd:i>assessment</xd:i>
                 Element für bestimmte, anhand des Fehlercodes identifizierten Fehlermeldungen eine
@@ -268,7 +268,7 @@
             <xd:p>Die Funktion prüft für eine Fehlernachricht, ob deren <xd:i>@code</xd:i> Attribut
                 Bestandteil der für ein bestimmtes <xd:i>customLevel</xd:i> des
                 <xd:ref
-                        name="assessment" type="parameter"/>
+                        name="assessment" type="parameter" />
                 Parameters angegebenen Fehlercodes ist.
                 Falls ja, dann gilt das jeweilige <xd:i>customLevel</xd:i>. Andernfalls wird der im
                 Rahmen der Validierung ermittelte Fehlerlevel unverändert übernommen.
@@ -277,26 +277,26 @@
         <xd:param name="message">Eine im Rahmen der Validierung ausgegebene
             Fehlernachricht
         </xd:param>
-        <xd:return/>
+        <xd:return />
     </xd:doc>
     <xsl:function name="rep:custom-level" as="xs:string">
-        <xsl:param name="message" as="element(rep:message)"/>
+        <xsl:param name="message" as="element(rep:message)" />
         <xsl:variable name="cl" as="element(s:customLevel)?"
-                      select="$custom-levels[tokenize(., '\s+') = $message/@code]"/>
-        <xsl:value-of select="if ($cl) then $cl/@level else $message/@level"/>
+                      select="$custom-levels[tokenize(., '\s+') = $message/@code]" />
+        <xsl:value-of select="if ($cl) then $cl/@level else $message/@level" />
     </xsl:function>
 
     <xsl:template name="explanations">
         <rep:explanation>
-            <xsl:call-template name="html:html"/>
+            <xsl:call-template name="html:html" />
         </rep:explanation>
     </xsl:template>
 
     <xsl:template name="html:html">
         <html xmlns="http://www.w3.org/1999/xhtml" data-report-type="report">
-            <xsl:call-template name="html:head"/>
+            <xsl:call-template name="html:head" />
             <body>
-                <xsl:call-template name="html:document"/>
+                <xsl:call-template name="html:document" />
             </body>
         </html>
     </xsl:template>
@@ -443,23 +443,23 @@
     <xsl:template name="html:document" xmlns="http://www.w3.org/1999/xhtml">
         <h1>Prüfbericht</h1>
 
-        <xsl:call-template name="html:document-metadata"/>
+        <xsl:call-template name="html:document-metadata" />
 
-        <xsl:call-template name="html:conformance"/>
+        <xsl:call-template name="html:conformance" />
 
         <xsl:if test="//rep:message">
-            <xsl:call-template name="html:validationresults"/>
+            <xsl:call-template name="html:validationresults" />
         </xsl:if>
-        <xsl:call-template name="html:assessment"/>
+        <xsl:call-template name="html:assessment" />
 
         <!-- this is the extension -->
         <xsl:if test="$input-document instance of document-node(element())">
             <xsl:call-template name="html:contentdoc">
-                <xsl:with-param name="invoice" select="$input-document"/>
+                <xsl:with-param name="invoice" select="$input-document" />
             </xsl:call-template>
         </xsl:if>
 
-        <xsl:call-template name="html:epilog"/>
+        <xsl:call-template name="html:epilog" />
     </xsl:template>
 
 
@@ -479,19 +479,19 @@
             <dl>
                 <dt>Referenz:</dt>
                 <dd>
-                    <xsl:value-of select="rep:documentIdentification/rep:documentReference"/>
+                    <xsl:value-of select="rep:documentIdentification/rep:documentReference" />
                 </dd>
 
                 <dt>Zeitpunkt der Prüfung:</dt>
                 <dd>
-                    <xsl:value-of select="format-dateTime(rep:timestamp, '[D].[M].[Y] [H]:[m]:[s]')"/>
+                    <xsl:value-of select="format-dateTime(rep:timestamp, '[D].[M].[Y] [H]:[m]:[s]')" />
                 </dd>
 
                 <dt>Erkannter Dokumenttyp:</dt>
                 <dd>
                     <xsl:choose>
                         <xsl:when test="rep:scenarioMatched">
-                            <xsl:value-of select="rep:scenarioMatched/s:scenario/s:name"/>
+                            <xsl:value-of select="rep:scenarioMatched/s:scenario/s:name" />
                         </xsl:when>
                         <xsl:otherwise>
                             <b class="error">unbekannt</b>
@@ -499,11 +499,11 @@
                     </xsl:choose>
                 </dd>
             </dl>
-            <xsl:call-template name="html:documentdata"/>
+            <xsl:call-template name="html:documentdata" />
         </div>
     </xsl:template>
 
-    <xsl:template name="html:documentdata"/>
+    <xsl:template name="html:documentdata" />
 
     <xd:doc>
         <xd:desc>
@@ -516,7 +516,7 @@
     <xsl:template name="html:epilog" as="element()+">
         <p class="info" xmlns="http://www.w3.org/1999/xhtml">
             <xsl:text>Dieser Prüfbericht wurde erstellt mit </xsl:text>
-            <xsl:value-of select="rep:engine/rep:name"/>
+            <xsl:value-of select="rep:engine/rep:name" />
             <xsl:text>.</xsl:text>
         </p>
     </xsl:template>
@@ -541,21 +541,21 @@
             </thead>
             <tbody>
                 <xsl:for-each select="//rep:validationResult/rep:validationStepResult">
-                    <xsl:variable name="step-id" select="@id"/>
+                    <xsl:variable name="step-id" select="@id" />
                     <tr>
                         <td>
-                            <xsl:value-of select="s:resource/s:name"/>
+                            <xsl:value-of select="s:resource/s:name" />
                             <xsl:text> (</xsl:text>
-                            <xsl:value-of select="@id"/>
+                            <xsl:value-of select="@id" />
                             <xsl:text>)</xsl:text>
                         </td>
                         <td style="width: 30mm;">
                             <xsl:value-of
-                                    select="count(rep:message[@level eq 'error'])"/>
+                                    select="count(rep:message[@level eq 'error'])" />
                         </td>
                         <td style="width: 30mm;">
                             <xsl:value-of
-                                    select="count(rep:message[@level eq 'warning'])"/>
+                                    select="count(rep:message[@level eq 'warning'])" />
                         </td>
                         <td style="width: 30mm;">
                             <xsl:value-of
@@ -581,37 +581,37 @@
                 <xsl:for-each select="//rep:message">
                     <tr>
                         <xsl:attribute name="class">
-                            <xsl:value-of select="rep:custom-level(.)"/>
+                            <xsl:value-of select="rep:custom-level(.)" />
                         </xsl:attribute>
                         <td rowspan="2">
-                            <xsl:value-of select="@id"/>
+                            <xsl:value-of select="@id" />
                         </td>
                         <td rowspan="2">
-                            <xsl:value-of select="@code"/>
+                            <xsl:value-of select="@code" />
                         </td>
                         <td rowspan="2">
-                            <xsl:value-of select="rep:custom-level(.)"/>
+                            <xsl:value-of select="rep:custom-level(.)" />
                             <xsl:if test="not(rep:custom-level(.) eq @level)">
-                                <xsl:value-of select="concat(' (', @level, ')')"/>
+                                <xsl:value-of select="concat(' (', @level, ')')" />
                             </xsl:if>
                         </td>
                         <td>
-                            <xsl:value-of select="normalize-space(.)"/>
+                            <xsl:value-of select="normalize-space(.)" />
                         </td>
                     </tr>
                     <tr>
                         <xsl:attribute name="class">
-                            <xsl:value-of select="rep:custom-level(.)"/>
+                            <xsl:value-of select="rep:custom-level(.)" />
                         </xsl:attribute>
                         <td>
                             <xsl:if test="@xpathLocation">
-                                <xsl:text>Pfad: </xsl:text><xsl:value-of select="@xpathLocation"/>
+                                <xsl:text>Pfad: </xsl:text><xsl:value-of select="@xpathLocation" />
                             </xsl:if>
                             <xsl:if test="@lineNumber">
-                                <xsl:text> Zeile: </xsl:text><xsl:value-of select="@lineNumber"/>
+                                <xsl:text> Zeile: </xsl:text><xsl:value-of select="@lineNumber" />
                             </xsl:if>
                             <xsl:if test="@columnNumber">
-                                <xsl:text> Spalte: </xsl:text><xsl:value-of select="@columnNumber"/>
+                                <xsl:text> Spalte: </xsl:text><xsl:value-of select="@columnNumber" />
                             </xsl:if>
                         </td>
                     </tr>
@@ -628,8 +628,8 @@
         </xd:desc>
     </xd:doc>
     <xsl:template name="html:conformance">
-        <xsl:variable name="e" as="xs:integer" select="count(//rep:message[@level eq 'error'])"/>
-        <xsl:variable name="w" as="xs:integer" select="count(//rep:message[@level eq 'warning'])"/>
+        <xsl:variable name="e" as="xs:integer" select="count(//rep:message[@level eq 'error'])" />
+        <xsl:variable name="w" as="xs:integer" select="count(//rep:message[@level eq 'warning'])" />
         <xsl:choose>
             <xsl:when test="rep:scenarioMatched">
                 <p class="important" xmlns="http://www.w3.org/1999/xhtml">
@@ -640,7 +640,7 @@
                             <xsl:text>weder Fehler noch Warnungen. Es ist konform zu den formalen Vorgaben.</xsl:text>
                         </xsl:when>
                         <xsl:otherwise>
-                            <xsl:value-of select="concat($e, ' Fehler / ', $w, ' Warnungen. Es ist ')"/>
+                            <xsl:value-of select="concat($e, ' Fehler / ', $w, ' Warnungen. Es ist ')" />
                             <b>nicht konform</b>
                             <xsl:text> zu den formalen Vorgaben.</xsl:text>
                         </xsl:otherwise>
@@ -667,9 +667,9 @@
         </xd:desc>
     </xd:doc>
     <xsl:template name="html:assessment" xmlns="http://www.w3.org/1999/xhtml">
-        <xsl:variable name="e1" as="xs:integer" select="count(//message[@level eq 'error'])"/>
+        <xsl:variable name="e1" as="xs:integer" select="count(//message[@level eq 'error'])" />
         <xsl:variable name="e2" as="xs:integer"
-                      select="count(//rep:message[rep:custom-level(.) eq 'error'])"/>
+                      select="count(//rep:message[rep:custom-level(.) eq 'error'])" />
         <xsl:choose>
             <xsl:when test="empty(rep:scenarioMatched)">
                 <p class="important error">Bewertung: Es wird empfohlen das Dokument zurückzuweisen.</p>
@@ -690,12 +690,12 @@
 
 
     <xsl:template name="html:contentdoc">
-        <xsl:param name="invoice" as="document-node(element())"/>
+        <xsl:param name="invoice" as="document-node(element())" />
         <p class="important">
             <xsl:text>Inhalt des Rechnungsdokuments:</xsl:text>
         </p>
         <table class="document" xmlns="http://www.w3.org/1999/xhtml">
-            <xsl:apply-templates select="$invoice/*" mode="html:contentdoc"/>
+            <xsl:apply-templates select="$invoice/*" mode="html:contentdoc" />
         </table>
     </xsl:template>
 
@@ -708,18 +708,18 @@
     </xd:doc>
     <xsl:template match="*" mode="html:contentdoc">
         <xsl:variable name="line-number" as="xs:string">
-            <xsl:number select="." count="*" level="any" format="0001"/>
+            <xsl:number select="." count="*" level="any" format="0001" />
         </xsl:variable>
         <tr class="row" xmlns="http://www.w3.org/1999/xhtml" id="{$line-number}">
             <td class="pos">
-                <xsl:value-of select="$line-number"/>
+                <xsl:value-of select="$line-number" />
             </td>
             <td class="element {concat('level',count(ancestor-or-self::*))}" title="{local-name()}">
-                <xsl:apply-templates select="text()" mode="html:contentdoc"/>
-                <xsl:apply-templates select="@*" mode="html:contentdoc"/>
+                <xsl:apply-templates select="text()" mode="html:contentdoc" />
+                <xsl:apply-templates select="@*" mode="html:contentdoc" />
             </td>
         </tr>
-        <xsl:apply-templates select="*" mode="html:contentdoc"/>
+        <xsl:apply-templates select="*" mode="html:contentdoc" />
     </xsl:template>
 
     <xd:doc>
@@ -729,7 +729,7 @@
     </xd:doc>
     <xsl:template match="text()" mode="html:contentdoc">
         <div class="val" xmlns="http://www.w3.org/1999/xhtml">
-            <xsl:value-of select="."/>
+            <xsl:value-of select="." />
         </div>
     </xsl:template>
 
@@ -739,7 +739,7 @@
         </div>
     </xsl:template>
 
-    <xsl:template match="@xsi:schemaLocation" mode="html:contentdoc"/>
+    <xsl:template match="@xsi:schemaLocation" mode="html:contentdoc" />
 
     <xd:doc>
         <xd:desc>
@@ -748,7 +748,7 @@
     </xd:doc>
     <xsl:template match="@*" mode="html:contentdoc">
         <div class="attribute" title="{local-name(.)}" xmlns="http://www.w3.org/1999/xhtml">
-            <xsl:value-of select="."/>
+            <xsl:value-of select="." />
         </div>
     </xsl:template>
 

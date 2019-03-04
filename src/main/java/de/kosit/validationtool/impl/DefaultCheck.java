@@ -21,6 +21,10 @@ package de.kosit.validationtool.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import de.kosit.validationtool.model.scenarios.Scenarios;
+import org.w3c.dom.Document;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +50,7 @@ import net.sf.saxon.s9api.XdmNode;
 /**
  * Die Referenz-Implementierung für den Prüfprozess. Nach initialer Konfiguration ist diese Klasse threadsafe und kann
  * in Server-Umgebungen eingesetzt werden
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j
@@ -56,6 +60,7 @@ public class DefaultCheck implements Check {
 
     private static final String ENGINE_VERSION = "1.0.0";
 
+    @Getter
     private ScenarioRepository repository;
 
     @Getter
@@ -63,12 +68,13 @@ public class DefaultCheck implements Check {
 
     private ConversionService conversionService;
 
+
     @Getter
     private List<CheckAction> checkSteps;
 
     /**
      * Erzeugt eine neue Instanz mit der angegebenen Konfiguration.
-     * 
+     *
      * @param configuration die Konfiguration
      */
     public DefaultCheck(CheckConfiguration configuration) {
@@ -135,5 +141,4 @@ public class DefaultCheck implements Check {
         transporter.getReportInput().setDocumentIdentification(i);
         return true;
     }
-
 }
