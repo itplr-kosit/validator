@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Andreas Penski
  */
 @Slf4j
-public class PrintMemoryStats implements de.kosit.validationtool.impl.tasks.CheckAction {
+class PrintMemoryStats implements de.kosit.validationtool.impl.tasks.CheckAction {
 
     private static final int BYTES_PER_K = 1024;
 

@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.DigestInputStream;
@@ -226,6 +227,8 @@ public class InputFactory {
                 byte[] hash = digest.digest();
                 log.debug("Generated hashcode for {} is {}", name, DatatypeConverter.printHexBinary(hash));
                 out.flush();
+                log.info(new String(out.toByteArray(), Charset.forName("utf8")).substring(0,
+                        out.toByteArray().length < 100 ? out.toByteArray().length : 100));
                 return new Input(out.toByteArray(), name, hash, digest.getAlgorithm());
             } catch (IOException e) {
                 throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + name, e);

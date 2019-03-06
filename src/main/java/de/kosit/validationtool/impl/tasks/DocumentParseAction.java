@@ -70,7 +70,7 @@ public class DocumentParseAction implements CheckAction {
             log.debug("Exception while parsing {}", content.getName(), e);
             XMLSyntaxError error = new XMLSyntaxError();
             error.setSeverity(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
-            error.setMessage(String.format("IOException while reading resource %s", content.getName()));
+            error.setMessage(String.format("IOException while reading resource %s: %s", content.getName(), e.getMessage()));
             result = new Result<>(Collections.singleton(error));
         }
 
@@ -84,6 +84,9 @@ public class DocumentParseAction implements CheckAction {
         results.setParserResult(parserResult);
         v.getXmlSyntaxError().addAll(parserResult.getErrors());
         results.getReportInput().setValidationResultsWellformedness(v);
+        if (parserResult.isInvalid()) {
+            log.info("Parsing war nicht erfolgreich: {} -> {}", parserResult.getObject(), parserResult.getErrors());
+        }
     }
 
 }

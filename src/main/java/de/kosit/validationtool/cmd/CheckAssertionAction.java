@@ -50,7 +50,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class CheckAssertionAction implements CheckAction {
+class CheckAssertionAction implements CheckAction {
 
     private final Assertions assertions;
 

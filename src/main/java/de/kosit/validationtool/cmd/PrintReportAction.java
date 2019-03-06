@@ -35,7 +35,7 @@ import net.sf.saxon.s9api.Serializer;
  * @author Andreas Penski
  */
 @Slf4j
-public class PrintReportAction implements CheckAction {
+class PrintReportAction implements CheckAction {
 
     @Override
     public void check(Bag results) {
