@@ -44,7 +44,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class ExtractHtmlContentAction implements CheckAction {
+class ExtractHtmlContentAction implements CheckAction {
 
     private static final QName NAME_ATTRIBUTE = new QName("data-report-type");
 

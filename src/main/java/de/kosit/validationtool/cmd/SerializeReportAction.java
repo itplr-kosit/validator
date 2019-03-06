@@ -37,7 +37,7 @@ import net.sf.saxon.s9api.Serializer;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class SerializeReportAction implements CheckAction {
+class SerializeReportAction implements CheckAction {
 
     private final Path outputDirectory;
 

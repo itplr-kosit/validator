@@ -135,7 +135,7 @@ public class CommandLineApplication {
                 printHelp(options);
             }
         }
-        return 0;
+        return returnValue;
     }
 
     private static int determinePort(CommandLine cmd) {

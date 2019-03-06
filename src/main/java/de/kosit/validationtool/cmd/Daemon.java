@@ -68,6 +68,7 @@ class Daemon {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             try {
+                log.debug("Incoming request");
                 String requestMethod = httpExchange.getRequestMethod();
                 if (requestMethod.equals("POST")) {
                     InputStream inputStream = httpExchange.getRequestBody();
@@ -82,7 +83,7 @@ class Daemon {
                 } else {
                     writeError(httpExchange, 405, "Es ist nur die POST-Methode erlaubt!");
                 }
-            } catch (TransformerException e) {
+            } catch (Exception e) {
                 writeError(httpExchange, 500, "Interner Fehler bei der Verarbeitung des Requests: " + e.getMessage());
                 log.error("Es ist ein Fehler aufgetreten. Das Dokument kann nicht geprüft werden", e);
             }
@@ -189,7 +190,7 @@ class Daemon {
             server.createContext("/health", new HealthHandler(check.getRepository().getScenarios()));
             server.setExecutor(Executors.newFixedThreadPool(threadCount));
             server.start();
-            log.info("Server ist erfolgreich gestartet");
+            log.info("Server unter Port {} ist erfolgreich gestartet", port);
         } catch (IOException e) {
             log.error("Fehler beim HttpServer erstellen!", e.getMessage(), e);
         }

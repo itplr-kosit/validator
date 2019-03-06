@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM openjdk:8
 
 RUN mkdir /opt/validationtool
 ADD maven/validationtool-standalone.jar /opt/validationtool
