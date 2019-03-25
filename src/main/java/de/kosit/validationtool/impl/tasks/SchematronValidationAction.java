@@ -36,7 +36,6 @@ import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 import net.sf.saxon.s9api.DOMDestination;
-import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
@@ -48,8 +47,6 @@ import net.sf.saxon.s9api.XsltTransformer;
  */
 @RequiredArgsConstructor
 public class SchematronValidationAction implements CheckAction {
-
-    private final Processor processor;
 
     private final URI repository;
 

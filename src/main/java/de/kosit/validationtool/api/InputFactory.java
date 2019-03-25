@@ -19,8 +19,6 @@
 
 package de.kosit.validationtool.api;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,19 +26,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Service zum Einlesen des Test-Objekts in den Speicher. Beim Einlesen wird gleichzeitig eine Prüfsumme ermittelt und
@@ -227,8 +225,6 @@ public class InputFactory {
                 byte[] hash = digest.digest();
                 log.debug("Generated hashcode for {} is {}", name, DatatypeConverter.printHexBinary(hash));
                 out.flush();
-                log.info(new String(out.toByteArray(), Charset.forName("utf8")).substring(0,
-                        out.toByteArray().length < 100 ? out.toByteArray().length : 100));
                 return new Input(out.toByteArray(), name, hash, digest.getAlgorithm());
             } catch (IOException e) {
                 throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + name, e);

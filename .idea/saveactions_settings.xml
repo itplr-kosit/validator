@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SaveActionSettings">
+    <option name="actions">
+      <set>
+        <option value="activate" />
+        <option value="activateOnShortcut" />
+        <option value="activateOnBatch" />
+        <option value="organizeImports" />
+        <option value="reformatChangedCode" />
+        <option value="rearrange" />
+        <option value="fieldCanBeFinal" />
+        <option value="localCanBeFinal" />
+        <option value="methodMayBeStatic" />
+        <option value="unqualifiedFieldAccess" />
+        <option value="missingOverrideAnnotation" />
+        <option value="useBlocks" />
+      </set>
+    </option>
+    <option name="configurationPath" value="" />
+  </component>
+</project>
