@@ -6,8 +6,7 @@
 # Log file
 *.log
 .idea
-.settings
-*.iml
+#*.iml
 
 # Package Files #
 *.jar

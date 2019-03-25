@@ -28,7 +28,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Ein Ergebnisobjekte, dass das eigentliche Ergebnis hält und optional auch verschiedene Fehlerobjekte.
+ * Ein Ergebnisobjekt, dass das eigentliche Ergebnis hält und optional auch verschiedene Fehlerobjekte.
  * 
  * @param <T> der Typ des Ergebnis-Objekts
  * @param <E> der Typ des Fehler-Objekts

@@ -21,10 +21,6 @@ package de.kosit.validationtool.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import de.kosit.validationtool.model.scenarios.Scenarios;
-import org.w3c.dom.Document;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +33,6 @@ import de.kosit.validationtool.impl.tasks.CreateReportAction;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.tasks.ScenarioSelectionAction;
 import de.kosit.validationtool.impl.tasks.SchemaValidationAction;
-import de.kosit.validationtool.impl.tasks.SchematronValidationAction;
 import de.kosit.validationtool.impl.tasks.ValidateReportInputAction;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
@@ -88,7 +83,6 @@ public class DefaultCheck implements Check {
         checkSteps.add(new DocumentParseAction());
         checkSteps.add(new ScenarioSelectionAction(repository));
         checkSteps.add(new SchemaValidationAction());
-        checkSteps.add(new SchematronValidationAction(processor, configuration.getScenarioRepository()));
         checkSteps.add(new ValidateReportInputAction(conversionService, contentRepository.getReportInputSchema()));
         checkSteps.add(new CreateReportAction(processor, conversionService, repository, configuration.getScenarioRepository()));
     }
@@ -112,7 +106,6 @@ public class DefaultCheck implements Check {
     protected XdmNode runCheckInternal(CheckAction.Bag t) {
         long started = System.currentTimeMillis();
         log.info("Checking content of {}", t.getInput().getName());
-
         for (final CheckAction action : checkSteps) {
             long start = System.currentTimeMillis();
             if (!action.isSkipped(t)) {
