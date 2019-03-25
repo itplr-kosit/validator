@@ -168,6 +168,26 @@ erzeugen lässt. Die InputFactory erzeugt für jedes Eingabe-Objekt eine Prüfsu
 verwendete Algorithmus ist über die `read`-Methoden der `InputFactory` definierbar. Standardmäßig wird _SHA-256_ des JDK 
 verwendet
 
+## Verwendung des Daemon-Mode
+Das Prüftool stellt auch eine HTTP-Schnittstelle bereit, über die die Funktionalität angesprochen werden kann. Dazu wird die Anwendung 
+im _Daemon-Mode_ gestartet:
+
+
+```shell
+java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
+```
+
+In der Default-Konfiguration stellt dieser Aufruf einen HTTP-Server unter _localhost_ und Port 8080 bereit. 
+
+Host und Port lassen sich anpassen:
+
+```shell
+java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D -H 192.168.1.x -P 8081 
+```
+
+Im Daemon-Mode nimmt der HTTP-Server POST-Anfragen unter `/` entgegen, verarbeitet den darüber bereitgestellten Prüfling und gibt das Ergebnis-Dokument als Antwort zurück. 
+Zur Integration in Monitoring-Systeme wird eine Health-Check angeboten. Dieser ist über einen GET-Request unter `/health` erreichbar.
+
 # Build-Anweisungen
 
 Das Projekt wird mit Apache Maven gebaut. 
@@ -226,7 +246,7 @@ Die Erstellung dieser Empfehlung kann *je Prüfszenario* konfiguriert werden, in
 ```
 
 In diesem Beispiel werden die Fehlercodes `BR-15` (Teil der EN) und `BR-DE-3` (Teil der CIUS XRechnung) für den
-Bewertungsschritt von ihrem eigentlicher Rolle *error* auf *warning* geändert. Ein Dokument, welches eine oder
+Bewertungsschritt von ihrer eigentlicher Rolle *error* auf *warning* geändert. Ein Dokument, welches eine oder
 beide dieser Regeln verletzt (und ansonsten keine *error*-Meldungen erzeugt) erhielte damit abweichend vom
 Standardverhalten die Bewertung *accept*.   
 
