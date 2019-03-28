@@ -21,17 +21,13 @@ package de.kosit.validationtool.cmd;
 
 import java.io.StringWriter;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
+
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
 
 /**
  * Gibt das Ergebnis-Document auf std-out aus.
@@ -39,18 +35,16 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
  * @author Andreas Penski
  */
 @Slf4j
-public class PrintReportAction implements CheckAction {
+class PrintReportAction implements CheckAction {
 
     @Override
     public void check(Bag results) {
         try {
-            Transformer transformer = ObjectFactory.createTransformer(true);
             final StringWriter writer = new StringWriter();
-            Result output = new StreamResult(writer);
-            Source input = new DOMSource(results.getReport());
-            transformer.transform(input, output);
+            final Serializer serializer = ObjectFactory.createProcessor().newSerializer(writer);
+            serializer.serializeNode(results.getReport());
             System.out.print(writer.toString());
-        } catch (TransformerException e) {
+        } catch (SaxonApiException e) {
             log.error("Error while printing result to stdout", e);
         }
     }

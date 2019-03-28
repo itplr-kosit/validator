@@ -19,12 +19,12 @@
 
 package de.kosit.validationtool.api;
 
+import java.net.URI;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.net.URI;
 
 /**
  * Zentrale Konfigration einer Prüf-Instanz.
@@ -54,15 +54,15 @@ public class CheckConfiguration {
      * @return uri die durch entsprechende resolver aufgelöst werden kann
      */
     public URI getScenarioRepository() {
-        if (scenarioRepository == null) {
-            scenarioRepository = createDefaultRepository();
+        if (this.scenarioRepository == null) {
+            this.scenarioRepository = createDefaultRepository();
         }
-        return scenarioRepository;
+        return this.scenarioRepository;
     }
 
     private URI createDefaultRepository() {
         log.info("Creating default scenario repository (alongside scenario definition)");
-        return scenarioDefinition.resolve(".");
+        return this.scenarioDefinition.resolve(".");
     }
 
 }

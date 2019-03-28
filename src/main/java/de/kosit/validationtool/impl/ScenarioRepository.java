@@ -19,15 +19,13 @@
 
 package de.kosit.validationtool.impl;
 
+import static org.apache.commons.lang3.StringUtils.startsWith;
+
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.xml.transform.dom.DOMSource;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,7 +40,13 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.Scenarios;
 
-import net.sf.saxon.s9api.*;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.QName;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathSelector;
+import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XdmNodeKind;
+import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Repository for die aktiven Szenario einer Prüfinstanz.
@@ -66,19 +70,31 @@ public class ScenarioRepository {
 
     private XsltExecutable noScenarioReport;
 
-    @Getter(value = AccessLevel.PACKAGE)
+    @Getter
     private Scenarios scenarios;
 
-    private static boolean isSupportedDocument(Document doc) {
-        final Element root = doc.getDocumentElement();
-        return root.hasAttribute("frameworkVersion") && root.getAttribute("frameworkVersion").startsWith(SUPPORTED_MAJOR_VERSION)
-                && doc.getDocumentElement().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
+    private static boolean isSupportedDocument(XdmNode doc) {
+        final XdmNode root = findRoot(doc);
+        final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
+        return startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
+                && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
+    }
+
+    private static XdmNode findRoot(final XdmNode doc) {
+        final Iterator<XdmNode> it = doc.children().iterator();
+        while (it.hasNext()) {
+            final XdmNode node = it.next();
+            if (node.getNodeKind() == XdmNodeKind.ELEMENT) {
+                return node;
+            }
+        }
+        throw new IllegalArgumentException("Kein root element gefunden");
     }
 
     private static void checkVersion(URI scenarioDefinition) {
         DocumentParseAction p = new DocumentParseAction();
         try {
-            final Result<Document, XMLSyntaxError> result = p.parseDocument(InputFactory.read(scenarioDefinition.toURL()));
+            final Result<XdmNode, XMLSyntaxError> result = p.parseDocument(InputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException(String.format(
                         "Specified scenario configuration %s is not supported.%nThis version only supports definitions of '%s'",
@@ -138,7 +154,7 @@ public class ScenarioRepository {
      * @param document das Eingabedokument
      * @return ein Ergebnis-Objekt zur weiteren Verarbeitung
      */
-    public Result<ScenarioType, String> selectScenario(Document document) {
+    public Result<ScenarioType, String> selectScenario(XdmNode document) {
         Result<ScenarioType, String> result = new Result<>();
         final List<ScenarioType> collect = scenarios.getScenario().stream().filter(s -> match(document, s)).collect(Collectors.toList());
         if (collect.size() == 1) {
@@ -152,13 +168,10 @@ public class ScenarioRepository {
 
     }
 
-    private boolean match(Document document, ScenarioType scenario) {
+    private boolean match(XdmNode document, ScenarioType scenario) {
         try {
             final XPathSelector selector = scenario.getSelector();
-            DocumentBuilder documentBuilder = getProcessor().newDocumentBuilder();
-
-            final XdmNode xdmSource = documentBuilder.build(new DOMSource(document));
-            selector.setContextItem(xdmSource);
+            selector.setContextItem(document);
             return selector.effectiveBooleanValue();
         } catch (SaxonApiException e) {
             log.error("Error evaluating xpath expression", e);

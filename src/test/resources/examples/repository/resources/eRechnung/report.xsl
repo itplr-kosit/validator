@@ -87,7 +87,7 @@
         <xsl:variable name="messages" as="element(rep:message)*">
             <xsl:apply-templates select="in:xmlSyntaxError"/>
         </xsl:variable>
-        <!-- Skip output for implicit validation steps (i. e., wellformedness check) unless there is anything to tell -->
+        <!-- Skip output for implicit validation steps (i. e., wellformedness implemenation) unless there is anything to tell -->
         <xsl:if test="exists($messages) or exists(s:resource)">
             <rep:validationStepResult valid="{if ($messages[@level = ('warning', 'error')]) then false() else true()}">
                 <xsl:apply-templates mode="copy-to-report-ns" select="s:resource"/>

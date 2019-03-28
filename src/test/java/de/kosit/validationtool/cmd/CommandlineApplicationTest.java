@@ -19,8 +19,14 @@
 
 package de.kosit.validationtool.cmd;
 
-import org.junit.Before;
-import org.junit.Test;
+import static de.kosit.validationtool.impl.Helper.ASSERTIONS;
+import static de.kosit.validationtool.impl.Helper.NOT_EXISTING;
+import static de.kosit.validationtool.impl.Helper.REPOSITORY;
+import static de.kosit.validationtool.impl.Helper.SAMPLE;
+import static de.kosit.validationtool.impl.Helper.SAMPLE2;
+import static de.kosit.validationtool.impl.Helper.SAMPLE_DIR;
+import static de.kosit.validationtool.impl.Helper.SCENARIO_FILE;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,8 +34,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static de.kosit.validationtool.impl.Helper.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Testet die Parameter des Kommandozeilen-Tools.
@@ -146,7 +152,7 @@ public class CommandlineApplicationTest {
                 Paths.get(SAMPLE).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(commandLine.getOutputLines()).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        assertThat(commandLine.getOutputLines().get(0)).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     }
 
     @Test

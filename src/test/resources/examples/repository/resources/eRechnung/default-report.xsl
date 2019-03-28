@@ -104,7 +104,7 @@
                 <xsl:with-param name="parent-id" select="$id"/>
             </xsl:apply-templates>
         </xsl:variable>
-        <!-- Skip output for implicit validation steps (i. e., wellformedness check) unless there is anything to tell -->
+        <!-- Skip output for implicit validation steps (i. e., wellformedness implemenation) unless there is anything to tell -->
         <xsl:if test="exists($messages) or exists(s:resource)">
             <rep:validationStepResult id="{$id}"
                                       valid="{if ($messages[@level = ('warning', 'error')]) then false() else true()}">

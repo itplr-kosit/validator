@@ -24,30 +24,57 @@ import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 
+import net.sf.saxon.dom.NodeOverNodeInfo;
+import net.sf.saxon.s9api.XdmNode;
+
+
 /**
  * Zentrale Schnittstellendefinition für das Prüf-Tool.
- * 
+ *
  * @author Andreas Penski
  */
 public interface Check {
 
     /**
+     * Führt die konfigurierte Prüfung für die übergebene Resource aus. Das Ergebnis-{@link Document} ist readonly. Soll es
+     * weiterverarbeitet werden, so muss es kopiert werden.
+     *
+     * @param input die Resource / XML-Datei, die geprüft werden soll.
+     * @return ein Ergebnis-{@link Document} (readonly)
+     */
+    default Document check(Input input) {
+        final XdmNode node = checkInput(input);
+        // readonly view of the document!!!
+        return (Document) NodeOverNodeInfo.wrap(node.getUnderlyingNode());
+    }
+
+    /**
      * Führt die konfigurierte Prüfung für die übergebene Resource aus.
-     * 
+     *
      * @param input die Resource / XML-Datei, die geprüft werden soll.
      * @return ein Ergebnis-{@link Document}
      */
-    Document check(Input input);
+    XdmNode checkInput(Input input);
 
+    /**
+     * Führt eine Prüfung im Batch-Mode durch. Die Default-Implementierung führt die Prüfung sequentiell aus. Die Ergebnis
+     * -{@link Document Dokumente} sind readonly. Sollen sie weiterverarbeitet werden, so müssen Kopien erstellt werden.
+     *
+     * @param input die Eingabe
+     * @return Liste mit Ergebnis-Dokumenten (readonly)
+     */
+    default List<Document> check(List<Input> input) {
+        return input.stream().map(this::check).collect(Collectors.toList());
+    }
 
     /**
      * Führt eine Prüfung im Batch-Mode durch. Die Default-Implementierung führt die Prüfung sequentiell aus.
-     * 
+     *
      * @param input die Eingabe
      * @return Liste mit Ergebnis-Dokumenten
      */
-    default List<Document> check(List<Input> input) {
-        return input.stream().map(i -> check(i)).collect(Collectors.toList());
+    default List<XdmNode> checkInput(List<Input> input) {
+        return input.stream().map(this::checkInput).collect(Collectors.toList());
     }
 
 }

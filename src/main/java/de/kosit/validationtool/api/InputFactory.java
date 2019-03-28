@@ -19,22 +19,26 @@
 
 package de.kosit.validationtool.api;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Service zum Einlesen des Test-Objekts in den Speicher. Beim Einlesen wird gleichzeitig eine Prüfsumme ermittelt und
@@ -51,7 +55,7 @@ public class InputFactory {
 
     private static final int DEFAULT_BUFFER_SIZE = 4096;
 
-    public static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
+    private static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
 
     @Getter
     private final String algorithm;

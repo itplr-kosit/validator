@@ -30,12 +30,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.w3c.dom.Document;
 
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.Scenarios;
+
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Testet das {@link ScenarioRepository}.
@@ -94,7 +95,7 @@ public class ScenarioRepositoryTest {
         assertThat(scenario.isValid()).isFalse();
     }
 
-    private Document load(URL url) throws IOException {
+    private XdmNode load(URL url) throws IOException {
         DocumentParseAction p = new DocumentParseAction();
         return p.parseDocument(read(url)).getObject();
     }

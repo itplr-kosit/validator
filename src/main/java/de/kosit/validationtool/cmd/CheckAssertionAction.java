@@ -19,23 +19,28 @@
 
 package de.kosit.validationtool.cmd;
 
-import de.kosit.validationtool.cmd.assertions.AssertionType;
-import de.kosit.validationtool.cmd.assertions.Assertions;
-import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.impl.tasks.CheckAction;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.*;
-import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Document;
-
-import javax.xml.transform.dom.DOMSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import de.kosit.validationtool.cmd.assertions.AssertionType;
+import de.kosit.validationtool.cmd.assertions.Assertions;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.tasks.CheckAction;
+
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XPathSelector;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Überprüft den Report mittels bereitgestellter Assertions. Diese {@link CheckAction} dient der Überprüfung der von der
@@ -45,7 +50,7 @@ import java.util.Map;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class CheckAssertionAction implements CheckAction {
+class CheckAssertionAction implements CheckAction {
 
     private final Assertions assertions;
 
@@ -64,7 +69,7 @@ public class CheckAssertionAction implements CheckAction {
         final List<AssertionType> toCheck = findAssertions(results.getName());
         final List<String> errors = new ArrayList<>();
         if (toCheck != null && !toCheck.isEmpty()) {
-            final XdmNode node = loadDocument(results.getReport());
+            final XdmNode node = results.getReport();
             toCheck.forEach(a -> {
                 if (!check(node, a)) {
                     log.error("Assertion mismatch: {}", a.getValue());
@@ -86,15 +91,6 @@ public class CheckAssertionAction implements CheckAction {
         return getMapped().entrySet().stream().filter(e -> matches(e.getKey(), name)).map(Map.Entry::getValue).findFirst().orElse(null);
     }
 
-    private XdmNode loadDocument(Document d) {
-        DocumentBuilder documentBuilder = getProcessor().newDocumentBuilder();
-        try {
-            return documentBuilder.build(new DOMSource(d));
-        } catch (SaxonApiException e) {
-            log.error("Can not load result document. Therefore can not run defined assertions", e);
-        }
-        return null;
-    }
 
     private boolean check(XdmNode document, AssertionType assertion) {
         try {

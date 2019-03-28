@@ -25,8 +25,7 @@ Fach- bzw. Standardspezifische Prüfkonfigurationen sind in eigene Module bzw. R
 
 ## Prüfkonfiguration XRechnung
 
-Eine eigenständige Konfiguration für den Standard XRechnung wird ebenfalls auf [GitHub bereitgestellt](https://github.com/itplr-kosit/validator-configuration-xrechnung) ([Releases](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases)). Diese enthält alle notwendigen Resourcen zu der Norm EN16931 (XML-Schema und [Schematron Regeln] (https://github.com/CenPC434/validation) u.a.) und die Resourcen des Standards
-[XRechnung](http://www.xoev.de/de/xrechnung) in ihren aktuellen Entwurfsversionen.
+Eine eigenständige Konfiguration für den Standard [XRechnung](http://www.xoev.de/de/xrechnung) wird ebenfalls auf [GitHub bereitgestellt](https://github.com/itplr-kosit/validator-configuration-xrechnung) ([Releases](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases)). Diese enthält alle notwendigen Ressourcen zu der Norm EN16931 (XML-Schema und [Schematron Regeln] (https://github.com/CenPC434/validation) u.a.) und die [XRechnung Schematron Regeln](https://github.com/itplr-kosit/xrechnung-schematron) in ihren aktuellen Versionen.
 
 Der geregelte Betrieb dieser Konfiguration wird im Rahmen des Betriebs des Standards XRechnung erfolgen.
 
@@ -132,7 +131,7 @@ CheckConfiguration config = new CheckConfiguration();
 config.setScenarioDefinition(scenarios);
 
 //Instanziierung der DefaultCheck-Implementierung
-Check check =  new DefaultCheck(config);
+Check implemenation =  new DefaultCheck(config);
 ```
 
 Weitere Konfigurationsoption ist der Pfad zum Repository. Standardmäßig wird das Repository relativ zur Szenarien-Defintion
@@ -149,12 +148,12 @@ Check pruefer =  new DefaultCheck(config);
 
 //einzelne Datei prüfen
 Input pruefKandidat = InputFactory.read(new File("rechnung.xml"));
-Document report = pruefer.check(pruefKandidat);
+Document report = pruefer.implemenation(pruefKandidat);
 
 //Batch-Prüfung
 List<File> files = Files.list(Paths.get("rechnungen")).map(path -> path.toFile()).collect(Collectors.toList());
 List<Input> toCheck = files.stream().map(InputFactory::read).collect(Collectors.toList());
-List<Document> reports = pruefer.check(toCheck);
+List<Document> reports = pruefer.implemenation(toCheck);
 
 ```
 
@@ -285,7 +284,7 @@ verwiesen.
   insgesamt 310 prüfbaren Aussagen (Assertions) über die resultierenden Prüfberichte erstellt.
 * Durch diese Testsuite werden, ausgehend von dem Prüfbericht-Schemas alle möglichen Optionen und Auswahlmöglichkeiten
   mindestens je einmal positiv  und einmal negativ getestet.  
-* Diese Zusicherungen können vom Prüftool selbst mittels des Schalter `--check-assertions` automatisch geprüft werden.
+* Diese Zusicherungen können vom Prüftool selbst mittels des Schalter `--implemenation-assertions` automatisch geprüft werden.
 * Zudem wird die Integrität aller erstellten Prüfberichte automatisch gegen das Schema (XML Schema und
   Schematron-Regeln) des Prüfberichts getestet. 
 * Für weitere Details siehe [xrechnung/test/readme.txt](configurations/xrechnung/test/readme.txt).   

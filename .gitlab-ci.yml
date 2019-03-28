@@ -1,0 +1,29 @@
+image: maven:latest
+
+variables:
+  MAVEN_CLI_OPTS: " --batch-mode -Dmaven.repo.local=repository -Dfile.encoding=UTF-8"
+
+cache:
+  paths:
+    - repository
+
+build-validator:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS -Pjava-11,java-8,gitlab  verify
+
+  artifacts:
+    name: build-results
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+#deploy:
+#  stage: deploy
+#  script:
+#    - mvn $MAVEN_CLI_OPTS deploy
+#  only:
+#    - master
