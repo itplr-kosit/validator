@@ -39,7 +39,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import net.sf.saxon.s9api.*;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XPathExecutable;
+import net.sf.saxon.s9api.XsltCompiler;
+import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Repository für verschiedene XML Artefakte zur Vearbeitung der Prüfszenarien.
@@ -57,25 +62,25 @@ public class ContentRepository {
 
     private Schema reportInputSchema;
 
-    private static Source resolve(URL resource) {
+    private static Source resolve(final URL resource) {
         try {
             return new StreamSource(resource.openStream(), resource.toURI().getRawPath());
-        } catch (IOException | URISyntaxException e) {
+        } catch (final IOException | URISyntaxException e) {
             throw new IllegalStateException("Can not load schema for resource " + resource.getPath(), e);
         }
     }
 
-    private static Schema createSchema(Source[] schemaSources, LSResourceResolver resourceResolver) {
+    private static Schema createSchema(final Source[] schemaSources, final LSResourceResolver resourceResolver) {
         try {
-            SchemaFactory sf = ObjectFactory.createSchemaFactory();
+            final SchemaFactory sf = ObjectFactory.createSchemaFactory();
             sf.setResourceResolver(resourceResolver);
             return sf.newSchema(schemaSources);
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new IllegalArgumentException("Can not load schema from sources " + schemaSources[0].getSystemId(), e);
         }
     }
 
-    private static Schema createSchema(Source[] schemaSources) {
+    private static Schema createSchema(final Source[] schemaSources) {
         return createSchema(schemaSources, null);
     }
 
@@ -85,16 +90,16 @@ public class ContentRepository {
      * @param uri die URI der XSL Definition
      * @return ein XSLT Executable
      */
-    public XsltExecutable loadXsltScript(URI uri) {
+    public XsltExecutable loadXsltScript(final URI uri) {
         log.info("Loading XSLT script from  {}", uri);
         final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
         final CollectingErrorEventHandler listener = new CollectingErrorEventHandler();
         try {
             xsltCompiler.setErrorListener(listener);
-            xsltCompiler.setURIResolver(new RelativeUriResolver(repository));
+            xsltCompiler.setURIResolver(new RelativeUriResolver(this.repository));
 
             return xsltCompiler.compile(resolve(uri));
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             listener.getErrors().forEach(event -> event.log(log));
             throw new IllegalStateException("Can not compile xslt executable for uri " + uri, e);
         } finally {
@@ -111,9 +116,13 @@ public class ContentRepository {
      * @param url die url
      * @return das erzeugte Schema
      */
-    public Schema createSchema(URL url) {
+    public static Schema createSchema(final URL url) {
+        return createSchema(url, null);
+    }
+
+    public static Schema createSchema(final URL url, final LSResourceResolver resourceResolver) {
         log.info("Load schema from source {}", url.getPath());
-        return createSchema(new Source[] { resolve(url) });
+        return createSchema(new Source[] { resolve(url) }, resourceResolver);
     }
 
     /**
@@ -121,7 +130,7 @@ public class ContentRepository {
      *
      * @return Scenario-Schema
      */
-    public Schema getScenarioSchema() {
+    public static Schema getScenarioSchema() {
         return createSchema(ContentRepository.class.getResource("/xsd/scenarios.xsd"));
     }
 
@@ -131,11 +140,11 @@ public class ContentRepository {
      * @return ReportInput-Schema
      */
     public Schema getReportInputSchema() {
-        if (reportInputSchema == null) {
+        if (this.reportInputSchema == null) {
             final Source source = resolve(ContentRepository.class.getResource("/xsd/createReportInput.xsd"));
-            reportInputSchema = createSchema(new Source[] { source }, new ClassPathResourceResolver("/xsd"));
+            this.reportInputSchema = createSchema(new Source[] { source }, new ClassPathResourceResolver("/xsd"));
         }
-        return reportInputSchema;
+        return this.reportInputSchema;
     }
 
     /**
@@ -144,12 +153,13 @@ public class ContentRepository {
      * @param uris die uris in String-Repräsentation
      * @return das Schema
      */
-    public Schema createSchema(Collection<String> uris) {
+    public Schema createSchema(final Collection<String> uris) {
         return createSchema(uris.stream().map(s -> resolve(URI.create(s))).toArray(Source[]::new));
     }
 
-    private Source resolve(URI source) {
-        return new StreamSource(repository.resolve(source).toASCIIString());
+    private Source resolve(final URI source) {
+        final URI resolved = RelativeUriResolver.resolve(source, this.repository);
+        return new StreamSource(resolved.toASCIIString());
     }
 
     /**
@@ -159,17 +169,37 @@ public class ContentRepository {
      * @param namespaces optionale Namespace-Mappings
      * @return ein kompiliertes Executable
      */
-    public XPathExecutable createXPath(String expression, Map<String, String> namespaces) {
+    public XPathExecutable createXPath(final String expression, final Map<String, String> namespaces) {
         try {
             final XPathCompiler compiler = getProcessor().newXPathCompiler();
             if (namespaces != null) {
-                namespaces.entrySet().forEach(n -> compiler.declareNamespace(n.getKey(), n.getValue()));
+                namespaces.forEach(compiler::declareNamespace);
             }
             return compiler.compile(expression);
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             throw new IllegalStateException(String.format("Can not compile xpath match expression '%s'",
                     StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION"), e);
         }
+    }
+
+    /**
+     * Zeigt an, ob diese URI in ein JAR zeigt.
+     *
+     * @param uri der URI
+     * @return true wenn innerhalb eines JARs
+     */
+    public static boolean isJarResource(final URI uri) {
+        return isJarResource(uri.toString());
+    }
+
+    /**
+     * Zeigt an, ob dieser Pfad in ein JAR zeigt.
+     *
+     * @param path der Pfad (URI-Format)
+     * @return true wenn innerhalb eines JARs
+     */
+    public static boolean isJarResource(final String path) {
+        return StringUtils.startsWithIgnoreCase(path, "jar:") && path.split("!").length == 2;
     }
 
 }

@@ -42,38 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class ClassPathResourceResolver implements LSResourceResolver {
 
-    private final URI base;
-
-    /**
-     * Instantiiert einen neuen resolver mit angegebenen Basispfad
-     * 
-     * @param basePath der Basispfad
-     */
-    public ClassPathResourceResolver(String basePath) {
-        if (!StringUtils.startsWith(basePath, "/")) {
-            throw new IllegalArgumentException("Base path must start with a slash");
-        }
-        base = URI.create(basePath + (basePath.endsWith("/") == basePath.length() > 1 ? "" : "/"));
-    }
-
-    @Override
-    public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
-        final URL resource = ClassPathResourceResolver.class.getResource(base.resolve(systemId).toASCIIString());
-        if (resource != null) {
-            try {
-                InputStream in = resource.openStream();
-                final LSInputImpl input = new LSInputImpl(publicId, systemId, baseURI);
-                input.setByteStream(in);
-                return input;
-
-            } catch (IOException e) {
-                log.error("Error loading schema resource from {}", resource, e);
-            }
-        }
-        // not found
-        return null;
-    }
-
     /**
      * Simple {@link LSInput}-Implementierung, die einen Stream liefern kann
      */
@@ -100,11 +68,12 @@ class ClassPathResourceResolver implements LSResourceResolver {
 
         /**
          * Instantiierung einer neue Instanz.
+         * 
          * @param publicId die publicId
          * @param systemId die systemId
          * @param baseURI die baseURI
          */
-        public LSInputImpl(String publicId, String systemId, String baseURI) {
+        public LSInputImpl(final String publicId, final String systemId, final String baseURI) {
             this.publicId = publicId;
             this.systemId = systemId;
             this.baseURI = baseURI;
@@ -112,7 +81,48 @@ class ClassPathResourceResolver implements LSResourceResolver {
 
         @Override
         public boolean getCertifiedText() {
-            return certifiedText;
+            return this.certifiedText;
         }
     }
+
+    private final URI base;
+
+    /**
+     * Instantiiert einen neuen resolver mit angegebenen Basispfad
+     *
+     * @param basePath der Basispfad
+     */
+    public ClassPathResourceResolver(final String basePath) {
+        if (!StringUtils.startsWith(basePath, "/")) {
+            throw new IllegalArgumentException("Base path must start with a slash");
+        }
+        this.base = URI.create(basePath + (basePath.endsWith("/") == basePath.length() > 1 ? "" : "/"));
+    }
+
+    public ClassPathResourceResolver(final URI jarUri) {
+        this.base = jarUri;
+    }
+
+    @Override
+    public LSInput resolveResource(final String type, final String namespaceURI, final String publicId, final String systemId,
+            final String baseURI) {
+
+        final URI resolved = RelativeUriResolver.resolve(URI.create(systemId), this.base);
+        if (resolved != null) {
+            try {
+                final URL resource = resolved.isAbsolute() ? resolved.toURL()
+                        : ClassPathResourceResolver.class.getResource(resolved.toASCIIString());
+                final InputStream in = resource.openStream();
+                final LSInputImpl input = new LSInputImpl(publicId, systemId, resolved.toASCIIString());
+                input.setByteStream(in);
+                return input;
+
+            } catch (final IOException e) {
+                log.error("Error loading schema resource from {}", resolved, e);
+            }
+        }
+        // not found
+        return null;
+    }
+
 }

@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Before;
@@ -31,6 +32,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
@@ -57,46 +59,57 @@ public class ScenarioRepositoryTest {
 
     @Before
     public void setup() {
-        content = new ContentRepository(ObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI());
-        Scenarios def = new Scenarios();
-        ScenarioType t = new ScenarioType();
+        this.content = new ContentRepository(ObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI());
+        final Scenarios def = new Scenarios();
+        final ScenarioType t = new ScenarioType();
         t.setMatch("//*:name");
         t.setName("Test");
-        t.initialize(content, true);
+        t.initialize(this.content, true);
         def.getScenario().add(t);
-        repository = new ScenarioRepository(ObjectFactory.createProcessor(), content);
-        repository.initialize(def);
+        this.repository = new ScenarioRepository(ObjectFactory.createProcessor(), this.content);
+        this.repository.initialize(def);
     }
 
     @Test
     public void testHappyCase() throws Exception {
-        final Result<ScenarioType, String> scenario = repository.selectScenario(load(SAMPLE));
+        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(SAMPLE));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isTrue();
     }
 
     @Test
     public void testNonMatch() throws Exception {
-        repository.getScenarios().getScenario().clear();
-        final Result<ScenarioType, String> scenario = repository.selectScenario(load(SAMPLE));
+        this.repository.getScenarios().getScenario().clear();
+        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(SAMPLE));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
     }
 
     @Test
     public void testMultiMatch() throws Exception {
-        ScenarioType t = new ScenarioType();
+        final ScenarioType t = new ScenarioType();
         t.setMatch("//*:name");
         t.setName("Test");
-        t.initialize(content, true);
-        repository.getScenarios().getScenario().add(t);
-        final Result<ScenarioType, String> scenario = repository.selectScenario(load(SAMPLE));
+        t.initialize(this.content, true);
+        this.repository.getScenarios().getScenario().add(t);
+        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(SAMPLE));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
     }
 
-    private XdmNode load(URL url) throws IOException {
-        DocumentParseAction p = new DocumentParseAction();
+    private static XdmNode load(final URL url) throws IOException {
+        final DocumentParseAction p = new DocumentParseAction();
         return p.parseDocument(read(url)).getObject();
     }
+
+    @Test
+    public void loadFromJar() throws URISyntaxException {
+        this.content = new ContentRepository(ObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
+        this.repository = new ScenarioRepository(ObjectFactory.createProcessor(), this.content);
+        final CheckConfiguration conf = new CheckConfiguration(
+                ScenarioRepository.class.getClassLoader().getResource("xrechnung/scenarios.xml").toURI());
+        this.repository.initialize(conf);
+        assertThat(this.repository.getScenarios()).isNotNull();
+    }
+
 }

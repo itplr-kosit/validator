@@ -73,7 +73,7 @@ public class ScenarioRepository {
     @Getter
     private Scenarios scenarios;
 
-    private static boolean isSupportedDocument(XdmNode doc) {
+    private static boolean isSupportedDocument(final XdmNode doc) {
         final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
         return startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
@@ -91,8 +91,8 @@ public class ScenarioRepository {
         throw new IllegalArgumentException("Kein root element gefunden");
     }
 
-    private static void checkVersion(URI scenarioDefinition) {
-        DocumentParseAction p = new DocumentParseAction();
+    private static void checkVersion(final URI scenarioDefinition) {
+        final DocumentParseAction p = new DocumentParseAction();
         try {
             final Result<XdmNode, XMLSyntaxError> result = p.parseDocument(InputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
@@ -101,16 +101,17 @@ public class ScenarioRepository {
                         scenarioDefinition, SUPPORTED_MAJOR_VERSION_SCHEMA));
 
             }
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             throw new IllegalStateException("Error reading definition file");
         }
     }
 
     public XsltExecutable getNoScenarioReport() {
-        if (noScenarioReport == null) {
-            noScenarioReport = repository.loadXsltScript(URI.create(scenarios.getNoScenarioReport().getResource().getLocation()));
+        if (this.noScenarioReport == null) {
+            this.noScenarioReport = this.repository
+                    .loadXsltScript(URI.create(this.scenarios.getNoScenarioReport().getResource().getLocation()));
         }
-        return noScenarioReport;
+        return this.noScenarioReport;
     }
 
     /**
@@ -118,18 +119,18 @@ public class ScenarioRepository {
      *
      * @param config die Konfiguration
      */
-    public void initialize(CheckConfiguration config) {
-        ConversionService conversionService = new ConversionService();
+    public void initialize(final CheckConfiguration config) {
+        final ConversionService conversionService = new ConversionService();
         checkVersion(config.getScenarioDefinition());
         log.info("Loading scenarios from {}", config.getScenarioDefinition());
-        CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        this.scenarios = conversionService.readXml(config.getScenarioDefinition(), Scenarios.class, repository.getScenarioSchema(),
+        final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
+        this.scenarios = conversionService.readXml(config.getScenarioDefinition(), Scenarios.class, ContentRepository.getScenarioSchema(),
                 handler);
         if (!handler.hasErrors()) {
-            log.info("Loaded scenarios for {} by {} from {}. The following scenarios are available:\n\n{}", scenarios.getName(),
-                    scenarios.getAuthor(), scenarios.getDate(), summarizeScenarios());
+            log.info("Loaded scenarios for {} by {} from {}. The following scenarios are available:\n\n{}", this.scenarios.getName(),
+                    this.scenarios.getAuthor(), this.scenarios.getDate(), summarizeScenarios());
             log.info("Loading scenario content from {}", config.getScenarioRepository());
-            getScenarios().getScenario().forEach(s -> s.initialize(repository, false));
+            getScenarios().getScenario().forEach(s -> s.initialize(this.repository, false));
         } else {
             throw new IllegalStateException(String.format("Can not load scenarios from %s due to %s", config.getScenarioDefinition(),
                     handler.getErrorDescription()));
@@ -140,8 +141,8 @@ public class ScenarioRepository {
     }
 
     private String summarizeScenarios() {
-        StringBuilder b = new StringBuilder();
-        scenarios.getScenario().forEach(s -> {
+        final StringBuilder b = new StringBuilder();
+        this.scenarios.getScenario().forEach(s -> {
             b.append(s.getName());
             b.append("\n");
         });
@@ -154,9 +155,10 @@ public class ScenarioRepository {
      * @param document das Eingabedokument
      * @return ein Ergebnis-Objekt zur weiteren Verarbeitung
      */
-    public Result<ScenarioType, String> selectScenario(XdmNode document) {
+    public Result<ScenarioType, String> selectScenario(final XdmNode document) {
         Result<ScenarioType, String> result = new Result<>();
-        final List<ScenarioType> collect = scenarios.getScenario().stream().filter(s -> match(document, s)).collect(Collectors.toList());
+        final List<ScenarioType> collect = this.scenarios.getScenario().stream().filter(s -> match(document, s))
+                .collect(Collectors.toList());
         if (collect.size() == 1) {
             result = new Result<>(collect.get(0));
         } else if (collect.isEmpty()) {
@@ -168,19 +170,19 @@ public class ScenarioRepository {
 
     }
 
-    private boolean match(XdmNode document, ScenarioType scenario) {
+    private static boolean match(final XdmNode document, final ScenarioType scenario) {
         try {
             final XPathSelector selector = scenario.getSelector();
             selector.setContextItem(document);
             return selector.effectiveBooleanValue();
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             log.error("Error evaluating xpath expression", e);
         }
         return false;
 
     }
 
-    void initialize(Scenarios def) {
+    void initialize(final Scenarios def) {
         this.scenarios = def;
     }
 }

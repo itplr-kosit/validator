@@ -25,7 +25,6 @@ import java.io.Reader;
 import java.net.URI;
 
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
@@ -48,38 +47,49 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
     private final URI baseUri;
 
     @Override
-    public Source resolve(final String href, final String base) throws TransformerException {
-        final URI resolved = URI.create(base).resolve(href);
+    public Source resolve(final String href, final String base) {
+        final URI resolved = resolve(URI.create(href), URI.create(base));
         if (isUnderBaseUri(resolved)) {
             try {
-                return new StreamSource(resolved.toURL().openStream());
+                return new StreamSource(resolved.toURL().openStream(), resolved.toASCIIString());
             } catch (final IOException e) {
 
                 throw new IllegalStateException(String.format("Can not resolve required  %s", href), e);
             }
         } else {
-            throw new IllegalStateException(
-                    String.format("The resolved transformation artifact %s is not within the configured repository %s", resolved, baseUri));
+            throw new IllegalStateException(String
+                    .format("The resolved transformation artifact %s is not within the configured repository %s", resolved, this.baseUri));
         }
     }
 
-    private boolean isUnderBaseUri(URI resolved) {
-        String base = baseUri.toASCIIString().replaceAll("file:/+", "");
-        String r = resolved.toASCIIString().replaceAll("file:/+", "");
+    static URI resolve(final URI href, final URI base) {
+        final boolean jarURI = isJarURI(base);
+        final URI tmpBase = jarURI ? URI.create(base.toASCIIString().substring(4)) : base;
+        final URI result = tmpBase.resolve(href);
+        return jarURI ? URI.create("jar:" + result.toString()) : result;
+    }
+
+    static boolean isJarURI(final URI uri) {
+        return uri.isOpaque() && uri.getScheme().equals("jar");
+    }
+
+    private boolean isUnderBaseUri(final URI resolved) {
+        final String base = this.baseUri.toASCIIString().replaceAll("file:/+", "");
+        final String r = resolved.toASCIIString().replaceAll("file:/+", "");
         return r.startsWith(base);
     }
 
     @Override
-    public Reader resolve(URI absoluteURI, String encoding, Configuration config) throws XPathException {
+    public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
         if (isUnderBaseUri(absoluteURI)) {
             try {
                 return new InputStreamReader(absoluteURI.toURL().openStream(), encoding);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new IllegalStateException(String.format("Can not resolve required  %s", absoluteURI), e);
             }
         } else {
-            throw new IllegalStateException(
-                    String.format("The resolved transformation artifact %s is not within the configured repository %s", absoluteURI, baseUri));
+            throw new IllegalStateException(String.format(
+                    "The resolved transformation artifact %s is not within the configured repository %s", absoluteURI, this.baseUri));
         }
     }
 }

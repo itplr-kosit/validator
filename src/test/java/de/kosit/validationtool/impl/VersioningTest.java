@@ -21,7 +21,6 @@ package de.kosit.validationtool.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -52,35 +51,33 @@ public class VersioningTest {
 
     private ConversionService service;
 
-    private ContentRepository repository;
 
     @Before
     public void setup() {
-        service = new ConversionService();
-        repository = new ContentRepository(ObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI());
+        this.service = new ConversionService();
     }
 
     @Test
     public void testBase() throws URISyntaxException {
-        final Scenarios result = service.readXml(BASE.toURI(), Scenarios.class, repository.getScenarioSchema());
+        final Scenarios result = this.service.readXml(BASE.toURI(), Scenarios.class, ContentRepository.getScenarioSchema());
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testFrameworkIncrement() throws URISyntaxException {
-        final Scenarios result = service.readXml(INCREMENT.toURI(), Scenarios.class, repository.getScenarioSchema());
+        final Scenarios result = this.service.readXml(INCREMENT.toURI(), Scenarios.class, ContentRepository.getScenarioSchema());
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testNewFeature() throws URISyntaxException {
-        exception.expect(ConversionService.ConversionExeption.class);
-        service.readXml(NEW_FEATURE.toURI(), Scenarios.class, repository.getScenarioSchema());
+        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, ContentRepository.getScenarioSchema());
     }
 
     @Test
     public void testNewVersion() throws URISyntaxException {
-        exception.expect(ConversionService.ConversionExeption.class);
-        service.readXml(NEW_VERSION.toURI(), Scenarios.class, repository.getScenarioSchema());
+        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, ContentRepository.getScenarioSchema());
     }
 }

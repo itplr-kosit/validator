@@ -57,65 +57,66 @@ public class ConversionServiceTest {
 
     @Before
     public void setup() {
-        service = new ConversionService();
-        repository = new ContentRepository(ObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI());
+        this.service = new ConversionService();
+        this.repository = new ContentRepository(ObjectFactory.createProcessor(),
+                new File("src/test/resources/examples/repository").toURI());
     }
 
     @Test
     public void testMarshalNull() {
-        exception.expect(ConversionService.ConversionExeption.class);
-        service.writeXml(null);
+        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.service.writeXml(null);
     }
 
     @Test
     public void testMarshalUnknown() {
-        exception.expect(ConversionService.ConversionExeption.class);
-        service.writeXml(new Serializable() {
+        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.service.writeXml(new Serializable() {
         });
     }
 
     @Test
     public void testUnmarshal() throws URISyntaxException {
-        final Scenarios s = service.readXml(VALID_XML.toURI(), Scenarios.class);
+        final Scenarios s = this.service.readXml(VALID_XML.toURI(), Scenarios.class);
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("XInneres");
     }
 
     @Test
     public void testUnmarshalWithSchema() throws URISyntaxException {
-        final Scenarios s = service.readXml(VALID_XML.toURI(), Scenarios.class, repository.createSchema(SCHEMA));
+        final Scenarios s = this.service.readXml(VALID_XML.toURI(), Scenarios.class, ContentRepository.createSchema(SCHEMA));
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("XInneres");
     }
 
     @Test
     public void testUnmarshalInvalidXml() throws URISyntaxException {
-        exception.expect(ConversionService.ConversionExeption.class);
-        service.readXml(INVALID_XML.toURI(), Scenarios.class, repository.createSchema(SCHEMA));
+        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.service.readXml(INVALID_XML.toURI(), Scenarios.class, ContentRepository.createSchema(SCHEMA));
     }
 
     @Test
     public void testUnmarshalIllFormed() throws URISyntaxException {
-        exception.expect(ConversionService.ConversionExeption.class);
-        service.readXml(ILLFORMED_XML.toURI(), Scenarios.class, repository.createSchema(SCHEMA));
+        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.service.readXml(ILLFORMED_XML.toURI(), Scenarios.class, ContentRepository.createSchema(SCHEMA));
     }
 
     @Test
     public void testUnmarshalEmpty() {
-        exception.expect(ConversionService.ConversionExeption.class);
-        service.readXml(null, Scenarios.class);
+        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.service.readXml(null, Scenarios.class);
     }
 
     @Test
     public void testUnmarshalUnknownType() throws URISyntaxException {
-        exception.expect(ConversionService.ConversionExeption.class);
-        service.readXml(VALID_XML.toURI(), ConversionService.class);
+        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.service.readXml(VALID_XML.toURI(), ConversionService.class);
     }
 
     @Test
     public void testUnmarshalWithoutType() throws URISyntaxException {
-        exception.expect(ConversionService.ConversionExeption.class);
-        service.readXml(VALID_XML.toURI(), null);
+        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.service.readXml(VALID_XML.toURI(), null);
     }
 
 }
