@@ -33,6 +33,7 @@ import de.kosit.validationtool.impl.tasks.CreateReportAction;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.tasks.ScenarioSelectionAction;
 import de.kosit.validationtool.impl.tasks.SchemaValidationAction;
+import de.kosit.validationtool.impl.tasks.SchematronValidationAction;
 import de.kosit.validationtool.impl.tasks.ValidateReportInputAction;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
@@ -56,40 +57,42 @@ public class DefaultCheck implements Check {
     private static final String ENGINE_VERSION = "1.0.0";
 
     @Getter
-    private ScenarioRepository repository;
+    private final ScenarioRepository repository;
 
     @Getter
-    private ContentRepository contentRepository;
+    private final ContentRepository contentRepository;
 
-    private ConversionService conversionService;
+    private final ConversionService conversionService;
 
 
     @Getter
-    private List<CheckAction> checkSteps;
+    private final List<CheckAction> checkSteps;
 
     /**
      * Erzeugt eine neue Instanz mit der angegebenen Konfiguration.
      *
      * @param configuration die Konfiguration
      */
-    public DefaultCheck(CheckConfiguration configuration) {
-        Processor processor = ObjectFactory.createProcessor();
-        conversionService = new ConversionService();
-        contentRepository = new ContentRepository(processor, configuration.getScenarioRepository());
-        repository = new ScenarioRepository(processor, contentRepository);
-        repository.initialize(configuration);
-        checkSteps = new ArrayList<>();
-        checkSteps.add(this::createDocumentIdentification);
-        checkSteps.add(new DocumentParseAction());
-        checkSteps.add(new ScenarioSelectionAction(repository));
-        checkSteps.add(new SchemaValidationAction());
-        checkSteps.add(new ValidateReportInputAction(conversionService, contentRepository.getReportInputSchema()));
-        checkSteps.add(new CreateReportAction(processor, conversionService, repository, configuration.getScenarioRepository()));
+    public DefaultCheck(final CheckConfiguration configuration) {
+        final Processor processor = ObjectFactory.createProcessor();
+        this.conversionService = new ConversionService();
+        this.contentRepository = new ContentRepository(processor, configuration.getScenarioRepository());
+        this.repository = new ScenarioRepository(processor, this.contentRepository);
+        this.repository.initialize(configuration);
+        this.checkSteps = new ArrayList<>();
+        this.checkSteps.add(DefaultCheck::createDocumentIdentification);
+        this.checkSteps.add(new DocumentParseAction());
+        this.checkSteps.add(new ScenarioSelectionAction(this.repository));
+        this.checkSteps.add(new SchemaValidationAction());
+        this.checkSteps.add(new SchematronValidationAction(configuration.getScenarioRepository()));
+        this.checkSteps.add(new ValidateReportInputAction(this.conversionService, this.contentRepository.getReportInputSchema()));
+        this.checkSteps
+                .add(new CreateReportAction(processor, this.conversionService, this.repository, configuration.getScenarioRepository()));
     }
 
     protected static CreateReportInput createReport() {
-        CreateReportInput type = new CreateReportInput();
-        EngineType e = new EngineType();
+        final CreateReportInput type = new CreateReportInput();
+        final EngineType e = new EngineType();
         e.setName(ENGINE_NAME);
         type.setEngine(e);
         type.setTimestamp(ObjectFactory.createTimestamp());
@@ -98,16 +101,16 @@ public class DefaultCheck implements Check {
     }
 
     @Override
-    public XdmNode checkInput(Input input) {
-        CheckAction.Bag t = new CheckAction.Bag(input, createReport());
+    public XdmNode checkInput(final Input input) {
+        final CheckAction.Bag t = new CheckAction.Bag(input, createReport());
         return runCheckInternal(t);
     }
 
-    protected XdmNode runCheckInternal(CheckAction.Bag t) {
-        long started = System.currentTimeMillis();
+    protected XdmNode runCheckInternal(final CheckAction.Bag t) {
+        final long started = System.currentTimeMillis();
         log.info("Checking content of {}", t.getInput().getName());
-        for (final CheckAction action : checkSteps) {
-            long start = System.currentTimeMillis();
+        for (final CheckAction action : this.checkSteps) {
+            final long start = System.currentTimeMillis();
             if (!action.isSkipped(t)) {
                 action.check(t);
             }
@@ -124,9 +127,9 @@ public class DefaultCheck implements Check {
         return t.getReport();
     }
 
-    private boolean createDocumentIdentification(CheckAction.Bag transporter) {
-        DocumentIdentificationType i = new DocumentIdentificationType();
-        DocumentIdentificationType.DocumentHash h = new DocumentIdentificationType.DocumentHash();
+    private static boolean createDocumentIdentification(final CheckAction.Bag transporter) {
+        final DocumentIdentificationType i = new DocumentIdentificationType();
+        final DocumentIdentificationType.DocumentHash h = new DocumentIdentificationType.DocumentHash();
         h.setHashAlgorithm(transporter.getInput().getDigestAlgorithm());
         h.setHashValue(transporter.getInput().getHashCode());
         i.setDocumentHash(h);
