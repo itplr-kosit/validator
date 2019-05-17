@@ -40,9 +40,12 @@ public interface Result {
      * wurden.
      */
     List<XmlError> getSchemaViolations();
+    
 
     // TODO scheitert momentan daran, das intern kein svlr o.ä. zur Verfügung steht
     // List<XmlError> getSchematronResult();
+    
+    
     /**
      * Extrahiert evtl. vorhandenes HTML aus dem Report und stellt diese als {@link XdmNode}-Objekt zur Verfügung.
      * 
