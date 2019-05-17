@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Enhanced API-Usage e.g. return Result object with processing information
 - Support loading scenarios and content from a JAR-File
 - Simple Daemon-Mode exposing validation functionality via http
 
