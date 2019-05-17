@@ -68,7 +68,7 @@
     <xs:complexType name="XMLSyntaxError">
         <xs:sequence>
             <xs:element name="message" type="xs:normalizedString"/>
-            <xs:element name="severity" type="in:XMLSyntaxErrorSeverity"/>
+            <xs:element name="getSeverityCode" type="in:XMLSyntaxErrorSeverity" />
             <xs:element name="rowNumber" type="xs:int" minOccurs="0"/>
             <xs:element name="columnNumber" type="xs:int" minOccurs="0"/>
         </xs:sequence>

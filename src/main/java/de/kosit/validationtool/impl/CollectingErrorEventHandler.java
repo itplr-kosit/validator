@@ -51,26 +51,26 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static final int DEFAULT_ABORT_COUNT = 50;
 
-    private Collection<XMLSyntaxError> errors = new ArrayList<>();
+    private final Collection<XMLSyntaxError> errors = new ArrayList<>();
 
-    private int stopProcessCount = DEFAULT_ABORT_COUNT;
+    private final int stopProcessCount = DEFAULT_ABORT_COUNT;
 
-    private static XMLSyntaxError createError(XMLSyntaxErrorSeverity severity, String message) {
-        XMLSyntaxError e = new XMLSyntaxError();
+    private static XMLSyntaxError createError(final XMLSyntaxErrorSeverity severity, final String message) {
+        final XMLSyntaxError e = new XMLSyntaxError();
         e.setSeverity(severity);
         e.setMessage(message);
         return e;
     }
 
-    private static XMLSyntaxError createError(XMLSyntaxErrorSeverity severity, SAXParseException exception) {
-        XMLSyntaxError e = createError(severity, exception.getMessage());
+    private static XMLSyntaxError createError(final XMLSyntaxErrorSeverity severity, final SAXParseException exception) {
+        final XMLSyntaxError e = createError(severity, exception.getMessage());
         e.setRowNumber(exception.getLineNumber());
         e.setColumnNumber(exception.getColumnNumber());
         return e;
     }
 
-    private static XMLSyntaxError createError(XMLSyntaxErrorSeverity severity, TransformerException exception) {
-        XMLSyntaxError e = createError(severity, exception.getMessage());
+    private static XMLSyntaxError createError(final XMLSyntaxErrorSeverity severity, final TransformerException exception) {
+        final XMLSyntaxError e = createError(severity, exception.getMessage());
         if (exception.getLocator() != null) {
             e.setRowNumber(exception.getLocator().getLineNumber());
             e.setColumnNumber(exception.getLocator().getColumnNumber());
@@ -78,7 +78,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         return e;
     }
 
-    private static XMLSyntaxErrorSeverity translateSeverity(int severity) {
+    private static XMLSyntaxErrorSeverity translateSeverity(final int severity) {
         switch (severity) {
             case ValidationEvent.WARNING:
                 return XMLSyntaxErrorSeverity.SEVERITY_WARNING;
@@ -92,12 +92,12 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     @Override
-    public boolean handleEvent(ValidationEvent event) {
-        XMLSyntaxError e = createError(translateSeverity(event.getSeverity()), event.getMessage());
+    public boolean handleEvent(final ValidationEvent event) {
+        final XMLSyntaxError e = createError(translateSeverity(event.getSeverity()), event.getMessage());
         e.setColumnNumber(event.getLocator().getColumnNumber());
         e.setRowNumber(event.getLocator().getLineNumber());
-        errors.add(e);
-        return stopProcessCount != errors.size();
+        this.errors.add(e);
+        return this.stopProcessCount != this.errors.size();
     }
 
     /**
@@ -106,7 +106,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
      * @return true wenn mindestens ein Fehler vorhanden ist.
      */
     public boolean hasErrors() {
-        return hasEvents() && errors.stream().anyMatch(e -> e.getSeverity() != XMLSyntaxErrorSeverity.SEVERITY_WARNING);
+        return hasEvents() && this.errors.stream().anyMatch(e -> e.getSeverityCode() != XMLSyntaxErrorSeverity.SEVERITY_WARNING);
     }
 
     /**
@@ -115,27 +115,27 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
      * @return true wenn mindestens ein Validierungsereignis aufgetreten ist
      */
     public boolean hasEvents() {
-        return !errors.isEmpty();
+        return !this.errors.isEmpty();
     }
 
     @Override
-    public void warning(SAXParseException exception) throws SAXException {
-        errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_WARNING, exception));
+    public void warning(final SAXParseException exception) throws SAXException {
+        this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_WARNING, exception));
     }
 
     @Override
-    public void error(SAXParseException exception) throws SAXException {
-        errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_ERROR, exception));
+    public void error(final SAXParseException exception) throws SAXException {
+        this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_ERROR, exception));
     }
 
     @Override
-    public void fatalError(SAXParseException exception) throws SAXException {
-        errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR, exception));
+    public void fatalError(final SAXParseException exception) throws SAXException {
+        this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR, exception));
     }
 
     @Override
-    public void message(XdmNode content, boolean terminate, SourceLocator locator) {
-        XMLSyntaxError e = new XMLSyntaxError();
+    public void message(final XdmNode content, final boolean terminate, final SourceLocator locator) {
+        final XMLSyntaxError e = new XMLSyntaxError();
         if (locator != null) {
             e.setColumnNumber(locator.getColumnNumber());
             e.setRowNumber(locator.getLineNumber());
@@ -145,24 +145,25 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     @Override
-    public void warning(TransformerException exception) throws TransformerException {
-        errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_WARNING, exception));
+    public void warning(final TransformerException exception) throws TransformerException {
+        this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_WARNING, exception));
     }
 
     @Override
-    public void error(TransformerException exception) throws TransformerException {
-        errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_ERROR, exception));
+    public void error(final TransformerException exception) throws TransformerException {
+        this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_ERROR, exception));
     }
 
     @Override
-    public void fatalError(TransformerException exception) throws TransformerException {
-        errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR, exception));
+    public void fatalError(final TransformerException exception) throws TransformerException {
+        this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR, exception));
     }
 
     public String getErrorDescription() {
         final StringJoiner joiner = new StringJoiner("\n");
-        errors.forEach(e -> joiner
-                .add(e.getSeverity().value() + " " + e.getMessage() + " At row " + e.getRowNumber() + " at pos " + e.getColumnNumber()));
+        this.errors.forEach(e -> joiner
+                .add(e.getSeverityCode().value() + " " + e.getMessage() + " At row " + e.getRowNumber() + " at pos "
+                        + e.getColumnNumber()));
         return joiner.toString();
     }
 }

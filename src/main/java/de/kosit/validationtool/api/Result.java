@@ -1,11 +1,9 @@
 package de.kosit.validationtool.api;
 
+import java.util.List;
+
 import org.w3c.dom.Document;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -13,32 +11,33 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-@Getter
-@RequiredArgsConstructor
-public class Result {
+
+public interface Result {
 
     /** Der generierte Report. */
-    private final XdmNode report;
+    XdmNode getReport();
 
     /** Das evaluierte Ergebnis. */
-    private final AcceptRecommendation acceptRecommendation;
+    AcceptRecommendation getAcceptRecommendation();
 
     /**
      * Gibt den Report als W3C-{@link Document} zurück.
      * 
      * @return der Report
      */
-    public Document getReportDocument() {
-        return (Document) NodeOverNodeInfo.wrap(getReport().getUnderlyingNode());
-    }
+    Document getReportDocument();
 
     /**
      * Schnellzugriff auf die Empfehlung zur Weiterverarbeitung des Dokuments.
      * 
      * @return true wenn {@link AcceptRecommendation#ACCEPTABLE}
      */
-    public boolean isAcceptable() {
-        return AcceptRecommendation.ACCEPTABLE.equals(acceptRecommendation);
-    }
+    boolean isAcceptable();
+
+    /**
+     * Gibt eine Liste mit gefundenen Schema-Validation-Fehler zurück. Diese Liste ist leer, wenn keine Fehler gefunden
+     * wurden.
+     */
+    List<XmlError> getSchemaViolations();
 
 }

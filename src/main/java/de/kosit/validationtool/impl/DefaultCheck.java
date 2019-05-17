@@ -20,6 +20,7 @@
 package de.kosit.validationtool.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import lombok.Getter;
@@ -29,7 +30,9 @@ import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.Result;
+import de.kosit.validationtool.api.XmlError;
 import de.kosit.validationtool.impl.tasks.CheckAction;
+import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 import de.kosit.validationtool.impl.tasks.ComputeAcceptanceAction;
 import de.kosit.validationtool.impl.tasks.CreateReportAction;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
@@ -41,6 +44,7 @@ import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
 import de.kosit.validationtool.model.reportInput.EngineType;
 import de.kosit.validationtool.model.reportInput.ProcessingError;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -125,7 +129,20 @@ public class DefaultCheck implements Check {
         }
         t.setFinished(true);
         log.info("Finished check of {} in {}ms\n", t.getInput().getName(), System.currentTimeMillis() - started);
-        return new Result(t.getReport(), t.getAcceptStatus());
+        return createResult(t);
+    }
+
+    private Result createResult(final Bag t) {
+        final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), this.contentRepository);
+        if (t.getSchemaValidationResult() != null) {
+            result.setSchemaViolations(convertErrors(t.getSchemaValidationResult().getErrors()));
+        }
+        return result;
+    }
+
+    private static List<XmlError> convertErrors(final Collection<XMLSyntaxError> errors) {
+        // noinspection unchecked
+        return (List<XmlError>) (List<?>) errors;
     }
 
     private static void createDocumentIdentification(final CheckAction.Bag transporter) {

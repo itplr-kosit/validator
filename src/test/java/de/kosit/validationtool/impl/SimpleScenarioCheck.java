@@ -42,6 +42,7 @@ public class SimpleScenarioCheck {
         final Result result = this.implementation.checkInput(InputFactory.read(Simple.INVALID.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.getSchemaViolations()).isNotEmpty();
     }
 
     @Test

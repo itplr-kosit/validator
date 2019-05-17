@@ -20,20 +20,17 @@
 package de.kosit.validationtool.cmd;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.ContentRepository;
+import de.kosit.validationtool.impl.HtmlExtraction;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
-import net.sf.saxon.s9api.XPathExecutable;
-import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 
@@ -48,49 +45,38 @@ class ExtractHtmlContentAction implements CheckAction {
 
     private static final QName NAME_ATTRIBUTE = new QName("data-report-type");
 
-    private final ContentRepository repository;
-
     private final Path outputDirectory;
 
-    private XPathExecutable executable;
+    private HtmlExtraction htmlExtraction;
 
-    @Override
-    public void check(Bag results) {
-        try {
-            final XPathSelector selector = getSelector();
-            final XdmNode xdmSource = results.getReport();
-            selector.setContextItem(xdmSource);
-            selector.forEach(m -> print(results.getName(), m));
+    private ContentRepository repository;
 
-        } catch (SaxonApiException e) {
-            throw new IllegalStateException("Can not extract html content", e);
-        }
+    public ExtractHtmlContentAction(final ContentRepository repository, final Path outputDirectory) {
+        this.outputDirectory = outputDirectory;
+        this.htmlExtraction = new HtmlExtraction(repository);
+        this.repository = repository;
     }
 
-    private void print(String origName, XdmItem xdmItem) {
-        XdmNode node = (XdmNode) xdmItem;
+    @Override
+    public void check(final Bag results) {
+        this.htmlExtraction.extract(results.getReport()).forEach(i -> print(results.getName(), i));
+    }
+
+    private void print(final String origName, final XdmItem xdmItem) {
+        final XdmNode node = (XdmNode) xdmItem;
         final String name = origName + "-" + node.getAttributeValue(NAME_ATTRIBUTE);
-        final Path file = outputDirectory.resolve(name + ".html");
-        final Serializer serializer = repository.getProcessor().newSerializer(file.toFile());
+        final Path file = this.outputDirectory.resolve(name + ".html");
+        final Serializer serializer = this.repository.getProcessor().newSerializer(file.toFile());
         try {
             log.info("Writing report html '{}' to {}", name, file.toAbsolutePath());
             serializer.serializeNode(node);
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             log.info("Error extracting html content to {}", file.toAbsolutePath(), e);
         }
     }
 
-    private XPathSelector getSelector() {
-        if (executable == null) {
-            Map<String, String> ns = new HashMap<>();
-            ns.put("html", "http://www.w3.org/1999/xhtml");
-            executable = repository.createXPath("//html:html", ns);
-        }
-        return executable.load();
-    }
-
     @Override
-    public boolean isSkipped(Bag results) {
+    public boolean isSkipped(final Bag results) {
         if (results.getReport() == null) {
             log.warn("Can not extract html content. No report document found");
             return true;
