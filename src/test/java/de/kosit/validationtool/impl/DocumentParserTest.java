@@ -60,7 +60,7 @@ public class DocumentParserTest {
 
     @Test
     public void testSimple() {
-        final Result<XdmNode, XMLSyntaxError> result = this.parser.parseDocument(read(CONTENT));
+        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(CONTENT));
         assertThat(result).isNotNull();
         assertThat(result.getObject()).isNotNull();
         assertThat(result.getErrors()).isEmpty();
@@ -69,7 +69,7 @@ public class DocumentParserTest {
 
     @Test
     public void testIllformed() {
-        final Result<XdmNode, XMLSyntaxError> result = this.parser.parseDocument(read(ILLFORMED));
+        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(ILLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
         assertThat(result.getObject()).isNull();
@@ -79,7 +79,7 @@ public class DocumentParserTest {
     @Test
     public void testNullInput() {
         this.exception.expect(IllegalArgumentException.class);
-        this.parser.parseDocument(null);
+        DocumentParseAction.parseDocument(null);
 
     }
 

@@ -57,7 +57,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static XMLSyntaxError createError(final XMLSyntaxErrorSeverity severity, final String message) {
         final XMLSyntaxError e = new XMLSyntaxError();
-        e.setSeverity(severity);
+        e.setSeverityCode(severity);
         e.setMessage(message);
         return e;
     }
@@ -141,7 +141,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
             e.setRowNumber(locator.getLineNumber());
         }
         e.setMessage("Error procesing" + content.getStringValue());
-        e.setSeverity(terminate ? XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR : XMLSyntaxErrorSeverity.SEVERITY_WARNING);
+        e.setSeverityCode(terminate ? XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR : XMLSyntaxErrorSeverity.SEVERITY_WARNING);
     }
 
     @Override

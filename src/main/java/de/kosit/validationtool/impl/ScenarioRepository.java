@@ -94,7 +94,7 @@ public class ScenarioRepository {
     private static void checkVersion(final URI scenarioDefinition) {
         final DocumentParseAction p = new DocumentParseAction();
         try {
-            final Result<XdmNode, XMLSyntaxError> result = p.parseDocument(InputFactory.read(scenarioDefinition.toURL()));
+            final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(InputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException(String.format(
                         "Specified scenario configuration %s is not supported.%nThis version only supports definitions of '%s'",

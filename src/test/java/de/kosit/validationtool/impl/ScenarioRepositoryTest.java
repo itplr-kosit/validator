@@ -99,7 +99,7 @@ public class ScenarioRepositoryTest {
 
     private static XdmNode load(final URL url) throws IOException {
         final DocumentParseAction p = new DocumentParseAction();
-        return p.parseDocument(read(url)).getObject();
+        return DocumentParseAction.parseDocument(read(url)).getObject();
     }
 
     @Test

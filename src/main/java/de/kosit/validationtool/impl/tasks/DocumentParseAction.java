@@ -56,20 +56,20 @@ public class DocumentParseAction implements CheckAction {
      * @param content ein Dokument
      * @return Ergebnis des Parsings inklusive etwaiger Fehler
      */
-    public Result<XdmNode, XMLSyntaxError> parseDocument(Input content) {
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Input content) {
         if (content == null) {
             throw new IllegalArgumentException("Input may not be null");
         }
         Result<XdmNode, XMLSyntaxError> result;
-        try ( InputStream input = new ByteArrayInputStream(content.getContent()) ) {
+        try ( final InputStream input = new ByteArrayInputStream(content.getContent()) ) {
             final DocumentBuilder builder = ObjectFactory.createProcessor().newDocumentBuilder();
             builder.setLineNumbering(true);
-            XdmNode doc = builder.build(new StreamSource(input));
+            final XdmNode doc = builder.build(new StreamSource(input));
             result = new Result<>(doc, Collections.emptyList());
-        } catch (SaxonApiException | IOException e) {
+        } catch (final SaxonApiException | IOException e) {
             log.debug("Exception while parsing {}", content.getName(), e);
-            XMLSyntaxError error = new XMLSyntaxError();
-            error.setSeverity(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
+            final XMLSyntaxError error = new XMLSyntaxError();
+            error.setSeverityCode(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
             error.setMessage(String.format("IOException while reading resource %s: %s", content.getName(), e.getMessage()));
             result = new Result<>(Collections.singleton(error));
         }
@@ -78,9 +78,9 @@ public class DocumentParseAction implements CheckAction {
     }
 
     @Override
-    public void check(Bag results) {
-        Result<XdmNode, XMLSyntaxError> parserResult = parseDocument(results.getInput());
-        ValidationResultsWellformedness v = new ValidationResultsWellformedness();
+    public void check(final Bag results) {
+        final Result<XdmNode, XMLSyntaxError> parserResult = parseDocument(results.getInput());
+        final ValidationResultsWellformedness v = new ValidationResultsWellformedness();
         results.setParserResult(parserResult);
         v.getXmlSyntaxError().addAll(parserResult.getErrors());
         results.getReportInput().setValidationResultsWellformedness(v);
