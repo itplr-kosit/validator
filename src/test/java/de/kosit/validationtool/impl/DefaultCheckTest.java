@@ -33,17 +33,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
-
-import net.sf.saxon.s9api.XdmNode;
+import de.kosit.validationtool.api.Result;
 
 /**
  * Test das Check-Interface
  * 
  * @author Andreas Penski
  */
-public class DefaultCheckTest {
+public class DefaultCheckTest extends CheckTest {
 
     private static final URL SCENARIO_DEFINITION = ScenarioRepositoryTest.class.getResource("/examples/UBLReady/scenarios-2.xml");
 
@@ -62,27 +62,30 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testHappyCase() throws Exception {
-        final XdmNode doc = this.implementation.checkInput(read(VALID_EXAMPLE));
+    public void testHappyCase() {
+        final Result doc = this.implementation.checkInput(read(VALID_EXAMPLE));
         assertThat(doc).isNotNull();
+        assertThat(doc.getReport()).isNotNull();
+        assertThat(doc.isAcceptable()).isFalse();
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.UNDEFINED);
     }
 
     @Test
-    public void testHappyCaseDocument() throws Exception {
+    public void testHappyCaseDocument() {
         final Document doc = this.implementation.check(read(VALID_EXAMPLE));
         assertThat(doc).isNotNull();
     }
 
     @Test
-    public void testMultipleCase() throws Exception {
+    public void testMultipleCase() {
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(VALID_EXAMPLE)).collect(Collectors.toList());
-        final List<XdmNode> docs = this.implementation.checkInput(input);
+        final List<Result> docs = this.implementation.checkInput(input);
         assertThat(docs).isNotNull();
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
     @Test
-    public void testMultipleCaseDocument() throws Exception {
+    public void testMultipleCaseDocument() {
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(VALID_EXAMPLE)).collect(Collectors.toList());
         final List<Document> docs = this.implementation.check(input);
         assertThat(docs).isNotNull();

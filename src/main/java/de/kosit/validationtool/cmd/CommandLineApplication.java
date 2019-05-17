@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
@@ -45,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.cmd.assertions.Assertions;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.ObjectFactory;
@@ -101,7 +103,7 @@ public class CommandLineApplication {
      *
      * @param args die Eingabe-Argumente
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         final int resultStatus = mainProgram(args);
         if (DAEMON_SIGNAL != resultStatus) {
             System.exit(resultStatus);
@@ -114,14 +116,14 @@ public class CommandLineApplication {
      *
      * @param args die Eingabe-Argumente
      */
-    static int mainProgram(String[] args) {
+    static int mainProgram(final String[] args) {
         int returnValue = 0;
-        Options options = createOptions();
+        final Options options = createOptions();
         if (isHelpRequested(args)) {
             printHelp(options);
         } else {
             try {
-                CommandLineParser parser = new DefaultParser();
+                final CommandLineParser parser = new DefaultParser();
                 final CommandLine cmd = parser.parse(options, args);
                 if (cmd.hasOption(SERVER.getOpt())) {
                     returnValue = startDaemonMode(cmd);
@@ -130,7 +132,7 @@ public class CommandLineApplication {
                 } else {
                     returnValue = processActions(cmd);
                 }
-            } catch (ParseException e) {
+            } catch (final ParseException e) {
                 log.error("Error processing command line arguments: " + e.getMessage());
                 printHelp(options);
             }
@@ -138,7 +140,7 @@ public class CommandLineApplication {
         return returnValue;
     }
 
-    private static int determinePort(CommandLine cmd) {
+    private static int determinePort(final CommandLine cmd) {
         int port = 8080;
         if (checkOptionWithValue(PORT, cmd)) {
             port = Integer.parseInt(cmd.getOptionValue(PORT.getOpt()));
@@ -146,7 +148,7 @@ public class CommandLineApplication {
         return port;
     }
 
-    private static int determineThreads(CommandLine cmd) {
+    private static int determineThreads(final CommandLine cmd) {
         int threads = Runtime.getRuntime().availableProcessors();
         if (checkOptionWithValue(WORKER_COUNT, cmd)) {
             threads = Integer.parseInt(cmd.getOptionValue(WORKER_COUNT.getOpt()));
@@ -154,7 +156,7 @@ public class CommandLineApplication {
         return threads;
     }
 
-    private static String determineHost(CommandLine cmd) {
+    private static String determineHost(final CommandLine cmd) {
         String host = "localhost";
         if (checkOptionWithValue(HOST, cmd)) {
             host = cmd.getOptionValue(HOST.getOpt());
@@ -162,15 +164,15 @@ public class CommandLineApplication {
         return host;
     }
 
-    private static int startDaemonMode(CommandLine cmd) {
-        Option[] unavailable = new Option[]{PRINT, CHECK_ASSERTIONS, DEBUG, OUTPUT, EXTRACT_HTML};
+    private static int startDaemonMode(final CommandLine cmd) {
+        final Option[] unavailable = new Option[]{PRINT, CHECK_ASSERTIONS, DEBUG, OUTPUT, EXTRACT_HTML};
         warnUnusedOptions(cmd, unavailable, true);
-        Daemon validDaemon = new Daemon(determineDefinition(cmd), determineRepository(cmd), determineHost(cmd), determinePort(cmd), determineThreads(cmd));
+        final Daemon validDaemon = new Daemon(determineDefinition(cmd), determineRepository(cmd), determineHost(cmd), determinePort(cmd), determineThreads(cmd));
         validDaemon.startServer();
         return DAEMON_SIGNAL;
     }
 
-    private static void warnUnusedOptions(CommandLine cmd, Option[] unavailable, boolean daemon) {
+    private static void warnUnusedOptions(final CommandLine cmd, final Option[] unavailable, final boolean daemon) {
         Arrays.stream(cmd.getOptions()).filter(o -> ArrayUtils.contains(unavailable, o)).map(o -> "The option " + o.getLongOpt() + " is not available in daemon mode").forEach(log::error);
         if (daemon && !cmd.getArgList().isEmpty()) {
             log.info("Ignoring test targets in daemon mode");
@@ -178,30 +180,30 @@ public class CommandLineApplication {
     }
 
 
-    private static boolean isHelpRequested(String[] args) {
-        Options helpOptions = createHelpOptions();
+    private static boolean isHelpRequested(final String[] args) {
+        final Options helpOptions = createHelpOptions();
         try {
-            CommandLineParser parser = new DefaultParser();
-            CommandLine cmd = parser.parse(helpOptions, args, true);
+            final CommandLineParser parser = new DefaultParser();
+            final CommandLine cmd = parser.parse(helpOptions, args, true);
             if (cmd.hasOption(HELP.getOpt()) || args.length == 0) {
                 return true;
             }
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             // we can ignore that, we just look for the help parameters
         }
         return false;
     }
 
-    private static int processActions(CommandLine cmd) {
+    private static int processActions(final CommandLine cmd) {
         try {
 
             long start = System.currentTimeMillis();
-            Option[] unavailable = new Option[]{HOST, PORT, WORKER_COUNT};
+            final Option[] unavailable = new Option[]{HOST, PORT, WORKER_COUNT};
             warnUnusedOptions(cmd, unavailable, false);
-            CheckConfiguration d = new CheckConfiguration(determineDefinition(cmd));
+            final CheckConfiguration d = new CheckConfiguration(determineDefinition(cmd));
             d.setScenarioRepository(determineRepository(cmd));
-            InternalCheck check = new InternalCheck(d);
-            Path outputDirectory = determineOutputDirectory(cmd);
+            final InternalCheck check = new InternalCheck(d);
+            final Path outputDirectory = determineOutputDirectory(cmd);
 
             if (cmd.hasOption(EXTRACT_HTML.getOpt())) {
                 check.getCheckSteps().add(new ExtractHtmlContentAction(check.getContentRepository(), outputDirectory));
@@ -212,7 +214,7 @@ public class CommandLineApplication {
             }
 
             if (cmd.hasOption(CHECK_ASSERTIONS.getOpt())) {
-                Assertions assertions = loadAssertions(cmd.getOptionValue(CHECK_ASSERTIONS.getOpt()));
+                final Assertions assertions = loadAssertions(cmd.getOptionValue(CHECK_ASSERTIONS.getOpt()));
                 check.getCheckSteps().add(new CheckAssertionAction(assertions, ObjectFactory.createProcessor()));
             }
             if (cmd.hasOption(PRINT_MEM_STATS.getOpt())) {
@@ -222,16 +224,17 @@ public class CommandLineApplication {
             log.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
 
             final Collection<Path> targets = determineTestTargets(cmd);
+            final List<Result> results = new ArrayList<>();
             start = System.currentTimeMillis();
-            for (Path p : targets) {
+            for (final Path p : targets) {
                 final Input input = InputFactory.read(p);
-                check.checkInput(input);
+                results.add(check.checkInput(input));
             }
-            boolean result = check.printAndEvaluate();
+            final boolean result = check.printAndEvaluate();
             log.info("Processing {} object(s) completed in {}ms", targets.size(), System.currentTimeMillis() - start);
             return result ? 0 : 1;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (cmd.hasOption(DEBUG.getOpt())) {
                 log.error(e.getMessage(), e);
             } else {
@@ -241,20 +244,20 @@ public class CommandLineApplication {
         }
     }
 
-    private static Assertions loadAssertions(String optionValue) {
-        Path p = Paths.get(optionValue);
+    private static Assertions loadAssertions(final String optionValue) {
+        final Path p = Paths.get(optionValue);
         Assertions a = null;
         if (Files.exists(p)) {
-            ConversionService c = new ConversionService();
+            final ConversionService c = new ConversionService();
             c.initialize(de.kosit.validationtool.cmd.assertions.ObjectFactory.class.getPackage());
             a = c.readXml(p.toUri(), Assertions.class);
         }
         return a;
     }
 
-    private static Path determineOutputDirectory(CommandLine cmd) {
+    private static Path determineOutputDirectory(final CommandLine cmd) {
         final String value = cmd.getOptionValue(OUTPUT.getOpt());
-        Path fir;
+        final Path fir;
         if (StringUtils.isNotBlank(value)) {
             fir = Paths.get(value);
             if ((!Files.exists(fir) && !fir.toFile().mkdirs()) || !Files.isDirectory(fir)) {
@@ -266,8 +269,8 @@ public class CommandLineApplication {
         return fir;
     }
 
-    private static Collection<Path> determineTestTargets(CommandLine cmd) {
-        Collection<Path> targets = new ArrayList<>();
+    private static Collection<Path> determineTestTargets(final CommandLine cmd) {
+        final Collection<Path> targets = new ArrayList<>();
         if (!cmd.getArgList().isEmpty()) {
             cmd.getArgList().forEach(e -> targets.addAll(determineTestTarget(e)));
         }
@@ -277,8 +280,8 @@ public class CommandLineApplication {
         return targets;
     }
 
-    private static Collection<Path> determineTestTarget(String s) {
-        Path d = Paths.get(s);
+    private static Collection<Path> determineTestTarget(final String s) {
+        final Path d = Paths.get(s);
         if (Files.isDirectory(d)) {
             return listDirectoryTargets(d);
         } else if (Files.exists(d)) {
@@ -289,18 +292,18 @@ public class CommandLineApplication {
 
     }
 
-    private static Collection<Path> listDirectoryTargets(Path d) {
+    private static Collection<Path> listDirectoryTargets(final Path d) {
         try {
             return Files.list(d).filter(path -> path.toString().endsWith(".xml")).collect(Collectors.toList());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }
 
     }
 
-    private static URI determineRepository(CommandLine cmd) {
+    private static URI determineRepository(final CommandLine cmd) {
         if (checkOptionWithValue(REPOSITORY, cmd)) {
-            Path d = Paths.get(cmd.getOptionValue(REPOSITORY.getOpt()));
+            final Path d = Paths.get(cmd.getOptionValue(REPOSITORY.getOpt()));
             if (Files.isDirectory(d)) {
                 return d.toUri();
             } else {
@@ -311,9 +314,9 @@ public class CommandLineApplication {
         return null;
     }
 
-    private static URI determineDefinition(CommandLine cmd) {
+    private static URI determineDefinition(final CommandLine cmd) {
         checkOptionWithValue(SCENARIOS, cmd);
-        Path f = Paths.get(cmd.getOptionValue(SCENARIOS.getOpt()));
+        final Path f = Paths.get(cmd.getOptionValue(SCENARIOS.getOpt()));
         if (Files.isRegularFile(f)) {
             return f.toAbsolutePath().toUri();
         } else {
@@ -322,10 +325,10 @@ public class CommandLineApplication {
         }
     }
 
-    private static boolean checkOptionWithValue(Option option, CommandLine cmd) {
-        String opt = option.getOpt();
+    private static boolean checkOptionWithValue(final Option option, final CommandLine cmd) {
+        final String opt = option.getOpt();
         if (cmd.hasOption(opt)) {
-            String value = cmd.getOptionValue(opt);
+            final String value = cmd.getOptionValue(opt);
             if (StringUtils.isNoneBlank(value)) {
                 return true;
             } else {
@@ -338,20 +341,20 @@ public class CommandLineApplication {
         return false;
     }
 
-    private static void printHelp(Options options) {
+    private static void printHelp(final Options options) {
         // automatically generate the help statement
-        HelpFormatter formatter = new HelpFormatter();
+        final HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("check-tool  -s <scenario-config-file> [OPTIONS] [FILE]... ", options, false);
     }
 
     private static Options createHelpOptions() {
-        Options options = new Options();
+        final Options options = new Options();
         options.addOption(HELP);
         return options;
     }
 
     private static Options createOptions() {
-        Options options = new Options();
+        final Options options = new Options();
         options.addOption(HELP);
         options.addOption(SERVER);
         options.addOption(HOST);

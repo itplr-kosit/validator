@@ -39,6 +39,23 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class Helper {
 
+    public static class Simple {
+
+        public static final URI ROOT = EXAMPLES_DIR.resolve("simple/");
+
+        public static final URI SIMPLE_VALID = Simple.ROOT.resolve("input/simple.xml");
+
+        public static final URI FOO = Simple.ROOT.resolve("input/foo.xml");
+
+        public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
+
+        public static final URI REPOSITORY = ROOT.resolve("repository/");
+
+        public static final URI INVALID = ROOT.resolve("input/simple-invalid.xml");
+
+        public static final URI UNKNOWN = ROOT.resolve("input/unknown.xml");
+    }
+
     public static final URI SOURCE_ROOT = Paths.get("src/main/resources").toUri();
 
     public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();

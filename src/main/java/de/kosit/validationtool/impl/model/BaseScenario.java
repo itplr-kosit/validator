@@ -36,7 +36,11 @@ import lombok.Setter;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ScenarioRepository;
-import de.kosit.validationtool.model.scenarios.*;
+import de.kosit.validationtool.model.scenarios.CreateReportType;
+import de.kosit.validationtool.model.scenarios.NamespaceType;
+import de.kosit.validationtool.model.scenarios.ResourceType;
+import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
+import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
 
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
@@ -50,50 +54,63 @@ import net.sf.saxon.s9api.XsltExecutable;
  */
 public abstract class BaseScenario {
 
-    private XPathExecutable xPathExecutable;
+    /**
+     * Laufzeitinformationen über eine Transformation.
+     */
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public class Transformation {
 
+        private XsltExecutable executable;
+
+        private ResourceType resourceType;
+    }
+
+    private XPathExecutable matchExecutable;
+
+    private XPathExecutable acceptExecutable;
     private Schema schema;
-
     private List<Transformation> schematronValidations;
-
     private ContentRepository repository;
-
     private Transformation reportTransformation;
 
     /**
      * Gibt eine Transformation zurück.
+     * 
      * @return initialisierte Transformation
      */
     public Transformation getReportTransformation() {
-        if (reportTransformation == null) {
+        if (this.reportTransformation == null) {
             final ResourceType resource = getCreateReport().getResource();
-            final XsltExecutable executable = repository.loadXsltScript(URI.create(resource.getLocation()));
-            reportTransformation = new Transformation(executable, resource);
+            final XsltExecutable executable = this.repository.loadXsltScript(URI.create(resource.getLocation()));
+            this.reportTransformation = new Transformation(executable, resource);
         }
-        return reportTransformation;
+        return this.reportTransformation;
     }
 
     /**
      * Lieferrt das Schema zu diesem Szenario.
+     * 
      * @return das passende Schema
      */
     public Schema getSchema() {
-        if (schema == null) {
+        if (this.schema == null) {
             final List<String> schemaResources = getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation)
                     .collect(Collectors.toList());
-            schema = repository.createSchema(schemaResources);
+            this.schema = this.repository.createSchema(schemaResources);
         }
-        return schema;
+        return this.schema;
     }
-
 
     /**
      * Initialisiert das Szenario auf Basis eines [@link ContentRepository}
+     * 
      * @param repository das Repository mit den Szenario-Artefakten
      * @param lazy optionales lazy loading der XML-Artefakte
      * @return true wenn erfolgreich
      */
-    public boolean initialize(ContentRepository repository, boolean lazy) {
+    public boolean initialize(final ContentRepository repository, final boolean lazy) {
         this.repository = repository;
         if (!lazy) {
             getSchema();
@@ -106,20 +123,21 @@ public abstract class BaseScenario {
 
     /**
      * Liefer eine Liste mit Schematron Validierungs-Transformationen
+     * 
      * @return liste mit initialisierten Transformationsinformationen
      */
     public List<Transformation> getSchematronValidations() {
-        if (schematronValidations == null) {
-            schematronValidations = new ArrayList<>();
+        if (this.schematronValidations == null) {
+            this.schematronValidations = new ArrayList<>();
             getValidateWithSchematron().forEach(v -> {
                 if (v.isPsvi()) {
                     throw new NotImplementedException("This implemenation does not support PSVI usage");
                 }
-                final XsltExecutable xsltExecutable = repository.loadXsltScript(URI.create(v.getResource().getLocation()));
-                schematronValidations.add(new Transformation(xsltExecutable, v.getResource()));
+                final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create(v.getResource().getLocation()));
+                this.schematronValidations.add(new Transformation(xsltExecutable, v.getResource()));
             });
         }
-        return schematronValidations;
+        return this.schematronValidations;
     }
 
     /**
@@ -129,11 +147,28 @@ public abstract class BaseScenario {
      * @see {@link ScenarioRepository#selectScenario(Document)}.
      */
     public XPathSelector getSelector() {
-        if (xPathExecutable == null) {
-            final Map<String, String> namespaces = getNamespace().stream().collect(Collectors.toMap(NamespaceType::getPrefix, NamespaceType::getValue));
-            xPathExecutable = repository.createXPath(getMatch(), namespaces);
+        if (this.matchExecutable == null) {
+            this.matchExecutable = this.repository.createXPath(getMatch(), prepareNamespaces());
         }
-        return xPathExecutable.load();
+        return this.matchExecutable.load();
+    }
+
+    /**
+     * Liefert einen neuen XPath-Selector zur Evaluierung der {@link de.kosit.validationtool.api.AcceptRecommendation}.
+     * 
+     * @return neuer Selector
+     */
+    public XPathSelector getAcceptSelector() {
+        if (this.acceptExecutable == null) {
+            System.out.println(getAcceptMatch());
+            System.out.println(prepareNamespaces());
+            this.acceptExecutable = this.repository.createXPath(getAcceptMatch(), prepareNamespaces());
+        }
+        return this.acceptExecutable.load();
+    }
+
+    private Map<String, String> prepareNamespaces() {
+        return getNamespace().stream().collect(Collectors.toMap(NamespaceType::getPrefix, NamespaceType::getValue));
     }
 
     /**
@@ -142,6 +177,8 @@ public abstract class BaseScenario {
      * @return xpath match
      */
     public abstract String getMatch();
+
+    public abstract String getAcceptMatch();
 
     /**
      * Getter aus dem schema.
@@ -170,18 +207,5 @@ public abstract class BaseScenario {
      * @return report informationen
      */
     public abstract CreateReportType getCreateReport();
-
-    /**
-     * Laufzeitinformationen über eine Transformation.
-     */
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public class Transformation {
-
-        private XsltExecutable executable;
-
-        private ResourceType resourceType;
-    }
 
 }

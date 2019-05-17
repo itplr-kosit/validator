@@ -28,7 +28,9 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction;
+import de.kosit.validationtool.impl.tasks.ComputeAcceptanceAction;
 import de.kosit.validationtool.impl.tasks.CreateReportAction;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.tasks.ScenarioSelectionAction;
@@ -41,7 +43,6 @@ import de.kosit.validationtool.model.reportInput.EngineType;
 import de.kosit.validationtool.model.reportInput.ProcessingError;
 
 import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Die Referenz-Implementierung für den Prüfprozess. Nach initialer Konfiguration ist diese Klasse threadsafe und kann
@@ -63,7 +64,6 @@ public class DefaultCheck implements Check {
     private final ContentRepository contentRepository;
 
     private final ConversionService conversionService;
-
 
     @Getter
     private final List<CheckAction> checkSteps;
@@ -88,6 +88,7 @@ public class DefaultCheck implements Check {
         this.checkSteps.add(new ValidateReportInputAction(this.conversionService, this.contentRepository.getReportInputSchema()));
         this.checkSteps
                 .add(new CreateReportAction(processor, this.conversionService, this.repository, configuration.getScenarioRepository()));
+        this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
     protected static CreateReportInput createReport() {
@@ -101,12 +102,12 @@ public class DefaultCheck implements Check {
     }
 
     @Override
-    public XdmNode checkInput(final Input input) {
+    public Result checkInput(final Input input) {
         final CheckAction.Bag t = new CheckAction.Bag(input, createReport());
         return runCheckInternal(t);
     }
 
-    protected XdmNode runCheckInternal(final CheckAction.Bag t) {
+    protected Result runCheckInternal(final CheckAction.Bag t) {
         final long started = System.currentTimeMillis();
         log.info("Checking content of {}", t.getInput().getName());
         for (final CheckAction action : this.checkSteps) {
@@ -124,10 +125,10 @@ public class DefaultCheck implements Check {
         }
         t.setFinished(true);
         log.info("Finished check of {} in {}ms\n", t.getInput().getName(), System.currentTimeMillis() - started);
-        return t.getReport();
+        return new Result(t.getReport(), t.getAcceptStatus());
     }
 
-    private static boolean createDocumentIdentification(final CheckAction.Bag transporter) {
+    private static void createDocumentIdentification(final CheckAction.Bag transporter) {
         final DocumentIdentificationType i = new DocumentIdentificationType();
         final DocumentIdentificationType.DocumentHash h = new DocumentIdentificationType.DocumentHash();
         h.setHashAlgorithm(transporter.getInput().getDigestAlgorithm());
@@ -135,6 +136,5 @@ public class DefaultCheck implements Check {
         i.setDocumentHash(h);
         i.setDocumentReference(transporter.getInput().getName());
         transporter.getReportInput().setDocumentIdentification(i);
-        return true;
     }
 }
