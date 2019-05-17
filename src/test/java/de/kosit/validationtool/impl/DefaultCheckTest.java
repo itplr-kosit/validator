@@ -43,7 +43,7 @@ import de.kosit.validationtool.api.Result;
  * 
  * @author Andreas Penski
  */
-public class DefaultCheckTest extends CheckTest {
+public class DefaultCheckTest {
 
     private static final URL SCENARIO_DEFINITION = ScenarioRepositoryTest.class.getResource("/examples/UBLReady/scenarios-2.xml");
 
