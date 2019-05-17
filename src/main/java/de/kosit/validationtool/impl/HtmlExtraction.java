@@ -14,6 +14,8 @@ import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
+ * Funktion zum Extrahieren von HTML-Artefakten / Knoten aus einem XML-Dokument.
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor

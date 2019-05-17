@@ -61,24 +61,24 @@ public class CreateReportAction implements CheckAction {
 
     private final URI contentRepository;
 
-    private static XsltExecutable loadFromScenario(ScenarioType object) {
+    private static XsltExecutable loadFromScenario(final ScenarioType object) {
         return object.getReportTransformation().getExecutable();
     }
 
     @Override
-    public void check(Bag results) {
-        final DocumentBuilder documentBuilder = processor.newDocumentBuilder();
+    public void check(final Bag results) {
+        final DocumentBuilder documentBuilder = this.processor.newDocumentBuilder();
         try {
 
             final XdmNode parsedDocument = results.getParserResult().isValid() ? results.getParserResult().getObject()
                     : ObjectFactory.createProcessor().newDocumentBuilder().newBuildingContentHandler().getDocumentNode();
 
-            final Document reportInput = conversionService.writeDocument(results.getReportInput());
+            final Document reportInput = this.conversionService.writeDocument(results.getReportInput());
             final XdmNode root = documentBuilder.build(new DOMSource(reportInput));
             final XsltTransformer transformer = getTransformation(results).load();
             transformer.setInitialContextNode(root);
-            CollectingErrorEventHandler e = new CollectingErrorEventHandler();
-            RelativeUriResolver resolver = new RelativeUriResolver(contentRepository);
+            final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
+            final RelativeUriResolver resolver = new RelativeUriResolver(this.contentRepository);
             transformer.setMessageListener(e);
             transformer.setURIResolver(resolver);
             transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
@@ -88,17 +88,15 @@ public class CreateReportAction implements CheckAction {
             transformer.transform();
             results.setReport(destination.getXdmNode());
 
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             throw new IllegalStateException("Can not create final report", e);
         }
     }
 
-    private XsltExecutable getTransformation(Bag results) {
+    private static XsltExecutable getTransformation(final Bag results) {
         final Result<ScenarioType, String> scenario = results.getScenarioSelectionResult();
-        return scenario != null && scenario.isValid() ? loadFromScenario(scenario.getObject()) : loadFallback();
+        return loadFromScenario(scenario.getObject());
     }
 
-    private XsltExecutable loadFallback() {
-        return repository.getNoScenarioReport();
-    }
+
 }

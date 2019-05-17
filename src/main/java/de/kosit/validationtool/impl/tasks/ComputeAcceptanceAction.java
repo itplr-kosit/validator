@@ -36,7 +36,7 @@ public class ComputeAcceptanceAction implements CheckAction {
 
     @Override
     public boolean isSkipped(final Bag results) {
-        return results.getScenarioSelectionResult().isInvalid();
+        return results.getReport() == null;
     }
 
 }

@@ -23,13 +23,14 @@ import static org.apache.commons.lang3.StringUtils.startsWith;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.CheckConfiguration;
@@ -37,16 +38,15 @@ import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import de.kosit.validationtool.model.scenarios.CreateReportType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.Scenarios;
 
-import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
-import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Repository for die aktiven Szenario einer Prüfinstanz.
@@ -61,17 +61,16 @@ public class ScenarioRepository {
 
     private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = "http://www.xoev.de/de/validator/framework/1/scenarios";
 
-    @Getter(value = AccessLevel.PRIVATE)
-
-    private final Processor processor;
 
     @Getter(value = AccessLevel.PRIVATE)
     private final ContentRepository repository;
 
-    private XsltExecutable noScenarioReport;
-
     @Getter
     private Scenarios scenarios;
+
+    @Setter(AccessLevel.PACKAGE)
+    @Getter
+    private ScenarioType fallbackScenario;
 
     private static boolean isSupportedDocument(final XdmNode doc) {
         final XdmNode root = findRoot(doc);
@@ -81,9 +80,7 @@ public class ScenarioRepository {
     }
 
     private static XdmNode findRoot(final XdmNode doc) {
-        final Iterator<XdmNode> it = doc.children().iterator();
-        while (it.hasNext()) {
-            final XdmNode node = it.next();
+        for (final XdmNode node : doc.children()) {
             if (node.getNodeKind() == XdmNodeKind.ELEMENT) {
                 return node;
             }
@@ -92,7 +89,6 @@ public class ScenarioRepository {
     }
 
     private static void checkVersion(final URI scenarioDefinition) {
-        final DocumentParseAction p = new DocumentParseAction();
         try {
             final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(InputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
@@ -106,13 +102,7 @@ public class ScenarioRepository {
         }
     }
 
-    public XsltExecutable getNoScenarioReport() {
-        if (this.noScenarioReport == null) {
-            this.noScenarioReport = this.repository
-                    .loadXsltScript(URI.create(this.scenarios.getNoScenarioReport().getResource().getLocation()));
-        }
-        return this.noScenarioReport;
-    }
+
 
     /**
      * Initialisiert das Repository mit der angegebenen Konfiguration.
@@ -136,7 +126,7 @@ public class ScenarioRepository {
                     handler.getErrorDescription()));
         }
         // initialize fallback report eager
-        getNoScenarioReport();
+        this.fallbackScenario = createFallback();
 
     }
 
@@ -150,24 +140,37 @@ public class ScenarioRepository {
     }
 
     /**
-     * Ermittelt für das angegebene Dokument das passende Szenario.
-     * 
+     * Ermittelt für das gegebene Dokument das passende Szenario.
+     *
      * @param document das Eingabedokument
      * @return ein Ergebnis-Objekt zur weiteren Verarbeitung
      */
     public Result<ScenarioType, String> selectScenario(final XdmNode document) {
-        Result<ScenarioType, String> result = new Result<>();
+        final Result<ScenarioType, String> result;
         final List<ScenarioType> collect = this.scenarios.getScenario().stream().filter(s -> match(document, s))
                 .collect(Collectors.toList());
         if (collect.size() == 1) {
             result = new Result<>(collect.get(0));
         } else if (collect.isEmpty()) {
-            result.getErrors().add("None of the loaded scenarios matches the specified document");
+            result = new Result<>(getFallbackScenario(),
+                    Collections.singleton("None of the loaded scenarios matches the specified document"));
         } else {
-            result.getErrors().add("More than on scenario matches the specified document");
+            result = new Result<>(getFallbackScenario(), Collections.singleton("More than on scenario matches the specified document"));
         }
         return result;
 
+    }
+
+    private ScenarioType createFallback() {
+        final ScenarioType t = new ScenarioType();
+        t.setName("Fallback-Scenario");
+        final CreateReportType reportType = new CreateReportType();
+        reportType.setResource(this.scenarios.getNoScenarioReport().getResource());
+        t.initialize(this.repository, true);
+        // always reject
+        t.setAcceptMatch("count(/)<0");
+        t.setCreateReport(reportType);
+        return t;
     }
 
     private static boolean match(final XdmNode document, final ScenarioType scenario) {
@@ -179,7 +182,6 @@ public class ScenarioRepository {
             log.error("Error evaluating xpath expression", e);
         }
         return false;
-
     }
 
     void initialize(final Scenarios def) {

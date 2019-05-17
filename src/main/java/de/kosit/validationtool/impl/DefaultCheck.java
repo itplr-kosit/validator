@@ -81,7 +81,7 @@ public class DefaultCheck implements Check {
         final Processor processor = ObjectFactory.createProcessor();
         this.conversionService = new ConversionService();
         this.contentRepository = new ContentRepository(processor, configuration.getScenarioRepository());
-        this.repository = new ScenarioRepository(processor, this.contentRepository);
+        this.repository = new ScenarioRepository(this.contentRepository);
         this.repository.initialize(configuration);
         this.checkSteps = new ArrayList<>();
         this.checkSteps.add(DefaultCheck::createDocumentIdentification);

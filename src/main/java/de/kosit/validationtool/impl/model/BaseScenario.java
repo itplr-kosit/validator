@@ -160,8 +160,6 @@ public abstract class BaseScenario {
      */
     public XPathSelector getAcceptSelector() {
         if (this.acceptExecutable == null) {
-            System.out.println(getAcceptMatch());
-            System.out.println(prepareNamespaces());
             this.acceptExecutable = this.repository.createXPath(getAcceptMatch(), prepareNamespaces());
         }
         return this.acceptExecutable.load();

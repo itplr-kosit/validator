@@ -66,7 +66,7 @@ public class ScenarioRepositoryTest {
         t.setName("Test");
         t.initialize(this.content, true);
         def.getScenario().add(t);
-        this.repository = new ScenarioRepository(ObjectFactory.createProcessor(), this.content);
+        this.repository = new ScenarioRepository(this.content);
         this.repository.initialize(def);
     }
 
@@ -80,9 +80,14 @@ public class ScenarioRepositoryTest {
     @Test
     public void testNonMatch() throws Exception {
         this.repository.getScenarios().getScenario().clear();
+        final ScenarioType fallback = new ScenarioType();
+        fallback.setName("fallback");
+        this.repository.setFallbackScenario(fallback);
         final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(SAMPLE));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
+        assertThat(scenario.getObject().getName()).isEqualTo("fallback");
+
     }
 
     @Test
@@ -92,9 +97,13 @@ public class ScenarioRepositoryTest {
         t.setName("Test");
         t.initialize(this.content, true);
         this.repository.getScenarios().getScenario().add(t);
+        final ScenarioType fallback = new ScenarioType();
+        fallback.setName("fallback");
+        this.repository.setFallbackScenario(fallback);
         final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(SAMPLE));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
+        assertThat(scenario.getObject().getName()).isEqualTo("fallback");
     }
 
     private static XdmNode load(final URL url) throws IOException {
@@ -105,7 +114,7 @@ public class ScenarioRepositoryTest {
     @Test
     public void loadFromJar() throws URISyntaxException {
         this.content = new ContentRepository(ObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
-        this.repository = new ScenarioRepository(ObjectFactory.createProcessor(), this.content);
+        this.repository = new ScenarioRepository(this.content);
         final CheckConfiguration conf = new CheckConfiguration(
                 ScenarioRepository.class.getClassLoader().getResource("xrechnung/scenarios.xml").toURI());
         this.repository.initialize(conf);
