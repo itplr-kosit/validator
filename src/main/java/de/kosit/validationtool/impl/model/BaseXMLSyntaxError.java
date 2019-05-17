@@ -84,6 +84,11 @@ public abstract class BaseXMLSyntaxError implements XmlError {
      */
     public abstract XMLSyntaxErrorSeverity getSeverityCode();
 
+    /**
+     * Dies ist der API-Zugriff. Es gibt zwei Methoden, weil es für die API einen abweichenden Typ gibt.
+     * 
+     * @return der Schweregrad
+     */
     @Override
     public Severity getSeverity() {
         final XMLSyntaxErrorSeverity code = getSeverityCode();

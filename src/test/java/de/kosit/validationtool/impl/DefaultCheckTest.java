@@ -92,4 +92,15 @@ public class DefaultCheckTest {
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
+    @Test
+    public void testExtractHtml() {
+        final DefaultResult doc = (DefaultResult) this.implementation.checkInput(read(VALID_EXAMPLE));
+        assertThat(doc).isNotNull();
+        assertThat(doc.getReport()).isNotNull();
+        assertThat(doc.isAcceptable()).isFalse();
+        assertThat(doc.extractHtmlAsString()).isNotEmpty();
+        assertThat(doc.extractHtmlAsElement()).isNotEmpty();
+        assertThat(doc.extractHtml()).isNotEmpty();
+    }
+
 }
