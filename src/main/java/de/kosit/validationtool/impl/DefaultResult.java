@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,6 +42,10 @@ public class DefaultResult implements Result {
     @Getter
     private List<XmlError> schemaViolations = new ArrayList<>();
 
+    @Getter
+    @Setter(AccessLevel.PACKAGE)
+    private List<SchematronOutput> schematronResult;
+
     public DefaultResult(final XdmNode report, final AcceptRecommendation recommendation, final ContentRepository repository) {
         this.report = report;
         this.acceptRecommendation = recommendation;
@@ -67,17 +72,18 @@ public class DefaultResult implements Result {
         return AcceptRecommendation.ACCEPTABLE.equals(this.acceptRecommendation);
     }
 
+
     public List<String> extractHtmlAsString() {
-        return extractHtml().stream().map(this::convertToString).collect(Collectors.toList());
+        return extractHtml().stream().map(DefaultResult::convertToString).collect(Collectors.toList());
     }
 
-    private String convertToString(final XdmNode element) {
+    private static String convertToString(final XdmNode element) {
         try {
             final StringWriter writer = new StringWriter();
             final Serializer serializer = ObjectFactory.createProcessor().newSerializer(writer);
             serializer.serializeNode(element);
             return writer.toString();
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             throw new IllegalStateException("Can not convert to string", e);
         }
     }

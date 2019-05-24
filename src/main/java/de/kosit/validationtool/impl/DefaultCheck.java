@@ -22,6 +22,7 @@ package de.kosit.validationtool.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -88,7 +89,7 @@ public class DefaultCheck implements Check {
         this.checkSteps.add(new DocumentParseAction());
         this.checkSteps.add(new ScenarioSelectionAction(this.repository));
         this.checkSteps.add(new SchemaValidationAction());
-        this.checkSteps.add(new SchematronValidationAction(configuration.getScenarioRepository()));
+        this.checkSteps.add(new SchematronValidationAction(configuration.getScenarioRepository(), this.conversionService));
         this.checkSteps.add(new ValidateReportInputAction(this.conversionService, this.contentRepository.getReportInputSchema()));
         this.checkSteps
                 .add(new CreateReportAction(processor, this.conversionService, this.repository, configuration.getScenarioRepository()));
@@ -137,6 +138,8 @@ public class DefaultCheck implements Check {
         if (t.getSchemaValidationResult() != null) {
             result.setSchemaViolations(convertErrors(t.getSchemaValidationResult().getErrors()));
         }
+        result.setSchematronResult(t.getReportInput().getValidationResultsSchematron().stream()
+                .map(e -> e.getResults().getSchematronOutput()).collect(Collectors.toList()));
         return result;
     }
 

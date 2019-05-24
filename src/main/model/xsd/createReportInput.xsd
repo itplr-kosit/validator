@@ -20,8 +20,9 @@
 
 <!-- $Id$ -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:in="http://www.xoev.de/de/validator/framework/1/createreportinput"
-    xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios" targetNamespace="http://www.xoev.de/de/validator/framework/1/createreportinput" version="1.0.0"
-    elementFormDefault="qualified" attributeFormDefault="unqualified">
+           xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios" xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
+           targetNamespace="http://www.xoev.de/de/validator/framework/1/createreportinput" version="1.0.0"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
 
     <xs:import namespace="http://www.xoev.de/de/validator/framework/1/scenarios" schemaLocation="scenarios.xsd"/>
 
@@ -88,7 +89,7 @@
             <xs:element name="results">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:any namespace="##any" processContents="skip"/>
+                        <xs:element ref="svrl:schematron-output" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>

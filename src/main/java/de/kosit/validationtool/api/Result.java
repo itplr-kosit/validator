@@ -2,6 +2,7 @@ package de.kosit.validationtool.api;
 
 import java.util.List;
 
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 
 import net.sf.saxon.s9api.XdmNode;
@@ -39,9 +40,12 @@ public interface Result {
      * wurden.
      */
     List<XmlError> getSchemaViolations();
-    
 
-    // TODO scheitert momentan daran, das intern kein svlr o.ä. zur Verfügung steht
-    // List<XmlError> getSchematronResult();
+    /**
+     * Liefert die Ergebnisse der Schematron-Prüfungen, in der Reihenfolge der Szenario-Konfiguration.
+     * 
+     * @return Liste mit Schematron-Ergebnissen
+     */
+    List<SchematronOutput> getSchematronResult();
 
 }
