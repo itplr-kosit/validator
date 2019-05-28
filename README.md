@@ -70,76 +70,7 @@ Eine Übersicht über die Eigenschaften der Testdateien in
 [/validator-configuration-xrechnung/src/test/instances](/validator-configuration-xrechnung/src/test/instances) findet sich in
 [/validator-configuration-xrechnung/src/test/instances/assertions.xlsx](/validator-configuration-xrechnung/src/test/assertions.xlsx).
 
-## Verwendung als Bibliothek
-Daneben kann das Prüftool auch in eigene Anwendungen integriert werden.
 
-Die Bibliothek steht derzeit noch *nicht* im Maven-Central-Repository zur Verfügung. Sie muss manuell im lokalen oder
-unternehmensweiten Maven-Repository bereitgestellt werden (siehe [vgl. Maven Dokumentation](https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html)).
-
-
-
-* Maven
-```
-<dependency>
-   <groupId>de.kosit</groupId>
-   <artifactId>validationtool</artifactId>
-   <version>1.0.0</version>
-</dependency>
-```
-* Gradle
-```
-dependencies {
-    compile group: 'de.kosit', name: 'validationtool', version: '1.0.0'
-}
-```
-
-Voraussetzung für die Verwendung ist eine valide Prüfszenarien-Definition (xml-Datei) und das dazugehörige Repository
-mit den von den definierten Szenarien benötigten Artefakten. Der folgende Quellcode zeigt die Erzeugung einer neuen
-Prüf-Instanz:
-
-```java
-//Vorbereitung der Konfiguration
-URI scenarios =  URI.create("scenarios.xml");
-CheckConfiguration config = new CheckConfiguration();
-config.setScenarioDefinition(scenarios);
-
-//Instanziierung der DefaultCheck-Implementierung
-Check implemenation =  new DefaultCheck(config);
-```
-
-Weitere Konfigurationsoption ist der Pfad zum Repository. Standardmäßig wird das Repository relativ zur Szenarien-Defintion
-unter "repository" gesucht.
-
-Die so erzeugte Prüfinstanz initialisiert sämtliche  Szenarien und deren Prüfartefakte. Ein etwaiger Konfigurationsfehler
-wird frühzeitig mitgeteilt.
-
-Die eigentlich Prüfung erfolgt mit den beiden Methoden des `Check`-Interfaces:
-
-```java
-...
-Check pruefer =  new DefaultCheck(config);
-
-//einzelne Datei prüfen
-Input pruefKandidat = InputFactory.read(new File("rechnung.xml"));
-Document report = pruefer.implemenation(pruefKandidat);
-
-//Batch-Prüfung
-List<File> files = Files.list(Paths.get("rechnungen")).map(path -> path.toFile()).collect(Collectors.toList());
-List<Input> toCheck = files.stream().map(InputFactory::read).collect(Collectors.toList());
-List<Document> reports = pruefer.implemenation(toCheck);
-
-```
-
-Eine einmal initialisierte Prüfinstanz ist *threadsafe* und kann beliebig oft wieder verwendet
-werden. XML-Artefakte wie Schema oder XSLT-Executables werden bei Instantiierung des `DefaultCheck` initialisiert und
-wiederverwendet. Da diese Objekte relativ aufwändig zu Erzeugen sind, empfielt sich die Wiederverwendung der `Check`-Instanz.
-
-Die Batch-Verarbeitung erfolgt grundsätzlich seriell. Der `DefaultCheck` implementiert *keine Parallelverarbeitung*.
-
-Einziges Eingabeobjekt ist `Input`, welches sich mit den verschiedenen Methoden der `InputFactory` aus div. Eingabe-Resourcen
-erzeugen lässt. Die InputFactory erzeugt für jedes Eingabe-Objekt eine Prüfsumme, die im Report mitgeführt wird. Der
-verwendete Algorithmus ist über die `read`-Methoden der `InputFactory` definierbar. Standardmäßig wird _SHA-256_ des JDK
-verwendet
 
 ## Verwendung des Daemon-Mode
 Das Prüftool stellt auch eine HTTP-Schnittstelle bereit, über die die Funktionalität angesprochen werden kann. Dazu wird die Anwendung

@@ -51,4 +51,4 @@ Here is an example:
 </scenario>
 ```
 
-Here the errors reported by violating the schematron rule `BR/15` are translated from *error* to *warning*.
+Here the errors reported by violating the schematron rule `BR-15` are translated from *error* to *warning*.
