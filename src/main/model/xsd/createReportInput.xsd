@@ -25,6 +25,7 @@
            elementFormDefault="qualified" attributeFormDefault="unqualified">
 
     <xs:import namespace="http://www.xoev.de/de/validator/framework/1/scenarios" schemaLocation="scenarios.xsd"/>
+    <xs:import namespace="http://purl.oclc.org/dsdl/svrl" schemaLocation="svrl-kosit.xsd" />
 
     <xs:element name="createReportInput">
         <xs:complexType>
