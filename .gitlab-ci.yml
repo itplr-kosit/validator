@@ -9,10 +9,40 @@ cache:
 
 build-java-latest:
   stage: build
+  image: maven:3-jdk-13
   script:
     - mvn $MAVEN_CLI_OPTS  verify
   artifacts:
     name: java-latest
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+build-java-12:
+  stage: build
+  image: maven:3-jdk-12
+  script:
+    - mvn $MAVEN_CLI_OPTS  verify
+  artifacts:
+    name: java-12
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+
+build-java-11:
+  stage: build
+  image: maven:3-jdk-11
+  script:
+    - mvn $MAVEN_CLI_OPTS  verify
+  artifacts:
+    name: java-11
     paths:
       - target/*.jar
     reports:
