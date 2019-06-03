@@ -41,7 +41,7 @@ public class DaemonIT {
 
     @Test
     public void makeSureThatSuccessTest() throws IOException {
-        try ( InputStream io = DaemonIT.class.getClassLoader().getResourceAsStream(EXAMPLE_FILE) ) {
+        try ( final InputStream io = DaemonIT.class.getClassLoader().getResourceAsStream(EXAMPLE_FILE) ) {
             given().contentType(ContentType.XML).body(toContent(io)).when().post("/").then().statusCode(200);
         }
     }
@@ -54,12 +54,12 @@ public class DaemonIT {
     @Test
     @Ignore // no default error report yet
     public void internalServerErrorTest() throws IOException {
-        try ( InputStream io = DaemonIT.class.getClassLoader().getResourceAsStream(INVALID_XML) ) {
+        try ( final InputStream io = DaemonIT.class.getClassLoader().getResourceAsStream(INVALID_XML) ) {
             given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(200);
         }
     }
 
-    private byte[] toContent(final InputStream io) throws IOException {
+    private static byte[] toContent(final InputStream io) throws IOException {
         return IOUtils.toByteArray(io);
     }
 
@@ -75,7 +75,7 @@ public class DaemonIT {
 
     @Test
     public void xmlResultTest() throws IOException {
-        try ( InputStream io = DaemonIT.class.getClassLoader().getResourceAsStream(EXAMPLE_FILE) ) {
+        try ( final InputStream io = DaemonIT.class.getClassLoader().getResourceAsStream(EXAMPLE_FILE) ) {
             given().body(toContent(io)).when().post("/").then().contentType(APPLICATION_XML).and().statusCode(200);
         }
     }
