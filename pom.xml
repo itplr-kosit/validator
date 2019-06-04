@@ -387,8 +387,11 @@
                         <classpath/>
                         <argument>de.kosit.validationtool.cmd.CommandLineApplication</argument>
                         <argument>-s</argument>
-                        <argument>src/main/docker/daemon/config/scenarios.xml</argument>
+                        <argument>${project.build.testOutputDirectory}/examples/UBLReady/scenarios-2.xml</argument>
+                        <argument>-r</argument>
+                        <argument>${project.build.testOutputDirectory}/examples/repository</argument>
                         <argument>-D</argument>
+
                     </arguments>
 
                 </configuration>
@@ -398,6 +401,7 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <configuration>
                     <tasks>
+                        <!-- schlafen um den Start des Daemon abzuwarten -->
                         <sleep seconds="5" />
                     </tasks>
                 </configuration>

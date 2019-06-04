@@ -308,7 +308,7 @@ public class CommandLineApplication {
                 return d.toUri();
             } else {
                 throw new IllegalArgumentException(
-                        String.format("Not a valid path for scenario definition specified: '%s'", d.toAbsolutePath()));
+                        String.format("Not a valid path for repository definition specified: '%s'", d.toAbsolutePath()));
             }
         }
         return null;
