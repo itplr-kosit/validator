@@ -3,9 +3,6 @@ image: maven:latest
 variables:
   MAVEN_CLI_OPTS: " --batch-mode -Dmaven.repo.local=/cache/repository -Dfile.encoding=UTF-8"
 
-cache:
-  paths:
-    - /cache/repository
 
 build-java-latest:
   stage: build
