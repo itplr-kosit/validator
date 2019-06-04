@@ -5,7 +5,7 @@ variables:
 
 cache:
   paths:
-    - repository
+    - /cache/repository
 
 build-java-latest:
   stage: build
