@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Use s9api (e.g. XdmNode) internally for loading and holding xml objects (further memory optimization)
+- Builds with java 8 and >= 11
+- Packages for java8 and java >= 11 (with jaxb included)
 
 ## 1.0.2    
 ### Fixed
