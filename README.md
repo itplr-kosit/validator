@@ -94,8 +94,8 @@ java -jar validationtool-<version>-standalone.jar -s scenarios.xml -o test/repor
 Der Aufruf erzeugt im Verzeichnis test/reports für jede validierte Eingabedatei
 einen gleichnamige [Prüfbericht]-Datei.  
 Eine Übersicht über die Eigenschaften der Testdateien in
-[/validator-configuration-xrechnung/src/test/instances](/validator-configuration-xrechnung/src/test/instances) findet sich in
-[/validator-configuration-xrechnung/src/test/instances/assertions.xlsx](/validator-configuration-xrechnung/src/test/assertions.xlsx).  
+[/validator-configuration-xrechnung/src/test/instances](https://github.com/itplr-kosit/validator-configuration-xrechnung/blob/master/src/test/instances) findet sich in
+[/validator-configuration-xrechnung/src/test/instances/assertions.xml](https://github.com/itplr-kosit/validator-configuration-xrechnung/blob/master/src/test/assertions.xml). 
 
 ## Verwendung als Bibliothek
 Daneben kann das Prüftool auch in eigene Anwendungen integriert werden. 
@@ -204,10 +204,10 @@ sowie für Ausgabeoptionen für Ergebnisse. Sämtliche Abhängigkeiten sind im J
 Die Konfiguration besteht aus einer Konfigurationsdatei (XML-Dokument im Namensraum
 `http://www.xoev.de/de/validator/framework/1/scenarios`) sowie Resourcen (XML Schemata und XSLT-Dateien) in einem "Repository" genanntem Verzeichnis, auf welche die Konfigurationsdatei verweist.
 
-Der Aufbau der Konfigurationsdatei ist im entsprechenden Schema [scenarios.xsd](validationtool/src/main/model/xsd/scenarios.xsd) erläutert.
+Der Aufbau der Konfigurationsdatei ist im entsprechenden Schema [scenarios.xsd](src/main/model/xsd/scenarios.xsd) erläutert.
 
 ## Prüfbericht
-Der Aufbau des Prüfberichts ist im entsprechenden Schema [report.xsd](configurations/xrechnung/resources/report.xsd) erläutert.
+Der Aufbau des Prüfberichts ist im entsprechenden Schema [report.xsd](https://github.com/itplr-kosit/validator-configuration-xrechnung/blob/master/src/report.xsd) erläutert.
 Die für die maschinelle Auswertung des Prüfberichts wesentlichsten Angaben sind
 
 * der *Konformitätsstatus* (*valid* oder *invalid*, Attribut rep:report/@valid)
@@ -218,7 +218,7 @@ Die für die maschinelle Auswertung des Prüfberichts wesentlichsten Angaben sin
 
 ## Anpassung der Fehlergrade für die Bewertung
 Grundsätzlich werden für die Verarbeitungen alle Meldungen, welche aus den einzelnen
-[Prüfschritten](#grundsätzlicher-ablauf-der-prüfung) resultieren, in die Rollen *error*,
+[Prüfschritten](#grundsätzlicher-ablauf-einer-prüfung) resultieren, in die Rollen *error*,
 *warning* und *information* übersetzt. Der Prüfbericht erhält den Konformitätstatus *valid* genau dann, wenn in der
 Konfiguration ein Prüfszenario für den Dokumenttyp des zu testenden Dokuments gefunden wurde und keine Meldung mit
 Status *error* oder *warning* vorliegt. 
@@ -307,7 +307,7 @@ verwiesen.
 * Diese Zusicherungen können vom Prüftool selbst mittels des Schalter `--implemenation-assertions` automatisch geprüft werden.
 * Zudem wird die Integrität aller erstellten Prüfberichte automatisch gegen das Schema (XML Schema und
   Schematron-Regeln) des Prüfberichts getestet. 
-* Für weitere Details siehe [xrechnung/test/readme.txt](configurations/xrechnung/test/readme.txt).   
+* Für weitere Details siehe [Testsuite](https://github.com/itplr-kosit/xrechnung-testsuite/blob/master/README.md).  
 
 
 ## Noch nicht umgesetzte QS-Maßnahmen
