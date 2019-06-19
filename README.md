@@ -1,6 +1,6 @@
 # Inhaltsverzeichnis
 
-- [Über das Prüftool](#über-das-prüftool)
+- [Über den Validator](#über-das-prüftool)
 - [Konfigurationen](#konfigurationen)
 - [Grundsätzlicher Ablauf einer Prüfung](#grundsätzlicher-ablauf-einer-prüfung)
 - [Verwendung](#verwendung)
