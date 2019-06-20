@@ -29,3 +29,10 @@ src/generated
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 
+# IDE stuff
+.project
+.classpath
+.factorypath
+.settings
+.vscode
+*.code-workspace
