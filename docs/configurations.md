@@ -16,7 +16,7 @@ If no scenario matches you can also define a XSLT transformation in `<noScenario
 
 ## Validators Report
 
-The Validator's report is defined in [createReportInput.xsd](src/main/model/xsd/createReportInput.xsd) and contains all errors from all validation steps and some additional information on time of validation, engine used, the scenario which applied and a document identification.
+The Validator's report is defined in [createReportInput.xsd](/src/main/model/xsd/createReportInput.xsd) and contains all errors from all validation steps and some additional information on time of validation, engine used, the scenario which applied and a document identification.
 
 In general all errors will be classified in the following levels:
 

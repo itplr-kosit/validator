@@ -1,161 +1,89 @@
-# Inhaltsverzeichnis
+# Validator
 
-- [Über das Prüftool](#über-das-prüftool)
-- [Konfigurationen](#konfigurationen)
-- [Grundsätzlicher Ablauf einer Prüfung](#grundsätzlicher-ablauf-einer-prüfung)
-- [Verwendung](#verwendung)
-- [Build-Anweisungen](#build-anweisungen)
-- [Konfiguration des Prüftools](#konfiguration-des-prüftools)
-- [Qualitätssicherung](#qualitätssicherung)
+The validator is an XML validation-engine. It validates XML documents against XML Schema and Schematrons depending on self defined [scenarios](docs/configurations) which are used to fully configure the validation process.
+The validator always outputs a [validation report in XML](docs/configurations.md#validators-report) including all validation errors and data about the validation.
 
-# Über das Prüftool
+## Releases
 
-In seiner 23. Sitzung hat der [IT-Planungsrat](https://www.it-planungsrat.de) mit [Beschluss 2017/22 (6a)](https://www.it-planungsrat.de/SharedDocs/Sitzungen/DE/2017/Sitzung_23.html?pos=3) die [Koordinierungsstelle für IT-Standards (KoSIT)](https://www.xoev.de/) im Rahmen des Betriebs des Standards XRechnung mit der dauerhaften„…Bereitstellung eines Moduls zur Konformitätsprüfung elektronischer Rechnungen als offene Referenzimplementierung sowie …“ aller zugehöriger Artefakte beauftragt. Im Rahmen dieser Beauftragung wurde die hier bereitgestellte Software "Prüftool" entwickelt und (vor-) konfiguriert.
-
-Das Prüftool ist ein Programm, welches XML-Dateien (Dokumente) in Abhängigkeit von ihren Dokumenttypen gegen verschiedene
-Validierungsregeln (XML Schema und Schematron) prüft und das Ergebnis zu einem Konformitätsbericht (Konformitätsstatus
-*valid* oder *invalid*) mit einer Empfehlung zur Weiterverarbeitung (*accept*) oder Ablehnung (*reject*) aggregiert.  Mittels  Konfiguration kann bestimmt werden, welche der Konformitätsregeln durch ein Dokument, das zur Weiterverarbeitung empfohlen (*accept*) wird, verletzt sein dürfen.
-
-Das Prüftool selbst ist fachunabhängig und kennt keine spezifischen Dokumentinhalte noch Validierungsregeln.
-Diese werden im Rahmen einer [Prüftool-Konfiguration](#konfiguration-des-prüftools) definiert, welche zur Anwendung des Prüftools erforderlich ist.
-
-# Konfigurationen
-
-Fach- bzw. Standardspezifische Prüfkonfigurationen sind in eigene Module bzw. Repositories ausgelagert.
-
-## Prüfkonfiguration XRechnung
-
-Eine eigenständige Konfiguration für den Standard [XRechnung](http://www.xoev.de/de/xrechnung) wird ebenfalls auf [GitHub bereitgestellt](https://github.com/itplr-kosit/validator-configuration-xrechnung) ([Releases](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases)). Diese enthält alle notwendigen Ressourcen zu der Norm EN16931 (XML-Schema und [Schematron Regeln] (https://github.com/CenPC434/validation) u.a.) und die [XRechnung Schematron Regeln](https://github.com/itplr-kosit/xrechnung-schematron) in ihren aktuellen Versionen.
-
-Der geregelte Betrieb dieser Konfiguration wird im Rahmen des Betriebs des Standards XRechnung erfolgen.
-
-## Prüfkonfiguration XGewerbeanzeige
-
-Eine eigenständige Konfiguration für den Standard XGewerbeanzeige wird ebenfalls auf [GitHub bereitgestellt](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige) ([Releases](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige/releases)).
-
-Der geregelte Betrieb dieser Konfiguration wird im Rahmen des Betriebs des Standards XGewerbeanzeige erfolgen.
-
-
-
-# Verwendung
+Two kind of releases are available:
 
 Das Prüftool steht in zwei Varianten zur Verfügung:
-- als [Standalone-Version](#verwendung-als-standalone-anwendung), die von der Kommandozeile aus aufgerufen werden kann
-- als [Bibliothek](#verwendung-als-bibliothek), die in eigene Anwendungen integriert werden kann
 
-## Voraussetzungen
-Zur Ausführung und zum Durchführen des Maven-Builds wird Java 8 Update 111 oder höher benötigt.
+- als standalone/cli, die von der Kommandozeile aus aufgerufen werden kann
+- als Bibliothek/api, die in eigene Anwendungen integriert werden kann
 
+* die *Standalone-Distribution*  enthält das Uber-Jar mit allen Klassen zur Verarbeitung von Eingaben aus der Kommandozeile,
+sowie für Ausgabeoptionen für Ergebnisse. Sämtliche Abhängigkeiten sind im Jar gebundlet  und das Jar-File ist 'ausführbar'.
+* die *Full-Distribution* enthält darüber sämtlichen weiteren Varianten des `validationtools` sowie die benötigten Abhängigkeiten.
 
-## Verwendung als Standalone-Anwendung
+## Build
+
+### Requirements
+
+* Maven > 3.0.0
+* Java > 8 update 111
+
+### Procedure
+
+ `mvn install` generates two different packages in the `dist` directory:
+
+## Validation Configurations
+
+The validator is just an engine and does not know anything about XML Documents and has no own validation rules.
+
+Validation rules and details are defined in [validation scenarios](docs/configurations) which are used to fully configure the validation process.
+
+All configurations are self-contained modules and deployed on their own.
+
+### Third Party Validation Configurations
+
+Currently, there are two public third party validation configurations available.
+
+* Validation Configuration for [XRechnung](http://www.xoev.de/de/xrechnung) is available on
+  * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
+  * [Releases](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases) can also be downloaded
+* Validation Configuration for XGewerbeanzeige
+  * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige)
+  * [Releases](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige/releases) can also be downloaded
+
+## Usage
+
+### Standalone Command-Line Interface
+
+The general way using the CLI is:
 
 ```shell
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
-Eine Liste der möglichen Optionen kann mit den Schalter `--help` angezeigt werden.
+You can more CLI options by
 
-Aufruf, um die mitgelieferten Test-Dokumente zu validieren und dabei neben den XML-Prüfberichten auch die eingebetteten
-HTML-Dokumente als eingeständige Dateien auszugeben:
-
-```
-unzip validationtool-dist-<version>-standalone.zip
-unzip validator-configuration-xrechnung_<xrechnung-version>_<release-datum>.zip
-java -jar validationtool-<version>-standalone.jar -s scenarios.xml -o test/reports -h test/instances/*.xml
+```shell
+java -jar  validationtool-<version>-standalone.jar --help
 ```
 
-Der Aufruf erzeugt im Verzeichnis test/reports für jede validierte Eingabedatei
-einen gleichnamige [Prüfbericht]-Datei.
-Eine Übersicht über die Eigenschaften der Testdateien in
-[/validator-configuration-xrechnung/src/test/instances](/validator-configuration-xrechnung/src/test/instances) findet sich in
-[/validator-configuration-xrechnung/src/test/instances/assertions.xlsx](/validator-configuration-xrechnung/src/test/assertions.xlsx).
+A concrete exmaple with a specific validator configuration can be found on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung
 
+### Daemon-Mode
 
-
-## Verwendung des Daemon-Mode
-Das Prüftool stellt auch eine HTTP-Schnittstelle bereit, über die die Funktionalität angesprochen werden kann. Dazu wird die Anwendung
-im _Daemon-Mode_ gestartet:
-
+You can also start the validator as an HTTP-Server. Just start it in _Daemon-Mode_ with the `-D` option.
 
 ```shell
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
 ```
 
-In der Default-Konfiguration stellt dieser Aufruf einen HTTP-Server unter _localhost_ und Port 8080 bereit.
+Per default the HTTP-Server listens on _localhost_ at Port 8080.
 
-Host und Port lassen sich anpassen:
+You can configure it with `-H` for IP Adress and `-P` for port number:
 
 ```shell
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D -H 192.168.1.x -P 8081
 ```
 
-Im Daemon-Mode nimmt der HTTP-Server POST-Anfragen unter `/` entgegen, verarbeitet den darüber bereitgestellten Prüfling und gibt das Ergebnis-Dokument als Antwort zurück.
-Zur Integration in Monitoring-Systeme wird eine Health-Check angeboten. Dieser ist über einen GET-Request unter `/health` erreichbar.
+You can HTTP-POST to  `/` and the response will return the report document as defined in your validator configuration.
 
-# Build-Anweisungen
+Additionally there is the GET `/health` endpoint which can be used by monitoring systems.
 
-Das Projekt wird mit Apache Maven gebaut.
+### Application User Interface
 
-Mittels `mvn install` werden im Unterverzeichnis `dist` zwei Pakete gebaut:
-
-* die *Standalone-Distribution*  enthält das Uber-Jar mit allen Klassen zur Verarbeitung von Eingaben aus der Kommandozeile,
-sowie für Ausgabeoptionen für Ergebnisse. Sämtliche Abhängigkeiten sind im Jar gebundlet  und das Jar-File ist 'ausführbar'.
-
-* die *Full-Distribution* enthält darüber sämtlichen weiteren Varianten des `validationtools` sowie die benötigten Abhängigkeiten.
-
-
-# Qualitätssicherung
-
-## Umgesetzte QS-Maßnahmen
-
-### Automatische Unit-Tests (Java-Code)
-* Die korrekte Funktionsweise des Prüftools wird durch mehr als 60 Unit-Test überprüft.
-* Die Unit-Tests sind Teil des bereitgestellten Codes und werden durch den Maven-Build automatisch ausgeführt.
-* Die Unit-Tests decken alle grundsätzlichen Funktionen des Prüftools ab. Daneben wird  das korrekte Verhalten der
-  Anwendung bei verschiedenen Fehleingaben überprüft und nachgewiesen.
-* Die Testabdeckung (Coverage) liegt derzeit bei ca. 85% des Java-Codes.
-  Diese Abdeckung wird mittels der Bibliothek jacoco automatisch ermittelt und zeigt, dass alle wesentlichen Funktionen
-  durch Tests überprüft werden.
-  Die verbleibenden 15% lassen sich fast ausschließlich auf Fehlerbedingungen (Exceptions) zurückführen,
-  die in der Praxis auch bei Fehleingaben nicht auftreten können und entsprechend durch keine Unit-Tests durchlaufen
-  werden.
-
-### Automatische Code-Analyse (Java-Code)
-
-* Der Quellcode wird dauerhaft und automatisch durch das weit verbreitete System [Sonar](https://www.sonarqube.org/) zur
-  statischen Code-Analyse geprüft.
-* Das Prüftool wird von Sonar mit aktuell ca 1.800 Zeilen Quellcode als klein (S) eingestuft.
-* Es existieren aktuelle 7 "Code Smells" und 3 "False Positives".
-* Sämtliche „Code Smells“ sind auf nicht abgetestete Bedingungen (siehe oben) zurückzuführen.
-* Ein Beispiel für ein "False Positive" ist "Illegale Ausgabe auf STDout", was jedoch eine konkrete Anforderung an das
-  Prüftool ist.
-* In den Aspekten "Reliability", "Security" und "Maintainability" wird der Quellcode jeweils mit dem bestmöglichen
-  [Rating](https://docs.sonarqube.org/display/SONAR/Metric+Definitions) "A" bewertet.
-
-### Berücksichtigung von Best Practices für XML-Security
-
-* Es wurden explizit Best Practices für die sichere XML-Verarbeitung mit Java (XML, XML Schema, XSLT) berücksichtigt, um
-  beispielsweise XXE (XML eXternal Entity) Attacken und allgemein externe Referenzierungen (Entities, XIncludes)
-  auzuschließen.
-
-### End-to-End-Testsuite für die Prüftool-Konfiguration XRechnung
-
-* Um die korrekte Funktion der Prüftool-Konfiguration XRechnung zu testen, wurde eine Suite aus 10 Testdokumenten und
-  insgesamt 310 prüfbaren Aussagen (Assertions) über die resultierenden Prüfberichte erstellt.
-* Durch diese Testsuite werden, ausgehend von dem Prüfbericht-Schemas alle möglichen Optionen und Auswahlmöglichkeiten
-  mindestens je einmal positiv  und einmal negativ getestet.
-* Diese Zusicherungen können vom Prüftool selbst mittels des Schalter `--implemenation-assertions` automatisch geprüft werden.
-* Zudem wird die Integrität aller erstellten Prüfberichte automatisch gegen das Schema (XML Schema und
-  Schematron-Regeln) des Prüfberichts getestet.
-* Für weitere Details siehe [xrechnung/test/readme.txt](configurations/xrechnung/test/readme.txt).
-
-
-## Noch nicht umgesetzte QS-Maßnahmen
-
-### Internes Security-Audit (Java-Code)
-Ein abschließendes Security Audit durch den Dienstleister läuft noch und wird voraussichtlich in der KW40 abgeschlossen sein.
-
-### Fachlicher Test der Prüftool-Konfiguration XRechnung
-Die Korrektheit der in der Prüftool-Konfiguration XRechnung enthaltenen Schematron-Dateien bzw. der aus ihnen erstellten
-XSLT-Kompilate wurde noch nicht systematisch geprüft, da weder die Schematron-Dateien der EN16931 noch die
-Schematron-Dateien des Standards XRechnung in finalen Fassungen vorlagen.
+The validator can also be used in own Java Applications via the API. Details can be [found here](./docs/api.md).
