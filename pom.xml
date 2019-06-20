@@ -1,38 +1,13 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- License below -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-=======
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-  ~ Licensed to the Koordinierungsstelle für IT-Standards (KoSIT) under
-  ~ one or more contributor license agreements. See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  KoSIT licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License. You may obtain a copy of the License at
-  ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied. See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
-
+<!-- License below -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
->>>>>>> #25_Refactor_build
     <modelVersion>4.0.0</modelVersion>
-
+    
     <name>KoSIT XML Prüftool Implementierung</name>
-
+    
     <groupId>de.kosit</groupId>
     <version>1.1.0-SNAPSHOT</version>
-
+    
     <artifactId>validationtool</artifactId>
     <description>KoSIT XML Prüftool zur Prüfung von XML Dateien gegenüber definierten Szenarien.</description>
     <developers>
@@ -44,7 +19,7 @@
             <organizationUrl>http://www.xoev.de</organizationUrl>
         </developer>
         <developer>
-
+            
             <id>renzo.kottmann</id>
             <name>Renzo Kottmann</name>
             <organization>KoSIT</organization>
@@ -83,7 +58,7 @@
             <url>file:${project.basedir}/libs</url>
         </repository>
     </repositories>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -114,7 +89,7 @@
             <version>${version.slf4j}</version>
             <optional>true</optional>
         </dependency>
-
+        
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -155,16 +130,16 @@
             <artifactId>packaged-test-scenarios</artifactId>
             <version>1.0.0</version>
         </dependency>
-
+        
     </dependencies>
-
+    
     <build>
         <resources>
             <resource>
                 <directory>src/main/model</directory>
             </resource>
         </resources>
-
+        
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -196,7 +171,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -252,7 +227,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -291,8 +266,8 @@
                     </execution>
                 </executions>
             </plugin>
-
-
+            
+            
             <plugin>
                 <!-- Integrate the /src/main/generated folder -->
                 <groupId>org.codehaus.mojo</groupId>
@@ -309,7 +284,7 @@
                             <sources>
                                 <source>src/generated/java</source>
                             </sources>
-
+                            
                         </configuration>
                     </execution>
                 </executions>
@@ -344,7 +319,7 @@
                     </plugins>
                 </configuration>
             </plugin>
-
+            
             <!-- Integrate code coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -384,7 +359,7 @@
                     <argLine>-Dfile.encoding=UTF-8 ${jacocoArgumentsJUnit}</argLine>
                 </configuration>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -398,7 +373,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -407,7 +382,7 @@
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -435,9 +410,9 @@
                         <argument>-r</argument>
                         <argument>${project.build.testOutputDirectory}/examples/repository</argument>
                         <argument>-D</argument>
-
+                        
                     </arguments>
-
+                    
                 </configuration>
             </plugin>
             <plugin>
@@ -470,22 +445,21 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
-
+                        
                     </execution>
                 </executions>
             </plugin>
-
+            
         </plugins>
     </build>
-
+    
     <scm>
         <connection>https://github.com/itplr-kosit/validationtool.git</connection>
         <developerConnection>scm:git:https://github.com/itplr-kosit/validationtool.git</developerConnection>
         <tag>v1.0.0</tag>
     </scm>
-
+    
 </project>
-
 <!--
   ~ Licensed to the Koordinierungsstelle für IT-Standards (KoSIT) under
   ~ one or more contributor license agreements. See the NOTICE file
