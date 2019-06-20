@@ -21,6 +21,7 @@ package de.kosit.validationtool.impl.model;
 
 import org.slf4j.Logger;
 
+import de.kosit.validationtool.api.XmlError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
 
 /**
@@ -29,17 +30,17 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
  * 
  * @author Andreas Penski
  */
-public abstract class BaseXMLSyntaxError {
+public abstract class BaseXMLSyntaxError implements XmlError {
 
     /**
      * Logged den Syntax-Fehler über einen definierten Logger.
      * 
      * @param logger der Logger
      */
-    public void log(Logger logger) {
-        String msgTemplate = "{} At row {} at pos {}";
-        Object[] params = { getMessage(), getRowNumber(), getColumnNumber() };
-        if (getSeverity() == XMLSyntaxErrorSeverity.SEVERITY_WARNING) {
+    public void log(final Logger logger) {
+        final String msgTemplate = "{} At row {} at pos {}";
+        final Object[] params = { getMessage(), getRowNumber(), getColumnNumber() };
+        if (getSeverityCode() == XMLSyntaxErrorSeverity.SEVERITY_WARNING) {
             logger.warn(msgTemplate, params);
         } else {
             logger.error(msgTemplate, params);
@@ -57,6 +58,7 @@ public abstract class BaseXMLSyntaxError {
      * 
      * @return Spalte des Fehlers
      */
+    @Override
     public abstract Integer getColumnNumber();
 
     /**
@@ -64,6 +66,7 @@ public abstract class BaseXMLSyntaxError {
      *
      * @return Zeile des Fehlers
      */
+    @Override
     public abstract Integer getRowNumber();
 
     /**
@@ -71,6 +74,7 @@ public abstract class BaseXMLSyntaxError {
      *
      * @return Fehlermeldung
      */
+    @Override
     public abstract String getMessage();
 
     /**
@@ -78,5 +82,16 @@ public abstract class BaseXMLSyntaxError {
      *
      * @return severity
      */
-    public abstract XMLSyntaxErrorSeverity getSeverity();
+    public abstract XMLSyntaxErrorSeverity getSeverityCode();
+
+    /**
+     * Dies ist der API-Zugriff. Es gibt zwei Methoden, weil es für die API einen abweichenden Typ gibt.
+     * 
+     * @return der Schweregrad
+     */
+    @Override
+    public Severity getSeverity() {
+        final XMLSyntaxErrorSeverity code = getSeverityCode();
+        return code != null ? Severity.valueOf(code.name()) : null;
+    }
 }

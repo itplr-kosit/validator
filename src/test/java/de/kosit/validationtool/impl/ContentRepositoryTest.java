@@ -22,6 +22,9 @@ package de.kosit.validationtool.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,64 +51,85 @@ public class ContentRepositoryTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-
     @Before
     public void setup() {
-        repository = new ContentRepository(ObjectFactory.createProcessor(), Helper.REPOSITORY);
+        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Helper.REPOSITORY);
     }
-
 
     @Test
     public void testCreateSchema() throws MalformedURLException {
-        final Schema schema = repository.createSchema(Helper.ASSERTION_SCHEMA.toURL());
+        final Schema schema = ContentRepository.createSchema(Helper.ASSERTION_SCHEMA.toURL());
         assertThat(schema).isNotNull();
     }
 
     @Test
-    public void testSchemaCaching() throws MalformedURLException {
-        final Schema schema = repository.getReportInputSchema();
-        assertThat(repository.getReportInputSchema()).isSameAs(schema);
+    public void testSchemaCaching() {
+        final Schema schema = this.repository.getReportInputSchema();
+        assertThat(this.repository.getReportInputSchema()).isSameAs(schema);
     }
 
     @Test
-    public void testCreateSchemaNotExisting()throws Exception {
-        exception.expect(IllegalStateException.class);
-        repository.createSchema(Helper.ASSERTION_SCHEMA.resolve("noexisting").toURL());
+    public void testCreateSchemaNotExisting() throws Exception {
+        this.exception.expect(IllegalStateException.class);
+        ContentRepository.createSchema(Helper.ASSERTION_SCHEMA.resolve("noexisting").toURL());
     }
 
     @Test
-    public void testLoadXSLT() throws MalformedURLException {
-        final XsltExecutable executable = repository.loadXsltScript(Helper.SAMPLE_XSLT);
+    public void testLoadXSLT() {
+        final XsltExecutable executable = this.repository.loadXsltScript(Helper.SAMPLE_XSLT);
         assertThat(executable).isNotNull();
     }
 
     @Test
-    public void testLoadXSLTNotExisting() throws MalformedURLException {
-        exception.expect(IllegalStateException.class);
-        repository.loadXsltScript(Helper.SAMPLE_XSLT.resolve("notexisting"));
+    public void testLoadXSLTNotExisting() {
+        this.exception.expect(IllegalStateException.class);
+        this.repository.loadXsltScript(Helper.SAMPLE_XSLT.resolve("notexisting"));
     }
 
     @Test
-    public void testXpathCreation() throws MalformedURLException {
-        XPathExecutable xPath =  repository.createXPath("//html", null);
+    public void testXpathCreation() {
+        XPathExecutable xPath = this.repository.createXPath("//html", null);
         assertThat(xPath).isNotNull();
-        xPath = repository.createXPath("//html", Collections.emptyMap());
+        xPath = this.repository.createXPath("//html", Collections.emptyMap());
         assertThat(xPath).isNotNull();
-        Map<String,String> namespace = new HashMap<>();
+        final Map<String, String> namespace = new HashMap<>();
         namespace.put("html", "http://www.w3.org/1999/xhtml");
-        xPath =  repository.createXPath("//html:html", namespace );
+        xPath = this.repository.createXPath("//html:html", namespace);
         assertThat(xPath).isNotNull();
     }
 
     @Test
-    public void testXpathCreationWithoutNamespace(){
-        exception.expect(IllegalStateException.class);
-        repository.createXPath("//html:html", null );
+    public void testXpathCreationWithoutNamespace() {
+        this.exception.expect(IllegalStateException.class);
+        this.repository.createXPath("//html:html", null);
     }
 
     @Test
-    public void testIllegalXpath(){
-        exception.expect(IllegalStateException.class);
-        repository.createXPath("kein Xpath Ausdruck", null );
+    public void testIllegalXpath() {
+        this.exception.expect(IllegalStateException.class);
+        this.repository.createXPath("kein Xpath Ausdruck", null);
     }
+
+    @Test
+    public void loadFromJar() throws URISyntaxException {
+        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
+        final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("resources/eRechnung/report.xsl"));
+        assertThat(xsltExecutable).isNotNull();
+    }
+
+    @Test
+    public void testLoadSchema() {
+        final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("simple/main.xsd");
+        final Schema schema = ContentRepository.createSchema(main, new ClassPathResourceResolver("/simple"));
+        assertThat(schema).isNotNull();
+    }
+
+    @Test
+    public void testLoadSchemaPackaged() throws URISyntaxException {
+        final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("packaged/main.xsd");
+        final Schema schema = ContentRepository.createSchema(main,
+                new ClassPathResourceResolver(RelativeUriResolverTest.class.getClassLoader().getResource("packaged/").toURI()));
+        assertThat(schema).isNotNull();
+    }
+
 }

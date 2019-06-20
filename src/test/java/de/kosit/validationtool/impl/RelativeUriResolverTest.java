@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -44,7 +45,7 @@ public class RelativeUriResolverTest {
     static {
         try {
             BASE = RelativeUriResolver.class.getResource("/examples/assertions/").toURI();
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -56,19 +57,35 @@ public class RelativeUriResolverTest {
 
     @Test
     public void testSucces() throws TransformerException {
-        final Source resource = resolver.resolve("ubl-0001.xml", BASE.toASCIIString());
+        final Source resource = this.resolver.resolve("ubl-0001.xml", BASE.toASCIIString());
         assertThat(resource).isNotNull();
     }
 
     @Test
     public void testNotExisting() throws TransformerException {
-        exception.expect(IllegalStateException.class);
-        resolver.resolve("ubl-0001", BASE.toASCIIString());
+        this.exception.expect(IllegalStateException.class);
+        this.resolver.resolve("ubl-0001", BASE.toASCIIString());
     }
 
     @Test
     public void testOutOfPath() throws TransformerException {
-        exception.expect(IllegalStateException.class);
-        resolver.resolve("../results/report.xml", BASE.toASCIIString());
+        this.exception.expect(IllegalStateException.class);
+        this.resolver.resolve("../results/report.xml", BASE.toASCIIString());
+    }
+
+    @Test
+    public void testClasspathLocal() throws URISyntaxException, TransformerException {
+        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("simple").toURI());
+        final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("simple/main.xsd");
+        final Source resolved = this.resolver.resolve("./resources/reference.xsd", moz.toURI().toASCIIString());
+        assertThat(resolved).isNotNull();
+    }
+
+    @Test
+    public void testClasspathJAR() throws URISyntaxException, TransformerException {
+        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("packaged").toURI());
+        final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("packaged/main.xsd");
+        final Source resolved = this.resolver.resolve("./resources/reference.xsd", moz.toURI().toASCIIString());
+        assertThat(resolved).isNotNull();
     }
 }

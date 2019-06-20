@@ -20,7 +20,9 @@
 package de.kosit.validationtool.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +30,11 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.api.Result;
+import de.kosit.validationtool.api.XmlError;
 import de.kosit.validationtool.impl.tasks.CheckAction;
+import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
+import de.kosit.validationtool.impl.tasks.ComputeAcceptanceAction;
 import de.kosit.validationtool.impl.tasks.CreateReportAction;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.tasks.ScenarioSelectionAction;
@@ -39,9 +45,9 @@ import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
 import de.kosit.validationtool.model.reportInput.EngineType;
 import de.kosit.validationtool.model.reportInput.ProcessingError;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Die Referenz-Implementierung für den Prüfprozess. Nach initialer Konfiguration ist diese Klasse threadsafe und kann
@@ -64,7 +70,6 @@ public class DefaultCheck implements Check {
 
     private final ConversionService conversionService;
 
-
     @Getter
     private final List<CheckAction> checkSteps;
 
@@ -77,17 +82,18 @@ public class DefaultCheck implements Check {
         final Processor processor = ObjectFactory.createProcessor();
         this.conversionService = new ConversionService();
         this.contentRepository = new ContentRepository(processor, configuration.getScenarioRepository());
-        this.repository = new ScenarioRepository(processor, this.contentRepository);
+        this.repository = new ScenarioRepository(this.contentRepository);
         this.repository.initialize(configuration);
         this.checkSteps = new ArrayList<>();
         this.checkSteps.add(DefaultCheck::createDocumentIdentification);
         this.checkSteps.add(new DocumentParseAction());
         this.checkSteps.add(new ScenarioSelectionAction(this.repository));
         this.checkSteps.add(new SchemaValidationAction());
-        this.checkSteps.add(new SchematronValidationAction(configuration.getScenarioRepository()));
+        this.checkSteps.add(new SchematronValidationAction(configuration.getScenarioRepository(), this.conversionService));
         this.checkSteps.add(new ValidateReportInputAction(this.conversionService, this.contentRepository.getReportInputSchema()));
         this.checkSteps
                 .add(new CreateReportAction(processor, this.conversionService, this.repository, configuration.getScenarioRepository()));
+        this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
     protected static CreateReportInput createReport() {
@@ -101,12 +107,12 @@ public class DefaultCheck implements Check {
     }
 
     @Override
-    public XdmNode checkInput(final Input input) {
+    public Result checkInput(final Input input) {
         final CheckAction.Bag t = new CheckAction.Bag(input, createReport());
         return runCheckInternal(t);
     }
 
-    protected XdmNode runCheckInternal(final CheckAction.Bag t) {
+    protected Result runCheckInternal(final CheckAction.Bag t) {
         final long started = System.currentTimeMillis();
         log.info("Checking content of {}", t.getInput().getName());
         for (final CheckAction action : this.checkSteps) {
@@ -124,10 +130,25 @@ public class DefaultCheck implements Check {
         }
         t.setFinished(true);
         log.info("Finished check of {} in {}ms\n", t.getInput().getName(), System.currentTimeMillis() - started);
-        return t.getReport();
+        return createResult(t);
     }
 
-    private static boolean createDocumentIdentification(final CheckAction.Bag transporter) {
+    private Result createResult(final Bag t) {
+        final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), this.contentRepository);
+        if (t.getSchemaValidationResult() != null) {
+            result.setSchemaViolations(convertErrors(t.getSchemaValidationResult().getErrors()));
+        }
+        result.setSchematronResult(t.getReportInput().getValidationResultsSchematron().stream()
+                .map(e -> e.getResults().getSchematronOutput()).collect(Collectors.toList()));
+        return result;
+    }
+
+    private static List<XmlError> convertErrors(final Collection<XMLSyntaxError> errors) {
+        // noinspection unchecked
+        return (List<XmlError>) (List<?>) errors;
+    }
+
+    private static void createDocumentIdentification(final CheckAction.Bag transporter) {
         final DocumentIdentificationType i = new DocumentIdentificationType();
         final DocumentIdentificationType.DocumentHash h = new DocumentIdentificationType.DocumentHash();
         h.setHashAlgorithm(transporter.getInput().getDigestAlgorithm());
@@ -135,6 +156,5 @@ public class DefaultCheck implements Check {
         i.setDocumentHash(h);
         i.setDocumentReference(transporter.getInput().getName());
         transporter.getReportInput().setDocumentIdentification(i);
-        return true;
     }
 }

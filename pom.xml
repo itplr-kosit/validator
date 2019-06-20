@@ -1,11 +1,32 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- License below -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+=======
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Koordinierungsstelle für IT-Standards (KoSIT) under
+  ~ one or more contributor license agreements. See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  KoSIT licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+>>>>>>> #25_Refactor_build
     <modelVersion>4.0.0</modelVersion>
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
 
     <name>KoSIT XML Prüftool Implementierung</name>
 
@@ -15,27 +36,53 @@
     <artifactId>validationtool</artifactId>
     <description>KoSIT XML Prüftool zur Prüfung von XML Dateien gegenüber definierten Szenarien.</description>
     <developers>
+        <!-- In alphabetical order by last name -->
+        <developer>
+            <id>fabian.buettner</id>
+            <name>Fabian Büttner</name>
+            <organization>KoSIT</organization>
+            <organizationUrl>http://www.xoev.de</organizationUrl>
+        </developer>
+        <developer>
+
+            <id>renzo.kottmann</id>
+            <name>Renzo Kottmann</name>
+            <organization>KoSIT</organization>
+            <organizationUrl>http://www.xoev.de</organizationUrl>
+            <roles>
+                <role>Product Owner</role>
+            </roles>
+        </developer>
         <developer>
             <id>andreas.penski</id>
             <name>Andreas Penski</name>
             <organization>]init[ AG</organization>
             <organizationUrl>https://www.init.de</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
         </developer>
         <developer>
             <id>fabian.buettner</id>
             <name>Fabian Büttner</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.kosit.de</organizationUrl>
+            <organizationUrl>http://www.xoev.de</organizationUrl>
         </developer>
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.jacoco>0.8.3</version.jacoco>
-        <version.lombok>1.18.6</version.lombok>
-        <version.saxon-he>9.9.1-1</version.saxon-he>
+        <version.jacoco>0.8.4</version.jacoco>
+        <version.lombok>1.18.8</version.lombok>
+        <version.saxon-he>9.9.1-3</version.saxon-he>
         <version.slf4j>1.7.25</version.slf4j>
-        <docker.host>localhost</docker.host>
     </properties>
+    <repositories>
+        <repository>
+            <id>project.local</id>
+            <name>project</name>
+            <url>file:${project.basedir}/libs</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -71,7 +118,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.5</version>
+            <version>3.9</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -82,7 +129,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.8.0</version>
+            <version>3.12.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -100,8 +147,13 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>3.2.0</version>
+            <version>3.3.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.kosit.validationtool</groupId>
+            <artifactId>packaged-test-scenarios</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
     </dependencies>
@@ -116,8 +168,28 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.0.0,)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -225,7 +297,7 @@
                 <!-- Integrate the /src/main/generated folder -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.1</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
@@ -316,6 +388,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -335,256 +408,76 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>run</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>java</executable>
+                    <longClasspath>true</longClasspath>
+                    <async>true</async>
+                    <asyncDestroyOnShutdown>true</asyncDestroyOnShutdown>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <classpath />
+                        <argument>de.kosit.validationtool.cmd.CommandLineApplication</argument>
+                        <argument>-s</argument>
+                        <argument>${project.build.testOutputDirectory}/examples/UBLReady/scenarios-2.xml</argument>
+                        <argument>-r</argument>
+                        <argument>${project.build.testOutputDirectory}/examples/repository</argument>
+                        <argument>-D</argument>
+
+                    </arguments>
+
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <configuration>
+                    <tasks>
+                        <!-- schlafen um den Start des Daemon abzuwarten -->
+                        <sleep seconds="5" />
+                    </tasks>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>sleep-for-a-while</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.1</version>
+                <executions>
+                    <execution>
+                        <id>test-java8</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>java-8</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.22.1</version>
-                        <executions>
-                            <execution>
-                                <id>test-java8</id>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration>
-                                    <!--suppress MavenModelInspection -->
-                                    <argLine>
-                                        -Ddaemon.port=8081
-                                        -Ddaemon.host=http://${docker.host}
-                                    </argLine>
-                                    <summaryFile>${project.build.directory}/failsafe-reports/failsafe-summary-java8.xml</summaryFile>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>test-java-8-jdk-jaxb</id>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration>
-                                    <!--suppress MavenModelInspection -->
-                                    <argLine>
-                                        -Ddaemon.port=8082
-                                        -Ddaemon.host=http://${docker.host}
-                                    </argLine>
-                                    <summaryFile>${project.build.directory}/failsafe-reports/failsafe-summary-java8-jdk-jaxb.xml
-                                    </summaryFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.28.0</version>
-                        <configuration>
-                            <dockerHost>tcp://${docker.host}:2375</dockerHost>
-                            <showLogs>true</showLogs>
-                            <startParallel>true</startParallel>
-                            <verbose>false</verbose>
-                            <containerNamePattern>validator-%n-%t-%i-java8</containerNamePattern>
-                        </configuration>
-
-                        <executions>
-                            <execution>
-                                <id>up8</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>start</goal>
-                                </goals>
-                                <configuration>
-                                    <images>
-                                        <image>
-                                            <alias>daemon8</alias>
-                                            <name>daemon8</name>
-                                            <build>
-                                                <dockerFileDir>daemon</dockerFileDir>
-                                                <dockerFile>Dockerfile-java8</dockerFile>
-                                                <assembly>
-                                                    <inline>
-                                                        <files>
-                                                            <file>
-                                                                <source>
-                                                                    ${project.build.directory}/validationtool-${project.version}-standalone.jar
-                                                                </source>
-                                                                <destName>validationtool-standalone.jar</destName>
-                                                            </file>
-                                                        </files>
-                                                    </inline>
-                                                </assembly>
-                                            </build>
-                                            <run>
-                                                <network>
-                                                    <mode>bridge</mode>
-                                                </network>
-                                                <ports>
-                                                    <port>8081:8080</port>
-                                                </ports>
-                                                <wait>
-                                                    <time>5000</time>
-                                                </wait>
-                                            </run>
-                                        </image>
-                                        <image>
-                                            <alias>daemon8-jdk-jaxb</alias>
-                                            <name>daemon8-jdk-jaxb</name>
-                                            <build>
-                                                <dockerFileDir>daemon</dockerFileDir>
-                                                <dockerFile>Dockerfile-java8-jdk-jaxb</dockerFile>
-                                                <assembly>
-                                                    <inline>
-                                                        <files>
-                                                            <file>
-                                                                <source>
-                                                                    ${project.build.directory}/validationtool-${project.version}-java8-standalone.jar
-                                                                </source>
-                                                                <destName>validationtool-standalone.jar</destName>
-                                                            </file>
-                                                        </files>
-                                                    </inline>
-                                                </assembly>
-                                            </build>
-                                            <run>
-                                                <network>
-                                                    <mode>bridge</mode>
-                                                </network>
-                                                <ports>
-                                                    <port>8082:8080</port>
-                                                </ports>
-                                                <wait>
-                                                    <time>5000</time>
-                                                </wait>
-                                            </run>
-                                        </image>
-                                    </images>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>down8</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>java-11</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.22.1</version>
-                        <executions>
-                            <execution>
-                                <id>test-jdk11</id>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration>
-                                    <!--suppress MavenModelInspection -->
-                                    <argLine>
-                                        -Ddaemon.port=8080
-                                        -Ddaemon.host=http://${docker.host}
-                                    </argLine>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.28.0</version>
-                        <configuration>
-                            <dockerHost>tcp://${docker.host}:2375</dockerHost>
-                            <showLogs>true</showLogs>
-                            <startParallel>true</startParallel>
-                            <verbose>false</verbose>
-                            <containerNamePattern>validator-%n-%t-%i-java8</containerNamePattern>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>up11</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>start</goal>
-                                </goals>
-                                <configuration>
-                                    <images>
-                                        <image>
-                                            <alias>daemon11</alias>
-                                            <name>daemon11</name>
-                                            <build>
-                                                <dockerFileDir>daemon</dockerFileDir>
-                                                <assembly>
-                                                    <inline>
-                                                        <files>
-                                                            <file>
-                                                                <source>
-                                                                    ${project.build.directory}/validationtool-${project.version}-standalone.jar
-                                                                </source>
-                                                                <destName>validationtool-standalone.jar</destName>
-                                                            </file>
-                                                        </files>
-                                                    </inline>
-                                                </assembly>
-                                            </build>
-                                            <run>
-                                                <network>
-                                                    <mode>bridge</mode>
-                                                </network>
-                                                <ports>
-                                                    <port>8080:8080</port>
-                                                </ports>
-                                                <wait>
-                                                    <time>5000</time>
-                                                </wait>
-                                            </run>
-                                        </image>
-                                    </images>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>down11</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>gitlab</id>
-            <properties>
-                <docker.host>host.docker.internal</docker.host>
-            </properties>
-        </profile>
-    </profiles>
     <scm>
         <connection>https://github.com/itplr-kosit/validationtool.git</connection>
         <developerConnection>scm:git:https://github.com/itplr-kosit/validationtool.git</developerConnection>

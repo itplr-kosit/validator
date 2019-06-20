@@ -39,6 +39,23 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class Helper {
 
+    public static class Simple {
+
+        public static final URI ROOT = EXAMPLES_DIR.resolve("simple/");
+
+        public static final URI SIMPLE_VALID = Simple.ROOT.resolve("input/simple.xml");
+
+        public static final URI FOO = Simple.ROOT.resolve("input/foo.xml");
+
+        public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
+
+        public static final URI REPOSITORY = ROOT.resolve("repository/");
+
+        public static final URI INVALID = ROOT.resolve("input/simple-invalid.xml");
+
+        public static final URI UNKNOWN = ROOT.resolve("input/unknown.xml");
+    }
+
     public static final URI SOURCE_ROOT = Paths.get("src/main/resources").toUri();
 
     public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
@@ -57,6 +74,8 @@ public class Helper {
 
     public static final URI REPOSITORY = EXAMPLES_DIR.resolve("repository/");
 
+    public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("xrechnung/repository/");
+
     public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
 
     public static final URI SAMPLE_DIR = EXAMPLES_DIR.resolve("UBLReady/");
@@ -73,18 +92,18 @@ public class Helper {
      * @param url die url die geladen werden soll
      * @return ein result objekt mit Dokument
      */
-    public static XdmNode load(URL url) {
-        try ( InputStream input = url.openStream() ) {
+    public static XdmNode load(final URL url) {
+        try ( final InputStream input = url.openStream() ) {
             return ObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
-        } catch (SaxonApiException | IOException e) {
+        } catch (final SaxonApiException | IOException e) {
             throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
 
         }
 
     }
 
-    public static <T> T load(URL url, Class<T> type) throws URISyntaxException {
-        ConversionService c = new ConversionService();
+    public static <T> T load(final URL url, final Class<T> type) throws URISyntaxException {
+        final ConversionService c = new ConversionService();
         c.initialize(de.kosit.validationtool.model.reportInput.ObjectFactory.class.getPackage(),
                 de.kosit.validationtool.cmd.assertions.ObjectFactory.class.getPackage(),
                 de.kosit.validationtool.model.scenarios.ObjectFactory.class.getPackage());

@@ -52,4 +52,11 @@
         </jaxb:schemaBindings>
     </jaxb:bindings>
 
+    <jaxb:bindings schemaLocation="../xsd/svrl-kosit.xsd">
+
+        <jaxb:bindings node="//xs:element[@name='schematron-output']/xs:complexType">
+            <inheritance:extends>de.kosit.validationtool.impl.model.BaseOutput</inheritance:extends>
+        </jaxb:bindings>
+    </jaxb:bindings>
+
 </jaxb:bindings>

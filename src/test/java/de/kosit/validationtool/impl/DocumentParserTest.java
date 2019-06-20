@@ -22,7 +22,6 @@ package de.kosit.validationtool.impl;
 import static de.kosit.validationtool.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
 import java.net.URL;
 
 import org.junit.Before;
@@ -37,6 +36,8 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
+ * Testet die Document Parsing-Funktionalitäten.
+ * 
  * @author Andreas Penski
  */
 public class DocumentParserTest {
@@ -47,8 +48,6 @@ public class DocumentParserTest {
 
     private static final URL NOT_EXISTING = ConversionServiceTest.class.getResource("/does not exist.xml");
 
-
-
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
@@ -56,22 +55,21 @@ public class DocumentParserTest {
 
     @Before
     public void setup() {
-        parser = new DocumentParseAction();
+        this.parser = new DocumentParseAction();
     }
 
     @Test
-    public void testSimple() throws IOException {
-        final Result<XdmNode, XMLSyntaxError> result = parser.parseDocument(read(CONTENT));
+    public void testSimple() {
+        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(CONTENT));
         assertThat(result).isNotNull();
         assertThat(result.getObject()).isNotNull();
         assertThat(result.getErrors()).isEmpty();
         assertThat(result.isValid()).isTrue();
     }
 
-
     @Test
-    public void testIllformed() throws IOException {
-        final Result<XdmNode, XMLSyntaxError> result = parser.parseDocument(read(ILLFORMED));
+    public void testIllformed() {
+        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(ILLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
         assertThat(result.getObject()).isNull();
@@ -80,10 +78,9 @@ public class DocumentParserTest {
 
     @Test
     public void testNullInput() {
-        exception.expect(IllegalArgumentException.class);
-        parser.parseDocument(null);
+        this.exception.expect(IllegalArgumentException.class);
+        DocumentParseAction.parseDocument(null);
 
     }
-
 
 }
