@@ -7,6 +7,7 @@ The Validator offers an API which allows you to integrate Validator in your own 
 Currently, we *do not* deploy to Maven Central or similar. Hence you need to build and optionally deploy the Validator artifacts to your own shared repository  (see for example [Maven Documentation](https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html)).
 
 ### Maven
+
 Then you can declare the dependency as follows:
 
 ```xml
@@ -16,6 +17,7 @@ Then you can declare the dependency as follows:
    <version>${validator.version}</version>
 </dependency>
 ```
+
 ### Gradle
 
 ```js
@@ -26,10 +28,9 @@ dependencies {
 
 ## Usage
 
+Prerequisite for use is a valid [scenario definition](configurations.md) and the a folder with all necessary artifacts for validation (repository).
 
-
-Voraussetzung für die Verwendung ist eine valide Prüfszenarien-Definition (xml-Datei) und das dazugehörige Repository
-mit den von den definierten Szenarien benötigten Artefakten. Der folgende Quellcode zeigt die Erzeugung einer neuen
+The following example demonstrates  Der folgende Quellcode zeigt die Erzeugung einer neuen
 Prüf-Instanz:
 
 ```java
@@ -65,13 +66,9 @@ List<Document> reports = pruefer.implemenation(toCheck);
 
 ```
 
-Eine einmal initialisierte Prüfinstanz ist *threadsafe* und kann beliebig oft wieder verwendet
-werden. XML-Artefakte wie Schema oder XSLT-Executables werden bei Instantiierung des `DefaultCheck` initialisiert und
-wiederverwendet. Da diese Objekte relativ aufwändig zu Erzeugen sind, empfielt sich die Wiederverwendung der `Check`-Instanz.
+Initializing all XML artifacts and XSLT-executables is expensive. The `Check` instance is *threadsafe* and keeps all artifacts. Therefore, we recommend the re-use of an `Check` instance.
 
-Die Batch-Verarbeitung erfolgt grundsätzlich seriell. Der `DefaultCheck` implementiert *keine Parallelverarbeitung*.
+* Batch use is serial and *not parallel*
 
-Einziges Eingabeobjekt ist `Input`, welches sich mit den verschiedenen Methoden der `InputFactory` aus div. Eingabe-Resourcen
-erzeugen lässt. Die InputFactory erzeugt für jedes Eingabe-Objekt eine Prüfsumme, die im Report mitgeführt wird. Der
-verwendete Algorithmus ist über die `read`-Methoden der `InputFactory` definierbar. Standardmäßig wird _SHA-256_ des JDK
-verwendet
+The only input `de.kosit.validationtool.api.Input` which can be created by various methods of `de.kosit.validationtool.api.InputFactory`.
+The `InputFactory` calculates a hash sum for each Input which is also written to the Report. _SHA-256_ from the JDK is the default algorithm. It can be changed using the `read`-methods of `InputFactory`.
