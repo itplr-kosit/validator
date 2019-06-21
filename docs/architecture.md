@@ -30,7 +30,7 @@ sequenceDiagram
   e->>e: validate Schematron
   e->>e: create Validator Report
   e->>+c: execute configuration report generator
-  e->>-c: return XPATH of acceptance message
+  c->>-e: return XPATH of acceptance message
   
 ```
  
