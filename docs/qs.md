@@ -44,14 +44,4 @@
   Schematron-Regeln) des Prüfberichts getestet.
 * Für weitere Details siehe [xrechnung/test/readme.txt](configurations/xrechnung/test/readme.txt).
 
-## Noch nicht umgesetzte QS-Maßnahmen
 
-### Internes Security-Audit (Java-Code)
-
-Ein abschließendes Security Audit durch den Dienstleister läuft noch und wird voraussichtlich in der KW40 abgeschlossen sein.
-
-### Fachlicher Test der Prüftool-Konfiguration XRechnung
-
-Die Korrektheit der in der Prüftool-Konfiguration XRechnung enthaltenen Schematron-Dateien bzw. der aus ihnen erstellten
-XSLT-Kompilate wurde noch nicht systematisch geprüft, da weder die Schematron-Dateien der EN16931 noch die
-Schematron-Dateien des Standards XRechnung in finalen Fassungen vorlagen.
