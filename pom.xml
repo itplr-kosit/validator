@@ -184,7 +184,8 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>validationtool-${project.version}-standalone</finalName>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>standalone</shadedClassifierName>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>de.kosit.validationtool.cmd.CommandLineApplication</mainClass>
@@ -202,7 +203,8 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>validationtool-${project.version}-java8-standalone</finalName>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>java8-standalone</shadedClassifierName>
                             <artifactSet>
                                 <excludes>
                                     <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
@@ -233,22 +235,6 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>standalone_dist</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/assembly/assembly-standalone.xml</descriptor>
-                            </descriptors>
-                            <attach>true</attach>
-                            <appendAssemblyId>true</appendAssemblyId>
-                            <outputDirectory>target/</outputDirectory>
-                            <workDirectory>target/assembly/standalone</workDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>full_dist</id>
                         <phase>package</phase>
                         <goals>
@@ -256,7 +242,7 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>src/assembly/assembly-full.xml</descriptor>
+                                <descriptor>src/assembly/assembly-dist.xml</descriptor>
                             </descriptors>
                             <attach>true</attach>
                             <appendAssemblyId>false</appendAssemblyId>
