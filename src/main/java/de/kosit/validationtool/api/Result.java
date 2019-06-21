@@ -5,8 +5,6 @@ import java.util.List;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 
-import de.kosit.validationtool.model.reportInput.CreateReportInput;
-
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -15,13 +13,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public interface Result {
-
-    /**
-     * Gibt die vom Validator erstelle interne Berichts-'Vorstufe' als Objekt zurück.
-     * 
-     * @return die Berichts-'Vorstufe'
-     */
-    CreateReportInput getReportInput();
 
     /** Der generierte Report. */
     XdmNode getReport();

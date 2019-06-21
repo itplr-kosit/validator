@@ -34,6 +34,7 @@ public class DefaultResult implements Result {
     @Getter
     private final XdmNode report;
 
+    /** Die vom Validator erstelle interne Berichts-'Vorstufe' */
     @Getter
     @Setter(AccessLevel.PACKAGE)
     private CreateReportInput reportInput;
