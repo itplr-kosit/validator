@@ -10,4 +10,4 @@ Some information on how we aim to ensure certain level of quality.
 
 ## XML-Security Best Practices
 
-* We follow the recommndations on best practices for JAVA XML to mitigate XML eXternal Entity (XXE) attacks and per default we do not allow external references on Entities and XIncludes
+* We follow the [OWASP recommendations](https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/XML_Security_Cheat_Sheet.md) on best practices for JAVA XML to mitigate XML eXternal Entity (XXE) attacks and per default we do not allow external references on Entities and XIncludes
