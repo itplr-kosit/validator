@@ -1,19 +1,16 @@
 image: maven:latest
 
 variables:
-  MAVEN_CLI_OPTS: " --batch-mode -Dmaven.repo.local=repository -Dfile.encoding=UTF-8"
+  MAVEN_CLI_OPTS: " --batch-mode -Dmaven.repo.local=/cache/repository -Dfile.encoding=UTF-8"
 
-cache:
-  paths:
-    - repository
 
-build-validator:
+build-java-latest:
   stage: build
+  image: maven:3-jdk-13
   script:
-    - mvn $MAVEN_CLI_OPTS -Pjava-11,java-8,gitlab  verify
-
+    - mvn $MAVEN_CLI_OPTS  verify
   artifacts:
-    name: build-results
+    name: java-latest
     paths:
       - target/*.jar
     reports:
@@ -21,9 +18,45 @@ build-validator:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-#deploy:
-#  stage: deploy
-#  script:
-#    - mvn $MAVEN_CLI_OPTS deploy
-#  only:
-#    - master
+build-java-12:
+  stage: build
+  image: maven:3-jdk-12
+  script:
+    - mvn $MAVEN_CLI_OPTS  verify
+  artifacts:
+    name: java-12
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+
+build-java-11:
+  stage: build
+  image: maven:3-jdk-11
+  script:
+    - mvn $MAVEN_CLI_OPTS  verify
+  artifacts:
+    name: java-11
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+build-java8:
+  stage: build
+  image: maven:3-jdk-8-alpine
+  script:
+    - mvn $MAVEN_CLI_OPTS  verify
+  artifacts:
+    name: java8
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml

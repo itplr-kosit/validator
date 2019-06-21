@@ -45,7 +45,7 @@ public class ValidateReportInputAction implements CheckAction {
     private final Schema schema;
 
     @Override
-    public void check(Bag bag) {
+    public void check(final Bag bag) {
         final Result<Boolean, XMLSyntaxError> results = validate(bag.getReportInput());
         if (!results.isValid()) {
             log.error("Report input has errors {}", results.getErrors());
@@ -60,9 +60,9 @@ public class ValidateReportInputAction implements CheckAction {
      * @param <T> der Typ des Objekts
      * @return ein Validierungsergebnis
      */
-    private <T> Result<Boolean, XMLSyntaxError> validate(T object) {
-        CollectingErrorEventHandler h = new CollectingErrorEventHandler();
-        final String result = conversionService.writeXml(object, schema, h);
+    private <T> Result<Boolean, XMLSyntaxError> validate(final T object) {
+        final CollectingErrorEventHandler h = new CollectingErrorEventHandler();
+        final String result = this.conversionService.writeXml(object, this.schema, h);
         return new Result<>(StringUtils.isNotBlank(result), h.getErrors());
     }
 }

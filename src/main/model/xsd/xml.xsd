@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           targetNamespace="http://www.w3.org/XML/1998/namespace">
+    <xs:import namespace="http://purl.oclc.org/dsdl/svrl" schemaLocation="svrl-kosit.xsd" />
+    <xs:attribute name="space" />
+    <xs:attribute name="lang" />
+    <xs:attributeGroup name="local">
+        <xs:anyAttribute namespace="##other" processContents="skip" />
+    </xs:attributeGroup>
+</xs:schema>

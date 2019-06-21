@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
+import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
@@ -44,25 +45,6 @@ import net.sf.saxon.s9api.XdmNode;
 public interface CheckAction {
 
     /**
-     * Ausfürhung des Prüfschrittes und Erweiterung der gesammelten Informationen.
-     * 
-     * @param results die Informationssammlung
-     */
-    void check(Bag results);
-
-    /**
-     * Ermittlung, ob ein Schritt u.U. ausgelassen werden kann. Die Funktion wird vor der eigentlichen Prüfaktion aufgerufen
-     * und kann somit eine Ausführung des Prüfschrittes verhindern. Entwickler können diese Funktion überschreiben, um den
-     * Prüfschritt bedingt auszuführen.
-     * 
-     * @param results die bisher gesammelten Information
-     * @return <tt>true</tt> wenn der Schritt ausgelassen werden soll
-     */
-    default boolean isSkipped(Bag results) {
-        return false;
-    }
-
-    /**
      * Transport-Klasse für Eingabe und Ausgabe-Objekte für die einzelnen Prüfschritte.
      */
     @Getter
@@ -80,6 +62,8 @@ public interface CheckAction {
 
         private boolean stopped;
 
+        private AcceptRecommendation acceptStatus = AcceptRecommendation.UNDEFINED;
+
         /** Das zu prüfende Dokument */
         private Input input;
 
@@ -89,14 +73,15 @@ public interface CheckAction {
 
         private Result<Boolean, XMLSyntaxError> schemaValidationResult;
 
-        public Bag(Input input) {
+        public Bag(final Input input) {
             this(input, new CreateReportInput());
         }
 
-        public Bag(Input input, CreateReportInput reportInput) {
+        public Bag(final Input input, final CreateReportInput reportInput) {
             this.input = input;
             this.reportInput = reportInput;
         }
+
 
         /**
          * Signalisiert einen vorzeitigen Stop der Vearbeitung.
@@ -107,7 +92,7 @@ public interface CheckAction {
 
         /**
          * Gibt den Namen des Prüflings zurück, dabei werden etwaige Pfadinformationen abgeschnitten.
-         * 
+         *
          * @return der Name des Prüflings
          */
         public String getName() {
@@ -119,4 +104,24 @@ public interface CheckAction {
             return fileName;
         }
     }
+
+    /**
+     * Ausfürhung des Prüfschrittes und Erweiterung der gesammelten Informationen.
+     *
+     * @param results die Informationssammlung
+     */
+    void check(Bag results);
+
+    /**
+     * Ermittlung, ob ein Schritt u.U. ausgelassen werden kann. Die Funktion wird vor der eigentlichen Prüfaktion aufgerufen
+     * und kann somit eine Ausführung des Prüfschrittes verhindern. Entwickler können diese Funktion überschreiben, um den
+     * Prüfschritt bedingt auszuführen.
+     *
+     * @param results die bisher gesammelten Information
+     * @return <tt>true</tt> wenn der Schritt ausgelassen werden soll
+     */
+    default boolean isSkipped(final Bag results) {
+        return false;
+    }
+
 }

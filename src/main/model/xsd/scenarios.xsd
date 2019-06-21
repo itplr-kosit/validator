@@ -20,7 +20,8 @@
 
 <!-- $Id$ -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios"
-    targetNamespace="http://www.xoev.de/de/validator/framework/1/scenarios" version="1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+           targetNamespace="http://www.xoev.de/de/validator/framework/1/scenarios" version="1.1.0" elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
 
     <xs:element name="scenarios">
         <xs:complexType>
@@ -86,6 +87,8 @@
             <xs:element name="validateWithXmlSchema" type="s:ValidateWithXmlSchema"/>
             <xs:element name="validateWithSchematron" maxOccurs="unbounded" minOccurs="0" type="s:ValidateWithSchematron"/>
             <xs:element name="createReport" type="s:CreateReportType"/>
+            <!-- Optional da nachträglich eingeführt -->
+            <xs:element name="acceptMatch" type="xs:string" minOccurs="0" />
         </xs:sequence>
     </xs:complexType>
     

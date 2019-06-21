@@ -23,10 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
-import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszwerten und auszugeben.
@@ -46,7 +45,7 @@ class InternalCheck extends DefaultCheck {
      *
      * @param configuration die Konfiguration
      */
-    InternalCheck(CheckConfiguration configuration) {
+    InternalCheck(final CheckConfiguration configuration) {
         super(configuration);
     }
 
@@ -56,23 +55,26 @@ class InternalCheck extends DefaultCheck {
      * @param input die Prüflinge
      * @return false wenn es Assertion-Fehler gibt, sonst true
      */
-    public XdmNode checkInput(Input input) {
-        CheckAction.Bag bag = new CheckAction.Bag(input, createReport());
-        XdmNode result = runCheckInternal(bag);
+    @Override
+    public Result checkInput(final Input input) {
+        final CheckAction.Bag bag = new CheckAction.Bag(input, createReport());
+        final Result result = runCheckInternal(bag);
         if (bag.getAssertionResult() != null) {
-            checkAssertions += bag.getAssertionResult().getObject();
-            failedAssertions += bag.getAssertionResult().getErrors().size();
+            this.checkAssertions += bag.getAssertionResult().getObject();
+            this.failedAssertions += bag.getAssertionResult().getErrors().size();
         }
         return result;
     }
 
     boolean printAndEvaluate() {
-        if (failedAssertions > 0) {
-            log.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", checkAssertions, failedAssertions);
-        } else if (checkAssertions > 0) {
-            log.info("Assertion check successful.\n\nAssertions run: {}, Assertions failed: {}\n", checkAssertions, failedAssertions);
+        if (this.failedAssertions > 0) {
+            log.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
+                    this.failedAssertions);
+        } else if (this.checkAssertions > 0) {
+            log.info("Assertion check successful.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
+                    this.failedAssertions);
         }
-        return failedAssertions == 0;
+        return this.failedAssertions == 0;
     }
 
 }

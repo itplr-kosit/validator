@@ -33,10 +33,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
-
-import net.sf.saxon.s9api.XdmNode;
+import de.kosit.validationtool.api.Result;
 
 /**
  * Test das Check-Interface
@@ -56,37 +56,51 @@ public class DefaultCheckTest {
 
     @Before
     public void setup() throws URISyntaxException {
-        CheckConfiguration d = new CheckConfiguration(SCENARIO_DEFINITION.toURI());
+        final CheckConfiguration d = new CheckConfiguration(SCENARIO_DEFINITION.toURI());
         d.setScenarioRepository(new File("src/test/resources/examples/repository").toURI());
-        implementation = new DefaultCheck(d);
+        this.implementation = new DefaultCheck(d);
     }
 
     @Test
-    public void testHappyCase() throws Exception {
-        final XdmNode doc = implementation.checkInput(read(VALID_EXAMPLE));
+    public void testHappyCase() {
+        final Result doc = this.implementation.checkInput(read(VALID_EXAMPLE));
+        assertThat(doc).isNotNull();
+        assertThat(doc.getReport()).isNotNull();
+        assertThat(doc.isAcceptable()).isFalse();
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.UNDEFINED);
+    }
+
+    @Test
+    public void testHappyCaseDocument() {
+        final Document doc = this.implementation.check(read(VALID_EXAMPLE));
         assertThat(doc).isNotNull();
     }
 
     @Test
-    public void testHappyCaseDocument() throws Exception {
-        final Document doc = implementation.check(read(VALID_EXAMPLE));
-        assertThat(doc).isNotNull();
-    }
-
-    @Test
-    public void testMultipleCase() throws Exception {
+    public void testMultipleCase() {
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(VALID_EXAMPLE)).collect(Collectors.toList());
-        final List<XdmNode> docs = implementation.checkInput(input);
+        final List<Result> docs = this.implementation.checkInput(input);
         assertThat(docs).isNotNull();
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
     @Test
-    public void testMultipleCaseDocument() throws Exception {
+    public void testMultipleCaseDocument() {
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(VALID_EXAMPLE)).collect(Collectors.toList());
-        final List<Document> docs = implementation.check(input);
+        final List<Document> docs = this.implementation.check(input);
         assertThat(docs).isNotNull();
         assertThat(docs).hasSize(MULTI_COUNT);
+    }
+
+    @Test
+    public void testExtractHtml() {
+        final DefaultResult doc = (DefaultResult) this.implementation.checkInput(read(VALID_EXAMPLE));
+        assertThat(doc).isNotNull();
+        assertThat(doc.getReport()).isNotNull();
+        assertThat(doc.isAcceptable()).isFalse();
+        assertThat(doc.extractHtmlAsString()).isNotEmpty();
+        assertThat(doc.extractHtmlAsElement()).isNotEmpty();
+        assertThat(doc.extractHtml()).isNotEmpty();
     }
 
 }

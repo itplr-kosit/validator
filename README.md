@@ -62,7 +62,7 @@ You can more CLI options by
 java -jar  validationtool-<version>-standalone.jar --help
 ```
 
-A concrete exmaple with a specific validator configuration can be found on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung
+A concrete example with a specific validator configuration can be found on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung
 
 ### Daemon-Mode
 

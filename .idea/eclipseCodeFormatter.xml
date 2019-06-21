@@ -3,6 +3,7 @@
   <component name="EclipseCodeFormatterProjectSettings">
     <option name="projectSpecificProfile">
       <ProjectSpecificProfile>
+        <option name="disabledFileTypes" value="xml" />
         <option name="formatSeletedTextInAllFileTypes" value="false" />
         <option name="formatter" value="ECLIPSE" />
         <option name="importOrderConfigFilePath" value="$PROJECT_DIR$/.settings/org.eclipse.jdt.ui.prefs" />
