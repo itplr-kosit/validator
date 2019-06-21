@@ -12,7 +12,6 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-
 public interface Result {
 
     /** Der generierte Report. */

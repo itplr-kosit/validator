@@ -91,8 +91,7 @@ public class DefaultCheck implements Check {
         this.checkSteps.add(new SchemaValidationAction());
         this.checkSteps.add(new SchematronValidationAction(configuration.getScenarioRepository(), this.conversionService));
         this.checkSteps.add(new ValidateReportInputAction(this.conversionService, this.contentRepository.getReportInputSchema()));
-        this.checkSteps
-                .add(new CreateReportAction(processor, this.conversionService, this.repository, configuration.getScenarioRepository()));
+        this.checkSteps.add(new CreateReportAction(processor, this.conversionService, configuration.getScenarioRepository()));
         this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
@@ -135,6 +134,7 @@ public class DefaultCheck implements Check {
 
     private Result createResult(final Bag t) {
         final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), this.contentRepository);
+        result.setReportInput(t.getReportInput());
         if (t.getSchemaValidationResult() != null) {
             result.setSchemaViolations(convertErrors(t.getSchemaValidationResult().getErrors()));
         }
