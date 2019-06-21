@@ -16,6 +16,7 @@ import lombok.Setter;
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.api.XmlError;
+import de.kosit.validationtool.model.reportInput.CreateReportInput;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -23,14 +24,19 @@ import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
+ * Das Default-{@link Result} für die Rückgabe in der API
+ * 
  * @author Andreas Penski
  */
-
 public class DefaultResult implements Result {
 
     /** Der generierte Report. */
     @Getter
     private final XdmNode report;
+
+    @Getter
+    @Setter(AccessLevel.PACKAGE)
+    private CreateReportInput reportInput;
 
     /** Das evaluierte Ergebnis. */
     @Getter
