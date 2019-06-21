@@ -68,6 +68,7 @@ public class DefaultCheck implements Check {
     @Getter
     private final ContentRepository contentRepository;
 
+    @Getter
     private final ConversionService conversionService;
 
     @Getter
