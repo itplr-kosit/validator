@@ -4,11 +4,11 @@
 
 The core of each validation configuration is the scenarios.xml file. The scenarios.xml itself must be valid according to the [Scenarios XML Schema](/src/main/model/xsd/scenarios.xsd) with the following namespace `http://www.xoev.de/de/validator/framework/1/scenarios`.
 
-Several validation scenarios (`<scenario>` XML Elements can be described for each configuration.
+Several validation scenarios (`<scenario>` XML Elements) can be described for each configuration.
 
 Each scenario allows to define the matching criterion. It is an XPATH expression which must evaluate to true matched against the test xml candidate. Only then this scenario will apply to the test candidate.
 
-Within a scenario you can define the XML Schema and several Schematrons against which a test xml candidate has to be validated. You can give these a name and define where to find the resources/artifacts for validation.
+Within a scenario you can define the XML Schema and several Schematrons against which a test xml candidate has to be validated. You can give each a name and define where to find the resources/artifacts for validation.
 
 Lastly, you can define in an `<createReport>` element a XSLT transformation which takes the validator's report in order to create an own styled report.
 
