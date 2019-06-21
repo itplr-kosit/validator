@@ -8,10 +8,10 @@ The validator itself is just an engine which executes validation according to a 
 ```mermaid
 
 sequenceDiagram
-    participant A as Alice
-    participant J as John
-    A->>J: Hello John, how are you?
-    J->>A: Great!
+    participant e as Validator
+    participant c as Configuration
+    e ->> c: Read scenario.xml
+    e ->> c: Pick validation artifacts
   
   
   
