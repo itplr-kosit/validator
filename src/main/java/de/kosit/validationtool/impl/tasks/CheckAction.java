@@ -22,6 +22,7 @@ package de.kosit.validationtool.impl.tasks;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -53,6 +54,7 @@ public interface CheckAction {
 
         private Result<ScenarioType, String> scenarioSelectionResult;
 
+        @Setter(AccessLevel.NONE)
         private CreateReportInput reportInput;
 
         /** Das finale Ergebnis */
