@@ -138,6 +138,10 @@
             <resource>
                 <directory>src/main/model</directory>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
         </resources>
         
         <plugins>
