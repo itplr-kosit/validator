@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Enhanced API-Usage e.g. return Result object with processing information
+- Enhanced API-Usage e.g. return _Result_ object with processing information
 - Support loading scenarios and content from a JAR-File
 - Simple Daemon-Mode exposing validation functionality via http
+- cli option to serialize the 'report input' xml document to _cwd_ 
 
 ### Changed
 
