@@ -58,10 +58,6 @@ import net.sf.saxon.s9api.Processor;
 @Slf4j
 public class DefaultCheck implements Check {
 
-    private static final String ENGINE_NAME = "KoSIT Prüftool";
-
-    private static final String ENGINE_VERSION = "1.0.0";
-
     @Getter
     private final ScenarioRepository repository;
 
@@ -99,10 +95,10 @@ public class DefaultCheck implements Check {
     protected static CreateReportInput createReport() {
         final CreateReportInput type = new CreateReportInput();
         final EngineType e = new EngineType();
-        e.setName(ENGINE_NAME);
+        e.setName(EngineInformation.getName());
         type.setEngine(e);
         type.setTimestamp(ObjectFactory.createTimestamp());
-        type.setFrameworkVersion(ENGINE_VERSION);
+        type.setFrameworkVersion(EngineInformation.getFrameworkVersion());
         return type;
     }
 
