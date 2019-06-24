@@ -3,18 +3,14 @@
 The validator is an XML validation-engine. It validates XML documents against XML Schema and Schematrons depending on self defined [scenarios](docs/configurations) which are used to fully configure the validation process.
 The validator always outputs a [validation report in XML](docs/configurations.md#validators-report) including all validation errors and data about the validation.
 
-## Releases
+## Packages
 
-Two kind of releases are available:
+The validator distribution contains the following artifacts:
 
-Das Prüftool steht in zwei Varianten zur Verfügung:
-
-- als standalone/cli, die von der Kommandozeile aus aufgerufen werden kann
-- als Bibliothek/api, die in eigene Anwendungen integriert werden kann
-
-* die *Standalone-Distribution*  enthält das Uber-Jar mit allen Klassen zur Verarbeitung von Eingaben aus der Kommandozeile,
-sowie für Ausgabeoptionen für Ergebnisse. Sämtliche Abhängigkeiten sind im Jar gebundlet  und das Jar-File ist 'ausführbar'.
-* die *Full-Distribution* enthält darüber sämtlichen weiteren Varianten des `validationtools` sowie die benötigten Abhängigkeiten.
+1. **validator-`<version>`.jar**: Java library for embedded use within an application
+1. **validator-`<version`>-standalone**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with java 8 and java >=11)
+1. **validator-`<version`>-java8-standalone**: Uber-JAR for standalone usage with java jdk 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
+1. **libs/***: directory containing all (incl. optional) dependencies of the validator      
 
 ## Build
 
@@ -47,6 +43,13 @@ Currently, there are two public third party validation configurations available.
   * [Releases](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige/releases) can also be downloaded
 
 ## Usage
+
+The validator is designed to be used in different 3 ways: 
+
+- as standalone application running from the cli
+- as library embedded within a custom application
+- as a daemon providing a http interface
+
 
 ### Standalone Command-Line Interface
 
@@ -84,6 +87,6 @@ You can HTTP-POST to  `/` and the response will return the report document as de
 
 Additionally there is the GET `/health` endpoint which can be used by monitoring systems.
 
-### Application User Interface
+### Application User Interface (embedded usage)
 
 The validator can also be used in own Java Applications via the API. Details can be [found here](./docs/api.md).
