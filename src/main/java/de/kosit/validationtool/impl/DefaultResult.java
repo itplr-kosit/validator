@@ -50,8 +50,15 @@ public class DefaultResult implements Result {
     private List<XmlError> schemaViolations = new ArrayList<>();
 
     @Getter
+    private List<String> processingErrors = new ArrayList<>();
+
+    @Getter
     @Setter(AccessLevel.PACKAGE)
     private List<SchematronOutput> schematronResult;
+
+    @Getter
+    @Setter
+    private boolean processingSuccessful;
 
     public DefaultResult(final XdmNode report, final AcceptRecommendation recommendation, final ContentRepository repository) {
         this.report = report;
@@ -76,9 +83,8 @@ public class DefaultResult implements Result {
      */
     @Override
     public boolean isAcceptable() {
-        return AcceptRecommendation.ACCEPTABLE.equals(this.acceptRecommendation);
+        return isProcessingSuccessful() && AcceptRecommendation.ACCEPTABLE.equals(this.acceptRecommendation);
     }
-
 
     public List<String> extractHtmlAsString() {
         return extractHtml().stream().map(DefaultResult::convertToString).collect(Collectors.toList());

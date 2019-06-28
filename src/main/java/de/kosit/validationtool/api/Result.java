@@ -14,22 +14,42 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public interface Result {
 
-    /** Der generierte Report. */
+    /**
+     * Zeigt an, ob die Verarbeitung durch den Validator erfolgreich durchlaufen wurde. Diese Funktion macht ausdrücklich
+     * keine Aussage über die zur Akzeptanz.
+     * 
+     * @return true, wenn die Verarbeitung komplett und erfolgreich durchlaufen wurde
+     * @see #getAcceptRecommendation()
+     */
+    boolean isProcessingSuccessful();
+
+    /**
+     * Gibt eine Liste mit Verarbeitungsfehlermeldungen zurück.
+     * 
+     * @return Liste mit Fehlermeldungen
+     */
+    List<String> getProcessingErrors();
+
+    /**
+     * Der generierte Report.
+     */
     XdmNode getReport();
 
-    /** Das evaluierte Ergebnis. */
+    /**
+     * Das evaluierte Ergebnis.
+     */
     AcceptRecommendation getAcceptRecommendation();
 
     /**
      * Gibt den Report als W3C-{@link Document} zurück.
-     * 
+     *
      * @return der Report
      */
     Document getReportDocument();
 
     /**
      * Schnellzugriff auf die Empfehlung zur Weiterverarbeitung des Dokuments.
-     * 
+     *
      * @return true wenn {@link AcceptRecommendation#ACCEPTABLE}
      */
     boolean isAcceptable();
