@@ -1,5 +1,6 @@
 package de.kosit.validationtool.impl;
 
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
@@ -19,7 +21,7 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
-public class HtmlExtraction {
+public class HtmlExtractor {
 
     private final ContentRepository repository;
 
@@ -47,5 +49,26 @@ public class HtmlExtraction {
             executable = repository.createXPath("//html:html", ns);
         }
         return executable.load();
+    }
+
+    private static String convertToString(final XdmNode element) {
+        try {
+            final StringWriter writer = new StringWriter();
+            final Serializer serializer = ObjectFactory.createProcessor().newSerializer(writer);
+            serializer.serializeNode(element);
+            return writer.toString();
+        } catch (final SaxonApiException e) {
+            throw new IllegalStateException("Can not convert to string", e);
+        }
+    }
+
+    /**
+     * Extrahiert evtl. vorhandene HTML-Knoten als String.
+     * 
+     * @param node der root knoten
+     * @return HTML-Fragment als String
+     */
+    public List<String> extractAsString(final XdmNode node) {
+        return extract(node).stream().map(HtmlExtractor::convertToString).collect(Collectors.toList());
     }
 }

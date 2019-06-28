@@ -130,7 +130,7 @@ public class DefaultCheck implements Check {
     }
 
     private Result createResult(final Bag t) {
-        final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), this.contentRepository);
+        final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), new HtmlExtractor(this.contentRepository));
         result.setReportInput(t.getReportInput());
         if (t.getSchemaValidationResult() != null) {
             result.setSchemaViolations(convertErrors(t.getSchemaValidationResult().getErrors()));

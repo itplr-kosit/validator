@@ -1,13 +1,12 @@
 package de.kosit.validationtool.impl;
 
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,8 +18,6 @@ import de.kosit.validationtool.api.XmlError;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -43,14 +40,14 @@ public class DefaultResult implements Result {
     @Getter
     private final AcceptRecommendation acceptRecommendation;
 
-    private final HtmlExtraction htmlExtraction;
+    private final HtmlExtractor htmlExtraction;
 
     @Setter(AccessLevel.PACKAGE)
     @Getter
     private List<XmlError> schemaViolations = new ArrayList<>();
 
     @Getter
-    private List<String> processingErrors = new ArrayList<>();
+    private final List<String> processingErrors = new ArrayList<>();
 
     @Getter
     @Setter(AccessLevel.PACKAGE)
@@ -60,10 +57,10 @@ public class DefaultResult implements Result {
     @Setter
     private boolean processingSuccessful;
 
-    public DefaultResult(final XdmNode report, final AcceptRecommendation recommendation, final ContentRepository repository) {
+    public DefaultResult(final XdmNode report, final AcceptRecommendation recommendation, final HtmlExtractor htmlExtractor) {
         this.report = report;
         this.acceptRecommendation = recommendation;
-        this.htmlExtraction = new HtmlExtraction(repository);
+        this.htmlExtraction = htmlExtractor;
     }
 
     /**
@@ -87,30 +84,23 @@ public class DefaultResult implements Result {
     }
 
     public List<String> extractHtmlAsString() {
-        return extractHtml().stream().map(DefaultResult::convertToString).collect(Collectors.toList());
-    }
-
-    private static String convertToString(final XdmNode element) {
-        try {
-            final StringWriter writer = new StringWriter();
-            final Serializer serializer = ObjectFactory.createProcessor().newSerializer(writer);
-            serializer.serializeNode(element);
-            return writer.toString();
-        } catch (final SaxonApiException e) {
-            throw new IllegalStateException("Can not convert to string", e);
-        }
-    }
-
-    public List<Element> extractHtmlAsElement() {
-        return extractHtml().stream().map(DefaultResult::convertToElement).collect(Collectors.toList());
-    }
-
-    private static Element convertToElement(final XdmNode xdmItem) {
-        return (Element) NodeOverNodeInfo.wrap(xdmItem.getUnderlyingNode());
+        return this.htmlExtraction.extractAsString(getReport());
     }
 
     public List<XdmNode> extractHtml() {
         return this.htmlExtraction.extract(getReport());
     }
 
+    /**
+     * Gibt alle Schematron-Ergebnisse vom Typ {@link FailedAssert} zurück.
+     * 
+     * @return die {@link FailedAssert}
+     */
+    public List<FailedAssert> getFailedAsserts() {
+        return filterSchematronResult(FailedAssert.class);
+    }
+
+    private <T> List<T> filterSchematronResult(final Class<T> type) {
+        return getSchematronResult().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+    }
 }

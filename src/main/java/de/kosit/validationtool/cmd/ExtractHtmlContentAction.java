@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.ContentRepository;
-import de.kosit.validationtool.impl.HtmlExtraction;
+import de.kosit.validationtool.impl.HtmlExtractor;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 import net.sf.saxon.s9api.QName;
@@ -47,13 +47,13 @@ class ExtractHtmlContentAction implements CheckAction {
 
     private final Path outputDirectory;
 
-    private HtmlExtraction htmlExtraction;
+    private HtmlExtractor htmlExtraction;
 
     private ContentRepository repository;
 
     public ExtractHtmlContentAction(final ContentRepository repository, final Path outputDirectory) {
         this.outputDirectory = outputDirectory;
-        this.htmlExtraction = new HtmlExtraction(repository);
+        this.htmlExtraction = new HtmlExtractor(repository);
         this.repository = repository;
     }
 
