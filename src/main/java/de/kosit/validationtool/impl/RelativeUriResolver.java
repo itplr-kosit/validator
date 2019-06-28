@@ -62,7 +62,14 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         }
     }
 
-    static URI resolve(final URI href, final URI base) {
+    /**
+     * Resolves a relative uri including uris within a jar file.
+     *
+     * @param href the uri to resolve
+     * @param base the base uri
+     * @return the resolved uri
+     */
+    public static URI resolve(final URI href, final URI base) {
         final boolean jarURI = isJarURI(base);
         final URI tmpBase = jarURI ? URI.create(base.toASCIIString().substring(4)) : base;
         final URI result = tmpBase.resolve(href);

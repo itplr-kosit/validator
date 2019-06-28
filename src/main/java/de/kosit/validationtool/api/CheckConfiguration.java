@@ -26,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.impl.RelativeUriResolver;
+
 /**
  * Zentrale Konfigration einer Prüf-Instanz.
  * 
@@ -62,7 +64,7 @@ public class CheckConfiguration {
 
     private URI createDefaultRepository() {
         log.info("Creating default scenario repository (alongside scenario definition)");
-        return this.scenarioDefinition.resolve(".");
+        return RelativeUriResolver.resolve(URI.create("."), this.scenarioDefinition);
     }
 
 }

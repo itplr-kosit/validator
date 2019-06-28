@@ -37,7 +37,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Testet die Document Parsing-Funktionalitäten.
- * 
+ *
  * @author Andreas Penski
  */
 public class DocumentParserTest {

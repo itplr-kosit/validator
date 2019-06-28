@@ -89,6 +89,7 @@ public class ScenarioRepository {
     }
 
     private static void checkVersion(final URI scenarioDefinition) {
+        final DocumentParseAction p = new DocumentParseAction();
         try {
             final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(InputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
