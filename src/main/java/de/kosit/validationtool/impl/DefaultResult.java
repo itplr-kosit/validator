@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -83,12 +84,31 @@ public class DefaultResult implements Result {
         return isProcessingSuccessful() && AcceptRecommendation.ACCEPTABLE.equals(this.acceptRecommendation);
     }
 
+    /**
+     * Extrahiert evtl. im Report vorhandene HTML-Fragmente als String.
+     * 
+     * @return Liste mit HTML Strings.
+     */
     public List<String> extractHtmlAsString() {
         return this.htmlExtraction.extractAsString(getReport());
     }
 
+    /**
+     * Extrahiert evtl. im Report vorhandene HTML-Fragmente.
+     *
+     * @return Liste mit HTML Nodes.
+     */
     public List<XdmNode> extractHtml() {
         return this.htmlExtraction.extract(getReport());
+    }
+
+    /**
+     * Extrahiert evtl. im Report vorhandene HTML-Fragmente als {@link Element}.
+     *
+     * @return Liste mit HTML Elementen.
+     */
+    public List<Element> extractHtmlAsElement() {
+        return this.htmlExtraction.extractAsElement(getReport());
     }
 
     /**
@@ -103,4 +123,5 @@ public class DefaultResult implements Result {
     private <T> List<T> filterSchematronResult(final Class<T> type) {
         return getSchematronResult().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
     }
+
 }

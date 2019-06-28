@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.w3c.dom.Element;
+
 import lombok.RequiredArgsConstructor;
 
+import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XPathExecutable;
@@ -70,5 +73,13 @@ public class HtmlExtractor {
      */
     public List<String> extractAsString(final XdmNode node) {
         return extract(node).stream().map(HtmlExtractor::convertToString).collect(Collectors.toList());
+    }
+
+    public List<Element> extractAsElement(final XdmNode node) {
+        return extract(node).stream().map(HtmlExtractor::convertToElement).collect(Collectors.toList());
+    }
+
+    private static Element convertToElement(final XdmNode xdmItem) {
+        return (Element) NodeOverNodeInfo.wrap(xdmItem.getUnderlyingNode());
     }
 }
