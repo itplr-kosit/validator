@@ -411,10 +411,10 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <configuration>
-                    <tasks>
+                    <target>
                         <!-- schlafen um den Start des Daemon abzuwarten -->
                         <sleep seconds="5" />
-                    </tasks>
+                    </target>
                 </configuration>
                 <executions>
                     <execution>
@@ -451,7 +451,7 @@
         <tag>v1.0.0</tag>
     </scm>
     
-</project><!--
+</project> <!--
   ~ Licensed to the Koordinierungsstelle für IT-Standards (KoSIT) under
   ~ one or more contributor license agreements. See the NOTICE file
   ~ distributed with this work for additional information
