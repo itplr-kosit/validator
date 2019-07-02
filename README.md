@@ -1,6 +1,6 @@
 # Validator
 
-The validator is an XML validation-engine. It validates XML documents against XML Schema and Schematrons depending on self defined [scenarios](docs/configurations) which are used to fully configure the validation process.
+The validator is an XML validation-engine. It validates XML documents against XML Schema and Schematron Rules depending on self defined [scenarios](docs/configurations) which are used to fully configure the validation process.
 The validator always outputs a [validation report in XML](docs/configurations.md#validators-report) including all validation errors and data about the validation.
 
 ## Packages
@@ -8,9 +8,9 @@ The validator always outputs a [validation report in XML](docs/configurations.md
 The validator distribution contains the following artifacts:
 
 1. **validator-`<version>`.jar**: Java library for embedded use within an application
-1. **validator-`<version`>-standalone**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with java 8 and java >=11)
-1. **validator-`<version`>-java8-standalone**: Uber-JAR for standalone usage with java jdk 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
-1. **libs/***: directory containing all (incl. optional) dependencies of the validator      
+1. **validator-`<version`>-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java 8 and Java >= 11)
+1. **validator-`<version`>-java8-standalone.jar**: Uber-JAR for standalone usage with Java JDK 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
+1. **libs/***: directory containing all (incl. optional) dependencies of the validator
 
 ## Build
 
@@ -44,12 +44,11 @@ Currently, there are two public third party validation configurations available.
 
 ## Usage
 
-The validator is designed to be used in different 3 ways: 
+The validator is designed to be used in three different ways:
 
-- as standalone application running from the cli
-- as library embedded within a custom application
-- as a daemon providing a http interface
-
+* as standalone application running from the cli
+* as library embedded within a custom application
+* as a daemon providing a http interface
 
 ### Standalone Command-Line Interface
 
