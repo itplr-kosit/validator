@@ -22,49 +22,66 @@ Then you can declare the dependency as follows:
 
 ```js
 dependencies {
-    compile group: 'de.kosit', name: 'validationtool', version: '1.0.0'
+    compile group: 'de.kosit', name: 'validationtool', version: '1.1.0'
 }
 ```
 
 ## Usage
 
-Prerequisite for use is a valid [scenario definition](configurations.md) and the a folder with all necessary artifacts for validation (repository).
+Prerequisite for use is a valid [scenario definition](configurations.md) and the a folder with all necessary artifacts for validation (repository) either on the filesystem or on the classpath.
 
-The following example demonstrates  Der folgende Quellcode zeigt die Erzeugung einer neuen
-Prüf-Instanz:
-
-```java
-//Vorbereitung der Konfiguration
-URI scenarios =  URI.create("scenarios.xml");
-CheckConfiguration config = new CheckConfiguration();
-config.setScenarioDefinition(scenarios);
-
-//Instanziierung der DefaultCheck-Implementierung
-Check implemenation =  new DefaultCheck(config);
-```
-
-Weitere Konfigurationsoption ist der Pfad zum Repository. Standardmäßig wird das Repository relativ zur Szenarien-Defintion
-unter "repository" gesucht.
-
-Die so erzeugte Prüfinstanz initialisiert sämtliche  Szenarien und deren Prüfartefakte. Ein etwaiger Konfigurationsfehler
-wird frühzeitig mitgeteilt.
-
-Die eigentlich Prüfung erfolgt mit den beiden Methoden des `Check`-Interfaces:
+The following example demonstrates loading scenario.xml and whole configuration from classpath and validating one XML document:
 
 ```java
-...
-Check pruefer =  new DefaultCheck(config);
+package org.kosit.validator.example;
 
-//einzelne Datei prüfen
-Input pruefKandidat = InputFactory.read(new File("rechnung.xml"));
-Document report = pruefer.implemenation(pruefKandidat);
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-//Batch-Prüfung
-List<File> files = Files.list(Paths.get("rechnungen")).map(path -> path.toFile()).collect(Collectors.toList());
-List<Input> toCheck = files.stream().map(InputFactory::read).collect(Collectors.toList());
-List<Document> reports = pruefer.implemenation(toCheck);
+import de.kosit.validationtool.api.Check;
+import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.api.Result;
+import de.kosit.validationtool.impl.DefaultCheck;
+import org.w3c.dom.Document;
 
+public class StandardExample {
+
+    public void run(Path testDocument) throws URISyntaxException {
+        // Load scenarios.xml from classpath
+        URL scenarios = this.getClass().getClassLoader().getResource("scenarios.xml");
+        // Load the rest of the specific Validator configuration from classpath
+        CheckConfiguration config = new CheckConfiguration(scenarios.toURI());
+        // Use the default validation procedure
+        Check validator = new DefaultCheck(config);
+        // Validate a single document
+        Input document = InputFactory.read(testDocument);
+        // Get Result including information about the whole validation
+        Result report = validator.checkInput(document);
+        System.out.println("Is processing succesful=" + report.isProcessingSuccessful());
+        // Get report document if processing was successful
+        Document result = null;
+        if (report.isProcessingSuccessful()) {
+            result = report.getReportDocument();
+        }
+        // continue processing results...
+    }
+
+    public static void main(String[] args) throws Exception {
+        // Path of document for validation
+        Path testDoc = Paths.get(args[0]);
+        StandardExample example = new StandardExample();
+        // run example validation
+        example.run(testDoc);
+
+    }
+}
 ```
+
+The `Result` interface has more methods to retrieve details about XSD validation errors and Schematron messages.
 
 Initializing all XML artifacts and XSLT-executables is expensive. The `Check` instance is *threadsafe* and keeps all artifacts. Therefore, we recommend the re-use of an `Check` instance.
 
