@@ -12,13 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced API-Usage e.g. return _Result_ object with processing information
 - Support loading scenarios and content from a JAR-File
 - Simple Daemon-Mode exposing validation functionality via http
-- cli option to serialize the 'report input' xml document to _cwd_ 
+- cli option to serialize the 'report input' xml document to _cwd_ (current working directory)
+- Documentation in `docs`folder
 
 ### Changed
 
 - Use s9api (e.g. XdmNode) internally for loading and holding xml objects (further memory optimization)
 - Builds with java 8 and >= 11
 - Packages for java8 and java >= 11 (with jaxb included)
+- Translated README.md
 
 ## 1.0.2
 
