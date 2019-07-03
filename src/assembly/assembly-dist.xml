@@ -17,8 +17,8 @@
   ~ under the License.
   -->
 
-<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
     <id>full</id>
     <formats>
@@ -29,7 +29,7 @@
     <fileSets>
         <fileSet>
             <directory>${project.basedir}</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory/>
             <includes>
                 <include>LICENSE*</include>
                 <include>NOTICE*</include>
@@ -37,7 +37,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory/>
             <includes>
                 <include>validationtool-*.jar</include>
             </includes>
@@ -46,7 +46,7 @@
     </fileSets>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/libs</outputDirectory>
+            <outputDirectory>libs</outputDirectory>
             <useProjectArtifact>false</useProjectArtifact>
             <scope>runtime</scope>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>
