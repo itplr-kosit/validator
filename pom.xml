@@ -441,7 +441,7 @@
                 <version>2.22.1</version>
                 <executions>
                     <execution>
-                        <id>test-java8</id>
+                        <id>test-it</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
