@@ -1,6 +1,6 @@
 # Validator
 
-The validator is an XML validation-engine. It validates XML documents against XML Schema and Schematron Rules depending on self defined [scenarios](docs/configurations) which are used to fully configure the validation process.
+The validator is an XML validation-engine. It validates XML documents against XML Schema and Schematron Rules depending on self defined [scenarios](docs/configurations.md) which are used to fully configure the validation process.
 The validator always outputs a [validation report in XML](docs/configurations.md#validators-report) including all validation errors and data about the validation.
 
 ## Packages
@@ -27,7 +27,7 @@ The validator distribution contains the following artifacts:
 
 The validator is just an engine and does not know anything about XML Documents and has no own validation rules.
 
-Validation rules and details are defined in [validation scenarios](docs/configurations) which are used to fully configure the validation process.
+Validation rules and details are defined in [validation scenarios](docs/configurations.md) which are used to fully configure the validation process.
 
 All configurations are self-contained modules and deployed on their own.
 
@@ -64,7 +64,7 @@ You can more CLI options by
 java -jar  validationtool-<version>-standalone.jar --help
 ```
 
-A concrete example with a specific validator configuration can be found on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung
+A concrete example with a specific validator configuration can be found on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
 
 ### Daemon-Mode
 
