@@ -62,7 +62,7 @@ public class ScenarioRepository {
     private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = "http://www.xoev.de/de/validator/framework/1/scenarios";
 
 
-    @Getter(value = AccessLevel.PRIVATE)
+    @Getter(value = AccessLevel.PACKAGE)
     private final ContentRepository repository;
 
     @Getter

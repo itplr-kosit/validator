@@ -67,4 +67,17 @@ public interface Result {
      */
     List<SchematronOutput> getSchematronResult();
 
+    /**
+     * Liefert ein true, wenn keine Schema-Violations vorhanden sind.
+     * 
+     * @return true wenn Schema-valide
+     */
+    boolean isSchemaValid();
+
+    /**
+     * Liefert ein true, wenn der Prüfling eine well-formed XML-Datei ist.
+     * 
+     * @return true wenn well-formed
+     */
+    boolean isWellformed();
 }

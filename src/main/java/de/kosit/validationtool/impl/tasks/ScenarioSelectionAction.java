@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import de.kosit.validationtool.impl.ScenarioRepository;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import de.kosit.validationtool.model.reportInput.ProcessingError;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 /**
@@ -38,23 +37,20 @@ public class ScenarioSelectionAction implements CheckAction {
     private final ScenarioRepository repository;
 
     @Override
-    public void check(Bag results) {
+    public void check(final Bag results) {
         final CreateReportInput report = results.getReportInput();
-        final Result<ScenarioType, String> scenarioTypeResult = repository.selectScenario(results.getParserResult().getObject());
+        final Result<ScenarioType, String> scenarioTypeResult = this.repository.selectScenario(results.getParserResult().getObject());
         results.setScenarioSelectionResult(scenarioTypeResult);
         if (scenarioTypeResult.isValid()) {
             final ScenarioType scenario = scenarioTypeResult.getObject();
             report.setScenario(scenario);
         } else {
-            if (report.getProcessingError() == null) {
-                report.setProcessingError(new ProcessingError());
-            }
-            report.getProcessingError().getError().addAll(scenarioTypeResult.getErrors());
+            results.stopProcessing(scenarioTypeResult.getErrors());
         }
     }
 
     @Override
-    public boolean isSkipped(Bag results) {
+    public boolean isSkipped(final Bag results) {
         return results.getParserResult().isInvalid();
     }
 }

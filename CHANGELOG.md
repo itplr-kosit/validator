@@ -4,6 +4,12 @@ All notable changes to the Schematron Rules and this project will be documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## Upcoming version
+### Added
+- Convenience method for accessing information about well-formedness in Result
+- Convenience method for accessing information about schema validation result in Result
+### Fixed
+- NPE when validating non-XM files
 
 ## 1.1.0
 

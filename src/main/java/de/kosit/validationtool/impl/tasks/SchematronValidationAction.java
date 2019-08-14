@@ -19,7 +19,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +30,7 @@ import org.w3c.dom.Document;
 import lombok.RequiredArgsConstructor;
 
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
+import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.RelativeUriResolver;
@@ -52,7 +52,7 @@ import net.sf.saxon.s9api.XsltTransformer;
 @RequiredArgsConstructor
 public class SchematronValidationAction implements CheckAction {
 
-    private final URI repository;
+    private final ContentRepository repository;
 
     private final ConversionService conversionService;
 
@@ -64,7 +64,7 @@ public class SchematronValidationAction implements CheckAction {
         try {
             final XsltTransformer transformer = validation.getExecutable().load();
             // resolving nur relative zum Repository
-            final RelativeUriResolver resolver = new RelativeUriResolver(this.repository);
+            final RelativeUriResolver resolver = this.repository.createResolver();
             transformer.setURIResolver(resolver);
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
             transformer.setMessageListener(e);

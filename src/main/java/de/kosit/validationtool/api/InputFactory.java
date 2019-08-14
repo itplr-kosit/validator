@@ -19,26 +19,29 @@
 
 package de.kosit.validationtool.api;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Service zum Einlesen des Test-Objekts in den Speicher. Beim Einlesen wird gleichzeitig eine Prüfsumme ermittelt und
@@ -64,7 +67,7 @@ public class InputFactory {
         this(null);
     }
 
-    InputFactory(String specifiedAlgorithm) {
+    InputFactory(final String specifiedAlgorithm) {
         this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITH;
         createDigest();
     }
@@ -76,7 +79,7 @@ public class InputFactory {
      * @param path der Prüflings
      * @return ein Prüf-Eingabe-Objekt
      */
-    public static Input read(Path path) {
+    public static Input read(final Path path) {
         return read(path, DEFAULT_ALGORITH);
     }
 
@@ -88,11 +91,11 @@ public class InputFactory {
      * @param digestAlgorithm der Prüfsummenalgorithmus
      * @return ein Prüf-Eingabe-Objekt
      */
-    public static Input read(Path path, String digestAlgorithm) {
+    public static Input read(final Path path, final String digestAlgorithm) {
         checkNull(path);
-        try ( InputStream stream = Files.newInputStream(path) ) {
+        try ( final InputStream stream = Files.newInputStream(path) ) {
             return read(stream, path.toString(), digestAlgorithm);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + path, e);
         }
     }
@@ -104,7 +107,7 @@ public class InputFactory {
      * @param file der Prüflings
      * @return ein Prüf-Eingabe-Objekt
      */
-    public static Input read(File file) {
+    public static Input read(final File file) {
         return read(file, DEFAULT_ALGORITH);
     }
 
@@ -115,8 +118,16 @@ public class InputFactory {
      * @param url URL des Prüflings
      * @return ein Prüf-Eingabe-Objekt
      */
-    public static Input read(URL url) {
+    public static Input read(final URL url) {
         return read(url, DEFAULT_ALGORITH);
+    }
+
+    public static Input read(final URI uri) {
+        try {
+            return read(uri.toURL(), DEFAULT_ALGORITH);
+        } catch (final MalformedURLException e) {
+            throw new IllegalArgumentException(String.format("Can not read from uri %s Not a valid uri supplied", uri));
+        }
     }
 
     /**
@@ -127,11 +138,11 @@ public class InputFactory {
      * @param digestAlgorithm der Prüfsummenalgorithmus
      * @return ein Prüf-Eingabe-Objekt
      */
-    public static Input read(URL url, String digestAlgorithm) {
+    public static Input read(final URL url, final String digestAlgorithm) {
         checkNull(url);
         try {
             return read(url.openStream(), url.getFile(), digestAlgorithm);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + url, e);
         }
     }
@@ -144,11 +155,11 @@ public class InputFactory {
      * @param digestAlgorithm der Prüfsummenalgorithmus
      * @return ein Prüf-Eingabe-Objekt
      */
-    public static Input read(File file, String digestAlgorithm) {
+    public static Input read(final File file, final String digestAlgorithm) {
         checkNull(file);
         try {
             return read(file.toURI().toURL(), digestAlgorithm);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + file, e);
         }
     }
@@ -160,7 +171,7 @@ public class InputFactory {
      * @param input URL des Prüflings
      * @return ein Prüf-Eingabe-Objekt
      */
-    public static Input read(byte[] input, String name) {
+    public static Input read(final byte[] input, final String name) {
         checkNull(input);
         return read(input, name, DEFAULT_ALGORITH);
     }
@@ -173,12 +184,12 @@ public class InputFactory {
      * @param digestAlgorithm der Prüfsummenalgorithmus
      * @return ein Prüf-Eingabe-Objekt
      */
-    public static Input read(byte[] input, String name, String digestAlgorithm) {
+    public static Input read(final byte[] input, final String name, final String digestAlgorithm) {
         checkNull(input);
         return read(new ByteArrayInputStream(input), name, digestAlgorithm);
     }
 
-    private static void checkNull(Object input) {
+    private static void checkNull(final Object input) {
         if (input == null) {
             throw new IllegalArgumentException("Input can not be null");
         }
@@ -191,7 +202,7 @@ public class InputFactory {
      * @param name der Name/Bezeichner des Prüflings
      * @return einen Prüfling in eingelesener Form
      */
-    public static Input read(InputStream inputStream, String name) {
+    public static Input read(final InputStream inputStream, final String name) {
         return read(inputStream, name, DEFAULT_ALGORITH);
     }
 
@@ -203,18 +214,18 @@ public class InputFactory {
      * @param digestAlgorithm der Prüfsummenalgorithmus
      * @return einen Prüfling in eingelesener Form
      */
-    public static Input read(InputStream inputStream, String name, String digestAlgorithm) {
+    public static Input read(final InputStream inputStream, final String name, final String digestAlgorithm) {
         return new InputFactory(digestAlgorithm).readStream(inputStream, name);
     }
 
-    private Input readStream(InputStream inputStream, String name) {
+    private Input readStream(final InputStream inputStream, final String name) {
         if (StringUtils.isNotBlank(name)) {
             log.debug("Generating hashcode for {} using {} algorithm", name, getAlgorithm());
-            MessageDigest digest = createDigest();
-            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-            try ( BufferedInputStream bis = new BufferedInputStream(inputStream);
-                  DigestInputStream dis = new DigestInputStream(bis, digest);
-                  ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
+            final MessageDigest digest = createDigest();
+            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            try ( final BufferedInputStream bis = new BufferedInputStream(inputStream);
+                  final DigestInputStream dis = new DigestInputStream(bis, digest);
+                  final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
 
                 // read the file and update the hash calculation
                 int n;
@@ -222,11 +233,11 @@ public class InputFactory {
                     out.write(buffer, 0, n);
                 }
                 // get the hash value as byte array
-                byte[] hash = digest.digest();
+                final byte[] hash = digest.digest();
                 log.debug("Generated hashcode for {} is {}", name, DatatypeConverter.printHexBinary(hash));
                 out.flush();
                 return new Input(out.toByteArray(), name, hash, digest.getAlgorithm());
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + name, e);
             }
         } else {
@@ -236,10 +247,10 @@ public class InputFactory {
 
     private MessageDigest createDigest() {
         try {
-            MessageDigest digest;
+            final MessageDigest digest;
             digest = MessageDigest.getInstance(getAlgorithm());
             return digest;
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             // should not happen
             throw new IllegalStateException(String.format("Specified method %s is not available", getAlgorithm()), e);
         }

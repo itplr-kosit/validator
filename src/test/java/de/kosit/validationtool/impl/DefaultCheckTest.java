@@ -20,6 +20,7 @@
 package de.kosit.validationtool.impl;
 
 import static de.kosit.validationtool.api.InputFactory.read;
+import static de.kosit.validationtool.impl.Helper.Simple.GARBAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -101,6 +102,15 @@ public class DefaultCheckTest {
         assertThat(doc.extractHtmlAsString()).isNotEmpty();
         assertThat(doc.extractHtmlAsElement()).isNotEmpty();
         assertThat(doc.extractHtml()).isNotEmpty();
+    }
+
+    @Test
+    public void testGarbage() {
+        final Result result = this.implementation.checkInput(read(GARBAGE));
+        assertThat(result).isNotNull();
+        assertThat(result.isWellformed()).isFalse();
+        assertThat(result.isSchemaValid()).isFalse();
+        assertThat(result.isProcessingSuccessful()).isFalse();
     }
 
 }

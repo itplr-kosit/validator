@@ -96,7 +96,7 @@ public class ContentRepository {
         final CollectingErrorEventHandler listener = new CollectingErrorEventHandler();
         try {
             xsltCompiler.setErrorListener(listener);
-            xsltCompiler.setURIResolver(new RelativeUriResolver(this.repository));
+            xsltCompiler.setURIResolver(createResolver());
 
             return xsltCompiler.compile(resolve(uri));
         } catch (final SaxonApiException e) {
@@ -202,4 +202,12 @@ public class ContentRepository {
         return StringUtils.startsWithIgnoreCase(path, "jar:") && path.split("!").length == 2;
     }
 
+    /**
+     * Erzeugt einen resolver für dieses Repository, der nur relativ auflösen kann
+     * 
+     * @return ein neuer Resolver
+     */
+    public RelativeUriResolver createResolver() {
+        return new RelativeUriResolver(this.repository);
+    }
 }

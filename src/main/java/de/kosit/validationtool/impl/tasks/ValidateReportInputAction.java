@@ -49,7 +49,7 @@ public class ValidateReportInputAction implements CheckAction {
         final Result<Boolean, XMLSyntaxError> results = validate(bag.getReportInput());
         if (!results.isValid()) {
             log.error("Report input has errors {}", results.getErrors());
-            bag.stopProcessing();
+            bag.stopProcessing(String.format("Report input has errors %s", results.getErrors()));
         }
     }
 

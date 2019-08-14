@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import javax.xml.transform.stream.StreamSource;
 
@@ -51,7 +52,8 @@ public class DocumentParseAction implements CheckAction {
 
     /**
      * Parsed und überprüft ein übergebenes Dokument darauf ob es well-formed ist. Dies stellt den ersten
-     * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem Schema.
+     * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem
+     * Schema.
      * 
      * @param content ein Dokument
      * @return Ergebnis des Parsings inklusive etwaiger Fehler
@@ -86,6 +88,7 @@ public class DocumentParseAction implements CheckAction {
         results.getReportInput().setValidationResultsWellformedness(v);
         if (parserResult.isInvalid()) {
             log.info("Parsing war nicht erfolgreich: {} -> {}", parserResult.getObject(), parserResult.getErrors());
+            results.stopProcessing(parserResult.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.toList()));
         }
     }
 

@@ -54,6 +54,8 @@ public class Helper {
         public static final URI INVALID = ROOT.resolve("input/simple-invalid.xml");
 
         public static final URI UNKNOWN = ROOT.resolve("input/unknown.xml");
+
+        public static final URI GARBAGE = ROOT.resolve("input/no-xml.file");
     }
 
     public static final URI SOURCE_ROOT = Paths.get("src/main/resources").toUri();

@@ -28,6 +28,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import net.sf.saxon.Configuration;
@@ -40,7 +41,7 @@ import net.sf.saxon.trans.XPathException;
  *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver {
 
     /** the base uri */

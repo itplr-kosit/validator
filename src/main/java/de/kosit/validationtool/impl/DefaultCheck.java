@@ -86,9 +86,9 @@ public class DefaultCheck implements Check {
         this.checkSteps.add(new DocumentParseAction());
         this.checkSteps.add(new ScenarioSelectionAction(this.repository));
         this.checkSteps.add(new SchemaValidationAction());
-        this.checkSteps.add(new SchematronValidationAction(configuration.getScenarioRepository(), this.conversionService));
+        this.checkSteps.add(new SchematronValidationAction(this.contentRepository, this.conversionService));
         this.checkSteps.add(new ValidateReportInputAction(this.conversionService, this.contentRepository.getReportInputSchema()));
-        this.checkSteps.add(new CreateReportAction(processor, this.conversionService, configuration.getScenarioRepository()));
+        this.checkSteps.add(new CreateReportAction(processor, this.conversionService, this.repository, this.contentRepository));
         this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
@@ -131,14 +131,12 @@ public class DefaultCheck implements Check {
 
     private Result createResult(final Bag t) {
         final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), new HtmlExtractor(this.contentRepository));
+        result.setWellformed(t.getParserResult().isValid());
         result.setReportInput(t.getReportInput());
         if (t.getSchemaValidationResult() != null) {
             result.setSchemaViolations(convertErrors(t.getSchemaValidationResult().getErrors()));
         }
         result.setProcessingSuccessful(!t.isStopped() && t.isFinished());
-        if (t.getReportInput().getProcessingError() != null) {
-            result.getProcessingErrors().addAll(t.getReportInput().getProcessingError().getError());
-        }
         result.setSchematronResult(t.getReportInput().getValidationResultsSchematron().stream()
                 .map(e -> e.getResults().getSchematronOutput()).collect(Collectors.toList()));
         return result;

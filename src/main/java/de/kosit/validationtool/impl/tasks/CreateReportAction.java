@@ -19,8 +19,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.net.URI;
-
 import javax.xml.transform.dom.DOMSource;
 
 import org.w3c.dom.Document;
@@ -28,6 +26,7 @@ import org.w3c.dom.Document;
 import lombok.RequiredArgsConstructor;
 
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
+import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.RelativeUriResolver;
@@ -57,7 +56,9 @@ public class CreateReportAction implements CheckAction {
 
     private final ConversionService conversionService;
 
-    private final URI contentRepository;
+    private final ScenarioRepository scenarioRepository;
+
+    private final ContentRepository contentRepository;
 
     private static XsltExecutable loadFromScenario(final ScenarioType object) {
         return object.getReportTransformation().getExecutable();
@@ -76,7 +77,7 @@ public class CreateReportAction implements CheckAction {
             final XsltTransformer transformer = getTransformation(results).load();
             transformer.setInitialContextNode(root);
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
-            final RelativeUriResolver resolver = new RelativeUriResolver(this.contentRepository);
+            final RelativeUriResolver resolver = this.contentRepository.createResolver();
             transformer.setMessageListener(e);
             transformer.setURIResolver(resolver);
             transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
@@ -91,9 +92,10 @@ public class CreateReportAction implements CheckAction {
         }
     }
 
-    private static XsltExecutable getTransformation(final Bag results) {
+    private XsltExecutable getTransformation(final Bag results) {
         final Result<ScenarioType, String> scenario = results.getScenarioSelectionResult();
-        return loadFromScenario(scenario.getObject());
+        final ScenarioType reportScenario = scenario.isValid() ? scenario.getObject() : this.scenarioRepository.getFallbackScenario();
+        return loadFromScenario(reportScenario);
     }
 
 }

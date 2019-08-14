@@ -19,6 +19,8 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +32,7 @@ import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
+import de.kosit.validationtool.model.reportInput.ProcessingError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
@@ -84,12 +87,19 @@ public interface CheckAction {
             this.reportInput = reportInput;
         }
 
-
         /**
          * Signalisiert einen vorzeitigen Stop der Vearbeitung.
          */
-        public void stopProcessing() {
+        public void stopProcessing(final String error) {
+            stopProcessing(Collections.singleton(error));
+        }
+
+        public void stopProcessing(final Collection<String> errors) {
             this.stopped = true;
+            if (this.reportInput.getProcessingError() == null) {
+                this.reportInput.setProcessingError(new ProcessingError());
+            }
+            this.reportInput.getProcessingError().getError().addAll(errors);
         }
 
         /**

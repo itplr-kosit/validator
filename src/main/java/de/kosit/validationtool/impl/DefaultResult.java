@@ -1,6 +1,6 @@
 package de.kosit.validationtool.impl;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,10 +45,7 @@ public class DefaultResult implements Result {
 
     @Setter(AccessLevel.PACKAGE)
     @Getter
-    private List<XmlError> schemaViolations = new ArrayList<>();
-
-    @Getter
-    private final List<String> processingErrors = new ArrayList<>();
+    private List<XmlError> schemaViolations;
 
     @Getter
     @Setter(AccessLevel.PACKAGE)
@@ -58,10 +55,19 @@ public class DefaultResult implements Result {
     @Setter
     private boolean processingSuccessful;
 
+    @Getter
+    @Setter
+    private boolean wellformed;
+
     public DefaultResult(final XdmNode report, final AcceptRecommendation recommendation, final HtmlExtractor htmlExtractor) {
         this.report = report;
         this.acceptRecommendation = recommendation;
         this.htmlExtraction = htmlExtractor;
+    }
+
+    @Override
+    public List<String> getProcessingErrors() {
+        return getReportInput().getProcessingError() != null ? getReportInput().getProcessingError().getError() : Collections.emptyList();
     }
 
     /**
@@ -82,6 +88,11 @@ public class DefaultResult implements Result {
     @Override
     public boolean isAcceptable() {
         return isProcessingSuccessful() && AcceptRecommendation.ACCEPTABLE.equals(this.acceptRecommendation);
+    }
+
+    @Override
+    public boolean isSchemaValid() {
+        return getSchemaViolations() != null && getSchemaViolations().isEmpty();
     }
 
     /**
