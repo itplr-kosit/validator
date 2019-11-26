@@ -52,6 +52,10 @@
         <version.slf4j>1.7.25</version.slf4j>
     </properties>
     <repositories>
+     <repository>
+        <id>mustang-mvn-repo</id>
+        <url>https://raw.github.com/ZUGFeRD/mustangproject/mvn-repo/</url>
+    </repository>
         <repository>
             <id>project.local</id>
             <name>project</name>
@@ -131,6 +135,17 @@
             <version>1.0.0</version>
         </dependency>
 
+      <dependency>
+         <groupId>org.riversun</groupId>
+         <artifactId>bigdoc</artifactId>
+         <version>0.3.0</version>
+      </dependency>
+
+     <dependency>
+        <groupId>org.mustangproject.ZUGFeRD</groupId>
+        <artifactId>mustang</artifactId>
+        <version>1.7.5</version>
+    </dependency>
     </dependencies>
 
     <build>

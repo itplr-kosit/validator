@@ -39,6 +39,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
+import org.mustangproject.ZUGFeRD.ZUGFeRDImporter;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Service zum Einlesen des Test-Objekts in den Speicher. Beim Einlesen wird gleichzeitig eine Prüfsumme ermittelt und
  * mit dem Ergebnis mitgeführt.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j
@@ -73,8 +74,8 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von dem übergebenen Pfad. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der Prüfsumme
-     * genutzt.
+     * Liest einen Prüfling von dem übergebenen Pfad. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der
+     * Prüfsumme genutzt.
      *
      * @param path der Prüflings
      * @return ein Prüf-Eingabe-Objekt
@@ -112,9 +113,9 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der Prüfsumme
-     * genutzt.
-     * 
+     * Liest einen Prüfling von der übergebenen URL. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der
+     * Prüfsumme genutzt.
+     *
      * @param url URL des Prüflings
      * @return ein Prüf-Eingabe-Objekt
      */
@@ -133,7 +134,7 @@ public class InputFactory {
     /**
      * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmis zur Ermittlung der Prüfsumme
      * genutzt.
-     * 
+     *
      * @param url URL des Prüflings
      * @param digestAlgorithm der Prüfsummenalgorithmus
      * @return ein Prüf-Eingabe-Objekt
@@ -197,7 +198,7 @@ public class InputFactory {
 
     /**
      * Liest einen Prüfling vom übergebenen {@link InputStream}.
-     * 
+     *
      * @param inputStream der {@link InputStream}
      * @param name der Name/Bezeichner des Prüflings
      * @return einen Prüfling in eingelesener Form
@@ -220,10 +221,55 @@ public class InputFactory {
 
     private Input readStream(final InputStream inputStream, final String name) {
         if (StringUtils.isNotBlank(name)) {
-            log.debug("Generating hashcode for {} using {} algorithm", name, getAlgorithm());
             final MessageDigest digest = createDigest();
             final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-            try ( final BufferedInputStream bis = new BufferedInputStream(inputStream);
+            final byte[] sig = new byte[4];
+
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            /***
+             * If we want to check the file signature we need to copy the inputstream as it does not support rewind()
+             * (or mark() and reset()).
+             *
+             * Apart from being unneccessary (we could also simply check from the file name if the input is PDF) I'm
+             * doing this slow (no nio) and bad (high memory consumption)
+             */
+            int len;
+            try {
+                while ((len = inputStream.read(buffer)) > -1) {
+                    baos.write(buffer, 0, len);
+                }
+                baos.flush();
+            } catch (final NullPointerException e1) {
+                throw new IllegalArgumentException("Could not read from Null: Must supply a valid inputstream");
+            } catch (final IOException e2) {
+
+                throw new IllegalArgumentException("Could not read: Must supply a valid inputstream");
+
+            }
+
+            InputStream rewindedInputStream = new ByteArrayInputStream(baos.toByteArray());
+            final InputStream sigCheckIS = new ByteArrayInputStream(baos.toByteArray());
+
+            int read = 0;
+            try {
+                read = sigCheckIS.read(sig, 0, 4);
+            } catch (final IOException e3) {
+                throw new IllegalArgumentException("Could not read signature: Must supply a valid inputstream");
+            }
+
+            if (read == 4 && sig[0] == '%' && sig[1] == 'P' && sig[2] == 'D' && sig[3] == 'F') {
+                /***
+                 * we are reading a PDF, most likely Factur-X or ZUGFeRD, so let's extract its XML (assuming there is
+                 * some)
+                 */
+
+                final ZUGFeRDImporter zi = new ZUGFeRDImporter(rewindedInputStream);
+                final String zfXML = zi.getUTF8();
+                log.debug("Extracted the following XML {} from the PDF file {}", zfXML, name);
+                rewindedInputStream = new ByteArrayInputStream(zfXML.getBytes());
+            }
+            try ( final BufferedInputStream bis = new BufferedInputStream(rewindedInputStream);
                   final DigestInputStream dis = new DigestInputStream(bis, digest);
                   final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
 
