@@ -53,6 +53,8 @@ public class Helper {
 
         public static final URI INVALID = ROOT.resolve("input/simple-invalid.xml");
 
+        public static final URI NOT_WELLFORMED = ROOT.resolve("input/simple-not-wellformed.xml");
+
         public static final URI UNKNOWN = ROOT.resolve("input/unknown.xml");
 
         public static final URI GARBAGE = ROOT.resolve("input/no-xml.file");

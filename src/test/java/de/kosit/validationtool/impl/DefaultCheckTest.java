@@ -21,6 +21,7 @@ package de.kosit.validationtool.impl;
 
 import static de.kosit.validationtool.api.InputFactory.read;
 import static de.kosit.validationtool.impl.Helper.Simple.GARBAGE;
+import static de.kosit.validationtool.impl.Helper.Simple.NOT_WELLFORMED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -107,6 +108,15 @@ public class DefaultCheckTest {
     @Test
     public void testGarbage() {
         final Result result = this.implementation.checkInput(read(GARBAGE));
+        assertThat(result).isNotNull();
+        assertThat(result.isWellformed()).isFalse();
+        assertThat(result.isSchemaValid()).isFalse();
+        assertThat(result.isProcessingSuccessful()).isFalse();
+    }
+
+    @Test
+    public void testNotWellFormed() {
+        final Result result = this.implementation.checkInput(read(NOT_WELLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isFalse();
         assertThat(result.isSchemaValid()).isFalse();
