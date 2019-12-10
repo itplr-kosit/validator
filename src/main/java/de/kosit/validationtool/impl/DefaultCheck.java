@@ -42,7 +42,6 @@ import de.kosit.validationtool.impl.tasks.SchemaValidationAction;
 import de.kosit.validationtool.impl.tasks.SchematronValidationAction;
 import de.kosit.validationtool.impl.tasks.ValidateReportInputAction;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
 import de.kosit.validationtool.model.reportInput.EngineType;
 import de.kosit.validationtool.model.reportInput.ProcessingError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
@@ -82,7 +81,7 @@ public class DefaultCheck implements Check {
         this.repository = new ScenarioRepository(this.contentRepository);
         this.repository.initialize(configuration);
         this.checkSteps = new ArrayList<>();
-        this.checkSteps.add(DefaultCheck::createDocumentIdentification);
+        this.checkSteps.add(new CreateDocumentIdentificationAction());
         this.checkSteps.add(new DocumentParseAction());
         this.checkSteps.add(new ScenarioSelectionAction(this.repository));
         this.checkSteps.add(new SchemaValidationAction());
@@ -116,7 +115,7 @@ public class DefaultCheck implements Check {
             if (!action.isSkipped(t)) {
                 action.check(t);
             }
-            log.info("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
+            log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
             if (t.isStopped()) {
                 final ProcessingError processingError = t.getReportInput().getProcessingError();
                 log.error("Error processing input {}: {}", t.getInput().getName(),
@@ -147,13 +146,5 @@ public class DefaultCheck implements Check {
         return (List<XmlError>) (List<?>) errors;
     }
 
-    private static void createDocumentIdentification(final CheckAction.Bag transporter) {
-        final DocumentIdentificationType i = new DocumentIdentificationType();
-        final DocumentIdentificationType.DocumentHash h = new DocumentIdentificationType.DocumentHash();
-        h.setHashAlgorithm(transporter.getInput().getDigestAlgorithm());
-        h.setHashValue(transporter.getInput().getHashCode());
-        i.setDocumentHash(h);
-        i.setDocumentReference(transporter.getInput().getName());
-        transporter.getReportInput().setDocumentIdentification(i);
-    }
+
 }

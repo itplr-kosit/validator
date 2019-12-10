@@ -87,7 +87,6 @@ public class DocumentParseAction implements CheckAction {
         v.getXmlSyntaxError().addAll(parserResult.getErrors());
         results.getReportInput().setValidationResultsWellformedness(v);
         if (parserResult.isInvalid()) {
-            log.info("Parsing war nicht erfolgreich: {} -> {}", parserResult.getObject(), parserResult.getErrors());
             results.stopProcessing(parserResult.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.toList()));
         }
     }
