@@ -183,26 +183,6 @@ public class ContentRepository {
     }
 
     /**
-     * Zeigt an, ob diese URI in ein JAR zeigt.
-     *
-     * @param uri der URI
-     * @return true wenn innerhalb eines JARs
-     */
-    public static boolean isJarResource(final URI uri) {
-        return isJarResource(uri.toString());
-    }
-
-    /**
-     * Zeigt an, ob dieser Pfad in ein JAR zeigt.
-     *
-     * @param path der Pfad (URI-Format)
-     * @return true wenn innerhalb eines JARs
-     */
-    public static boolean isJarResource(final String path) {
-        return StringUtils.startsWithIgnoreCase(path, "jar:") && path.split("!").length == 2;
-    }
-
-    /**
      * Erzeugt einen resolver für dieses Repository, der nur relativ auflösen kann
      * 
      * @return ein neuer Resolver
