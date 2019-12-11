@@ -7,14 +7,41 @@ variables:
 before_script:
   - export CI_JOB_TIMESTAMP="-Dbuild.timestamp=$(date --utc --iso-8601=seconds)"
 
+build-amazoncorretto:
+  stage: build
+  image: maven:amazoncorretto
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  artifacts:
+    name: amazoncorretto
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
 
-build-java-latest:
+build-java-14:
+  stage: build
+  image: maven:3-jdk-14
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  artifacts:
+    name: java-14
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+build-java-13:
   stage: build
   image: maven:3-jdk-13
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
   artifacts:
-    name: java-latest
+    name: java-13
     paths:
       - target/*.jar
     reports:
@@ -36,6 +63,19 @@ build-java-12:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
+build-java-11-openj9:
+  stage: build
+  image: maven:3-jdk-11-openj9
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  artifacts:
+    name: java-11-openj9
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
 
 build-java-11:
   stage: build
@@ -51,13 +91,27 @@ build-java-11:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-build-java8:
+build-java-8-openj9:
+  stage: build
+  image: maven:3-jdk-8-openj9
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  artifacts:
+    name: java-8-open-j9
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+build-java8-alpine:
   stage: build
   image: maven:3-jdk-8-alpine
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
   artifacts:
-    name: java8
+    name: java-8-alpine
     paths:
       - target/*.jar
     reports:
