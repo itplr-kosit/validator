@@ -5,16 +5,16 @@ All notable changes to the Schematron Rules and this project will be documented 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## Upcoming version
+
+## 1.1.1
 ### Added
 - Convenience method for accessing information about well-formedness in Result
 - Convenience method for accessing information about schema validation result in Result
 ### Fixed
-- NPE when validating non-XM files
+- NPE when validating non-XML files
 
 ## 1.1.0
-
 ### Added
-
 - Enhanced API-Usage e.g. return _Result_ object with processing information
 - Support loading scenarios and content from a JAR-File
 - Simple Daemon-Mode exposing validation functionality via http
@@ -22,7 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation in `docs` folder
 
 ### Changed
-
 - Use s9api (e.g. XdmNode) internally for loading and holding xml objects (further memory optimization)
 - Builds with java 8 and >= 11
 - Packages for java8 and java >= 11 (with jaxb included)
