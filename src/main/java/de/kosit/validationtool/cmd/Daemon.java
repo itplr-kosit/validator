@@ -30,7 +30,7 @@ import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.impl.ObjectFactory;
-import de.kosit.validationtool.impl.input.ByteArrayInput;
+import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.model.scenarios.Scenarios;
 
 /**
@@ -72,10 +72,9 @@ class Daemon {
                 final String requestMethod = httpExchange.getRequestMethod();
                 if (requestMethod.equals("POST")) {
                     final InputStream inputStream = httpExchange.getRequestBody();
-                    final ByteArrayInput serverInput = (ByteArrayInput) InputFactory.read(inputStream,
-                            "Prüfling" + counter.incrementAndGet());
+                    final SourceInput serverInput = (SourceInput) InputFactory.read(inputStream, "Prüfling" + counter.incrementAndGet());
 
-                    if (serverInput.getLength() > 0) {
+                    if (inputStream.available() > 0) {
                         writeOutputstreamArray(httpExchange, this.implemenation.check(serverInput));
                     } else {
                         writeError(httpExchange, 400, "XML-Inhalt erforderlich!");

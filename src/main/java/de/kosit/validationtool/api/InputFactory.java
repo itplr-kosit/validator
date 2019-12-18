@@ -21,8 +21,6 @@ package de.kosit.validationtool.api;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +28,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
@@ -101,11 +94,7 @@ public class InputFactory {
      */
     public static Input read(final Path path, final String digestAlgorithm) {
         checkNull(path);
-        try ( final InputStream stream = Files.newInputStream(path) ) {
-            return read(stream, path.toString(), digestAlgorithm);
-        } catch (final IOException e) {
-            throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + path, e);
-        }
+        return read(path.toUri(), digestAlgorithm);
     }
 
     /**
@@ -119,23 +108,43 @@ public class InputFactory {
         return read(file, DEFAULT_ALGORITH);
     }
 
+
+    /**
+     * Liest einen Prüfling von der übergebenen URI. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der Prüfsumme
+     * genutzt.
+     *
+     * @param uri URI des Prüflings
+     * @return ein Prüf-Eingabe-Objekt
+     */
+    public static Input read(final URI uri) {
+        return read(uri, DEFAULT_ALGORITH);
+    }
+
+    /**
+     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmis zur Ermittlung der Prüfsumme
+     * genutzt.
+     *
+     * @param uri URI des Prüflings
+     * @param digestAlgorithm der Prüfsummenalgorithmus
+     * @return ein Prüf-Eingabe-Objekt
+     */
+    public static Input read(final URI uri, final String digestAlgorithm) {
+        try {
+            return read(uri.toURL(), digestAlgorithm);
+        } catch (final MalformedURLException e) {
+            throw new IllegalArgumentException(String.format("Can not read from uri %s Not a valid uri supplied", uri));
+        }
+    }
+
     /**
      * Liest einen Prüfling von der übergebenen URL. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der Prüfsumme
      * genutzt.
-     * 
+     *
      * @param url URL des Prüflings
      * @return ein Prüf-Eingabe-Objekt
      */
     public static Input read(final URL url) {
         return read(url, DEFAULT_ALGORITH);
-    }
-
-    public static Input read(final URI uri) {
-        try {
-            return read(uri.toURL(), DEFAULT_ALGORITH);
-        } catch (final MalformedURLException e) {
-            throw new IllegalArgumentException(String.format("Can not read from uri %s Not a valid uri supplied", uri));
-        }
     }
 
     /**
@@ -152,7 +161,7 @@ public class InputFactory {
         try {
             final URLConnection urlConnection = url.openConnection();
             urlConnection.connect();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + url, e);
         }
         return new ResourceInput(url, url.getFile(), digestAlgorithm);
@@ -268,36 +277,8 @@ public class InputFactory {
      * @return einen Prüfling in eingelesener Form
      */
     public static Input read(final InputStream inputStream, final String name, final String digestAlgorithm) {
-        return new InputFactory(digestAlgorithm).readStream(inputStream, name);
-    }
-
-    private Input readStream(final InputStream inputStream, final String name) {
-        if (StringUtils.isNotBlank(name)) {
-            log.debug("Generating hashcode for {} using {} algorithm", name, getAlgorithm());
-            final MessageDigest digest = StreamHelper.createDigest(getAlgorithm());
-            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-            try ( final BufferedInputStream bis = new BufferedInputStream(inputStream);
-                  final DigestInputStream dis = new DigestInputStream(bis, digest);
-                  final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
-
-                // read the file and update the hash calculation
-                int n;
-                while (EOF != (n = dis.read(buffer))) {
-                    out.write(buffer, 0, n);
-                }
-                // get the hash value as byte array
-                final byte[] hash = digest.digest();
-                log.debug("Generated hashcode for {} is {}", name, DatatypeConverter.printHexBinary(hash));
-                out.flush();
-                final ByteArrayInput input = new ByteArrayInput(out.toByteArray(), name, digest.getAlgorithm());
-                input.setHashCode(hash);
-                return input;
-            } catch (final IOException e) {
-                throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + name, e);
-            }
-        } else {
-            throw new IllegalArgumentException("Must supply a valid name/identifier for the input");
-        }
+        checkNull(inputStream);
+        return read(new StreamSource(inputStream, name), digestAlgorithm);
     }
 
 }
