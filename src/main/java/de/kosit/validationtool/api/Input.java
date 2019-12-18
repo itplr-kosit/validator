@@ -19,24 +19,46 @@
 
 package de.kosit.validationtool.api;
 
-import lombok.*;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.xml.transform.Source;
 
 /**
- * Eine Datei in eingelesener Form.
+ * An input for the validator.
  *
  * @author apenski
  */
-@Getter
-@RequiredArgsConstructor (access = AccessLevel.PACKAGE)
-@AllArgsConstructor (access = AccessLevel.PACKAGE)
-public class Input {
 
-    private final byte[] content;
+public interface Input {
 
-    private final String name;
+    /**
+     * The name of the input for document identification
+     * 
+     * @return the name
+     */
+    String getName();
 
-    private byte[] hashCode;
+    /**
+     * The hashcode for document identification
+     * 
+     * @return the computed hashcode
+     */
+    byte[] getHashCode();
 
-    private String digestAlgorithm;
+    /**
+     * The digest algorithm used for computing the {@link #getHashCode()}
+     * 
+     * @return the name of the digest algorith
+     */
+    String getDigestAlgorithm();
+
+    /**
+     * Opens a new {@link InputStream } for this input which carries the actual data
+     * 
+     * @return an open {@link InputStream}
+     * @throws IOException on I/O while opening the stream
+     */
+    Source getSource() throws IOException;
 
 }

@@ -19,13 +19,9 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.stream.Collectors;
-
-import javax.xml.transform.stream.StreamSource;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,10 +59,10 @@ public class DocumentParseAction implements CheckAction {
             throw new IllegalArgumentException("Input may not be null");
         }
         Result<XdmNode, XMLSyntaxError> result;
-        try ( final InputStream input = new ByteArrayInputStream(content.getContent()) ) {
+        try {
             final DocumentBuilder builder = ObjectFactory.createProcessor().newDocumentBuilder();
             builder.setLineNumbering(true);
-            final XdmNode doc = builder.build(new StreamSource(input));
+            final XdmNode doc = builder.build(content.getSource());
             result = new Result<>(doc, Collections.emptyList());
         } catch (final SaxonApiException | IOException e) {
             log.debug("Exception while parsing {}", content.getName(), e);

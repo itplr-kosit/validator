@@ -240,6 +240,7 @@ public class CommandLineApplication {
             return result ? 0 : 1;
 
         } catch (final Exception e) {
+            e.printStackTrace();
             if (cmd.hasOption(DEBUG.getOpt())) {
                 log.error(e.getMessage(), e);
             } else {

@@ -75,8 +75,8 @@ public class RelativeUriResolverTest {
 
     @Test
     public void testClasspathLocal() throws URISyntaxException, TransformerException {
-        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("simple").toURI());
-        final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("simple/main.xsd");
+        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("loading").toURI());
+        final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("loading/main.xsd");
         final Source resolved = this.resolver.resolve("./resources/reference.xsd", moz.toURI().toASCIIString());
         assertThat(resolved).isNotNull();
     }

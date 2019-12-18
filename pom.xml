@@ -6,7 +6,7 @@
     <name>KoSIT XML Prüftool Implementierung</name>
 
     <groupId>de.kosit</groupId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <artifactId>validationtool</artifactId>
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
@@ -116,8 +116,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>1.3.2</version>
-            <scope>test</scope>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
@@ -129,6 +128,7 @@
             <groupId>de.kosit.validationtool</groupId>
             <artifactId>packaged-test-scenarios</artifactId>
             <version>1.0.0</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -406,9 +406,9 @@
                         <classpath />
                         <argument>de.kosit.validationtool.cmd.CommandLineApplication</argument>
                         <argument>-s</argument>
-                        <argument>${project.build.testOutputDirectory}/examples/UBLReady/scenarios-2.xml</argument>
+                        <argument>${project.build.testOutputDirectory}/examples/simple/scenarios.xml</argument>
                         <argument>-r</argument>
-                        <argument>${project.build.testOutputDirectory}/examples/repository</argument>
+                        <argument>${project.build.testOutputDirectory}/examples/simple/repository</argument>
                         <argument>-D</argument>
 
                     </arguments>

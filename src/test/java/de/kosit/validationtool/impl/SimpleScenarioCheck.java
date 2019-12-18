@@ -49,7 +49,7 @@ public class SimpleScenarioCheck {
     public void testUnknown() throws MalformedURLException {
         final Result result = this.implementation.checkInput(InputFactory.read(Simple.UNKNOWN.toURL()));
         assertThat(result).isNotNull();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.isProcessingSuccessful()).isFalse();
     }
 
     @Test

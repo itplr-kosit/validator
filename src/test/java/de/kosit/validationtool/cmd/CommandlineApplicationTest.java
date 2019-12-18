@@ -20,12 +20,6 @@
 package de.kosit.validationtool.cmd;
 
 import static de.kosit.validationtool.impl.Helper.ASSERTIONS;
-import static de.kosit.validationtool.impl.Helper.NOT_EXISTING;
-import static de.kosit.validationtool.impl.Helper.REPOSITORY;
-import static de.kosit.validationtool.impl.Helper.SAMPLE;
-import static de.kosit.validationtool.impl.Helper.SAMPLE2;
-import static de.kosit.validationtool.impl.Helper.SAMPLE_DIR;
-import static de.kosit.validationtool.impl.Helper.SCENARIO_FILE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -34,8 +28,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.kosit.validationtool.impl.Helper.Simple;
 
 /**
  * Testet die Parameter des Kommandozeilen-Tools.
@@ -51,88 +48,88 @@ public class CommandlineApplicationTest {
 
     @Before
     public void setup() throws IOException {
-        commandLine = new CommandLine();
-        commandLine.activate();
+        this.commandLine = new CommandLine();
+        this.commandLine.activate();
     }
 
     @Test
     public void testHelp() {
-        String[] args = new String[] { "-?" };
+        final String[] args = new String[] { "-?" };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).isEmpty();
-        checkForHelp(commandLine.getOutputLines());
+        assertThat(this.commandLine.getErrorOutput()).isEmpty();
+        checkForHelp(this.commandLine.getOutputLines());
     }
 
-    private void checkForHelp(List<String> outputLines) {
+    private static void checkForHelp(final List<String> outputLines) {
         assertThat(outputLines.size()).isGreaterThan(0);
         outputLines.subList(1, outputLines.size() - 1).forEach(l -> assertThat(l.startsWith(" -") || l.startsWith("  ")));
     }
 
     @Test
     public void testRequiredScenarioFile() {
-        String[] args = new String[] { "-d", "arguments", "egal welche", "argument drin sind" };
+        final String[] args = new String[] { "-d", "arguments", "egal welche", "argument drin sind" };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).isNotEmpty();
-        assertThat(commandLine.getErrorOutput()).contains("Missing required option: s");
+        assertThat(this.commandLine.getErrorOutput()).isNotEmpty();
+        assertThat(this.commandLine.getErrorOutput()).contains("Missing required option: s");
     }
 
     @Test
     public void testNotExistingScenarioFile() {
-        String[] args = new String[] { "-s", Paths.get(NOT_EXISTING).toString(), Paths.get(NOT_EXISTING).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.NOT_EXISTING).toString(), Paths.get(Simple.NOT_EXISTING).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).isNotEmpty();
-        assertThat(commandLine.getErrorOutput()).contains("Not a valid path for scenario definition specified");
+        assertThat(this.commandLine.getErrorOutput()).isNotEmpty();
+        assertThat(this.commandLine.getErrorOutput()).contains("Not a valid path for scenario definition specified");
     }
 
     @Test
     public void testIncorrectRepository() {
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), Paths.get(NOT_EXISTING).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), Paths.get(Simple.NOT_EXISTING).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).isNotEmpty();
-        assertThat(commandLine.getErrorOutput()).contains("Can not load schema from sources");
+        assertThat(this.commandLine.getErrorOutput()).isNotEmpty();
+        assertThat(this.commandLine.getErrorOutput()).contains("Can not load schema from sources");
     }
 
     @Test
     public void testNotExistingTestTarget() {
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), "-r", Paths.get(REPOSITORY).toString(),
-                Paths.get(NOT_EXISTING).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY).toString(),
+                Paths.get(Simple.NOT_EXISTING).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).isNotEmpty();
-        assertThat(commandLine.getErrorOutput()).contains("No test targets found");
+        assertThat(this.commandLine.getErrorOutput()).isNotEmpty();
+        assertThat(this.commandLine.getErrorOutput()).contains("No test targets found");
     }
 
     @Test
     public void testValidMinimalConfiguration() {
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), "-r", Paths.get(REPOSITORY).toString(),
-                Paths.get(SAMPLE).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY).toString(),
+                Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
     }
 
     @Test
     public void testValidMultipleInput() {
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), "-r", Paths.get(REPOSITORY).toString(),
-                Paths.get(SAMPLE).toString(), Paths.get(SAMPLE2).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY).toString(),
+                Paths.get(Simple.SIMPLE_VALID).toString(), Paths.get(Simple.FOO).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).contains("Processing 2 object(s) completed");
+        assertThat(this.commandLine.getErrorOutput()).contains("Processing 2 object(s) completed");
     }
 
     @Test
     public void testValidDirectoryInput() {
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), "-r", Paths.get(REPOSITORY).toString(),
-                Paths.get(SAMPLE_DIR).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY).toString(),
+                Paths.get(Simple.EXAMPLES).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).contains("Processing 4 object(s) completed");
+        assertThat(this.commandLine.getErrorOutput()).contains("Processing 5 object(s) completed");
     }
 
     @Test
     public void testValidOutputConfiguration() throws IOException {
-        Path output = Paths.get("output");
-        // assertThat(output).doesNotExist();
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), "-o", output.getFileName().toString(), "-r",
-                Paths.get(REPOSITORY).toString(), Paths.get(SAMPLE).toString() };
+        final Path output = Paths.get("output");
+        FileUtils.deleteDirectory(output.toFile());
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", output.getFileName().toString(), "-r",
+                Paths.get(Simple.REPOSITORY).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(output).exists();
         assertThat(Files.list(output)).hasSize(1);
     }
@@ -140,45 +137,47 @@ public class CommandlineApplicationTest {
     @Test
     public void testNoInput() {
         // assertThat(output).doesNotExist();
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), "-r", Paths.get(REPOSITORY).toString(), };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY).toString(), };
         CommandLineApplication.mainProgram(args);
-        checkForHelp(commandLine.getOutputLines());
+        checkForHelp(this.commandLine.getOutputLines());
     }
 
     @Test
     public void testPrint() {
 
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), "-p", "-r", Paths.get(REPOSITORY).toString(),
-                Paths.get(SAMPLE).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-p", "-r",
+                Paths.get(Simple.REPOSITORY).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(commandLine.getOutputLines().get(0)).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(this.commandLine.getOutputLines().get(0)).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     }
 
     @Test
     public void testHtmlExtraktion() throws IOException {
-        Path output = Files.createTempDirectory("pruef-tool-test");
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), "-h", "-o", output.toAbsolutePath().toString(), "-r",
-                Paths.get(REPOSITORY).toString(), Paths.get(SAMPLE).toString() };
+        final Path output = Files.createTempDirectory("pruef-tool-test");
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-h", "-o", output.toAbsolutePath().toString(),
+                "-r", Paths.get(Simple.REPOSITORY).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(Files.list(output).filter(f -> f.toString().endsWith(".html")).count()).isGreaterThan(0);
     }
 
     @Test
     public void testAssertionsExtraktion() throws IOException {
-        String[] args = new String[] { "-d", "-s", Paths.get(SCENARIO_FILE).toString(), "-r", Paths.get(REPOSITORY).toString(), "-c",
-                Paths.get(ASSERTIONS).toString(), Paths.get(REPOSITORY).toString(), Paths.get(SAMPLE).toString() };
+        final String[] args = new String[] { "-d", "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
+                Paths.get(Simple.REPOSITORY).toString(), "-c", Paths.get(ASSERTIONS).toString(), Paths.get(Simple.REPOSITORY).toString(),
+                Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(commandLine.getErrorOutput()).contains("Can not find assertions for ");
+        assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(this.commandLine.getErrorOutput()).contains("Can not find assertions for ");
     }
 
     @Test
     public void testDebugFlag() throws IOException {
-        String[] args = new String[] { "-s", Paths.get(SCENARIO_FILE).toString(), "-r", "unknown", "-d", Paths.get(ASSERTIONS).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", "unknown", "-d",
+                Paths.get(ASSERTIONS).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(commandLine.getErrorOutput()).contains("at de.kosit.validationtool");
+        assertThat(this.commandLine.getErrorOutput()).contains("at de.kosit.validationtool");
     }
 
 }

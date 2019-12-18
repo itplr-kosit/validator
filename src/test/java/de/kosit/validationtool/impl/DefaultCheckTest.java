@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -39,6 +38,7 @@ import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.CheckConfiguration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.Result;
+import de.kosit.validationtool.impl.Helper.Simple;
 
 /**
  * Test das Check-Interface
@@ -47,10 +47,7 @@ import de.kosit.validationtool.api.Result;
  */
 public class DefaultCheckTest {
 
-    private static final URL SCENARIO_DEFINITION = ScenarioRepositoryTest.class.getResource("/examples/UBLReady/scenarios-2.xml");
 
-    private static final URL VALID_EXAMPLE = ScenarioRepositoryTest.class
-            .getResource("/examples/UBLReady/UBLReady_EU_UBL-NL_20170102_FULL.xml");
 
     public static final int MULTI_COUNT = 5;
 
@@ -58,14 +55,23 @@ public class DefaultCheckTest {
 
     @Before
     public void setup() throws URISyntaxException {
-        final CheckConfiguration d = new CheckConfiguration(SCENARIO_DEFINITION.toURI());
-        d.setScenarioRepository(new File("src/test/resources/examples/repository").toURI());
+        final CheckConfiguration d = new CheckConfiguration(Simple.SCENARIOS);
+        d.setScenarioRepository(new File(Simple.REPOSITORY).toURI());
         this.implementation = new DefaultCheck(d);
     }
 
     @Test
     public void testHappyCase() {
-        final Result doc = this.implementation.checkInput(read(VALID_EXAMPLE));
+        final Result doc = this.implementation.checkInput(read(Simple.SIMPLE_VALID));
+        assertThat(doc).isNotNull();
+        assertThat(doc.getReport()).isNotNull();
+        assertThat(doc.isAcceptable()).isTrue();
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+    }
+
+    @Test
+    public void testWithoutAcceptMatch() {
+        final Result doc = this.implementation.checkInput(read(Simple.FOO));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isFalse();
@@ -74,13 +80,13 @@ public class DefaultCheckTest {
 
     @Test
     public void testHappyCaseDocument() {
-        final Document doc = this.implementation.check(read(VALID_EXAMPLE));
+        final Document doc = this.implementation.check(read(Simple.SIMPLE_VALID));
         assertThat(doc).isNotNull();
     }
 
     @Test
     public void testMultipleCase() {
-        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(VALID_EXAMPLE)).collect(Collectors.toList());
+        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(Simple.SIMPLE_VALID)).collect(Collectors.toList());
         final List<Result> docs = this.implementation.checkInput(input);
         assertThat(docs).isNotNull();
         assertThat(docs).hasSize(MULTI_COUNT);
@@ -88,7 +94,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testMultipleCaseDocument() {
-        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(VALID_EXAMPLE)).collect(Collectors.toList());
+        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(Simple.SIMPLE_VALID)).collect(Collectors.toList());
         final List<Document> docs = this.implementation.check(input);
         assertThat(docs).isNotNull();
         assertThat(docs).hasSize(MULTI_COUNT);
@@ -96,10 +102,10 @@ public class DefaultCheckTest {
 
     @Test
     public void testExtractHtml() {
-        final DefaultResult doc = (DefaultResult) this.implementation.checkInput(read(VALID_EXAMPLE));
+        final DefaultResult doc = (DefaultResult) this.implementation.checkInput(read(Simple.SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
-        assertThat(doc.isAcceptable()).isFalse();
+        assertThat(doc.isAcceptable()).isTrue();
         assertThat(doc.extractHtmlAsString()).isNotEmpty();
         assertThat(doc.extractHtmlAsElement()).isNotEmpty();
         assertThat(doc.extractHtml()).isNotEmpty();

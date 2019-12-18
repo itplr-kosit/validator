@@ -22,10 +22,9 @@ package de.kosit.validationtool.impl;
 import static de.kosit.validationtool.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,6 +32,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
@@ -48,8 +48,6 @@ import net.sf.saxon.s9api.XdmNode;
 
 public class ScenarioRepositoryTest {
 
-    private static final URL SAMPLE = ScenarioRepositoryTest.class.getResource("/valid/scenarios.xml");
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -59,7 +57,7 @@ public class ScenarioRepositoryTest {
 
     @Before
     public void setup() {
-        this.content = new ContentRepository(ObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI());
+        this.content = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
         final Scenarios def = new Scenarios();
         final ScenarioType t = new ScenarioType();
         t.setMatch("//*:name");
@@ -72,7 +70,7 @@ public class ScenarioRepositoryTest {
 
     @Test
     public void testHappyCase() throws Exception {
-        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(SAMPLE));
+        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isTrue();
     }
@@ -83,7 +81,7 @@ public class ScenarioRepositoryTest {
         final ScenarioType fallback = new ScenarioType();
         fallback.setName("fallback");
         this.repository.setFallbackScenario(fallback);
-        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(SAMPLE));
+        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");
@@ -100,15 +98,15 @@ public class ScenarioRepositoryTest {
         final ScenarioType fallback = new ScenarioType();
         fallback.setName("fallback");
         this.repository.setFallbackScenario(fallback);
-        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(SAMPLE));
+        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");
     }
 
-    private static XdmNode load(final URL url) throws IOException {
+    private static XdmNode load(final URI uri) throws IOException {
         final DocumentParseAction p = new DocumentParseAction();
-        return DocumentParseAction.parseDocument(read(url)).getObject();
+        return DocumentParseAction.parseDocument(read(uri.toURL())).getObject();
     }
 
     @Test

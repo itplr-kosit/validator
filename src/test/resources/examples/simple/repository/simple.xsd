@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://validator.kosit.de/test-sample" version="1.0" xml:lang="en"
-           targetNamespace="http://validator.kosit.de/test-sample"
-           xmlns="http://www.w3.org/1999/xhtml" elementFormDefault="qualified">
+           targetNamespace="http://validator.kosit.de/test-sample" elementFormDefault="qualified">
 
     <xs:element name="simple" type="tns:SimpleType" />
     <xs:element name="foo" type="tns:SimpleType" />
@@ -9,6 +8,7 @@
     <xs:complexType name="SimpleType">
         <xs:sequence>
             <xs:element name="inner" type="xs:string" />
+            <xs:element name="content" type="xs:anyType" />
         </xs:sequence>
     </xs:complexType>
-</xs:schema>
+</xs:schema>  

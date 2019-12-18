@@ -36,6 +36,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import de.kosit.validationtool.impl.Helper.Simple;
+
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XsltExecutable;
 
@@ -53,7 +55,7 @@ public class ContentRepositoryTest {
 
     @Before
     public void setup() {
-        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Helper.REPOSITORY);
+        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
     }
 
     @Test
@@ -71,19 +73,19 @@ public class ContentRepositoryTest {
     @Test
     public void testCreateSchemaNotExisting() throws Exception {
         this.exception.expect(IllegalStateException.class);
-        ContentRepository.createSchema(Helper.ASSERTION_SCHEMA.resolve("noexisting").toURL());
+        ContentRepository.createSchema(Simple.NOT_EXISTING.toURL());
     }
 
     @Test
     public void testLoadXSLT() {
-        final XsltExecutable executable = this.repository.loadXsltScript(Helper.SAMPLE_XSLT);
+        final XsltExecutable executable = this.repository.loadXsltScript(Simple.REPORT_XSL);
         assertThat(executable).isNotNull();
     }
 
     @Test
     public void testLoadXSLTNotExisting() {
         this.exception.expect(IllegalStateException.class);
-        this.repository.loadXsltScript(Helper.SAMPLE_XSLT.resolve("notexisting"));
+        this.repository.loadXsltScript(Simple.NOT_EXISTING);
     }
 
     @Test
@@ -119,8 +121,8 @@ public class ContentRepositoryTest {
 
     @Test
     public void testLoadSchema() {
-        final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("simple/main.xsd");
-        final Schema schema = ContentRepository.createSchema(main, new ClassPathResourceResolver("/simple"));
+        final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("loading/main.xsd");
+        final Schema schema = ContentRepository.createSchema(main, new ClassPathResourceResolver("/loading"));
         assertThat(schema).isNotNull();
     }
 

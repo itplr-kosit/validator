@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## Upcoming version
 
+#Added
+- Support java.xml.transform.Source/java.xml.transform.StreamSource as Input
+
+
+#Changed 
+- Inputs are NOT read into memory (e.g. Byte-Array) prior processing within the validtor. This reduces memory consumption.
+
 ## 1.1.1
 ### Added
 - Convenience method for accessing information about well-formedness in Result
