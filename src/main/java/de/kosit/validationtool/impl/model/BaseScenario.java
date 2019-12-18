@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.w3c.dom.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -60,7 +59,7 @@ public abstract class BaseScenario {
     @Getter
     @Setter
     @AllArgsConstructor
-    public class Transformation {
+    public static class Transformation {
 
         private XsltExecutable executable;
 
@@ -122,7 +121,7 @@ public abstract class BaseScenario {
     }
 
     /**
-     * Liefer eine Liste mit Schematron Validierungs-Transformationen
+     * Liefer eine Liste mit Schematron Validierungs-Transformationen.
      * 
      * @return liste mit initialisierten Transformationsinformationen
      */
@@ -144,7 +143,7 @@ public abstract class BaseScenario {
      * Der XPath-Selector zur Identifikation des Scenarios.
      * 
      * @return vorbereiteten selector
-     * @see {@link ScenarioRepository#selectScenario(Document)}.
+     * @see ScenarioRepository#selectScenario(net.sf.saxon.s9api.XdmNode)
      */
     public XPathSelector getSelector() {
         if (this.matchExecutable == null) {
