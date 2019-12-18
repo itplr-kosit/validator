@@ -22,13 +22,11 @@ package de.kosit.validationtool.impl;
 import static de.kosit.validationtool.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.URL;
-
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
@@ -42,25 +40,12 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class DocumentParserTest {
 
-    private static final URL CONTENT = ConversionServiceTest.class.getResource("/valid/scenarios.xml");
-
-    private static final URL ILLFORMED = ConversionServiceTest.class.getResource("/invalid/scenarios-illformed.xml");
-
-    private static final URL NOT_EXISTING = ConversionServiceTest.class.getResource("/does not exist.xml");
-
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    private DocumentParseAction parser;
-
-    @Before
-    public void setup() {
-        this.parser = new DocumentParseAction();
-    }
-
     @Test
     public void testSimple() {
-        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(CONTENT));
+        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
         assertThat(result.getObject()).isNotNull();
         assertThat(result.getErrors()).isEmpty();
@@ -69,7 +54,7 @@ public class DocumentParserTest {
 
     @Test
     public void testIllformed() {
-        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(ILLFORMED));
+        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(Simple.NOT_WELLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
         assertThat(result.getObject()).isNull();

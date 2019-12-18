@@ -2,4 +2,14 @@
 
 <simple xmlns="http://validator.kosit.de/test-sample">
     <inner>asldkfj</inner>
+    <content>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <!--nothing-->
+            </head>
+            <body>
+                <div>some data</div>
+            </body>
+        </html>
+    </content>
 </simple>

@@ -22,7 +22,6 @@ package de.kosit.validationtool.api;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +29,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.DigestInputStream;
@@ -37,11 +37,18 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import de.kosit.validationtool.impl.input.ByteArrayInput;
+import de.kosit.validationtool.impl.input.ResourceInput;
+import de.kosit.validationtool.impl.input.SourceInput;
+import de.kosit.validationtool.impl.input.StreamHelper;
 
 /**
  * Service zum Einlesen des Test-Objekts in den Speicher. Beim Einlesen wird gleichzeitig eine Prüfsumme ermittelt und
@@ -69,7 +76,8 @@ public class InputFactory {
 
     InputFactory(final String specifiedAlgorithm) {
         this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITH;
-        createDigest();
+        // check validity
+        StreamHelper.createDigest(this.algorithm);
     }
 
     /**
@@ -140,11 +148,48 @@ public class InputFactory {
      */
     public static Input read(final URL url, final String digestAlgorithm) {
         checkNull(url);
+        checkNotEmpty(url.getFile());
         try {
-            return read(url.openStream(), url.getFile(), digestAlgorithm);
-        } catch (final IOException e) {
+            final URLConnection urlConnection = url.openConnection();
+            urlConnection.connect();
+        } catch (IOException e) {
             throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + url, e);
         }
+        return new ResourceInput(url, url.getFile(), digestAlgorithm);
+
+    }
+
+    /**
+     * Reads a test document from a {@link Source}.
+     *
+     * @param source source
+     * @return an {@link Input}
+     */
+    public static Input read(final StreamSource source) {
+        return read(source, DEFAULT_ALGORITH);
+    }
+
+    /**
+     * Reads a test document from a {@link Source} using a specified digest algorithm.
+     *
+     * @param source source
+     * @param digestAlgorithm the digest algorithm
+     * @return an {@link Input}
+     */
+    public static Input read(final StreamSource source, final String digestAlgorithm) {
+        return read(source, digestAlgorithm, null);
+    }
+
+    /**
+     * Reads a test document from a {@link Source} using a specified digest algorithm.
+     *
+     * @param source source
+     * @param digestAlgorithm the digest algorithm
+     * @return an {@link Input}
+     */
+    public static Input read(final Source source, final String digestAlgorithm, final byte[] hashcode) {
+        checkNull(source);
+        return new SourceInput(source, source.getSystemId(), digestAlgorithm, hashcode);
     }
 
     /**
@@ -162,6 +207,7 @@ public class InputFactory {
         } catch (final IOException e) {
             throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + file, e);
         }
+
     }
 
     /**
@@ -186,7 +232,14 @@ public class InputFactory {
      */
     public static Input read(final byte[] input, final String name, final String digestAlgorithm) {
         checkNull(input);
-        return read(new ByteArrayInputStream(input), name, digestAlgorithm);
+        checkNotEmpty(name);
+        return new ByteArrayInput(input, name, digestAlgorithm);
+    }
+
+    private static void checkNotEmpty(final String name) {
+        if (StringUtils.isBlank(name)) {
+            throw new IllegalArgumentException("Input name can not be null");
+        }
     }
 
     private static void checkNull(final Object input) {
@@ -221,7 +274,7 @@ public class InputFactory {
     private Input readStream(final InputStream inputStream, final String name) {
         if (StringUtils.isNotBlank(name)) {
             log.debug("Generating hashcode for {} using {} algorithm", name, getAlgorithm());
-            final MessageDigest digest = createDigest();
+            final MessageDigest digest = StreamHelper.createDigest(getAlgorithm());
             final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             try ( final BufferedInputStream bis = new BufferedInputStream(inputStream);
                   final DigestInputStream dis = new DigestInputStream(bis, digest);
@@ -236,23 +289,14 @@ public class InputFactory {
                 final byte[] hash = digest.digest();
                 log.debug("Generated hashcode for {} is {}", name, DatatypeConverter.printHexBinary(hash));
                 out.flush();
-                return new Input(out.toByteArray(), name, hash, digest.getAlgorithm());
+                final ByteArrayInput input = new ByteArrayInput(out.toByteArray(), name, digest.getAlgorithm());
+                input.setHashCode(hash);
+                return input;
             } catch (final IOException e) {
                 throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + name, e);
             }
         } else {
             throw new IllegalArgumentException("Must supply a valid name/identifier for the input");
-        }
-    }
-
-    private MessageDigest createDigest() {
-        try {
-            final MessageDigest digest;
-            digest = MessageDigest.getInstance(getAlgorithm());
-            return digest;
-        } catch (final NoSuchAlgorithmException e) {
-            // should not happen
-            throw new IllegalStateException(String.format("Specified method %s is not available", getAlgorithm()), e);
         }
     }
 

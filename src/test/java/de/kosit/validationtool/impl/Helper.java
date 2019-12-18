@@ -37,11 +37,13 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-public class Helper {
 
+public class Helper {
     public static class Simple {
 
         public static final URI ROOT = EXAMPLES_DIR.resolve("simple/");
+
+        public static final URI EXAMPLES = ROOT.resolve("input/");
 
         public static final URI SIMPLE_VALID = Simple.ROOT.resolve("input/simple.xml");
 
@@ -58,15 +60,30 @@ public class Helper {
         public static final URI UNKNOWN = ROOT.resolve("input/unknown.xml");
 
         public static final URI GARBAGE = ROOT.resolve("input/no-xml.file");
+
+        public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
+
+        public static final URI REPORT_XSL = REPOSITORY.resolve("report.xsl");
+
+        public static URI getSchemaLocation() {
+            return ROOT.resolve("repository/simple.xsd");
+        }
     }
 
-    public static final URI SOURCE_ROOT = Paths.get("src/main/resources").toUri();
+    public static class Invalid {
+
+        public static final URI ROOT = EXAMPLES_DIR.resolve("invaid/");
+
+        public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
+
+        public static final URI SCENARIOS_ILLFORMED = ROOT.resolve("scenarios-illformed.xml");
+    }
+
 
     public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
 
     public static final URI ASSERTION_SCHEMA = MODEL_ROOT.resolve("xsd/assertions.xsd");
 
-    public static final URI SCENARIO_SCHEMA = MODEL_ROOT.resolve("xsd/scenarios.xsd");
 
     public static final URI TEST_ROOT = Paths.get("src/test/resources").toUri();
 
@@ -74,21 +91,14 @@ public class Helper {
 
     public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
 
-    public static final URI SCENARIO_FILE = EXAMPLES_DIR.resolve("UBLReady/scenarios-2.xml");
 
-    public static final URI REPOSITORY = EXAMPLES_DIR.resolve("repository/");
 
     public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("xrechnung/repository/");
 
-    public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
 
-    public static final URI SAMPLE_DIR = EXAMPLES_DIR.resolve("UBLReady/");
 
-    public static final URI SAMPLE_XSLT = EXAMPLES_DIR.resolve("repository/resources/eRechnung/report.xsl");
 
-    public static final URI SAMPLE = SAMPLE_DIR.resolve("UBLReady_EU_UBL-NL_20170102_FULL.xml");
 
-    public static final URI SAMPLE2 = SAMPLE_DIR.resolve("UBLReady_EU_UBL-NL_20170102_FULL-invalid.xml");
 
     /**
      * Lädt ein XML-Dokument von der gegebenen URL

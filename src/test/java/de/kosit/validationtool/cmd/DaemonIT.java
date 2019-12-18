@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import de.kosit.validationtool.impl.Helper.Simple;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -20,11 +22,9 @@ import io.restassured.http.ContentType;
  */
 public class DaemonIT {
 
-    private static final String EXAMPLE_FILE = "examples/UBLReady/UBLReady_EU_UBL-NL_20170102_FULL.xml";
 
     private static final String APPLICATION_XML = "application/xml";
 
-    private static final String INVALID_XML = "examples/UBLReady/UBLReady_EU_UBL-NL_20170102_FULL-invalid.xml";
 
     @Before
     public void setup() {
@@ -41,7 +41,7 @@ public class DaemonIT {
 
     @Test
     public void makeSureThatSuccessTest() throws IOException {
-        try ( final InputStream io = DaemonIT.class.getClassLoader().getResourceAsStream(EXAMPLE_FILE) ) {
+        try ( final InputStream io = Simple.SIMPLE_VALID.toURL().openStream() ) {
             given().contentType(ContentType.XML).body(toContent(io)).when().post("/").then().statusCode(200);
         }
     }
@@ -54,7 +54,7 @@ public class DaemonIT {
     @Test
     @Ignore // no default error report yet
     public void internalServerErrorTest() throws IOException {
-        try ( final InputStream io = DaemonIT.class.getClassLoader().getResourceAsStream(INVALID_XML) ) {
+        try ( final InputStream io = Simple.INVALID.toURL().openStream() ) {
             given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(200);
         }
     }
@@ -75,7 +75,8 @@ public class DaemonIT {
 
     @Test
     public void xmlResultTest() throws IOException {
-        try ( final InputStream io = DaemonIT.class.getClassLoader().getResourceAsStream(EXAMPLE_FILE) ) {
+
+        try ( final InputStream io = Simple.SIMPLE_VALID.toURL().openStream() ) {
             given().body(toContent(io)).when().post("/").then().contentType(APPLICATION_XML).and().statusCode(200);
         }
     }

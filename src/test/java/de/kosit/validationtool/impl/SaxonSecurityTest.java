@@ -33,7 +33,14 @@ import org.w3c.dom.Document;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.sf.saxon.s9api.*;
+import de.kosit.validationtool.impl.Helper.Simple;
+
+import net.sf.saxon.s9api.DOMDestination;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XsltCompiler;
+import net.sf.saxon.s9api.XsltExecutable;
+import net.sf.saxon.s9api.XsltTransformer;
 
 /**
  * Testet verschiedene Saxon Security Einstellungen.
@@ -45,18 +52,18 @@ public class SaxonSecurityTest {
 
     @Test
     public void testEvilStylesheets() throws IOException {
-        Processor p = ObjectFactory.createProcessor();
+        final Processor p = ObjectFactory.createProcessor();
         for (int i = 1; i <= 5; i++) {
             try {
-                URL resource = SaxonSecurityTest.class.getResource(String.format("/evil/evil%s.xsl", i));
+                final URL resource = SaxonSecurityTest.class.getResource(String.format("/evil/evil%s.xsl", i));
                 final XsltCompiler compiler = p.newXsltCompiler();
-                final RelativeUriResolver resolver = new RelativeUriResolver(Helper.REPOSITORY);
+                final RelativeUriResolver resolver = new RelativeUriResolver(Simple.REPOSITORY);
                 compiler.setURIResolver(resolver);
                 final XsltExecutable exetuable = compiler.compile(new StreamSource(resource.openStream()));
                 final XsltTransformer transformer = exetuable.load();
                 final Document document = ObjectFactory.createDocumentBuilder(false).newDocument();
                 document.createElement("root");
-                Document result = ObjectFactory.createDocumentBuilder(false).newDocument();
+                final Document result = ObjectFactory.createDocumentBuilder(false).newDocument();
                 transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
                 transformer.setURIResolver(resolver);
                 transformer.setSource(new DOMSource(document));
@@ -68,7 +75,7 @@ public class SaxonSecurityTest {
                     fail(String.format("Saxon configuration should prevent expansion within %s", resource));
                 }
 
-            } catch (SaxonApiException | RuntimeException e) {
+            } catch (final SaxonApiException | RuntimeException e) {
                 log.info("Expected exception detected", e.getMessage());
             }
         }
