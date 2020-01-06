@@ -58,7 +58,7 @@ import net.sf.saxon.s9api.XdmNode;
  * functionality and therefore needs a {@link Source} to do the actual validation. Since we base the validator on Saxon
  * HE functionality, we have no support for schema in Saxon (e.g. the in memory version of the document is not
  * schema-aware) and need to re-read the actual source.
- * 
+ *
  * Since the actual {@link Input} implementation may not be read twice, we must serialize the previously read document.
  * This implementation tries to do the validation in an efficient manner. If possible the source is read a second time
  * to validate. If not, the source is serialized to the heap upon re-read/validaiton up to a configurable file size. The
@@ -187,11 +187,11 @@ public class SchemaValidationAction implements CheckAction {
 
     @Override
     public boolean isSkipped(final Bag results) {
-        return hasNoScenario(results);
+        return hasNoSchema(results);
     }
 
-    private static boolean hasNoScenario(final Bag results) {
-        return results.getScenarioSelectionResult() == null || results.getScenarioSelectionResult().isInvalid();
+    private static boolean hasNoSchema(final Bag results) {
+        return results.getScenarioSelectionResult() == null || results.getScenarioSelectionResult().getObject().getSchema() == null;
     }
 
     private interface SourceProvider extends AutoCloseable {

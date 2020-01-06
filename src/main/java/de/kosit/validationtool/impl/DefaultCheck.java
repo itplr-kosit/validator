@@ -43,7 +43,6 @@ import de.kosit.validationtool.impl.tasks.SchematronValidationAction;
 import de.kosit.validationtool.impl.tasks.ValidateReportInputAction;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.EngineType;
-import de.kosit.validationtool.model.reportInput.ProcessingError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
@@ -116,12 +115,6 @@ public class DefaultCheck implements Check {
                 action.check(t);
             }
             log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
-            if (t.isStopped()) {
-                final ProcessingError processingError = t.getReportInput().getProcessingError();
-                log.error("Error processing input {}: {}", t.getInput().getName(),
-                        processingError != null ? String.join("\n", processingError.getError()) : "");
-                break;
-            }
         }
         t.setFinished(true);
         log.info("Finished check of {} in {}ms\n", t.getInput().getName(), System.currentTimeMillis() - started);

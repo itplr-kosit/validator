@@ -19,7 +19,6 @@
             <organizationUrl>http://www.xoev.de</organizationUrl>
         </developer>
         <developer>
-
             <id>renzo.kottmann</id>
             <name>Renzo Kottmann</name>
             <organization>KoSIT</organization>
@@ -36,12 +35,6 @@
             <roles>
                 <role>developer</role>
             </roles>
-        </developer>
-        <developer>
-            <id>fabian.buettner</id>
-            <name>Fabian Büttner</name>
-            <organization>KoSIT</organization>
-            <organizationUrl>http://www.xoev.de</organizationUrl>
         </developer>
     </developers>
     <properties>

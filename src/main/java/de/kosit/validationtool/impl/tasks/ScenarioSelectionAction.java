@@ -26,8 +26,11 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
+import net.sf.saxon.s9api.XdmNode;
+
 /**
- * Identifiziert das der Eingabe entsprechende Szenario, sofern eines konfiguriert ist.
+ * Identifiziert das der Eingabe entsprechende Szenario, sofern eines konfiguriert ist. Setzt das Fallback-Szenario,
+ * wenn keines identifiziert werden konnte.
  * 
  * @author Andreas Penski
  */
@@ -39,18 +42,23 @@ public class ScenarioSelectionAction implements CheckAction {
     @Override
     public void check(final Bag results) {
         final CreateReportInput report = results.getReportInput();
-        final Result<ScenarioType, String> scenarioTypeResult = this.repository.selectScenario(results.getParserResult().getObject());
-        results.setScenarioSelectionResult(scenarioTypeResult);
-        if (scenarioTypeResult.isValid()) {
-            final ScenarioType scenario = scenarioTypeResult.getObject();
-            report.setScenario(scenario);
+        final Result<ScenarioType, String> scenarioTypeResult;
+
+        if (results.getParserResult().isValid()) {
+            scenarioTypeResult = determineScenario(results.getParserResult().getObject());
         } else {
-            results.stopProcessing(scenarioTypeResult.getErrors());
+            scenarioTypeResult = new Result<>(repository.getFallbackScenario());
         }
+        results.setScenarioSelectionResult(scenarioTypeResult);
+        report.setScenario(scenarioTypeResult.getObject());
     }
 
-    @Override
-    public boolean isSkipped(final Bag results) {
-        return results.getParserResult().isInvalid();
+    private Result<ScenarioType, String> determineScenario(final XdmNode document) {
+        final Result<ScenarioType, String> result = this.repository.selectScenario(document);
+        if (result.isInvalid()) {
+            return new Result<>(repository.getFallbackScenario());
+        }
+        return result;
     }
+
 }
