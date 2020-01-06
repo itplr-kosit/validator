@@ -29,8 +29,11 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.Helper.Simple;
 
@@ -39,17 +42,33 @@ import de.kosit.validationtool.impl.Helper.Simple;
  * 
  * @author Andreas Penski
  */
+@Slf4j
 public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
     private CommandLine commandLine;
 
+    private final Path output = Paths.get("target/test-output");
 
     @Before
     public void setup() throws IOException {
         this.commandLine = new CommandLine();
         this.commandLine.activate();
+        if (Files.exists(this.output)) {
+            FileUtils.deleteDirectory(this.output.toFile());
+        }
+    }
+
+    @After
+    public void cleanup() throws IOException {
+        Files.list(Paths.get("")).filter(p -> p.getFileName().toString().endsWith("-report.xml")).forEach(path -> {
+            try {
+                Files.delete(path);
+            } catch (final IOException e) {
+                log.error("Error deleting file", e);
+            }
+        });
     }
 
     @Test
@@ -108,30 +127,29 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testValidMultipleInput() {
-        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY).toString(),
-                Paths.get(Simple.SIMPLE_VALID).toString(), Paths.get(Simple.FOO).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
+                Paths.get(Simple.REPOSITORY).toString(), Paths.get(Simple.SIMPLE_VALID).toString(), Paths.get(Simple.FOO).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains("Processing 2 object(s) completed");
     }
 
     @Test
     public void testValidDirectoryInput() {
-        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY).toString(),
-                Paths.get(Simple.EXAMPLES).toString() };
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
+                Paths.get(Simple.REPOSITORY).toString(), Paths.get(Simple.EXAMPLES).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains("Processing 5 object(s) completed");
     }
 
     @Test
     public void testValidOutputConfiguration() throws IOException {
-        final Path output = Paths.get("output");
-        FileUtils.deleteDirectory(output.toFile());
-        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", output.getFileName().toString(), "-r",
+
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(output).exists();
-        assertThat(Files.list(output)).hasSize(1);
+        assertThat(this.output).exists();
+        assertThat(Files.list(this.output)).hasSize(1);
     }
 
     @Test
@@ -146,7 +164,7 @@ public class CommandlineApplicationTest {
     public void testPrint() {
 
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-p", "-r",
-                Paths.get(Simple.REPOSITORY).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
+                Paths.get(Simple.REPOSITORY).toString(), "-o", this.output.toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(this.commandLine.getOutputLines().get(0)).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -154,18 +172,19 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testHtmlExtraktion() throws IOException {
-        final Path output = Files.createTempDirectory("pruef-tool-test");
-        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-h", "-o", output.toAbsolutePath().toString(),
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-h", "-o",
+                this.output.toAbsolutePath().toString(),
                 "-r", Paths.get(Simple.REPOSITORY).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(Files.list(output).filter(f -> f.toString().endsWith(".html")).count()).isGreaterThan(0);
+        assertThat(Files.list(this.output).filter(f -> f.toString().endsWith(".html")).count()).isGreaterThan(0);
     }
 
     @Test
-    public void testAssertionsExtraktion() throws IOException {
+    public void testAssertionsExtraktion() {
         final String[] args = new String[] { "-d", "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
-                Paths.get(Simple.REPOSITORY).toString(), "-c", Paths.get(ASSERTIONS).toString(), Paths.get(Simple.REPOSITORY).toString(),
+                Paths.get(Simple.REPOSITORY).toString(), "-o", this.output.toString(), "-c", Paths.get(ASSERTIONS).toString(),
+                Paths.get(Simple.REPOSITORY).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
@@ -173,8 +192,9 @@ public class CommandlineApplicationTest {
     }
 
     @Test
-    public void testDebugFlag() throws IOException {
-        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", "unknown", "-d",
+    public void testDebugFlag() {
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", "unknown", "-o", this.output.toString(),
+                "-d",
                 Paths.get(ASSERTIONS).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains("at de.kosit.validationtool");
