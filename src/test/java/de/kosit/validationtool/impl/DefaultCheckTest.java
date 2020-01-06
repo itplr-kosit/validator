@@ -130,6 +130,7 @@ public class DefaultCheckTest {
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
+        System.out.println(Helper.serialize(result.getReportDocument()));
     }
 
 }

@@ -21,23 +21,23 @@
 <!-- $Id$ -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:in="http://www.xoev.de/de/validator/framework/1/createreportinput"
            xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios" xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-           targetNamespace="http://www.xoev.de/de/validator/framework/1/createreportinput" version="1.0.0"
+           targetNamespace="http://www.xoev.de/de/validator/framework/1/createreportinput" version="1.0.2"
            elementFormDefault="qualified" attributeFormDefault="unqualified">
 
-    <xs:import namespace="http://www.xoev.de/de/validator/framework/1/scenarios" schemaLocation="scenarios.xsd"/>
+    <xs:import namespace="http://www.xoev.de/de/validator/framework/1/scenarios" schemaLocation="scenarios.xsd" />
     <xs:import namespace="http://purl.oclc.org/dsdl/svrl" schemaLocation="svrl-kosit.xsd" />
 
     <xs:element name="createReportInput">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="engine" type="in:EngineType"/>
-                <xs:element name="timestamp" type="xs:dateTime"/>
-                <xs:element name="documentIdentification" type="in:DocumentIdentificationType"/>
-                <xs:element ref="s:scenario" minOccurs="0"/>
-                <xs:element name="validationResultsWellformedness" type="in:ValidationResultsWellformedness" minOccurs="0"/>
-                <xs:element name="validationResultsXmlSchema" type="in:ValidationResultsXmlSchema" minOccurs="0"/>
-                <xs:element name="validationResultsSchematron" type="in:ValidationResultsSchematron" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="processingError" type="in:ProcessingError" minOccurs="0"/>
+                <xs:element name="engine" type="in:EngineType" />
+                <xs:element name="timestamp" type="xs:dateTime" />
+                <xs:element name="documentIdentification" type="in:DocumentIdentificationType" />
+                <xs:element ref="s:scenario" minOccurs="0" />
+                <xs:element name="validationResultsWellformedness" type="in:ValidationResultsWellformedness" minOccurs="0" />
+                <xs:element name="validationResultsXmlSchema" type="in:ValidationResultsXmlSchema" minOccurs="0" />
+                <xs:element name="validationResultsSchematron" type="in:ValidationResultsSchematron" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="processingError" type="in:ProcessingError" minOccurs="0" />
             </xs:sequence>
             <xs:attribute name="frameworkVersion" type="xs:string" use="required"/>
         </xs:complexType>
@@ -145,11 +145,24 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="ProcessingError">
         <xs:sequence>
-            <xs:element name="error" type="xs:string" minOccurs="1" maxOccurs="unbounded"/> 
+            <xs:element name="error" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
+
+    <xs:element name="error-message">
+        <xs:annotation>
+            <xs:documentation>
+                Dieses Element wird als "Input"-Document im Falle von Parsing-Fehlern an den Report-Generator übergeben.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string" />
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
 
 </xs:schema>
