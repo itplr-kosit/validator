@@ -22,13 +22,21 @@ package de.kosit.validationtool.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.Document;
+
+import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
@@ -121,6 +129,20 @@ public class Helper {
      */
     public static ContentRepository loadTestRepository() {
         return new ContentRepository(ObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI());
+    }
+
+    public static String serialize(final Document doc) {
+        try ( final StringWriter writer = new StringWriter() ) {
+            final Transformer transformer = ObjectFactory.createTransformer(true);
+            transformer.transform(new DOMSource(doc), new StreamResult(writer));
+            return writer.toString();
+        } catch (final IOException | TransformerException e) {
+            throw new IllegalStateException("Can not serialize document", e);
+        }
+    }
+
+    public static String serialize(final XdmNode node) {
+        return serialize((Document) NodeOverNodeInfo.wrap(node.getUnderlyingNode()));
     }
 
 }

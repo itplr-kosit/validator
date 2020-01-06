@@ -94,7 +94,7 @@ public abstract class BaseScenario {
      * @return das passende Schema
      */
     public Schema getSchema() {
-        if (this.schema == null) {
+        if (this.schema == null && getValidateWithXmlSchema() != null) {
             final List<String> schemaResources = getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation)
                     .collect(Collectors.toList());
             this.schema = this.repository.createSchema(schemaResources);

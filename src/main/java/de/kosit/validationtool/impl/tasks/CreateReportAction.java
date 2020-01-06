@@ -22,6 +22,7 @@ package de.kosit.validationtool.impl.tasks;
 import javax.xml.transform.dom.DOMSource;
 
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,9 +32,9 @@ import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.RelativeUriResolver;
 import de.kosit.validationtool.impl.ScenarioRepository;
-import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
+import net.sf.saxon.s9api.BuildingContentHandler;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
@@ -70,7 +71,7 @@ public class CreateReportAction implements CheckAction {
         try {
 
             final XdmNode parsedDocument = results.getParserResult().isValid() ? results.getParserResult().getObject()
-                    : ObjectFactory.createProcessor().newDocumentBuilder().newBuildingContentHandler().getDocumentNode();
+                    : createEmpty();
 
             final Document reportInput = this.conversionService.writeDocument(results.getReportInput());
             final XdmNode root = documentBuilder.build(new DOMSource(reportInput));
@@ -81,21 +82,27 @@ public class CreateReportAction implements CheckAction {
             transformer.setMessageListener(e);
             transformer.setURIResolver(resolver);
             transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
-            transformer.setParameter(new QName("input-document"), parsedDocument);
+            if (parsedDocument != null) {
+                transformer.setParameter(new QName("input-document"), parsedDocument);
+            }
             final XdmDestination destination = new XdmDestination();
             transformer.setDestination(destination);
             transformer.transform();
             results.setReport(destination.getXdmNode());
 
-        } catch (final SaxonApiException e) {
+        } catch (final SaxonApiException | SAXException e) {
             throw new IllegalStateException("Can not create final report", e);
         }
     }
 
-    private XsltExecutable getTransformation(final Bag results) {
-        final Result<ScenarioType, String> scenario = results.getScenarioSelectionResult();
-        final ScenarioType reportScenario = scenario.isValid() ? scenario.getObject() : this.scenarioRepository.getFallbackScenario();
-        return loadFromScenario(reportScenario);
+    private static XdmNode createEmpty() throws SaxonApiException, SAXException {
+        final BuildingContentHandler contentHandler = ObjectFactory.createProcessor().newDocumentBuilder().newBuildingContentHandler();
+        contentHandler.startDocument();
+        return contentHandler.getDocumentNode();
+    }
+
+    private static XsltExecutable getTransformation(final Bag results) {
+        return loadFromScenario(results.getScenarioSelectionResult().getObject());
     }
 
 }

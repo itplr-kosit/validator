@@ -121,6 +121,9 @@ public class DefaultCheckTest {
         assertThat(result.isWellformed()).isFalse();
         assertThat(result.isSchemaValid()).isFalse();
         assertThat(result.isProcessingSuccessful()).isFalse();
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.getReport()).isNotNull();
+        assertThat(result.getReportDocument()).isNotNull();
     }
 
 }

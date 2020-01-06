@@ -46,26 +46,26 @@ import de.kosit.validationtool.model.scenarios.ScenarioType;
 @Slf4j
 public class SchemaValidationAction implements CheckAction {
 
-    private Result<Boolean, XMLSyntaxError> validate(byte[] document, ScenarioType scenarioType) {
+    private static Result<Boolean, XMLSyntaxError> validate(final byte[] document, final ScenarioType scenarioType) {
         log.debug("Validating document using scenario {}", scenarioType.getName());
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
-        try ( InputStream input = new ByteArrayInputStream(document) ) {
+        try ( final InputStream input = new ByteArrayInputStream(document) ) {
             final Validator validator = ObjectFactory.createValidator(scenarioType.getSchema());
             validator.setErrorHandler(errorHandler);
             validator.validate(new StreamSource(input));
             return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
-        } catch (SAXException | IOException e) {
+        } catch (final SAXException | IOException e) {
             throw new IllegalStateException("Error validating document", e);
         }
     }
 
     @Override
-    public void check(Bag results) {
+    public void check(final Bag results) {
         final CreateReportInput report = results.getReportInput();
         final ScenarioType scenario = results.getScenarioSelectionResult().getObject();
         final Result<Boolean, XMLSyntaxError> validateResult = validate(results.getInput().getContent(), scenario);
         results.setSchemaValidationResult(validateResult);
-        ValidationResultsXmlSchema result = new ValidationResultsXmlSchema();
+        final ValidationResultsXmlSchema result = new ValidationResultsXmlSchema();
         report.setValidationResultsXmlSchema(result);
         result.getResource().addAll(scenario.getValidateWithXmlSchema().getResource());
         if (!validateResult.isValid()) {
@@ -76,11 +76,11 @@ public class SchemaValidationAction implements CheckAction {
 
 
     @Override
-    public boolean isSkipped(Bag results) {
-        return hasNoScenario(results);
+    public boolean isSkipped(final Bag results) {
+        return hasNoSchema(results);
     }
 
-    private static boolean hasNoScenario(Bag results) {
-        return results.getScenarioSelectionResult() == null || results.getScenarioSelectionResult().isInvalid();
+    private static boolean hasNoSchema(final Bag results) {
+        return results.getScenarioSelectionResult() == null || results.getScenarioSelectionResult().getObject().getSchema() == null;
     }
 }
