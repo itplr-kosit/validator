@@ -19,19 +19,25 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import javax.xml.transform.dom.DOMSource;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 import lombok.RequiredArgsConstructor;
 
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
+import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.RelativeUriResolver;
 import de.kosit.validationtool.impl.ScenarioRepository;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 import net.sf.saxon.s9api.BuildingContentHandler;
@@ -53,6 +59,7 @@ import net.sf.saxon.s9api.XsltTransformer;
 @RequiredArgsConstructor
 public class CreateReportAction implements CheckAction {
 
+    private static final String ERROR_MESSAGE_ELEMENT = "error-message";
     private final Processor processor;
 
     private final ConversionService conversionService;
@@ -71,7 +78,7 @@ public class CreateReportAction implements CheckAction {
         try {
 
             final XdmNode parsedDocument = results.getParserResult().isValid() ? results.getParserResult().getObject()
-                    : createEmpty();
+                    : createErrorInformation(results.getParserResult().getErrors());
 
             final Document reportInput = this.conversionService.writeDocument(results.getReportInput());
             final XdmNode root = documentBuilder.build(new DOMSource(reportInput));
@@ -95,9 +102,14 @@ public class CreateReportAction implements CheckAction {
         }
     }
 
-    private static XdmNode createEmpty() throws SaxonApiException, SAXException {
+    private static XdmNode createErrorInformation(final Collection<XMLSyntaxError> errors) throws SaxonApiException, SAXException {
         final BuildingContentHandler contentHandler = ObjectFactory.createProcessor().newDocumentBuilder().newBuildingContentHandler();
         contentHandler.startDocument();
+        contentHandler.startElement(EngineInformation.getFrameworkNamespace(), ERROR_MESSAGE_ELEMENT, ERROR_MESSAGE_ELEMENT,
+                new AttributesImpl());
+        final String message = errors.stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining());
+        contentHandler.characters(message.toCharArray(), 0, message.length());
+        contentHandler.endElement(EngineInformation.getFrameworkNamespace(), ERROR_MESSAGE_ELEMENT, ERROR_MESSAGE_ELEMENT);
         return contentHandler.getDocumentNode();
     }
 

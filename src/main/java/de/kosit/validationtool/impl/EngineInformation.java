@@ -55,4 +55,22 @@ public class EngineInformation {
     public static String getFrameworkVersion() {
         return PROPERTIES.getProperty("framework_version");
     }
+
+    /**
+     * Gibt die Major-Versions-Nummer des eingesetzten Frameworks zurück.
+     * 
+     * @return die Major-Versions-Nummer
+     */
+    public static String getFrameworkMajorVersion() {
+        return getFrameworkVersion().substring(0, 1);
+    }
+
+    /**
+     * Gibt den Namespace des eingesetzten Frameworks zurück.
+     * 
+     * @return die Major-Versions-Nummer
+     */
+    public static String getFrameworkNamespace() {
+        return "http://www.xoev.de/de/validator/framework/" + getFrameworkMajorVersion() + "/createreportinput";
+    }
 }
