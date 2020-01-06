@@ -1,5 +1,8 @@
 package de.kosit.validationtool.impl.input;
 
+import static de.kosit.validationtool.impl.input.StreamHelper.drain;
+
+import java.io.IOException;
 import java.io.InputStream;
 
 import lombok.Getter;
@@ -25,9 +28,18 @@ public abstract class AbstractInput implements Input, LazyReadInput {
     @Override
     public byte[] getHashCode() {
         if (this.hashCode == null) {
-            throw new IllegalStateException("Hashcode is not computed yet");
+            log.warn("Extra calculating hashcode. This is in-efficient in most cases");
+            computeHashcode();
         }
         return this.hashCode;
+    }
+
+    protected void computeHashcode() {
+        try {
+            drain(this);
+        } catch (final IOException e) {
+            log.error("Error extra computing hashcode", e);
+        }
     }
 
     protected InputStream wrap(final InputStream stream) {

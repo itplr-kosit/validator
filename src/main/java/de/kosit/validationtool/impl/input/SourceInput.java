@@ -57,7 +57,7 @@ public class SourceInput extends AbstractInput {
             return wrap();
         }
         if (isConsumed()) {
-            throw new IllegalStateException("A StreamSource can only read once");
+            throw new IllegalStateException("A SourceInput can only read once");
         }
         return this.source;
     }

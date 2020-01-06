@@ -19,6 +19,7 @@
 
 package de.kosit.validationtool.api;
 
+import static de.kosit.validationtool.impl.input.StreamHelper.drain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
@@ -51,9 +52,7 @@ public class InputFactoryTest {
 
     private static URL NOT_EXISTING;
 
-    private static final int EOF = -1;
 
-    private static final int DEFAULT_BUFFER_SIZE = 4096;
 
     static {
         try {
@@ -83,20 +82,7 @@ public class InputFactoryTest {
         assertThat(s1).isNotEqualTo(s3);
     }
 
-    private static Input drain(final Input input) throws IOException {
-        final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        final StreamSource s = (StreamSource) input.getSource();
-        try ( final InputStream stream = s.getInputStream() ) {
 
-            int n;
-            while (EOF != (n = stream.read(buffer))) {
-                // nothing
-            }
-
-        }
-        return input;
-
-    }
 
     @Test
     public void testWrongAlgorithm() {

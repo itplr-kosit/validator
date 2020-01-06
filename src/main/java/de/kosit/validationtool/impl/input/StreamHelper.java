@@ -7,7 +7,11 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.io.input.CountingInputStream;
+
+import de.kosit.validationtool.api.Input;
 
 /**
  * Helper for stream handling.
@@ -56,6 +60,10 @@ public class StreamHelper {
         }
     }
 
+    private static final int EOF = -1;
+
+    private static final int DEFAULT_BUFFER_SIZE = 4096;
+
     private StreamHelper() {
         // hide
     }
@@ -91,5 +99,37 @@ public class StreamHelper {
      */
     public static InputStream wrapDigesting(final LazyReadInput input, final InputStream stream, final String digestAlgorithm) {
         return new DigestingInputStream(input, stream, createDigest(digestAlgorithm));
+    }
+
+    /**
+     * Drains the {@link Input} without further processing. This is useful to computing hashcode etc.
+     * 
+     * @param input the input
+     * @return the input drained once
+     * @throws IOException on I/O errors
+     */
+    public static Input drain(final Input input) throws IOException {
+        final StreamSource s = (StreamSource) input.getSource();
+        try ( final InputStream stream = s.getInputStream() ) {
+            drain(stream);
+        }
+        return input;
+
+    }
+
+    /**
+     * Drains the {@link InputStream} without further processing. This is useful to computing hashcode etc.
+     *
+     * @param input the input
+     * @throws IOException on I/O errors
+     */
+    public static void drain(final InputStream input) throws IOException {
+        final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+
+        int n;
+        while (EOF != (n = input.read(buffer))) {
+            // nothing
+        }
+
     }
 }
