@@ -86,6 +86,7 @@ build-java-11:
     name: java-11
     paths:
       - target/*.jar
+      - target/*.zip
     reports:
       junit:
         - target/surefire-reports/*.xml
