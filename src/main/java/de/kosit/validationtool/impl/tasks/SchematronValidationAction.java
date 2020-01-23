@@ -28,6 +28,7 @@ import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ContentRepository;
@@ -50,17 +51,20 @@ import net.sf.saxon.s9api.XsltTransformer;
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
+@Slf4j
 public class SchematronValidationAction implements CheckAction {
 
     private final ContentRepository repository;
 
     private final ConversionService conversionService;
 
-    private List<ValidationResultsSchematron> validate(final XdmNode document, final ScenarioType scenario) {
-        return scenario.getSchematronValidations().stream().map(v -> validate(document, v)).collect(Collectors.toList());
+    private List<ValidationResultsSchematron> validate(final Bag results, final XdmNode document, final ScenarioType scenario) {
+        return scenario.getSchematronValidations().stream().map(v -> validate(results, document, v)).collect(Collectors.toList());
     }
 
-    private ValidationResultsSchematron validate(final XdmNode document, final BaseScenario.Transformation validation) {
+    private ValidationResultsSchematron validate(final Bag results, final XdmNode document, final BaseScenario.Transformation validation) {
+        final ValidationResultsSchematron s = new ValidationResultsSchematron();
+        s.setResource(validation.getResourceType());
         try {
             final XsltTransformer transformer = validation.getExecutable().load();
             // resolving nur relative zum Repository
@@ -73,29 +77,34 @@ public class SchematronValidationAction implements CheckAction {
             transformer.setDestination(new DOMDestination(result));
             transformer.setInitialContextNode(document);
             transformer.transform();
-            final ValidationResultsSchematron s = new ValidationResultsSchematron();
-            s.setResource(validation.getResourceType());
+
             final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
             r.setSchematronOutput(this.conversionService.readDocument(new DOMSource(result), SchematronOutput.class));
             s.setResults(r);
-            return s;
 
         } catch (final SaxonApiException e) {
-            throw new IllegalStateException("Can not run schematron validation", e);
+            final String msg = String.format("Error processing schematron validation %s", validation.getResourceType().getName());
+            log.error(msg, e);
+            results.addProcessingError(msg);
         }
+        return s;
     }
 
     @Override
     public void check(final Bag results) {
         final CreateReportInput report = results.getReportInput();
-        final List<ValidationResultsSchematron> validationResult = validate(results.getParserResult().getObject(),
+        final List<ValidationResultsSchematron> validationResult = validate(results, results.getParserResult().getObject(),
                 results.getScenarioSelectionResult().getObject());
         report.getValidationResultsSchematron().addAll(validationResult);
     }
 
     @Override
     public boolean isSkipped(final Bag results) {
-        return hasNoSchematrons(results.getScenarioSelectionResult().getObject());
+        return hasNoSchematrons(results.getScenarioSelectionResult().getObject()) || isSchemaInvalid(results);
+    }
+
+    private static boolean isSchemaInvalid(final Bag results) {
+        return results.getSchemaValidationResult() == null || results.getSchemaValidationResult().isInvalid();
     }
 
     private static boolean hasNoSchematrons(final ScenarioType object) {

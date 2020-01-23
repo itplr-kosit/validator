@@ -142,7 +142,10 @@ public class SchemaValidationAction implements CheckAction {
             validator.validate(validateInput.getSource());
             return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
         } catch (final SAXException | SaxonApiException | IOException e) {
-            throw new IllegalStateException("Error validating document", e);
+            final String msg = String.format("Error processing schema validation for scenario %s", scenarioType.getName());
+            log.error(msg, e);
+            results.addProcessingError(msg);
+            return new Result<>(Boolean.FALSE);
         }
     }
 
