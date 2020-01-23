@@ -61,24 +61,24 @@ public class SchemaValidatorActionTest {
 
     @Before
     public void setup() {
-        service = new SchemaValidationAction();
-        repository = new ContentRepository(ObjectFactory.createProcessor(), Helper.REPOSITORY);
+        this.service = new SchemaValidationAction();
+        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Helper.REPOSITORY);
 
     }
 
     @Test
     public void testSimple() {
-        CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(VALID_EXAMPLE), new CreateReportInput());
-        ScenarioType t = new ScenarioType();
-        ValidateWithXmlSchema v = new ValidateWithXmlSchema();
-        ResourceType r = new ResourceType();
+        final CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(VALID_EXAMPLE), new CreateReportInput());
+        final ScenarioType t = new ScenarioType();
+        final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
+        final ResourceType r = new ResourceType();
         r.setLocation("resources/eRechnung/UBL-2.1/xsdrt/maindoc/UBL-Invoice-2.1.xsd");
         r.setName("invoice");
         v.getResource().add(r);
         t.setValidateWithXmlSchema(v);
-        t.initialize(repository, true);
+        t.initialize(this.repository, true);
         bag.setScenarioSelectionResult(new Result<>(t, Collections.emptyList()));
-        service.check(bag);
+        this.service.check(bag);
         assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
         assertThat(bag.getSchemaValidationResult()).isNotNull();
         assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
@@ -86,17 +86,17 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testValidationFailure() throws MalformedURLException {
-        CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(INVALID_EXAMPLE.toURL()), new CreateReportInput());
-        ScenarioType t = new ScenarioType();
-        ValidateWithXmlSchema v = new ValidateWithXmlSchema();
-        ResourceType r = new ResourceType();
+        final CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(INVALID_EXAMPLE.toURL()), new CreateReportInput());
+        final ScenarioType t = new ScenarioType();
+        final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
+        final ResourceType r = new ResourceType();
         r.setLocation(Helper.REPOSITORY.relativize(Helper.SCENARIO_SCHEMA).getRawPath());
         r.setName("invoice");
         v.getResource().add(r);
         t.setValidateWithXmlSchema(v);
-        t.initialize(repository, true);
+        t.initialize(this.repository, true);
         bag.setScenarioSelectionResult(new Result<>(t, Collections.emptyList()));
-        service.check(bag);
+        this.service.check(bag);
         assertThat(bag.getSchemaValidationResult().isValid()).isFalse();
         bag.getSchemaValidationResult().getErrors().forEach(e->{
             assertThat(e.getRowNumber()).isGreaterThan(0);
@@ -104,9 +104,10 @@ public class SchemaValidatorActionTest {
         });
     }
 
+
     @Test
     public void testSchemaReferences() {
-        final Schema reportInputSchema = repository.getReportInputSchema();
+        final Schema reportInputSchema = this.repository.getReportInputSchema();
         assertThat(reportInputSchema).isNotNull();
     }
 

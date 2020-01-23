@@ -102,6 +102,10 @@ public interface CheckAction {
             this.reportInput.getProcessingError().getError().addAll(errors);
         }
 
+        public void addProcessingError(final String msg) {
+            stopProcessing(msg);
+        }
+
         /**
          * Gibt den Namen des Prüflings zurück, dabei werden etwaige Pfadinformationen abgeschnitten.
          *

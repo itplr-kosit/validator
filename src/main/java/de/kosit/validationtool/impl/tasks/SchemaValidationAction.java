@@ -46,7 +46,8 @@ import de.kosit.validationtool.model.scenarios.ScenarioType;
 @Slf4j
 public class SchemaValidationAction implements CheckAction {
 
-    private static Result<Boolean, XMLSyntaxError> validate(final byte[] document, final ScenarioType scenarioType) {
+    private static Result<Boolean, XMLSyntaxError> validate(final byte[] document, final ScenarioType scenarioType,
+            final Bag results) {
         log.debug("Validating document using scenario {}", scenarioType.getName());
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
         try ( final InputStream input = new ByteArrayInputStream(document) ) {
@@ -55,7 +56,10 @@ public class SchemaValidationAction implements CheckAction {
             validator.validate(new StreamSource(input));
             return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
         } catch (final SAXException | IOException e) {
-            throw new IllegalStateException("Error validating document", e);
+            final String msg = String.format("Error processing schema validation for scenario %s", scenarioType.getName());
+            log.error(msg, e);
+            results.addProcessingError(msg);
+            return new Result<>(Boolean.FALSE);
         }
     }
 
@@ -63,7 +67,7 @@ public class SchemaValidationAction implements CheckAction {
     public void check(final Bag results) {
         final CreateReportInput report = results.getReportInput();
         final ScenarioType scenario = results.getScenarioSelectionResult().getObject();
-        final Result<Boolean, XMLSyntaxError> validateResult = validate(results.getInput().getContent(), scenario);
+        final Result<Boolean, XMLSyntaxError> validateResult = validate(results.getInput().getContent(), scenario, results);
         results.setSchemaValidationResult(validateResult);
         final ValidationResultsXmlSchema result = new ValidationResultsXmlSchema();
         report.setValidationResultsXmlSchema(result);
