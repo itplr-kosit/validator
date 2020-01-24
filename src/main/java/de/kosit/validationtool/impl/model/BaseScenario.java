@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -51,6 +54,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  * 
  * @author Andreas Penski
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class BaseScenario {
 
     /**
@@ -71,6 +75,7 @@ public abstract class BaseScenario {
     private XPathExecutable acceptExecutable;
 
     @Setter
+    @XmlTransient
     private Schema schema;
 
     @Setter
