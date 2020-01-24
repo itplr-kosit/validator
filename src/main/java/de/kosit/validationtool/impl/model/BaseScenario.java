@@ -69,9 +69,15 @@ public abstract class BaseScenario {
     private XPathExecutable matchExecutable;
 
     private XPathExecutable acceptExecutable;
+
+    @Setter
     private Schema schema;
+
+    @Setter
     private List<Transformation> schematronValidations;
+
     private ContentRepository repository;
+
     private Transformation reportTransformation;
 
     /**

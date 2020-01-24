@@ -19,34 +19,36 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
-import java.net.URI;
 
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.xml.sax.SAXException;
 
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.ContentRepository;
-import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.input.SourceInput;
-import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
-import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
-import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
 
 /**
  * Tests die {@link SchemaValidationAction}.
@@ -59,14 +61,10 @@ public class SchemaValidatorActionTest {
 
     private SchemaValidationAction service;
 
-    private ContentRepository repository;
-
     @Before
     public void setup() {
         this.service = new SchemaValidationAction();
-        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
     }
-
 
     @Test
     public void testSimple() throws MalformedURLException {
@@ -83,33 +81,15 @@ public class SchemaValidatorActionTest {
         final CheckAction.Bag bag = createBag(input);
         this.service.check(bag);
         assertThat(bag.getSchemaValidationResult().isValid()).isFalse();
-        bag.getSchemaValidationResult().getErrors().forEach(e->{
+        bag.getSchemaValidationResult().getErrors().forEach(e -> {
             assertThat(e.getRowNumber()).isGreaterThan(0);
             assertThat(e.getColumnNumber()).isGreaterThan(0);
         });
     }
 
-    private Bag createBag(final Input input) {
-        final Bag bag = new Bag(input, new CreateReportInput());
-        bag.setScenarioSelectionResult(new Result<>(createScenario(Helper.Simple.getSchemaLocation())));
-        return bag;
-    }
-
-    private ScenarioType createScenario(final URI schemafile) {
-        final ScenarioType t = new ScenarioType();
-        final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
-        final ResourceType r = new ResourceType();
-        r.setLocation(schemafile.getRawPath());
-        r.setName("invoice");
-        v.getResource().add(r);
-        t.setValidateWithXmlSchema(v);
-        t.initialize(this.repository, true);
-        return t;
-    }
-
     @Test
     public void testSchemaReferences() {
-        final Schema reportInputSchema = this.repository.getReportInputSchema();
+        final Schema reportInputSchema = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY).getReportInputSchema();
         assertThat(reportInputSchema).isNotNull();
     }
 
@@ -169,6 +149,19 @@ public class SchemaValidatorActionTest {
             assertThat(bag.getSchemaValidationResult()).isNotNull();
             assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
         }
+    }
+
+    @Test
+    public void testProcessingError() throws IOException, SAXException {
+        final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
+        final ScenarioType scenario = bag.getScenarioSelectionResult().getObject();
+        final Schema schema = mock(Schema.class);
+        final Validator validator = mock(Validator.class);
+        when(schema.newValidator()).thenReturn(validator);
+        doThrow(SAXException.class).when(validator).validate(any());
+        scenario.setSchema(schema);
+        this.service.check(bag);
+        assertThat(bag.getReportInput().getProcessingError().getError()).isNotEmpty();
     }
 
 }
