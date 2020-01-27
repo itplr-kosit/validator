@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -50,18 +49,6 @@ public class InputFactoryTest {
 
     public static final String SOME_VALUE = "some value";
 
-    private static URL NOT_EXISTING;
-
-
-
-    static {
-        try {
-            NOT_EXISTING = new URL("file://localhost/somefile.text");
-        } catch (final MalformedURLException e) {
-            // just ignore;
-        }
-    }
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -81,8 +68,6 @@ public class InputFactoryTest {
         assertThat(s3).isNotEmpty();
         assertThat(s1).isNotEqualTo(s3);
     }
-
-
 
     @Test
     public void testWrongAlgorithm() {
@@ -111,7 +96,7 @@ public class InputFactoryTest {
     @Test
     public void testNullStream() {
         this.expectedException.expect(IllegalArgumentException.class);
-        final Input input = InputFactory.read((InputStream)null, SOME_VALUE);
+        final Input input = InputFactory.read((InputStream) null, SOME_VALUE);
     }
 
     @Test
@@ -175,8 +160,7 @@ public class InputFactoryTest {
     @Test
     public void testUnexistingInput() {
         this.expectedException.expect(IllegalArgumentException.class);
-        InputFactory.read(NOT_EXISTING);
+        InputFactory.read(Simple.NOT_EXISTING);
     }
-
 
 }
