@@ -19,10 +19,12 @@
 
 package de.kosit.validationtool.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.stream.Collectors;
 
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
@@ -41,6 +43,14 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
+import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.tasks.DocumentParseAction;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+
+
+import net.sf.saxon.s9api.XdmNode;
+
 
 /**
  * Testet verschiedene Saxon Security Einstellungen.
@@ -76,8 +86,18 @@ public class SaxonSecurityTest {
                 }
 
             } catch (final SaxonApiException | RuntimeException e) {
-                log.info("Expected exception detected", e.getMessage());
+                log.info("Expected exception detected {}", e.getMessage(), e);
             }
         }
+    }
+
+    @Test
+    public void testXxe() {
+        final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
+        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(InputFactory.read(resource));
+        assertThat(result.isValid()).isFalse();
+        assertThat(result.getObject()).isNull();
+        assertThat(result.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining()))
+                .contains("http://apache.org/xml/features/disallow-doctype-dec");
     }
 }
