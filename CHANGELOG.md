@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## 1.1.3
 ### Fixed
-- XXE vulnerability when reading xml documents with Saxon
+- XXE vulnerability when reading xml documents with Saxon [#44](https://github.com/itplr-kosit/validator/issues/44)
 - validator unintentionally stopped when schematron processing has errors. See  [#41](https://github.com/itplr-kosit/validator/issues/41).
 
 ## 1.1.2
