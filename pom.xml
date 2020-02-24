@@ -122,6 +122,7 @@
             <groupId>de.kosit.validationtool</groupId>
             <artifactId>packaged-test-scenarios</artifactId>
             <version>1.0.0</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
