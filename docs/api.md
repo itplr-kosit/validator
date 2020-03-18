@@ -89,3 +89,21 @@ Initializing all XML artifacts and XSLT-executables is expensive. The `Check` in
 
 The only input `de.kosit.validationtool.api.Input` which can be created by various methods of `de.kosit.validationtool.api.InputFactory`.
 The `InputFactory` calculates a hash sum for each Input which is also written to the Report. _SHA-256_ from the JDK is the default algorithm. It can be changed using the `read`-methods of `InputFactory`.
+
+## Accept Recommendation and Accept Match
+
+A tri-state Object `AcceptRecommendation` can be retrieved from the `Result` using `getAcceptRecommendation()`.
+
+The three defined states are:
+
+1. `UNDEFINED` i.e. the evaluation of the overall validation could not be computed.
+2. `ACCEPTABLE` i.e. the recommendation is to accept input based on the evaluation of the overall validation.
+3. `REJECT` i.e. the recommendation is to reject input based on the evaluation of the overall validation.
+
+By default it is `UNDEFINED`.
+
+### Accept Match in Scenario Configuration
+
+For your own configuration you can add an `acceptMatch` element in each scenario. It can contain in XPATH expression over your own defined `Report` to compute a boolean. An XPATH expression evaluating to true will lead to an `ACCEPTABLE` amd otherwise to a `REJECT` recommendation.
+
+This allows to have own control over what validation result is to be considered acceptable for your own application context.
