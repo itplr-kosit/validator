@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Licensed to the Koordinierungsstelle für IT-Standards (KoSIT) under
   ~ one or more contributor license agreements. See the NOTICE file
@@ -19,46 +19,44 @@
   -->
 
 <!-- $Id$ -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios"
-           targetNamespace="http://www.xoev.de/de/validator/framework/1/scenarios" version="1.1.0" elementFormDefault="qualified"
-           attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios" targetNamespace="http://www.xoev.de/de/validator/framework/1/scenarios" version="1.1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
 
     <xs:element name="scenarios">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="name" type="xs:token"/>
-                <xs:element minOccurs="0" name="author" type="xs:token"/>
-                <xs:element name="date" type="xs:date"/>
-                <xs:element name="description" type="s:DescriptionType"/>
-                <xs:element ref="s:scenario" minOccurs="1" maxOccurs="unbounded"/>
-                <xs:element name="noScenarioReport" type="s:NoScenarioReportType"/>
+                <xs:element name="name" type="xs:token" />
+                <xs:element minOccurs="0" name="author" type="xs:token" />
+                <xs:element name="date" type="xs:date" />
+                <xs:element name="description" type="s:DescriptionType" />
+                <xs:element ref="s:scenario" minOccurs="1" maxOccurs="unbounded" />
+                <xs:element name="noScenarioReport" type="s:NoScenarioReportType" />
             </xs:sequence>
-            <xs:attribute name="frameworkVersion" type="xs:string" use="required"/>
+            <xs:attribute name="frameworkVersion" type="xs:string" use="required" />
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="scenario" type="s:ScenarioType"/>
+    <xs:element name="scenario" type="s:ScenarioType" />
 
     <xs:complexType name="NoScenarioReportType">
         <xs:sequence>
-            <xs:element ref="s:resource"/>
+            <xs:element ref="s:resource" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="DescriptionType">
         <xs:choice maxOccurs="unbounded">
-            <xs:element name="p" type="xs:normalizedString"/>
+            <xs:element name="p" type="xs:normalizedString" />
             <xs:element name="ol">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" name="li" type="xs:normalizedString"/>
+                        <xs:element maxOccurs="unbounded" name="li" type="xs:normalizedString" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="ul">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" name="li" type="xs:normalizedString"/>
+                        <xs:element maxOccurs="unbounded" name="li" type="xs:normalizedString" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -68,72 +66,73 @@
     <!-- TODO: Prüfen, ob restriction passt -->
     <xs:simpleType name="ErrorLevelType">
         <xs:restriction base="xs:token">
-            <xs:enumeration value="error"/>
-            <xs:enumeration value="warning"/>
-            <xs:enumeration value="information"/>
+            <xs:enumeration value="error" />
+            <xs:enumeration value="warning" />
+            <xs:enumeration value="information" />
         </xs:restriction>
     </xs:simpleType>
 
     <xs:simpleType name="Tokens">
-        <xs:list itemType="xs:token"/>
+        <xs:list itemType="xs:token" />
     </xs:simpleType>
 
     <xs:complexType name="ScenarioType">
         <xs:sequence>
-            <xs:element name="name" type="xs:token"/>
-            <xs:element minOccurs="0" name="description" type="s:DescriptionType"/>
-            <xs:element minOccurs="0" maxOccurs="unbounded" name="namespace" type="s:NamespaceType"/>
-            <xs:element name="match" type="xs:string"/>
-            <xs:element name="validateWithXmlSchema" type="s:ValidateWithXmlSchema"/>
-            <xs:element name="validateWithSchematron" maxOccurs="unbounded" minOccurs="0" type="s:ValidateWithSchematron"/>
-            <xs:element name="createReport" type="s:CreateReportType"/>
+            <xs:element name="name" type="xs:token" />
+            <xs:element minOccurs="0" name="description" type="s:DescriptionType" />
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="namespace" type="s:NamespaceType" />
+            <xs:element name="match" type="xs:string" />
+            <xs:element name="validateWithXmlSchema" type="s:ValidateWithXmlSchema" />
+            <xs:element name="validateWithSchematron" maxOccurs="unbounded" minOccurs="0" type="s:ValidateWithSchematron" />
+            <xs:element name="createReport" type="s:CreateReportType" />
             <!-- Optional da nachträglich eingeführt -->
+            <!-- An XPATH expression to be applied to a generated validation report as defined in the createReport element -->
             <xs:element name="acceptMatch" type="xs:string" minOccurs="0" />
         </xs:sequence>
     </xs:complexType>
-    
-    <xs:element name="resource" type="s:ResourceType"/>
+
+    <xs:element name="resource" type="s:ResourceType" />
 
     <xs:complexType name="NamespaceType">
         <xs:simpleContent>
             <xs:extension base="xs:anyURI">
-                <xs:attribute name="prefix" use="required"/>
+                <xs:attribute name="prefix" use="required" />
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
 
     <xs:complexType name="ResourceType">
         <xs:sequence>
-            <xs:element name="name" type="xs:token"/>
-            <xs:element name="location" type="xs:anyURI"/>
+            <xs:element name="name" type="xs:token" />
+            <xs:element name="location" type="xs:anyURI" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ValidateWithXmlSchema">
         <xs:sequence>
-            <xs:element ref="s:resource" maxOccurs="unbounded"/>
+            <xs:element ref="s:resource" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ValidateWithSchematron">
         <xs:sequence>
-            <xs:element ref="s:resource"/>
+            <xs:element ref="s:resource" />
         </xs:sequence>
-        <xs:attribute name="psvi" type="xs:boolean" default="false" use="optional"/>
+        <xs:attribute name="psvi" type="xs:boolean" default="false" use="optional" />
     </xs:complexType>
-    
+
 
     <xs:complexType name="CreateReportType">
-            <xs:sequence>
-                <xs:element ref="s:resource"/>
-                <xs:element maxOccurs="3" minOccurs="0" name="customLevel" type="s:CustomErrorLevel"/>
-            </xs:sequence>
+        <xs:sequence>
+            <xs:element ref="s:resource" />
+            <xs:element maxOccurs="3" minOccurs="0" name="customLevel" type="s:CustomErrorLevel" />
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CustomErrorLevel">
         <xs:simpleContent>
             <xs:extension base="s:Tokens">
-                <xs:attribute name="level" type="s:ErrorLevelType" use="required"/>
+                <xs:attribute name="level" type="s:ErrorLevelType" use="required" />
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
