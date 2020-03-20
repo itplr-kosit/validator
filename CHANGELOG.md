@@ -4,6 +4,17 @@ All notable changes to the Schematron Rules and this project will be documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## 1.2.0 (unreleased)
+### Added
+- Provide access to schematron result through Result.java
+  - *Result#getFailedAsserts()* returns a list of failed asserts found by schematron
+  - *Result#isSchematronValid()* convinience access to evaluate whether schematron was processed without any *FailedAsserts*
+### Changed
+- *getAcceptRecommendation()* does not _only_ work when _acceptMatch_ is configured in the scenario
+  - schema correct is a precondion, of the checked instance is not valid, this evaluates to _REJECTED_
+  - if _acceptMatch_ is configured, the result is based on the boolean result of the xpath expression evaluated against the generated report
+  - if *no* _acceptMatch_ is configured, the result is based on evaluation of schema and schematron correctnes
+ 
 ## 1.1.3
 ### Fixed
 - XXE vulnerability when reading xml documents with Saxon [#44](https://github.com/itplr-kosit/validator/issues/44)
