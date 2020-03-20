@@ -2,6 +2,7 @@ package de.kosit.validationtool.api;
 
 import java.util.List;
 
+import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 
@@ -70,6 +71,13 @@ public interface Result {
     List<SchematronOutput> getSchematronResult();
 
     /**
+     * Returns {@link org.oclc.purl.dsdl.svrl.FailedAssert FailedAsserts} of a schematron evaluation.
+     * 
+     * @return list of {@link org.oclc.purl.dsdl.svrl.FailedAssert FailedAsserts}, if any, empty list otherwise
+     */
+    List<FailedAssert> getFailedAsserts();
+
+    /**
      * Liefert ein true, wenn keine Schema-Violations vorhanden sind.
      *
      * @return true wenn Schema-valide
@@ -82,4 +90,11 @@ public interface Result {
      * @return true wenn well-formed
      */
     boolean isWellformed();
+
+    /**
+     * Returns true, if schematron has been checked and the result does not contain any {@link FailedAssert FailedAsserts}.
+     * 
+     * @return true, if valid
+     */
+    boolean isSchematronValid();
 }
