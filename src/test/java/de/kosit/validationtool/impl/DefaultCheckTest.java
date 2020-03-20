@@ -68,8 +68,9 @@ public class DefaultCheckTest {
         final Result doc = this.implementation.checkInput(read(VALID_EXAMPLE));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
+        // happy case has schematron errors !??
         assertThat(doc.isAcceptable()).isFalse();
-        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.UNDEFINED);
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
     @Test
