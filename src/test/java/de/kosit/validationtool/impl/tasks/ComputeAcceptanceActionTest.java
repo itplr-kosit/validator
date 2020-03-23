@@ -73,7 +73,7 @@ public class ComputeAcceptanceActionTest {
     }
 
     @Test
-    public void testValidAcceptMatchOnSchematronFailed() {
+    public void testAcceptMatchOverridesSchematronErrors() {
         final Bag bag = createBag(true, false);
         bag.getScenarioSelectionResult().getObject().setAcceptMatch("count(//doesnotExist) = 0");
         this.action.check(bag);
