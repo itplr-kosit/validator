@@ -21,7 +21,6 @@ package de.kosit.validationtool.cmd;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.junit.After;
@@ -44,14 +43,14 @@ public class PrintReportActionTest {
     private PrintReportAction action;
 
     @Before
-    public void setup() throws IOException {
+    public void setup() {
         this.commandLine = new CommandLine();
         this.commandLine.activate();
         this.action = new PrintReportAction();
     }
 
     @After
-    public void tearDownd() throws IOException {
+    public void tearDown() {
         this.commandLine.deactivate();
     }
 
