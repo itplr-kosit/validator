@@ -1,29 +1,14 @@
 package de.kosit.validationtool.impl.tasks;
 
+import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
 
 import de.kosit.validationtool.api.AcceptRecommendation;
-import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.impl.ContentRepository;
-import de.kosit.validationtool.impl.Helper.Simple;
-import de.kosit.validationtool.impl.ObjectFactory;
-import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
-import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron;
-import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron.Results;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
-
-import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Tests the 'acceptMatch' functionality.
@@ -103,36 +88,5 @@ public class ComputeAcceptanceActionTest {
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
-    private static Bag createBag(final boolean schemaValid, final boolean schematronValid) {
-        final Result<Boolean, XMLSyntaxError> schemaResult = schemaValid ? new Result<>(true)
-                : new Result<>(Collections.singletonList(new XMLSyntaxError()));
-        final List<ValidationResultsSchematron> schematronResult = schematronValid ? Collections.emptyList() : createSchematronError();
-        return createBag(schemaResult, schematronResult);
-    }
 
-    private static List<ValidationResultsSchematron> createSchematronError() {
-        final ValidationResultsSchematron v = new ValidationResultsSchematron();
-        final SchematronOutput out = new SchematronOutput();
-        final FailedAssert f = new FailedAssert();
-        out.getActivePatternAndFiredRuleAndFailedAssert().add(f);
-        final Results r = new Results();
-        r.setSchematronOutput(out);
-        v.setResults(r);
-        return Collections.singletonList(v);
-    }
-
-    private static Bag createBag(final Result<Boolean, XMLSyntaxError> schemaResult,
-            final Collection<ValidationResultsSchematron> schematronResult) {
-        final ScenarioType t = new ScenarioType();
-        t.initialize(new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY), true);
-        final CreateReportInput reportInput = new CreateReportInput();
-        reportInput.getValidationResultsSchematron().addAll(schematronResult);
-        final Bag b = new Bag(InputFactory.read("<someXml></someXml>".getBytes(), "someCheck"), reportInput);
-        final Result<XdmNode, XMLSyntaxError> parseREsult = DocumentParseAction.parseDocument(b.getInput());
-        b.setReport(parseREsult.getObject());
-        b.setParserResult(parseREsult);
-        b.setSchemaValidationResult(schemaResult);
-        b.setScenarioSelectionResult(new Result<>(t));
-        return b;
-    }
 }
