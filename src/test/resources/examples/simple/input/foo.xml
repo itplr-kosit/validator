@@ -2,4 +2,5 @@
 
 <foo xmlns="http://validator.kosit.de/test-sample">
     <inner>asldkfj</inner>
+    <content></content>
 </foo>
