@@ -47,7 +47,7 @@
                 <location>report.xsl</location>
             </resource>
         </createReport>
-        <acceptMatch>count(//cri:xmlSyntaxError) = 0</acceptMatch>
+        <acceptMatch>count(//test:rejected) = 0</acceptMatch>
     </scenario>
 
     <scenario>

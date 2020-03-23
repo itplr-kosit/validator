@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<simple xmlns="http://validator.kosit.de/test-sample">
+    <inner>asldkfj</inner>
+    <content>
+        <rejected>directly transferred, so this is part of the report</rejected>
+    </content>
+</simple>

@@ -57,6 +57,8 @@ public class Helper {
 
         public static final URI FOO = Simple.ROOT.resolve("input/foo.xml");
 
+        public static final URI REJECTED = Simple.ROOT.resolve("input/withManualReject.xml");
+
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
         public static final URI REPOSITORY = ROOT.resolve("repository/");
