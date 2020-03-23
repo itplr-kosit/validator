@@ -81,6 +81,15 @@ public class ComputeAcceptanceActionTest {
     }
 
     @Test
+    public void testNoSchematronCheck() {
+        final Bag bag = createBag(true, true);
+        // remove schematron results
+        bag.getReportInput().getValidationResultsSchematron().clear();
+        this.action.check(bag);
+        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+    }
+
+    @Test
     public void testMissingReport() {
         final Bag bag = createBag(false, true);
         bag.setReport(null);
