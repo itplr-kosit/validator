@@ -7,14 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## next version (unreleased)
 
-# Added
+### Added
 
 - Support java.xml.transform.Source/java.xml.transform.StreamSource as Input
 
-# Changed
+### Changed
 
 - Inputs are NOT read into memory (e.g. Byte-Array) prior processing within the validator. This reduces memory consumption.
 
+## 1.2.0 (unreleased)
+### Added
+
+- Provide access to schematron result through Result.java
+  - *Result#getFailedAsserts()* returns a list of failed asserts found by schematron
+  - *Result#isSchematronValid()* convinience access to evaluate whether schematron was processed without any *FailedAsserts*
+  
+### Changed
+
+- *getAcceptRecommendation()* does not _only_ work when _acceptMatch_ is configured in the scenario
+  - schema correct is a precondion, of the checked instance is not valid, this evaluates to _REJECTED_
+  - if _acceptMatch_ is configured, the result is based on the boolean result of the xpath expression evaluated against the generated report
+  - if *no* _acceptMatch_ is configured, the result is based on evaluation of schema and schematron correctness
+  - _UNDEFINED_ is only returned, when processing is stopped somehow
+- *isAcceptable()* can no evaluate to true, when no _acceptMatch_ is configured (see above)
+ 
 ## 1.1.3
 
 ### Fixed

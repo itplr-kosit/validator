@@ -19,7 +19,7 @@ import de.kosit.validationtool.impl.Helper.Simple;
  * 
  * @author Andreas Penski
  */
-public class SimpleScenarioCheck {
+public class SimpleScenarioCheckTest {
 
     private DefaultCheck implementation;
 
@@ -56,7 +56,7 @@ public class SimpleScenarioCheck {
     public void testWithoutAcceptMatch() throws MalformedURLException {
         final Result result = this.implementation.checkInput(InputFactory.read(Simple.FOO.toURL()));
         assertThat(result).isNotNull();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.UNDEFINED);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
 }

@@ -13,9 +13,9 @@ the validation and generates a report in XML format. This report is then the inp
 
 The validator reports valid/invalid, a configuration reports acceptance/rejection!
 
-## General process
+## General default process
 
-The general process is like this:
+The general process is like this (the default is defined in `DefaultCheck`):
 
 ```mermaid
 
@@ -30,6 +30,7 @@ sequenceDiagram
   e->>e: validate Schematron
   e->>e: create Validator Report
   e->>+c: execute configuration report generator
+  e->>e: Compute Recommendation
 
 ```
 
@@ -50,3 +51,8 @@ sequenceDiagram
 6. *execute configuration report generator*
 
     The Validator will search for the XSLT as configured in scenario.xml and execute it with the Validator Report as input
+7. compute Recommendation
+
+    In case a scenario contains an `acceptMatch` element with an XPATH expression, this expression will be executed.
+
+    In case the XPATH returns `true`, the recommendation will be set to `ACCEPT` else to `REJECT`. In case no such XPATH is defined it is `UNDEFINED`.

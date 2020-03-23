@@ -1,21 +1,21 @@
 package de.kosit.validationtool.api;
 
 /**
- * Status der Empfehlung.
+ * Tri-state describtion of a Recommendation.
  */
 public enum AcceptRecommendation {
     /**
-     * Nicht definiert, weil eine Evaluierung nicht durchgeführt wurde, oder nicht durchgeführt werden konnte.
+     * The evaluation of the overall validation could not be computed.
      */
     UNDEFINED,
 
     /**
-     * Das Dokument ist gemäß Konfiguration valide und kann akzeptiert werden.
+     * Recommendation is to accept input based on the evaluation of the overall validation.
      */
     ACCEPTABLE,
 
     /**
-     * Das Dokuemnt ist gemäß Konfiguration invalide und sollte NICHT akzeptiert werden.
+     * Recommendation is to reject input based on the evaluation of the overall validation.
      */
     REJECT
 }
