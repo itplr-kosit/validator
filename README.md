@@ -66,6 +66,10 @@ java -jar  validationtool-<version>-standalone.jar --help
 
 A concrete example with a specific validator configuration can be found on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
 
+### Application User Interface (API / embedded usage)
+
+The validator can also be used in own Java Applications via the API. Details can be [found here](./docs/api.md).
+
 ### Daemon-Mode
 
 You can also start the validator as an HTTP-Server. Just start it in _Daemon-Mode_ with the `-D` option.
@@ -86,6 +90,4 @@ You can HTTP-POST to  `/` and the response will return the report document as de
 
 Additionally there is the GET `/health` endpoint which can be used by monitoring systems.
 
-### Application User Interface (embedded usage)
 
-The validator can also be used in own Java Applications via the API. Details can be [found here](./docs/api.md).
