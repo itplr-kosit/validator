@@ -7,16 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.2.0
 ### Added
-- Provide access to schematron result through Result.java
+- Provide access to schematron result through [Result.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Result.java)
   - *Result#getFailedAsserts()* returns a list of failed asserts found by schematron
   - *Result#isSchematronValid()* convinience access to evaluate whether schematron was processed without any *FailedAsserts*
 ### Changed
-- *getAcceptRecommendation()* does not _only_ work when _acceptMatch_ is configured in the scenario
-  - schema correct is a precondion, of the checked instance is not valid, this evaluates to _REJECTED_
+- *Result#getAcceptRecommendation()* does not _only_ work when _acceptMatch_ is configured in the scenario
+  - schema correctness is a precondition, if the checked instance is not valid, this evaluates to _REJECTED_
   - if _acceptMatch_ is configured, the result is based on the boolean result of the xpath expression evaluated against the generated report
   - if *no* _acceptMatch_ is configured, the result is based on evaluation of schema and schematron correctness
   - _UNDEFINED_ is only returned, when processing is stopped somehow
-- *isAcceptable()* can no evaluate to true, when no _acceptMatch_ is configured (see above)
+- *Result#isAcceptable()* can now evaluate to true, when no _acceptMatch_ is configured (see above)
  
 ## 1.1.3
 ### Fixed
