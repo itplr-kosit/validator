@@ -22,6 +22,7 @@ package de.kosit.validationtool.impl;
 import static de.kosit.validationtool.api.InputFactory.read;
 import static de.kosit.validationtool.impl.Helper.Simple.GARBAGE;
 import static de.kosit.validationtool.impl.Helper.Simple.NOT_WELLFORMED;
+import static de.kosit.validationtool.impl.Helper.Simple.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -113,6 +114,17 @@ public class DefaultCheckTest {
         assertThat(result.isWellformed()).isFalse();
         assertThat(result.isSchemaValid()).isFalse();
         assertThat(result.isProcessingSuccessful()).isFalse();
+    }
+
+    @Test
+    public void testNoScenario() {
+        final Result result = this.implementation.checkInput(read(UNKNOWN));
+        assertThat(result).isNotNull();
+        assertThat(result.isWellformed()).isTrue();
+        assertThat(result.isProcessingSuccessful()).isTrue();
+        assertThat(result.isSchemaValid()).isFalse();
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.isAcceptable()).isFalse();
     }
 
     @Test

@@ -66,6 +66,10 @@ public abstract class BaseScenario {
         private ResourceType resourceType;
     }
 
+    @Getter
+    @Setter
+    private boolean fallback;
+
     private XPathExecutable matchExecutable;
 
     private XPathExecutable acceptExecutable;
