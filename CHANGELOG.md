@@ -16,8 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Inputs are NOT read into memory (e.g. Byte-Array) prior processing within the validator. This reduces memory consumption.
 
-## 1.2.0 
+## UNRELEASED
+### Fixed
+- Validator was creating invalid createReportInput xml in case of no scenrio match
 
+## 1.2.0
 ### Added
 
 - Provide access to schematron result through [Result.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Result.java)
