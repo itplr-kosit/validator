@@ -3,7 +3,6 @@ package de.kosit.validationtool.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +23,7 @@ public class SimpleScenarioCheckTest {
     private DefaultCheck implementation;
 
     @Before
-    public void setup() throws URISyntaxException {
+    public void setup() {
         final CheckConfiguration d = new CheckConfiguration(Simple.SCENARIOS);
         d.setScenarioRepository(Simple.REPOSITORY);
         this.implementation = new DefaultCheck(d);
@@ -49,7 +48,10 @@ public class SimpleScenarioCheckTest {
     public void testUnknown() throws MalformedURLException {
         final Result result = this.implementation.checkInput(InputFactory.read(Simple.UNKNOWN.toURL()));
         assertThat(result).isNotNull();
-        assertThat(result.isProcessingSuccessful()).isFalse();
+        assertThat(result.isProcessingSuccessful()).isTrue();
+        assertThat(result.isAcceptable()).isFalse();
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+
     }
 
     @Test
