@@ -36,3 +36,6 @@ src/generated
 .settings
 .vscode
 *.code-workspace
+
+# Testing stuff
+xrechnung
