@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -66,8 +67,7 @@ public abstract class BaseScenario {
         private ResourceType resourceType;
     }
 
-    @Getter
-    @Setter
+    @XmlTransient
     private boolean fallback;
 
     private XPathExecutable matchExecutable;
@@ -81,6 +81,15 @@ public abstract class BaseScenario {
     private ContentRepository repository;
 
     private Transformation reportTransformation;
+
+    @XmlTransient
+    public boolean isFallback() {
+        return this.fallback;
+    }
+
+    public void setFallback(final boolean value) {
+        this.fallback = value;
+    }
 
     /**
      * Gibt eine Transformation zurück.
