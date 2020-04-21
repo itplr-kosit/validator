@@ -28,7 +28,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Check;
-import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.api.XmlError;
@@ -73,20 +73,22 @@ public class DefaultCheck implements Check {
      *
      * @param configuration die Konfiguration
      */
-    public DefaultCheck(final CheckConfiguration configuration) {
+    public DefaultCheck(final Configuration configuration) {
         final Processor processor = ObjectFactory.createProcessor();
         this.conversionService = new ConversionService();
-        this.contentRepository = new ContentRepository(processor, configuration.getScenarioRepository());
-        this.repository = new ScenarioRepository(this.contentRepository);
-        this.repository.initialize(configuration);
+        this.repository = new ScenarioRepository(configuration);
+
+        // TODO get rid of it
+        this.contentRepository = configuration.getContentRepository();
         this.checkSteps = new ArrayList<>();
         this.checkSteps.add(new DocumentParseAction());
         this.checkSteps.add(new CreateDocumentIdentificationAction());
         this.checkSteps.add(new ScenarioSelectionAction(this.repository));
         this.checkSteps.add(new SchemaValidationAction());
         this.checkSteps.add(new SchematronValidationAction(this.contentRepository, this.conversionService));
-        this.checkSteps.add(new ValidateReportInputAction(this.conversionService, this.contentRepository.getReportInputSchema()));
-        this.checkSteps.add(new CreateReportAction(processor, this.conversionService, this.repository, this.contentRepository));
+        this.checkSteps
+                .add(new ValidateReportInputAction(this.conversionService, configuration.getContentRepository().getReportInputSchema()));
+        this.checkSteps.add(new CreateReportAction(processor, this.conversionService, this.contentRepository));
         this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
@@ -138,6 +140,5 @@ public class DefaultCheck implements Check {
         // noinspection unchecked
         return (List<XmlError>) (List<?>) errors;
     }
-
 
 }

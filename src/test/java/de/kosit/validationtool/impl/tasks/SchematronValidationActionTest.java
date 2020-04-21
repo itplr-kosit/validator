@@ -17,9 +17,9 @@ import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.ObjectFactory;
-import de.kosit.validationtool.impl.model.BaseScenario.Transformation;
+import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.model.scenarios.ResourceType;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
@@ -44,7 +44,7 @@ public class SchematronValidationActionTest {
     public void testProcessingError() throws IOException, SaxonApiException {
         final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()), true);
 
-        final ScenarioType scenario = bag.getScenarioSelectionResult().getObject();
+        final Scenario scenario = bag.getScenarioSelectionResult().getObject();
         final XsltExecutable exec = mock(XsltExecutable.class);
         final XsltTransformer transformer = mock(XsltTransformer.class);
         doThrow(new SaxonApiException("invalid")).when(transformer).transform();

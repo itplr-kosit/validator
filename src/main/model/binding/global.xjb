@@ -42,9 +42,6 @@
         <jaxb:schemaBindings>
             <jaxb:package name="de.kosit.validationtool.model.scenarios"/>
         </jaxb:schemaBindings>
-        <jaxb:bindings node="//xs:complexType[@name='ScenarioType']">
-            <inheritance:extends>de.kosit.validationtool.impl.model.BaseScenario</inheritance:extends>
-        </jaxb:bindings>
     </jaxb:bindings>
     <jaxb:bindings schemaLocation="../xsd/assertions.xsd">
         <jaxb:schemaBindings>

@@ -1,9 +1,13 @@
 package de.kosit.validationtool.impl.tasks;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import javax.xml.validation.Schema;
 
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
@@ -12,8 +16,8 @@ import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper;
-import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.ObjectFactory;
+import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
@@ -50,8 +54,9 @@ public class TestBagBuilder {
         return bag;
     }
 
-    private static ScenarioType createScenario(final URI schemafile) {
-        final ContentRepository repository = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
+    private static Scenario createScenario(final URI schemafile) {
+
+        try {
         final ScenarioType t = new ScenarioType();
         final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
         final ResourceType r = new ResourceType();
@@ -59,8 +64,16 @@ public class TestBagBuilder {
         r.setName("invoice");
         v.getResource().add(r);
         t.setValidateWithXmlSchema(v);
-        t.initialize(repository, true);
-        return t;
+            final Scenario scenario = new Scenario(t);
+            scenario.setSchema(createSchema(schemafile.toURL()));
+            return scenario;
+        } catch (final MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static Schema createSchema(final URL toURL) {
+        return new ContentRepository(ObjectFactory.createProcessor(), null).createSchema(toURL);
     }
 
     private static XdmNode createReport() {

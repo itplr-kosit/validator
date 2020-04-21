@@ -1,8 +1,6 @@
 package de.kosit.validationtool.cmd;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -10,7 +8,8 @@ import org.w3c.dom.Node;
 
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.model.scenarios.Scenarios;
+import de.kosit.validationtool.api.Configuration;
+import de.kosit.validationtool.impl.ObjectFactory;
 
 /**
  * Klasse zur Erzeugung Health Xml , die optiamle Status.
@@ -26,15 +25,15 @@ class Health {
 
     private final long totalMemory;
 
-    private final Scenarios scenarios;
+    private final Configuration config;
 
-    Health(Scenarios scenarios) {
+    Health(final Configuration config) {
 
-        Runtime runtime = Runtime.getRuntime();
-        freeMemory = runtime.freeMemory();
-        maxMemory = runtime.maxMemory();
-        totalMemory = runtime.totalMemory();
-        this.scenarios = scenarios;
+        final Runtime runtime = Runtime.getRuntime();
+        this.freeMemory = runtime.freeMemory();
+        this.maxMemory = runtime.maxMemory();
+        this.totalMemory = runtime.totalMemory();
+        this.config = config;
     }
 
     /**
@@ -42,20 +41,13 @@ class Health {
      *
      */
     Document writeHealthXml() {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder;
-        Document doc = null;
-        try {
-            dBuilder = dbFactory.newDocumentBuilder();
-            doc = dBuilder.newDocument();
-            Element rootElement = doc.createElementNS("https://localhost:8080/Health", "Health");
-            doc.appendChild(rootElement);
-            rootElement.appendChild(getMemory(doc, freeMemory, maxMemory, totalMemory));
-            rootElement.appendChild(getState(doc));
-            rootElement.appendChild(getScenario(doc, scenarios));
-        } catch (ParserConfigurationException e) {
-            log.error("Fehler beim Schreiben der Status-Informationen", e);
-        }
+        final DocumentBuilder dBuilder = ObjectFactory.createDocumentBuilder(false);
+        final Document doc = dBuilder.newDocument();
+        final Element rootElement = doc.createElementNS("https://localhost:8080/Health", "Health");
+        doc.appendChild(rootElement);
+        rootElement.appendChild(getMemory(doc, this.freeMemory, this.maxMemory, this.totalMemory));
+        rootElement.appendChild(getState(doc));
+        rootElement.appendChild(getScenario(doc, this.config));
         return doc;
     }
 
@@ -65,10 +57,10 @@ class Health {
      * @param doc Vom Typ Dokument.
      *
      */
-    private Node getState(Document doc) {
-        Element state = doc.createElement("state");
+    private static Node getState(final Document doc) {
+        final Element state = doc.createElement("state");
         state.setAttribute("indicator", "OK");
-        Element stateNode = doc.createElement("message");
+        final Element stateNode = doc.createElement("message");
         stateNode.appendChild(doc.createTextNode("System is up and running normally"));
         state.appendChild(stateNode);
         return state;
@@ -78,13 +70,13 @@ class Health {
      * Methode, die schreibt das Scnarios Information Node im Xml File
      * 
      * @param doc Vom Typ Dokument .
-     * @param scenarios Vom Typ {@link Scenarios} das verwendete scenario.
+     * @param config Vom Typ {@link Configuration} das verwendete scenario.
      *
      */
-    private Node getScenario(Document doc, Scenarios scenarios) {
-        Element scenario = doc.createElement("scenario");
-        Element scenarioNameNode = doc.createElement("name");
-        scenarioNameNode.appendChild(doc.createTextNode(scenarios.getName()));
+    private static Node getScenario(final Document doc, final Configuration config) {
+        final Element scenario = doc.createElement("scenario");
+        final Element scenarioNameNode = doc.createElement("name");
+        scenarioNameNode.appendChild(doc.createTextNode(config.getName()));
         scenario.appendChild(scenarioNameNode);
         return scenario;
     }
@@ -98,18 +90,18 @@ class Health {
      * @param totalMemory Vom Typ long , der Gesamte speicher.
      *
      */
-    private static Node getMemory(Document doc, long freeMemory, long maxMemory, long totalMemory) {
-        Element memory = doc.createElement("memoryState");
-        String freeM = Long.toString(freeMemory);
-        Element freeMNode = doc.createElement("freeMemory");
+    private static Node getMemory(final Document doc, final long freeMemory, final long maxMemory, final long totalMemory) {
+        final Element memory = doc.createElement("memoryState");
+        final String freeM = Long.toString(freeMemory);
+        final Element freeMNode = doc.createElement("freeMemory");
         freeMNode.appendChild(doc.createTextNode(freeM));
         memory.appendChild(freeMNode);
-        String maxM = Long.toString(maxMemory);
-        Element maxMNode = doc.createElement("maxMemory");
+        final String maxM = Long.toString(maxMemory);
+        final Element maxMNode = doc.createElement("maxMemory");
         maxMNode.appendChild(doc.createTextNode(maxM));
         memory.appendChild(maxMNode);
-        String totalM = Long.toString(totalMemory);
-        Element totalMNode = doc.createElement("totalMemory");
+        final String totalM = Long.toString(totalMemory);
+        final Element totalMNode = doc.createElement("totalMemory");
         totalMNode.appendChild(doc.createTextNode(totalM));
         memory.appendChild(totalMNode);
         return memory;

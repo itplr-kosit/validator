@@ -207,7 +207,7 @@ public class ObjectFactory {
             final SecureUriResolver resolver = new SecureUriResolver();
             processor.getUnderlyingConfiguration().setCollectionFinder(resolver);
             processor.getUnderlyingConfiguration().setOutputURIResolver(resolver);
-            //hier fehlt eigentlich noch der UriResolver für unparsed text, wird erst ab Saxon 9.8 unterstützt
+            processor.getUnderlyingConfiguration().setUnparsedTextURIResolver(resolver);
 
             //grundsätzlich Feature-konfiguration:
             processor.setConfigurationProperty(FeatureKeys.DTD_VALIDATION, false);

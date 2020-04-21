@@ -30,11 +30,11 @@ import lombok.Setter;
 
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ProcessingError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 import net.sf.saxon.s9api.XdmNode;
 
@@ -55,7 +55,7 @@ public interface CheckAction {
     @Setter
     class Bag {
 
-        private Result<ScenarioType, String> scenarioSelectionResult;
+        private Result<Scenario, String> scenarioSelectionResult;
 
         @Setter(AccessLevel.NONE)
         private CreateReportInput reportInput;

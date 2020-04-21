@@ -27,11 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.input.SourceInput;
-import de.kosit.validationtool.model.scenarios.Scenarios;
 
 /**
  * HTTP-Daemon für die Bereitstellung der Prüf-Funktionalität via http.
@@ -98,10 +98,10 @@ class Daemon {
     @Slf4j
     static class HealthHandler implements HttpHandler {
 
-        private final Scenarios scenarios;
+        private final Configuration scenarios;
 
-        HealthHandler(final Scenarios scenarios) {
-            this.scenarios = scenarios;
+        HealthHandler(final Configuration config) {
+            this.scenarios = config;
         }
 
         @Override
@@ -188,7 +188,7 @@ class Daemon {
             server = HttpServer.create(new InetSocketAddress(this.hostName, this.port), 0);
             final DefaultCheck check = new DefaultCheck(config);
             server.createContext("/", new HttpServerHandler(check));
-            server.createContext("/health", new HealthHandler(check.getRepository().getScenarios()));
+            server.createContext("/health", new HealthHandler(config));
             server.setExecutor(Executors.newFixedThreadPool(this.threadCount));
             server.start();
             log.info("Server unter Port {} ist erfolgreich gestartet", this.port);

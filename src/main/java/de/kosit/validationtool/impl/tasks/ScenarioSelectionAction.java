@@ -22,10 +22,10 @@ package de.kosit.validationtool.impl.tasks;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.ScenarioRepository;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 import net.sf.saxon.s9api.XdmNode;
 
@@ -44,7 +44,7 @@ public class ScenarioSelectionAction implements CheckAction {
     @Override
     public void check(final Bag results) {
         final CreateReportInput report = results.getReportInput();
-        final Result<ScenarioType, String> scenarioTypeResult;
+        final Result<Scenario, String> scenarioTypeResult;
 
         if (results.getParserResult().isValid()) {
             scenarioTypeResult = determineScenario(results.getParserResult().getObject());
@@ -53,15 +53,15 @@ public class ScenarioSelectionAction implements CheckAction {
         }
         results.setScenarioSelectionResult(scenarioTypeResult);
         if (!scenarioTypeResult.getObject().isFallback()) {
-            report.setScenario(scenarioTypeResult.getObject());
+            report.setScenario(scenarioTypeResult.getObject().getConfiguration());
             log.info("Schenario {} identified for {}", scenarioTypeResult.getObject().getName(), results.getInput().getName());
         } else {
             log.error("No valid schenario configuration found for {}", results.getInput().getName());
         }
     }
 
-    private Result<ScenarioType, String> determineScenario(final XdmNode document) {
-        final Result<ScenarioType, String> result = this.repository.selectScenario(document);
+    private Result<Scenario, String> determineScenario(final XdmNode document) {
+        final Result<Scenario, String> result = this.repository.selectScenario(document);
         if (result.isInvalid()) {
             return new Result<>(this.repository.getFallbackScenario());
         }

@@ -42,12 +42,12 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ObjectFactory;
+import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.input.AbstractInput;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsXmlSchema;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
@@ -132,17 +132,17 @@ public class SchemaValidationAction implements CheckAction {
     @Getter
     private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
 
-    private Result<Boolean, XMLSyntaxError> validate(final Bag results, final ScenarioType scenarioType) {
-        log.debug("Validating document using scenario {}", scenarioType.getName());
+    private Result<Boolean, XMLSyntaxError> validate(final Bag results, final Scenario scenario) {
+        log.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
         try ( final SourceProvider validateInput = resolveSource(results) ) {
 
-            final Validator validator = ObjectFactory.createValidator(scenarioType.getSchema());
+            final Validator validator = ObjectFactory.createValidator(scenario.getSchema());
             validator.setErrorHandler(errorHandler);
             validator.validate(validateInput.getSource());
             return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
         } catch (final SAXException | SaxonApiException | IOException e) {
-            final String msg = String.format("Error processing schema validation for scenario %s", scenarioType.getName());
+            final String msg = String.format("Error processing schema validation for scenario %s", scenario.getConfiguration().getName());
             log.error(msg, e);
             results.addProcessingError(msg);
             return new Result<>(Boolean.FALSE);
@@ -152,14 +152,14 @@ public class SchemaValidationAction implements CheckAction {
     @Override
     public void check(final Bag results) {
         final CreateReportInput report = results.getReportInput();
-        final ScenarioType scenario = results.getScenarioSelectionResult().getObject();
+        final Scenario scenario = results.getScenarioSelectionResult().getObject();
 
         final Result<Boolean, XMLSyntaxError> validateResult = validate(results, scenario);
 
         results.setSchemaValidationResult(validateResult);
         final ValidationResultsXmlSchema result = new ValidationResultsXmlSchema();
         report.setValidationResultsXmlSchema(result);
-        result.getResource().addAll(scenario.getValidateWithXmlSchema().getResource());
+        result.getResource().addAll(scenario.getConfiguration().getValidateWithXmlSchema().getResource());
         if (!validateResult.isValid()) {
             result.getXmlSyntaxError().addAll(validateResult.getErrors());
         }

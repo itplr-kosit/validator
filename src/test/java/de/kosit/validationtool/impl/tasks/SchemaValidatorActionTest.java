@@ -46,9 +46,9 @@ import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.ObjectFactory;
+import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 /**
  * Tests die {@link SchemaValidationAction}.
@@ -154,7 +154,7 @@ public class SchemaValidatorActionTest {
     @Test
     public void testProcessingError() throws IOException, SAXException {
         final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
-        final ScenarioType scenario = bag.getScenarioSelectionResult().getObject();
+        final Scenario scenario = bag.getScenarioSelectionResult().getObject();
         final Schema schema = mock(Schema.class);
         final Validator validator = mock(Validator.class);
         when(schema.newValidator()).thenReturn(validator);

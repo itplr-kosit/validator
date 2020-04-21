@@ -72,7 +72,7 @@ public class ConversionServiceTest {
     }
 
     @Test
-    public void testUnmarshal() throws URISyntaxException {
+    public void testUnmarshal() {
         final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class);
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
@@ -80,7 +80,7 @@ public class ConversionServiceTest {
 
     @Test
     public void testUnmarshalWithSchema() {
-        final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class, ContentRepository.createSchema(SCHEMA));
+        final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA));
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
@@ -88,13 +88,13 @@ public class ConversionServiceTest {
     @Test
     public void testUnmarshalInvalidXml() {
         this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Invalid.SCENARIOS, Scenarios.class, ContentRepository.createSchema(SCHEMA));
+        this.service.readXml(Invalid.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA));
     }
 
     @Test
     public void testUnmarshalIllFormed() {
         this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, ContentRepository.createSchema(SCHEMA));
+        this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, this.repository.createSchema(SCHEMA));
     }
 
     @Test

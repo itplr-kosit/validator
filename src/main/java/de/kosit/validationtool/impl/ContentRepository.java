@@ -24,9 +24,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -38,6 +41,11 @@ import org.xml.sax.SAXException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import de.kosit.validationtool.impl.Scenario.Transformation;
+import de.kosit.validationtool.model.scenarios.NamespaceType;
+import de.kosit.validationtool.model.scenarios.ResourceType;
+import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -55,14 +63,16 @@ import net.sf.saxon.s9api.XsltExecutable;
 @Slf4j
 public class ContentRepository {
 
+    private Schema reportInputSchema;
+
     @Getter
     private final Processor processor;
 
     private final URI repository;
 
-    private Schema reportInputSchema;
+    private final ResolvingMode mode = ResolvingMode.STRICT_RELATIVE;
 
-    private static Source resolve(final URL resource) {
+    private Source resolve(final URL resource) {
         try {
             return new StreamSource(resource.openStream(), resource.toURI().getRawPath());
         } catch (final IOException | URISyntaxException e) {
@@ -70,7 +80,7 @@ public class ContentRepository {
         }
     }
 
-    private static Schema createSchema(final Source[] schemaSources, final LSResourceResolver resourceResolver) {
+    private Schema createSchema(final Source[] schemaSources, final LSResourceResolver resourceResolver) {
         try {
             final SchemaFactory sf = ObjectFactory.createSchemaFactory();
             sf.setResourceResolver(resourceResolver);
@@ -80,7 +90,7 @@ public class ContentRepository {
         }
     }
 
-    private static Schema createSchema(final Source[] schemaSources) {
+    private Schema createSchema(final Source[] schemaSources) {
         return createSchema(schemaSources, null);
     }
 
@@ -116,11 +126,11 @@ public class ContentRepository {
      * @param url die url
      * @return das erzeugte Schema
      */
-    public static Schema createSchema(final URL url) {
+    public Schema createSchema(final URL url) {
         return createSchema(url, null);
     }
 
-    public static Schema createSchema(final URL url, final LSResourceResolver resourceResolver) {
+    public Schema createSchema(final URL url, final LSResourceResolver resourceResolver) {
         log.info("Load schema from source {}", url.getPath());
         return createSchema(new Source[] { resolve(url) }, resourceResolver);
     }
@@ -130,7 +140,7 @@ public class ContentRepository {
      *
      * @return Scenario-Schema
      */
-    public static Schema getScenarioSchema() {
+    public Schema getScenarioSchema() {
         return createSchema(ContentRepository.class.getResource("/xsd/scenarios.xsd"));
     }
 
@@ -140,11 +150,11 @@ public class ContentRepository {
      * @return ReportInput-Schema
      */
     public Schema getReportInputSchema() {
-        if (this.reportInputSchema == null) {
+        if (reportInputSchema == null) {
             final Source source = resolve(ContentRepository.class.getResource("/xsd/createReportInput.xsd"));
-            this.reportInputSchema = createSchema(new Source[] { source }, new ClassPathResourceResolver("/xsd"));
+            reportInputSchema = createSchema(new Source[] { source }, new ClassPathResourceResolver("/xsd"));
         }
-        return this.reportInputSchema;
+        return reportInputSchema;
     }
 
     /**
@@ -157,8 +167,23 @@ public class ContentRepository {
         return createSchema(uris.stream().map(s -> resolve(URI.create(s))).toArray(Source[]::new));
     }
 
+    /**
+     * Liefert das Schema zu diesem Szenario.
+     *
+     * @return das passende Schema
+     */
+    public Schema createSchema(final ScenarioType s) {
+        Schema schema = null;
+        if (s.getValidateWithXmlSchema() != null) {
+            final List<String> schemaResources = s.getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation)
+                    .collect(Collectors.toList());
+            schema = createSchema(schemaResources);
+        }
+        return schema;
+    }
+
     private Source resolve(final URI source) {
-        final URI resolved = RelativeUriResolver.resolve(source, this.repository);
+        final URI resolved = this.mode.resolve(source, this.repository);
         return new StreamSource(resolved.toASCIIString());
     }
 
@@ -187,7 +212,30 @@ public class ContentRepository {
      * 
      * @return ein neuer Resolver
      */
-    public RelativeUriResolver createResolver() {
-        return new RelativeUriResolver(this.repository);
+    public URIResolver createResolver() {
+        return this.mode.createResolver(this.repository);
+    }
+
+    /**
+     * Gibt eine Transformation zurück.
+     *
+     * @return initialisierte Transformation
+     */
+    public Transformation createReportTransformation(final ScenarioType t) {
+        final ResourceType resource = t.getCreateReport().getResource();
+        final XsltExecutable executable = loadXsltScript(URI.create(resource.getLocation()));
+        return new Transformation(executable, resource);
+    }
+
+    public XPathExecutable createMatchExecutable(final ScenarioType s) {
+        final Map<String, String> namespaces = s.getNamespace().stream()
+                .collect(Collectors.toMap(NamespaceType::getPrefix, NamespaceType::getValue));
+        return createXPath(s.getMatch(), namespaces);
+    }
+
+    public XPathExecutable createAccepptExecutable(final ScenarioType s) {
+        final Map<String, String> namespaces = s.getNamespace().stream()
+                .collect(Collectors.toMap(NamespaceType::getPrefix, NamespaceType::getValue));
+        return createXPath(s.getAcceptMatch(), namespaces);
     }
 }
