@@ -77,7 +77,7 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
     }
 
     @Override
-    public Processor createProcessor() {
+    protected Processor createProcessor() {
         final Processor processor = new Processor(false);
         // verhindere global im Prinzip alle resolving strategien
         final SecureUriResolver resolver = new SecureUriResolver();

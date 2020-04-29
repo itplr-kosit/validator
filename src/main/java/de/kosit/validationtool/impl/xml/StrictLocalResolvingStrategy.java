@@ -9,8 +9,6 @@ import javax.xml.validation.Validator;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.sf.saxon.s9api.Processor;
-
 /**
  * 
  * 
@@ -28,11 +26,6 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
         final SchemaFactory schemaFactory = super.createSchemaFactory();
         allowExternalSchema(schemaFactory, "file", "jar");
         return schemaFactory;
-    }
-
-    @Override
-    public Processor createProcessor() {
-        return super.createProcessor();
     }
 
     @Override

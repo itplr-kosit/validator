@@ -58,8 +58,8 @@ public class ComputeAcceptanceAction implements CheckAction {
             selector.setContextItem(results.getReport());
             results.setAcceptStatus(selector.effectiveBooleanValue() ? AcceptRecommendation.ACCEPTABLE : AcceptRecommendation.REJECT);
         } catch (final SaxonApiException e) {
-            final String msg = "Error evaluating accept recommendation: %s";
-            log.error(msg);
+            final String msg = String.format("Error evaluating accept recommendation: %s", selector.getUnderlyingXPathContext().toString());
+            log.error(msg, e);
             results.addProcessingError(msg);
         }
     }

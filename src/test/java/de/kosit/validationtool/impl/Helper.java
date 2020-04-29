@@ -43,6 +43,7 @@ import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
@@ -161,7 +162,20 @@ public class Helper {
         return serialize((Document) NodeOverNodeInfo.wrap(node.getUnderlyingNode()));
     }
 
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final Input input) {
+        return new DocumentParseAction(processor).parseDocument(input);
+    }
+
     public static Result<XdmNode, XMLSyntaxError> parseDocument(final Input input) {
-        return new DocumentParseAction(TestObjectFactory.createProcessor()).parseDocument(input);
+        return new DocumentParseAction(getTestProcessor()).parseDocument(input);
+    }
+
+    public static Processor getTestProcessor() {
+        // is always the same at the moment
+        return createProcessor();
+    }
+
+    public static Processor createProcessor() {
+        return ResolvingMode.STRICT_RELATIVE.getStrategy().getProcessor();
     }
 }

@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 
+import net.sf.saxon.s9api.Processor;
+
 /**
  * @author Andreas Penski
  */
@@ -26,6 +28,18 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
     protected static final String FEATURE_SECURE_PROCESSING = "http://javax.xml.XMLConstants/feature/secure-processing";
 
     private static final String ORACLE_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
+
+    private Processor processor;
+
+    @Override
+    public Processor getProcessor() {
+        if (this.processor == null) {
+            this.processor = createProcessor();
+        }
+        return this.processor;
+    }
+
+    protected abstract Processor createProcessor();
 
     public static void forceOpenJdkXmlImplementation() {
         if (!isOpenJdkXmlImplementationAvailable()) {

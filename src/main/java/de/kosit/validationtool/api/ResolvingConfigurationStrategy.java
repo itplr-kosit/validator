@@ -31,13 +31,13 @@ public interface ResolvingConfigurationStrategy {
     SchemaFactory createSchemaFactory();
 
     /**
-     * Creates a preconfigured {@link Processor Saxon Processor} for various tasks within the Validator. The validator
+     * Returns a preconfigured {@link Processor Saxon Processor} for various tasks within the Validator. The validator
      * leverages the saxon s9api for internal processing e.g. xml reading and writing. So this is the main object to secure
      * for reading, transforming and writing xml files.
      * 
      * @return a preconfigured {@link Processor}
      */
-    Processor createProcessor();
+    Processor getProcessor();
 
     /**
      * Creates a specific implementation for resolving referenced objects in XML files. The URIResolver, it is used for

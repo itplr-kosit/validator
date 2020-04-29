@@ -92,7 +92,7 @@ public class ContentRepository {
     public ContentRepository(final ResolvingConfigurationStrategy strategy, final URI repository) {
         this.repository = repository;
         this.resolvingConfigurationStrategy = strategy;
-        this.processor = this.resolvingConfigurationStrategy.createProcessor();
+        this.processor = this.resolvingConfigurationStrategy.getProcessor();
         this.resolver = this.resolvingConfigurationStrategy.createResolver(repository);
         this.schemaFactory = this.resolvingConfigurationStrategy.createSchemaFactory();
     }

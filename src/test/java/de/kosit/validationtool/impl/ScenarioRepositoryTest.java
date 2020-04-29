@@ -26,22 +26,17 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import lombok.Data;
-
-import de.kosit.validationtool.api.Configuration;
+import de.kosit.validationtool.config.TestConfiguration;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
-import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XdmNode;
 
@@ -53,45 +48,25 @@ import net.sf.saxon.s9api.XdmNode;
 
 public class ScenarioRepositoryTest {
 
-    @Data
-    private static class DummyConfiguration implements Configuration {
-
-        private List<Scenario> scenarios;
-
-        private Scenario fallbackScenario;
-
-        private String author;
-
-        private String name;
-
-        private String date;
-
-        private Processor processor;
-
-        private ContentRepository contentRepository;
-
-        private Map<String, Object> additionalParameters;
-
-    }
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     private ScenarioRepository repository;
 
-    private DummyConfiguration configInstance;
+    private TestConfiguration configInstance;
 
     @Before
     public void setup() {
-        final Scenario s = createScenario();
+        this.configInstance = new TestConfiguration();
+        this.configInstance.setContentRepository(new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
 
-        this.configInstance = new DummyConfiguration();
+        final Scenario s = createScenario();
         this.configInstance.setScenarios(new ArrayList<>());
         this.configInstance.getScenarios().add(s);
         this.repository = new ScenarioRepository(this.configInstance);
     }
 
-    private static Scenario createScenario() {
+    private Scenario createScenario() {
         final Scenario s = new Scenario(new ScenarioType());
         s.setMatchExecutable(createXpath("//*:name"));
         return s;
@@ -134,11 +109,11 @@ public class ScenarioRepositoryTest {
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");
     }
 
-    private static XdmNode load(final URI uri) throws IOException {
-        return Helper.parseDocument(read(uri.toURL())).getObject();
+    private XdmNode load(final URI uri) throws IOException {
+        return Helper.parseDocument(this.configInstance.getContentRepository().getProcessor(), read(uri.toURL())).getObject();
     }
 
-    private static XPathExecutable createXpath(final String expression) {
-        return new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null).createXPath(expression, new HashMap<>());
+    private XPathExecutable createXpath(final String expression) {
+        return this.configInstance.getContentRepository().createXPath(expression, new HashMap<>());
     }
 }
