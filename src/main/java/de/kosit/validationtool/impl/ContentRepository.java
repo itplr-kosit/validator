@@ -42,7 +42,6 @@ import org.xml.sax.SAXException;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
@@ -78,13 +77,27 @@ public class ContentRepository {
 
     private final URIResolver resolver;
 
-    @Setter
-    private SchemaFactory schemaFactory;
+    private final SchemaFactory schemaFactory;
 
-    @Setter
     @Getter
-    private ResolvingConfigurationStrategy resolvingConfigurationStrategy;
+    private final ResolvingConfigurationStrategy resolvingConfigurationStrategy;
 
+    /**
+     * Creates a new {@link ContentRepository} based on configured security and resolving strategy and the specified
+     * repository location.
+     * 
+     * @param strategy the security and resolving strategy
+     * @param repository the repository.
+     */
+    public ContentRepository(final ResolvingConfigurationStrategy strategy, final URI repository) {
+        this.repository = repository;
+        this.resolvingConfigurationStrategy = strategy;
+        this.processor = this.resolvingConfigurationStrategy.createProcessor();
+        this.resolver = this.resolvingConfigurationStrategy.createResolver(repository);
+        this.schemaFactory = this.resolvingConfigurationStrategy.createSchemaFactory();
+    }
+
+    @SuppressWarnings("java:S2095")
     private static Source resolve(final URL resource) {
         try {
             return new StreamSource(resource.openStream(), resource.toURI().getRawPath());
@@ -119,10 +132,9 @@ public class ContentRepository {
         final CollectingErrorEventHandler listener = new CollectingErrorEventHandler();
         try {
             xsltCompiler.setErrorListener(listener);
-            final URIResolver resolver = getResolver();
-            if (resolver != null) {
+            if (getResolver() != null) {
                 // otherwise use default resolver
-                xsltCompiler.setURIResolver(resolver);
+                xsltCompiler.setURIResolver(getResolver());
             }
 
             return xsltCompiler.compile(resolveInRepository(uri));
@@ -275,7 +287,7 @@ public class ContentRepository {
     }
 
     public List<Transformation> createSchematronTransformations(final ScenarioType s) {
-        return s.getValidateWithSchematron() != null && s.getValidateWithSchematron().isEmpty() ? Collections.emptyList()
+        return s.getValidateWithSchematron().isEmpty() ? Collections.emptyList()
                 : s.getValidateWithSchematron().stream().map(this::createSchematronTransformation).collect(Collectors.toList());
     }
 

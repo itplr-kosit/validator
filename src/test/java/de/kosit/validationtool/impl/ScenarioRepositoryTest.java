@@ -139,6 +139,6 @@ public class ScenarioRepositoryTest {
     }
 
     private static XPathExecutable createXpath(final String expression) {
-        return new ContentRepository(TestObjectFactory.createProcessor(), null, null).createXPath(expression, new HashMap<>());
+        return new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null).createXPath(expression, new HashMap<>());
     }
 }

@@ -25,7 +25,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -144,8 +143,8 @@ public class ObjectFactory {
         Transformer transformer = null;
         try {
             final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // Compliant
+            // transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            // transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // Compliant
             transformer = transformerFactory.newTransformer();
             if (prettyPrint) {
                 transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");

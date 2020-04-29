@@ -53,6 +53,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 
 public class Helper {
+
     public static class Simple {
 
         public static final URI ROOT = EXAMPLES_DIR.resolve("simple/");
@@ -83,12 +84,9 @@ public class Helper {
 
         public static final ContentRepository createContentRepository() {
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
-            final ContentRepository rep = new ContentRepository(TestObjectFactory.createProcessor(), Simple.REPOSITORY_URI,
-                    strategy.createResolver(Simple.REPOSITORY_URI));
-            rep.setResolvingConfigurationStrategy(strategy);
-            rep.setSchemaFactory(strategy.createSchemaFactory());
-            return rep;
+            return new ContentRepository(strategy, Simple.REPOSITORY_URI);
         }
+
         public static URI getSchemaLocation() {
             return ROOT.resolve("repository/simple.xsd");
         }
@@ -103,11 +101,9 @@ public class Helper {
         public static final URI SCENARIOS_ILLFORMED = ROOT.resolve("scenarios-illformed.xml");
     }
 
-
     public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
 
     public static final URI ASSERTION_SCHEMA = MODEL_ROOT.resolve("xsd/assertions.xsd");
-
 
     public static final URI TEST_ROOT = Paths.get("src/test/resources").toUri();
 
@@ -115,14 +111,7 @@ public class Helper {
 
     public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
 
-
-
     public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("xrechnung/repository/");
-
-
-
-
-
 
     /**
      * Lädt ein XML-Dokument von der gegebenen URL
@@ -154,7 +143,8 @@ public class Helper {
      * @return ein {@link ContentRepository}
      */
     public static ContentRepository loadTestRepository() {
-        return new ContentRepository(TestObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI(), null);
+        return new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(),
+                new File("src/test/resources/examples/repository").toURI());
     }
 
     public static String serialize(final Document doc) {

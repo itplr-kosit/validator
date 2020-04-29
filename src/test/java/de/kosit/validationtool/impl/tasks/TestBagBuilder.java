@@ -18,7 +18,6 @@ import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.Scenario;
-import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
@@ -74,8 +73,7 @@ public class TestBagBuilder {
     }
 
     private static Schema createSchema(final URL toURL) {
-        final ContentRepository contentRepository = new ContentRepository(TestObjectFactory.createProcessor(), null, null);
-        contentRepository.setSchemaFactory(ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory());
+        final ContentRepository contentRepository = new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null);
         return contentRepository.createSchema(toURL);
     }
 

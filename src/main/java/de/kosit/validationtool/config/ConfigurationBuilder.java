@@ -172,10 +172,7 @@ public class ConfigurationBuilder {
         if (this.processor == null) {
             this.processor = resolving.createProcessor();
         }
-        final ContentRepository contentRepository = new ContentRepository(this.processor, this.repository,
-                resolving.createResolver(this.repository));
-        contentRepository.setSchemaFactory(resolving.createSchemaFactory());
-        contentRepository.setResolvingConfigurationStrategy(resolving);
+        final ContentRepository contentRepository = new ContentRepository(this.resolvingConfigurationStrategy, this.repository);
 
         final List<Scenario> list = initializeScenarios(contentRepository);
         final Scenario fallbackScenario = initializeFallback(contentRepository);

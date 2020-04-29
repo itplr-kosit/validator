@@ -114,7 +114,8 @@ public class ContentRepositoryTest {
 
     @Test
     public void loadFromJar() throws URISyntaxException {
-        this.repository = new ContentRepository(TestObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI(), null);
+        assert Helper.JAR_REPOSITORY != null;
+        this.repository = new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), Helper.JAR_REPOSITORY.toURI());
         final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("resources/eRechnung/report.xsl"));
         assertThat(xsltExecutable).isNotNull();
     }
@@ -122,6 +123,7 @@ public class ContentRepositoryTest {
     @Test
     public void testLoadSchema() {
         final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("loading/main.xsd");
+        assert main != null;
         final Schema schema = this.repository.createSchema(main, new ClassPathResourceResolver("/loading"));
         assertThat(schema).isNotNull();
     }
@@ -129,6 +131,7 @@ public class ContentRepositoryTest {
     @Test
     public void testLoadSchemaPackaged() throws URISyntaxException {
         final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("packaged/main.xsd");
+        assert main != null;
         final Schema schema = this.repository.createSchema(main,
                 new ClassPathResourceResolver(RelativeUriResolverTest.class.getClassLoader().getResource("packaged/").toURI()));
         assertThat(schema).isNotNull();
