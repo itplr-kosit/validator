@@ -28,13 +28,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import org.w3c.dom.Document;
 
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
@@ -42,9 +36,9 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
-import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -148,18 +142,15 @@ public class Helper {
                 new File("src/test/resources/examples/repository").toURI());
     }
 
-    public static String serialize(final Document doc) {
+    public static String serialize(final XdmNode node) {
         try ( final StringWriter writer = new StringWriter() ) {
-            final Transformer transformer = TestObjectFactory.createTransformer(true);
-            transformer.transform(new DOMSource(doc), new StreamResult(writer));
+            final Processor processor = Helper.getTestProcessor();
+            final Serializer serializer = processor.newSerializer(writer);
+            serializer.serializeNode(node);
             return writer.toString();
-        } catch (final IOException | TransformerException e) {
+        } catch (final SaxonApiException | IOException e) {
             throw new IllegalStateException("Can not serialize document", e);
         }
-    }
-
-    public static String serialize(final XdmNode node) {
-        return serialize((Document) NodeOverNodeInfo.wrap(node.getUnderlyingNode()));
     }
 
     public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final Input input) {

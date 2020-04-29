@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:d="http://www.xoev.de/de/validator/framework/1/daemon" targetNamespace="http://www.xoev.de/de/validator/framework/1/daemon"
+        elementFormDefault="qualified"
+        xmlns="http://www.w3.org/2001/XMLSchema" version="1.0.0">
+
+    <element name="health" type="d:HealthType"></element>
+
+    <complexType name="ApplicationType">
+        <sequence>
+            <element name="name" type="string"></element>
+            <element name="version" type="string"></element>
+            <element name="build" type="string"></element>
+        </sequence>
+    </complexType>
+
+    <complexType name="HealthType">
+        <sequence>
+            <element name="status">
+
+                <simpleType>
+                    <restriction base="string">
+                        <enumeration value="UP"></enumeration>
+                        <enumeration value="DOWN"></enumeration>
+                        <enumeration value="WARN"></enumeration>
+                    </restriction>
+                </simpleType>
+            </element>
+            <element name="application" type="d:ApplicationType"></element>
+
+            <element name="memory" type="d:MemoryType"></element>
+        </sequence>
+    </complexType>
+
+
+    <complexType name="MemoryType">
+        <sequence>
+            <element name="freeMemory" type="long"></element>
+            <element name="maxMemory" type="long"></element>
+            <element name="totalMemory" type="long"></element>
+        </sequence>
+    </complexType>
+</schema>

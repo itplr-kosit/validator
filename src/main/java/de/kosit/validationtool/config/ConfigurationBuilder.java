@@ -1,5 +1,7 @@
 package de.kosit.validationtool.config;
 
+import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
+
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +24,10 @@ import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.model.scenarios.DescriptionType;
+import de.kosit.validationtool.model.scenarios.NoScenarioReportType;
+import de.kosit.validationtool.model.scenarios.ObjectFactory;
+import de.kosit.validationtool.model.scenarios.Scenarios;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -52,6 +59,8 @@ public class ConfigurationBuilder {
 
     private URI repository;
 
+    private String description;
+
     public ConfigurationBuilder author(final String authorName) {
         this.author = authorName;
         return this;
@@ -81,6 +90,11 @@ public class ConfigurationBuilder {
             log.warn("Overriding previously created fallback scenario");
         }
         this.fallbackBuilder = builder;
+        return this;
+    }
+
+    public ConfigurationBuilder description(final String description) {
+        this.description = description;
         return this;
     }
 
@@ -182,7 +196,27 @@ public class ConfigurationBuilder {
         configuration.setDate(this.date);
         configuration.setName(this.name);
         configuration.setContentRepository(contentRepository);
+        configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, createDefinition(configuration));
         return (configuration);
+    }
+
+    private Scenarios createDefinition(final DefaultConfiguration configuration) {
+        final Scenarios s = new Scenarios();
+        s.setAuthor(configuration.getAuthor());
+        s.setDate(createTimestamp());
+        final DescriptionType d = new DescriptionType();
+        d.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, "")));
+        s.setDescription(d);
+        s.setName(configuration.getName());
+        s.getScenario().addAll(configuration.getScenarios().stream().map(Scenario::getConfiguration).collect(Collectors.toList()));
+        s.setNoScenarioReport(createNoScenarioReportType(configuration.getFallbackScenario()));
+        return s;
+    }
+
+    private static NoScenarioReportType createNoScenarioReportType(final Scenario fallbackScenario) {
+        final NoScenarioReportType no = new NoScenarioReportType();
+        no.setResource(fallbackScenario.getConfiguration().getCreateReport().getResource());
+        return no;
     }
 
     private Scenario initializeFallback(final ContentRepository contentRepository) {

@@ -19,16 +19,12 @@
 
 package de.kosit.validationtool.impl;
 
+import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -103,16 +99,7 @@ public class DefaultCheck implements Check {
         return type;
     }
 
-    private static XMLGregorianCalendar createTimestamp() {
-        try {
-            final GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(new Date());
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
 
-        } catch (final DatatypeConfigurationException e) {
-            throw new IllegalStateException("Can not create timestamp", e);
-        }
-    }
 
     @Override
     public Result checkInput(final Input input) {

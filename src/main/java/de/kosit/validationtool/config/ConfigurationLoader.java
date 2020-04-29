@@ -129,6 +129,8 @@ public class ConfigurationLoader {
         configuration.setDate(def.getDate().toString());
         configuration.setName(def.getName());
         configuration.setContentRepository(contentRepository);
+        configuration.getAdditionalParameters().put(Keys.SCENARIOS_FILE, this.scenarioDefinition);
+        configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, def);
         return (configuration);
     }
 
