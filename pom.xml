@@ -39,7 +39,7 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.jacoco>0.8.4</version.jacoco>
+        <version.jacoco>0.8.5</version.jacoco>
         <version.lombok>1.18.8</version.lombok>
         <version.saxon-he>9.9.1-3</version.saxon-he>
         <version.slf4j>1.7.25</version.slf4j>
@@ -309,13 +309,38 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>prepareJacocoJUnitArgLine</id>
+                        <id>prepareJacocoSurefireArgLine</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                         <configuration>
-                            <propertyName>jacocoArgumentsJUnit</propertyName>
+                            <propertyName>jacocoSurefire</propertyName>
                         </configuration>
+                    </execution>
+                    <execution>
+                        <id>prepareJacocoFailsafeArgLine</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <propertyName>jacocoFailsafe</propertyName>
+                            <output>tcpserver</output>
+                            <address>localhost</address>
+                            <port>8081</port>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>dump</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>dump</goal>
+
+                        </goals>
+                            <configuration>
+                                <address>localhost</address>
+                                <port>8081</port>
+                                <append>true</append>
+                            </configuration>
                     </execution>
                     <execution>
                         <id>generateJacocoReport</id>
@@ -332,7 +357,7 @@
                 <version>2.22.0</version>
                 <configuration>
                     <!--suppress MavenModelInspection -->
-                    <argLine>-Dfile.encoding=UTF-8 ${jacocoArgumentsJUnit}</argLine>
+                    <argLine>-Dfile.encoding=UTF-8 ${jacocoSurefire}</argLine>
                 </configuration>
             </plugin>
 
@@ -364,20 +389,21 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <executions>
-                    <execution>
+                <execution>
                         <id>run</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
+                    <phase>pre-integration-test</phase>
+                    <goals>
                             <goal>exec</goal>
-                        </goals>
+                    </goals>
                     </execution>
                 </executions>
-                <configuration>
+                    <configuration>
                     <executable>java</executable>
                     <longClasspath>true</longClasspath>
                     <async>true</async>
                     <asyncDestroyOnShutdown>true</asyncDestroyOnShutdown>
                     <arguments>
+                        <argument>${jacocoFailsafe}</argument>
                         <argument>-classpath</argument>
                         <classpath />
                         <argument>de.kosit.validationtool.cmd.CommandLineApplication</argument>
