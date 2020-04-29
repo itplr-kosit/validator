@@ -36,5 +36,5 @@ public class DefaultConfiguration implements Configuration {
 
     private String date;
 
-    public Map<String, Object> additionalParameters;
+    private Map<String, Object> additionalParameters;
 }

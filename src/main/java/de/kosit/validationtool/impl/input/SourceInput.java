@@ -75,6 +75,7 @@ public class SourceInput extends AbstractInput {
             return (ss.getInputStream() != null && ss.getInputStream().available() == 0)
                     || (ss.getReader() != null && !ss.getReader().ready());
         } catch (final IOException e) {
+            log.error("Error checking consumed state", e);
             return true;
         }
     }
