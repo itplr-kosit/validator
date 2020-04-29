@@ -146,18 +146,6 @@
 
         <plugins>
             <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>src/generated/java</directory>
-                            <followSymlinks>false</followSymlinks>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M2</version>
@@ -278,28 +266,6 @@
                 </executions>
             </plugin>
 
-
-            <plugin>
-                <!-- Integrate the /src/main/generated folder -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/generated/java</source>
-                            </sources>
-
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- Generate model classes -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -316,7 +282,6 @@
                     <extension>true</extension>
                     <schemaDirectory>src/main/model/xsd</schemaDirectory>
                     <bindingDirectory>src/main/model/binding</bindingDirectory>
-                    <generateDirectory>src/generated/java</generateDirectory>
                     <packageLevelAnnotations>false</packageLevelAnnotations>
                     <args>
                         <arg>-Xinheritance</arg>
