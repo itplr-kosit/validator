@@ -56,7 +56,7 @@ public class VersioningTest {
 
     @Before
     public void setup() {
-        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
+        this.repository = Simple.createContentRepository();
         this.service = new ConversionService();
     }
 

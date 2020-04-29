@@ -27,6 +27,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,7 +39,6 @@ import lombok.Data;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 import net.sf.saxon.s9api.Processor;
@@ -70,10 +70,8 @@ public class ScenarioRepositoryTest {
 
         private ContentRepository contentRepository;
 
-        @Override
-        public void build() {
-            // nothing
-        }
+        private Map<String, Object> additionalParameters;
+
     }
 
     @Rule
@@ -137,11 +135,10 @@ public class ScenarioRepositoryTest {
     }
 
     private static XdmNode load(final URI uri) throws IOException {
-        final DocumentParseAction p = new DocumentParseAction();
-        return DocumentParseAction.parseDocument(read(uri.toURL())).getObject();
+        return Helper.parseDocument(read(uri.toURL())).getObject();
     }
 
     private static XPathExecutable createXpath(final String expression) {
-        return new ContentRepository(ObjectFactory.createProcessor(), null).createXPath(expression, new HashMap<>());
+        return new ContentRepository(TestObjectFactory.createProcessor(), null, null).createXPath(expression, new HashMap<>());
     }
 }

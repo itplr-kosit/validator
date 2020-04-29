@@ -4,28 +4,36 @@ import static org.apache.commons.lang3.StringUtils.startsWith;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.xml.validation.Schema;
+
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Check;
+import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
-import de.kosit.validationtool.impl.RelativeUriResolver;
+import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
+import de.kosit.validationtool.impl.xml.RelativeUriResolver;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-import de.kosit.validationtool.model.scenarios.CreateReportType;
+import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.Scenarios;
 
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
@@ -36,9 +44,9 @@ import net.sf.saxon.s9api.XdmNodeKind;
  * 
  * @author Andreas Penski
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
-public class LoadConfiguration extends BaseConfiguration {
+public class ConfigurationLoader {
 
     private static final String SUPPORTED_MAJOR_VERSION = "1";
 
@@ -55,6 +63,12 @@ public class LoadConfiguration extends BaseConfiguration {
      */
     private final URI scenarioRepository;
 
+    protected ResolvingMode resolvingMode = ResolvingMode.STRICT_RELATIVE;
+
+    protected ResolvingConfigurationStrategy resolvingConfigurationStrategy;
+
+    protected final Map<String, Object> parameters = new HashMap<>();
+
     URI getScenarioRepository() {
         if (this.scenarioRepository == null) {
             log.info("Creating default scenario repository (alongside scenario definition)");
@@ -63,9 +77,10 @@ public class LoadConfiguration extends BaseConfiguration {
         return this.scenarioRepository;
     }
 
-    private static void checkVersion(final URI scenarioDefinition) {
+    private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
-            final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(InputFactory.read(scenarioDefinition.toURL()));
+            final Result<XdmNode, XMLSyntaxError> result = new DocumentParseAction(processor)
+                    .parseDocument(InputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException(String.format(
                         "Specified scenario configuration %s is not supported.%nThis version only supports definitions of '%s'",
@@ -94,54 +109,53 @@ public class LoadConfiguration extends BaseConfiguration {
     }
 
     private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {
-        final ScenarioType t = new ScenarioType();
-        t.setName("Fallback-Scenario");
-        t.setMatch("count(/)<0");
-        final CreateReportType reportType = new CreateReportType();
-        reportType.setResource(scenarios.getNoScenarioReport().getResource());
-        // always reject
-        t.setAcceptMatch("count(/)<0");
-        t.setCreateReport(reportType);
-        final Scenario sceanrio = initialize(t, repository);
-        sceanrio.setFallback(true);
-        return sceanrio;
+        final ResourceType noscenarioResource = scenarios.getNoScenarioReport().getResource();
+        return new FallbackBuilder().source(noscenarioResource.getLocation()).name(noscenarioResource.getName()).build(repository)
+                .getObject();
+
     }
 
-    @Override
-    protected RuntimeArtefacts buildArtefacts() {
-        final ContentRepository contentRepository = buildContentRepository();
-        final Scenarios def = loadScenarios();
+    public Configuration build() {
+        final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
+        final Processor processor = resolving.createProcessor();
+        final ContentRepository contentRepository = new ContentRepository(processor, getScenarioRepository(),
+                resolving.createResolver(this.getScenarioRepository()));
+        contentRepository.setSchemaFactory(resolving.createSchemaFactory());
+        contentRepository.setResolvingConfigurationStrategy(resolving);
+
+        final Scenarios def = loadScenarios(contentRepository.getScenarioSchema(), processor);
         final List<Scenario> scenarios = initializeScenarios(def, contentRepository);
         final Scenario fallbackScenario = createFallback(def, contentRepository);
-        final RuntimeArtefacts runtimeArtefacts = new RuntimeArtefacts(scenarios, fallbackScenario);
-        runtimeArtefacts.setAuthor(def.getAuthor());
-        runtimeArtefacts.setDate(def.getDate().toString());
-        runtimeArtefacts.setName(def.getName());
-        return runtimeArtefacts;
+        final DefaultConfiguration configuration = new DefaultConfiguration(scenarios, fallbackScenario);
+        configuration.setAdditionalParameters(this.parameters);
+        configuration.setAuthor(def.getAuthor());
+        configuration.setDate(def.getDate().toString());
+        configuration.setName(def.getName());
+        configuration.setContentRepository(contentRepository);
+        return (configuration);
     }
 
     private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
         return def.getScenario().stream().map(s -> initialize(s, contentRepository)).collect(Collectors.toList());
     }
 
-    private ContentRepository buildContentRepository() {
-        return new ContentRepository(getProcessor(), getScenarioRepository());
+    private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
+        if (this.resolvingConfigurationStrategy != null) {
+            log.info("Custom resolving strategy supplied. Please take care of xml security!");
+            return this.resolvingConfigurationStrategy;
+        }
+        log.info("Using resolving strategy {}", this.resolvingMode);
+        return this.resolvingMode.getStrategy();
     }
 
-    @Override
-    public ContentRepository getContentRepository() {
-        return buildContentRepository();
-    }
-
-    private Scenarios loadScenarios() {
+    private Scenarios loadScenarios(final Schema scenarioSchema, final Processor processor) {
         final ConversionService conversionService = new ConversionService();
-        checkVersion(this.scenarioDefinition);
+        checkVersion(this.scenarioDefinition, processor);
         log.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        final Scenarios scenarios = conversionService.readXml(this.scenarioDefinition, Scenarios.class,
-                getContentRepository().getScenarioSchema(), handler);
+        final Scenarios scenarios = conversionService.readXml(this.scenarioDefinition, Scenarios.class, scenarioSchema, handler);
         if (!handler.hasErrors()) {
-            log.info("Loading scenario content from {}", this.scenarioRepository);
+            log.info("Loading scenario content from {}", this.getScenarioRepository());
         } else {
             throw new IllegalStateException(
                     String.format("Can not load scenarios from %s due to %s", getScenarioDefinition(), handler.getErrorDescription()));
@@ -152,27 +166,23 @@ public class LoadConfiguration extends BaseConfiguration {
 
     private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
         final Scenario s = new Scenario(def);
-        s.setSchema(repository.createSchema(def));
-        s.setReportTransformation(repository.createReportTransformation(def));
         s.setMatchExecutable(repository.createMatchExecutable(def));
+        s.setSchema(repository.createSchema(def));
+        s.setSchematronValidations(repository.createSchematronTransformations(def));
+        s.setReportTransformation(repository.createReportTransformation(def));
         if (def.getAcceptMatch() != null) {
             s.setAcceptExecutable(repository.createAccepptExecutable(def));
         }
         return s;
     }
 
-    @Override
-    public String getAuthor() {
-        return null;
+    public ConfigurationLoader setResolvingMode(final ResolvingMode mode) {
+        this.resolvingMode = mode;
+        return this;
     }
 
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public String getDate() {
-        return null;
+    public ConfigurationLoader addParameter(final String name, final Object value) {
+        this.parameters.put(name, value);
+        return this;
     }
 }

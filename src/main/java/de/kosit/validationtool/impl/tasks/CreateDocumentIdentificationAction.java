@@ -1,6 +1,5 @@
-package de.kosit.validationtool.impl;
+package de.kosit.validationtool.impl.tasks;
 
-import de.kosit.validationtool.impl.tasks.CheckAction;
 import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
 
 /**
@@ -8,7 +7,7 @@ import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
  * 
  * @author Andreas Penski
  */
-class CreateDocumentIdentificationAction implements CheckAction {
+public class CreateDocumentIdentificationAction implements CheckAction {
 
     @Override
     public void check(final Bag transporter) {

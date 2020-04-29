@@ -27,13 +27,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Input;
-import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.ValidationResultsWellformedness;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
 
 import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
@@ -46,6 +46,7 @@ import net.sf.saxon.s9api.XdmNode;
 @RequiredArgsConstructor
 public class DocumentParseAction implements CheckAction {
 
+    private final Processor processor;
     /**
      * Parsed und überprüft ein übergebenes Dokument darauf ob es well-formed ist. Dies stellt den ersten
      * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem
@@ -54,13 +55,13 @@ public class DocumentParseAction implements CheckAction {
      * @param content ein Dokument
      * @return Ergebnis des Parsings inklusive etwaiger Fehler
      */
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Input content) {
+    public Result<XdmNode, XMLSyntaxError> parseDocument(final Input content) {
         if (content == null) {
             throw new IllegalArgumentException("Input may not be null");
         }
         Result<XdmNode, XMLSyntaxError> result;
         try {
-            final DocumentBuilder builder = ObjectFactory.createProcessor().newDocumentBuilder();
+            final DocumentBuilder builder = this.processor.newDocumentBuilder();
             builder.setLineNumbering(true);
             final XdmNode doc = builder.build(content.getSource());
             result = new Result<>(doc, Collections.emptyList());

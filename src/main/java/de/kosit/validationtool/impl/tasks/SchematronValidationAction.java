@@ -26,21 +26,19 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMSource;
 
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
-import org.w3c.dom.Document;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
-import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
-import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron;
 
-import net.sf.saxon.s9api.DOMDestination;
+import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmDestination;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
 
@@ -53,7 +51,7 @@ import net.sf.saxon.s9api.XsltTransformer;
 @Slf4j
 public class SchematronValidationAction implements CheckAction {
 
-    private final ContentRepository repository;
+    private final URIResolver resolver;
 
     private final ConversionService conversionService;
 
@@ -67,18 +65,19 @@ public class SchematronValidationAction implements CheckAction {
         try {
             final XsltTransformer transformer = validation.getExecutable().load();
             // resolving nur relative zum Repository
-            final URIResolver resolver = this.repository.createResolver();
-            transformer.setURIResolver(resolver);
+            transformer.setURIResolver(this.resolver);
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
             transformer.setMessageListener(e);
 
-            final Document result = ObjectFactory.createDocumentBuilder(false).newDocument();
-            transformer.setDestination(new DOMDestination(result));
+            final XdmDestination result = new XdmDestination();
+            transformer.setDestination(result);
             transformer.setInitialContextNode(document);
             transformer.transform();
 
             final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
-            r.setSchematronOutput(this.conversionService.readDocument(new DOMSource(result), SchematronOutput.class));
+            r.setSchematronOutput(this.conversionService.readDocument(
+                    new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
+                    SchematronOutput.class));
             s.setResults(r);
 
         } catch (final SaxonApiException e) {

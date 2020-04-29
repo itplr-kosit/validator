@@ -21,7 +21,6 @@ package de.kosit.validationtool.impl;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import java.io.File;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -54,8 +53,7 @@ public class ConversionServiceTest {
     @Before
     public void setup() {
         this.service = new ConversionService();
-        this.repository = new ContentRepository(ObjectFactory.createProcessor(),
-                new File("src/test/resources/examples/repository").toURI());
+        this.repository = Simple.createContentRepository();
     }
 
     @Test

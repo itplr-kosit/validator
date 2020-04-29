@@ -54,10 +54,6 @@ public class InputFactory {
 
     static final String DEFAULT_ALGORITH = "SHA-256";
 
-    private static final int EOF = -1;
-
-    private static final int DEFAULT_BUFFER_SIZE = 4096;
-
     private static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
 
     @Getter
@@ -107,7 +103,6 @@ public class InputFactory {
     public static Input read(final File file) {
         return read(file, DEFAULT_ALGORITH);
     }
-
 
     /**
      * Liest einen Prüfling von der übergebenen URI. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der Prüfsumme

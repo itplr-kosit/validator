@@ -55,7 +55,7 @@ public class ContentRepositoryTest {
 
     @Before
     public void setup() {
-        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
+        this.repository = Simple.createContentRepository();
     }
 
     @Test
@@ -114,7 +114,7 @@ public class ContentRepositoryTest {
 
     @Test
     public void loadFromJar() throws URISyntaxException {
-        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
+        this.repository = new ContentRepository(TestObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI(), null);
         final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("resources/eRechnung/report.xsl"));
         assertThat(xsltExecutable).isNotNull();
     }
@@ -136,7 +136,7 @@ public class ContentRepositoryTest {
 
     // @Test
     // public void loadFromJar() throws URISyntaxException {
-    // this.content = new ContentRepository(ObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
+    // this.content = new ContentRepository(TestObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
     // this.repository = new ScenarioRepository(this.content);
     // final CheckConfiguration conf = new CheckConfiguration(
     // ScenarioRepository.class.getClassLoader().getResource("xrechnung/scenarios.xml").toURI());

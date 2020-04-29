@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.impl.ContentRepository;
-import de.kosit.validationtool.impl.ObjectFactory;
+import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 
 import net.sf.saxon.s9api.XPathExecutable;
@@ -22,6 +22,7 @@ import net.sf.saxon.s9api.XPathExecutable;
  */
 public class ComputeAcceptanceActionTest {
 
+    private static final String DOESNOT_EXIST = "count(//doesnotExist) = 0";
     private final ComputeAcceptanceAction action = new ComputeAcceptanceAction();
 
     @Test
@@ -49,7 +50,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testValidAcceptMatch() {
         final Bag bag = createBag(true, true);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath("count(//doesnotExist) = 0"));
+        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
@@ -65,7 +66,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testAcceptMatchOverridesSchematronErrors() {
         final Bag bag = createBag(true, false);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath("count(//doesnotExist) = 0"));
+        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
@@ -73,7 +74,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testValidAcceptMatchOnSchemaFailed() {
         final Bag bag = createBag(false, true);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath("count(//doesnotExist) = 0"));
+        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
     }
@@ -104,6 +105,6 @@ public class ComputeAcceptanceActionTest {
 
 
     private static XPathExecutable createXpath(final String expression) {
-        return new ContentRepository(ObjectFactory.createProcessor(), null).createXPath(expression, new HashMap<>());
+        return new ContentRepository(TestObjectFactory.createProcessor(), null, null).createXPath(expression, new HashMap<>());
     }
 }

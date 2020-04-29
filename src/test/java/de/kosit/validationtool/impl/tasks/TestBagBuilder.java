@@ -16,8 +16,9 @@ import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper;
-import de.kosit.validationtool.impl.ObjectFactory;
+import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
@@ -48,7 +49,7 @@ public class TestBagBuilder {
     public static Bag createBag(final Input input, final boolean parse, final CreateReportInput reportInput) {
         final Bag bag = new Bag(input, reportInput);
         if (parse) {
-            bag.setParserResult(DocumentParseAction.parseDocument(bag.getInput()));
+            bag.setParserResult(Helper.parseDocument(bag.getInput()));
         }
         bag.setScenarioSelectionResult(new Result<>(createScenario(Helper.Simple.getSchemaLocation())));
         return bag;
@@ -73,11 +74,13 @@ public class TestBagBuilder {
     }
 
     private static Schema createSchema(final URL toURL) {
-        return new ContentRepository(ObjectFactory.createProcessor(), null).createSchema(toURL);
+        final ContentRepository contentRepository = new ContentRepository(TestObjectFactory.createProcessor(), null, null);
+        contentRepository.setSchemaFactory(ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory());
+        return contentRepository.createSchema(toURL);
     }
 
     private static XdmNode createReport() {
-        return DocumentParseAction.parseDocument(InputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
+        return Helper.parseDocument(InputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
     }
 
     static Bag createBag(final boolean schemaValid, final boolean schematronValid) {

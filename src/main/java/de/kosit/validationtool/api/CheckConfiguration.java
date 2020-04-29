@@ -21,17 +21,16 @@ package de.kosit.validationtool.api;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.config.LoadConfiguration;
+import de.kosit.validationtool.config.ConfigurationLoader;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario;
-
-import net.sf.saxon.s9api.Processor;
 
 /**
  * Zentrale Konfigration einer Prüf-Instanz.
@@ -56,11 +55,13 @@ public class CheckConfiguration implements Configuration {
      */
     private URI scenarioRepository;
 
-    private LoadConfiguration delegate;
+    private ConfigurationLoader loader;
 
-    private LoadConfiguration getDelegate() {
+    private Configuration delegate;
+
+    private Configuration getDelegate() {
         if (this.delegate == null) {
-            this.delegate = Configuration.load(this.scenarioDefinition, this.scenarioRepository);
+            this.delegate = Configuration.load(this.scenarioDefinition, this.scenarioRepository).build();
         }
         return this.delegate;
     }
@@ -76,13 +77,13 @@ public class CheckConfiguration implements Configuration {
     }
 
     @Override
-    public void build() {
-        getDelegate().build();
+    public String getDate() {
+        return getDelegate().getDate();
     }
 
     @Override
-    public String getDate() {
-        return getDelegate().getDate();
+    public Map<String, Object> getAdditionalParameters() {
+        return this.delegate.getAdditionalParameters();
     }
 
     @Override
@@ -95,10 +96,7 @@ public class CheckConfiguration implements Configuration {
         return getDelegate().getAuthor();
     }
 
-    @Override
-    public Processor getProcessor() {
-        return getDelegate().getProcessor();
-    }
+
 
     @Override
     public ContentRepository getContentRepository() {

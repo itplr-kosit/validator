@@ -36,12 +36,13 @@ import org.xml.sax.SAXException;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
-import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.input.AbstractInput;
 import de.kosit.validationtool.impl.model.Result;
@@ -49,6 +50,7 @@ import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsXmlSchema;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
@@ -67,16 +69,20 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 @Slf4j
+@RequiredArgsConstructor
 public class SchemaValidationAction implements CheckAction {
 
+    @RequiredArgsConstructor
     private static class ByteArraySerializedDocument implements SerializedDocument {
 
         private byte[] bytes;
 
+        private final Processor processor;
+
         @Override
         public void serialize(final XdmNode node) throws SaxonApiException, IOException {
             try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
-                final Serializer serializer = ObjectFactory.createProcessor().newSerializer();
+                final Serializer serializer = this.processor.newSerializer();
                 serializer.setOutputStream(out);
                 serializer.serializeNode(node);
                 serializer.close();
@@ -97,16 +103,20 @@ public class SchemaValidationAction implements CheckAction {
 
     private static class FileSerializedDocument implements SerializedDocument {
 
+
         private final Path file;
 
-        FileSerializedDocument() throws IOException {
+        private final Processor processor;
+
+        FileSerializedDocument(final Processor processor) throws IOException {
             this.file = Files.createTempFile("validator", ".xml");
+            this.processor = processor;
         }
 
         @Override
         public void serialize(final XdmNode node) throws SaxonApiException, IOException {
             try ( final OutputStream out = Files.newOutputStream(this.file) ) {
-                final Serializer serializer = ObjectFactory.createProcessor().newSerializer();
+                final Serializer serializer = this.processor.newSerializer();
                 serializer.setOutputStream(out);
                 serializer.serializeNode(node);
                 serializer.close();
@@ -128,6 +138,10 @@ public class SchemaValidationAction implements CheckAction {
 
     private static final String LIMIT_PARAMETER = "schema.validation.inmem.limit";
 
+    private final ResolvingConfigurationStrategy factory;
+
+    private final Processor processor;
+
     @Setter(AccessLevel.PACKAGE)
     @Getter
     private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
@@ -137,7 +151,7 @@ public class SchemaValidationAction implements CheckAction {
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
         try ( final SourceProvider validateInput = resolveSource(results) ) {
 
-            final Validator validator = ObjectFactory.createValidator(scenario.getSchema());
+            final Validator validator = this.factory.createValidator(scenario.getSchema());
             validator.setErrorHandler(errorHandler);
             validator.validate(validateInput.getSource());
             return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
@@ -180,9 +194,9 @@ public class SchemaValidationAction implements CheckAction {
     private SerializedDocument serialize(final Input input, final XdmNode object) throws IOException, SaxonApiException {
         final SerializedDocument doc;
         if (input instanceof AbstractInput && ((AbstractInput) input).getLength() < getInMemoryLimit()) {
-            doc = new ByteArraySerializedDocument();
+            doc = new ByteArraySerializedDocument(this.processor);
         } else {
-            doc = new FileSerializedDocument();
+            doc = new FileSerializedDocument(this.processor);
         }
         doc.serialize(object);
         return doc;

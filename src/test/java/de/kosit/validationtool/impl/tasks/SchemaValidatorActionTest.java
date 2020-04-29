@@ -43,12 +43,13 @@ import org.xml.sax.SAXException;
 
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.impl.ContentRepository;
+import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
-import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
+import de.kosit.validationtool.impl.xml.StrictRelativeResolvingStrategy;
 
 /**
  * Tests die {@link SchemaValidationAction}.
@@ -63,7 +64,7 @@ public class SchemaValidatorActionTest {
 
     @Before
     public void setup() {
-        this.service = new SchemaValidationAction();
+        this.service = new SchemaValidationAction(new StrictRelativeResolvingStrategy(), TestObjectFactory.createProcessor());
     }
 
     @Test
@@ -89,7 +90,7 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testSchemaReferences() {
-        final Schema reportInputSchema = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY).getReportInputSchema();
+        final Schema reportInputSchema = Simple.createContentRepository().getReportInputSchema();
         assertThat(reportInputSchema).isNotNull();
     }
 
@@ -98,7 +99,7 @@ public class SchemaValidatorActionTest {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
             final Bag bag = createBag(InputFactory.read(new StreamSource(inputStream)));
             // don't read the real inputstream here!
-            bag.setParserResult(DocumentParseAction.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
+            bag.setParserResult(Helper.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
             this.service.check(bag);
             assertThat(bag.getSchemaValidationResult()).isNotNull();
             assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
@@ -114,7 +115,7 @@ public class SchemaValidatorActionTest {
             this.service.setInMemoryLimit(5L);
             input.setLength(6L);
 
-            bag.setParserResult(DocumentParseAction.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
+            bag.setParserResult(Helper.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
             this.service.check(bag);
             assertThat(bag.getSchemaValidationResult()).isNotNull();
             assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
@@ -127,7 +128,7 @@ public class SchemaValidatorActionTest {
               final Reader reader = new InputStreamReader(inputStream) ) {
             final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(reader));
             final Bag bag = createBag(input);
-            bag.setParserResult(DocumentParseAction.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
+            bag.setParserResult(Helper.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
             this.service.check(bag);
             this.service.check(bag);
             assertThat(bag.getSchemaValidationResult()).isNotNull();
@@ -143,7 +144,7 @@ public class SchemaValidatorActionTest {
             final Bag bag = createBag(input);
             // set limit and length for serialization to 5 bytes
             this.service.setInMemoryLimit(5L);
-            bag.setParserResult(DocumentParseAction.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
+            bag.setParserResult(Helper.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
             this.service.check(bag);
             this.service.check(bag);
             assertThat(bag.getSchemaValidationResult()).isNotNull();

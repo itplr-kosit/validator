@@ -36,6 +36,12 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 
+import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.tasks.DocumentParseAction;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
@@ -61,7 +67,7 @@ public class Helper {
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
-        public static final URI REPOSITORY = ROOT.resolve("repository/");
+        public static final URI REPOSITORY_URI = ROOT.resolve("repository/");
 
         public static final URI INVALID = ROOT.resolve("input/simple-invalid.xml");
 
@@ -73,8 +79,16 @@ public class Helper {
 
         public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
 
-        public static final URI REPORT_XSL = REPOSITORY.resolve("report.xsl");
+        public static final URI REPORT_XSL = REPOSITORY_URI.resolve("report.xsl");
 
+        public static final ContentRepository createContentRepository() {
+            final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
+            final ContentRepository rep = new ContentRepository(TestObjectFactory.createProcessor(), Simple.REPOSITORY_URI,
+                    strategy.createResolver(Simple.REPOSITORY_URI));
+            rep.setResolvingConfigurationStrategy(strategy);
+            rep.setSchemaFactory(strategy.createSchemaFactory());
+            return rep;
+        }
         public static URI getSchemaLocation() {
             return ROOT.resolve("repository/simple.xsd");
         }
@@ -118,7 +132,7 @@ public class Helper {
      */
     public static XdmNode load(final URL url) {
         try ( final InputStream input = url.openStream() ) {
-            return ObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
+            return TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
         } catch (final SaxonApiException | IOException e) {
             throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
 
@@ -140,12 +154,12 @@ public class Helper {
      * @return ein {@link ContentRepository}
      */
     public static ContentRepository loadTestRepository() {
-        return new ContentRepository(ObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI());
+        return new ContentRepository(TestObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI(), null);
     }
 
     public static String serialize(final Document doc) {
         try ( final StringWriter writer = new StringWriter() ) {
-            final Transformer transformer = ObjectFactory.createTransformer(true);
+            final Transformer transformer = TestObjectFactory.createTransformer(true);
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
             return writer.toString();
         } catch (final IOException | TransformerException e) {
@@ -157,4 +171,7 @@ public class Helper {
         return serialize((Document) NodeOverNodeInfo.wrap(node.getUnderlyingNode()));
     }
 
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Input input) {
+        return new DocumentParseAction(TestObjectFactory.createProcessor()).parseDocument(input);
+    }
 }

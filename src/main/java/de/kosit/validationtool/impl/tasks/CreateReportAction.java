@@ -19,23 +19,31 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.URIResolver;
-import javax.xml.transform.dom.DOMSource;
 
-import org.w3c.dom.Document;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 
 import lombok.RequiredArgsConstructor;
 
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
-import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.EngineInformation;
-import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
@@ -58,12 +66,108 @@ import net.sf.saxon.s9api.XsltTransformer;
 @RequiredArgsConstructor
 public class CreateReportAction implements CheckAction {
 
+    /**
+     * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect on
+     * {@link JAXBSource}'s XMLReader, but it throws exceptions on unknown properties. This just drops this exceptions.
+     */
+    private static class ReaderWrapper implements XMLReader {
+
+        private final XMLReader delegate;
+
+        public ReaderWrapper(final XMLReader xmlReader) {
+            this.delegate = xmlReader;
+        }
+
+        @Override
+        public boolean getFeature(final String name) throws SAXNotRecognizedException, SAXNotSupportedException {
+            if (name.equals("http://xml.org/sax/features/namespaces")) {
+                return true;
+            } else if (name.equals("http://xml.org/sax/features/namespace-prefixes")) {
+                return false;
+            }
+            // just return false on unknown properties
+            return false;
+        }
+
+        @Override
+        public void setFeature(final String name, final boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
+            // this inverts the logic from JaxbSource pseude parser
+            if (name.equals("http://xml.org/sax/features/namespaces") && !value) {
+                throw new SAXNotRecognizedException(name);
+            }
+            if (name.equals("http://xml.org/sax/features/namespace-prefixes") && value) {
+                throw new SAXNotRecognizedException(name);
+            }
+        }
+
+        @Override
+        public Object getProperty(final String name) throws SAXNotRecognizedException, SAXNotSupportedException {
+            return this.delegate.getProperty(name);
+        }
+
+        @Override
+        public void setProperty(final String name, final Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
+            this.delegate.setProperty(name, value);
+        }
+
+        @Override
+        public void setEntityResolver(final EntityResolver resolver) {
+            this.delegate.setEntityResolver(resolver);
+        }
+
+        @Override
+        public EntityResolver getEntityResolver() {
+            return this.delegate.getEntityResolver();
+        }
+
+        @Override
+        public void setDTDHandler(final DTDHandler handler) {
+            this.delegate.setDTDHandler(handler);
+        }
+
+        @Override
+        public DTDHandler getDTDHandler() {
+            return this.delegate.getDTDHandler();
+        }
+
+        @Override
+        public void setContentHandler(final ContentHandler handler) {
+            this.delegate.setContentHandler(handler);
+        }
+
+        @Override
+        public ContentHandler getContentHandler() {
+            return this.delegate.getContentHandler();
+        }
+
+        @Override
+        public void setErrorHandler(final ErrorHandler handler) {
+            this.delegate.setErrorHandler(handler);
+        }
+
+        @Override
+        public ErrorHandler getErrorHandler() {
+            return this.delegate.getErrorHandler();
+        }
+
+        @Override
+        public void parse(final InputSource input) throws IOException, SAXException {
+            this.delegate.parse(input);
+        }
+
+        @Override
+        public void parse(final String systemId) throws IOException, SAXException {
+            this.delegate.parse(systemId);
+        }
+    }
+
     private static final String ERROR_MESSAGE_ELEMENT = "error-message";
+
     private final Processor processor;
 
     private final ConversionService conversionService;
 
-    private final ContentRepository contentRepository;
+    private final URIResolver resolver;
 
     private static XsltExecutable loadFromScenario(final Scenario object) {
         return object.getReportTransformation().getExecutable();
@@ -77,14 +181,17 @@ public class CreateReportAction implements CheckAction {
             final XdmNode parsedDocument = results.getParserResult().isValid() ? results.getParserResult().getObject()
                     : createErrorInformation(results.getParserResult().getErrors());
 
-            final Document reportInput = this.conversionService.writeDocument(results.getReportInput());
-            final XdmNode root = documentBuilder.build(new DOMSource(reportInput));
+            final Marshaller marshaller = this.conversionService.getJaxbContext().createMarshaller();
+            final JAXBSource source = new JAXBSource(marshaller, results.getReportInput());
+            // wrap to circumvent inconsistency between sax and saxon
+            source.setXMLReader(new ReaderWrapper(source.getXMLReader()));
+
+            final XdmNode root = documentBuilder.build(source);
             final XsltTransformer transformer = getTransformation(results).load();
             transformer.setInitialContextNode(root);
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
-            final URIResolver resolver = this.contentRepository.createResolver();
             transformer.setMessageListener(e);
-            transformer.setURIResolver(resolver);
+            transformer.setURIResolver(this.resolver);
             // transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
             if (parsedDocument != null) {
                 transformer.setParameter(new QName("input-document"), parsedDocument);
@@ -94,13 +201,13 @@ public class CreateReportAction implements CheckAction {
             transformer.transform();
             results.setReport(destination.getXdmNode());
 
-        } catch (final SaxonApiException | SAXException e) {
+        } catch (final SaxonApiException | SAXException | JAXBException e) {
             throw new IllegalStateException("Can not create final report", e);
         }
     }
 
-    private static XdmNode createErrorInformation(final Collection<XMLSyntaxError> errors) throws SaxonApiException, SAXException {
-        final BuildingContentHandler contentHandler = ObjectFactory.createProcessor().newDocumentBuilder().newBuildingContentHandler();
+    private XdmNode createErrorInformation(final Collection<XMLSyntaxError> errors) throws SaxonApiException, SAXException {
+        final BuildingContentHandler contentHandler = this.processor.newDocumentBuilder().newBuildingContentHandler();
         contentHandler.startDocument();
         contentHandler.startElement(EngineInformation.getFrameworkNamespace(), ERROR_MESSAGE_ELEMENT, ERROR_MESSAGE_ELEMENT,
                 new AttributesImpl());

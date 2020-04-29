@@ -30,6 +30,7 @@ import org.junit.Test;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
+import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 /**
@@ -46,7 +47,7 @@ public class PrintReportActionTest {
     public void setup() {
         this.commandLine = new CommandLine();
         this.commandLine.activate();
-        this.action = new PrintReportAction();
+        this.action = new PrintReportAction(TestObjectFactory.createProcessor());
     }
 
     @After

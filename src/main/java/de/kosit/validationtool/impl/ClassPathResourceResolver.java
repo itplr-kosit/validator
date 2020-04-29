@@ -34,6 +34,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.impl.xml.RelativeUriResolver;
+
 /**
  * {@link LSResourceResolver} der objekte relativ zu einem Basis-Pfad aus dem Classpath der Anwendung laden kann.
  * 

@@ -24,13 +24,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import javax.xml.XMLConstants;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -40,13 +35,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,6 +58,7 @@ import net.sf.saxon.trans.XPathException;
  * @author Andreas Penski
  */
 @Slf4j
+@Deprecated
 public class ObjectFactory {
 
     private static class SecureUriResolver implements CollectionFinder, OutputURIResolver, UnparsedTextURIResolver {
@@ -116,7 +105,7 @@ public class ObjectFactory {
         }
     }
 
-    private ObjectFactory() {
+    ObjectFactory() {
         // hide, it's a factory
     }
 
@@ -154,13 +143,17 @@ public class ObjectFactory {
     public static Transformer createTransformer(final boolean prettyPrint) {
         Transformer transformer = null;
         try {
-            transformer = TransformerFactory.newInstance().newTransformer();
+            final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // Compliant
+            transformer = transformerFactory.newTransformer();
             if (prettyPrint) {
                 transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
                 transformer.setOutputProperty(OutputKeys.METHOD, "xml");
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
             }
             return transformer;
         } catch (final TransformerConfigurationException e) {
@@ -168,21 +161,6 @@ public class ObjectFactory {
         }
     }
 
-    /**
-     * Erzeugt einen Zeitstempel zur Verwendung in XML-Objekten
-     *
-     * @return eine Instanz {@link XMLGregorianCalendar}
-     */
-    public static XMLGregorianCalendar createTimestamp() {
-        try {
-            final GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(new Date());
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-
-        } catch (final DatatypeConfigurationException e) {
-            throw new IllegalStateException("Can not create timestamp", e);
-        }
-    }
 
     public static DocumentBuilder createDocumentBuilder(final boolean validating) {
         try {
@@ -223,38 +201,6 @@ public class ObjectFactory {
         return processor;
     }
 
-    /**
-     * Erzeugt einen Validier für das angegebenen Schema.
-     *
-     * @param schema das Schema mit dem validiert werden soll
-     * @return einen vorkonfigurierten Validator
-     */
-    public static Validator createValidator(final Schema schema) {
-        final Validator validator = schema.newValidator();
-        try {
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        } catch (final SAXNotRecognizedException | SAXNotSupportedException e) {
-            log.warn("Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
-            log.debug(e.getMessage(), e);
-        }
-        try {
-            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        } catch (final SAXNotRecognizedException | SAXNotSupportedException e) {
-            log.warn("Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
-            log.debug(e.getMessage(), e);
 
-        }
-        return validator;
-    }
 
-    public static SchemaFactory createSchemaFactory() {
-        final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        try {
-            sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file");
-        } catch (final SAXException e) {
-            log.warn("Can not disable external DTD access, maybe an unsupported JAXP implementation is used", e);
-        }
-        return sf;
-    }
 }

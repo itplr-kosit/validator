@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 
 import lombok.RequiredArgsConstructor;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
@@ -26,38 +29,51 @@ import net.sf.saxon.s9api.XdmNode;
 @RequiredArgsConstructor
 public class HtmlExtractor {
 
-    private final ContentRepository repository;
+    private final Processor processor;
 
     private XPathExecutable executable;
 
-    public List<XdmNode> extract(XdmNode xdmSource) {
+    public List<XdmNode> extract(final XdmNode xdmSource) {
         try {
             final XPathSelector selector = getSelector();
             selector.setContextItem(xdmSource);
-            return selector.stream().map(this::castToNode).collect(Collectors.toList());
+            return selector.stream().map(HtmlExtractor::castToNode).collect(Collectors.toList());
 
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             throw new IllegalStateException("Can not extract html content", e);
         }
     }
 
-    private XdmNode castToNode(final XdmItem xdmItem) {
+    private static XdmNode castToNode(final XdmItem xdmItem) {
         return (XdmNode) xdmItem;
     }
 
     private XPathSelector getSelector() {
-        if (executable == null) {
-            Map<String, String> ns = new HashMap<>();
+        if (this.executable == null) {
+            final Map<String, String> ns = new HashMap<>();
             ns.put("html", "http://www.w3.org/1999/xhtml");
-            executable = repository.createXPath("//html:html", ns);
+            this.executable = createXPath("//html:html", ns);
         }
-        return executable.load();
+        return this.executable.load();
     }
 
-    private static String convertToString(final XdmNode element) {
+    private XPathExecutable createXPath(final String expression, final Map<String, String> namespaces) {
+        try {
+            final XPathCompiler compiler = this.processor.newXPathCompiler();
+            if (namespaces != null) {
+                namespaces.forEach(compiler::declareNamespace);
+            }
+            return compiler.compile(expression);
+        } catch (final SaxonApiException e) {
+            throw new IllegalStateException(String.format("Can not compile xpath match expression '%s'",
+                    StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION"), e);
+        }
+    }
+
+    private String convertToString(final XdmNode element) {
         try {
             final StringWriter writer = new StringWriter();
-            final Serializer serializer = ObjectFactory.createProcessor().newSerializer(writer);
+            final Serializer serializer = this.processor.newSerializer(writer);
             serializer.serializeNode(element);
             return writer.toString();
         } catch (final SaxonApiException e) {
@@ -72,7 +88,7 @@ public class HtmlExtractor {
      * @return HTML-Fragment als String
      */
     public List<String> extractAsString(final XdmNode node) {
-        return extract(node).stream().map(HtmlExtractor::convertToString).collect(Collectors.toList());
+        return extract(node).stream().map(this::convertToString).collect(Collectors.toList());
     }
 
     public List<Element> extractAsElement(final XdmNode node) {

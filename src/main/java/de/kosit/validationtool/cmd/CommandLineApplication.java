@@ -42,12 +42,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.cmd.assertions.Assertions;
+import de.kosit.validationtool.config.ConfigurationLoader;
+import de.kosit.validationtool.daemon.Daemon;
 import de.kosit.validationtool.impl.ConversionService;
-import de.kosit.validationtool.impl.ObjectFactory;
+
+import net.sf.saxon.s9api.Processor;
 
 /**
  * Commandline Version des Prüftools. Parsed die Kommandozeile und führt die konfigurierten Aktionen aus.
@@ -169,9 +172,9 @@ public class CommandLineApplication {
     private static int startDaemonMode(final CommandLine cmd) {
         final Option[] unavailable = new Option[] { PRINT, CHECK_ASSERTIONS, DEBUG, OUTPUT, EXTRACT_HTML };
         warnUnusedOptions(cmd, unavailable, true);
-        final Daemon validDaemon = new Daemon(determineDefinition(cmd), determineRepository(cmd), determineHost(cmd), determinePort(cmd),
-                determineThreads(cmd));
-        validDaemon.startServer();
+        final ConfigurationLoader config = Configuration.load(determineDefinition(cmd), determineRepository(cmd));
+        final Daemon validDaemon = new Daemon(determineHost(cmd), determinePort(cmd), determineThreads(cmd));
+        validDaemon.startServer(config.build());
         return DAEMON_SIGNAL;
     }
 
@@ -203,25 +206,26 @@ public class CommandLineApplication {
             long start = System.currentTimeMillis();
             final Option[] unavailable = new Option[] { HOST, PORT, WORKER_COUNT };
             warnUnusedOptions(cmd, unavailable, false);
-            final CheckConfiguration d = new CheckConfiguration(determineDefinition(cmd));
-            d.setScenarioRepository(determineRepository(cmd));
-            final InternalCheck check = new InternalCheck(d);
+            final Configuration config = Configuration.load(determineDefinition(cmd), determineRepository(cmd)).build();
+
+            final InternalCheck check = new InternalCheck(config);
             final Path outputDirectory = determineOutputDirectory(cmd);
 
+            final Processor processor = config.getContentRepository().getProcessor();
             if (cmd.hasOption(EXTRACT_HTML.getOpt())) {
-                check.getCheckSteps().add(new ExtractHtmlContentAction(check.getContentRepository(), outputDirectory));
+                check.getCheckSteps().add(new ExtractHtmlContentAction(processor, outputDirectory));
             }
-            check.getCheckSteps().add(new SerializeReportAction(outputDirectory));
+            check.getCheckSteps().add(new SerializeReportAction(outputDirectory, processor));
             if (cmd.hasOption(SERIALIZE_REPORT_INPUT.getOpt())) {
                 check.getCheckSteps().add(new SerializeReportInputAction(outputDirectory, check.getConversionService()));
             }
             if (cmd.hasOption(PRINT.getOpt())) {
-                check.getCheckSteps().add(new PrintReportAction());
+                check.getCheckSteps().add(new PrintReportAction(processor));
             }
 
             if (cmd.hasOption(CHECK_ASSERTIONS.getOpt())) {
                 final Assertions assertions = loadAssertions(cmd.getOptionValue(CHECK_ASSERTIONS.getOpt()));
-                check.getCheckSteps().add(new CheckAssertionAction(assertions, ObjectFactory.createProcessor()));
+                check.getCheckSteps().add(new CheckAssertionAction(assertions, processor));
             }
             if (cmd.hasOption(PRINT_MEM_STATS.getOpt())) {
                 check.getCheckSteps().add(new PrintMemoryStats());

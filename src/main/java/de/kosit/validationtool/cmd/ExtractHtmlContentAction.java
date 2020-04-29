@@ -24,10 +24,10 @@ import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.HtmlExtractor;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
@@ -49,12 +49,12 @@ class ExtractHtmlContentAction implements CheckAction {
 
     private HtmlExtractor htmlExtraction;
 
-    private ContentRepository repository;
+    private Processor processor;
 
-    public ExtractHtmlContentAction(final ContentRepository repository, final Path outputDirectory) {
+    public ExtractHtmlContentAction(final Processor p, final Path outputDirectory) {
         this.outputDirectory = outputDirectory;
-        this.htmlExtraction = new HtmlExtractor(repository);
-        this.repository = repository;
+        this.htmlExtraction = new HtmlExtractor(p);
+        this.processor = p;
     }
 
     @Override
@@ -66,7 +66,7 @@ class ExtractHtmlContentAction implements CheckAction {
         final XdmNode node = (XdmNode) xdmItem;
         final String name = origName + "-" + node.getAttributeValue(NAME_ATTRIBUTE);
         final Path file = this.outputDirectory.resolve(name + ".html");
-        final Serializer serializer = this.repository.getProcessor().newSerializer(file.toFile());
+        final Serializer serializer = this.processor.newSerializer(file.toFile());
         try {
             log.info("Writing report html '{}' to {}", name, file.toAbsolutePath());
             serializer.serializeNode(node);

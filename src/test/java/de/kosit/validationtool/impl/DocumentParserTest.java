@@ -28,7 +28,6 @@ import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 import net.sf.saxon.s9api.XdmNode;
@@ -45,7 +44,7 @@ public class DocumentParserTest {
 
     @Test
     public void testSimple() {
-        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(Simple.SIMPLE_VALID));
+        final Result<XdmNode, XMLSyntaxError> result = Helper.parseDocument(read(Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
         assertThat(result.getObject()).isNotNull();
         assertThat(result.getErrors()).isEmpty();
@@ -54,7 +53,7 @@ public class DocumentParserTest {
 
     @Test
     public void testIllformed() {
-        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(read(Simple.NOT_WELLFORMED));
+        final Result<XdmNode, XMLSyntaxError> result = Helper.parseDocument(read(Simple.NOT_WELLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
         assertThat(result.getObject()).isNull();
@@ -64,7 +63,7 @@ public class DocumentParserTest {
     @Test
     public void testNullInput() {
         this.exception.expect(IllegalArgumentException.class);
-        DocumentParseAction.parseDocument(null);
+        Helper.parseDocument(null);
 
     }
 

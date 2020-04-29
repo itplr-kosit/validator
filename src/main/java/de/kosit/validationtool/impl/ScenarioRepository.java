@@ -45,7 +45,6 @@ public class ScenarioRepository {
 
     public ScenarioRepository(final Configuration configuration) {
         this.configuration = configuration;
-        configuration.build();
         log.info("Loaded scenarios for {} by {} from {}. The following scenarios are available:\n\n{}", configuration.getName(),
                 configuration.getAuthor(), configuration.getDate(), summarizeScenarios());
     }

@@ -35,21 +35,19 @@ import org.w3c.dom.Document;
 
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.Helper.Simple;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.xml.RelativeUriResolver;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 import net.sf.saxon.s9api.DOMDestination;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
-import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.impl.tasks.DocumentParseAction;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
-
-import net.sf.saxon.s9api.XdmNode;
 
 
 /**
@@ -62,19 +60,19 @@ public class SaxonSecurityTest {
 
     @Test
     public void testEvilStylesheets() throws IOException {
-        final Processor p = ObjectFactory.createProcessor();
+        final Processor p = TestObjectFactory.createProcessor();
         for (int i = 1; i <= 5; i++) {
             try {
                 final URL resource = SaxonSecurityTest.class.getResource(String.format("/evil/evil%s.xsl", i));
                 final XsltCompiler compiler = p.newXsltCompiler();
-                final RelativeUriResolver resolver = new RelativeUriResolver(Simple.REPOSITORY);
+                final RelativeUriResolver resolver = new RelativeUriResolver(Simple.REPOSITORY_URI);
                 compiler.setURIResolver(resolver);
                 final XsltExecutable exetuable = compiler.compile(new StreamSource(resource.openStream()));
                 final XsltTransformer transformer = exetuable.load();
-                final Document document = ObjectFactory.createDocumentBuilder(false).newDocument();
+                final Document document = TestObjectFactory.createDocumentBuilder(false).newDocument();
                 document.createElement("root");
-                final Document result = ObjectFactory.createDocumentBuilder(false).newDocument();
-                transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
+                final Document result = TestObjectFactory.createDocumentBuilder(false).newDocument();
+                // transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
                 transformer.setURIResolver(resolver);
                 transformer.setSource(new DOMSource(document));
                 transformer.setDestination(new DOMDestination(result));
@@ -94,7 +92,7 @@ public class SaxonSecurityTest {
     @Test
     public void testXxe() {
         final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
-        final Result<XdmNode, XMLSyntaxError> result = DocumentParseAction.parseDocument(InputFactory.read(resource));
+        final Result<XdmNode, XMLSyntaxError> result = Helper.parseDocument(InputFactory.read(resource));
         assertThat(result.isValid()).isFalse();
         assertThat(result.getObject()).isNull();
         assertThat(result.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining()))

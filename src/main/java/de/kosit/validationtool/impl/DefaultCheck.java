@@ -21,8 +21,14 @@ package de.kosit.validationtool.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +41,7 @@ import de.kosit.validationtool.api.XmlError;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 import de.kosit.validationtool.impl.tasks.ComputeAcceptanceAction;
+import de.kosit.validationtool.impl.tasks.CreateDocumentIdentificationAction;
 import de.kosit.validationtool.impl.tasks.CreateReportAction;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.tasks.ScenarioSelectionAction;
@@ -57,13 +64,9 @@ import net.sf.saxon.s9api.Processor;
 public class DefaultCheck implements Check {
 
     @Getter
-    private final ScenarioRepository repository;
-
-    @Getter
-    private final ContentRepository contentRepository;
-
-    @Getter
     private final ConversionService conversionService;
+
+    private final Configuration configuration;
 
     @Getter
     private final List<CheckAction> checkSteps;
@@ -74,21 +77,19 @@ public class DefaultCheck implements Check {
      * @param configuration die Konfiguration
      */
     public DefaultCheck(final Configuration configuration) {
-        final Processor processor = ObjectFactory.createProcessor();
+        this.configuration = configuration;
+        final ContentRepository content = configuration.getContentRepository();
+        final Processor processor = content.getProcessor();
         this.conversionService = new ConversionService();
-        this.repository = new ScenarioRepository(configuration);
 
-        // TODO get rid of it
-        this.contentRepository = configuration.getContentRepository();
         this.checkSteps = new ArrayList<>();
-        this.checkSteps.add(new DocumentParseAction());
+        this.checkSteps.add(new DocumentParseAction(processor));
         this.checkSteps.add(new CreateDocumentIdentificationAction());
-        this.checkSteps.add(new ScenarioSelectionAction(this.repository));
-        this.checkSteps.add(new SchemaValidationAction());
-        this.checkSteps.add(new SchematronValidationAction(this.contentRepository, this.conversionService));
-        this.checkSteps
-                .add(new ValidateReportInputAction(this.conversionService, configuration.getContentRepository().getReportInputSchema()));
-        this.checkSteps.add(new CreateReportAction(processor, this.conversionService, this.contentRepository));
+        this.checkSteps.add(new ScenarioSelectionAction(new ScenarioRepository(configuration)));
+        this.checkSteps.add(new SchemaValidationAction(content.getResolvingConfigurationStrategy(), processor));
+        this.checkSteps.add(new SchematronValidationAction(content.getResolver(), this.conversionService));
+        this.checkSteps.add(new ValidateReportInputAction(this.conversionService, content.getReportInputSchema()));
+        this.checkSteps.add(new CreateReportAction(processor, this.conversionService, content.getResolver()));
         this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
@@ -97,9 +98,20 @@ public class DefaultCheck implements Check {
         final EngineType e = new EngineType();
         e.setName(EngineInformation.getName());
         type.setEngine(e);
-        type.setTimestamp(ObjectFactory.createTimestamp());
+        type.setTimestamp(createTimestamp());
         type.setFrameworkVersion(EngineInformation.getFrameworkVersion());
         return type;
+    }
+
+    private static XMLGregorianCalendar createTimestamp() {
+        try {
+            final GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(new Date());
+            return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+
+        } catch (final DatatypeConfigurationException e) {
+            throw new IllegalStateException("Can not create timestamp", e);
+        }
     }
 
     @Override
@@ -124,7 +136,8 @@ public class DefaultCheck implements Check {
     }
 
     private Result createResult(final Bag t) {
-        final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), new HtmlExtractor(this.contentRepository));
+        final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(),
+                new HtmlExtractor(this.configuration.getContentRepository().getProcessor()));
         result.setWellformed(t.getParserResult().isValid());
         result.setReportInput(t.getReportInput());
         if (t.getSchemaValidationResult() != null) {

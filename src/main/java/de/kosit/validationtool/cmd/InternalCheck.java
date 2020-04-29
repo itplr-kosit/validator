@@ -21,7 +21,7 @@ package de.kosit.validationtool.cmd;
 
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.DefaultCheck;
@@ -45,7 +45,7 @@ class InternalCheck extends DefaultCheck {
      *
      * @param configuration die Konfiguration
      */
-    InternalCheck(final CheckConfiguration configuration) {
+    InternalCheck(final Configuration configuration) {
         super(configuration);
     }
 

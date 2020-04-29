@@ -31,7 +31,7 @@ import org.junit.Test;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.cmd.assertions.Assertions;
 import de.kosit.validationtool.impl.Helper;
-import de.kosit.validationtool.impl.ObjectFactory;
+import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 
@@ -52,15 +52,15 @@ public class CheckAssertionActionTest {
 
     @Before
     public void setup() throws IOException {
-        commandLine = new CommandLine();
-        commandLine.activate();
+        this.commandLine = new CommandLine();
+        this.commandLine.activate();
     }
 
     @Test
     public void testEmptyInput() {
-        CheckAssertionAction a = new CheckAssertionAction(new Assertions(), ObjectFactory.createProcessor());
+        final CheckAssertionAction a = new CheckAssertionAction(new Assertions(), TestObjectFactory.createProcessor());
         a.check(new CheckAction.Bag(InputFactory.read(SAMPLE), new CreateReportInput()));
-        assertThat(commandLine.getErrorOutput()).contains("Can not find assertions for");
+        assertThat(this.commandLine.getErrorOutput()).contains("Can not find assertions for");
     }
 
     @Test
@@ -69,9 +69,9 @@ public class CheckAssertionActionTest {
         bag.setReport(Helper.load(SAMPLE_REPORT));
 
         final Assertions assertions = Helper.load(SAMPLE_ASSERTIONS, Assertions.class);
-        CheckAssertionAction a = new CheckAssertionAction(assertions, ObjectFactory.createProcessor());
+        final CheckAssertionAction a = new CheckAssertionAction(assertions, TestObjectFactory.createProcessor());
         a.check(bag);
 
-        assertThat(commandLine.getErrorOutput()).contains("Assertion mismatch");
+        assertThat(this.commandLine.getErrorOutput()).contains("Assertion mismatch");
     }
 }

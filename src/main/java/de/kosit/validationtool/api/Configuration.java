@@ -2,20 +2,19 @@ package de.kosit.validationtool.api;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import de.kosit.validationtool.config.ConfigurationBuilder;
-import de.kosit.validationtool.config.LoadConfiguration;
+import de.kosit.validationtool.config.ConfigurationLoader;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario;
 
-import net.sf.saxon.s9api.Processor;
-
 /**
- * Configuration of the actual {@link Check} instance. This is a contruct and can be used implemented by custom
+ * Configuration of the actual {@link Check} instance. This is an interface and can be implemented by custom
  * configuration classes. There are two implementations supported out of the box:
  * 
  * <ol>
- * <li>{@link LoadConfiguration} implements loading {@link Check} configurations from a scenario.xml file</li>
+ * <li>{@link ConfigurationLoader} implements loading {@link Check} configurations from a scenario.xml file</li>
  * <li>Using a builder style api {@link de.kosit.validationtool.config.ConfigurationBuilder}to configure the
  * {@link Check}</li>
  * </ol>
@@ -27,33 +26,77 @@ import net.sf.saxon.s9api.Processor;
 
 public interface Configuration {
 
+    /**
+     * Returns a list of configured scenarios.
+     * 
+     * @return the list of scenarios
+     */
     List<Scenario> getScenarios();
 
-    static LoadConfiguration load(final URI scenarioDefinition) {
+    /**
+     * Returns the configured fallback scenario to use, in case no configured scenario match.
+     * 
+     * @return the fallback scenario
+     */
+    Scenario getFallbackScenario();
+
+    /**
+     * Returns the author of this configuration.
+     * 
+     * @return the author
+     */
+    String getAuthor();
+
+    /**
+     * Returns the name of the specification
+     * 
+     * @return the name
+     */
+    String getName();
+
+    /**
+     * The creation date of the config
+     * 
+     * @return the date
+     */
+    String getDate();
+
+    Map<String, Object> getAdditionalParameters();
+
+    /**
+     * The content repository including resolving strategies.
+     * 
+     * @return the configured {@link ContentRepository}
+     */
+    ContentRepository getContentRepository();
+
+    /**
+     * Loads an XML based scenario definition from the file specified via URI.
+     * 
+     * @param scenarioDefinition the XML file with scenario definition
+     * @return the loaded configuration
+     */
+    static ConfigurationLoader load(final URI scenarioDefinition) {
         return load(scenarioDefinition, null);
     }
 
-    static LoadConfiguration load(final URI scenarioDefinition, final URI repository) {
-        final LoadConfiguration config = new LoadConfiguration(scenarioDefinition, repository);
-        config.build();
-        return config;
+    /**
+     * Loads an XML based scenario definition from the file with an specific repository / source location specified via
+     * URIs.
+     *
+     * @param scenarioDefinition the XML file with scenario definition
+     * @return the loaded configuration
+     */
+    static ConfigurationLoader load(final URI scenarioDefinition, final URI repository) {
+        return new ConfigurationLoader(scenarioDefinition, repository);
     }
 
+    /**
+     * Creates a {@link Configuration} based on a builder style API using {@link ConfigurationBuilder}
+     * 
+     * @return the Builder
+     */
     static ConfigurationBuilder create() {
         return new ConfigurationBuilder();
     }
-
-    Scenario getFallbackScenario();
-
-    void build();
-
-    String getAuthor();
-
-    String getName();
-
-    String getDate();
-
-    Processor getProcessor();
-
-    ContentRepository getContentRepository();
 }

@@ -13,12 +13,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Helper.Simple;
-import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.Scenario.Transformation;
+import de.kosit.validationtool.impl.xml.RelativeUriResolver;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 
 import net.sf.saxon.s9api.SaxonApiException;
@@ -36,8 +35,7 @@ public class SchematronValidationActionTest {
 
     @Before
     public void setup() {
-        final ContentRepository repository = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
-        this.action = new SchematronValidationAction(repository, new ConversionService());
+        this.action = new SchematronValidationAction(new RelativeUriResolver(Simple.REPOSITORY_URI), new ConversionService());
     }
 
     @Test

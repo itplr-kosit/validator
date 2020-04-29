@@ -22,7 +22,6 @@ import net.sf.saxon.s9api.XsltExecutable;
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
-
 @Setter
 @Getter
 public class Scenario {

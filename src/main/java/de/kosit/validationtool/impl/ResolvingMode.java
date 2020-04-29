@@ -1,45 +1,34 @@
 package de.kosit.validationtool.impl;
 
-import java.net.URI;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import javax.xml.transform.URIResolver;
-
-import org.apache.commons.lang3.NotImplementedException;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.impl.xml.StrictLocalResolvingStrategy;
+import de.kosit.validationtool.impl.xml.StrictRelativeResolvingStrategy;
 
 /**
  * Defines how artefacts are resolved internally.
  * 
  * @author Andreas Penski
  */
+@RequiredArgsConstructor
 public enum ResolvingMode {
 
     /**
      * Resolving using only the configured content repository. No furthing resolving allowed. This
      */
-    STRICT_RELATIVE {
+    STRICT_RELATIVE(new StrictRelativeResolvingStrategy()) {
 
-        @Override
-        public URI resolve(final URI source, final URI repository) {
-            return RelativeUriResolver.resolve(source, repository);
-        }
-
-        @Override
-        public URIResolver createResolver(final URI repository) {
-            return new RelativeUriResolver(repository);
-        }
     },
 
-    STRICT_LOCAL,
+    STRICT_LOCAL(new StrictLocalResolvingStrategy()),
 
-    JDK_SUPPORTED,
+    JDK_SUPPORTED(null),
 
-    CUSTOM;
+    CUSTOM(null);
 
-    public URI resolve(final URI source, final URI repository) {
-        throw new NotImplementedException("Not yet implemented");
-    }
+    @Getter
+    private final ResolvingConfigurationStrategy strategy;
 
-    public URIResolver createResolver(final URI repository) {
-        throw new NotImplementedException("Not yet implemented");
-    }
 }

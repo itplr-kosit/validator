@@ -24,11 +24,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -40,12 +42,16 @@ import org.xml.sax.SAXException;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.Scenario.Transformation;
+import de.kosit.validationtool.impl.xml.RelativeUriResolver;
 import de.kosit.validationtool.model.scenarios.NamespaceType;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
+import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -70,9 +76,16 @@ public class ContentRepository {
 
     private final URI repository;
 
-    private final ResolvingMode mode = ResolvingMode.STRICT_RELATIVE;
+    private final URIResolver resolver;
 
-    private Source resolve(final URL resource) {
+    @Setter
+    private SchemaFactory schemaFactory;
+
+    @Setter
+    @Getter
+    private ResolvingConfigurationStrategy resolvingConfigurationStrategy;
+
+    private static Source resolve(final URL resource) {
         try {
             return new StreamSource(resource.openStream(), resource.toURI().getRawPath());
         } catch (final IOException | URISyntaxException e) {
@@ -82,7 +95,7 @@ public class ContentRepository {
 
     private Schema createSchema(final Source[] schemaSources, final LSResourceResolver resourceResolver) {
         try {
-            final SchemaFactory sf = ObjectFactory.createSchemaFactory();
+            final SchemaFactory sf = this.schemaFactory;
             sf.setResourceResolver(resourceResolver);
             return sf.newSchema(schemaSources);
         } catch (final SAXException e) {
@@ -106,9 +119,13 @@ public class ContentRepository {
         final CollectingErrorEventHandler listener = new CollectingErrorEventHandler();
         try {
             xsltCompiler.setErrorListener(listener);
-            xsltCompiler.setURIResolver(createResolver());
+            final URIResolver resolver = getResolver();
+            if (resolver != null) {
+                // otherwise use default resolver
+                xsltCompiler.setURIResolver(resolver);
+            }
 
-            return xsltCompiler.compile(resolve(uri));
+            return xsltCompiler.compile(resolveInRepository(uri));
         } catch (final SaxonApiException e) {
             listener.getErrors().forEach(event -> event.log(log));
             throw new IllegalStateException("Can not compile xslt executable for uri " + uri, e);
@@ -128,6 +145,10 @@ public class ContentRepository {
      */
     public Schema createSchema(final URL url) {
         return createSchema(url, null);
+    }
+
+    public Schema createSchema(final URI uri) {
+        return createSchema(new Source[] { resolveInRepository(uri) });
     }
 
     public Schema createSchema(final URL url, final LSResourceResolver resourceResolver) {
@@ -150,11 +171,11 @@ public class ContentRepository {
      * @return ReportInput-Schema
      */
     public Schema getReportInputSchema() {
-        if (reportInputSchema == null) {
+        if (this.reportInputSchema == null) {
             final Source source = resolve(ContentRepository.class.getResource("/xsd/createReportInput.xsd"));
-            reportInputSchema = createSchema(new Source[] { source }, new ClassPathResourceResolver("/xsd"));
+            this.reportInputSchema = createSchema(new Source[] { source }, new ClassPathResourceResolver("/xsd"));
         }
-        return reportInputSchema;
+        return this.reportInputSchema;
     }
 
     /**
@@ -164,7 +185,7 @@ public class ContentRepository {
      * @return das Schema
      */
     public Schema createSchema(final Collection<String> uris) {
-        return createSchema(uris.stream().map(s -> resolve(URI.create(s))).toArray(Source[]::new));
+        return createSchema(uris.stream().map(s -> resolveInRepository(URI.create(s))).toArray(Source[]::new));
     }
 
     /**
@@ -182,9 +203,19 @@ public class ContentRepository {
         return schema;
     }
 
-    private Source resolve(final URI source) {
-        final URI resolved = this.mode.resolve(source, this.repository);
-        return new StreamSource(resolved.toASCIIString());
+    private Source resolveInRepository(final URI source) {
+        try {
+            if (this.resolver == null) {
+                // TODO wie wird ohne resolver das richtige Artefakt gefunden?
+                // assume local
+                final URI resolved = RelativeUriResolver.resolve(source, this.repository);
+                return new StreamSource(resolved.toASCIIString());
+            }
+            return this.resolver.resolve(source.toString(), this.repository.toString());
+        } catch (final TransformerException e) {
+            log.error("Error resolving source {}", source, e);
+            throw new IllegalStateException(String.format("Can not resolve %s in repository %s", source, this.repository), e);
+        }
     }
 
     /**
@@ -212,8 +243,8 @@ public class ContentRepository {
      * 
      * @return ein neuer Resolver
      */
-    public URIResolver createResolver() {
-        return this.mode.createResolver(this.repository);
+    public URIResolver getResolver() {
+        return this.resolver;
     }
 
     /**
@@ -223,6 +254,10 @@ public class ContentRepository {
      */
     public Transformation createReportTransformation(final ScenarioType t) {
         final ResourceType resource = t.getCreateReport().getResource();
+        return createTransformation(resource);
+    }
+
+    public Transformation createTransformation(final ResourceType resource) {
         final XsltExecutable executable = loadXsltScript(URI.create(resource.getLocation()));
         return new Transformation(executable, resource);
     }
@@ -237,5 +272,14 @@ public class ContentRepository {
         final Map<String, String> namespaces = s.getNamespace().stream()
                 .collect(Collectors.toMap(NamespaceType::getPrefix, NamespaceType::getValue));
         return createXPath(s.getAcceptMatch(), namespaces);
+    }
+
+    public List<Transformation> createSchematronTransformations(final ScenarioType s) {
+        return s.getValidateWithSchematron() != null && s.getValidateWithSchematron().isEmpty() ? Collections.emptyList()
+                : s.getValidateWithSchematron().stream().map(this::createSchematronTransformation).collect(Collectors.toList());
+    }
+
+    public Transformation createSchematronTransformation(final ValidateWithSchematron validateWithSchematron) {
+        return createTransformation(validateWithSchematron.getResource());
     }
 }
