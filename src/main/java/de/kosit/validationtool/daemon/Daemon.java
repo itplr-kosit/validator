@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.DefaultCheck;
+import de.kosit.validationtool.model.daemon.HealthType;
 
 /**
  * HTTP-Daemon für die Bereitstellung der Prüf-Funktionalität via http.
@@ -47,12 +48,14 @@ public class Daemon {
     public void startServer(final Configuration config) {
         HttpServer server = null;
         try {
+            final ConversionService healthConverter = new ConversionService();
+            healthConverter.initialize(HealthType.class.getPackage());
             final ConversionService converter = new ConversionService();
 
             server = HttpServer.create(getSocket(), 0);
             final DefaultCheck check = new DefaultCheck(config);
             server.createContext("/", new CheckHandler(check, config.getContentRepository().getProcessor()));
-            server.createContext("/server/health", new HealthHandler(config, converter));
+            server.createContext("/server/health", new HealthHandler(config, healthConverter));
             server.createContext("/server/config", new ConfigHandler(config, converter));
             server.setExecutor(createExecutor());
             server.start();
