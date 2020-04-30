@@ -1,7 +1,10 @@
 package de.kosit.validationtool.daemon;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.sun.net.httpserver.HttpServer;
@@ -13,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.DefaultCheck;
-import de.kosit.validationtool.model.daemon.HealthType;
 
 /**
  * HTTP-Daemon für die Bereitstellung der Prüf-Funktionalität via http.
@@ -24,6 +26,12 @@ import de.kosit.validationtool.model.daemon.HealthType;
 @Setter
 @Slf4j
 public class Daemon {
+
+    private static final String DEFAULT_HOST = "localhost";
+
+    private static final int DEFAULT_PORT = 8080;
+
+    private static final int DEFAULT_THREAD_COUNT = Runtime.getRuntime().availableProcessors();
 
     private final String hostName;
 
@@ -40,18 +48,25 @@ public class Daemon {
         HttpServer server = null;
         try {
             final ConversionService converter = new ConversionService();
-            converter.initialize(HealthType.class.getPackage());
 
-            server = HttpServer.create(new InetSocketAddress(this.hostName, this.port), 0);
+            server = HttpServer.create(getSocket(), 0);
             final DefaultCheck check = new DefaultCheck(config);
             server.createContext("/", new CheckHandler(check, config.getContentRepository().getProcessor()));
             server.createContext("/server/health", new HealthHandler(config, converter));
-            server.createContext("/server/config", new ConfigHandler(config, new ConversionService()));
-            server.setExecutor(Executors.newFixedThreadPool(this.threadCount));
+            server.createContext("/server/config", new ConfigHandler(config, converter));
+            server.setExecutor(createExecutor());
             server.start();
-            log.info("Server unter Port {} ist erfolgreich gestartet", this.port);
+            log.info("Server {} started", server.getAddress());
         } catch (final IOException e) {
-            log.error("Fehler beim HttpServer erstellen: {}", e.getMessage(), e);
+            log.error("Error starting HttpServer for Valdidator: {}", e.getMessage(), e);
         }
+    }
+
+    private ExecutorService createExecutor() {
+        return Executors.newFixedThreadPool(this.threadCount > 0 ? this.threadCount : DEFAULT_THREAD_COUNT);
+    }
+
+    private InetSocketAddress getSocket() {
+        return new InetSocketAddress(defaultIfBlank(this.hostName, DEFAULT_HOST), this.port > 0 ? this.port : DEFAULT_PORT);
     }
 }

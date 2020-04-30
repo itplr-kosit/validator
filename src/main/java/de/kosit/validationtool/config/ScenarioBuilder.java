@@ -39,6 +39,7 @@ import net.sf.saxon.s9api.XPathExecutable;
  */
 @RequiredArgsConstructor
 @Slf4j
+@Getter(AccessLevel.PACKAGE)
 public class ScenarioBuilder implements Builder<Scenario> {
 
     private static int nameCount = 0;
@@ -51,8 +52,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     private final XPathBuilder acceptConfig = new XPathBuilder("accept");
 
-    @Getter(AccessLevel.PACKAGE)
-    private final String name;
+    private String name;
 
     private SchemaBuilder schemaBuilder;
 
@@ -273,4 +273,8 @@ public class ScenarioBuilder implements Builder<Scenario> {
         return type;
     }
 
+    public ScenarioBuilder name(final String name) {
+        this.name = name;
+        return this;
+    }
 }

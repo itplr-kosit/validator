@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -32,7 +33,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 @Slf4j
 class XPathBuilder implements Builder<XPathExecutable> {
 
-    private static final String[] IGNORED_PREFIXES = new String[] { "xsd" };
+    private static final String[] IGNORED_PREFIXES = new String[] { "xsd", "saxon", "xsl", "xs" };
 
     private final String name;
 
@@ -66,10 +67,9 @@ class XPathBuilder implements Builder<XPathExecutable> {
         try {
             if (this.executable == null) {
                 this.executable = repository.createXPath(this.xpath, this.namespaces);
-
             } else {
                 this.xpath = extractExpression();
-                this.namespaces = extractNamespaces();
+                extractNamespaces();
             }
         } catch (final IllegalStateException e) {
             final String msg = String.format("Error creating %s xpath", this.name, e);
@@ -80,16 +80,21 @@ class XPathBuilder implements Builder<XPathExecutable> {
         return new Result<>(this.executable);
     }
 
-    private Map<String, String> extractNamespaces() {
+    private void extractNamespaces() {
+        if (this.namespaces == null) {
+            this.namespaces = new HashMap<>();
+        }
         final Map<String, String> ns = new HashMap<>();
         final Iterator<String> iterator = this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext()
                 .iteratePrefixes();
         final Iterable<String> iterable = () -> iterator;
-        StreamSupport.stream(iterable.spliterator(), false).filter(e -> !ArrayUtils.contains(IGNORED_PREFIXES, e)).forEach(e -> {
-            ns.put(e,
-                    this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext().getURIForPrefix(e, false));
-        });
-        return ns;
+        StreamSupport.stream(iterable.spliterator(), false).filter(e -> !ArrayUtils.contains(IGNORED_PREFIXES, e))
+                .filter(StringUtils::isNotBlank).forEach(e -> {
+                    ns.put(e, this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext()
+                            .getURIForPrefix(e, false));
+                });
+        this.namespaces.putAll(ns);
+
     }
 
     private String extractExpression() {

@@ -186,7 +186,16 @@ public class ConfigurationBuilder {
      * @return the scenario configuration builder
      */
     public static ScenarioBuilder scenario(final String name) {
-        return new ScenarioBuilder(name);
+        return new ScenarioBuilder().name(name);
+    }
+
+    /**
+     * Create a new scenario configuration.
+     *
+     * @return the scenario configuration builder
+     */
+    public static ScenarioBuilder scenario() {
+        return scenario(null);
     }
 
     /**
