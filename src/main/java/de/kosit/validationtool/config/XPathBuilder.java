@@ -1,5 +1,7 @@
 package de.kosit.validationtool.config;
 
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +13,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.model.Result;
@@ -23,10 +27,14 @@ import net.sf.saxon.s9api.XPathExecutable;
  * 
  * @author Andreas Penski
  */
+@RequiredArgsConstructor
 @Data
+@Slf4j
 class XPathBuilder implements Builder<XPathExecutable> {
 
     private static final String[] IGNORED_PREFIXES = new String[] { "xsd" };
+
+    private final String name;
 
     private String xpath;
 
@@ -44,19 +52,30 @@ class XPathBuilder implements Builder<XPathExecutable> {
     public String getXPath() {
         return this.xpath == null && this.executable != null ? this.executable.getUnderlyingExpression().getInternalExpression().toString()
                 : this.xpath;
+    }
 
+    public boolean isAvailable() {
+        return this.executable != null || isNotEmpty(this.xpath);
     }
 
     @Override
     public Result<XPathExecutable, String> build(final ContentRepository repository) {
-        if (this.executable == null && this.xpath == null) {
-            return createError("No configuration for xpath expression found");
+        if (!isAvailable()) {
+            return createError(String.format("No configuration for %s xpath  expression found", this.name));
         }
-        if (this.executable == null) {
-            this.executable = repository.createXPath(this.xpath, this.namespaces);
-        } else {
-            this.xpath = extractExpression();
-            this.namespaces = extractNamespaces();
+        try {
+            if (this.executable == null) {
+                this.executable = repository.createXPath(this.xpath, this.namespaces);
+
+            } else {
+                this.xpath = extractExpression();
+                this.namespaces = extractNamespaces();
+            }
+        } catch (final IllegalStateException e) {
+            final String msg = String.format("Error creating %s xpath", this.name, e);
+            log.error(msg, e);
+            return new Result<>(Collections.singletonList(msg));
+
         }
         return new Result<>(this.executable);
     }

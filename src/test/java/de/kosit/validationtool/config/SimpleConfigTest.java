@@ -25,25 +25,26 @@ public class SimpleConfigTest {
     @Test
     public void testSimpleWithApi() {
         //@formatter:off
-        final Configuration config = 
-                Configuration.create().name("Simple-API")
-                     .with(scenario("simple")
-                                .validate(schema("Sample Schema").schemaLocation(URI.create("simple.xsd")))
-                           .with(report("Report für eRechnung").source("report.xsl"))
-                           .acceptWith("count(//test:rejected) = 0")
-                           .declareNamespace("cri", "http://www.xoev.de/de/validator/framework/1/createreportinput")
-                           .declareNamespace("rpt", "http://validator.kosit.de/test-report")
-                           .declareNamespace("test", "http://validator.kosit.de/test-sample")
-                           .match("/test:simple")
-//                           .description("awesome api")
-                           )
-                     .with(fallback().name("default").source("report.xsl"))
-                             
-                     .resolvingMode(ResolvingMode.STRICT_RELATIVE)
-                     .useRepository(Simple.REPOSITORY_URI).build();
+        final Configuration config = createSimpleConfiguration().build();
         //@formatter:on
         final DefaultCheck check = new DefaultCheck(config);
         final Result result = check.checkInput(InputFactory.read(Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
+    }
+
+    static ConfigurationBuilder createSimpleConfiguration() {
+        return Configuration.create().name("Simple-API").with(createScenarioConfiguration()
+        // .description("awesome api")
+        ).with(fallback().name("default").source("report.xsl"))
+
+                .resolvingMode(ResolvingMode.STRICT_RELATIVE).useRepository(Simple.REPOSITORY_URI);
+    }
+
+    static ScenarioBuilder createScenarioConfiguration() {
+        return scenario("simple").validate(schema("Sample Schema").schemaLocation(URI.create("simple.xsd")))
+                .with(report("Report für eRechnung").source("report.xsl")).acceptWith("count(//test:rejected) = 0")
+                .declareNamespace("cri", "http://www.xoev.de/de/validator/framework/1/createreportinput")
+                .declareNamespace("rpt", "http://validator.kosit.de/test-report")
+                .declareNamespace("test", "http://validator.kosit.de/test-sample").match("/test:simple");
     }
 }

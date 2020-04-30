@@ -37,7 +37,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
     @Override
     public Result<Pair<ValidateWithXmlSchema, Schema>, String> build(final ContentRepository repository) {
         if (this.schema == null && this.schemaLocation == null) {
-            return createError("Must supply schema location and/or schema");
+            return createError(String.format("Must supply source location and/or executable for schema '%s'", this.name));
         }
         Result<Pair<ValidateWithXmlSchema, Schema>, String> result;
         try {

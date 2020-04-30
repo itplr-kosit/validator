@@ -16,6 +16,8 @@ import javax.xml.validation.Schema;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Configuration;
@@ -37,6 +39,7 @@ import net.sf.saxon.s9api.Processor;
  * @author Andreas Penski
  */
 @Slf4j
+@Getter(AccessLevel.PACKAGE)
 public class ConfigurationBuilder {
 
     private final List<ScenarioBuilder> scenarios = new ArrayList<>();
@@ -66,18 +69,33 @@ public class ConfigurationBuilder {
         return this;
     }
 
-    public ConfigurationBuilder date(final LocalDate localDate) {
-        this.date = localDate.toString();
-        return this;
-    }
 
     public ConfigurationBuilder name(final String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Sets the date for this configuration.
+     * 
+     * @param date the date
+     * @return this
+     */
+    public ConfigurationBuilder date(final LocalDate date) {
+        if (date != null) {
+            this.date = date.toString();
+        }
+        return this;
+    }
+
+    /**
+     * Sets the date for this configuration.
+     * 
+     * @param date the date
+     * @return this
+     */
     public ConfigurationBuilder date(final Date date) {
-        return date(LocalDate.ofEpochDay(date.getTime()));
+        return date(date != null ? LocalDate.ofEpochDay(date.getTime()) : null);
     }
 
     public ConfigurationBuilder with(final ScenarioBuilder scenarioBuilder) {

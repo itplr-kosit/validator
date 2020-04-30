@@ -16,6 +16,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario;
@@ -37,6 +38,7 @@ import net.sf.saxon.s9api.XPathExecutable;
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
+@Slf4j
 public class ScenarioBuilder implements Builder<Scenario> {
 
     private static int nameCount = 0;
@@ -45,9 +47,9 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     private final Map<String, String> namespaces = new HashMap<>();
 
-    private final XPathBuilder matchConfig = new XPathBuilder();
+    private final XPathBuilder matchConfig = new XPathBuilder("match");
 
-    private final XPathBuilder acceptConfig = new XPathBuilder();
+    private final XPathBuilder acceptConfig = new XPathBuilder("accept");
 
     @Getter(AccessLevel.PACKAGE)
     private final String name;
@@ -207,13 +209,17 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     private void buildAccept(final ContentRepository repository, final List<String> errors, final Scenario scenario) {
         this.acceptConfig.setNamespaces(this.namespaces);
-        final Result<XPathExecutable, String> result = this.acceptConfig.build(repository);
-        if (result.isValid()) {
-            scenario.setAcceptExecutable(result.getObject());
-            scenario.getConfiguration().setAcceptMatch(this.acceptConfig.getXPath());
-            this.namespaces.putAll(this.acceptConfig.getNamespaces());
+        if (this.acceptConfig.isAvailable()) {
+            final Result<XPathExecutable, String> result = this.acceptConfig.build(repository);
+            if (result.isValid()) {
+                scenario.setAcceptExecutable(result.getObject());
+                scenario.getConfiguration().setAcceptMatch(this.acceptConfig.getXPath());
+                this.namespaces.putAll(this.acceptConfig.getNamespaces());
+            } else {
+                errors.addAll(result.getErrors());
+            }
         } else {
-            errors.addAll(result.getErrors());
+            log.debug("No accept configuration available");
         }
     }
 

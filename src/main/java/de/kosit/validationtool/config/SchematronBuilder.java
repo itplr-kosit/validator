@@ -38,7 +38,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     @Override
     public Result<Pair<ValidateWithSchematron, Transformation>, String> build(final ContentRepository repository) {
         if (this.executable == null && this.source == null) {
-            return createError("Must supply source location and/or executable");
+            return createError(String.format("Must supply source location and/or executable for schematron '%s'", this.name));
         }
         final ValidateWithSchematron object = createObject();
         Result<Pair<ValidateWithSchematron, Transformation>, String> result;
