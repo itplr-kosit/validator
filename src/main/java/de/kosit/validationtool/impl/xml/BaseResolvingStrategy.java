@@ -6,8 +6,7 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,7 +60,7 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
     private void setProperty(final PropertySetter setter, final boolean lenient, final String errorMessage) {
         try {
             setter.apply();
-        } catch (final SAXNotRecognizedException | SAXNotSupportedException e) {
+        } catch (final SAXException e) {
 
             if (lenient) {
                 log.warn(errorMessage);
@@ -117,6 +116,6 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
     @FunctionalInterface
     private interface PropertySetter {
 
-        void apply() throws SAXNotRecognizedException, SAXNotSupportedException;
+        void apply() throws SAXException;
     }
 }
