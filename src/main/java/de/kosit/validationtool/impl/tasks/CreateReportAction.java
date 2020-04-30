@@ -72,6 +72,10 @@ public class CreateReportAction implements CheckAction {
      */
     private static class ReaderWrapper implements XMLReader {
 
+        private static final String SAX_FEATURES_NAMESPACE_PREFIXES = "http://xml.org/sax/features/namespace-prefixes";
+
+        private static final String SAX_FEATURES_NAMESPACES = "http://xml.org/sax/features/namespaces";
+
         private final XMLReader delegate;
 
         public ReaderWrapper(final XMLReader xmlReader) {
@@ -80,9 +84,9 @@ public class CreateReportAction implements CheckAction {
 
         @Override
         public boolean getFeature(final String name) throws SAXNotRecognizedException, SAXNotSupportedException {
-            if (name.equals("http://xml.org/sax/features/namespaces")) {
+            if (SAX_FEATURES_NAMESPACES.equals(name)) {
                 return true;
-            } else if (name.equals("http://xml.org/sax/features/namespace-prefixes")) {
+            } else if (SAX_FEATURES_NAMESPACE_PREFIXES.equals(name)) {
                 return false;
             }
             // just return false on unknown properties
@@ -92,10 +96,10 @@ public class CreateReportAction implements CheckAction {
         @Override
         public void setFeature(final String name, final boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
             // this inverts the logic from JaxbSource pseude parser
-            if (name.equals("http://xml.org/sax/features/namespaces") && !value) {
+            if (name.equals(SAX_FEATURES_NAMESPACES) && !value) {
                 throw new SAXNotRecognizedException(name);
             }
-            if (name.equals("http://xml.org/sax/features/namespace-prefixes") && value) {
+            if (name.equals(SAX_FEATURES_NAMESPACE_PREFIXES) && value) {
                 throw new SAXNotRecognizedException(name);
             }
         }

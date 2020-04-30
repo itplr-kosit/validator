@@ -1,6 +1,6 @@
 package de.kosit.validationtool.config;
 
-import static de.kosit.validationtool.config.SimpleConfigTest.createScenarioConfiguration;
+import static de.kosit.validationtool.config.TestScenarioFactory.createScenario;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
@@ -33,14 +33,14 @@ public class ScenarioBuilderTest {
 
     @Test
     public void simpleValid() {
-        final Result<Scenario, String> result = createScenarioConfiguration().build(Simple.createContentRepository());
+        final Result<Scenario, String> result = createScenario().build(Simple.createContentRepository());
         assertThat(result.isValid()).isTrue();
         assertThat(result.getObject().getConfiguration()).isNotNull();
     }
 
     @Test
     public void testNoSchema() {
-        final ScenarioBuilder builder = createScenarioConfiguration();
+        final ScenarioBuilder builder = createScenario();
         builder.validate((SchemaBuilder) null);
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isFalse();
@@ -49,7 +49,7 @@ public class ScenarioBuilderTest {
 
     @Test
     public void testNoMatch() {
-        final ScenarioBuilder builder = createScenarioConfiguration();
+        final ScenarioBuilder builder = createScenario();
         builder.match((String) null);
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isFalse();
@@ -58,7 +58,7 @@ public class ScenarioBuilderTest {
 
     @Test
     public void testInvalidMatch() {
-        final ScenarioBuilder builder = createScenarioConfiguration();
+        final ScenarioBuilder builder = createScenario();
         builder.match("/////");
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isFalse();
@@ -67,7 +67,7 @@ public class ScenarioBuilderTest {
 
     @Test
     public void testNoAccept() {
-        final ScenarioBuilder builder = createScenarioConfiguration();
+        final ScenarioBuilder builder = createScenario();
         builder.acceptWith((String) null);
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isTrue();
@@ -75,7 +75,7 @@ public class ScenarioBuilderTest {
 
     @Test
     public void testInvalidAccept() {
-        final ScenarioBuilder builder = createScenarioConfiguration();
+        final ScenarioBuilder builder = createScenario();
         builder.acceptWith("/////");
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isFalse();
@@ -93,7 +93,7 @@ public class ScenarioBuilderTest {
         ns2.put("n2", "http://n2.org");
         final XPathExecutable accept = repository.createXPath("//n2:*", ns2);
 
-        final ScenarioBuilder builder = createScenarioConfiguration();
+        final ScenarioBuilder builder = createScenario();
         builder.getNamespaces().clear();
 
         builder.match(match).acceptWith(accept).declareNamespace("n3", "http://n3.org");
@@ -111,7 +111,7 @@ public class ScenarioBuilderTest {
         final ContentRepository repository = Simple.createContentRepository();
         final XPathExecutable match = repository.createXPath("//*", null);
         final XPathExecutable accept = repository.createXPath("//*", null);
-        final ScenarioBuilder builder = createScenarioConfiguration();
+        final ScenarioBuilder builder = createScenario();
         builder.getNamespaces().clear();
 
         builder.match(match);
@@ -128,7 +128,7 @@ public class ScenarioBuilderTest {
     public void testBasicAttributes() {
         final ContentRepository repository = Simple.createContentRepository();
         final String random = RandomStringUtils.random(5);
-        final ScenarioBuilder builder = createScenarioConfiguration();
+        final ScenarioBuilder builder = createScenario();
         builder.name(random).description(random);
         final Result<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();
@@ -141,7 +141,7 @@ public class ScenarioBuilderTest {
     @Test
     public void testNoBasicAttributes() {
         final ContentRepository repository = Simple.createContentRepository();
-        final ScenarioBuilder builder = createScenarioConfiguration();
+        final ScenarioBuilder builder = createScenario();
         builder.name(null);
         final Result<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();

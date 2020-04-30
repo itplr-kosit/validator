@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package de.kosit.validationtool.impl;
+package de.kosit.validationtool.impl.tasks;
 
 import static de.kosit.validationtool.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,9 +27,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 import net.sf.saxon.s9api.XdmNode;

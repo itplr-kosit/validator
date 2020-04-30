@@ -82,6 +82,7 @@ public class Helper {
             return new ContentRepository(strategy, Simple.REPOSITORY_URI);
         }
 
+
         public static URI getSchemaLocation() {
             return ROOT.resolve("repository/simple.xsd");
         }
