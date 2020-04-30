@@ -1,7 +1,6 @@
 package de.kosit.validationtool.impl.xml;
 
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +14,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.XPathContext;
@@ -98,12 +98,9 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
         return processor;
     }
 
+    @SneakyThrows
     private static String encode(final String input) {
-        try {
-            return URLEncoder.encode(input, StandardCharsets.UTF_8.name());
-        } catch (final UnsupportedEncodingException e) {
-            throw new IllegalStateException("Error encoding property while initializing saxon", e);
-        }
+        return URLEncoder.encode(input, StandardCharsets.UTF_8.name());
     }
 
     @Override

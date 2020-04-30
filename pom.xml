@@ -146,6 +146,26 @@
 
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>reserve-network-port</id>
+                        <goals>
+                            <goal>reserve-network-port</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <portNames>
+                                <portName>validator.server.port</portName>
+                                <portName>jacoco.tcp.port</portName>
+                            </portNames>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M2</version>
@@ -319,6 +339,7 @@
                     </execution>
                     <execution>
                         <id>prepareJacocoFailsafeArgLine</id>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
@@ -326,7 +347,7 @@
                             <propertyName>jacocoFailsafe</propertyName>
                             <output>tcpserver</output>
                             <address>localhost</address>
-                            <port>8081</port>
+                            <port>${jacoco.tcp.port}</port>
                         </configuration>
                     </execution>
                     <execution>
@@ -338,7 +359,7 @@
                         </goals>
                             <configuration>
                                 <address>localhost</address>
-                                <port>8081</port>
+                                <port>${jacoco.tcp.port}</port>
                                 <append>true</append>
                             </configuration>
                     </execution>
@@ -411,6 +432,8 @@
                         <argument>${project.build.testOutputDirectory}/examples/simple/scenarios.xml</argument>
                         <argument>-r</argument>
                         <argument>${project.build.testOutputDirectory}/examples/simple/repository</argument>
+                        <argument>--port</argument>
+                        <argument>${validator.server.port}</argument>
                         <argument>-D</argument>
 
                     </arguments>
@@ -425,6 +448,7 @@
                     <target>
                         <!-- schlafen um den Start des Daemon abzuwarten -->
                         <sleep seconds="5" />
+                        <echo>${jacoco.tcp.port}</echo>
                     </target>
                 </configuration>
                 <executions>
@@ -448,6 +472,10 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
+                        <configuration>
+                        <!--suppress MavenModelInspection -->
+                        <argLine>-Dfile.encoding=UTF-8 -Ddaemon.port=${validator.server.port}</argLine>
+                        </configuration>
 
                     </execution>
                 </executions>

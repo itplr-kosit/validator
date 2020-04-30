@@ -1,4 +1,4 @@
-package de.kosit.validationtool.cmd;
+package de.kosit.validationtool.daemon;
 
 import static io.restassured.RestAssured.given;
 
@@ -6,13 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import de.kosit.validationtool.impl.Helper.Simple;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 /**
@@ -20,24 +18,13 @@ import io.restassured.http.ContentType;
  *
  * @author Roula Antoun
  */
-public class DaemonIT {
+public class CheckHandlerIT extends BaseIT {
 
 
     private static final String APPLICATION_XML = "application/xml";
 
 
-    @Before
-    public void setup() {
-        final String port = System.getProperty("daemon.port");
-        if (port != null) {
-            RestAssured.port = Integer.valueOf(port);
-        }
-        final String baseHost = System.getProperty("daemon.host");
-        if (baseHost != null) {
-            RestAssured.baseURI = baseHost;
-        }
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
+
 
     @Test
     public void makeSureThatSuccessTest() throws IOException {

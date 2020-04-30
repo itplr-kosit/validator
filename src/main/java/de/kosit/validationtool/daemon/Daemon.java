@@ -6,7 +6,6 @@ import java.util.concurrent.Executors;
 
 import com.sun.net.httpserver.HttpServer;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import de.kosit.validationtool.model.daemon.HealthType;
  */
 @RequiredArgsConstructor
 @Setter
-@Getter
 @Slf4j
 public class Daemon {
 
