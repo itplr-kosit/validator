@@ -58,7 +58,7 @@ public class RelativeUriResolverTest {
     private URIResolver resolver = new RelativeUriResolver(BASE);
 
     @Test
-    public void testSucces() throws TransformerException {
+    public void testSuccess() throws TransformerException {
         final Source resource = this.resolver.resolve("ubl-0001.xml", BASE.toASCIIString());
         assertThat(resource).isNotNull();
     }

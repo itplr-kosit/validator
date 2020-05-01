@@ -77,6 +77,8 @@ public class Helper {
 
         public static final URI REPORT_XSL = REPOSITORY_URI.resolve("report.xsl");
 
+        public static final URI SCHEMA = REPOSITORY_URI.resolve("simple.xsd");
+
         public static final ContentRepository createContentRepository() {
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
             return new ContentRepository(strategy, Simple.REPOSITORY_URI);
@@ -84,7 +86,7 @@ public class Helper {
 
 
         public static URI getSchemaLocation() {
-            return ROOT.resolve("repository/simple.xsd");
+            return SCHEMA;
         }
     }
 

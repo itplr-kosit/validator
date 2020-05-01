@@ -51,6 +51,7 @@ public class CommandlineApplicationTest {
 
     private final Path output = Paths.get("target/test-output");
 
+
     @Before
     public void setup() throws IOException {
         this.commandLine = new CommandLine();
@@ -203,4 +204,12 @@ public class CommandlineApplicationTest {
         assertThat(this.commandLine.getErrorOutput()).contains("at de.kosit.validationtool");
     }
 
+    @Test
+    public void testPrintMemoryStats() {
+        final String[] args = new String[] { "-m", "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
+        CommandLineApplication.mainProgram(args);
+        assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(this.commandLine.getErrorOutput()).contains("total");
+    }
 }

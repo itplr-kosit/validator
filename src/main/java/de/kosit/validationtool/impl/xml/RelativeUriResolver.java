@@ -81,7 +81,14 @@ public class RelativeUriResolver implements URIResolver {
     }
 
     private boolean isUnderBaseUri(final URI resolved) {
-        final String base = this.baseUri.toASCIIString().replaceAll("file:/+", "");
+        return isUnderBaseUri(resolved, this.baseUri);
+    }
+
+    private static boolean isUnderBaseUri(final URI resolved, final URI baseUri) {
+        if (resolved == null || baseUri == null) {
+            return false;
+        }
+        final String base = baseUri.toASCIIString().replaceAll("file:/+", "");
         final String r = resolved.toASCIIString().replaceAll("file:/+", "");
         return r.startsWith(base);
     }
