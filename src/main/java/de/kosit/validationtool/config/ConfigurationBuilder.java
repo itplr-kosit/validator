@@ -64,11 +64,16 @@ public class ConfigurationBuilder {
 
     private String description;
 
+    /**
+     * Add a specific author name to this configuration.
+     * 
+     * @param authorName the name of the author
+     * @return this
+     */
     public ConfigurationBuilder author(final String authorName) {
         this.author = authorName;
         return this;
     }
-
 
     public ConfigurationBuilder name(final String name) {
         this.name = name;
@@ -135,6 +140,12 @@ public class ConfigurationBuilder {
         throw new NotImplementedException("Not yet defined");
     }
 
+    /**
+     * Create a named schematron configuration.
+     * 
+     * @param name the name of the schematron configuration
+     * @return new {@link SchemaBuilder}
+     */
     public static SchematronBuilder schematron(final String name) {
         return new SchematronBuilder().name(name);
     }

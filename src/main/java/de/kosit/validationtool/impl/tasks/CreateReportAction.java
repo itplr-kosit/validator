@@ -28,6 +28,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.URIResolver;
 
+import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
@@ -64,6 +65,7 @@ import net.sf.saxon.s9api.XsltTransformer;
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
+@Slf4j
 public class CreateReportAction implements CheckAction {
 
     /**
@@ -206,7 +208,8 @@ public class CreateReportAction implements CheckAction {
             results.setReport(destination.getXdmNode());
 
         } catch (final SaxonApiException | SAXException | JAXBException e) {
-            throw new IllegalStateException("Can not create final report", e);
+            log.error("Error creating final report", e);
+            results.stopProcessing("Can not create final report: " + e.getMessage());
         }
     }
 

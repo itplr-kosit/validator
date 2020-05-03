@@ -60,7 +60,7 @@ public class ComputeAcceptanceAction implements CheckAction {
         } catch (final SaxonApiException e) {
             final String msg = String.format("Error evaluating accept recommendation: %s", selector.getUnderlyingXPathContext().toString());
             log.error(msg, e);
-            results.addProcessingError(msg);
+            results.stopProcessing(msg);
         }
     }
 

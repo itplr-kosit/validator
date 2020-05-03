@@ -38,8 +38,6 @@ public class CreateReportActionTest {
 
     private ContentRepository repository;
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setup() {
@@ -72,15 +70,15 @@ public class CreateReportActionTest {
 
     @Test
     public void testExecutionException() throws SaxonApiException {
-        this.expectedException.expect(IllegalStateException.class);
-        this.expectedException.expectMessage(Matchers.containsString("Can not create final report"));
         final Processor p = mock(Processor.class);
         final DocumentBuilder documentBuilder = mock(DocumentBuilder.class);
         this.action = new CreateReportAction(p, new ConversionService(), null);
 
         when(p.newDocumentBuilder()).thenReturn(documentBuilder);
         when(documentBuilder.build(any(Source.class))).thenThrow(new SaxonApiException("mocked"));
-        this.action.check(TestBagBuilder.createBag(InputFactory.read(Simple.SIMPLE_VALID), true));
+        final Bag bag = TestBagBuilder.createBag(InputFactory.read(Simple.SIMPLE_VALID), true);
+        this.action.check(bag);
+        assertThat(bag.isStopped()).isTrue();
 
     }
 }

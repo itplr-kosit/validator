@@ -13,6 +13,8 @@ import de.kosit.validationtool.model.scenarios.CreateReportType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 /**
+ * Create a fallback {@link Scenario} configuration.
+ * 
  * @author Andreas Penski
  */
 public class FallbackBuilder implements Builder<Scenario> {

@@ -10,12 +10,15 @@ import javax.xml.validation.Validator;
 import net.sf.saxon.s9api.Processor;
 
 /**
- * Centralized construction and configuration of XML related infrastructore components. The KoSIT Validator provides out
- * of the box implementaions with various security levels.
+ * Centralized construction and configuration of XML related infrastructure components. This interface allows to use
+ * custom implementations and configurations of internal xml related factories and objects.
+ * 
+ * The KoSIT Validator provides out of the box implementations with various security levels based on openjdk SAX stack.
  * 
  * If you decide to implement a custom strategy, please be aware of XML security within your stack. The validator
  * components beyond this strategy asume secured implementation of the interfaces provided by this strategy. There is no
- * effort to mitigate or prevent xml related security issues such as XXE, loading external sources etc.
+ * effort to mitigate or prevent xml related security issues such as XXE, loading external sources etc. Your would be
+ * responsible for this!
  * 
  * @see de.kosit.validationtool.impl.ResolvingMode
  * @author Andreas Penski
@@ -35,12 +38,14 @@ public interface ResolvingConfigurationStrategy {
      * leverages the saxon s9api for internal processing e.g. xml reading and writing. So this is the main object to secure
      * for reading, transforming and writing xml files.
      * 
+     * Note: you need exactly one instance for all validator related processing.
+     * 
      * @return a preconfigured {@link Processor}
      */
     Processor getProcessor();
 
     /**
-     * Creates a specific implementation for resolving referenced objects in XML files. The URIResolver, it is used for
+     * Creates a specific implementation for resolving referenced objects in XML files. The URIResolver is used for
      * dereferencing an absolute URI (after resolution) to return a {@link javax.xml.transform.Source}. It <b>can</b> be
      * used for resolving relative URIs against a base URI or restrict access to certain URIs.
      * <p>
@@ -48,6 +53,7 @@ public interface ResolvingConfigurationStrategy {
      * <code>xsl:import-schema</code> declarations.
      * </p>
      * 
+     * @param scenarioRepository an optional repository, your implementation might not need this
      * @return a preconfigured {@link URIResolver}
      */
     URIResolver createResolver(URI scenarioRepository);

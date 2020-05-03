@@ -72,7 +72,7 @@ class XPathBuilder implements Builder<XPathExecutable> {
                 extractNamespaces();
             }
         } catch (final IllegalStateException e) {
-            final String msg = String.format("Error creating %s xpath", this.name, e);
+            final String msg = String.format("Error creating %s xpath: %s", this.name, e.getMessage());
             log.error(msg, e);
             return new Result<>(Collections.singletonList(msg));
 

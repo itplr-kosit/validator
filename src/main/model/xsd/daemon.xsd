@@ -16,7 +16,6 @@
     <complexType name="HealthType">
         <sequence>
             <element name="status">
-
                 <simpleType>
                     <restriction base="string">
                         <enumeration value="UP"></enumeration>

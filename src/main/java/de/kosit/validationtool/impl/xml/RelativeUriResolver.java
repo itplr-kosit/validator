@@ -94,16 +94,5 @@ public class RelativeUriResolver implements URIResolver {
     }
 
 
-    public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
-        if (isUnderBaseUri(absoluteURI)) {
-            try {
-                return new InputStreamReader(absoluteURI.toURL().openStream(), encoding);
-            } catch (final IOException e) {
-                throw new IllegalStateException(String.format("Can not resolve required  %s", absoluteURI), e);
-            }
-        } else {
-            throw new IllegalStateException(String.format(
-                    "The resolved transformation artifact %s is not within the configured repository %s", absoluteURI, this.baseUri));
-        }
-    }
+
 }

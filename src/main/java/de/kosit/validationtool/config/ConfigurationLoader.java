@@ -175,11 +175,27 @@ public class ConfigurationLoader {
         return s;
     }
 
+    /**
+     * Sets actual {@link ResolvingMode}, when the validator needs to resolve stuff on startup.
+     * @param mode the resolving mode
+     * @return this
+     */
     public ConfigurationLoader setResolvingMode(final ResolvingMode mode) {
         this.resolvingMode = mode;
         return this;
     }
 
+    public ConfigurationLoader setResolvingStrategy(final ResolvingConfigurationStrategy strategy){
+        this.resolvingConfigurationStrategy = strategy;
+        return this;
+    }
+
+    /**
+     * Add a parameter to the configuration.
+     * @param name the name of the parameter
+     * @param value the parameter value object
+     * @return this
+     */
     public ConfigurationLoader addParameter(final String name, final Object value) {
         this.parameters.put(name, value);
         return this;
