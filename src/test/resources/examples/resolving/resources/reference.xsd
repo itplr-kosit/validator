@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/reference" elementFormDefault="qualified">
+
+    <complexType name="ReferenzTyp">
+        <sequence>
+            <element name="some" type="string"></element>
+        </sequence>
+    </complexType>
+</schema>

@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
  * 
  * @author Andreas Penski
  */
-public class BaseResolverTest {
+public class BaseResolverConfigurationTest {
 
     @RequiredArgsConstructor
     private class TestResolvingStrategy extends StrictRelativeResolvingStrategy {

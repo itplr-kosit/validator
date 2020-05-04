@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package de.kosit.validationtool.impl;
+package de.kosit.validationtool.impl.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -35,9 +35,10 @@ import org.junit.Test;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
+import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.impl.xml.RelativeUriResolver;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
