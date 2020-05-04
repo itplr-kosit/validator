@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +41,14 @@ class XPathBuilder implements Builder<XPathExecutable> {
     private XPathExecutable executable;
 
     @Setter(AccessLevel.PACKAGE)
-    @Getter(AccessLevel.PACKAGE)
     private Map<String, String> namespaces;
+
+    Map<String, String> getNamespaces() {
+        if (this.namespaces == null) {
+            this.namespaces = new HashMap<>();
+        }
+        return this.namespaces;
+    }
 
     /**
      * Returns the xpath expression.
@@ -66,7 +71,7 @@ class XPathBuilder implements Builder<XPathExecutable> {
         }
         try {
             if (this.executable == null) {
-                this.executable = repository.createXPath(this.xpath, this.namespaces);
+                this.executable = repository.createXPath(this.xpath, getNamespaces());
             } else {
                 this.xpath = extractExpression();
                 extractNamespaces();
@@ -81,19 +86,15 @@ class XPathBuilder implements Builder<XPathExecutable> {
     }
 
     private void extractNamespaces() {
-        if (this.namespaces == null) {
-            this.namespaces = new HashMap<>();
-        }
+
         final Map<String, String> ns = new HashMap<>();
         final Iterator<String> iterator = this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext()
                 .iteratePrefixes();
         final Iterable<String> iterable = () -> iterator;
         StreamSupport.stream(iterable.spliterator(), false).filter(e -> !ArrayUtils.contains(IGNORED_PREFIXES, e))
-                .filter(StringUtils::isNotBlank).forEach(e -> {
-                    ns.put(e, this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext()
-                            .getURIForPrefix(e, false));
-                });
-        this.namespaces.putAll(ns);
+                .filter(StringUtils::isNotBlank).forEach(e -> ns.put(e, this.executable.getUnderlyingExpression().getInternalExpression()
+                        .getRetainedStaticContext().getURIForPrefix(e, false)));
+        getNamespaces().putAll(ns);
 
     }
 
