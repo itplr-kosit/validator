@@ -12,7 +12,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,8 @@ import net.sf.saxon.s9api.XPathExecutable;
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
-@Data
+@Getter
+@Setter
 @Slf4j
 class XPathBuilder implements Builder<XPathExecutable> {
 
