@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import de.kosit.validationtool.impl.EngineInformation;
+import de.kosit.validationtool.model.daemon.ApplicationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,12 +17,11 @@ import de.kosit.validationtool.model.daemon.MemoryType;
 /**
  * Handler that implements a simple health check. Useful for monitoring the service.
  * 
- * @author Andreas Penski`
+ * @author Andreas Penski
  */
 @Slf4j
 @RequiredArgsConstructor
 class HealthHandler extends BaseHandler {
-
 
     private final Configuration scenarios;
 
@@ -34,9 +35,11 @@ class HealthHandler extends BaseHandler {
 
     }
 
-    private static HealthType createHealth() {
+    private HealthType createHealth() {
         final HealthType h = new HealthType();
         h.setMemory(createMemory());
+        h.setApplication(createApplication());
+        h.setStatus(scenarios.getScenarios().size() > 0 ? "UP" : "DOWN");
         return h;
     }
 
@@ -47,5 +50,13 @@ class HealthHandler extends BaseHandler {
         m.setMaxMemory(runtime.maxMemory());
         m.setTotalMemory(runtime.totalMemory());
         return m;
+    }
+
+    private static ApplicationType createApplication() {
+        ApplicationType a = new ApplicationType();
+        a.setBuild(EngineInformation.getBuild());
+        a.setName(EngineInformation.getName());
+        a.setVersion(EngineInformation.getVersion());
+        return a;
     }
 }

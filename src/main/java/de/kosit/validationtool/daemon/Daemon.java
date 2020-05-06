@@ -7,8 +7,10 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -32,13 +34,18 @@ public class Daemon {
 
     private static final int DEFAULT_PORT = 8080;
 
-    private static final int DEFAULT_THREAD_COUNT = Runtime.getRuntime().availableProcessors();
-
     private final String hostName;
 
     private final int port;
 
     private final int threadCount;
+
+    @Setter(AccessLevel.PRIVATE)
+    private boolean guiDisabled = false;
+
+    public void disableGui() {
+        guiDisabled = true;
+    }
 
     /**
      * Methode zum Starten des Servers
@@ -53,8 +60,7 @@ public class Daemon {
             final ConversionService converter = new ConversionService();
 
             server = HttpServer.create(getSocket(), 0);
-            final DefaultCheck check = new DefaultCheck(config);
-            server.createContext("/", new CheckHandler(check, config.getContentRepository().getProcessor()));
+            server.createContext("/", createRootHandler(config));
             server.createContext("/server/health", new HealthHandler(config, healthConverter));
             server.createContext("/server/config", new ConfigHandler(config, converter));
             server.setExecutor(createExecutor());
@@ -65,8 +71,21 @@ public class Daemon {
         }
     }
 
+    private HttpHandler createRootHandler(Configuration config) {
+        HttpHandler rootHandler;
+        final DefaultCheck check = new DefaultCheck(config);
+        final CheckHandler checkHandler = new CheckHandler(check, config.getContentRepository().getProcessor());
+        if (!guiDisabled) {
+            GuiHandler gui = new GuiHandler();
+            rootHandler = new RoutingHandler(checkHandler, gui);
+        } else {
+            rootHandler = checkHandler;
+        }
+        return rootHandler;
+    }
+
     private ExecutorService createExecutor() {
-        return Executors.newFixedThreadPool(this.threadCount > 0 ? this.threadCount : DEFAULT_THREAD_COUNT);
+        return Executors.newFixedThreadPool(this.threadCount > 0 ? this.threadCount : Runtime.getRuntime().availableProcessors());
     }
 
     private InetSocketAddress getSocket() {

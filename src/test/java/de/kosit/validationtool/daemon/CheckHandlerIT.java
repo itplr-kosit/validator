@@ -17,14 +17,11 @@ import io.restassured.http.ContentType;
  * Testet the Daemon-Mode input , Methoden , Output Content-Type and the success case
  *
  * @author Roula Antoun
+ * @author Andreas Penski
  */
 public class CheckHandlerIT extends BaseIT {
 
-
     private static final String APPLICATION_XML = "application/xml";
-
-
-
 
     @Test
     public void makeSureThatSuccessTest() throws IOException {
@@ -50,15 +47,7 @@ public class CheckHandlerIT extends BaseIT {
         return IOUtils.toByteArray(io);
     }
 
-    @Test
-    public void methodNotAllowedTest() {
-        given().when().get("/").then().statusCode(405);
-        given().when().put("/").then().statusCode(405);
-        given().when().patch("/").then().statusCode(405);
-        given().when().delete("/").then().statusCode(405);
-        given().when().head("/").then().statusCode(405);
-        given().when().options("/").then().statusCode(405);
-    }
+
 
     @Test
     public void xmlResultTest() throws IOException {

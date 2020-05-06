@@ -11,15 +11,21 @@ import com.sun.net.httpserver.HttpHandler;
  * 
  * @author Andreas Penski
  */
-public abstract class BaseHandler implements HttpHandler {
+abstract class BaseHandler implements HttpHandler {
 
     protected static final String APPLICATION_XML = "application/xml";
 
+    protected static final int OK = 200;
+
     protected static void write(final HttpExchange exchange, final byte[] content, final String contentType) throws IOException {
-        final OutputStream os = exchange.getResponseBody();
+        write(exchange, contentType, os -> os.write(content));
+    }
+
+    protected static void write(final HttpExchange exchange, final String contentType, Write write) throws IOException {
         exchange.getResponseHeaders().add("Content-Type", contentType);
-        exchange.sendResponseHeaders(200, content.length);
-        os.write(content);
+        exchange.sendResponseHeaders(OK, 0);
+        final OutputStream os = exchange.getResponseBody();
+        write.write(os);
         os.close();
     }
 
@@ -31,4 +37,9 @@ public abstract class BaseHandler implements HttpHandler {
         os.close();
     }
 
+    @FunctionalInterface
+    protected interface Write {
+
+        public void write(OutputStream out) throws IOException;
+    }
 }
