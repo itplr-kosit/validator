@@ -6,8 +6,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 
+/**
+ * A simple handler which routes between the {@link CheckHandler} and the {@link GuiHandler} depending on the request.
+ */
 @RequiredArgsConstructor
-public class RoutingHandler extends BaseHandler {
+class RoutingHandler extends BaseHandler {
 
     private final CheckHandler checkHandler;
 

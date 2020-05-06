@@ -34,17 +34,24 @@ public class Daemon {
 
     private static final int DEFAULT_PORT = 8080;
 
-    private final String hostName;
+    private String bindAddress;
 
-    private final int port;
+    private int port;
 
-    private final int threadCount;
+    private int threadCount;
 
-    @Setter(AccessLevel.PRIVATE)
-    private boolean guiDisabled = false;
+    private boolean guiEnabled = true;
 
-    public void disableGui() {
-        guiDisabled = true;
+    /**
+     * Create a new daemon.
+     * @param hostname the interface to bind to
+     * @param port the port to expose
+     * @param threadCount the number of working threads
+     */
+    public Daemon(String hostname, int port, int threadCount) {
+        this.bindAddress = hostname;
+        this.port  = port;
+        this.threadCount = threadCount;
     }
 
     /**
@@ -75,7 +82,7 @@ public class Daemon {
         HttpHandler rootHandler;
         final DefaultCheck check = new DefaultCheck(config);
         final CheckHandler checkHandler = new CheckHandler(check, config.getContentRepository().getProcessor());
-        if (!guiDisabled) {
+        if (guiEnabled) {
             GuiHandler gui = new GuiHandler();
             rootHandler = new RoutingHandler(checkHandler, gui);
         } else {
@@ -89,6 +96,6 @@ public class Daemon {
     }
 
     private InetSocketAddress getSocket() {
-        return new InetSocketAddress(defaultIfBlank(this.hostName, DEFAULT_HOST), this.port > 0 ? this.port : DEFAULT_PORT);
+        return new InetSocketAddress(defaultIfBlank(this.bindAddress, DEFAULT_HOST), this.port > 0 ? this.port : DEFAULT_PORT);
     }
 }

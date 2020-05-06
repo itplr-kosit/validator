@@ -97,8 +97,5 @@ You can configure it with `-H` for IP Adress and `-P` for port number:
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D -H 192.168.1.x -P 8081
 ```
 
-You can HTTP-POST to  `/` and the response will return the report document as defined in your validator configuration.
-
-Additionally there is the GET `/health` endpoint which can be used by monitoring systems.
-
+Details and further configuration options can be [found here](./docs/daemon.md).
 
