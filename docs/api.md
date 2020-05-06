@@ -121,3 +121,96 @@ recommendation.
 This allows to have control over what validation result is to be considered _acceptable_ for your own application context. E.g. you can
 overrule schematron validation errors with _acceptMatch_ configuration and consider certain errors as _acceptable_. Nevertheless you can *not* 
 overrule schema errors with accept match. 
+
+## Building scenario configurations with the Builder API
+Despite using preconfigured [scenario files](configurations.md) it is also possible to create a validator configuration using
+a builder API. A valid configuration consists of the following:
+
+* at least one valid scenario configuration, this includes
+  * a valid match configuration to identify/activate this scenario
+  * a valid XML schema configuration
+  * a valid report transformation configuration
+  * valid schematron validation configurations (optional)
+  * a valid accept match configuration to compute acceptance information (optional)
+* valid a fallback scenario configuration
+
+A simple configuration looks like this:
+
+```java
+import static de.kosit.validationtool.config.ConfigurationBuilder.*;
+import de.kosit.validationtool.api.Configuration;
+import java.net.URI;
+import java.nio.file.Path;
+
+public class MyValidator {
+
+ public static void main(String[] args) {
+    Configuration config = Configuration.create().name("myconfiguration")
+                          .with(scenario("firstScenario")
+                                          .match("//myNode")
+                                          .validate(schema("Sample Schema").schemaLocation(URI.create("simple.xsd")))
+                                          .validate(schematron("my rules").source("myRules.xsl"))
+                                          .with(report("my report").source("report.xsl")))
+                          .with(fallback().name("default-report").source("fallback.xsl"))
+                          .useRepository(Paths.get("/opt/myrepository"))
+                          .build();
+    Check validator = new DefaultCheck(config); 
+    // .. run your checks
+ }
+}
+```
+
+There a various methods provided by the builder API to configure your scenarios and the validation process. 
+
+It is also possible to provide runtime artifacts like `XsltExecutable`, `XPathExecutalbe` or `Schema` to configure the validator. 
+This gives you complete control how to load these artifacts.
+---
+**Note:** Creating this objects requires usage of the same instance of the saxon `Processor` as used during validation later. So you
+need to supply a custom `ResolvingConfigurationStrategy` or use the internal one to create these objects. See below.
+
+---
+## Configure xml security an resolving
+
+When using xml related technologies you are supposed to handle certein security issues properly. The KoSIT validator pursues a rather strict 
+strategy. The default configuration
+
+* disable DTD validation completely
+* allows loading/resolving only from a configured local content repository (a specific folder)
+* tries to prevent known XML security issues (see [OWASP XML_Security_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/XML_Security_Cheat_Sheet.html))
+* only works with OpenJDK based XML stacks
+
+However, you can configure certain aspects related to resolving and security yourself. The validator uses a single interface for accessing
+or creating the neccessary XML API objects like `SchemaFactory`, `Validator`,`URIResolver` or `Processor`:  [ResolvingConfigurationStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/api/ResolvingConfigurationStrategy.java)
+
+There are 3 implemenations available out of the box:
+
+1.  [StrictRelativeResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/StrictRelativeResolvingStrategy.java)
+which is the **default**, prevents known XML attacks and only allows loading from a specific local repository location
+1.  [StrictLocalResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/StrictLocalResolvingStrategy.java)
+which opens the first to load resource from local location
+1.  [RemoteResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/RemoteResolvingStrategy.java)
+which opens the first to load resource also from remote locations via http and https
+
+You can configure usage of one of this implemenations via
+
+````java
+Conifuguration config = Configuration.load(URI.create("myscenarios.xml"))
+                            .resolvingMode(ResolvingMode.STRICT_LOCAL)
+                            .build();
+````
+
+If you decide to implement your own strategy you can configure this via:
+
+````java
+Conifuguration config = Configuration.load(URI.create("myscenarios.xml"))
+                            .resolvingStrategy(new MyCustomResolvingConfigurationStrategy())
+                            .build();
+````
+
+---
+**Attention:** If you decide to implement a custom strategy you need to handle xml security risk. Please make sure, that you prevent XXE attacks and 
+other kind of attacks. Consider using [BaseResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/BaseResolvingStrategy.java)
+and the protected methods within to disable certain features.
+
+---
+ 

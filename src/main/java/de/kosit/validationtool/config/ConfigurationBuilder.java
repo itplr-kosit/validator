@@ -3,6 +3,7 @@ package de.kosit.validationtool.config;
 import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,6 +76,12 @@ public class ConfigurationBuilder {
         return this;
     }
 
+    /**
+     * Add a specific nam to this configuration
+     * 
+     * @param name the name of the configuration
+     * @return this
+     */
     public ConfigurationBuilder name(final String name) {
         this.name = name;
         return this;
@@ -103,11 +110,25 @@ public class ConfigurationBuilder {
         return date(date != null ? LocalDate.ofEpochDay(date.getTime()) : null);
     }
 
+    /**
+     * Adds a {@link Scenario} to this list of know scenarios. Note: order of calling this methods defines order of
+     * scenarios when determining the target scenario for a given xml file.
+     * 
+     * @param scenarioBuilder the {@link ScenarioBuilder} building the {@link Scenario}
+     * @return this
+     */
     public ConfigurationBuilder with(final ScenarioBuilder scenarioBuilder) {
         this.scenarios.add(scenarioBuilder);
         return this;
     }
 
+    /**
+     * Sets a specific fallback scenario configuration. Note: calling this more than once is possible, but the last call
+     * will define the actual fallback scenario used. There can be only one
+     * 
+     * @param builder the {@link FallbackBuilder}
+     * @return this
+     */
     public ConfigurationBuilder with(final FallbackBuilder builder) {
         if (this.fallbackBuilder != null) {
             log.warn("Overriding previously created fallback scenario");
@@ -116,6 +137,12 @@ public class ConfigurationBuilder {
         return this;
     }
 
+    /**
+     * Adds a description to this configuration.
+     * 
+     * @param description the descriptioin
+     * @return this
+     */
     public ConfigurationBuilder description(final String description) {
         this.description = description;
         return this;
@@ -219,6 +246,12 @@ public class ConfigurationBuilder {
         return new ReportBuilder().name(name);
     }
 
+    /**
+     * Builds the actual {@link Configuration} by validating all builder inputs and constructing neccessary objects.
+     * 
+     * @return a valid configuration
+     * @throws IllegalStateException when the configuration is not valid/complete
+     */
     public Configuration build() {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         if (this.processor == null) {
@@ -269,7 +302,7 @@ public class ConfigurationBuilder {
     }
 
     private List<Scenario> initializeScenarios(final ContentRepository contentRepository) {
-        if (this.scenarios.size() == 0) {
+        if (this.scenarios.isEmpty()) {
             throw new IllegalStateException("No scenario specified");
         }
         return this.scenarios.stream().map(s -> {
@@ -291,6 +324,13 @@ public class ConfigurationBuilder {
         return this.resolvingMode.getStrategy();
     }
 
+    /**
+     * Sets a specific resolving mode, for resolving xml artifacts for this configuration. See {@link ResolvingMode} for
+     * details.
+     * 
+     * @param mode the mode
+     * @return this
+     */
     public ConfigurationBuilder resolvingMode(final ResolvingMode mode) {
         this.resolvingMode = mode;
         return this;
@@ -307,8 +347,24 @@ public class ConfigurationBuilder {
         return this;
     }
 
+    /**
+     * Set a specific repository location for resolving artifacts for scenarios.
+     * 
+     * @param repository the repository location
+     * @return this
+     */
     public ConfigurationBuilder useRepository(final URI repository) {
         this.repository = repository;
         return this;
+    }
+
+    /**
+     * Set a specific repository location for resolving artifacts for scenarios.
+     *
+     * @param repository the repository location
+     * @return this
+     */
+    public ConfigurationBuilder useRepository(final Path repository) {
+        return useRepository(repository.toUri());
     }
 }
