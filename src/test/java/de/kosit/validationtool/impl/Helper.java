@@ -19,7 +19,6 @@
 
 package de.kosit.validationtool.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -84,7 +83,6 @@ public class Helper {
             return new ContentRepository(strategy, Simple.REPOSITORY_URI);
         }
 
-
         public static URI getSchemaLocation() {
             return SCHEMA;
         }
@@ -97,6 +95,15 @@ public class Helper {
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
         public static final URI SCENARIOS_ILLFORMED = ROOT.resolve("scenarios-illformed.xml");
+    }
+
+    public static class Resolving {
+
+        public static final URI ROOT = EXAMPLES_DIR.resolve("resolving/");
+
+        public static final URI SCHEMA_WITH_REMOTE_REFERENCE = ROOT.resolve("withRemote.xsd");
+
+        public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
     }
 
     public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
@@ -133,16 +140,6 @@ public class Helper {
                 de.kosit.validationtool.cmd.assertions.ObjectFactory.class.getPackage(),
                 de.kosit.validationtool.model.scenarios.ObjectFactory.class.getPackage());
         return c.readXml(url.toURI(), type);
-    }
-
-    /**
-     * Lädt das default test repository mit Artefacten für Unit-Tests
-     * 
-     * @return ein {@link ContentRepository}
-     */
-    public static ContentRepository loadTestRepository() {
-        return new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(),
-                new File("src/test/resources/examples/repository").toURI());
     }
 
     public static String serialize(final XdmNode node) {

@@ -143,7 +143,7 @@ public class ContentRepository {
             throw new IllegalStateException("Can not compile xslt executable for uri " + uri, e);
         } finally {
             if (!listener.hasErrors() && listener.hasEvents()) {
-                log.warn("Received warnings while loading a xslt script {}", uri);
+                log.warn("Received warnings or errors while loading a xslt script {}", uri);
                 listener.getErrors().forEach(e -> e.log(log));
             }
         }

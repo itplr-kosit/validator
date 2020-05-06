@@ -58,7 +58,7 @@ The general way using the CLI is:
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
-You can more CLI options by
+You can see more CLI options with
 
 ```shell
 java -jar  validationtool-<version>-standalone.jar --help
@@ -68,7 +68,18 @@ A concrete example with a specific validator configuration can be found on [GitH
 
 ### Application User Interface (API / embedded usage)
 
-The validator can also be used in own Java Applications via the API. Details can be [found here](./docs/api.md).
+The validator can also be used in own Java Applications via the API. Usage would be something like this:
+```
+Path scenarios = Paths.get("scenarios.xml");
+Configuration config = Configuration.load(scenarios.toUri());
+Input document = InputFactory.read(testDocument);
+
+Check validator = new DefaultCheck(config);
+Result validationResult = validator.checkInput(document);
+
+// examine the result here
+```
+Details and further configuration options can be [found here](./docs/api.md).
 
 ### Daemon-Mode
 

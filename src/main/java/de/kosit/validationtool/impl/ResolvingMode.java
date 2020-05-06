@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.impl.xml.RemoteResolvingStrategy;
 import de.kosit.validationtool.impl.xml.StrictLocalResolvingStrategy;
 import de.kosit.validationtool.impl.xml.StrictRelativeResolvingStrategy;
 
@@ -24,7 +25,7 @@ public enum ResolvingMode {
 
     STRICT_LOCAL(new StrictLocalResolvingStrategy()),
 
-    JDK_SUPPORTED(null),
+    ALLOW_REMOTE(new RemoteResolvingStrategy()),
 
     CUSTOM(null);
 

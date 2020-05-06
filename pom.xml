@@ -447,7 +447,7 @@
                 <configuration>
                     <target>
                         <!-- schlafen um den Start des Daemon abzuwarten -->
-                        <sleep seconds="5" />
+                        <sleep seconds="10" />
                         <echo>${jacoco.tcp.port}</echo>
                     </target>
                 </configuration>
