@@ -164,8 +164,10 @@ public class InputFactory {
     }
 
     /**
-     * Reads a test document from a {@link Source}.
-     *
+     * Reads a test document from a {@link Source}. <br/>
+     * Note: computing the hashcode is only supported for {@link StreamSource}. You can not directly use other {@link Source
+     * Soures}. You need to supply the hashcode for identification then.
+     * 
      * @param source source
      * @return an {@link Input}
      */
@@ -175,6 +177,9 @@ public class InputFactory {
 
     /**
      * Reads a test document from a {@link Source} using a specified digest algorithm.
+     * 
+     * Note: computing the hashcode is only supported for {@link StreamSource}. You can not directly use other {@link Source
+     * Soures}. You need to supply the hashcode for identification then.
      *
      * @param source source
      * @param digestAlgorithm the digest algorithm

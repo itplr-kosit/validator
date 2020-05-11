@@ -4,7 +4,7 @@ The Validator offers an API which allows you to integrate Validator in your own 
 
 ## Dependency Management
 
-Currently, we *do not* deploy to Maven Central or similar. Hence you need to build and optionally deploy the Validator artifacts to your own 
+Currently, we *do not* deploy to Maven Central or similar. Hence, you need to build and optionally deploy the Validator artifacts to your own 
 shared (or local) repository  (see for example [Maven Documentation](https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html)).
 
 ### Maven

@@ -31,14 +31,29 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
+import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
+import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.input.SourceInput;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+
+import net.sf.saxon.dom.NodeOverNodeInfo;
+import net.sf.saxon.s9api.BuildingContentHandler;
+import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Testet den Hashcode-Service.
@@ -161,6 +176,25 @@ public class InputFactoryTest {
     public void testUnexistingInput() {
         this.expectedException.expect(IllegalArgumentException.class);
         InputFactory.read(Simple.NOT_EXISTING);
+    }
+
+    @Test
+    public void testDomSource() throws SaxonApiException, SAXException, IOException {
+        final DocumentBuilder builder = TestObjectFactory.createProcessor().newDocumentBuilder();
+
+        final BuildingContentHandler handler = builder.newBuildingContentHandler();
+        handler.startDocument();
+        handler.startElement("http://some.ns", "mynode", "mynode", new AttributesImpl());
+        final Document dom = NodeOverNodeInfo.wrap(handler.getDocumentNode().getUnderlyingNode()).getOwnerDocument();
+        final Input domInput = InputFactory.read(new DOMSource(dom), "MD5", "id".getBytes());
+        assertThat(domInput).isNotNull();
+        final Source source = domInput.getSource();
+        assertThat(source).isNotNull();
+        final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(domInput);
+        assertThat(parsed.isValid()).isTrue();
+
+        // read twice
+        assertThat(Helper.parseDocument(domInput).getObject()).isNotNull();
     }
 
 }
