@@ -29,10 +29,11 @@ abstract class BaseHandler implements HttpHandler {
         os.close();
     }
 
-    protected static void error(final HttpExchange httpExchange, final int statusCode, final String message) throws IOException {
+    protected static void error(final HttpExchange exchange, final int statusCode, final String message) throws IOException {
         final byte[] bytes = message.getBytes();
-        httpExchange.sendResponseHeaders(statusCode, bytes.length);
-        final OutputStream os = httpExchange.getResponseBody();
+        exchange.getResponseHeaders().add("Content-Type", "text/plain");
+        exchange.sendResponseHeaders(statusCode, bytes.length);
+        final OutputStream os = exchange.getResponseBody();
         os.write(bytes);
         os.close();
     }
