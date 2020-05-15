@@ -3,6 +3,8 @@
 The validator is an XML validation-engine. It validates XML documents against XML Schema and Schematron Rules depending on self defined [scenarios](docs/configurations.md) which are used to fully configure the validation process.
 The validator always outputs a [validation report in XML](docs/configurations.md#validators-report) including all validation errors and data about the validation.
 
+See [architecture](docs/architecture.md) for informations about the actual validation process.
+
 ## Packages
 
 The validator distribution contains the following artifacts:
@@ -12,16 +14,6 @@ The validator distribution contains the following artifacts:
 1. **validationtool-`<version`>-java8-standalone.jar**: Uber-JAR for standalone usage with Java JDK 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
 1. **libs/***: directory containing all (incl. optional) dependencies of the validator
 
-## Build
-
-### Requirements
-
-* Maven > 3.0.0
-* Java > 8 update 111
-
-### Procedure
-
- `mvn install` generates two different packages in the `dist` directory:
 
 ## Validation Configurations
 
@@ -29,7 +21,7 @@ The validator is just an engine and does not know anything about XML Documents a
 
 Validation rules and details are defined in [validation scenarios](docs/configurations.md) which are used to fully configure the validation process.
 
-All configurations are self-contained modules and deployed on their own.
+All configurations are self-contained modules and deployed and developed on their own.
 
 ### Third Party Validation Configurations
 
@@ -64,7 +56,8 @@ You can see more CLI options with
 java -jar  validationtool-<version>-standalone.jar --help
 ```
 
-A concrete example with a specific validator configuration can be found on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
+A concrete example with a specific validator configuration can be found on 
+[GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
 
 ### Application User Interface (API / embedded usage)
 
@@ -97,5 +90,5 @@ You can configure it with `-H` for IP Adress and `-P` for port number:
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D -H 192.168.1.x -P 8081
 ```
 
-Details and further configuration options can be [found here](./docs/daemon.md).
+Usage details and further configuration options can be [found here](./docs/daemon.md).
 

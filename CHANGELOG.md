@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## next version (unreleased)
+## 1.3.0
 
 ### Added
 - Added a builder style configuration API to configure scenarios
@@ -19,11 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CheckConfiguration is deprecated now. Use Configuration.load(...) or Configuration.build(...)
 - Overall processing of xml files is based on Saxon s9api. No JAXP or SAX classes are used by 
 the validator (this further improves performance and memory consumption)
-- 
 
-## UNRELEASED
 ### Fixed
-- Validator was creating invalid createReportInput xml in case of no scenrio match
+- Validator was creating invalid createReportInput xml in case of no scenrio match 
+
 
 ## 1.2.0
 ### Added
