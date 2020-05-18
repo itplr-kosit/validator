@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -96,6 +95,9 @@ public class CommandLineApplication {
 
     private static final Option WORKER_COUNT = Option.builder("T").longOpt("threads").hasArg()
             .desc("Number of threads processing validation requests").build();
+
+    private static final Option DISABLE_GUI = Option.builder("G").longOpt("disable-gui").desc("Disables the GUI of the daemon mode")
+            .build();
 
     public static final int DAEMON_SIGNAL = 100;
 
@@ -175,6 +177,9 @@ public class CommandLineApplication {
         warnUnusedOptions(cmd, unavailable, true);
         final ConfigurationLoader config = Configuration.load(determineDefinition(cmd), determineRepository(cmd));
         final Daemon validDaemon = new Daemon(determineHost(cmd), determinePort(cmd), determineThreads(cmd));
+        if (cmd.hasOption(DISABLE_GUI.getOpt())) {
+            validDaemon.setGuiEnabled(false);
+        }
         validDaemon.startServer(config.build());
         return DAEMON_SIGNAL;
     }
@@ -379,6 +384,7 @@ public class CommandLineApplication {
         options.addOption(CHECK_ASSERTIONS);
         options.addOption(PRINT_MEM_STATS);
         options.addOption(WORKER_COUNT);
+        options.addOption(DISABLE_GUI);
         return options;
     }
 }

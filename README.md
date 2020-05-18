@@ -18,19 +18,17 @@ The validator distribution contains the following artifacts:
 ## Validation Configurations
 
 The validator is just an engine and does not know anything about XML Documents and has no own validation rules.
-
 Validation rules and details are defined in [validation scenarios](docs/configurations.md) which are used to fully configure the validation process.
-
 All configurations are self-contained modules and deployed and developed on their own.
 
 ### Third Party Validation Configurations
 
 Currently, there are two public third party validation configurations available.
 
-* Validation Configuration for [XRechnung](http://www.xoev.de/de/xrechnung) is available on
+* Validation Configuration for [XRechnung](http://www.xoev.de/de/xrechnung):
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
   * [Releases](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases) can also be downloaded
-* Validation Configuration for XGewerbeanzeige
+* Validation Configuration for [XGewerbeanzeige](https://xgewerbeanzeige.de/)
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige)
   * [Releases](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige/releases) can also be downloaded
 
@@ -50,7 +48,7 @@ The general way using the CLI is:
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
-You can see more CLI options with
+The help option displays further CLI options to customize the process:
 
 ```shell
 java -jar  validationtool-<version>-standalone.jar --help
@@ -72,7 +70,7 @@ Result validationResult = validator.checkInput(document);
 
 // examine the result here
 ```
-Details and further configuration options can be [found here](./docs/api.md).
+The  [API documentation](./docs/api.md) shows further configuration options.
 
 ### Daemon-Mode
 
@@ -82,13 +80,6 @@ You can also start the validator as an HTTP-Server. Just start it in _Daemon-Mod
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
 ```
 
-Per default the HTTP-Server listens on _localhost_ at Port 8080.
 
-You can configure it with `-H` for IP Adress and `-P` for port number:
-
-```shell
-java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D -H 192.168.1.x -P 8081
-```
-
-Usage details and further configuration options can be [found here](./docs/daemon.md).
+The [daemon documentation](./docs/daemon.md) shows more usage details and further configuration options.
 

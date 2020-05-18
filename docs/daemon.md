@@ -1,9 +1,11 @@
 # Validator daemon
-You can also start the validator as a HTTP-Server. This is based JDK http server functionality. Keep that mind, if you want to deploy this 
+You can also start the validator as a HTTP-Server. This is based [JDK http server](https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpServer.html) functionality 
+and should work with OpenJDK based Java distributions. Keep that mind, if you want to deploy this 
 in production scenarios with heavy load.
 
 ## Basic usage
-To just use the validator daemon as is, start the _Daemon-Mode_ with the `-D` option.
+To just use the validator daemon as is, start the _Daemon-Mode_ with the `-D` option and supply a suitable
+ [validator configuration](configurations.md)
 
 ```shell
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
@@ -11,7 +13,7 @@ java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
 
 Per default the HTTP-Server listens on _localhost_ at Port 8080.
 
-You can configure it with `-H` for IP Adress and `-P` for port number:
+You can configure the daemon with `-H` for IP Adress and `-P` for port number:
 
 ```shell
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D -H 192.168.1.x -P 8081
@@ -38,7 +40,7 @@ The possible customizations are:
 
 ## Access the http interface
 The validation service listens to `POST`-requests to any server uri. You need to supply the xml/object to validate in the post body. 
-The service expects a single plain input in the post body, e.g. `multipart/form-data` is not supported.
+The service expects a single xml input in the post body, e.g. `multipart/form-data` is not supported.
 
 Examples:
 
@@ -85,3 +87,16 @@ This can be done using infrastructural service like a forwarding proxy (e.g. `ng
 ## Monitoring and administration
 The validation service can be integrated in monitoring solutions like `Icinga` or `Nagios`. There is a `health` endpoint exposed under `/server/health` wich returns
 some basic information about the service like memory consumption, general information about the version and a status `UP` as an XML file.
+
+## GUI
+The daemon provides a simple GUI when issuing `GET` requests providing the following:
+ 
+ 1. usage information 
+ 1. information about the actual [validator configuration](configurations.md) used by this daemon
+ 1. a simple form to test the daemon with custom inputs
+ 
+ The GUI can be disabled with using the API (see above) or via CLI
+ 
+ ```shell script
+java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D --disable-gui
+```
