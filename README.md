@@ -74,7 +74,7 @@ The  [API documentation](./docs/api.md) shows further configuration options.
 
 ### Daemon-Mode
 
-You can also start the validator as an HTTP-Server. Just start it in _Daemon-Mode_ with the `-D` option.
+You can also start the validator as a HTTP-Server. Just start it in _Daemon-Mode_ with the `-D` option.
 
 ```shell
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D

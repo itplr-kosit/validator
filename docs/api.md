@@ -190,7 +190,7 @@ There are 3 implemenations available out of the box:
 1.  [StrictRelativeResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/StrictRelativeResolvingStrategy.java)
 which is the **default**, prevents known XML attacks and only allows loading from a specific local repository location
 1.  [StrictLocalResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/StrictLocalResolvingStrategy.java)
-which opens the first to load resource from local locations
+which opens the first strategy to load resources from local locations
 1.  [RemoteResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/RemoteResolvingStrategy.java)
 which further opens the second to load resources also from remote locations via http and https
 
