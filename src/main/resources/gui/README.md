@@ -2,6 +2,8 @@
 
 [API usage](docs/api)
 
+[configurations](docs/configurations)
+
 # Server information
 View [validator configuration](/server/config) or <a href="/server/health" target="_blank">health information</a> 
 

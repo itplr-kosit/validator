@@ -1,3 +1,4 @@
+# API Usage
 The validation service listens to `POST`-requests to any server uri. You need to supply the xml/object to validate in the post body. 
 The service expects a single plain input in the post body, e.g. `multipart/form-data` is not supported.
 
