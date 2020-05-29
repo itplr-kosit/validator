@@ -60,7 +60,7 @@ A concrete example with a specific validator configuration can be found on
 ### Application User Interface (API / embedded usage)
 
 The validator can also be used in own Java Applications via the API. Usage would be something like this:
-```
+```java
 Path scenarios = Paths.get("scenarios.xml");
 Configuration config = Configuration.load(scenarios.toUri());
 Input document = InputFactory.read(testDocument);
