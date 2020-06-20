@@ -1,11 +1,12 @@
-# Validator daemon
-You can also start the validator as a HTTP-Server. This is based [JDK http server](https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpServer.html) functionality 
-and should work with OpenJDK based Java distributions. Keep that mind, if you want to deploy this 
-in production scenarios with heavy load.
+# Validator HTTP Daemon
+
+You can start the validator as an HTTP-Server. This server is based on the [JDK HTTP server](https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpServer.html) functionality 
+and should work with OpenJDK based distributions. Keep this in mind, if you want to deploy this in production scenarios with heavy load.
 
 ## Basic usage
-To just use the validator daemon as is, start the _Daemon-Mode_ with the `-D` option and supply a suitable
- [validator configuration](configurations.md)
+
+To use the validator daemon as is, start the _Daemon-Mode_ with the `-D` option and supply a suitable
+ [validator configuration](configurations.md).
 
 ```shell
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
@@ -20,7 +21,8 @@ java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
 ```
 
 ## Customized usage
-You can also leverage the API to create a customized version of the Daemon. Just instantiate, configure and start the daemon like this:
+
+You can also leverage the API to create a customized version of the daemon. Just instantiate, configure and start the daemon like this:
 
 ````java
 Configuration config = Configuration.load(...);
@@ -36,11 +38,13 @@ The possible customizations are:
 * `bindAddress` - the interface to bind the daemon to
 * `port` - the port to expose
 * `threadCount` - number of worker threads to handle results
-* `guiEnabled` - enable or disable the basic gui with usage information
+* `guiEnabled` - enable or disable the basic GUI with usage information
 
-## Access the http interface
-The validation service listens to `POST`-requests to any server uri. You need to supply the xml/object to validate in the post body. 
-The service expects a single xml input in the post body, e.g. `multipart/form-data` is not supported.
+## Access the HTTP interface
+
+The validation service listens to `POST`-requests on any server URL. You need to supply the xml/object to validate in the HTTP body.
+
+The service expects a single XML input in the HTTP body, e.g. `multipart/form-data` is not supported.
 
 Examples:
 
@@ -80,15 +84,17 @@ fetch("http://localhost:8080", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
+
 ## Authorization
-There is no mechanism to check, whether client is allowed to consume the service or not. The user is responsible to secure access to the service
-This can be done using infrastructural service like a forwarding proxy (e.g. `nginx` or `apache http server`) or by implementing a custom solution
+There is no mechanism to check, whether client is allowed to consume the service or not. The user is responsible to secure access to the service.
+This can be done using infrastructural service like a forwarding proxies (e.g. `nginx` or `Apache http server`) or by implementing a custom solution.
 
 ## Monitoring and administration
-The validation service can be integrated in monitoring solutions like `Icinga` or `Nagios`. There is a `health` endpoint exposed under `/server/health` wich returns
-some basic information about the service like memory consumption, general information about the version and a status `UP` as an XML file.
+
+The validation service can be integrated in monitoring solutions like `Icinga` or `Nagios`. There is a `health` endpoint exposed under `/server/health` wich returns some basic information about the service like memory consumption, general information about the version and a status `UP` as an XML file.
 
 ## GUI
+
 The daemon provides a simple GUI when issuing `GET` requests providing the following:
  
  1. usage information 
