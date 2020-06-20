@@ -22,7 +22,6 @@ package de.kosit.validationtool.cmd;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
@@ -34,6 +33,7 @@ import org.junit.Test;
 
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.Helper;
+import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 /**
@@ -43,7 +43,6 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
  */
 public class ExtractHtmlActionTest {
 
-    private static final URL REPORT = SerializeReportActionTest.class.getResource("/examples/results/report.xml");
 
     private ExtractHtmlContentAction action;
 
@@ -51,24 +50,24 @@ public class ExtractHtmlActionTest {
 
     @Before
     public void setup() throws IOException {
-        tmpDirectory = Files.createTempDirectory("checktool");
-        action = new ExtractHtmlContentAction(Helper.loadTestRepository(), tmpDirectory);
+        this.tmpDirectory = Files.createTempDirectory("checktool");
+        this.action = new ExtractHtmlContentAction(Helper.loadTestRepository(), this.tmpDirectory);
     }
 
     @After
     public void tearDown() throws IOException {
-        FileUtils.deleteDirectory(tmpDirectory.toFile());
+        FileUtils.deleteDirectory(this.tmpDirectory.toFile());
     }
 
     @Test
     public void testSimple() throws IOException {
-        CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(REPORT));
-        assertThat(action.isSkipped(b)).isTrue();
-        b.setReport(Helper.load(REPORT));
-        action.check(b);
-        assertThat(action.isSkipped(b)).isFalse();
-        action.check(b);
+        final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(Simple.SIMPLE_VALID));
+        assertThat(this.action.isSkipped(b)).isTrue();
+        b.setReport(Helper.load(Simple.SIMPLE_VALID.toURL()));
+        this.action.check(b);
+        assertThat(this.action.isSkipped(b)).isFalse();
+        this.action.check(b);
         assertThat(b.isStopped()).isFalse();
-        assertThat(Files.list(tmpDirectory).collect(Collectors.toList())).hasSize(1);
+        assertThat(Files.list(this.tmpDirectory).collect(Collectors.toList())).hasSize(1);
     }
 }

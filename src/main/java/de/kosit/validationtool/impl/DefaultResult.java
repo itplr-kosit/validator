@@ -127,12 +127,19 @@ public class DefaultResult implements Result {
      * 
      * @return die {@link FailedAssert}
      */
+    @Override
     public List<FailedAssert> getFailedAsserts() {
         return filterSchematronResult(FailedAssert.class);
     }
 
     private <T> List<T> filterSchematronResult(final Class<T> type) {
-        return getSchematronResult().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+        return getSchematronResult() != null
+                ? getSchematronResult().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList())
+                : Collections.emptyList();
     }
 
+    @Override
+    public boolean isSchematronValid() {
+        return getSchematronResult() != null && getFailedAsserts().isEmpty();
+    }
 }

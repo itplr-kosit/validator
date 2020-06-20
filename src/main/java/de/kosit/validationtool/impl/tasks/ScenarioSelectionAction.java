@@ -20,6 +20,7 @@
 package de.kosit.validationtool.impl.tasks;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.ScenarioRepository;
 import de.kosit.validationtool.impl.model.Result;
@@ -35,6 +36,7 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
+@Slf4j
 public class ScenarioSelectionAction implements CheckAction {
 
     private final ScenarioRepository repository;
@@ -47,16 +49,21 @@ public class ScenarioSelectionAction implements CheckAction {
         if (results.getParserResult().isValid()) {
             scenarioTypeResult = determineScenario(results.getParserResult().getObject());
         } else {
-            scenarioTypeResult = new Result<>(repository.getFallbackScenario());
+            scenarioTypeResult = new Result<>(this.repository.getFallbackScenario());
         }
         results.setScenarioSelectionResult(scenarioTypeResult);
-        report.setScenario(scenarioTypeResult.getObject());
+        if (!scenarioTypeResult.getObject().isFallback()) {
+            report.setScenario(scenarioTypeResult.getObject());
+            log.info("Schenario {} identified for {}", scenarioTypeResult.getObject().getName(), results.getInput().getName());
+        } else {
+            log.error("No valid schenario configuration found for {}", results.getInput().getName());
+        }
     }
 
     private Result<ScenarioType, String> determineScenario(final XdmNode document) {
         final Result<ScenarioType, String> result = this.repository.selectScenario(document);
         if (result.isInvalid()) {
-            return new Result<>(repository.getFallbackScenario());
+            return new Result<>(this.repository.getFallbackScenario());
         }
         return result;
     }

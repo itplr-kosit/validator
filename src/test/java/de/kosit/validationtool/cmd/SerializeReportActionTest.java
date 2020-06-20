@@ -22,7 +22,7 @@ package de.kosit.validationtool.cmd;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.net.URL;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.Helper;
+import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 /**
@@ -40,7 +41,6 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
  */
 public class SerializeReportActionTest {
 
-    private static final URL REPORT = SerializeReportActionTest.class.getResource("/examples/results/report.xml");
 
     private Path tmpDirectory;
 
@@ -48,31 +48,31 @@ public class SerializeReportActionTest {
 
     @Before
     public void setup() throws IOException {
-        tmpDirectory = Files.createTempDirectory("checktool");
-        action = new SerializeReportAction(tmpDirectory);
+        this.tmpDirectory = Files.createTempDirectory("checktool");
+        this.action = new SerializeReportAction(this.tmpDirectory);
     }
 
     @After
     public void tearDown() throws IOException {
-        FileUtils.deleteDirectory(tmpDirectory.toFile());
+        FileUtils.deleteDirectory(this.tmpDirectory.toFile());
     }
 
     @Test
-    public void testSimpleSerialize() {
-        CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(REPORT));
-        assertThat(action.isSkipped(b)).isTrue();
-        b.setReport(Helper.load(REPORT));
-        assertThat(action.isSkipped(b)).isFalse();
-        action.check(b);
+    public void testSimpleSerialize() throws MalformedURLException {
+        final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(Simple.SIMPLE_VALID));
+        assertThat(this.action.isSkipped(b)).isTrue();
+        b.setReport(Helper.load(Simple.SIMPLE_VALID.toURL()));
+        assertThat(this.action.isSkipped(b)).isFalse();
+        this.action.check(b);
         assertThat(b.isStopped()).isFalse();
-        assertThat(tmpDirectory.toFile().listFiles()).hasSize(1);
+        assertThat(this.tmpDirectory.toFile().listFiles()).hasSize(1);
     }
 
     //ERPT-83
     @Test
     public void testName(){
         final String name = "some.name.with.dots";
-        CheckAction.Bag b = new CheckAction.Bag(InputFactory.read("ega".getBytes(), name + ".xml"));
+        final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read("ega".getBytes(), name + ".xml"));
         assertThat(b.getName()).isEqualTo(name);
     }
 

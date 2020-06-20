@@ -22,10 +22,11 @@ package de.kosit.validationtool.impl;
 import static de.kosit.validationtool.api.InputFactory.read;
 import static de.kosit.validationtool.impl.Helper.Simple.GARBAGE;
 import static de.kosit.validationtool.impl.Helper.Simple.NOT_WELLFORMED;
+import static de.kosit.validationtool.impl.Helper.Simple.REJECTED;
+import static de.kosit.validationtool.impl.Helper.Simple.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -54,7 +55,7 @@ public class DefaultCheckTest {
     private DefaultCheck implementation;
 
     @Before
-    public void setup() throws URISyntaxException {
+    public void setup() {
         final CheckConfiguration d = new CheckConfiguration(Simple.SCENARIOS);
         d.setScenarioRepository(new File(Simple.REPOSITORY).toURI());
         this.implementation = new DefaultCheck(d);
@@ -74,8 +75,8 @@ public class DefaultCheckTest {
         final Result doc = this.implementation.checkInput(read(Simple.FOO));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
-        assertThat(doc.isAcceptable()).isFalse();
-        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.UNDEFINED);
+        assertThat(doc.isAcceptable()).isTrue();
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -121,6 +122,17 @@ public class DefaultCheckTest {
     }
 
     @Test
+    public void testNoScenario() {
+        final Result result = this.implementation.checkInput(read(UNKNOWN));
+        assertThat(result).isNotNull();
+        assertThat(result.isWellformed()).isTrue();
+        assertThat(result.isProcessingSuccessful()).isTrue();
+        assertThat(result.isSchemaValid()).isFalse();
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.isAcceptable()).isFalse();
+    }
+
+    @Test
     public void testNotWellFormed() {
         final Result result = this.implementation.checkInput(read(NOT_WELLFORMED));
         assertThat(result).isNotNull();
@@ -130,7 +142,19 @@ public class DefaultCheckTest {
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
-        System.out.println(Helper.serialize(result.getReportDocument()));
+    }
+
+    @Test
+    public void testRejectAcceptMatch() {
+        final Result result = this.implementation.checkInput(read(REJECTED));
+        assertThat(result).isNotNull();
+        assertThat(result.isWellformed()).isTrue();
+        assertThat(result.isSchemaValid()).isTrue();
+        assertThat(result.isProcessingSuccessful()).isTrue();
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.isAcceptable()).isFalse();
+        assertThat(result.getReport()).isNotNull();
+        assertThat(result.getReportDocument()).isNotNull();
     }
 
 }

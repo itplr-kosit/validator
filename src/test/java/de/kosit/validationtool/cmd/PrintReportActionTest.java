@@ -21,8 +21,7 @@ package de.kosit.validationtool.cmd;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
-import java.net.URL;
+import java.net.MalformedURLException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,6 +29,7 @@ import org.junit.Test;
 
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.Helper;
+import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 /**
@@ -37,34 +37,33 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
  */
 public class PrintReportActionTest {
 
-    private static final URL REPORT = SerializeReportActionTest.class.getResource("/examples/results/report.xml");
 
     private CommandLine commandLine;
 
     private PrintReportAction action;
 
     @Before
-    public void setup() throws IOException {
-        commandLine = new CommandLine();
-        commandLine.activate();
-        action = new PrintReportAction();
+    public void setup() {
+        this.commandLine = new CommandLine();
+        this.commandLine.activate();
+        this.action = new PrintReportAction();
     }
 
     @After
-    public void tearDownd() throws IOException {
-        commandLine.deactivate();
+    public void tearDown() {
+        this.commandLine.deactivate();
     }
 
     @Test
-    public void testSimpleSerialize() {
-        CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(REPORT));
-        b.setReport(Helper.load(REPORT));
-        assertThat(action.isSkipped(b)).isFalse();
-        action.check(b);
+    public void testSimpleSerialize() throws MalformedURLException {
+        final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(Simple.SIMPLE_VALID));
+        b.setReport(Helper.load(Simple.SIMPLE_VALID.toURL()));
+        assertThat(this.action.isSkipped(b)).isFalse();
+        this.action.check(b);
         assertThat(b.isStopped()).isFalse();
-        assertThat(commandLine.getOutput()).isNotEmpty();
-        // assertThat(commandLine.getOutput()).contains("<?xml version=\"1.0\" ");
-        // assertThat(commandLine.getErrorOutput()).isEmpty();
+        assertThat(this.commandLine.getOutput()).isNotEmpty();
+        assertThat(this.commandLine.getOutput()).contains("<?xml version=\"1.0\" ");
+        assertThat(this.commandLine.getErrorOutput()).isEmpty();
     }
 
 }

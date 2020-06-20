@@ -70,6 +70,11 @@ public abstract class BaseScenario {
         private ResourceType resourceType;
     }
 
+    @XmlTransient
+    @Getter
+    @Setter
+    private boolean fallback;
+
     private XPathExecutable matchExecutable;
 
     private XPathExecutable acceptExecutable;

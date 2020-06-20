@@ -5,16 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## next version (unreleased)
 
-# Added
+### Added
 
 - Support java.xml.transform.Source/java.xml.transform.StreamSource as Input
 
-# Changed
+### Changed
 
 - Inputs are NOT read into memory (e.g. Byte-Array) prior processing within the validator. This reduces memory consumption.
 
+## UNRELEASED
+### Fixed
+- Validator was creating invalid createReportInput xml in case of no scenrio match
+
+## 1.2.0
+### Added
+
+- Provide access to schematron result through [Result.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Result.java)
+  - *Result#getFailedAsserts()* returns a list of failed asserts found by schematron
+  - *Result#isSchematronValid()* convinience access to evaluate whether schematron was processed without any *FailedAsserts*
+### Changed
+
+- *Result#getAcceptRecommendation()* does not _only_ work when _acceptMatch_ is configured in the scenario
+  - schema correctness is a precondition, if the checked instance is not valid, this evaluates to _REJECTED_
+  - if _acceptMatch_ is configured, the result is based on the boolean result of the xpath expression evaluated against the generated report
+  - if *no* _acceptMatch_ is configured, the result is based on evaluation of schema and schematron correctness
+  - _UNDEFINED_ is only returned, when processing is stopped somehow
+- *Result#isAcceptable()* can now evaluate to true, when no _acceptMatch_ is configured (see above)
+ 
 ## 1.1.3
 
 ### Fixed

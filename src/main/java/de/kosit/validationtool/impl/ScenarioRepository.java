@@ -164,6 +164,7 @@ public class ScenarioRepository {
 
     private ScenarioType createFallback() {
         final ScenarioType t = new ScenarioType();
+        t.setFallback(true);
         t.setName("Fallback-Scenario");
         t.setMatch("count(/)<0");
         final CreateReportType reportType = new CreateReportType();
