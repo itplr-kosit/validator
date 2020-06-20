@@ -19,7 +19,7 @@ The validator distribution contains the following artifacts:
 
 The validator is just an engine and does not know anything about XML Documents and has no own validation rules.
 Validation rules and details are defined in [validation scenarios](docs/configurations.md) which are used to fully configure the validation process.
-All configurations are self-contained modules and deployed and developed on their own.
+All configurations are self-contained modules which are deployed and developed on their own.
 
 ### Third Party Validation Configurations
 
@@ -59,7 +59,8 @@ A concrete example with a specific validator configuration can be found on
 
 ### Application User Interface (API / embedded usage)
 
-The validator can also be used in own Java Applications via the API. Usage would be something like this:
+The validator can also be used in own Java Applications via the API. An example use of the API as follows:
+
 ```java
 Path scenarios = Paths.get("scenarios.xml");
 Configuration config = Configuration.load(scenarios.toUri());
@@ -70,6 +71,7 @@ Result validationResult = validator.checkInput(document);
 
 // examine the result here
 ```
+
 The  [API documentation](./docs/api.md) shows further configuration options.
 
 ### Daemon-Mode
