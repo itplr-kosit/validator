@@ -34,6 +34,7 @@ import org.junit.Test;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
+import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 /**
@@ -51,7 +52,7 @@ public class ExtractHtmlActionTest {
     @Before
     public void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
-        this.action = new ExtractHtmlContentAction(Helper.loadTestRepository(), this.tmpDirectory);
+        this.action = new ExtractHtmlContentAction(TestObjectFactory.createProcessor(), this.tmpDirectory);
     }
 
     @After

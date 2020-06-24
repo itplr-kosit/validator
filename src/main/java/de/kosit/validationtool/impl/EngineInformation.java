@@ -1,5 +1,7 @@
 package de.kosit.validationtool.impl;
 
+import lombok.SneakyThrows;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -63,6 +65,10 @@ public class EngineInformation {
      */
     public static String getFrameworkMajorVersion() {
         return getFrameworkVersion().substring(0, 1);
+    }
+
+    public static String getBuild() {
+        return PROPERTIES.getProperty("build_number");
     }
 
     /**

@@ -21,11 +21,12 @@ package de.kosit.validationtool.cmd;
 
 import java.io.StringWriter;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 
@@ -35,13 +36,16 @@ import net.sf.saxon.s9api.Serializer;
  * @author Andreas Penski
  */
 @Slf4j
+@RequiredArgsConstructor
 class PrintReportAction implements CheckAction {
+
+    private final Processor processor;
 
     @Override
     public void check(Bag results) {
         try {
             final StringWriter writer = new StringWriter();
-            final Serializer serializer = ObjectFactory.createProcessor().newSerializer(writer);
+            final Serializer serializer = processor.newSerializer(writer);
             serializer.serializeNode(results.getReport());
             System.out.print(writer.toString());
         } catch (SaxonApiException e) {

@@ -57,7 +57,7 @@ public class DefaultCheckTest {
     @Before
     public void setup() {
         final CheckConfiguration d = new CheckConfiguration(Simple.SCENARIOS);
-        d.setScenarioRepository(new File(Simple.REPOSITORY).toURI());
+        d.setScenarioRepository(new File(Simple.REPOSITORY_URI).toURI());
         this.implementation = new DefaultCheck(d);
     }
 

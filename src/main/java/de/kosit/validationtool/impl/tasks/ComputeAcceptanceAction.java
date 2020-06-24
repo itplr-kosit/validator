@@ -1,6 +1,6 @@
 package de.kosit.validationtool.impl.tasks;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import java.util.Optional;
 
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 
@@ -25,9 +25,9 @@ public class ComputeAcceptanceAction implements CheckAction {
     @Override
     public void check(final Bag results) {
         if (preCondtionsMatch(results)) {
-            final String acceptMatch = results.getScenarioSelectionResult().getObject().getAcceptMatch();
-            if (results.getSchemaValidationResult().isValid() && isNotBlank(acceptMatch)) {
-                evaluateAcceptanceMatch(results);
+            final Optional<XPathSelector> acceptMatch = results.getScenarioSelectionResult().getObject().getAcceptSelector();
+            if (results.getSchemaValidationResult().isValid() && acceptMatch.isPresent()) {
+                evaluateAcceptanceMatch(results, acceptMatch.get());
             } else {
                 evaluateSchemaAndSchematron(results);
             }
@@ -53,15 +53,14 @@ public class ComputeAcceptanceAction implements CheckAction {
                 .flatMap(e -> e.getActivePatternAndFiredRuleAndFailedAssert().stream()).anyMatch(FailedAssert.class::isInstance);
     }
 
-    private static void evaluateAcceptanceMatch(final Bag results) {
+    private static void evaluateAcceptanceMatch(final Bag results, final XPathSelector selector) {
         try {
-            final XPathSelector selector = results.getScenarioSelectionResult().getObject().getAcceptSelector();
             selector.setContextItem(results.getReport());
             results.setAcceptStatus(selector.effectiveBooleanValue() ? AcceptRecommendation.ACCEPTABLE : AcceptRecommendation.REJECT);
         } catch (final SaxonApiException e) {
-            final String msg = "Error evaluating accept recommendation: %s";
-            log.error(msg);
-            results.addProcessingError(msg);
+            final String msg = String.format("Error evaluating accept recommendation: %s", selector.getUnderlyingXPathContext().toString());
+            log.error(msg, e);
+            results.stopProcessing(msg);
         }
     }
 

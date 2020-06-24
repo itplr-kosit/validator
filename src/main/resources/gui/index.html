@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Validator</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <link href="lib/vue.css" rel="stylesheet">
+
+    <style>
+
+        #result {
+            border: 1pt solid black;
+            margin-top: 20px
+        }
+
+        #result:empty {
+            display: none;
+        }
+
+
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+
+
+  var validate = function () {
+    const input = document.getElementById('file');
+    const output = document.getElementById('result');
+
+    var headers = new Headers();
+    headers.append('Content-Type', 'application/xml');
+
+    var requestOptions = {
+      method: 'POST',
+      headers: headers,
+      body: input.files[0],
+      redirect: 'follow',
+    };
+
+    fetch('/', requestOptions)
+      .then(response => response.text())
+      .then(result => output.innerText = result)
+      .catch(error => output.innerText = result);
+    return false;
+  };
+
+
+</script>
+
+<div data-app id="app">Loading validator... </div>
+<script>
+    window.$docsify = {
+        repo: "itplr-kosit/validator",
+        loadSidebar: false,
+        hideSidebar: true,
+        autoHeader: true,
+    }
+ </script>
+<script src="lib/docsify.min.js"></script>
+
+
+</body>
+</html>

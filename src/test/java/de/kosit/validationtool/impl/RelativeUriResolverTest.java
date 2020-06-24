@@ -33,6 +33,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import de.kosit.validationtool.impl.xml.RelativeUriResolver;
+
 /**
  * Testet den Uri-Resolver der relative auflösen soll
  * 
@@ -56,20 +58,20 @@ public class RelativeUriResolverTest {
     private URIResolver resolver = new RelativeUriResolver(BASE);
 
     @Test
-    public void testSucces() throws TransformerException {
+    public void testSuccess() throws TransformerException {
         final Source resource = this.resolver.resolve("ubl-0001.xml", BASE.toASCIIString());
         assertThat(resource).isNotNull();
     }
 
     @Test
     public void testNotExisting() throws TransformerException {
-        this.exception.expect(IllegalStateException.class);
+        this.exception.expect(TransformerException.class);
         this.resolver.resolve("ubl-0001", BASE.toASCIIString());
     }
 
     @Test
     public void testOutOfPath() throws TransformerException {
-        this.exception.expect(IllegalStateException.class);
+        this.exception.expect(TransformerException.class);
         this.resolver.resolve("../results/report.xml", BASE.toASCIIString());
     }
 

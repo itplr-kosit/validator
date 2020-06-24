@@ -21,7 +21,6 @@ package de.kosit.validationtool.impl;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import java.io.File;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -54,8 +53,7 @@ public class ConversionServiceTest {
     @Before
     public void setup() {
         this.service = new ConversionService();
-        this.repository = new ContentRepository(ObjectFactory.createProcessor(),
-                new File("src/test/resources/examples/repository").toURI());
+        this.repository = Simple.createContentRepository();
     }
 
     @Test
@@ -72,7 +70,7 @@ public class ConversionServiceTest {
     }
 
     @Test
-    public void testUnmarshal() throws URISyntaxException {
+    public void testUnmarshal() {
         final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class);
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
@@ -80,7 +78,7 @@ public class ConversionServiceTest {
 
     @Test
     public void testUnmarshalWithSchema() {
-        final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class, ContentRepository.createSchema(SCHEMA));
+        final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA));
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
@@ -88,13 +86,13 @@ public class ConversionServiceTest {
     @Test
     public void testUnmarshalInvalidXml() {
         this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Invalid.SCENARIOS, Scenarios.class, ContentRepository.createSchema(SCHEMA));
+        this.service.readXml(Invalid.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA));
     }
 
     @Test
     public void testUnmarshalIllFormed() {
         this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, ContentRepository.createSchema(SCHEMA));
+        this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, this.repository.createSchema(SCHEMA));
     }
 
     @Test

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package de.kosit.validationtool.impl;
+package de.kosit.validationtool.impl.xml;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,14 +25,13 @@ import java.io.Reader;
 import java.net.URI;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import net.sf.saxon.Configuration;
-import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.trans.XPathException;
 
 /**
@@ -41,24 +40,24 @@ import net.sf.saxon.trans.XPathException;
  *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver {
+@RequiredArgsConstructor()
+public class RelativeUriResolver implements URIResolver {
 
     /** the base uri */
     private final URI baseUri;
 
     @Override
-    public Source resolve(final String href, final String base) {
+    public Source resolve(final String href, final String base) throws TransformerException {
         final URI resolved = resolve(URI.create(href), URI.create(base));
         if (isUnderBaseUri(resolved)) {
             try {
                 return new StreamSource(resolved.toURL().openStream(), resolved.toASCIIString());
             } catch (final IOException e) {
 
-                throw new IllegalStateException(String.format("Can not resolve required  %s", href), e);
+                throw new TransformerException(String.format("Can not resolve required  %s", href), e);
             }
         } else {
-            throw new IllegalStateException(String
+            throw new TransformerException(String
                     .format("The resolved transformation artifact %s is not within the configured repository %s", resolved, this.baseUri));
         }
     }
@@ -82,22 +81,18 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
     }
 
     private boolean isUnderBaseUri(final URI resolved) {
-        final String base = this.baseUri.toASCIIString().replaceAll("file:/+", "");
+        return isUnderBaseUri(resolved, this.baseUri);
+    }
+
+    private static boolean isUnderBaseUri(final URI resolved, final URI baseUri) {
+        if (resolved == null || baseUri == null) {
+            return false;
+        }
+        final String base = baseUri.toASCIIString().replaceAll("file:/+", "");
         final String r = resolved.toASCIIString().replaceAll("file:/+", "");
         return r.startsWith(base);
     }
 
-    @Override
-    public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
-        if (isUnderBaseUri(absoluteURI)) {
-            try {
-                return new InputStreamReader(absoluteURI.toURL().openStream(), encoding);
-            } catch (final IOException e) {
-                throw new IllegalStateException(String.format("Can not resolve required  %s", absoluteURI), e);
-            }
-        } else {
-            throw new IllegalStateException(String.format(
-                    "The resolved transformation artifact %s is not within the configured repository %s", absoluteURI, this.baseUri));
-        }
-    }
+
+
 }

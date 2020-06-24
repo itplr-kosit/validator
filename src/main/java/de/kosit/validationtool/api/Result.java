@@ -72,7 +72,7 @@ public interface Result {
 
     /**
      * Returns {@link org.oclc.purl.dsdl.svrl.FailedAssert FailedAsserts} of a schematron evaluation.
-     * 
+     *
      * @return list of {@link org.oclc.purl.dsdl.svrl.FailedAssert FailedAsserts}, if any, empty list otherwise
      */
     List<FailedAssert> getFailedAsserts();
@@ -93,7 +93,7 @@ public interface Result {
 
     /**
      * Returns true, if schematron has been checked and the result does not contain any {@link FailedAssert FailedAsserts}.
-     * 
+     *
      * @return true, if valid
      */
     boolean isSchematronValid();

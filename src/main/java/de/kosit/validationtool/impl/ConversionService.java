@@ -36,7 +36,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -47,7 +46,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Document;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,6 +83,15 @@ public class ConversionService {
     private static final int MAX_LOG_CONTENT = 50;
     // context setup
     private JAXBContext jaxbContext;
+
+    public JAXBContext
+
+            getJaxbContext() {
+        if (this.jaxbContext == null) {
+            initialize();
+        }
+        return this.jaxbContext;
+    }
 
     private static <T> QName createQName(final T model) {
         return new QName(model.getClass().getSimpleName().toLowerCase());
@@ -139,13 +146,6 @@ public class ConversionService {
         } catch (final JAXBException e) {
             throw new IllegalStateException(String.format("Can not create JAXB context for given context: %s", contextPath), e);
         }
-    }
-
-    private JAXBContext getJaxbContext() {
-        if (this.jaxbContext == null) {
-            initialize();
-        }
-        return this.jaxbContext;
     }
 
     /**
@@ -233,24 +233,8 @@ public class ConversionService {
         }
     }
 
-    public <T> Document writeDocument(final T input) {
-        if (input == null) {
-            throw new ConversionExeption("Can not serialize null");
-        }
-        final DocumentBuilder builder = ObjectFactory.createDocumentBuilder(false);
-        final Document document = builder.newDocument();
 
-        // Marshal the Object to a Document
-        Marshaller marshaller = null;
-        try {
-            marshaller = getJaxbContext().createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(input, document);
-            return document;
-        } catch (final JAXBException e) {
-            throw new ConversionExeption(String.format("Error serializing Object %s to document", input.getClass().getName()), e);
-        }
-    }
+
 
     public <T> T readDocument(final Source source, final Class<T> type) {
         try {

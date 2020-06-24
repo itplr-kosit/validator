@@ -7,13 +7,25 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.ReaderInputStream;
-import org.apache.commons.lang3.NotImplementedException;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * A validator {@link de.kosit.validationtool.api.Input} based an on a {@link Source}.
+ * A validator {@link de.kosit.validationtool.api.Input} based on a {@link Source}. <br/>
+ * <p>
+ * Note: The various implementations of {@link Source} varies wether the can be read twice or no. This implementation
+ * tries to handle this with respect document identification (hashcode).
+ * 
+ * This class is know to work with:
+ * <ul>
+ * <li>{@link StreamSource} - both {@link java.io.InputStream} based and {@link java.io.Reader} based</li>
+ * <li>{@link javax.xml.transform.dom.DOMSource}</li>
+ * <li>{@link javax.xml.bind.util.JAXBSource}</li>
+ * </ul>
+ * 
+ * Other {@link Source Sources} may work as well, please try and let us know.
+ * </p>
  * 
  * @author Andreas Penski
  */
@@ -40,26 +52,23 @@ public class SourceInput extends AbstractInput {
     }
 
     private void validate() {
-        if (!isSupported()) {
+        if (!isHashcodeComputed() && !isSupported()) {
             throw new IllegalStateException("Unsupported source. Only StreamSource supported yet");
         }
-        if (((StreamSource) this.source).getInputStream() == null && !isHashcodeComputed()) {
+        if (!isHashcodeComputed() && ((StreamSource) this.source).getInputStream() == null) {
             log.warn("No hashcode supplied, will wrap the reader using system default charset");
         }
     }
 
     @Override
     public Source getSource() throws IOException {
-        if (!isSupported()) {
+        if (!isHashcodeComputed() && !isSupported()) {
             throw new IllegalStateException("Unsupported source. Only InputStream-based StreamSource supported yet");
-        }
-        if (isWrappingRequired()) {
-            return wrap();
         }
         if (isConsumed()) {
             throw new IllegalStateException("A SourceInput can only read once");
         }
-        return this.source;
+        return isHashcodeComputed() ? this.source : wrappedSource();
     }
 
     private boolean isSupported() {
@@ -67,23 +76,25 @@ public class SourceInput extends AbstractInput {
     }
 
     private boolean isConsumed() throws IOException {
-        if (!isStreamSource()) {
-            throw new NotImplementedException("Supports only StreamSource yet");
+        if (isStreamSource()) {
+
+            final StreamSource ss = (StreamSource) this.source;
+            try {
+                return (ss.getInputStream() != null && ss.getInputStream().available() == 0)
+                        || (ss.getReader() != null && !ss.getReader().ready());
+            } catch (final IOException e) {
+                log.error("Error checking consumed state", e);
+                return true;
+            }
         }
-        final StreamSource ss = (StreamSource) this.source;
-        try {
-            return (ss.getInputStream() != null && ss.getInputStream().available() == 0)
-                    || (ss.getReader() != null && !ss.getReader().ready());
-        } catch (final IOException e) {
-            return true;
-        }
+        return false;
     }
 
     private boolean isStreamSource() {
         return this.source instanceof StreamSource;
     }
 
-    private Source wrap() {
+    private Source wrappedSource() {
         Source result = this.source;
         if (isStreamSource()) {
             final StreamSource ss = (StreamSource) this.source;

@@ -1,4 +1,4 @@
-package de.kosit.validationtool.cmd;
+package de.kosit.validationtool.daemon;
 
 import static io.restassured.RestAssured.given;
 
@@ -6,38 +6,22 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import de.kosit.validationtool.impl.Helper.Simple;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 /**
  * Testet the Daemon-Mode input , Methoden , Output Content-Type and the success case
  *
  * @author Roula Antoun
+ * @author Andreas Penski
  */
-public class DaemonIT {
-
+public class CheckHandlerIT extends BaseIT {
 
     private static final String APPLICATION_XML = "application/xml";
-
-
-    @Before
-    public void setup() {
-        final String port = System.getProperty("daemon.port");
-        if (port != null) {
-            RestAssured.port = Integer.valueOf(port);
-        }
-        final String baseHost = System.getProperty("daemon.host");
-        if (baseHost != null) {
-            RestAssured.baseURI = baseHost;
-        }
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
 
     @Test
     public void makeSureThatSuccessTest() throws IOException {
@@ -63,15 +47,7 @@ public class DaemonIT {
         return IOUtils.toByteArray(io);
     }
 
-    @Test
-    public void methodNotAllowedTest() {
-        given().when().get("/").then().statusCode(405);
-        given().when().put("/").then().statusCode(405);
-        given().when().patch("/").then().statusCode(405);
-        given().when().delete("/").then().statusCode(405);
-        given().when().head("/").then().statusCode(405);
-        given().when().options("/").then().statusCode(405);
-    }
+
 
     @Test
     public void xmlResultTest() throws IOException {

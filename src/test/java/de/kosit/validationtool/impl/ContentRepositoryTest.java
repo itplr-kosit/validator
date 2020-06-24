@@ -42,7 +42,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XsltExecutable;
 
 /**
- * Testet das ContentRepository.
+ * Testet das repository.
  * 
  * @author Andreas Penski
  */
@@ -55,12 +55,12 @@ public class ContentRepositoryTest {
 
     @Before
     public void setup() {
-        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
+        this.repository = Simple.createContentRepository();
     }
 
     @Test
     public void testCreateSchema() throws MalformedURLException {
-        final Schema schema = ContentRepository.createSchema(Helper.ASSERTION_SCHEMA.toURL());
+        final Schema schema = this.repository.createSchema(Helper.ASSERTION_SCHEMA.toURL());
         assertThat(schema).isNotNull();
     }
 
@@ -73,7 +73,7 @@ public class ContentRepositoryTest {
     @Test
     public void testCreateSchemaNotExisting() throws Exception {
         this.exception.expect(IllegalStateException.class);
-        ContentRepository.createSchema(Simple.NOT_EXISTING.toURL());
+        this.repository.createSchema(Simple.NOT_EXISTING.toURL());
     }
 
     @Test
@@ -114,7 +114,8 @@ public class ContentRepositoryTest {
 
     @Test
     public void loadFromJar() throws URISyntaxException {
-        this.repository = new ContentRepository(ObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
+        assert Helper.JAR_REPOSITORY != null;
+        this.repository = new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), Helper.JAR_REPOSITORY.toURI());
         final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("resources/eRechnung/report.xsl"));
         assertThat(xsltExecutable).isNotNull();
     }
@@ -122,16 +123,28 @@ public class ContentRepositoryTest {
     @Test
     public void testLoadSchema() {
         final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("loading/main.xsd");
-        final Schema schema = ContentRepository.createSchema(main, new ClassPathResourceResolver("/loading"));
+        assert main != null;
+        final Schema schema = this.repository.createSchema(main, new ClassPathResourceResolver("/loading"));
         assertThat(schema).isNotNull();
     }
 
     @Test
     public void testLoadSchemaPackaged() throws URISyntaxException {
         final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("packaged/main.xsd");
-        final Schema schema = ContentRepository.createSchema(main,
+        assert main != null;
+        final Schema schema = this.repository.createSchema(main,
                 new ClassPathResourceResolver(RelativeUriResolverTest.class.getClassLoader().getResource("packaged/").toURI()));
         assertThat(schema).isNotNull();
     }
+
+    // @Test
+    // public void loadFromJar() throws URISyntaxException {
+    // this.content = new ContentRepository(TestObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
+    // this.repository = new ScenarioRepository(this.content);
+    // final CheckConfiguration conf = new CheckConfiguration(
+    // ScenarioRepository.class.getClassLoader().getResource("xrechnung/scenarios.xml").toURI());
+    // ScenarioRepository.initialize(conf);
+    // assertThat(this.repository.getScenarios()).isNotNull();
+    // }
 
 }

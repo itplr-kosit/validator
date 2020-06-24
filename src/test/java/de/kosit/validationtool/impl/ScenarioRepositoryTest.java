@@ -24,20 +24,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.config.TestConfiguration;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
-import de.kosit.validationtool.model.scenarios.Scenarios;
 
+import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -51,72 +51,69 @@ public class ScenarioRepositoryTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    ContentRepository content;
-
     private ScenarioRepository repository;
+
+    private TestConfiguration configInstance;
 
     @Before
     public void setup() {
-        this.content = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
-        final Scenarios def = new Scenarios();
-        final ScenarioType t = new ScenarioType();
-        t.setMatch("//*:name");
-        t.setName("Test");
-        t.initialize(this.content, true);
-        def.getScenario().add(t);
-        this.repository = new ScenarioRepository(this.content);
-        this.repository.initialize(def);
+        this.configInstance = new TestConfiguration();
+        this.configInstance.setContentRepository(new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
+
+        final Scenario s = createScenario();
+        this.configInstance.setScenarios(new ArrayList<>());
+        this.configInstance.getScenarios().add(s);
+        this.repository = new ScenarioRepository(this.configInstance);
+    }
+
+    private Scenario createScenario() {
+        final Scenario s = new Scenario(new ScenarioType());
+        s.setMatchExecutable(createXpath("//*:name"));
+        return s;
     }
 
     @Test
     public void testHappyCase() throws Exception {
-        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
+        final Result<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isTrue();
     }
 
     @Test
     public void testNonMatch() throws Exception {
-        this.repository.getScenarios().getScenario().clear();
-        final ScenarioType fallback = new ScenarioType();
-        fallback.setName("fallback");
-        this.repository.setFallbackScenario(fallback);
-        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
+        this.configInstance.setScenarios(new ArrayList<>());
+        final Scenario fallback = createFallback();
+        this.configInstance.setFallbackScenario(fallback);
+        final Result<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");
 
+    }
+
+    private static Scenario createFallback() {
+        final ScenarioType t = new ScenarioType();
+        t.setName("fallback");
+        final Scenario fallback = new Scenario(t);
+        fallback.setFallback(true);
+        return fallback;
     }
 
     @Test
     public void testMultiMatch() throws Exception {
-        final ScenarioType t = new ScenarioType();
-        t.setMatch("//*:name");
-        t.setName("Test");
-        t.initialize(this.content, true);
-        this.repository.getScenarios().getScenario().add(t);
-        final ScenarioType fallback = new ScenarioType();
-        fallback.setName("fallback");
-        this.repository.setFallbackScenario(fallback);
-        final Result<ScenarioType, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
+        this.configInstance.getScenarios().add(createScenario());
+        this.configInstance.setFallbackScenario(createFallback());
+        final Result<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");
     }
 
-    private static XdmNode load(final URI uri) throws IOException {
-        final DocumentParseAction p = new DocumentParseAction();
-        return DocumentParseAction.parseDocument(read(uri.toURL())).getObject();
+    private XdmNode load(final URI uri) throws IOException {
+        return Helper.parseDocument(this.configInstance.getContentRepository().getProcessor(), read(uri.toURL())).getObject();
     }
 
-    @Test
-    public void loadFromJar() throws URISyntaxException {
-        this.content = new ContentRepository(ObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
-        this.repository = new ScenarioRepository(this.content);
-        final CheckConfiguration conf = new CheckConfiguration(
-                ScenarioRepository.class.getClassLoader().getResource("xrechnung/scenarios.xml").toURI());
-        this.repository.initialize(conf);
-        assertThat(this.repository.getScenarios()).isNotNull();
+    private XPathExecutable createXpath(final String expression) {
+        return this.configInstance.getContentRepository().createXPath(expression, new HashMap<>());
     }
-
 }

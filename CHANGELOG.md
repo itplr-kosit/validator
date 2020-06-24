@@ -6,19 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## next version (unreleased)
+## 1.3.0
 
 ### Added
-
-- Support java.xml.transform.Source/java.xml.transform.StreamSource as Input
+- Added a builder style configuration API to configure scenarios
+- Added an option to configure xml security e.g. to load from http sources or not from a specific repository 
+(so loading is configurable less restrictive, default strategy is to only load from a local repository)
+- Support java.xml.transform.Source as Input
 
 ### Changed
-
 - Inputs are NOT read into memory (e.g. Byte-Array) prior processing within the validator. This reduces memory consumption.
+- CheckConfiguration is deprecated now. Use Configuration.load(...) or Configuration.build(...)
+- Overall processing of xml files is based on Saxon s9api. No JAXP or SAX classes are used by 
+the validator (this further improves performance and memory consumption)
 
-## UNRELEASED
 ### Fixed
-- Validator was creating invalid createReportInput xml in case of no scenrio match
+- Validator was creating invalid createReportInput xml in case of no scenrio match 
+
 
 ## 1.2.0
 ### Added

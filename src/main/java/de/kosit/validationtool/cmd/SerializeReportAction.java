@@ -24,9 +24,9 @@ import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.impl.ObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 
@@ -41,12 +41,14 @@ class SerializeReportAction implements CheckAction {
 
     private final Path outputDirectory;
 
+    private final Processor processor;
+
     @Override
     public void check(Bag results) {
         final Path file = outputDirectory.resolve(results.getName() + "-report.xml");
         try {
             log.info("Serializing result to {}", file.toAbsolutePath());
-            final Serializer serializer = ObjectFactory.createProcessor().newSerializer(file.toFile());
+            final Serializer serializer = processor.newSerializer(file.toFile());
             serializer.serializeNode(results.getReport());
         } catch (SaxonApiException e) {
             log.error("Can not serialize result report to {}", file.toAbsolutePath(), e);

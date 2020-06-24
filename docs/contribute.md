@@ -25,3 +25,14 @@ due to historical reasons. This not only works in Eclipse but also in IntelliJ (
 The configuration can be found in `.settings`-directory. For IntelliJ this is all set up. Additionally this should work in Eclipse out of the box.
 Another potential usage scenario would be to integrate the formatter via git hooks into the commit-pipeline (e.g  [Example Hook](https://gist.github.com/ktoso/708972)  ).
 For other IDEs you are on your own.
+
+## Build
+
+### Requirements
+
+* Maven > 3.0.0
+* Java > 8 update 111
+
+### Procedure
+
+ `mvn install` generates two different packages in the `dist` directory:

@@ -29,6 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.model.scenarios.Scenarios;
 
 /**
@@ -51,33 +52,35 @@ public class VersioningTest {
 
     private ConversionService service;
 
+    private ContentRepository repository;
 
     @Before
     public void setup() {
+        this.repository = Simple.createContentRepository();
         this.service = new ConversionService();
     }
 
     @Test
     public void testBase() throws URISyntaxException {
-        final Scenarios result = this.service.readXml(BASE.toURI(), Scenarios.class, ContentRepository.getScenarioSchema());
+        final Scenarios result = this.service.readXml(BASE.toURI(), Scenarios.class, this.repository.getScenarioSchema());
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testFrameworkIncrement() throws URISyntaxException {
-        final Scenarios result = this.service.readXml(INCREMENT.toURI(), Scenarios.class, ContentRepository.getScenarioSchema());
+        final Scenarios result = this.service.readXml(INCREMENT.toURI(), Scenarios.class, this.repository.getScenarioSchema());
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testNewFeature() throws URISyntaxException {
         this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, ContentRepository.getScenarioSchema());
+        this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, this.repository.getScenarioSchema());
     }
 
     @Test
     public void testNewVersion() throws URISyntaxException {
         this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, ContentRepository.getScenarioSchema());
+        this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, this.repository.getScenarioSchema());
     }
 }

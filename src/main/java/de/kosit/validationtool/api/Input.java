@@ -20,7 +20,6 @@
 package de.kosit.validationtool.api;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.xml.transform.Source;
 
@@ -54,10 +53,10 @@ public interface Input {
     String getDigestAlgorithm();
 
     /**
-     * Opens a new {@link InputStream } for this input which carries the actual data
+     * Creates a new {@link Source } for this input which carries the actual data
      * 
-     * @return an open {@link InputStream}
-     * @throws IOException on I/O while opening the stream
+     * @return an open {@link Source}
+     * @throws IOException on I/O while opening the source
      */
     Source getSource() throws IOException;
 

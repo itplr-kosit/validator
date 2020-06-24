@@ -13,13 +13,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Helper.Simple;
-import de.kosit.validationtool.impl.ObjectFactory;
-import de.kosit.validationtool.impl.model.BaseScenario.Transformation;
+import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.Scenario.Transformation;
+import de.kosit.validationtool.impl.xml.RelativeUriResolver;
 import de.kosit.validationtool.model.scenarios.ResourceType;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
 
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
@@ -36,15 +35,14 @@ public class SchematronValidationActionTest {
 
     @Before
     public void setup() {
-        final ContentRepository repository = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
-        this.action = new SchematronValidationAction(repository, new ConversionService());
+        this.action = new SchematronValidationAction(new RelativeUriResolver(Simple.REPOSITORY_URI), new ConversionService());
     }
 
     @Test
     public void testProcessingError() throws IOException, SaxonApiException {
         final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()), true);
 
-        final ScenarioType scenario = bag.getScenarioSelectionResult().getObject();
+        final Scenario scenario = bag.getScenarioSelectionResult().getObject();
         final XsltExecutable exec = mock(XsltExecutable.class);
         final XsltTransformer transformer = mock(XsltTransformer.class);
         doThrow(new SaxonApiException("invalid")).when(transformer).transform();

@@ -42,21 +42,21 @@
         <jaxb:schemaBindings>
             <jaxb:package name="de.kosit.validationtool.model.scenarios"/>
         </jaxb:schemaBindings>
-        <jaxb:bindings node="//xs:complexType[@name='ScenarioType']">
-            <inheritance:extends>de.kosit.validationtool.impl.model.BaseScenario</inheritance:extends>
-        </jaxb:bindings>
     </jaxb:bindings>
     <jaxb:bindings schemaLocation="../xsd/assertions.xsd">
         <jaxb:schemaBindings>
-            <jaxb:package name="de.kosit.validationtool.cmd.assertions"/>
+            <jaxb:package name="de.kosit.validationtool.cmd.assertions" />
         </jaxb:schemaBindings>
     </jaxb:bindings>
-
     <jaxb:bindings schemaLocation="../xsd/svrl-kosit.xsd">
-
         <jaxb:bindings node="//xs:element[@name='schematron-output']/xs:complexType">
             <inheritance:extends>de.kosit.validationtool.impl.model.BaseOutput</inheritance:extends>
         </jaxb:bindings>
+    </jaxb:bindings>
+    <jaxb:bindings schemaLocation="../xsd/daemon.xsd">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.kosit.validationtool.model.daemon" />
+        </jaxb:schemaBindings>
     </jaxb:bindings>
 
 </jaxb:bindings>

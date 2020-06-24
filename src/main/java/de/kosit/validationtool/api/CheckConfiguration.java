@@ -20,24 +20,30 @@
 package de.kosit.validationtool.api;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.impl.RelativeUriResolver;
+import de.kosit.validationtool.config.ConfigurationLoader;
+import de.kosit.validationtool.impl.ContentRepository;
+import de.kosit.validationtool.impl.Scenario;
 
 /**
  * Zentrale Konfigration einer Prüf-Instanz.
  * 
  * @author Andreas Penski
+ * @deprecated since 2.0 use {@link Configuration} instead
  */
 @Getter
 @Setter
 @Slf4j
 @RequiredArgsConstructor
-public class CheckConfiguration {
+@Deprecated
+public class CheckConfiguration implements Configuration {
 
     /**
      * URL, die auf die scenerio.xml Datei zeigt.
@@ -49,22 +55,51 @@ public class CheckConfiguration {
      */
     private URI scenarioRepository;
 
+    private ConfigurationLoader loader;
 
-    /**
-     * Liefert das Repository mit den Artefakten der einzelnen Szenarien.
-     * 
-     * @return uri die durch entsprechende resolver aufgelöst werden kann
-     */
-    public URI getScenarioRepository() {
-        if (this.scenarioRepository == null) {
-            this.scenarioRepository = createDefaultRepository();
+    private Configuration delegate;
+
+    private Configuration getDelegate() {
+        if (this.delegate == null) {
+            this.delegate = Configuration.load(this.scenarioDefinition, this.scenarioRepository).build();
         }
-        return this.scenarioRepository;
+        return this.delegate;
     }
 
-    private URI createDefaultRepository() {
-        log.info("Creating default scenario repository (alongside scenario definition)");
-        return RelativeUriResolver.resolve(URI.create("."), this.scenarioDefinition);
+    @Override
+    public List<Scenario> getScenarios() {
+        return getDelegate().getScenarios();
     }
 
+    @Override
+    public Scenario getFallbackScenario() {
+        return getDelegate().getFallbackScenario();
+    }
+
+    @Override
+    public String getDate() {
+        return getDelegate().getDate();
+    }
+
+    @Override
+    public Map<String, Object> getAdditionalParameters() {
+        return this.delegate.getAdditionalParameters();
+    }
+
+    @Override
+    public String getName() {
+        return getDelegate().getName();
+    }
+
+    @Override
+    public String getAuthor() {
+        return getDelegate().getAuthor();
+    }
+
+
+
+    @Override
+    public ContentRepository getContentRepository() {
+        return getDelegate().getContentRepository();
+    }
 }

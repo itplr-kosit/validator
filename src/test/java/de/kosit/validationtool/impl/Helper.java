@@ -19,7 +19,6 @@
 
 package de.kosit.validationtool.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -28,16 +27,17 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.w3c.dom.Document;
+import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.tasks.DocumentParseAction;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
-import net.sf.saxon.dom.NodeOverNodeInfo;
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -47,6 +47,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 
 public class Helper {
+
     public static class Simple {
 
         public static final URI ROOT = EXAMPLES_DIR.resolve("simple/");
@@ -61,7 +62,7 @@ public class Helper {
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
-        public static final URI REPOSITORY = ROOT.resolve("repository/");
+        public static final URI REPOSITORY_URI = ROOT.resolve("repository/");
 
         public static final URI INVALID = ROOT.resolve("input/simple-invalid.xml");
 
@@ -73,10 +74,17 @@ public class Helper {
 
         public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
 
-        public static final URI REPORT_XSL = REPOSITORY.resolve("report.xsl");
+        public static final URI REPORT_XSL = REPOSITORY_URI.resolve("report.xsl");
+
+        public static final URI SCHEMA = REPOSITORY_URI.resolve("simple.xsd");
+
+        public static final ContentRepository createContentRepository() {
+            final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
+            return new ContentRepository(strategy, Simple.REPOSITORY_URI);
+        }
 
         public static URI getSchemaLocation() {
-            return ROOT.resolve("repository/simple.xsd");
+            return SCHEMA;
         }
     }
 
@@ -89,11 +97,18 @@ public class Helper {
         public static final URI SCENARIOS_ILLFORMED = ROOT.resolve("scenarios-illformed.xml");
     }
 
+    public static class Resolving {
+
+        public static final URI ROOT = EXAMPLES_DIR.resolve("resolving/");
+
+        public static final URI SCHEMA_WITH_REMOTE_REFERENCE = ROOT.resolve("withRemote.xsd");
+
+        public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
+    }
 
     public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
 
     public static final URI ASSERTION_SCHEMA = MODEL_ROOT.resolve("xsd/assertions.xsd");
-
 
     public static final URI TEST_ROOT = Paths.get("src/test/resources").toUri();
 
@@ -101,14 +116,7 @@ public class Helper {
 
     public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
 
-
-
     public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("xrechnung/repository/");
-
-
-
-
-
 
     /**
      * Lädt ein XML-Dokument von der gegebenen URL
@@ -118,7 +126,7 @@ public class Helper {
      */
     public static XdmNode load(final URL url) {
         try ( final InputStream input = url.openStream() ) {
-            return ObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
+            return TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
         } catch (final SaxonApiException | IOException e) {
             throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
 
@@ -134,27 +142,31 @@ public class Helper {
         return c.readXml(url.toURI(), type);
     }
 
-    /**
-     * Lädt das default test repository mit Artefacten für Unit-Tests
-     * 
-     * @return ein {@link ContentRepository}
-     */
-    public static ContentRepository loadTestRepository() {
-        return new ContentRepository(ObjectFactory.createProcessor(), new File("src/test/resources/examples/repository").toURI());
-    }
-
-    public static String serialize(final Document doc) {
+    public static String serialize(final XdmNode node) {
         try ( final StringWriter writer = new StringWriter() ) {
-            final Transformer transformer = ObjectFactory.createTransformer(true);
-            transformer.transform(new DOMSource(doc), new StreamResult(writer));
+            final Processor processor = Helper.getTestProcessor();
+            final Serializer serializer = processor.newSerializer(writer);
+            serializer.serializeNode(node);
             return writer.toString();
-        } catch (final IOException | TransformerException e) {
+        } catch (final SaxonApiException | IOException e) {
             throw new IllegalStateException("Can not serialize document", e);
         }
     }
 
-    public static String serialize(final XdmNode node) {
-        return serialize((Document) NodeOverNodeInfo.wrap(node.getUnderlyingNode()));
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final Input input) {
+        return new DocumentParseAction(processor).parseDocument(input);
     }
 
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Input input) {
+        return new DocumentParseAction(getTestProcessor()).parseDocument(input);
+    }
+
+    public static Processor getTestProcessor() {
+        // is always the same at the moment
+        return createProcessor();
+    }
+
+    public static Processor createProcessor() {
+        return ResolvingMode.STRICT_RELATIVE.getStrategy().getProcessor();
+    }
 }

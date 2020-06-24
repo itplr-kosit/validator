@@ -1,9 +1,13 @@
 package de.kosit.validationtool.impl.tasks;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import javax.xml.validation.Schema;
 
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
@@ -12,8 +16,8 @@ import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper;
-import de.kosit.validationtool.impl.Helper.Simple;
-import de.kosit.validationtool.impl.ObjectFactory;
+import de.kosit.validationtool.impl.ResolvingMode;
+import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
@@ -44,14 +48,15 @@ public class TestBagBuilder {
     public static Bag createBag(final Input input, final boolean parse, final CreateReportInput reportInput) {
         final Bag bag = new Bag(input, reportInput);
         if (parse) {
-            bag.setParserResult(DocumentParseAction.parseDocument(bag.getInput()));
+            bag.setParserResult(Helper.parseDocument(bag.getInput()));
         }
         bag.setScenarioSelectionResult(new Result<>(createScenario(Helper.Simple.getSchemaLocation())));
         return bag;
     }
 
-    private static ScenarioType createScenario(final URI schemafile) {
-        final ContentRepository repository = new ContentRepository(ObjectFactory.createProcessor(), Simple.REPOSITORY);
+    private static Scenario createScenario(final URI schemafile) {
+
+        try {
         final ScenarioType t = new ScenarioType();
         final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
         final ResourceType r = new ResourceType();
@@ -59,12 +64,21 @@ public class TestBagBuilder {
         r.setName("invoice");
         v.getResource().add(r);
         t.setValidateWithXmlSchema(v);
-        t.initialize(repository, true);
-        return t;
+            final Scenario scenario = new Scenario(t);
+            scenario.setSchema(createSchema(schemafile.toURL()));
+            return scenario;
+        } catch (final MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static Schema createSchema(final URL toURL) {
+        final ContentRepository contentRepository = new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null);
+        return contentRepository.createSchema(toURL);
     }
 
     private static XdmNode createReport() {
-        return DocumentParseAction.parseDocument(InputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
+        return Helper.parseDocument(InputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
     }
 
     static Bag createBag(final boolean schemaValid, final boolean schematronValid) {
