@@ -5,7 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## 1.3.0
 
 ### Added
@@ -20,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Overall processing of xml files is based on Saxon s9api. No JAXP or SAX classes are used by 
 the validator (this further improves performance and memory consumption)
 
+## 1.2.1
 ### Fixed
 - Validator was creating invalid createReportInput xml in case of no scenrio match 
 
