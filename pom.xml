@@ -6,7 +6,7 @@
     <name>KoSIT XML Prüftool Implementierung</name>
 
     <groupId>de.kosit</groupId>
-    <version>1.2.1</version>
+    <version>1.2.2-SNAPSHOT</version>
 
     <artifactId>validationtool</artifactId>
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
@@ -451,7 +451,7 @@
     <scm>
         <connection>https://github.com/itplr-kosit/validationtool.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>v1.2.1</tag>
+        <tag>v1.1.1</tag>
     </scm>
 
 </project> <!--
