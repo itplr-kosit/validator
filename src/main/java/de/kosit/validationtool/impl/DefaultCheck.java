@@ -92,7 +92,7 @@ public class DefaultCheck implements Check {
     protected static CreateReportInput createReport() {
         final CreateReportInput type = new CreateReportInput();
         final EngineType e = new EngineType();
-        e.setName(EngineInformation.getName());
+        e.setName(EngineInformation.getName() + " " + EngineInformation.getVersion());
         type.setEngine(e);
         type.setTimestamp(createTimestamp());
         type.setFrameworkVersion(EngineInformation.getFrameworkVersion());
