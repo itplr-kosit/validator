@@ -41,6 +41,12 @@
                 <location>simple.xsd</location>
             </resource>
         </validateWithXmlSchema>
+        <validateWithSchematron>
+            <resource>
+                <name>Sample Schematron</name>
+                <location>simple.xsl</location>
+            </resource>
+        </validateWithSchematron>
         <createReport>
             <resource>
                 <name>Report für eRechnung</name>
@@ -58,13 +64,18 @@
         </description>
         <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
         <match>/test:foo</match>
-
         <validateWithXmlSchema>
             <resource>
                 <name>Sample Schema</name>
                 <location>simple.xsd</location>
             </resource>
         </validateWithXmlSchema>
+        <validateWithSchematron>
+            <resource>
+                <name>Sample Schematron</name>
+                <location>simple.xsl</location>
+            </resource>
+        </validateWithSchematron>
         <createReport>
             <resource>
                 <name>Report für eRechnung</name>

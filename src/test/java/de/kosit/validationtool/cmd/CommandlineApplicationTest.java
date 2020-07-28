@@ -141,7 +141,7 @@ public class CommandlineApplicationTest {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.EXAMPLES).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(this.commandLine.getErrorOutput()).contains("Processing 6 object(s) completed");
+        assertThat(this.commandLine.getErrorOutput()).contains("Processing 8 object(s) completed");
     }
 
     @Test

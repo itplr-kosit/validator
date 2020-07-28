@@ -77,7 +77,7 @@ public class InputFactoryTest {
     public void testHashCodeGeneration() throws IOException {
         final byte[] s1 = drain(InputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
         final byte[] s2 = drain(InputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
-        final byte[] s3 = drain(InputFactory.read(Simple.INVALID.toURL())).getHashCode();
+        final byte[] s3 = drain(InputFactory.read(Simple.SCHEMA_INVALID.toURL())).getHashCode();
         assertThat(s1).isNotEmpty();
         assertThat(s1).isEqualTo(s2);
         assertThat(s3).isNotEmpty();

@@ -38,7 +38,7 @@ public class SimpleScenarioCheckTest {
 
     @Test
     public void testInvalid() throws MalformedURLException {
-        final Result result = this.implementation.checkInput(InputFactory.read(Simple.INVALID.toURL()));
+        final Result result = this.implementation.checkInput(InputFactory.read(Simple.SCHEMA_INVALID.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
         assertThat(result.getSchemaViolations()).isNotEmpty();

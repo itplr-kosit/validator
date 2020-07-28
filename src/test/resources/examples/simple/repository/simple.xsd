@@ -7,7 +7,7 @@
 
     <xs:complexType name="SimpleType">
         <xs:sequence>
-            <xs:element name="inner" type="xs:string" />
+            <xs:element name="inner" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="content" type="xs:anyType" />
         </xs:sequence>
     </xs:complexType>

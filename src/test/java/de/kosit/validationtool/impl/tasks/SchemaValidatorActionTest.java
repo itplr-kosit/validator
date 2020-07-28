@@ -78,7 +78,7 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testValidationFailure() throws MalformedURLException {
-        final Input input = InputFactory.read(Simple.INVALID.toURL());
+        final Input input = InputFactory.read(Simple.SCHEMA_INVALID.toURL());
         final CheckAction.Bag bag = createBag(input);
         this.service.check(bag);
         assertThat(bag.getSchemaValidationResult().isValid()).isFalse();

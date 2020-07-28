@@ -20,9 +20,11 @@
 package de.kosit.validationtool.impl;
 
 import static de.kosit.validationtool.api.InputFactory.read;
+import static de.kosit.validationtool.impl.Helper.Simple.FOO_SCHEMATRON_INVALID;
 import static de.kosit.validationtool.impl.Helper.Simple.GARBAGE;
 import static de.kosit.validationtool.impl.Helper.Simple.NOT_WELLFORMED;
 import static de.kosit.validationtool.impl.Helper.Simple.REJECTED;
+import static de.kosit.validationtool.impl.Helper.Simple.SCHEMATRON_INVALID;
 import static de.kosit.validationtool.impl.Helper.Simple.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,8 +50,6 @@ import de.kosit.validationtool.impl.Helper.Simple;
  */
 public class DefaultCheckTest {
 
-
-
     public static final int MULTI_COUNT = 5;
 
     private DefaultCheck implementation;
@@ -67,6 +67,8 @@ public class DefaultCheckTest {
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
+        assertThat(doc.isSchematronValid()).isTrue();
+        assertThat(doc.isSchemaValid()).isTrue();
         assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
@@ -150,6 +152,39 @@ public class DefaultCheckTest {
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
+        assertThat(result.isProcessingSuccessful()).isTrue();
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.isAcceptable()).isFalse();
+        assertThat(result.getReport()).isNotNull();
+        assertThat(result.getReportDocument()).isNotNull();
+    }
+
+    @Test
+    public void testSchematronFailed() {
+        final Result result = this.implementation.checkInput(read(SCHEMATRON_INVALID));
+        assertThat(result).isNotNull();
+        assertThat(result.isWellformed()).isTrue();
+        assertThat(result.isSchemaValid()).isTrue();
+        assertThat(result.getFailedAsserts()).isNotEmpty();
+        assertThat(result.isSchematronValid()).isFalse();
+        assertThat(result.isProcessingSuccessful()).isTrue();
+        // acceptMatch overules schematron!!!
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        assertThat(result.isAcceptable()).isTrue();
+        assertThat(result.getReport()).isNotNull();
+        assertThat(result.getReportDocument()).isNotNull();
+
+    }
+
+    @Test
+    public void testSchematronFailedWithoutAcceptMatch() {
+        final Result result = this.implementation.checkInput(read(FOO_SCHEMATRON_INVALID));
+        assertThat(result).isNotNull();
+        assertThat(result.isWellformed()).isTrue();
+        assertThat(result.isSchemaValid()).isTrue();
+        result.getFailedAsserts();
+        assertThat(result.isSchematronValid()).isFalse();
+        assertThat(result.getFailedAsserts()).isNotEmpty();
         assertThat(result.isProcessingSuccessful()).isTrue();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
         assertThat(result.isAcceptable()).isFalse();

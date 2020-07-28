@@ -38,7 +38,7 @@ public class CheckHandlerIT extends BaseIT {
     @Test
     @Ignore // no default error report yet
     public void internalServerErrorTest() throws IOException {
-        try ( final InputStream io = Simple.INVALID.toURL().openStream() ) {
+        try ( final InputStream io = Simple.SCHEMA_INVALID.toURL().openStream() ) {
             given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(200);
         }
     }

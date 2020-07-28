@@ -50,7 +50,7 @@ public class SchemaBuilderTest {
 
     @Test
     public void testInvalidSchema() {
-        final SchemaBuilder builder = schema("myname").schemaLocation(Simple.INVALID);
+        final SchemaBuilder builder = schema("myname").schemaLocation(Simple.SCHEMA_INVALID);
         final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = builder.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isFalse();

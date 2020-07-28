@@ -58,13 +58,17 @@ public class Helper {
 
         public static final URI FOO = Simple.ROOT.resolve("input/foo.xml");
 
+        public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");
+
         public static final URI REJECTED = Simple.ROOT.resolve("input/withManualReject.xml");
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
         public static final URI REPOSITORY_URI = ROOT.resolve("repository/");
 
-        public static final URI INVALID = ROOT.resolve("input/simple-invalid.xml");
+        public static final URI SCHEMA_INVALID = ROOT.resolve("input/simple-schema-invalid.xml");
+
+        public static final URI SCHEMATRON_INVALID = ROOT.resolve("input/simple-schematron-invalid.xml");
 
         public static final URI NOT_WELLFORMED = ROOT.resolve("input/simple-not-wellformed.xml");
 
@@ -95,6 +99,7 @@ public class Helper {
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
         public static final URI SCENARIOS_ILLFORMED = ROOT.resolve("scenarios-illformed.xml");
+
     }
 
     public static class Resolving {
