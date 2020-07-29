@@ -7,6 +7,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.Processor;
 
 /**
@@ -28,7 +29,7 @@ public interface ResolvingConfigurationStrategy {
     /**
      * Creates a preconfigured {@link SchemaFactory} for loading {@link javax.xml.validation.Schema} objects. The
      * implementation is responsible for xml security. Take care
-     * 
+     *
      * @return preconfigured {@link SchemaFactory}
      */
     SchemaFactory createSchemaFactory();
@@ -37,9 +38,9 @@ public interface ResolvingConfigurationStrategy {
      * Returns a preconfigured {@link Processor Saxon Processor} for various tasks within the Validator. The validator
      * leverages the saxon s9api for internal processing e.g. xml reading and writing. So this is the main object to secure
      * for reading, transforming and writing xml files.
-     * 
+     *
      * Note: you need exactly one instance for all validator related processing.
-     * 
+     *
      * @return a preconfigured {@link Processor}
      */
     Processor getProcessor();
@@ -52,11 +53,19 @@ public interface ResolvingConfigurationStrategy {
      * This URIResolver is used to dereference the URIs appearing in <code>xsl:import</code>, <code>xsl:include</code>, and
      * <code>xsl:import-schema</code> declarations.
      * </p>
-     * 
+     *
      * @param scenarioRepository an optional repository, your implementation might not need this
      * @return a preconfigured {@link URIResolver}
      */
     URIResolver createResolver(URI scenarioRepository);
+
+    /**
+     * Creates a specific implementation for resolving objects referenced via XSLT's <code>unparsed-text()</code> function.
+     * 
+     * @param scenarioRepository an optional repository, your implementation might not need this
+     * @return a preconfigured {@link net.sf.saxon.lib.UnparsedTextURIResolver} or null for using saxons default
+     */
+    UnparsedTextURIResolver createUnparsedTextURIResolver(URI scenarioRepository);
 
     /**
      * Creates a preconfigured {@link Validator } instance for a given schema for xml file validation. The implementation

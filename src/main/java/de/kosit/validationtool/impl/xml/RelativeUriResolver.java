@@ -20,7 +20,6 @@
 package de.kosit.validationtool.impl.xml;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 
@@ -32,6 +31,8 @@ import javax.xml.transform.stream.StreamSource;
 import lombok.RequiredArgsConstructor;
 
 import net.sf.saxon.Configuration;
+import net.sf.saxon.lib.StandardUnparsedTextResolver;
+import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.trans.XPathException;
 
 /**
@@ -41,7 +42,7 @@ import net.sf.saxon.trans.XPathException;
  * @author Andreas Penski
  */
 @RequiredArgsConstructor()
-public class RelativeUriResolver implements URIResolver {
+public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver {
 
     /** the base uri */
     private final URI baseUri;
@@ -93,6 +94,16 @@ public class RelativeUriResolver implements URIResolver {
         return r.startsWith(base);
     }
 
+    // from UnparsedTextURIResolver
+    @Override
+    public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
+        if (isUnderBaseUri(absoluteURI, this.baseUri)) {
+            return new StandardUnparsedTextResolver().resolve(absoluteURI, encoding, config);
+        } else {
+            throw new XPathException(String.format("The resolved transformation artifact %s is not within the configured repository %s",
+                    absoluteURI, this.baseUri));
+        }
+    }
 
 
 }

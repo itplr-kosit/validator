@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `getFailedAsserts()` and `isSchematronValid()` in [DefaultResult.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/impl/DefaultResult.java)
 do not reflect actual schematron validation result
+- exception while resolving when using XSLT's `unparsed-text()` function within report generation
 
 ### Changed
 - engine info contains version number of the validator (configurations can output this in the report for maintainance puposes)

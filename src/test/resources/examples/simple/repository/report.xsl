@@ -37,6 +37,9 @@
             <result>
                 <xsl:copy-of select="." />
             </result>
+            <text>
+                <xsl:value-of select="unparsed-text('some.txt','UTF-8')" />
+            </text>
         </report>
     </xsl:template>
 
