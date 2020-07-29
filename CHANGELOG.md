@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `getFailedAsserts()` and `isSchematronValid()` in [DefaultResult.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/impl/DefaultResult.java)
 do not reflect actual schematron validation result
+- Processing aborts on schematron execution errors (e.g. errors within schematron logic). The validator now generates a report in such cases.
 - exception while resolving when using XSLT's `unparsed-text()` function within report generation
 
 ### Changed

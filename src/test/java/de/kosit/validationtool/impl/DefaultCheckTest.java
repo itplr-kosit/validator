@@ -25,6 +25,7 @@ import static de.kosit.validationtool.impl.Helper.Simple.GARBAGE;
 import static de.kosit.validationtool.impl.Helper.Simple.NOT_WELLFORMED;
 import static de.kosit.validationtool.impl.Helper.Simple.REJECTED;
 import static de.kosit.validationtool.impl.Helper.Simple.SCHEMATRON_INVALID;
+import static de.kosit.validationtool.impl.Helper.Simple.SIMPLE_VALID;
 import static de.kosit.validationtool.impl.Helper.Simple.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,18 +53,25 @@ public class DefaultCheckTest {
 
     public static final int MULTI_COUNT = 5;
 
-    private DefaultCheck implementation;
+    private DefaultCheck validCheck;
+
+    // for checking certain error scenarios.
+    private DefaultCheck errorCheck;
 
     @Before
     public void setup() {
-        final CheckConfiguration d = new CheckConfiguration(Simple.SCENARIOS);
-        d.setScenarioRepository(new File(Simple.REPOSITORY_URI).toURI());
-        this.implementation = new DefaultCheck(d);
+        final CheckConfiguration validConfig = new CheckConfiguration(Simple.SCENARIOS);
+        validConfig.setScenarioRepository(new File(Simple.REPOSITORY_URI).toURI());
+        this.validCheck = new DefaultCheck(validConfig);
+
+        final CheckConfiguration errorConfig = new CheckConfiguration(Simple.ERROR_SCENARIOS);
+        errorConfig.setScenarioRepository(new File(Simple.REPOSITORY_URI).toURI());
+        this.errorCheck = new DefaultCheck(errorConfig);
     }
 
     @Test
     public void testHappyCase() {
-        final Result doc = this.implementation.checkInput(read(Simple.SIMPLE_VALID));
+        final Result doc = this.validCheck.checkInput(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
@@ -74,7 +82,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testWithoutAcceptMatch() {
-        final Result doc = this.implementation.checkInput(read(Simple.FOO));
+        final Result doc = this.validCheck.checkInput(read(Simple.FOO));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
@@ -83,27 +91,27 @@ public class DefaultCheckTest {
 
     @Test
     public void testHappyCaseDocument() {
-        final Document doc = this.implementation.check(read(Simple.SIMPLE_VALID));
+        final Document doc = this.validCheck.check(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
     }
 
     @Test
     public void testMultipleCase() {
-        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(Simple.SIMPLE_VALID)).collect(Collectors.toList());
-        final List<Result> docs = this.implementation.checkInput(input);
+        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
+        final List<Result> docs = this.validCheck.checkInput(input);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
     @Test
     public void testMultipleCaseDocument() {
-        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(Simple.SIMPLE_VALID)).collect(Collectors.toList());
-        final List<Document> docs = this.implementation.check(input);
+        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
+        final List<Document> docs = this.validCheck.check(input);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
     @Test
     public void testExtractHtml() {
-        final DefaultResult doc = (DefaultResult) this.implementation.checkInput(read(Simple.SIMPLE_VALID));
+        final DefaultResult doc = (DefaultResult) this.validCheck.checkInput(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
@@ -114,7 +122,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testGarbage() {
-        final Result result = this.implementation.checkInput(read(GARBAGE));
+        final Result result = this.validCheck.checkInput(read(GARBAGE));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isFalse();
         assertThat(result.isSchemaValid()).isFalse();
@@ -123,7 +131,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testNoScenario() {
-        final Result result = this.implementation.checkInput(read(UNKNOWN));
+        final Result result = this.validCheck.checkInput(read(UNKNOWN));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
@@ -134,7 +142,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testNotWellFormed() {
-        final Result result = this.implementation.checkInput(read(NOT_WELLFORMED));
+        final Result result = this.validCheck.checkInput(read(NOT_WELLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isFalse();
         assertThat(result.isSchemaValid()).isFalse();
@@ -146,7 +154,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testRejectAcceptMatch() {
-        final Result result = this.implementation.checkInput(read(REJECTED));
+        final Result result = this.validCheck.checkInput(read(REJECTED));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
@@ -159,7 +167,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testSchematronFailed() {
-        final Result result = this.implementation.checkInput(read(SCHEMATRON_INVALID));
+        final Result result = this.validCheck.checkInput(read(SCHEMATRON_INVALID));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
@@ -176,7 +184,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testSchematronFailedWithoutAcceptMatch() {
-        final Result result = this.implementation.checkInput(read(FOO_SCHEMATRON_INVALID));
+        final Result result = this.validCheck.checkInput(read(FOO_SCHEMATRON_INVALID));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
@@ -188,6 +196,19 @@ public class DefaultCheckTest {
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
+    }
+
+    @Test
+    public void testSchematronExecutionError() {
+        final Result result = this.errorCheck.checkInput(read(SIMPLE_VALID));
+        assertThat(result).isNotNull();
+        assertThat(result.isProcessingSuccessful()).isFalse();
+        assertThat(result.isSchematronValid()).isFalse();
+        assertThat(result.isSchemaValid()).isTrue();
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.UNDEFINED);
+        assertThat(result.isAcceptable()).isFalse();
+        assertThat(result.getReport()).isNotNull();
+        assertThat(result.getProcessingErrors()).hasSize(1);
     }
 
 }

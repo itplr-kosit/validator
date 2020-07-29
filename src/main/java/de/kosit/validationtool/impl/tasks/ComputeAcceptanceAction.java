@@ -24,6 +24,10 @@ public class ComputeAcceptanceAction implements CheckAction {
 
     @Override
     public void check(final Bag results) {
+        if (results.isStopped() && results.getParserResult().isValid()) {
+            // xml wurde aus irgendwelchen Gründen nicht korrekt verarbeitet, dann lassen wir es als undefined
+            return;
+        }
         if (preCondtionsMatch(results)) {
             final Optional<XPathSelector> acceptMatch = results.getScenarioSelectionResult().getObject().getAcceptSelector();
             if (results.getSchemaValidationResult().isValid() && acceptMatch.isPresent()) {
@@ -44,11 +48,11 @@ public class ComputeAcceptanceAction implements CheckAction {
         }
     }
 
-    private boolean isSchematronValid(final Bag results) {
+    private static boolean isSchematronValid(final Bag results) {
         return !hasSchematronErrors(results);
     }
 
-    private boolean hasSchematronErrors(final Bag results) {
+    private static boolean hasSchematronErrors(final Bag results) {
         return results.getReportInput().getValidationResultsSchematron().stream().map(e -> e.getResults().getSchematronOutput())
                 .flatMap(e -> e.getActivePatternAndFiredRuleAndFailedAssert().stream()).anyMatch(FailedAssert.class::isInstance);
     }
