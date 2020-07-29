@@ -99,6 +99,12 @@ public class CommandLineApplication {
     private static final Option DISABLE_GUI = Option.builder("G").longOpt("disable-gui").desc("Disables the GUI of the daemon mode")
             .build();
 
+    private static final Option REPORT_POSTFIX = Option.builder(null).longOpt("report-postfix").hasArg()
+            .desc("Postfix of the generated report name").build();
+
+    private static final Option REPORT_PREFIX = Option.builder(null).longOpt("report-prefix").hasArg()
+            .desc("Prefix of the generated report name").build();
+
     public static final int DAEMON_SIGNAL = 100;
 
     private static final Option PRINT_MEM_STATS = Option.builder("m").longOpt("memory-stats").desc("Prints some memory stats").build();
@@ -173,7 +179,7 @@ public class CommandLineApplication {
     }
 
     private static int startDaemonMode(final CommandLine cmd) {
-        final Option[] unavailable = new Option[] { PRINT, CHECK_ASSERTIONS, DEBUG, OUTPUT, EXTRACT_HTML };
+        final Option[] unavailable = new Option[] { PRINT, CHECK_ASSERTIONS, DEBUG, OUTPUT, EXTRACT_HTML, REPORT_POSTFIX, REPORT_PREFIX };
         warnUnusedOptions(cmd, unavailable, true);
         final ConfigurationLoader config = Configuration.load(determineDefinition(cmd), determineRepository(cmd));
         final Daemon validDaemon = new Daemon(determineHost(cmd), determinePort(cmd), determineThreads(cmd));
@@ -210,7 +216,7 @@ public class CommandLineApplication {
         try {
 
             long start = System.currentTimeMillis();
-            final Option[] unavailable = new Option[] { HOST, PORT, WORKER_COUNT };
+            final Option[] unavailable = new Option[] { HOST, PORT, WORKER_COUNT, DISABLE_GUI };
             warnUnusedOptions(cmd, unavailable, false);
             final Configuration config = Configuration.load(determineDefinition(cmd), determineRepository(cmd)).build();
 
@@ -221,7 +227,7 @@ public class CommandLineApplication {
             if (cmd.hasOption(EXTRACT_HTML.getOpt())) {
                 check.getCheckSteps().add(new ExtractHtmlContentAction(processor, outputDirectory));
             }
-            check.getCheckSteps().add(new SerializeReportAction(outputDirectory, processor));
+            check.getCheckSteps().add(new SerializeReportAction(outputDirectory, processor, determineNamingStrategy(cmd)));
             if (cmd.hasOption(SERIALIZE_REPORT_INPUT.getOpt())) {
                 check.getCheckSteps().add(new SerializeReportInputAction(outputDirectory, check.getConversionService()));
             }
@@ -258,6 +264,18 @@ public class CommandLineApplication {
             }
             return -1;
         }
+    }
+
+    private static NamingStrategy determineNamingStrategy(final CommandLine cmd) {
+        final DefaultNamingStrategy namingStrategy = new DefaultNamingStrategy();
+        if (cmd.hasOption(REPORT_PREFIX.getLongOpt())) {
+            namingStrategy.setPrefix(cmd.getOptionValue(REPORT_PREFIX.getLongOpt()));
+        }
+        if (cmd.hasOption(REPORT_POSTFIX.getLongOpt())) {
+            namingStrategy.setPostfix(cmd.getOptionValue(REPORT_POSTFIX.getLongOpt()));
+        }
+
+        return namingStrategy;
     }
 
     private static Assertions loadAssertions(final String optionValue) {
@@ -385,6 +403,8 @@ public class CommandLineApplication {
         options.addOption(PRINT_MEM_STATS);
         options.addOption(WORKER_COUNT);
         options.addOption(DISABLE_GUI);
+        options.addOption(REPORT_POSTFIX);
+        options.addOption(REPORT_PREFIX);
         return options;
     }
 }

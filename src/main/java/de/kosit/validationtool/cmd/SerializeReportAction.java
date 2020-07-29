@@ -43,20 +43,22 @@ class SerializeReportAction implements CheckAction {
 
     private final Processor processor;
 
+    private final NamingStrategy namingStrategy;
+
     @Override
-    public void check(Bag results) {
-        final Path file = outputDirectory.resolve(results.getName() + "-report.xml");
+    public void check(final Bag results) {
+        final Path file = this.outputDirectory.resolve(this.namingStrategy.createName(results.getName()));
         try {
             log.info("Serializing result to {}", file.toAbsolutePath());
-            final Serializer serializer = processor.newSerializer(file.toFile());
+            final Serializer serializer = this.processor.newSerializer(file.toFile());
             serializer.serializeNode(results.getReport());
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             log.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
         }
     }
 
     @Override
-    public boolean isSkipped(Bag results) {
+    public boolean isSkipped(final Bag results) {
         if (results.getReport() == null) {
             log.warn("Can not serialize result report. No document found");
             return true;
