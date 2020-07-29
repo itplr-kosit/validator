@@ -9,11 +9,8 @@ import static org.mockito.Mockito.when;
 
 import javax.xml.transform.Source;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.ContentRepository;
@@ -42,7 +39,8 @@ public class CreateReportActionTest {
     @Before
     public void setup() {
         this.repository = Simple.createContentRepository();
-        this.action = new CreateReportAction(this.repository.getProcessor(), new ConversionService(), this.repository.getResolver());
+        this.action = new CreateReportAction(this.repository.getProcessor(), new ConversionService(), this.repository.getResolver(),
+                this.repository.getUnparsedTextURIResolver());
     }
 
     @Test
@@ -72,7 +70,7 @@ public class CreateReportActionTest {
     public void testExecutionException() throws SaxonApiException {
         final Processor p = mock(Processor.class);
         final DocumentBuilder documentBuilder = mock(DocumentBuilder.class);
-        this.action = new CreateReportAction(p, new ConversionService(), null);
+        this.action = new CreateReportAction(p, new ConversionService(), null, null);
 
         when(p.newDocumentBuilder()).thenReturn(documentBuilder);
         when(documentBuilder.build(any(Source.class))).thenThrow(new SaxonApiException("mocked"));

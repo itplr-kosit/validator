@@ -85,7 +85,8 @@ public class DefaultCheck implements Check {
         this.checkSteps.add(new SchemaValidationAction(content.getResolvingConfigurationStrategy(), processor));
         this.checkSteps.add(new SchematronValidationAction(content.getResolver(), this.conversionService));
         this.checkSteps.add(new ValidateReportInputAction(this.conversionService, content.getReportInputSchema()));
-        this.checkSteps.add(new CreateReportAction(processor, this.conversionService, content.getResolver()));
+        this.checkSteps.add(
+                new CreateReportAction(processor, this.conversionService, content.getResolver(), content.getUnparsedTextURIResolver()));
         this.checkSteps.add(new ComputeAcceptanceAction());
     }
 

@@ -52,6 +52,7 @@ import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
 
+import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
@@ -77,6 +78,8 @@ public class ContentRepository {
 
     private final URIResolver resolver;
 
+    private final UnparsedTextURIResolver unparsedTextURIResolver;
+
     private final SchemaFactory schemaFactory;
 
     @Getter
@@ -94,6 +97,7 @@ public class ContentRepository {
         this.resolvingConfigurationStrategy = strategy;
         this.processor = this.resolvingConfigurationStrategy.getProcessor();
         this.resolver = this.resolvingConfigurationStrategy.createResolver(repository);
+        this.unparsedTextURIResolver = this.resolvingConfigurationStrategy.createUnparsedTextURIResolver(repository);
         this.schemaFactory = this.resolvingConfigurationStrategy.createSchemaFactory();
     }
 
@@ -251,12 +255,16 @@ public class ContentRepository {
     }
 
     /**
-     * Erzeugt einen resolver für dieses Repository, der nur relativ auflösen kann
+     * Returns the {@link URIResolver} to use for resolving xml artifacts.
      * 
-     * @return ein neuer Resolver
+     * @return the resolver
      */
     public URIResolver getResolver() {
         return this.resolver;
+    }
+
+    public UnparsedTextURIResolver getUnparsedTextURIResolver() {
+        return this.unparsedTextURIResolver;
     }
 
     /**

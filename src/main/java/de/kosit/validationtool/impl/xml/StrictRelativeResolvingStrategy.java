@@ -110,6 +110,11 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
     }
 
     @Override
+    public UnparsedTextURIResolver createUnparsedTextURIResolver(final URI scenarioRepository) {
+        return new RelativeUriResolver(scenarioRepository);
+    }
+
+    @Override
     public Validator createValidator(final Schema schema) {
         if (schema == null) {
             throw new IllegalArgumentException("No schema supplied. Can not create validator");

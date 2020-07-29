@@ -28,7 +28,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.URIResolver;
 
-import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
@@ -41,6 +40,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ConversionService;
@@ -48,6 +48,7 @@ import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
+import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.BuildingContentHandler;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
@@ -175,6 +176,8 @@ public class CreateReportAction implements CheckAction {
 
     private final URIResolver resolver;
 
+    private final UnparsedTextURIResolver unparsedTextURIResolver;
+
     private static XsltExecutable loadFromScenario(final Scenario object) {
         return object.getReportTransformation().getExecutable();
     }
@@ -198,7 +201,9 @@ public class CreateReportAction implements CheckAction {
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
             transformer.setMessageListener(e);
             transformer.setURIResolver(this.resolver);
-            // transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
+            if (this.unparsedTextURIResolver != null) {
+                transformer.getUnderlyingController().setUnparsedTextURIResolver(this.unparsedTextURIResolver);
+            }
             if (parsedDocument != null) {
                 transformer.setParameter(new QName("input-document"), parsedDocument);
             }
