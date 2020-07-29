@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## 1.3.1 
 ### Fixed
-- failed-asserts are not evaluated correctly while computing overall acceptance
+- `getFailedAsserts()` and `isSchematronValid()` in [DefaultResult.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/impl/DefaultResult.java)
+do not reflect actual schematron validation result
 
 ### Changed
 - engine info contains version number of the validator (configurations can output this in the report for maintainance puposes)
@@ -27,7 +29,7 @@ the validator (this further improves performance and memory consumption)
 
 ## 1.2.1
 ### Fixed
-- Validator was creating invalid createReportInput xml in case of no scenrio match 
+- Validator is creating invalid createReportInput xml in case of no scenario match 
 
 
 ## 1.2.0

@@ -91,7 +91,6 @@ public class DefaultCheckTest {
     public void testMultipleCase() {
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(Simple.SIMPLE_VALID)).collect(Collectors.toList());
         final List<Result> docs = this.implementation.checkInput(input);
-        assertThat(docs).isNotNull();
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
@@ -99,7 +98,6 @@ public class DefaultCheckTest {
     public void testMultipleCaseDocument() {
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(Simple.SIMPLE_VALID)).collect(Collectors.toList());
         final List<Document> docs = this.implementation.check(input);
-        assertThat(docs).isNotNull();
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
