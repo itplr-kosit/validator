@@ -101,7 +101,7 @@ The daemon provides a simple GUI when issuing `GET` requests providing the follo
  1. information about the actual [validator configuration](configurations.md) used by this daemon
  1. a simple form to test the daemon with custom inputs
  
- The GUI can be disabled with using the API (see above) or via CLI
+ The GUI can be disabled using the API (see above) or via CLI
  
  ```shell script
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D --disable-gui
