@@ -35,6 +35,7 @@ import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron;
+import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron.Results;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -81,11 +82,19 @@ public class SchematronValidationAction implements CheckAction {
             s.setResults(r);
 
         } catch (final SaxonApiException e) {
-            final String msg = String.format("Error processing schematron validation %s", validation.getResourceType().getName());
+            final String msg = String.format("Error processing schematron validation %s. Error is %s",
+                    validation.getResourceType().getName(), e.getMessage());
             log.error(msg, e);
             results.addProcessingError(msg);
+            s.setResults(createErrorResult());
         }
         return s;
+    }
+
+    private static Results createErrorResult() {
+        final Results r = new Results();
+        r.setSchematronOutput(new SchematronOutput());
+        return r;
     }
 
     @Override

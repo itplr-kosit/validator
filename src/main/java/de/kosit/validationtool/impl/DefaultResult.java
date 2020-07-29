@@ -139,8 +139,13 @@ public class DefaultResult implements Result {
                 : Collections.emptyList();
     }
 
+    private boolean isSchematronEvaluated() {
+        return getSchematronResult() != null
+                && getSchematronResult().stream().noneMatch(e -> e.getActivePatternAndFiredRuleAndFailedAssert().isEmpty());
+    }
+
     @Override
     public boolean isSchematronValid() {
-        return getSchematronResult() != null && getFailedAsserts().isEmpty();
+        return isSchematronEvaluated() && getFailedAsserts().isEmpty();
     }
 }

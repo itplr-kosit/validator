@@ -132,7 +132,7 @@ public class DefaultCheck implements Check {
             result.setSchemaViolations(convertErrors(t.getSchemaValidationResult().getErrors()));
         }
         result.setProcessingSuccessful(!t.isStopped() && t.isFinished());
-        result.setSchematronResult(t.getReportInput().getValidationResultsSchematron().stream()
+        result.setSchematronResult(t.getReportInput().getValidationResultsSchematron().stream().filter(e -> e.getResults() != null)
                 .map(e -> e.getResults().getSchematronOutput()).collect(Collectors.toList()));
         return result;
     }

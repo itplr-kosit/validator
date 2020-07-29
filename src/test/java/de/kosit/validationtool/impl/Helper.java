@@ -64,6 +64,8 @@ public class Helper {
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
+        public static final URI ERROR_SCENARIOS = ROOT.resolve("scenarios-with-errors.xml");
+
         public static final URI REPOSITORY_URI = ROOT.resolve("repository/");
 
         public static final URI SCHEMA_INVALID = ROOT.resolve("input/simple-schema-invalid.xml");
