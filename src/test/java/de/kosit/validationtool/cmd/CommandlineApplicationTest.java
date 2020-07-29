@@ -129,6 +129,16 @@ public class CommandlineApplicationTest {
     }
 
     @Test
+    public void testValidNamingConfiguration() {
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "somePrefix",
+                "--report-postfix", "somePostfix" };
+        CommandLineApplication.mainProgram(args);
+        assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(this.commandLine.getErrorOutput()).contains("somePrefix-simple-somePostfix");
+    }
+
+    @Test
     public void testValidMultipleInput() {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString(), Paths.get(Simple.FOO).toString() };

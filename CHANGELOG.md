@@ -13,6 +13,7 @@ do not reflect actual schematron validation result
 
 ### Changed
 - engine info contains version number of the validator (configurations can output this in the report for maintainance puposes)
+- Options to customize serialized report file names (cmdline only) via `--report-prefix` and `--report-postfix`
 
 ## 1.3.0
 

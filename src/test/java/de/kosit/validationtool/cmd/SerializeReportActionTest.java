@@ -50,7 +50,8 @@ public class SerializeReportActionTest {
     @Before
     public void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
-        this.action = new SerializeReportAction(this.tmpDirectory, TestObjectFactory.createProcessor());
+        final DefaultNamingStrategy namingStrategy = new DefaultNamingStrategy();
+        this.action = new SerializeReportAction(this.tmpDirectory, TestObjectFactory.createProcessor(), namingStrategy);
     }
 
     @After
