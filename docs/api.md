@@ -167,7 +167,7 @@ This gives you complete control over loading these artifacts.
 
 ---
 
-## Configure SML Security and Resolving
+## Configure XML Security and Resolving
 
 When using XML related technologies you are supposed to handle certain security issues properly. The KoSIT validator pursues a rather strict strategy. The default configuration:
 
