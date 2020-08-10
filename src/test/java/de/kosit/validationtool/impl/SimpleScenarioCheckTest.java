@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.kosit.validationtool.api.AcceptRecommendation;
-import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.Helper.Simple;
@@ -24,8 +24,7 @@ public class SimpleScenarioCheckTest {
 
     @Before
     public void setup() {
-        final CheckConfiguration d = new CheckConfiguration(Simple.SCENARIOS);
-        d.setScenarioRepository(Simple.REPOSITORY_URI);
+        final Configuration d = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build();
         this.implementation = new DefaultCheck(d);
     }
 

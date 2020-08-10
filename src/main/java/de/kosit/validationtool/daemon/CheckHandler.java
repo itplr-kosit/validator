@@ -44,6 +44,7 @@ class CheckHandler extends BaseHandler {
         try {
             log.debug("Incoming request");
             final String requestMethod = httpExchange.getRequestMethod();
+            // check neccessary, since gui can be disabled
             if (requestMethod.equals("POST")) {
                 final InputStream inputStream = httpExchange.getRequestBody();
                 if (inputStream.available() > 0) {

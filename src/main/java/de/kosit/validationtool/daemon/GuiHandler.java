@@ -1,14 +1,16 @@
 package de.kosit.validationtool.daemon;
 
-import com.sun.net.httpserver.HttpExchange;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.IOUtils;
-
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+
+import org.apache.commons.io.IOUtils;
+
+import com.sun.net.httpserver.HttpExchange;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 public class GuiHandler extends BaseHandler {
 
@@ -21,7 +23,7 @@ public class GuiHandler extends BaseHandler {
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
+    public void handle(final HttpExchange exchange) throws IOException {
         assert INDEX_HTML != null;
         final String path = exchange.getRequestURI().toASCIIString();
         if (path.equals("/")) {
@@ -29,7 +31,8 @@ public class GuiHandler extends BaseHandler {
         } else{
             final URL resource = GuiHandler.class.getClassLoader().getResource("gui" + path);
             if (resource != null) {
-                write(exchange,IOUtils.toString(resource, Charset.defaultCharset()).getBytes(), Mediatype.resolveBySuffix(resource.getPath()).getMimeType());;
+                write(exchange, IOUtils.toString(resource, Charset.defaultCharset()).getBytes(),
+                        Mediatype.resolveBySuffix(resource.getPath()).getMimeType());
             }else {
                 error(exchange,404,"not found");
             }
@@ -45,7 +48,7 @@ public class GuiHandler extends BaseHandler {
         CSS("text/css");
         private final String mimeType;
 
-        static Mediatype resolveBySuffix(String path){
+        static Mediatype resolveBySuffix(final String path) {
             return Arrays.stream(values()).filter(e->path.toUpperCase().endsWith("."+e.name())).findFirst().orElse(Mediatype.MD);
         }
     }

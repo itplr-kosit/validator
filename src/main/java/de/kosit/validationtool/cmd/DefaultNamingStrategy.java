@@ -25,7 +25,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
         if (StringUtils.isEmpty(base)) {
             throw new IllegalArgumentException("Can not generate name based on null input");
         }
-        final int index = base.lastIndexOf(".");
+        final int index = base.lastIndexOf('.');
         final StringBuilder result = new StringBuilder();
         if (isNotEmpty(this.prefix)) {
             result.append(this.prefix).append("-");

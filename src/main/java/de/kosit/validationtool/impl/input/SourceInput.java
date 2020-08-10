@@ -52,7 +52,7 @@ public class SourceInput extends AbstractInput {
     }
 
     private void validate() {
-        if (!isHashcodeComputed() && !isSupported()) {
+        if (!isHashcodeComputed() && isNotSupported()) {
             throw new IllegalStateException("Unsupported source. Only StreamSource supported yet");
         }
         if (!isHashcodeComputed() && ((StreamSource) this.source).getInputStream() == null) {
@@ -62,7 +62,7 @@ public class SourceInput extends AbstractInput {
 
     @Override
     public Source getSource() throws IOException {
-        if (!isHashcodeComputed() && !isSupported()) {
+        if (!isHashcodeComputed() && isNotSupported()) {
             throw new IllegalStateException("Unsupported source. Only InputStream-based StreamSource supported yet");
         }
         if (isConsumed()) {
@@ -71,8 +71,8 @@ public class SourceInput extends AbstractInput {
         return isHashcodeComputed() ? this.source : wrappedSource();
     }
 
-    private boolean isSupported() {
-        return isStreamSource();
+    private boolean isNotSupported() {
+        return !isStreamSource();
     }
 
     private boolean isConsumed() throws IOException {
@@ -107,9 +107,7 @@ public class SourceInput extends AbstractInput {
         return result;
     }
 
-    private boolean isWrappingRequired() {
-        return !isHashcodeComputed();
-    }
+
 
     @Override
     public boolean supportsMultipleReads() {

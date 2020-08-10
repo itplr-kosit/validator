@@ -24,6 +24,7 @@ public class StreamHelper {
      * Helper class, which generates the hashcode while reading the stream e.g. for parsing the document. This allows
      * generating the hashcode without an aditional reading step.
      */
+    @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
     private static class DigestingInputStream extends FilterInputStream {
 
         private final MessageDigest digest;
@@ -44,6 +45,7 @@ public class StreamHelper {
 
     }
 
+    @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
     private static class CountInputStream extends FilterInputStream {
 
         private final LazyReadInput reference;
@@ -123,10 +125,12 @@ public class StreamHelper {
      * @param input the input
      * @throws IOException on I/O errors
      */
+    @SuppressWarnings("squid:S1854")
     public static void drain(final InputStream input) throws IOException {
         final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
         int n;
+
         while (EOF != (n = input.read(buffer))) {
             // nothing
         }

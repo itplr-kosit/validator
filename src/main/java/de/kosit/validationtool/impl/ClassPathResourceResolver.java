@@ -114,8 +114,9 @@ class ClassPathResourceResolver implements LSResourceResolver {
             try {
                 final URL resource = resolved.isAbsolute() ? resolved.toURL()
                         : ClassPathResourceResolver.class.getResource(resolved.toASCIIString());
-                final InputStream in = resource.openStream();
                 final LSInputImpl input = new LSInputImpl(publicId, systemId, resolved.toASCIIString());
+                // intentionally not closed, since xml stack wants it open upon return
+                final InputStream in = resource.openStream();
                 input.setByteStream(in);
                 return input;
 

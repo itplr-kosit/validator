@@ -101,7 +101,7 @@ public class ContentRepository {
         this.schemaFactory = this.resolvingConfigurationStrategy.createSchemaFactory();
     }
 
-    @SuppressWarnings("java:S2095")
+    @SuppressWarnings("squid:S2095")
     private static Source resolve(final URL resource) {
         try {
             return new StreamSource(resource.openStream(), resource.toURI().getRawPath());

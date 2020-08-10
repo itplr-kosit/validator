@@ -29,7 +29,6 @@ import static de.kosit.validationtool.impl.Helper.Simple.SIMPLE_VALID;
 import static de.kosit.validationtool.impl.Helper.Simple.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -39,7 +38,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 import de.kosit.validationtool.api.AcceptRecommendation;
-import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.Helper.Simple;
@@ -60,12 +59,10 @@ public class DefaultCheckTest {
 
     @Before
     public void setup() {
-        final CheckConfiguration validConfig = new CheckConfiguration(Simple.SCENARIOS);
-        validConfig.setScenarioRepository(new File(Simple.REPOSITORY_URI).toURI());
+        final Configuration validConfig = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build();
         this.validCheck = new DefaultCheck(validConfig);
 
-        final CheckConfiguration errorConfig = new CheckConfiguration(Simple.ERROR_SCENARIOS);
-        errorConfig.setScenarioRepository(new File(Simple.REPOSITORY_URI).toURI());
+        final Configuration errorConfig = Configuration.load(Simple.ERROR_SCENARIOS, Simple.REPOSITORY_URI).build();
         this.errorCheck = new DefaultCheck(errorConfig);
     }
 

@@ -9,12 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `getFailedAsserts()` and `isSchematronValid()` in [DefaultResult.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/impl/DefaultResult.java)
 do not reflect actual schematron validation result
-- Processing aborts on schematron execution errors (e.g. errors within schematron logic). The validator now generates a report in such cases.
+- processing aborts on schematron execution errors (e.g. errors within schematron logic). The validator now generates a report in such cases.
 - exception while resolving when using XSLT's `unparsed-text()` function within report generation
+
+### Added
+- [CLI] add summary report 
 
 ### Changed
 - engine info contains version number of the validator (configurations can output this in the report for maintainance puposes)
-- Options to customize serialized report file names (cmdline only) via `--report-prefix` and `--report-postfix`
+- options to customize serialized report file names (cmdline only) via `--report-prefix` and `--report-postfix`
+- remove unused dependency Apache Commons HTTP
 
 ## 1.3.0
 
