@@ -28,7 +28,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -45,6 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.cmd.assertions.Assertions;
 import de.kosit.validationtool.config.ConfigurationLoader;
 import de.kosit.validationtool.daemon.Daemon;
@@ -58,6 +62,7 @@ import net.sf.saxon.s9api.Processor;
  * @author Andreas Penski
  */
 @Slf4j
+@SuppressWarnings("squid:S3725") // performance is not a problem here
 public class CommandLineApplication {
 
     private static final Option HELP = Option.builder("?").longOpt("help").argName("Help").desc("Displays this help").build();
@@ -247,16 +252,17 @@ public class CommandLineApplication {
 
             final Collection<Path> targets = determineTestTargets(cmd);
             start = System.currentTimeMillis();
+            final Map<Path, Result> results = new HashMap<>();
             for (final Path p : targets) {
                 final Input input = InputFactory.read(p);
-                check.checkInput(input);
+                results.put(p, check.checkInput(input));
             }
-            final boolean result = check.printAndEvaluate();
+            final boolean result = check.printAndEvaluate(results);
             log.info("Processing {} object(s) completed in {}ms", targets.size(), System.currentTimeMillis() - start);
             return result ? 0 : 1;
 
         } catch (final Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();// NOSONAR
             if (cmd.hasOption(DEBUG.getOpt())) {
                 log.error(e.getMessage(), e);
             } else {
@@ -327,8 +333,8 @@ public class CommandLineApplication {
     }
 
     private static Collection<Path> listDirectoryTargets(final Path d) {
-        try {
-            return Files.list(d).filter(path -> path.toString().endsWith(".xml")).collect(Collectors.toList());
+        try ( final Stream<Path> stream = Files.list(d) ) {
+            return stream.filter(path -> path.toString().endsWith(".xml")).collect(Collectors.toList());
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }

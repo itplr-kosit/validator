@@ -70,6 +70,7 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
 
     @Override
     public SchemaFactory createSchemaFactory() {
+        forceOpenJdkXmlImplementation();
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         disableExternalEntities(sf);
         allowExternalSchema(sf, "file");
@@ -82,7 +83,7 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
         // verhindere global im Prinzip alle resolving strategien
         final SecureUriResolver resolver = new SecureUriResolver();
         processor.getUnderlyingConfiguration().setCollectionFinder(resolver);
-        processor.getUnderlyingConfiguration().setOutputURIResolver(resolver);
+        processor.getUnderlyingConfiguration().setOutputURIResolver(resolver);// NOSONAR
         processor.getUnderlyingConfiguration().setUnparsedTextURIResolver(resolver);
 
         // grundsätzlich Feature-konfiguration:
@@ -92,10 +93,10 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
         processor.setConfigurationProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, false);
 
         // Konfiguration des zu verwendenden Parsers, wenn Saxon selbst einen erzeugen muss, bspw. beim XSL parsen
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(FEATURE_SECURE_PROCESSING), true);
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(DISSALLOW_DOCTYPE_DECL_FEATURE), true);
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(LOAD_EXTERNAL_DTD_FEATURE), false);
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.ACCESS_EXTERNAL_DTD), false);
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(FEATURE_SECURE_PROCESSING), true); // NOSONAR
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(DISSALLOW_DOCTYPE_DECL_FEATURE), true);// NOSONAR
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(LOAD_EXTERNAL_DTD_FEATURE), false);// NOSONAR
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.ACCESS_EXTERNAL_DTD), false);// NOSONAR
         return processor;
     }
 

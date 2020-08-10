@@ -41,7 +41,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import de.kosit.validationtool.api.Check;
-import de.kosit.validationtool.api.CheckConfiguration;
+import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;

@@ -131,7 +131,7 @@ public class ConversionService {
     public void initialize(final Collection<Package> context) {
         final String[] packages = context != null ? context.stream().map(Package::getName).toArray(String[]::new) : new String[0];
         final StringJoiner joiner = new StringJoiner(":");
-        Arrays.stream(packages).forEach(p -> joiner.add(p));
+        Arrays.stream(packages).forEach(joiner::add);
         initialize(joiner.toString());
     }
 

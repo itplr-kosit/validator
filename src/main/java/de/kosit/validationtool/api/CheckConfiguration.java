@@ -36,7 +36,7 @@ import de.kosit.validationtool.impl.Scenario;
  * Zentrale Konfigration einer Prüf-Instanz.
  * 
  * @author Andreas Penski
- * @deprecated since 2.0 use {@link Configuration} instead
+ * @deprecated since 1.3.0 use {@link Configuration} instead
  */
 @Getter
 @Setter

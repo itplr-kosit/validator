@@ -55,30 +55,6 @@ public abstract class BaseXMLSyntaxError implements XmlError {
 
     /**
      * Getter aus dem schema
-     * 
-     * @return Spalte des Fehlers
-     */
-    @Override
-    public abstract Integer getColumnNumber();
-
-    /**
-     * Getter aus dem schema
-     *
-     * @return Zeile des Fehlers
-     */
-    @Override
-    public abstract Integer getRowNumber();
-
-    /**
-     * Getter aus dem schema
-     *
-     * @return Fehlermeldung
-     */
-    @Override
-    public abstract String getMessage();
-
-    /**
-     * Getter aus dem schema
      *
      * @return severity
      */

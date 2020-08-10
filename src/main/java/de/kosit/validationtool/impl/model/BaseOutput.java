@@ -43,7 +43,7 @@ public abstract class BaseOutput {
      * @return true wenn mindestens ein {@link FailedAssert} vorhanden ist
      */
     public boolean hasFailedAsserts() {
-        return getFailedAsserts().size() > 0;
+        return !getFailedAsserts().isEmpty();
     }
 
     /**
@@ -69,4 +69,8 @@ public abstract class BaseOutput {
         return getFailedAsserts().stream().filter(e -> e.getId().equals(name)).findAny();
     }
 
+    public List<String> getMessages() {
+        return getFailedAsserts().stream().map(FailedAssert::getText).flatMap(e -> e.getContent().stream()).map(Object::toString)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,17 +1,20 @@
 package de.kosit.validationtool.daemon;
 
 import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpStatus.SC_OK;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
+import org.apache.http.HttpStatus;
 import org.junit.Test;
 
 import de.kosit.validationtool.impl.Helper.Simple;
 
+import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.MultiPartSpecification;
 
 /**
  * Testet the Daemon-Mode input , Methoden , Output Content-Type and the success case
@@ -24,22 +27,21 @@ public class CheckHandlerIT extends BaseIT {
     private static final String APPLICATION_XML = "application/xml";
 
     @Test
-    public void makeSureThatSuccessTest() throws IOException {
+    public void simpleTest() throws IOException {
         try ( final InputStream io = Simple.SIMPLE_VALID.toURL().openStream() ) {
-            given().contentType(ContentType.XML).body(toContent(io)).when().post("/").then().statusCode(200);
+            given().contentType(ContentType.XML).body(toContent(io)).when().post("/").then().statusCode(SC_OK);
         }
     }
 
     @Test
-    public void NoInputTest() {
-        given().body("").contentType(APPLICATION_XML).when().post("/").then().statusCode(400);
+    public void noInputTest() {
+        given().body("").contentType(APPLICATION_XML).when().post("/").then().statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
     @Test
-    @Ignore // no default error report yet
-    public void internalServerErrorTest() throws IOException {
-        try ( final InputStream io = Simple.SCHEMA_INVALID.toURL().openStream() ) {
-            given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(200);
+    public void testUnknown() throws IOException {
+        try ( final InputStream io = Simple.UNKNOWN.toURL().openStream() ) {
+            given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(SC_OK);
         }
     }
 
@@ -47,13 +49,19 @@ public class CheckHandlerIT extends BaseIT {
         return IOUtils.toByteArray(io);
     }
 
-
-
     @Test
     public void xmlResultTest() throws IOException {
-
         try ( final InputStream io = Simple.SIMPLE_VALID.toURL().openStream() ) {
-            given().body(toContent(io)).when().post("/").then().contentType(APPLICATION_XML).and().statusCode(200);
+            given().body(toContent(io)).when().post("/").then().contentType(APPLICATION_XML).and().statusCode(SC_OK);
         }
     }
+
+    @Test
+    public void testMultipart() throws IOException {
+        try ( final InputStream io = Simple.SIMPLE_VALID.toURL().openStream() ) {
+            final MultiPartSpecification spec = new MultiPartSpecBuilder(io).fileName("file").controlName("file").build();
+            given().multiPart(spec).when().post("/").then().statusCode(HttpStatus.SC_BAD_REQUEST);
+        }
+    }
+
 }

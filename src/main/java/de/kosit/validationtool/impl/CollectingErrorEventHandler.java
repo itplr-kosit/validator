@@ -51,9 +51,9 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static final int DEFAULT_ABORT_COUNT = 50;
 
-    private final Collection<XMLSyntaxError> errors = new ArrayList<>();
+    private static final int stopProcessCount = DEFAULT_ABORT_COUNT;
 
-    private final int stopProcessCount = DEFAULT_ABORT_COUNT;
+    private final Collection<XMLSyntaxError> errors = new ArrayList<>();
 
     private static XMLSyntaxError createError(final XMLSyntaxErrorSeverity severity, final String message) {
         final XMLSyntaxError e = new XMLSyntaxError();
@@ -97,7 +97,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         e.setColumnNumber(event.getLocator().getColumnNumber());
         e.setRowNumber(event.getLocator().getLineNumber());
         this.errors.add(e);
-        return this.stopProcessCount != this.errors.size();
+        return stopProcessCount != this.errors.size();
     }
 
     /**
@@ -161,9 +161,8 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     public String getErrorDescription() {
         final StringJoiner joiner = new StringJoiner("\n");
-        this.errors.forEach(e -> joiner
-                .add(e.getSeverityCode().value() + " " + e.getMessage() + " At row " + e.getRowNumber() + " at pos "
-                        + e.getColumnNumber()));
+        this.errors.forEach(e -> joiner.add(
+                e.getSeverityCode().value() + " " + e.getMessage() + " At row " + e.getRowNumber() + " at pos " + e.getColumnNumber()));
         return joiner.toString();
     }
 }

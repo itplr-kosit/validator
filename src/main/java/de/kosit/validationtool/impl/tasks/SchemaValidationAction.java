@@ -191,9 +191,11 @@ public class SchemaValidationAction implements CheckAction {
 
     }
 
+    @SuppressWarnings("squid:S2095") // intentionally return open stream/autoclosable here
     private SerializedDocument serialize(final Input input, final XdmNode object) throws IOException, SaxonApiException {
         final SerializedDocument doc;
         if (input instanceof AbstractInput && ((AbstractInput) input).getLength() < getInMemoryLimit()) {
+
             doc = new ByteArraySerializedDocument(this.processor);
         } else {
             doc = new FileSerializedDocument(this.processor);

@@ -42,13 +42,13 @@ class PrintReportAction implements CheckAction {
     private final Processor processor;
 
     @Override
-    public void check(Bag results) {
+    public void check(final Bag results) {
         try {
             final StringWriter writer = new StringWriter();
-            final Serializer serializer = processor.newSerializer(writer);
+            final Serializer serializer = this.processor.newSerializer(writer);
             serializer.serializeNode(results.getReport());
-            System.out.print(writer.toString());
-        } catch (SaxonApiException e) {
+            System.out.print(writer.toString()); // NOSONAR
+        } catch (final SaxonApiException e) {
             log.error("Error while printing result to stdout", e);
         }
     }

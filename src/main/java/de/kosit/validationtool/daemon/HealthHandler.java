@@ -4,13 +4,13 @@ import java.io.IOException;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import de.kosit.validationtool.impl.EngineInformation;
-import de.kosit.validationtool.model.daemon.ApplicationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.ConversionService;
+import de.kosit.validationtool.impl.EngineInformation;
+import de.kosit.validationtool.model.daemon.ApplicationType;
 import de.kosit.validationtool.model.daemon.HealthType;
 import de.kosit.validationtool.model.daemon.MemoryType;
 
@@ -39,7 +39,7 @@ class HealthHandler extends BaseHandler {
         final HealthType h = new HealthType();
         h.setMemory(createMemory());
         h.setApplication(createApplication());
-        h.setStatus(scenarios.getScenarios().size() > 0 ? "UP" : "DOWN");
+        h.setStatus(!this.scenarios.getScenarios().isEmpty() ? "UP" : "DOWN");
         return h;
     }
 
@@ -53,7 +53,7 @@ class HealthHandler extends BaseHandler {
     }
 
     private static ApplicationType createApplication() {
-        ApplicationType a = new ApplicationType();
+        final ApplicationType a = new ApplicationType();
         a.setBuild(EngineInformation.getBuild());
         a.setName(EngineInformation.getName());
         a.setVersion(EngineInformation.getVersion());
