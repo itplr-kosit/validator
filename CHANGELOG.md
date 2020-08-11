@@ -32,9 +32,11 @@ do not reflect actual schematron validation result
 
 ### Changed
 - Inputs are NOT read into memory (e.g. Byte-Array) prior processing within the validator. This reduces memory consumption.
-- CheckConfiguration is deprecated now. Use Configuration.load(...) or Configuration.build(...)
 - Overall processing of xml files is based on Saxon s9api. No JAXP or SAX classes are used by 
 the validator (this further improves performance and memory consumption)
+
+### Deprecations
+- CheckConfiguration is deprecated now. Use Configuration.load(...) or Configuration.build(...)
 
 ## 1.2.1
 ### Fixed
