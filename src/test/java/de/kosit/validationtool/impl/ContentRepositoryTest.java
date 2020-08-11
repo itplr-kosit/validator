@@ -116,7 +116,7 @@ public class ContentRepositoryTest {
     public void loadFromJar() throws URISyntaxException {
         assert Helper.JAR_REPOSITORY != null;
         this.repository = new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), Helper.JAR_REPOSITORY.toURI());
-        final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("resources/eRechnung/report.xsl"));
+        final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("report.xsl"));
         assertThat(xsltExecutable).isNotNull();
     }
 

@@ -27,8 +27,10 @@ import static de.kosit.validationtool.impl.Helper.Simple.REJECTED;
 import static de.kosit.validationtool.impl.Helper.Simple.SCHEMATRON_INVALID;
 import static de.kosit.validationtool.impl.Helper.Simple.SIMPLE_VALID;
 import static de.kosit.validationtool.impl.Helper.Simple.UNKNOWN;
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -57,18 +59,38 @@ public class DefaultCheckTest {
     // for checking certain error scenarios.
     private DefaultCheck errorCheck;
 
+    private DefaultCheck jarScenarioCheck;
+
     @Before
-    public void setup() {
+    public void setup() throws URISyntaxException {
         final Configuration validConfig = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build();
         this.validCheck = new DefaultCheck(validConfig);
 
         final Configuration errorConfig = Configuration.load(Simple.ERROR_SCENARIOS, Simple.REPOSITORY_URI).build();
         this.errorCheck = new DefaultCheck(errorConfig);
+
+        final Configuration jarConfig = Configuration
+                .load(requireNonNull(DefaultCheckTest.class.getClassLoader().getResource("simple/packaged/scenarios.xml")).toURI(),
+                        requireNonNull(DefaultCheckTest.class.getClassLoader().getResource("simple/packaged/repository/")).toURI())
+                .build();
+
+        this.jarScenarioCheck = new DefaultCheck(jarConfig);
     }
 
     @Test
     public void testHappyCase() {
         final Result doc = this.validCheck.checkInput(read(SIMPLE_VALID));
+        assertThat(doc).isNotNull();
+        assertThat(doc.getReport()).isNotNull();
+        assertThat(doc.isAcceptable()).isTrue();
+        assertThat(doc.isSchematronValid()).isTrue();
+        assertThat(doc.isSchemaValid()).isTrue();
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+    }
+
+    @Test
+    public void testJarCase() {
+        final Result doc = this.jarScenarioCheck.checkInput(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();

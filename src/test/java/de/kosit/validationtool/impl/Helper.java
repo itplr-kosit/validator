@@ -123,7 +123,7 @@ public class Helper {
 
     public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
 
-    public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("xrechnung/repository/");
+    public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("simple/packaged/repository/");
 
     /**
      * Lädt ein XML-Dokument von der gegebenen URL
