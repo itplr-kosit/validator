@@ -5,6 +5,7 @@ import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -107,7 +108,7 @@ public class ConfigurationBuilder {
      * @return this
      */
     public ConfigurationBuilder date(final Date date) {
-        return date(date != null ? LocalDate.ofEpochDay(date.getTime()) : null);
+        return date(date != null ? date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() : null);
     }
 
     /**
