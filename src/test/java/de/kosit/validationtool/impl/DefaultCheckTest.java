@@ -85,6 +85,11 @@ public class DefaultCheckTest {
         assertThat(doc.isAcceptable()).isTrue();
         assertThat(doc.isSchematronValid()).isTrue();
         assertThat(doc.isSchemaValid()).isTrue();
+        assertThat(doc.getFailedAsserts()).isEmpty();
+        assertThat(doc.getSchematronResult()).isNotEmpty();
+        assertThat(doc.getSchematronResult()).hasSize(1);
+        assertThat(doc.getSchematronResult().get(0).getActivePatterns()).isNotEmpty();
+        assertThat(doc.getSchematronResult().get(0).getFiredRules()).isNotEmpty();
         assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
@@ -192,6 +197,7 @@ public class DefaultCheckTest {
         assertThat(result.isSchemaValid()).isTrue();
         assertThat(result.getFailedAsserts()).isNotEmpty();
         assertThat(result.isSchematronValid()).isFalse();
+        assertThat(result.getSchematronResult().get(0).findFailedAssert("content-1")).isPresent();
         assertThat(result.isProcessingSuccessful()).isTrue();
         // acceptMatch overules schematron!!!
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);

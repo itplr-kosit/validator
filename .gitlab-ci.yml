@@ -106,7 +106,7 @@ build-java-8-openj9:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-build-java8-alpine:
+build-java8:
   stage: build
   image: maven:3-jdk-8-alpine
   script:

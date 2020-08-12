@@ -43,6 +43,7 @@ import org.xml.sax.SAXException;
 
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.api.XmlError.Severity;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.Scenario;
@@ -85,6 +86,7 @@ public class SchemaValidatorActionTest {
         bag.getSchemaValidationResult().getErrors().forEach(e -> {
             assertThat(e.getRowNumber()).isGreaterThan(0);
             assertThat(e.getColumnNumber()).isGreaterThan(0);
+            assertThat(e.getSeverity()).isEqualTo(Severity.SEVERITY_ERROR);
         });
     }
 
