@@ -90,6 +90,8 @@ public class DefaultCheckTest {
         assertThat(doc.getSchematronResult()).hasSize(1);
         assertThat(doc.getSchematronResult().get(0).getActivePatterns()).isNotEmpty();
         assertThat(doc.getSchematronResult().get(0).getFiredRules()).isNotEmpty();
+        assertThat(doc.getSchematronResult().get(0).hasFailedAsserts()).isFalse();
+        assertThat(doc.getSchematronResult().get(0).getFailedAsserts()).isEmpty();
         assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
