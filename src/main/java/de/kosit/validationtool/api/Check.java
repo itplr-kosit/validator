@@ -26,18 +26,18 @@ import org.w3c.dom.Document;
 
 
 /**
- * Zentrale Schnittstellendefinition für das Prüf-Tool.
+ * Main validator interface for checking incoming files.
  *
  * @author Andreas Penski
  */
 public interface Check {
 
     /**
-     * Führt die konfigurierte Prüfung für die übergebene Resource aus. Das Ergebnis-{@link Document} ist readonly. Soll es
-     * weiterverarbeitet werden, so muss es kopiert werden.
+     * Checks an incoming xml {@link Input Inputs}. The result-{@link Document} is readonly. To change the this document you
+     * need to copy the nodes into an new {@link Document}.
      *
-     * @param input die Resource / XML-Datei, die geprüft werden soll.
-     * @return ein Ergebnis-{@link Document} (readonly)
+     * @param input the resource / xml file to validate.
+     * @return a result-{@link Document} (readonly)
      */
     default Document check(final Input input) {
         final Result result = checkInput(input);
@@ -46,29 +46,30 @@ public interface Check {
     }
 
     /**
-     * Führt die konfigurierte Prüfung für die übergebene Resource aus.
+     * Checks an incoming xml file.
      *
-     * @param input die Resource / XML-Datei, die geprüft werden soll.
-     * @return ein Ergebnis-{@link Document}
+     * @param input the resource / xml file to validate.
+     * @return a {@link Result} object
      */
     Result checkInput(Input input);
 
     /**
-     * Führt eine Prüfung im Batch-Mode durch. Die Default-Implementierung führt die Prüfung sequentiell aus. Die Ergebnis
-     * -{@link Document Dokumente} sind readonly. Sollen sie weiterverarbeitet werden, so müssen Kopien erstellt werden.
-     *
-     * @param input die Eingabe
-     * @return Liste mit Ergebnis-Dokumenten (readonly)
+     * Checks an incoming xml files in batch mode. Processing is sequential. The result-{@link Document Documents} are
+     * readonly. To change the this document you need to copy them into new {@link Document Documents}.
+     * 
+     * 
+     * @param input list of xml {@link Input Inputs}
+     * @return list of result-{@link Document Documents} (readonly)
      */
     default List<Document> check(final List<Input> input) {
         return input.stream().map(this::check).collect(Collectors.toList());
     }
 
     /**
-     * Führt eine Prüfung im Batch-Mode durch. Die Default-Implementierung führt die Prüfung sequentiell aus.
+     * Checks an incoming xml files in batch mode. Processing is sequential.
      *
-     * @param input die Eingabe
-     * @return Liste mit Ergebnis-Dokumenten
+     * @param input list of xml {@link Input Inputs}
+     * @return list of {@link Result}
      */
     default List<Result> checkInput(final List<Input> input) {
         return input.stream().map(this::checkInput).collect(Collectors.toList());

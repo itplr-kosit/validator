@@ -51,8 +51,8 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import net.sf.saxon.s9api.Processor;
 
 /**
- * Die Referenz-Implementierung für den Prüfprozess. Nach initialer Konfiguration ist diese Klasse threadsafe und kann
- * in Server-Umgebungen eingesetzt werden
+ * The reference implementation for the validation process. After initialisation, instances are threadsafe and should be
+ * reused since initializing saxon runtime objects is an rather heavyweight process.
  *
  * @author Andreas Penski
  */
@@ -68,9 +68,9 @@ public class DefaultCheck implements Check {
     private final List<CheckAction> checkSteps;
 
     /**
-     * Erzeugt eine neue Instanz mit der angegebenen Konfiguration.
+     * Creates a new instance for the {@link Configuration}.
      *
-     * @param configuration die Konfiguration
+     * @param configuration the Configuration
      */
     public DefaultCheck(final Configuration configuration) {
         this.configuration = configuration;
@@ -99,8 +99,6 @@ public class DefaultCheck implements Check {
         type.setFrameworkVersion(EngineInformation.getFrameworkVersion());
         return type;
     }
-
-
 
     @Override
     public Result checkInput(final Input input) {
