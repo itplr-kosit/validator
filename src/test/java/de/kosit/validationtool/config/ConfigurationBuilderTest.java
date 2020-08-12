@@ -2,7 +2,7 @@ package de.kosit.validationtool.config;
 
 import static de.kosit.validationtool.config.ConfigurationBuilder.report;
 import static de.kosit.validationtool.config.ConfigurationBuilder.schematron;
-import static de.kosit.validationtool.config.SimpleConfigTest.createSimpleConfiguration;
+import static de.kosit.validationtool.config.TestScenarioFactory.createSimpleConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
