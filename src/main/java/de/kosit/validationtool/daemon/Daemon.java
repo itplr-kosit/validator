@@ -44,15 +44,17 @@ public class Daemon {
 
     /**
      * Create a new daemon.
+     * 
      * @param hostname the interface to bind to
      * @param port the port to expose
      * @param threadCount the number of working threads
      */
     public Daemon(final String hostname, final int port, final int threadCount) {
         this.bindAddress = hostname;
-        this.port  = port;
+        this.port = port;
         this.threadCount = threadCount;
     }
+
 
     /**
      * Methode zum Starten des Servers
@@ -73,9 +75,7 @@ public class Daemon {
             server.setExecutor(createExecutor());
             server.start();
             log.info("Server {} started", server.getAddress());
-            if (!log.isInfoEnabled()) {
-                writeOut("Server {0} started", server.getAddress());
-            }
+            writeOut("Daemon started. Visit http://{0}", this.bindAddress + ":" + this.port);
         } catch (final IOException e) {
             log.error("Error starting HttpServer for Valdidator: {}", e.getMessage(), e);
         }
@@ -100,5 +100,9 @@ public class Daemon {
 
     private InetSocketAddress getSocket() {
         return new InetSocketAddress(defaultIfBlank(this.bindAddress, DEFAULT_HOST), this.port > 0 ? this.port : DEFAULT_PORT);
+    }
+
+    public static void shutdown() {
+        System.out.println("bla");
     }
 }

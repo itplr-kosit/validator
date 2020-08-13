@@ -123,12 +123,15 @@ public class Validator {
     private static int startDaemonMode(final CommandLine cmd) {
         final Option[] unavailable = new Option[] { PRINT, CHECK_ASSERTIONS, DEBUG, OUTPUT, EXTRACT_HTML, REPORT_POSTFIX, REPORT_PREFIX };
         warnUnusedOptions(cmd, unavailable, true);
-        final ConfigurationLoader config = Configuration.load(determineDefinition(cmd), determineRepository(cmd));
+        final ConfigurationLoader config = getConfiguration(cmd);
         final Daemon validDaemon = new Daemon(determineHost(cmd), determinePort(cmd), determineThreads(cmd));
         if (cmd.hasOption(DISABLE_GUI.getOpt())) {
             validDaemon.setGuiEnabled(false);
         }
-        validDaemon.startServer(config.build());
+        final Configuration configuration = config.build();
+        printScenarios(configuration);
+        Printer.writeOut("\nStarting daemon mode ...");
+        validDaemon.startServer(configuration);
         return DAEMON_SIGNAL;
     }
 
@@ -146,11 +149,8 @@ public class Validator {
             long start = System.currentTimeMillis();
             final Option[] unavailable = new Option[] { HOST, PORT, WORKER_COUNT, DISABLE_GUI };
             warnUnusedOptions(cmd, unavailable, false);
-            final URI scenarioLocation = determineDefinition(cmd);
-            final URI repositoryLocation = determineRepository(cmd);
-            reportConfiguration(scenarioLocation, repositoryLocation);
-            final Configuration config = Configuration.load(scenarioLocation, repositoryLocation).build();
-
+            final Configuration config = getConfiguration(cmd).build();
+            printScenarios(config);
             final InternalCheck check = new InternalCheck(config);
             final Path outputDirectory = determineOutputDirectory(cmd);
 
@@ -173,7 +173,6 @@ public class Validator {
             if (cmd.hasOption(PRINT_MEM_STATS.getOpt())) {
                 check.getCheckSteps().add(new PrintMemoryStats());
             }
-            printScenarios(check.getConfiguration());
             log.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
 
             final Collection<Path> targets = determineTestTargets(cmd);
@@ -205,6 +204,13 @@ public class Validator {
             }
             return -1;
         }
+    }
+
+    private static ConfigurationLoader getConfiguration(final CommandLine cmd) {
+        final URI scenarioLocation = determineDefinition(cmd);
+        final URI repositoryLocation = determineRepository(cmd);
+        reportConfiguration(scenarioLocation, repositoryLocation);
+        return Configuration.load(scenarioLocation, repositoryLocation);
     }
 
     private static void reportConfiguration(final URI scenarioLocation, final URI repositoryLocation) {

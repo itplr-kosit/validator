@@ -300,7 +300,7 @@ public class InputFactory {
      */
     public static Input read(final InputStream inputStream, final String name, final String digestAlgorithm) {
         checkNull(inputStream);
-        return read(new StreamSource(inputStream, name), digestAlgorithm);
+        return read(new StreamSource(inputStream, name), name, digestAlgorithm);
     }
 
     /**
