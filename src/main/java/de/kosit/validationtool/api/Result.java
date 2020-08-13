@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * API Rückgabe Objekt des Ergebnisses des Validierungsprozesses.
+ * API result object holding various information of the validation process results.
  *
  * @author Andreas Penski
  */

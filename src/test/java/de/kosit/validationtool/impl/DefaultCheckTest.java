@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.xml.transform.stream.StreamSource;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -42,8 +44,11 @@ import org.w3c.dom.Document;
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.Helper.Simple;
+
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Test das Check-Interface
@@ -238,4 +243,18 @@ public class DefaultCheckTest {
         assertThat(result.getProcessingErrors()).hasSize(1);
     }
 
+    @Test
+    public void testXdmNode() throws Exception {
+        XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
+        Input domInput = InputFactory.read(node, "node test");
+        Result result = this.validCheck.checkInput(domInput);
+        assertThat(result.isProcessingSuccessful()).isEqualTo(true);
+
+        // test compatible configuration
+        node = this.validCheck.getConfiguration().getContentRepository().getProcessor().newDocumentBuilder()
+                .build(new StreamSource(SIMPLE_VALID.toASCIIString()));
+        domInput = InputFactory.read(node, "node test");
+        result = this.validCheck.checkInput(domInput);
+        assertThat(result.isProcessingSuccessful()).isEqualTo(true);
+    }
 }

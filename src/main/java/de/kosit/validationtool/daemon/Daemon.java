@@ -1,5 +1,6 @@
 package de.kosit.validationtool.daemon;
 
+import static de.kosit.validationtool.impl.Printer.writeOut;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.IOException;
@@ -10,7 +11,6 @@ import java.util.concurrent.Executors;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class Daemon {
      * @param port the port to expose
      * @param threadCount the number of working threads
      */
-    public Daemon(String hostname, int port, int threadCount) {
+    public Daemon(final String hostname, final int port, final int threadCount) {
         this.bindAddress = hostname;
         this.port  = port;
         this.threadCount = threadCount;
@@ -73,17 +73,20 @@ public class Daemon {
             server.setExecutor(createExecutor());
             server.start();
             log.info("Server {} started", server.getAddress());
+            if (!log.isInfoEnabled()) {
+                writeOut("Server {0} started", server.getAddress());
+            }
         } catch (final IOException e) {
             log.error("Error starting HttpServer for Valdidator: {}", e.getMessage(), e);
         }
     }
 
-    private HttpHandler createRootHandler(Configuration config) {
-        HttpHandler rootHandler;
+    private HttpHandler createRootHandler(final Configuration config) {
+        final HttpHandler rootHandler;
         final DefaultCheck check = new DefaultCheck(config);
         final CheckHandler checkHandler = new CheckHandler(check, config.getContentRepository().getProcessor());
-        if (guiEnabled) {
-            GuiHandler gui = new GuiHandler();
+        if (this.guiEnabled) {
+            final GuiHandler gui = new GuiHandler();
             rootHandler = new RoutingHandler(checkHandler, gui);
         } else {
             rootHandler = checkHandler;

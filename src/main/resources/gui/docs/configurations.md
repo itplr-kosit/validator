@@ -11,5 +11,5 @@ Currently, there are two public third party validation configurations available.
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige)
   * [Releases](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige/releases) can also be downloaded
   
-For creating custom configurations see [configaration documentation](https://github.com/itplr-kosit/validator/blob/master/docs/configurations.md)
+For creating custom configurations see [configuration documentation](https://github.com/itplr-kosit/validator/blob/master/docs/configurations.md)
 for details

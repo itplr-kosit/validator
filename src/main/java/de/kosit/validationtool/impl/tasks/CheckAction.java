@@ -134,7 +134,7 @@ public interface CheckAction {
      * Prüfschritt bedingt auszuführen.
      *
      * @param results die bisher gesammelten Information
-     * @return <tt>true</tt> wenn der Schritt ausgelassen werden soll
+     * @return <code>true</code> wenn der Schritt ausgelassen werden soll
      */
     default boolean isSkipped(final Bag results) {
         return false;

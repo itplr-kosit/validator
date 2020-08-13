@@ -19,6 +19,7 @@
 
 package de.kosit.validationtool.api;
 
+import static de.kosit.validationtool.impl.Helper.Simple.SIMPLE_VALID;
 import static de.kosit.validationtool.impl.input.StreamHelper.drain;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +32,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
-import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
@@ -188,13 +188,25 @@ public class InputFactoryTest {
         final Document dom = NodeOverNodeInfo.wrap(handler.getDocumentNode().getUnderlyingNode()).getOwnerDocument();
         final Input domInput = InputFactory.read(new DOMSource(dom), "MD5", "id".getBytes());
         assertThat(domInput).isNotNull();
-        final Source source = domInput.getSource();
-        assertThat(source).isNotNull();
+        assertThat(domInput.getSource()).isNotNull();
         final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(domInput);
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
         assertThat(Helper.parseDocument(domInput).getObject()).isNotNull();
+    }
+
+    @Test
+    public void testXdmNode() throws Exception {
+        final XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
+        final Input nodeInput = InputFactory.read(node, "node test");
+        assertThat(nodeInput).isNotNull();
+        assertThat(nodeInput.getSource()).isNotNull();
+        final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(nodeInput);
+        assertThat(parsed.isValid()).isTrue();
+
+        // read twice
+        assertThat(Helper.parseDocument(nodeInput).getObject()).isNotNull();
     }
 
 }

@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.impl.input.XdmNodeInput;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.ValidationResultsWellformedness;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
@@ -47,6 +48,7 @@ import net.sf.saxon.s9api.XdmNode;
 public class DocumentParseAction implements CheckAction {
 
     private final Processor processor;
+
     /**
      * Parsed und überprüft ein übergebenes Dokument darauf ob es well-formed ist. Dies stellt den ersten
      * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem
@@ -60,11 +62,17 @@ public class DocumentParseAction implements CheckAction {
             throw new IllegalArgumentException("Input may not be null");
         }
         Result<XdmNode, XMLSyntaxError> result;
+
         try {
-            final DocumentBuilder builder = this.processor.newDocumentBuilder();
-            builder.setLineNumbering(true);
-            final XdmNode doc = builder.build(content.getSource());
-            result = new Result<>(doc, Collections.emptyList());
+            if (content instanceof XdmNodeInput && hasCompatibleConfiguration((XdmNodeInput) content)) {
+                // parsing not neccessary
+                result = new Result<>(((XdmNodeInput) content).getNode());
+            } else {
+                final DocumentBuilder builder = this.processor.newDocumentBuilder();
+                builder.setLineNumbering(true);
+                final XdmNode doc = builder.build(content.getSource());
+                result = new Result<>(doc, Collections.emptyList());
+            }
         } catch (final SaxonApiException | IOException e) {
             log.debug("Exception while parsing {}", content.getName(), e);
             final XMLSyntaxError error = new XMLSyntaxError();
@@ -74,6 +82,10 @@ public class DocumentParseAction implements CheckAction {
         }
 
         return result;
+    }
+
+    private boolean hasCompatibleConfiguration(final XdmNodeInput content) {
+        return content.getNode().getProcessor().getUnderlyingConfiguration().isCompatible(this.processor.getUnderlyingConfiguration());
     }
 
     @Override

@@ -29,6 +29,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
+import java.util.UUID;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -42,6 +43,9 @@ import de.kosit.validationtool.impl.input.ByteArrayInput;
 import de.kosit.validationtool.impl.input.ResourceInput;
 import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.input.StreamHelper;
+import de.kosit.validationtool.impl.input.XdmNodeInput;
+
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Service zum Einlesen des Test-Objekts in den Speicher. Beim Einlesen wird gleichzeitig eine Prüfsumme ermittelt und
@@ -53,6 +57,11 @@ import de.kosit.validationtool.impl.input.StreamHelper;
 public class InputFactory {
 
     static final String DEFAULT_ALGORITH = "SHA-256";
+
+    /**
+     * Pseudo hashcode algorithm name, which indicates, thate the hashcode of the {@link Input} is actually the name.
+     */
+    static final String PSEUDO_NAME_ALGORITHM = "NAME";
 
     private static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
 
@@ -164,15 +173,18 @@ public class InputFactory {
     }
 
     /**
-     * Reads a test document from a {@link Source}. <br/>
-     * Note: computing the hashcode is only supported for {@link StreamSource}. You can not directly use other {@link Source
-     * Soures}. You need to supply the hashcode for identification then.
+     * Reads a test document from a {@link Source}. Note: computing the hashcode is only supported for {@link StreamSource}.
+     * You can not directly use other {@link Source Soures}. You need to supply the hashcode for identification then.
      * 
      * @param source source
      * @return an {@link Input}
      */
-    public static Input read(final StreamSource source) {
-        return read(source, DEFAULT_ALGORITH);
+    public static Input read(final Source source) {
+        if (source instanceof StreamSource) {
+            return read(source, source.getSystemId(), DEFAULT_ALGORITH);
+        }
+        final String name = UUID.randomUUID().toString();
+        return read(source, name, PSEUDO_NAME_ALGORITHM, name.getBytes());
     }
 
     /**
@@ -182,11 +194,16 @@ public class InputFactory {
      * Soures}. You need to supply the hashcode for identification then.
      *
      * @param source source
-     * @param digestAlgorithm the digest algorithm
+     * @param name the digest algorithm
      * @return an {@link Input}
      */
-    public static Input read(final StreamSource source, final String digestAlgorithm) {
-        return read(source, digestAlgorithm, null);
+    public static Input read(final Source source, final String name) {
+        checkNotEmpty(name);
+        return read(source, name, PSEUDO_NAME_ALGORITHM, name.getBytes());
+    }
+
+    public static Input read(final Source source, final String name, final String digestAlgorithm) {
+        return read(source, name, digestAlgorithm, null);
     }
 
     /**
@@ -198,7 +215,12 @@ public class InputFactory {
      */
     public static Input read(final Source source, final String digestAlgorithm, final byte[] hashcode) {
         checkNull(source);
-        return new SourceInput(source, source.getSystemId(), digestAlgorithm, hashcode);
+        return read(source, source.getSystemId(), digestAlgorithm, hashcode);
+    }
+
+    public static Input read(final Source source, final String name, final String digestAlgorithm, final byte[] hashcode) {
+        checkNull(source);
+        return new SourceInput(source, name, digestAlgorithm, hashcode);
     }
 
     /**
@@ -279,6 +301,19 @@ public class InputFactory {
     public static Input read(final InputStream inputStream, final String name, final String digestAlgorithm) {
         checkNull(inputStream);
         return read(new StreamSource(inputStream, name), digestAlgorithm);
+    }
+
+    /**
+     * Reads a saxon {@link XdmNode} with a given name. Hashcode identification is based on the name of the supplied input.
+     * Now real hashcode is computed.
+     * 
+     * @param node the node to read
+     * @param name the name of the {@link Input}
+     * @return an {@link Input} to validate
+     */
+    public static Input read(final XdmNode node, final String name) {
+        checkNull(node);
+        return new XdmNodeInput(node, name, PSEUDO_NAME_ALGORITHM, name.getBytes());
     }
 
 }

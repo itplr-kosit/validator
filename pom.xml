@@ -426,7 +426,7 @@
                 </executions>
                     <configuration>
                     <executable>java</executable>
-                    <longClasspath>true</longClasspath>
+                    <longClasspath>false</longClasspath>
                     <async>true</async>
                     <asyncDestroyOnShutdown>true</asyncDestroyOnShutdown>
                     <arguments>
@@ -487,9 +487,33 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <source>8</source>
+                    <doclint>none</doclint>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
 
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
 
     <scm>
         <connection>https://github.com/itplr-kosit/validationtool.git</connection>

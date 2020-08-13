@@ -1,9 +1,13 @@
 package de.kosit.validationtool.impl.input;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.ReaderInputStream;
@@ -11,21 +15,23 @@ import org.apache.commons.io.input.ReaderInputStream;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import net.sf.saxon.om.TreeInfo;
+
 /**
- * A validator {@link de.kosit.validationtool.api.Input} based on a {@link Source}. <br/>
+ * A validator {@link de.kosit.validationtool.api.Input} based on a {@link Source}.
  * <p>
  * Note: The various implementations of {@link Source} varies wether the can be read twice or no. This implementation
  * tries to handle this with respect document identification (hashcode).
  * 
- * This class is know to work with:
+ * This class is known to work with:
  * <ul>
  * <li>{@link StreamSource} - both {@link java.io.InputStream} based and {@link java.io.Reader} based</li>
  * <li>{@link javax.xml.transform.dom.DOMSource}</li>
  * <li>{@link javax.xml.bind.util.JAXBSource}</li>
+ * <li>{@link TreeInfo}</li>
  * </ul>
  * 
  * Other {@link Source Sources} may work as well, please try and let us know.
- * </p>
  * 
  * @author Andreas Penski
  */
@@ -51,28 +57,33 @@ public class SourceInput extends AbstractInput {
         validate();
     }
 
+    @Override
+    public String getName() {
+        return defaultIfBlank(this.name, this.source.getClass().getSimpleName());
+    }
+
     private void validate() {
-        if (!isHashcodeComputed() && isNotSupported()) {
+        if (!isHashcodeComputed() && !isHashcodeComputationSupported()) {
             throw new IllegalStateException("Unsupported source. Only StreamSource supported yet");
         }
         if (!isHashcodeComputed() && ((StreamSource) this.source).getInputStream() == null) {
             log.warn("No hashcode supplied, will wrap the reader using system default charset");
         }
+        if (!(isTreeInfo() || isDomSource() || isStreamSource() || isJaxbSource())) {
+            log.warn("No known to be working Source implementation provided.");
+        }
     }
 
     @Override
     public Source getSource() throws IOException {
-        if (!isHashcodeComputed() && isNotSupported()) {
-            throw new IllegalStateException("Unsupported source. Only InputStream-based StreamSource supported yet");
-        }
         if (isConsumed()) {
             throw new IllegalStateException("A SourceInput can only read once");
         }
         return isHashcodeComputed() ? this.source : wrappedSource();
     }
 
-    private boolean isNotSupported() {
-        return !isStreamSource();
+    private boolean isHashcodeComputationSupported() {
+        return isStreamSource();
     }
 
     private boolean isConsumed() throws IOException {
@@ -94,6 +105,18 @@ public class SourceInput extends AbstractInput {
         return this.source instanceof StreamSource;
     }
 
+    private boolean isDomSource() {
+        return this.source instanceof DOMSource;
+    }
+
+    public boolean isTreeInfo() {
+        return this.source instanceof TreeInfo;
+    }
+
+    private boolean isJaxbSource() {
+        return this.source instanceof JAXBSource;
+    }
+
     private Source wrappedSource() {
         Source result = this.source;
         if (isStreamSource()) {
@@ -107,11 +130,9 @@ public class SourceInput extends AbstractInput {
         return result;
     }
 
-
-
     @Override
     public boolean supportsMultipleReads() {
-        return false;
+        return isDomSource() || isTreeInfo();
     }
 
 }

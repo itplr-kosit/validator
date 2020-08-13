@@ -62,6 +62,7 @@ public class DefaultCheck implements Check {
     @Getter
     private final ConversionService conversionService;
 
+    @Getter
     private final Configuration configuration;
 
     @Getter

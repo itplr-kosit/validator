@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - date conversion when using [ConfigurationBuilder#date(Date)](https://github.com/itplr-kosit/validator/blob/d7beb1040418ae5cbeb9427532fd87482f55756c/src/main/java/de/kosit/validationtool/config/ConfigurationBuilder.java#L109)
 
+### Added
+- read saxon XdmNode with InputFactory
+
+### Changed
+- InputFactory has methods to read any java.xml.transform.Source as Input not only StreamSources 
+- InputFactory uses a generated UUID as name for SourceInput, if no "real" name can be derived 
+
 ## 1.3.1 
 ### Fixed
 - `getFailedAsserts()` and `isSchematronValid()` in [DefaultResult.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/impl/DefaultResult.java)
