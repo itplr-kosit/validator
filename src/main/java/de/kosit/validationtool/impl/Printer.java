@@ -7,7 +7,12 @@ import java.text.MessageFormat;
  * 
  * @author Andreas Penski
  */
+@SuppressWarnings("squid:S106")
 public class Printer {
+
+    private Printer() {
+        // hide
+    }
 
     /**
      * Writes to standard output channel.

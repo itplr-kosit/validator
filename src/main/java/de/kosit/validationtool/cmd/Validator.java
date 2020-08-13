@@ -66,6 +66,10 @@ import net.sf.saxon.s9api.Processor;
 @SuppressWarnings("squid:S3725")
 public class Validator {
 
+    private Validator() {
+        // hide
+    }
+
     /**
      * Hauptprogramm für die Kommandozeilen-Applikation.
      *
