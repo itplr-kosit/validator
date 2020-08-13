@@ -102,7 +102,4 @@ public class Daemon {
         return new InetSocketAddress(defaultIfBlank(this.bindAddress, DEFAULT_HOST), this.port > 0 ? this.port : DEFAULT_PORT);
     }
 
-    public static void shutdown() {
-        System.out.println("bla");
-    }
 }
