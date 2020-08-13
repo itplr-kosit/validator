@@ -100,7 +100,6 @@ class InternalCheck extends DefaultCheck {
         final long rejected = results.entrySet().stream().filter(e -> !e.getValue().isAcceptable()).count();
         final long errors = results.entrySet().stream().filter(e -> !e.getValue().isProcessingSuccessful()).count();
         final Line line = new Line();
-        line.add(String.format("Validation of %s objects finished. ", results.size()));
         line.add("Acceptable: ").add(acceptable, Code.GREEN);
         line.add(" Rejected: ").add(rejected, Code.RED);
         if (errors > 0) {

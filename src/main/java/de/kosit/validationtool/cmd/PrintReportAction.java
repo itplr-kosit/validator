@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.impl.Printer;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 import net.sf.saxon.s9api.Processor;
@@ -47,7 +48,7 @@ class PrintReportAction implements CheckAction {
             final StringWriter writer = new StringWriter();
             final Serializer serializer = this.processor.newSerializer(writer);
             serializer.serializeNode(results.getReport());
-            System.out.print(writer.toString()); // NOSONAR
+            Printer.writeOut(writer.toString());
         } catch (final SaxonApiException e) {
             log.error("Error while printing result to stdout", e);
         }

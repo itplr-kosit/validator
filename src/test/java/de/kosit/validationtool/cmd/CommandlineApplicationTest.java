@@ -29,6 +29,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +52,6 @@ public class CommandlineApplicationTest {
     private CommandLine commandLine;
 
     private final Path output = Paths.get("target/test-output");
-
 
     @Before
     public void setup() throws IOException {
@@ -112,8 +113,7 @@ public class CommandlineApplicationTest {
     @Test
     public void testNotExistingTestTarget() {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
-                Paths.get(Simple.REPOSITORY_URI).toString(),
-                Paths.get(Simple.NOT_EXISTING).toString() };
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.NOT_EXISTING).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).isNotEmpty();
         assertThat(this.commandLine.getErrorOutput()).contains("No test targets found");
@@ -122,8 +122,7 @@ public class CommandlineApplicationTest {
     @Test
     public void testValidMinimalConfiguration() {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
-                Paths.get(Simple.REPOSITORY_URI).toString(),
-                Paths.get(Simple.SIMPLE_VALID).toString() };
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
     }
@@ -181,14 +180,15 @@ public class CommandlineApplicationTest {
                 Paths.get(Simple.REPOSITORY_URI).toString(), "-o", this.output.toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(this.commandLine.getOutputLines().get(0)).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        assertThat(this.commandLine.getOutputLines()).haveAtLeastOne(new Condition<>(
+                s -> StringUtils.contains(s, "<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
     }
 
     @Test
     public void testHtmlExtraktion() throws IOException {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-h", "-o",
-                this.output.toAbsolutePath().toString(),
-                "-r", Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
+                this.output.toAbsolutePath().toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
+                Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(Files.list(this.output).filter(f -> f.toString().endsWith(".html")).count()).isGreaterThan(0);
@@ -198,8 +198,7 @@ public class CommandlineApplicationTest {
     public void testAssertionsExtraktion() {
         final String[] args = new String[] { "-d", "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), "-o", this.output.toString(), "-c", Paths.get(ASSERTIONS).toString(),
-                Paths.get(Simple.REPOSITORY_URI).toString(),
-                Paths.get(Simple.SIMPLE_VALID).toString() };
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(this.commandLine.getErrorOutput()).contains("Can not find assertions for ");
@@ -208,8 +207,7 @@ public class CommandlineApplicationTest {
     @Test
     public void testDebugFlag() {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", "unknown", "-o", this.output.toString(),
-                "-d",
-                Paths.get(ASSERTIONS).toString() };
+                "-d", Paths.get(ASSERTIONS).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(this.commandLine.getErrorOutput()).contains("at de.kosit.validationtool");
     }

@@ -64,7 +64,7 @@ public class Line {
         return render(true, false);
     }
 
-    String render(final boolean newLine, final boolean dotted) {
+    public String render(final boolean newLine, final boolean dotted) {
         final List<String> joins = new ArrayList<>();
         final List<Text> reversed = new ArrayList<>(this.texts);
         int replace = 0;
