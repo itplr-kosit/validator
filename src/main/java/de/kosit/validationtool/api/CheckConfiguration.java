@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.config.ConfigurationLoader;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario;
 
@@ -55,7 +54,7 @@ public class CheckConfiguration implements Configuration {
      */
     private URI scenarioRepository;
 
-    private ConfigurationLoader loader;
+
 
     private Configuration delegate;
 

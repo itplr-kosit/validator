@@ -20,6 +20,7 @@
 
 <scenarios xmlns="http://www.xoev.de/de/validator/framework/1/scenarios" frameworkVersion="1.1.2">
     <name>HTML-TestSuite</name>
+    <author>QA</author>
     <date>2017-08-08</date>
     <description>
         <p>Szenario für Tests</p>

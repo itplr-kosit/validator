@@ -17,7 +17,7 @@ import de.kosit.validationtool.impl.ResolvingMode;
  */
 public class TestScenarioFactory {
 
-    static ConfigurationBuilder createSimpleConfiguration() {
+    public static ConfigurationBuilder createSimpleConfiguration() {
         return Configuration.create().name("Simple-API").author("me").description("test desc").date(new Date())
                 .with(createScenario().description("awesome scenario")).with(fallback().name("default").source("report.xsl"))
 

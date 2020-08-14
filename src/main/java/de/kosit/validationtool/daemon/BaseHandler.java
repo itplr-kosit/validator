@@ -15,13 +15,13 @@ abstract class BaseHandler implements HttpHandler {
 
     protected static final String APPLICATION_XML = "application/xml";
 
-    protected static final int OK = 200;
+    static final int OK = 200;
 
     protected static void write(final HttpExchange exchange, final byte[] content, final String contentType) throws IOException {
         write(exchange, contentType, os -> os.write(content));
     }
 
-    protected static void write(final HttpExchange exchange, final String contentType, Write write) throws IOException {
+    protected static void write(final HttpExchange exchange, final String contentType, final Write write) throws IOException {
         exchange.getResponseHeaders().add("Content-Type", contentType);
         exchange.sendResponseHeaders(OK, 0);
         final OutputStream os = exchange.getResponseBody();
@@ -41,6 +41,6 @@ abstract class BaseHandler implements HttpHandler {
     @FunctionalInterface
     protected interface Write {
 
-        public void write(OutputStream out) throws IOException;
+        void write(OutputStream out) throws IOException;
     }
 }
