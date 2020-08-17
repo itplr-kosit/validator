@@ -1,14 +1,13 @@
 package de.kosit.validationtool.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 
 import de.kosit.validationtool.api.Configuration;
-import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.ResolvingMode;
-import de.kosit.validationtool.impl.xml.StrictLocalResolvingStrategy;
+import de.kosit.validationtool.impl.xml.RemoteResolvingStrategy;
+import de.kosit.validationtool.impl.xml.StrictRelativeResolvingStrategy;
 
 /**
  * @author Andreas Penski
@@ -18,10 +17,9 @@ public class ConfigurationLoaderTest {
     @Test
     public void testCustomResolvingStrategy() {
         final ConfigurationLoader loader = TestConfigurationFactory.loadSimpleConfiguration();
-        final ResolvingConfigurationStrategy strategy = mock(ResolvingConfigurationStrategy.class);
-        loader.setResolvingStrategy(strategy);
-        loader.setResolvingMode(ResolvingMode.STRICT_LOCAL);
+        loader.setResolvingStrategy(new StrictRelativeResolvingStrategy());
+        loader.setResolvingMode(ResolvingMode.ALLOW_REMOTE);
         final Configuration config = loader.build();
-        assertThat(config.getContentRepository().getResolvingConfigurationStrategy()).isNotInstanceOf(StrictLocalResolvingStrategy.class);
+        assertThat(config.getContentRepository().getResolvingConfigurationStrategy()).isNotInstanceOf(RemoteResolvingStrategy.class);
     }
 }
