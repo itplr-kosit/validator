@@ -1,6 +1,6 @@
 package de.kosit.validationtool.config;
 
-import static de.kosit.validationtool.config.TestScenarioFactory.createScenario;
+import static de.kosit.validationtool.config.TestConfigurationFactory.createScenario;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;

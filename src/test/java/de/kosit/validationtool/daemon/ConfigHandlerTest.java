@@ -20,7 +20,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import de.kosit.validationtool.api.Configuration;
-import de.kosit.validationtool.config.TestScenarioFactory;
+import de.kosit.validationtool.config.TestConfigurationFactory;
 import de.kosit.validationtool.impl.ConversionService;
 
 /**
@@ -35,7 +35,7 @@ public class ConfigHandlerTest {
         final OutputStream stream = mock(OutputStream.class);
         when(exchange.getResponseHeaders()).thenReturn(headers);
         when(exchange.getResponseBody()).thenReturn(stream);
-        final Configuration config = TestScenarioFactory.createSimpleConfiguration().build();
+        final Configuration config = TestConfigurationFactory.createSimpleConfiguration().build();
         final ConfigHandler handler = new ConfigHandler(config, new ConversionService());
         handler.handle(exchange);
         verify(exchange, times(1)).sendResponseHeaders(ConfigHandler.OK, 0);

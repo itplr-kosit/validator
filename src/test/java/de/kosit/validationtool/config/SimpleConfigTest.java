@@ -1,6 +1,6 @@
 package de.kosit.validationtool.config;
 
-import static de.kosit.validationtool.config.TestScenarioFactory.createSimpleConfiguration;
+import static de.kosit.validationtool.config.TestConfigurationFactory.createSimpleConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;

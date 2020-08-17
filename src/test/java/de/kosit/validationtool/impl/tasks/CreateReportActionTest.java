@@ -1,6 +1,6 @@
 package de.kosit.validationtool.impl.tasks;
 
-import static de.kosit.validationtool.config.TestScenarioFactory.createScenario;
+import static de.kosit.validationtool.config.TestConfigurationFactory.createScenario;
 import static de.kosit.validationtool.impl.Helper.serialize;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

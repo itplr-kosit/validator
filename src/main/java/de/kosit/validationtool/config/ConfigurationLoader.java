@@ -181,6 +181,9 @@ public class ConfigurationLoader {
      * @return this
      */
     public ConfigurationLoader setResolvingMode(final ResolvingMode mode) {
+        if (this.resolvingConfigurationStrategy != null) {
+            log.warn("Ignoring resolving mode configuration since a custom strategy is already defined");
+        }
         this.resolvingMode = mode;
         return this;
     }

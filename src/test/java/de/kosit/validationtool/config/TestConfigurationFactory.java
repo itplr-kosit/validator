@@ -15,13 +15,17 @@ import de.kosit.validationtool.impl.ResolvingMode;
 /**
  * @author Andreas Penski
  */
-public class TestScenarioFactory {
+public class TestConfigurationFactory {
 
     public static ConfigurationBuilder createSimpleConfiguration() {
         return Configuration.create().name("Simple-API").author("me").description("test desc").date(new Date())
                 .with(createScenario().description("awesome scenario")).with(fallback().name("default").source("report.xsl"))
 
                 .resolvingMode(ResolvingMode.STRICT_RELATIVE).useRepository(Simple.REPOSITORY_URI);
+    }
+
+    public static ConfigurationLoader loadSimpleConfiguration() {
+        return Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI);
     }
 
     public static ScenarioBuilder createScenario() {
