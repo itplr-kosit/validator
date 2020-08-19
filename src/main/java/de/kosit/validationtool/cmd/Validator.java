@@ -190,10 +190,10 @@ public class Validator {
             }
             final long processingTime = System.currentTimeMillis() - start;
             Printer.writeOut("Processing of {0} objects completed in {1}ms", targets.size(), processingTime);
-            Printer.writeOut("Results:");
-            final boolean result = check.printAndEvaluate(results);
+
+            check.printResults(results);
             log.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
-            return result ? 0 : 1;
+            return check.isSuccessful(results) ? 0 : 1;
 
         } catch (final Exception e) {
             e.printStackTrace();// NOSONAR
@@ -219,7 +219,7 @@ public class Validator {
     }
 
     private static void printScenarios(final Configuration configuration) {
-        Printer.writeOut("Loaded \"{0} {1}\" by {2} from {3} ", configuration.getName(), "1", configuration.getAuthor(),
+        Printer.writeOut("Loaded \"{0}\" by {1} from {2} ", configuration.getName(), configuration.getAuthor(),
                 configuration.getDate());
         Printer.writeOut("\nThe following scenarios are available:");
         configuration.getScenarios().forEach(e -> {

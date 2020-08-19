@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - read saxon XdmNode with InputFactory
 - [CLI] custom output without the various log messages
 - [CLI] options to set the log level (`-X` = full debug output, `-l <level>` set a specific level)
+- [CLI] return code ist <> 0 on rejected results
 
 ### Changed
 - InputFactory has methods to read any java.xml.transform.Source as Input not only StreamSources 

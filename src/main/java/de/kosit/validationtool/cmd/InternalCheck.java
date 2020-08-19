@@ -21,6 +21,7 @@ package de.kosit.validationtool.cmd;
 
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,7 +40,6 @@ import de.kosit.validationtool.cmd.report.Justify;
 import de.kosit.validationtool.cmd.report.Line;
 import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
 
 /**
  * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszwerten und auszugeben.
@@ -80,19 +80,36 @@ class InternalCheck extends DefaultCheck {
         return result;
     }
 
-    boolean printAndEvaluate(final Map<Path, Result> results) {
+    void printResults(final Map<Path, Result> results) {
         final PrintWriter writer = new PrintWriter(System.out);// NOSONAR
+        writer.write("Results:\n");
         writer.write(createResultGrid(results).render());
         writer.write(createStatusLine(results));
+        writer.write(createAssertionStatus());
         writer.flush();
+    }
+
+    private String createAssertionStatus() {
+        final Line line = new Line();
         if (this.failedAssertions > 0) {
             log.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
                     this.failedAssertions);
+            line.add(MessageFormat.format("Assertions run: {0}, Assertions failed: ", this.checkAssertions));
+            line.add(this.failedAssertions, Code.RED);
         } else if (this.checkAssertions > 0) {
             log.info("Assertion check successful.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
                     this.failedAssertions);
+            line.add(MessageFormat.format("Assertions run: {0}, Assertions failed: {1}", this.checkAssertions, this.failedAssertions));
         }
-        return this.failedAssertions == 0 && results.entrySet().stream().allMatch(e -> e.getValue().isAcceptable());
+        return line.render(true, false);
+    }
+
+    @Override
+    public boolean isSuccessful(final Map<Path, Result> results) {
+        if (this.checkAssertions > 0) {
+            return this.failedAssertions == 0;
+        }
+        return super.isSuccessful(results);
     }
 
     private static String createStatusLine(final Map<Path, Result> results) {
@@ -105,7 +122,7 @@ class InternalCheck extends DefaultCheck {
         if (errors > 0) {
             line.add(" Processing errors: ").add(errors, Code.RED);
         }
-        return line.render();
+        return line.render(true, false);
     }
 
     private static Grid createResultGrid(final Map<Path, Result> results) {
