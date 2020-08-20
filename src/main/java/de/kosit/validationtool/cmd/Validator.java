@@ -196,7 +196,7 @@ public class Validator {
             return check.isSuccessful(results) ? 0 : 1;
 
         } catch (final Exception e) {
-            e.printStackTrace();// NOSONAR
+            Printer.writeErr(e.getMessage());
             if (cmd.hasOption(DEBUG.getOpt())) {
                 log.error(e.getMessage(), e);
             } else {
@@ -219,8 +219,7 @@ public class Validator {
     }
 
     private static void printScenarios(final Configuration configuration) {
-        Printer.writeOut("Loaded \"{0}\" by {1} from {2} ", configuration.getName(), configuration.getAuthor(),
-                configuration.getDate());
+        Printer.writeOut("Loaded \"{0}\" by {1} from {2} ", configuration.getName(), configuration.getAuthor(), configuration.getDate());
         Printer.writeOut("\nThe following scenarios are available:");
         configuration.getScenarios().forEach(e -> {
             final Line line = new Line(Code.GREEN);
@@ -291,7 +290,7 @@ public class Validator {
 
     private static Collection<Path> listDirectoryTargets(final Path d) {
         try ( final Stream<Path> stream = Files.list(d) ) {
-            return stream.filter(path -> path.toString().endsWith(".xml")).collect(Collectors.toList());
+            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).collect(Collectors.toList());
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }
