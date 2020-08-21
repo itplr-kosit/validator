@@ -58,4 +58,9 @@ public class DefaultNamingStrategyTest {
         strategy.setPrefix(null);
         assertThat(strategy.createName("test.ext")).isEqualTo("test.ext-postfix.xml");
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testEmptyInput() {
+        new DefaultNamingStrategy().createName(null);
+    }
 }

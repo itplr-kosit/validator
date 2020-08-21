@@ -7,7 +7,6 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -15,7 +14,6 @@ import lombok.Setter;
  * 
  * @author Andreas Penski
  */
-@Getter
 @Setter
 public class DefaultNamingStrategy implements NamingStrategy {
 
