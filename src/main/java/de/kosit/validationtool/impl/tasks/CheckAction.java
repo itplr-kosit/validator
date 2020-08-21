@@ -21,8 +21,8 @@ package de.kosit.validationtool.impl.tasks;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.apache.commons.io.FilenameUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -113,11 +113,7 @@ public interface CheckAction {
          */
         public String getName() {
             final String fileName = getInput().getName().replaceAll(".*/|.*\\\\", "");
-            final Matcher matcher = Pattern.compile("(.*)\\..+").matcher(fileName);
-            if (matcher.matches()) {
-                return matcher.group(1);
-            }
-            return fileName;
+            return FilenameUtils.getBaseName(fileName);
         }
     }
 

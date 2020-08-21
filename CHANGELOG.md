@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Fixed
 - date conversion when using [ConfigurationBuilder#date(Date)](https://github.com/itplr-kosit/validator/blob/d7beb1040418ae5cbeb9427532fd87482f55756c/src/main/java/de/kosit/validationtool/config/ConfigurationBuilder.java#L109)
+### Fixed
+- [#51](https://github.com/itplr-kosit/validator/issues/51) Suffix of report xml is missing
 
 ### Added
 - read saxon XdmNode with InputFactory
