@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - InputFactory has methods to read any java.xml.transform.Source as Input not only StreamSources 
 - InputFactory uses a generated UUID as name for SourceInput, if no "real" name can be derived 
+- saxon dependency update (minor, 9.9.1-7)
 
 ## 1.3.1 
 ### Fixed
