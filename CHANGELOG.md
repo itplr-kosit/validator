@@ -15,11 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [CLI] custom output without the various log messages
 - [CLI] options to set the log level (`-X` = full debug output, `-l <level>` set a specific level)
 - [CLI] return code ist <> 0 on rejected results
+- [CLI] read (single) test target from stdin
+- [DAEMON] name inputs via request URI (see [daemon documentation](./docs/daemon.md#status-codes))
 
 ### Changed
 - InputFactory has methods to read any java.xml.transform.Source as Input not only StreamSources 
 - InputFactory uses a generated UUID as name for SourceInput, if no "real" name can be derived 
 - saxon dependency update (minor, 9.9.1-7)
+- [DAEMON] proper status codes when returning results
 
 ## 1.3.1 
 ### Fixed
@@ -29,7 +32,7 @@ do not reflect actual schematron validation result
 - exception while resolving when using XSLT's `unparsed-text()` function within report generation
 
 ### Added
-- [CLI] add summary report 
+- [CLI] summary report 
 
 ### Changed
 - engine info contains version number of the validator (configurations can output this in the report for maintainance puposes)

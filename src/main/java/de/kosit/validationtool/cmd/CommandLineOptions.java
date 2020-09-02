@@ -37,7 +37,6 @@ public class CommandLineOptions {
     static final Option DEBUG_LOG = Option.builder("X").longOpt("debug-logging").desc("Enables full debug log. Alias for -l debug").build();
     static final Option LOG_LEVEL = Option.builder("l").longOpt("log-level").hasArg()
             .desc("Enables a certain log level for debugging " + "purposes").build();
-    public static final int DAEMON_SIGNAL = 100;
     static final Option PRINT_MEM_STATS = Option.builder("m").longOpt("memory-stats").desc("Prints some memory stats").build();
 
     private CommandLineOptions() {

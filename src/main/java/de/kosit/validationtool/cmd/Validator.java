@@ -1,7 +1,6 @@
 package de.kosit.validationtool.cmd;
 
 import static de.kosit.validationtool.cmd.CommandLineOptions.CHECK_ASSERTIONS;
-import static de.kosit.validationtool.cmd.CommandLineOptions.DAEMON_SIGNAL;
 import static de.kosit.validationtool.cmd.CommandLineOptions.DEBUG;
 import static de.kosit.validationtool.cmd.CommandLineOptions.DISABLE_GUI;
 import static de.kosit.validationtool.cmd.CommandLineOptions.EXTRACT_HTML;
@@ -75,20 +74,29 @@ public class Validator {
      *
      * @param cmd parsed commandline.
      */
-    static int mainProgram(final CommandLine cmd) {
+    static ReturnValue mainProgram(final CommandLine cmd) {
         greeting();
         final org.apache.commons.cli.Options options = createOptions();
-        int returnValue = 0;
-        if (cmd.hasOption(SERVER.getOpt())) {
-            returnValue = startDaemonMode(cmd);
-        } else if (cmd.hasOption(HELP.getOpt()) || cmd.getArgList().isEmpty()) {
-            printHelp(options);
-        } else if (cmd.getArgList().isEmpty()) {
-            printHelp(options);
-        } else {
-            returnValue = processActions(cmd);
+        final ReturnValue returnValue;
+        try {
+            if (cmd.hasOption(SERVER.getOpt())) {
+                startDaemonMode(cmd);
+                returnValue = ReturnValue.DAEMON_MODE;
+            } else if (cmd.hasOption(HELP.getOpt()) || (cmd.getArgList().isEmpty() && !isPiped())) {
+                printHelp(options);
+                returnValue = ReturnValue.PARSING_ERROR;
+            } else {
+                returnValue = processActions(cmd);
+            }
+        } catch (final Exception e) {
+            Printer.writeErr(e.getMessage());
+            if (cmd.hasOption(DEBUG.getOpt())) {
+                log.error(e.getMessage(), e);
+            } else {
+                log.error(e.getMessage());
+            }
+            return ReturnValue.CONFIGURATION_ERROR;
         }
-
         return returnValue;
     }
 
@@ -120,7 +128,7 @@ public class Validator {
         return host;
     }
 
-    private static int startDaemonMode(final CommandLine cmd) {
+    private static void startDaemonMode(final CommandLine cmd) {
         final Option[] unavailable = new Option[] { PRINT, CHECK_ASSERTIONS, DEBUG, OUTPUT, EXTRACT_HTML, REPORT_POSTFIX, REPORT_PREFIX };
         warnUnusedOptions(cmd, unavailable, true);
         final ConfigurationLoader config = getConfiguration(cmd);
@@ -132,7 +140,6 @@ public class Validator {
         printScenarios(configuration);
         Printer.writeOut("\nStarting daemon mode ...");
         validDaemon.startServer(configuration);
-        return DAEMON_SIGNAL;
     }
 
     private static void warnUnusedOptions(final CommandLine cmd, final Option[] unavailable, final boolean daemon) {
@@ -143,68 +150,56 @@ public class Validator {
         }
     }
 
-    private static int processActions(final CommandLine cmd) {
-        try {
+    private static ReturnValue processActions(final CommandLine cmd) throws IOException {
+        long start = System.currentTimeMillis();
+        final Option[] unavailable = new Option[] { HOST, PORT, WORKER_COUNT, DISABLE_GUI };
+        warnUnusedOptions(cmd, unavailable, false);
+        final Configuration config = getConfiguration(cmd).build();
+        printScenarios(config);
+        final InternalCheck check = new InternalCheck(config);
+        final Path outputDirectory = determineOutputDirectory(cmd);
 
-            long start = System.currentTimeMillis();
-            final Option[] unavailable = new Option[] { HOST, PORT, WORKER_COUNT, DISABLE_GUI };
-            warnUnusedOptions(cmd, unavailable, false);
-            final Configuration config = getConfiguration(cmd).build();
-            printScenarios(config);
-            final InternalCheck check = new InternalCheck(config);
-            final Path outputDirectory = determineOutputDirectory(cmd);
-
-            final Processor processor = config.getContentRepository().getProcessor();
-            if (cmd.hasOption(EXTRACT_HTML.getOpt())) {
-                check.getCheckSteps().add(new ExtractHtmlContentAction(processor, outputDirectory));
-            }
-            check.getCheckSteps().add(new SerializeReportAction(outputDirectory, processor, determineNamingStrategy(cmd)));
-            if (cmd.hasOption(SERIALIZE_REPORT_INPUT.getOpt())) {
-                check.getCheckSteps().add(new SerializeReportInputAction(outputDirectory, check.getConversionService()));
-            }
-            if (cmd.hasOption(PRINT.getOpt())) {
-                check.getCheckSteps().add(new PrintReportAction(processor));
-            }
-
-            if (cmd.hasOption(CHECK_ASSERTIONS.getOpt())) {
-                final Assertions assertions = loadAssertions(cmd.getOptionValue(CHECK_ASSERTIONS.getOpt()));
-                check.getCheckSteps().add(new CheckAssertionAction(assertions, processor));
-            }
-            if (cmd.hasOption(PRINT_MEM_STATS.getOpt())) {
-                check.getCheckSteps().add(new PrintMemoryStats());
-            }
-            log.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
-
-            final Collection<Path> targets = determineTestTargets(cmd);
-            start = System.currentTimeMillis();
-            final Map<Path, Result> results = new HashMap<>();
-            Printer.writeOut("\nProcessing of {0} objects started", targets.size());
-            long tick = System.currentTimeMillis();
-            for (final Path p : targets) {
-                final Input input = InputFactory.read(p);
-                results.put(p, check.checkInput(input));
-                if (((System.currentTimeMillis() - tick) / 1000) > 5) {
-                    tick = System.currentTimeMillis();
-                    Printer.writeOut("{0}/{1} objects processed", results.size(), targets.size());
-                }
-            }
-            final long processingTime = System.currentTimeMillis() - start;
-            Printer.writeOut("Processing of {0} objects completed in {1}ms", targets.size(), processingTime);
-
-            check.printResults(results);
-            log.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
-            return check.isSuccessful(results) ? 0 : 1;
-
-        } catch (final Exception e) {
-            Printer.writeErr(e.getMessage());
-            if (cmd.hasOption(DEBUG.getOpt())) {
-                log.error(e.getMessage(), e);
-            } else {
-                log.error(e.getMessage());
-            }
-            return -1;
+        final Processor processor = config.getContentRepository().getProcessor();
+        if (cmd.hasOption(EXTRACT_HTML.getOpt())) {
+            check.getCheckSteps().add(new ExtractHtmlContentAction(processor, outputDirectory));
         }
+        check.getCheckSteps().add(new SerializeReportAction(outputDirectory, processor, determineNamingStrategy(cmd)));
+        if (cmd.hasOption(SERIALIZE_REPORT_INPUT.getOpt())) {
+            check.getCheckSteps().add(new SerializeReportInputAction(outputDirectory, check.getConversionService()));
+        }
+        if (cmd.hasOption(PRINT.getOpt())) {
+            check.getCheckSteps().add(new PrintReportAction(processor));
+        }
+
+        if (cmd.hasOption(CHECK_ASSERTIONS.getOpt())) {
+            final Assertions assertions = loadAssertions(cmd.getOptionValue(CHECK_ASSERTIONS.getOpt()));
+            check.getCheckSteps().add(new CheckAssertionAction(assertions, processor));
+        }
+        if (cmd.hasOption(PRINT_MEM_STATS.getOpt())) {
+            check.getCheckSteps().add(new PrintMemoryStats());
+        }
+        log.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
+
+        final Collection<Input> targets = determineTestTargets(cmd);
+        start = System.currentTimeMillis();
+        final Map<String, Result> results = new HashMap<>();
+        Printer.writeOut("\nProcessing of {0} objects started", targets.size());
+        long tick = System.currentTimeMillis();
+        for (final Input input : targets) {
+            results.put(input.getName(), check.checkInput(input));
+            if (((System.currentTimeMillis() - tick) / 1000) > 5) {
+                tick = System.currentTimeMillis();
+                Printer.writeOut("{0}/{1} objects processed", results.size(), targets.size());
+            }
+        }
+        final long processingTime = System.currentTimeMillis() - start;
+        Printer.writeOut("Processing of {0} objects completed in {1}ms", targets.size(), processingTime);
+
+        check.printResults(results);
+        log.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
+        return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
     }
+
 
     private static ConfigurationLoader getConfiguration(final CommandLine cmd) {
         final URI scenarioLocation = determineDefinition(cmd);
@@ -265,10 +260,13 @@ public class Validator {
         return fir;
     }
 
-    private static Collection<Path> determineTestTargets(final CommandLine cmd) {
-        final Collection<Path> targets = new ArrayList<>();
+    private static Collection<Input> determineTestTargets(final CommandLine cmd) throws IOException {
+        final Collection<Input> targets = new ArrayList<>();
         if (!cmd.getArgList().isEmpty()) {
             cmd.getArgList().forEach(e -> targets.addAll(determineTestTarget(e)));
+        }
+        if (isPiped()) {
+            targets.add(readFromPipe());
         }
         if (targets.isEmpty()) {
             throw new IllegalStateException("No test targets found. Nothing to check. Will quit now!");
@@ -276,21 +274,30 @@ public class Validator {
         return targets;
     }
 
-    private static Collection<Path> determineTestTarget(final String s) {
+    private static boolean isPiped() throws IOException {
+        return System.in.available() > 0;
+    }
+
+    private static Input readFromPipe() {
+        return InputFactory.read(System.in, "stdin");
+    }
+
+    private static Collection<Input> determineTestTarget(final String s) {
         final Path d = Paths.get(s);
         if (Files.isDirectory(d)) {
             return listDirectoryTargets(d);
         } else if (Files.exists(d)) {
-            return Collections.singleton(d);
+            return Collections.singleton(InputFactory.read(d));
         }
         log.warn("The specified test target {} does not exist. Will be ignored", s);
         return Collections.emptyList();
 
     }
 
-    private static Collection<Path> listDirectoryTargets(final Path d) {
+    private static Collection<Input> listDirectoryTargets(final Path d) {
         try ( final Stream<Path> stream = Files.list(d) ) {
-            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).collect(Collectors.toList());
+            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(InputFactory::read)
+                    .collect(Collectors.toList());
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }

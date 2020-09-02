@@ -1,6 +1,7 @@
 package de.kosit.validationtool.daemon;
 
 import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpStatus.SC_NOT_ACCEPTABLE;
 import static org.apache.http.HttpStatus.SC_OK;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class CheckHandlerIT extends BaseIT {
     @Test
     public void testUnknown() throws IOException {
         try ( final InputStream io = Simple.UNKNOWN.toURL().openStream() ) {
-            given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(SC_OK);
+            given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(SC_NOT_ACCEPTABLE);
         }
     }
 

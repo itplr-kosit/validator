@@ -1,27 +1,34 @@
-# Validator
+# KoSIT Validator
+- [Introduction](#introduction)
+- [Validation Configurations](#validation-configurations)
+    * [Third Party Validation Configurations](#third-party-validation-configurations)
+- [Usage](#usage)
+    * [Standalone Command-Line Interface](#standalone-command-line-interface)
+    * [Application User Interface (API / embedded usage)](#application-user-interface--api---embedded-usage-)
+    * [Daemon-Mode](#daemon-mode)
+- [Packages](#packages)
 
-The validator is an XML validation-engine. It validates XML documents against XML Schema and Schematron Rules depending on self defined [scenarios](docs/configurations.md) which are used to fully configure the validation process.
-The validator always outputs a [validation report in XML](docs/configurations.md#validators-report) including all validation errors and data about the validation.
+## Introduction
+The validator is an XML validation engine to validate and process  XML files in various formats. It basically does the following in order:
 
-See [architecture](docs/architecture.md) for informations about the actual validation process.
+1. identify actual xml format 
+1. validate the xml file (using schema  and schematron rules)
+1. generate a custom report / extract custom data from the xml file
+1. compute an acceptance status (according the supplied schema and rules)
 
-## Packages
+The validator depends on self defined [scenarios](docs/configurations.md) which are used to fully configure the process.
+It always creates a [validation report in XML](docs/configurations.md#validators-report). The actual content of this is controlled by the scenario.
 
-The validator distribution contains the following artifacts:
-
-1. **validationtool-`<version>`.jar**: Java library for embedded use within an application
-1. **validationtool-`<version`>-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java 8 and Java >= 11)
-1. **validationtool-`<version`>-java8-standalone.jar**: Uber-JAR for standalone usage with Java JDK 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
-1. **libs/***: directory containing all (incl. optional) dependencies of the validator
+See [architecture](docs/architecture.md) for information about the actual validation process.
 
 
-## Validation Configurations
+## Validation configurations
 
-The validator is just an engine and does not know anything about XML Documents and has no own validation rules.
+The validator is just an engine and does not know anything about XML documents and has no own validation rules.
 Validation rules and details are defined in [validation scenarios](docs/configurations.md) which are used to fully configure the validation process.
 All configurations are self-contained modules which are deployed and developed on their own.
 
-### Third Party Validation Configurations
+### Third party validation configurations
 
 Currently, there are two public third party validation configurations available.
 
@@ -34,7 +41,7 @@ Currently, there are two public third party validation configurations available.
 
 ## Usage
 
-The validator is designed to be used in three different ways:
+The validator can be used in three different ways:
 
 * as standalone application running from the cli
 * as library embedded within a custom application
@@ -56,6 +63,8 @@ java -jar  validationtool-<version>-standalone.jar --help
 
 A concrete example with a specific validator configuration can be found on 
 [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
+
+The  [CLI documentation](./docs/cli.md) shows further configuration options.
 
 ### Application User Interface (API / embedded usage)
 
@@ -85,3 +94,11 @@ java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
 
 The [daemon documentation](./docs/daemon.md) shows more usage details and further configuration options.
 
+## Packages
+
+The validator distribution contains the following artifacts:
+
+1. **validationtool-`<version>`.jar**: Java library for embedded use within an application
+1. **validationtool-`<version`>-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java 8 and Java >= 11)
+1. **validationtool-`<version`>-java8-standalone.jar**: Uber-JAR for standalone usage with Java JDK 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
+1. **libs/***: directory containing all (incl. optional) dependencies of the validator

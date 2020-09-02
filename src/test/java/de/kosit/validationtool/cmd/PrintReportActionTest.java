@@ -46,13 +46,13 @@ public class PrintReportActionTest {
     @Before
     public void setup() {
         this.commandLine = new CommandLine();
-        this.commandLine.activate();
+        CommandLine.activate();
         this.action = new PrintReportAction(TestObjectFactory.createProcessor());
     }
 
     @After
     public void tearDown() {
-        this.commandLine.deactivate();
+        CommandLine.deactivate();
     }
 
     @Test
@@ -62,9 +62,9 @@ public class PrintReportActionTest {
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);
         assertThat(b.isStopped()).isFalse();
-        assertThat(this.commandLine.getOutput()).isNotEmpty();
-        assertThat(this.commandLine.getOutput()).contains("<?xml version=\"1.0\" ");
-        assertThat(this.commandLine.getErrorOutput()).isEmpty();
+        assertThat(CommandLine.getOutput()).isNotEmpty();
+        assertThat(CommandLine.getOutput()).contains("<?xml version=\"1.0\" ");
+        assertThat(CommandLine.getErrorOutput()).isEmpty();
     }
 
 }

@@ -19,7 +19,14 @@
 
 package de.kosit.validationtool.cmd;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.Reader;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -35,23 +42,85 @@ import lombok.Setter;
  */
 public class CommandLine {
 
-    private static ReplaceableOutputStream<ByteArrayOutputStream> out = new ReplaceableOutputStream<>();
+    /**
+     * Simpler Proxy für {@link OutputStream}, dessen target ausgetauscht werden kann.
+     *
+     * @param <O> Typ des eigentlichen {@link OutputStream}
+     */
+    private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
 
-    private static ReplaceableOutputStream<ByteArrayOutputStream> error = new ReplaceableOutputStream<>();
+        @Getter
+        @Setter
+        private O out;
+
+        @Override
+        public void write(final int idx) throws IOException {
+            if (this.out != null) {
+                this.out.write(idx);
+            }
+        }
+
+        @Override
+        public void write(final byte[] bts) throws IOException {
+            if (this.out != null) {
+                this.out.write(bts);
+            }
+        }
+
+        @Override
+        public void write(final byte[] bts, final int st, final int end) throws IOException {
+            if (this.out != null) {
+                this.out.write(bts, st, end);
+            }
+        }
+
+        @Override
+        public void flush() throws IOException {
+
+            if (this.out != null) {
+                this.out.flush();
+            }
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (this.out != null) {
+                this.out.close();
+            }
+        }
+    }
+
+    private static final ReplaceableOutputStream<ByteArrayOutputStream> out = new ReplaceableOutputStream<>();
+
+    private static final ReplaceableOutputStream<ByteArrayOutputStream> error = new ReplaceableOutputStream<>();
 
     static {
         // Initialisierung muss vor SL4J's SimpleLogger erfolgen, sonst sind logs nicht erfasst.
         // deshalb darf diese Klasse kein Log haben
         System.setOut(new PrintStream(new TeeOutputStream(System.out, out)));
         System.setErr(new PrintStream(new TeeOutputStream(System.err, error)));
+        setStandardInput(nullInputStream());
     }
 
-    public String getOutput() {
+    public static void setStandardInput(final InputStream in) {
+        System.setIn(in);
+    }
+
+    public static InputStream nullInputStream() {
+        return new InputStream() {
+
+            @Override
+            public int read() throws IOException {
+                return 0;
+            }
+        };
+    }
+
+    public static String getOutput() {
         return new String(out.getOut().toByteArray());
     }
 
-
-    public String getErrorOutput() {
+    public static String getErrorOutput() {
         return new String(error.getOut().toByteArray());
     }
 
@@ -63,68 +132,26 @@ public class CommandLine {
         return readLines(error.getOut().toByteArray());
     }
 
-    private List<String> readLines(byte[] bytes) {
-        try ( ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-              Reader r = new InputStreamReader(in) ) {
+    private List<String> readLines(final byte[] bytes) {
+        try ( final ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+              final Reader r = new InputStreamReader(in) ) {
 
             return IOUtils.readLines(r);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("Can not read input");
         }
     }
 
-    public void activate() {
+    public static void activate() {
         out.setOut(new ByteArrayOutputStream());
         error.setOut(new ByteArrayOutputStream());
 
     }
 
-    public void deactivate() {
+    public static void deactivate() {
         out.setOut(null);
         error.setOut(null);
-    }
-
-    /**
-     * Simpler Proxy für {@link OutputStream}, dessen target ausgetauscht werden kann.
-     * 
-     * @param <O> Typ des eigentlichen {@link OutputStream}
-     */
-    private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
-
-        @Getter
-        @Setter
-        private O out;
-
-        public void write(int idx) throws IOException {
-            if (out != null) {
-                this.out.write(idx);
-            }
-        }
-
-        public void write(byte[] bts) throws IOException {
-            if (out != null) {
-                this.out.write(bts);
-            }
-        }
-
-        public void write(byte[] bts, int st, int end) throws IOException {
-            if (out != null) {
-                this.out.write(bts, st, end);
-            }
-        }
-
-        public void flush() throws IOException {
-
-            if (out != null) {
-                this.out.flush();
-            }
-        }
-
-        public void close() throws IOException {
-            if (out != null) {
-                this.out.close();
-            }
-        }
+        setStandardInput(nullInputStream());
     }
 
 }
