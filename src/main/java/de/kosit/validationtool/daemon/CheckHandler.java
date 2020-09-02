@@ -3,6 +3,7 @@ package de.kosit.validationtool.daemon;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -49,19 +50,34 @@ class CheckHandler extends BaseHandler {
                 final InputStream inputStream = httpExchange.getRequestBody();
                 if (inputStream.available() > 0) {
                     final SourceInput serverInput = (SourceInput) InputFactory.read(inputStream,
-                            "supplied_instance_" + counter.incrementAndGet());
+                            resolveInputName(httpExchange.getRequestURI()));
                     final Result result = this.implemenation.checkInput(serverInput);
-                    write(httpExchange, serialize(result), APPLICATION_XML);
+                    write(httpExchange, serialize(result), APPLICATION_XML, resolveStatus(result));
                 } else {
-                    error(httpExchange, 400, "No content supplied");
+                    error(httpExchange, HttpStatus.SC_BAD_REQUEST, "No content supplied");
                 }
 
             } else {
-                error(httpExchange, 405, "Method not supported");
+                error(httpExchange, HttpStatus.SC_METHOD_NOT_ALLOWED, "Method not supported");
             }
         } catch (final Exception e) {
-            error(httpExchange, 500, "Internal error: " + e.getMessage());
+            error(httpExchange, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal error: " + e.getMessage());
         }
+    }
+
+    private static String resolveInputName(final URI requestURI) {
+        final String path = requestURI.getPath();
+        if (path.equalsIgnoreCase("/")) {
+            return "supplied_instance_" + counter.incrementAndGet();
+        }
+        return path.substring((path.lastIndexOf('/') + 1));
+    }
+
+    private static int resolveStatus(final Result result) {
+        if (result.isProcessingSuccessful()) {
+            return result.isAcceptable() ? HttpStatus.SC_OK : HttpStatus.SC_NOT_ACCEPTABLE;
+        }
+        return HttpStatus.SC_UNPROCESSABLE_ENTITY;
     }
 
     private byte[] serialize(final Result result) {

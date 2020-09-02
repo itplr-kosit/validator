@@ -21,7 +21,6 @@ package de.kosit.validationtool.impl;
 
 import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -103,7 +102,7 @@ public class DefaultCheck implements Check {
         return type;
     }
 
-    protected boolean isSuccessful(final Map<Path, Result> results) {
+    protected boolean isSuccessful(final Map<String, Result> results) {
         return results.entrySet().stream().allMatch(e -> e.getValue().isAcceptable());
     }
 

@@ -19,7 +19,6 @@
 
 package de.kosit.validationtool.cmd;
 
-import static de.kosit.validationtool.cmd.CommandLineOptions.DAEMON_SIGNAL;
 import static de.kosit.validationtool.cmd.CommandLineOptions.HELP;
 import static de.kosit.validationtool.cmd.CommandLineOptions.createHelpOptions;
 import static de.kosit.validationtool.cmd.CommandLineOptions.createOptions;
@@ -59,16 +58,18 @@ public class CommandLineApplication {
      * @param args die Eingabe-Argumente
      */
     public static void main(final String[] args) {
-        final int resultStatus = mainProgram(args);
-        if (DAEMON_SIGNAL != resultStatus) {
+        final ReturnValue resultStatus = mainProgram(args);
+        if (!resultStatus.equals(ReturnValue.DAEMON_MODE)) {
             sayGoodby(resultStatus);
-            System.exit(resultStatus);
+            System.exit(resultStatus.getCode());
+        } else {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> Printer.writeOut("Shutting down daemon ...")));
         }
     }
 
-    private static void sayGoodby(final int resultStatus) {
+    private static void sayGoodby(final ReturnValue resultStatus) {
         Printer.writeOut("\n##############################");
-        if (resultStatus == 0) {
+        if (resultStatus.equals(ReturnValue.SUCCESS)) {
             Printer.writeOut("#   " + new Line(Code.GREEN).add("Validation succesful!").render(false, false) + "    #");
         } else {
             Printer.writeOut("#     " + new Line(Code.RED).add("Validation failed!").render(false, false) + "     #");
@@ -77,14 +78,14 @@ public class CommandLineApplication {
     }
 
     // for testing purposes. Unless jvm is terminated during tests. See above
-    static int mainProgram(final String[] args) {
+    static ReturnValue mainProgram(final String[] args) {
 
         final Options options = createOptions();
-        int resultStatus;
+        ReturnValue resultStatus;
         try {
             if (isHelpRequested(args)) {
                 printHelp(options);
-                resultStatus = 0;
+                resultStatus = ReturnValue.SUCCESS;
             } else {
                 final CommandLineParser parser = new DefaultParser();
                 final CommandLine cmd = parser.parse(options, args);
@@ -94,7 +95,7 @@ public class CommandLineApplication {
         } catch (final ParseException e) {
             writeErr("Error processing command line arguments: {0}", e.getMessage(), e);
             printHelp(options);
-            resultStatus = 1;
+            resultStatus = ReturnValue.PARSING_ERROR;
         }
         return resultStatus;
     }

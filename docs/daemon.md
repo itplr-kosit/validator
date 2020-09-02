@@ -42,9 +42,11 @@ The possible customizations are:
 
 ## Access the HTTP interface
 
-The validation service listens to `POST`-requests on any server URL. You need to supply the xml/object to validate in the HTTP body.
+The validation service listens to `POST`-requests on any server URL. You need to supply the xml/object to validate in the HTTP body. 
+The last segment of the request URI is treated as the name of the input. E.g. requests to `/myfile.xml`, `/mypath/myfile.xml` and `/mypath/myfile.xml?someParam=1`
+would all result in an input named `myfile.xml`. If you don't specify a specific request URI (e.g. POST to `/`), the name is auto generated for you. 
 
-The service expects a single XML input in the HTTP body, e.g. `multipart/form-data` is not supported.
+The service expects a single XML input in the HTTP body, e.g. `multipart/form-data` is NOT supported.
 
 Examples:
 
@@ -84,6 +86,15 @@ fetch("http://localhost:8080", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
+## Status codes
+| code | description |
+|-|-|
+| 200  | The xml file is acceptable according to the scenario configurations |
+| 400 | Bad request. the request contains errors, e.g. no content supplied  |
+| 405 | Method not allowed. Thec check service is only answering on POST requests |
+| 406 | The xml file is NOT acceptable according to the scenario configurations| 
+| 422 | Unprocessable entity. Indicates an error while processing the xml file. This hints to errors in the scenario configuration |
+| 500 | Internal server error. Something went wrong |
 
 ## Authorization
 There is no mechanism to check, whether client is allowed to consume the service or not. The user is responsible to secure access to the service.
@@ -101,7 +112,7 @@ The daemon provides a simple GUI when issuing `GET` requests providing the follo
  1. information about the actual [validator configuration](configurations.md) used by this daemon
  1. a simple form to test the daemon with custom inputs
  
- The GUI can be disabled using the API (see above) or via CLI
+ The GUI can be disabled using the API (see above) or via CLI:
  
  ```shell script
 java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D --disable-gui

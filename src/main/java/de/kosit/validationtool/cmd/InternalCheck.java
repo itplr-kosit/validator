@@ -20,10 +20,9 @@
 package de.kosit.validationtool.cmd;
 
 import java.io.PrintWriter;
-import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.Comparator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.fusesource.jansi.AnsiRenderer.Code;
@@ -80,7 +79,7 @@ class InternalCheck extends DefaultCheck {
         return result;
     }
 
-    void printResults(final Map<Path, Result> results) {
+    void printResults(final Map<String, Result> results) {
         final PrintWriter writer = new PrintWriter(System.out);// NOSONAR
         writer.write("Results:\n");
         writer.write(createResultGrid(results).render());
@@ -105,14 +104,18 @@ class InternalCheck extends DefaultCheck {
     }
 
     @Override
-    public boolean isSuccessful(final Map<Path, Result> results) {
+    public boolean isSuccessful(final Map<String, Result> results) {
         if (this.checkAssertions > 0) {
             return this.failedAssertions == 0;
         }
         return super.isSuccessful(results);
     }
 
-    private static String createStatusLine(final Map<Path, Result> results) {
+    public int getNotAcceptableCount(final Map<String, Result> results) {
+        return (int) (this.failedAssertions + results.values().stream().filter(e -> !e.isAcceptable()).count());
+    }
+
+    private static String createStatusLine(final Map<String, Result> results) {
         final long acceptable = results.entrySet().stream().filter(e -> e.getValue().isAcceptable()).count();
         final long rejected = results.entrySet().stream().filter(e -> !e.getValue().isAcceptable()).count();
         final long errors = results.entrySet().stream().filter(e -> !e.getValue().isProcessingSuccessful()).count();
@@ -125,7 +128,7 @@ class InternalCheck extends DefaultCheck {
         return line.render(true, false);
     }
 
-    private static Grid createResultGrid(final Map<Path, Result> results) {
+    private static Grid createResultGrid(final Map<String, Result> results) {
         final Grid grid = new Grid(
         //@formatter:off
                 new ColumnDefinition("filename", 60, 10, 1), 
@@ -135,11 +138,11 @@ class InternalCheck extends DefaultCheck {
                 new ColumnDefinition("Error/Description", 60,20,3) 
         );
         //@formatter:on
-        results.entrySet().stream().sorted(Comparator.comparing(e -> e.getKey().getFileName())).forEach(e -> {
+        results.entrySet().stream().sorted(Entry.comparingByKey()).forEach(e -> {
             final Result value = e.getValue();
 
             final Code textcolor = value.isAcceptable() ? Code.GREEN : Code.RED;
-            grid.addCell(e.getKey().getFileName(), textcolor);
+            grid.addCell(e.getKey(), textcolor);
             grid.addCell(value.isSchemaValid() ? "Y" : "N", textcolor);
             grid.addCell(value.isSchematronValid() ? "Y" : "N", textcolor);
             grid.addCell(value.getAcceptRecommendation(), textcolor);

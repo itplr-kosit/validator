@@ -53,14 +53,14 @@ public class CheckAssertionActionTest {
     @Before
     public void setup() throws IOException {
         this.commandLine = new CommandLine();
-        this.commandLine.activate();
+        CommandLine.activate();
     }
 
     @Test
     public void testEmptyInput() {
         final CheckAssertionAction a = new CheckAssertionAction(new Assertions(), TestObjectFactory.createProcessor());
         a.check(new CheckAction.Bag(InputFactory.read(SAMPLE), new CreateReportInput()));
-        assertThat(this.commandLine.getErrorOutput()).contains("Can not find assertions for");
+        assertThat(CommandLine.getErrorOutput()).contains("Can not find assertions for");
     }
 
     @Test
@@ -72,6 +72,6 @@ public class CheckAssertionActionTest {
         final CheckAssertionAction a = new CheckAssertionAction(assertions, TestObjectFactory.createProcessor());
         a.check(bag);
 
-        assertThat(this.commandLine.getErrorOutput()).contains("Assertion mismatch");
+        assertThat(CommandLine.getErrorOutput()).contains("Assertion mismatch");
     }
 }

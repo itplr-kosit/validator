@@ -15,15 +15,20 @@ abstract class BaseHandler implements HttpHandler {
 
     protected static final String APPLICATION_XML = "application/xml";
 
-    static final int OK = 200;
 
     protected static void write(final HttpExchange exchange, final byte[] content, final String contentType) throws IOException {
-        write(exchange, contentType, os -> os.write(content));
+        write(exchange, content, contentType, HttpStatus.SC_OK);
     }
 
-    protected static void write(final HttpExchange exchange, final String contentType, final Write write) throws IOException {
+    protected static void write(final HttpExchange exchange, final byte[] content, final String contentType, final int statusCode)
+            throws IOException {
+        write(exchange, contentType, os -> os.write(content), statusCode);
+    }
+
+    protected static void write(final HttpExchange exchange, final String contentType, final Write write, final int statusCode)
+            throws IOException {
         exchange.getResponseHeaders().add("Content-Type", contentType);
-        exchange.sendResponseHeaders(OK, 0);
+        exchange.sendResponseHeaders(statusCode, 0);
         final OutputStream os = exchange.getResponseBody();
         write.write(os);
         os.close();

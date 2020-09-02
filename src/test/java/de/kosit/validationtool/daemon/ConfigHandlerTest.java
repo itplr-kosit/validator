@@ -38,7 +38,7 @@ public class ConfigHandlerTest {
         final Configuration config = TestConfigurationFactory.createSimpleConfiguration().build();
         final ConfigHandler handler = new ConfigHandler(config, new ConversionService());
         handler.handle(exchange);
-        verify(exchange, times(1)).sendResponseHeaders(ConfigHandler.OK, 0);
+        verify(exchange, times(1)).sendResponseHeaders(HttpStatus.SC_OK, 0);
         verify(stream, atLeast(1)).write(any());
     }
 
@@ -55,6 +55,6 @@ public class ConfigHandlerTest {
         handler.handle(exchange);
         verify(headers, times(1)).add(any(), any());
         verify(stream, atLeast(1)).write(any());
-        assertThat(valueCapture.getValue()).isEqualTo(500);
+        assertThat(valueCapture.getValue()).isEqualTo(HttpStatus.SC_INTERNAL_SERVER_ERROR);
     }
 }
