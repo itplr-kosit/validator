@@ -1,9 +1,10 @@
 package de.kosit.validationtool.daemon;
 
-import io.restassured.http.ContentType;
+import static io.restassured.RestAssured.given;
+
 import org.junit.Test;
 
-import static io.restassured.RestAssured.given;
+import io.restassured.http.ContentType;
 
 public class GuiHandlerIT extends BaseIT {
 

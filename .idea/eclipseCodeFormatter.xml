@@ -8,7 +8,8 @@
         <option name="formatter" value="ECLIPSE" />
         <option name="importOrderConfigFilePath" value="$PROJECT_DIR$/.settings/org.eclipse.jdt.ui.prefs" />
         <option name="importOrderFromFile" value="true" />
-        <option name="pathToConfigFileJava" value="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" />
+        <option name="pathToConfigFileJava" value="$PROJECT_DIR$/formatter.xml" />
+        <option name="selectedJavaProfile" value="init" />
         <option name="useForLiveTemplates" value="true" />
       </ProjectSpecificProfile>
     </option>

@@ -16,8 +16,8 @@ import net.sf.saxon.s9api.XdmNode;
 public interface Result {
 
     /**
-     * Zeigt an, ob die Verarbeitung durch den Validator erfolgreich durchlaufen wurde. Diese Funktion macht ausdrücklich
-     * keine Aussage über die zur Akzeptanz.
+     * Zeigt an, ob die Verarbeitung durch den Validator erfolgreich durchlaufen wurde. Diese Funktion macht
+     * ausdrücklich keine Aussage über die zur Akzeptanz.
      *
      * @return true, wenn die Verarbeitung komplett und erfolgreich durchlaufen wurde
      * @see #getAcceptRecommendation()
@@ -92,7 +92,8 @@ public interface Result {
     boolean isWellformed();
 
     /**
-     * Returns true, if schematron has been checked and the result does not contain any {@link FailedAssert FailedAsserts}.
+     * Returns true, if schematron has been checked and the result does not contain any {@link FailedAssert
+     * FailedAsserts}.
      *
      * @return true, if valid
      */

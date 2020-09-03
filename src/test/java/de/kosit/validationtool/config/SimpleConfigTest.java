@@ -26,7 +26,4 @@ public class SimpleConfigTest {
         assertThat(result).isNotNull();
     }
 
-
-
-
 }

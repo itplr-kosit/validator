@@ -103,7 +103,6 @@ public class SchemaValidationAction implements CheckAction {
 
     private static class FileSerializedDocument implements SerializedDocument {
 
-
         private final Path file;
 
         private final Processor processor;

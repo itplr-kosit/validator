@@ -157,8 +157,8 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Add description for this scenario. This is part of the
-     * {@link de.kosit.validationtool.model.reportInput.CreateReportInput} configuration and can be used while creating the
-     * report
+     * {@link de.kosit.validationtool.model.reportInput.CreateReportInput} configuration and can be used while creating
+     * the report
      * 
      * @param description the description
      * @return this

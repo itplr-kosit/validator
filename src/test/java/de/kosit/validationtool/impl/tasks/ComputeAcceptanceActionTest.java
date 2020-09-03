@@ -23,6 +23,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 public class ComputeAcceptanceActionTest {
 
     private static final String DOESNOT_EXIST = "count(//doesnotExist) = 0";
+
     private final ComputeAcceptanceAction action = new ComputeAcceptanceAction();
 
     @Test
@@ -102,7 +103,6 @@ public class ComputeAcceptanceActionTest {
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
     }
-
 
     private static XPathExecutable createXpath(final String expression) {
         return new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null).createXPath(expression, new HashMap<>());

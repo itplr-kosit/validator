@@ -125,9 +125,9 @@ public interface CheckAction {
     void check(Bag results);
 
     /**
-     * Ermittlung, ob ein Schritt u.U. ausgelassen werden kann. Die Funktion wird vor der eigentlichen Prüfaktion aufgerufen
-     * und kann somit eine Ausführung des Prüfschrittes verhindern. Entwickler können diese Funktion überschreiben, um den
-     * Prüfschritt bedingt auszuführen.
+     * Ermittlung, ob ein Schritt u.U. ausgelassen werden kann. Die Funktion wird vor der eigentlichen Prüfaktion
+     * aufgerufen und kann somit eine Ausführung des Prüfschrittes verhindern. Entwickler können diese Funktion
+     * überschreiben, um den Prüfschritt bedingt auszuführen.
      *
      * @param results die bisher gesammelten Information
      * @return <code>true</code> wenn der Schritt ausgelassen werden soll

@@ -54,8 +54,6 @@ public class CheckConfiguration implements Configuration {
      */
     private URI scenarioRepository;
 
-
-
     private Configuration delegate;
 
     private Configuration getDelegate() {
@@ -94,8 +92,6 @@ public class CheckConfiguration implements Configuration {
     public String getAuthor() {
         return getDelegate().getAuthor();
     }
-
-
 
     @Override
     public ContentRepository getContentRepository() {

@@ -55,7 +55,6 @@ public class Daemon {
         this.threadCount = threadCount;
     }
 
-
     /**
      * Methode zum Starten des Servers
      * 

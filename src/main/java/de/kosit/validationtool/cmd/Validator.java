@@ -200,7 +200,6 @@ public class Validator {
         return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
     }
 
-
     private static ConfigurationLoader getConfiguration(final CommandLine cmd) {
         final URI scenarioLocation = determineDefinition(cmd);
         final URI repositoryLocation = determineRepository(cmd);

@@ -16,7 +16,7 @@ public enum AcceptRecommendation {
     ACCEPTABLE,
 
     /**
-     * Recommendation is to reject {@link Input}  based on the evaluation of the overall validation.
+     * Recommendation is to reject {@link Input} based on the evaluation of the overall validation.
      */
     REJECT
 }
