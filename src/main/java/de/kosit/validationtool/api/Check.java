@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 
-
 /**
  * Main validator interface for checking incoming files.
  *
@@ -33,8 +32,8 @@ import org.w3c.dom.Document;
 public interface Check {
 
     /**
-     * Checks an incoming xml {@link Input Inputs}. The result-{@link Document} is readonly. To change the this document you
-     * need to copy the nodes into an new {@link Document}.
+     * Checks an incoming xml {@link Input Inputs}. The result-{@link Document} is readonly. To change the this document
+     * you need to copy the nodes into an new {@link Document}.
      *
      * @param input the resource / xml file to validate.
      * @return a result-{@link Document} (readonly)
@@ -74,6 +73,5 @@ public interface Check {
     default List<Result> checkInput(final List<Input> input) {
         return input.stream().map(this::checkInput).collect(Collectors.toList());
     }
-
 
 }

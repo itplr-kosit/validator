@@ -15,7 +15,6 @@ abstract class BaseHandler implements HttpHandler {
 
     protected static final String APPLICATION_XML = "application/xml";
 
-
     protected static void write(final HttpExchange exchange, final byte[] content, final String contentType) throws IOException {
         write(exchange, content, contentType, HttpStatus.SC_OK);
     }

@@ -62,8 +62,8 @@ public interface Configuration {
     String getDate();
 
     /**
-     * Add some additional parameters to the validator configuration. Parameter usage depends on actual implementation of
-     * {@link Check}
+     * Add some additional parameters to the validator configuration. Parameter usage depends on actual implementation
+     * of {@link Check}
      *
      * @return
      */

@@ -44,7 +44,6 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
  */
 public class ExtractHtmlActionTest {
 
-
     private ExtractHtmlContentAction action;
 
     private Path tmpDirectory;

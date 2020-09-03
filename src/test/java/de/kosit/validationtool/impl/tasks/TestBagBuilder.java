@@ -57,13 +57,13 @@ public class TestBagBuilder {
     private static Scenario createScenario(final URI schemafile) {
 
         try {
-        final ScenarioType t = new ScenarioType();
-        final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
-        final ResourceType r = new ResourceType();
-        r.setLocation(schemafile.getRawPath());
-        r.setName("invoice");
-        v.getResource().add(r);
-        t.setValidateWithXmlSchema(v);
+            final ScenarioType t = new ScenarioType();
+            final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
+            final ResourceType r = new ResourceType();
+            r.setLocation(schemafile.getRawPath());
+            r.setName("invoice");
+            v.getResource().add(r);
+            t.setValidateWithXmlSchema(v);
             final Scenario scenario = new Scenario(t);
             scenario.setSchema(createSchema(schemafile.toURL()));
             return scenario;

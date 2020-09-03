@@ -74,8 +74,7 @@ public class ScenarioRepository {
      */
     public Result<Scenario, String> selectScenario(final XdmNode document) {
         final Result<Scenario, String> result;
-        final List<Scenario> collect = getScenarios().stream().filter(s -> match(document, s))
-                .collect(Collectors.toList());
+        final List<Scenario> collect = getScenarios().stream().filter(s -> match(document, s)).collect(Collectors.toList());
         if (collect.size() == 1) {
             result = new Result<>(collect.get(0));
         } else if (collect.isEmpty()) {

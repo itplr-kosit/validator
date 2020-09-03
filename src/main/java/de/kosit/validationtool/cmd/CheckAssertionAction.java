@@ -91,7 +91,6 @@ class CheckAssertionAction implements CheckAction {
         return getMapped().entrySet().stream().filter(e -> matches(e.getKey(), name)).map(Map.Entry::getValue).findFirst().orElse(null);
     }
 
-
     private boolean check(XdmNode document, AssertionType assertion) {
         try {
             final XPathSelector selector = createSelector(assertion);

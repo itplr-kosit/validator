@@ -70,8 +70,8 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
     }
 
     /**
-     * Specifices a source for this report. This is either used to compile the report transformation or as documentation for
-     * a precompiled tranformation.
+     * Specifices a source for this report. This is either used to compile the report transformation or as documentation
+     * for a precompiled tranformation.
      *
      * @param source the source
      * @return this
@@ -81,8 +81,8 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
     }
 
     /**
-     * Specifices a source for this report. This is either used to compile the report transformation or as documentation for
-     * a precompiled tranformation.
+     * Specifices a source for this report. This is either used to compile the report transformation or as documentation
+     * for a precompiled tranformation.
      *
      * @param source the source
      * @return this
@@ -93,8 +93,8 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
     }
 
     /**
-     * Specifices a source for this report. This is either used to compile the report transformation or as documentation for
-     * a precompiled tranformation.
+     * Specifices a source for this report. This is either used to compile the report transformation or as documentation
+     * for a precompiled tranformation.
      *
      * @param source the source
      * @return this

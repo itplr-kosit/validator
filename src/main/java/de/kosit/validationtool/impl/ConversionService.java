@@ -81,6 +81,7 @@ public class ConversionService {
     }
 
     private static final int MAX_LOG_CONTENT = 50;
+
     // context setup
     private JAXBContext jaxbContext;
 
@@ -232,9 +233,6 @@ public class ConversionService {
             throw new ConversionExeption(String.format("Error serializing Object %s", model.getClass().getName()), e);
         }
     }
-
-
-
 
     public <T> T readDocument(final Source source, final Class<T> type) {
         try {

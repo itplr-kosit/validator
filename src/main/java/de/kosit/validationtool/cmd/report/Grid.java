@@ -183,8 +183,6 @@ public class Grid {
             return this;
         }
 
-
-
     }
 
     private static final Format DEFAULT_FORMAT = new Format();

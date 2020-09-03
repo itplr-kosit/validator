@@ -22,9 +22,14 @@ For other IDEs the correct setup is up to you.
 We use an automatic formatting of the source code in our environment. This is based on the Eclipse code formatter functionality
 due to historical reasons. This not only works in Eclipse but also in IntelliJ (via plugin) and can be used standalone.
 
-The configuration can be found in `.settings`-directory. For IntelliJ this is all set up. Additionally this should work in Eclipse out of the box.
-Another potential usage scenario would be to integrate the formatter via git hooks into the commit-pipeline (e.g  [Example Hook](https://gist.github.com/ktoso/708972)  ).
-For other IDEs you are on your own.
+The configuration can be found in `.settings`-directory. For IntelliJ this is all set up. The correct formatting is validated as part of the build 
+process. If your IDE does not support the eclipse formatter, your can run the maven build locally prior commit like this:
+
+```shell script
+mvn package -Pformat
+```
+
+This will format all changed files according to our rules. Afterwards your can commit and push your changes.
 
 ## Build
 

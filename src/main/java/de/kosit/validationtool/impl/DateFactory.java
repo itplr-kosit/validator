@@ -19,9 +19,9 @@ public class DateFactory {
 
     @SneakyThrows
     public static XMLGregorianCalendar createTimestamp() {
-            final GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(new Date());
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+        final GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new Date());
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
 
     }
 }

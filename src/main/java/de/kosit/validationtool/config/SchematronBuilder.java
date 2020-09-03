@@ -70,8 +70,8 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     }
 
     /**
-     * Specifices a source for this schematron validation. This is either used to compile the schematron transformation or
-     * as documentation for a precompiled tranformation.
+     * Specifices a source for this schematron validation. This is either used to compile the schematron transformation
+     * or as documentation for a precompiled tranformation.
      * 
      * @param source the source
      * @return this
@@ -81,8 +81,8 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     }
 
     /**
-     * Specifices a source for this schematron validation. This is either used to compile the schematron transformation or
-     * as documentation for a precompiled tranformation.
+     * Specifices a source for this schematron validation. This is either used to compile the schematron transformation
+     * or as documentation for a precompiled tranformation.
      * 
      * @param source the source
      * @return this
@@ -93,8 +93,8 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     }
 
     /**
-     * Specifices a source for this schematron validation. This is either used to compile the schematron transformation or
-     * as documentation for a precompiled tranformation.
+     * Specifices a source for this schematron validation. This is either used to compile the schematron transformation
+     * or as documentation for a precompiled tranformation.
      * 
      * @param source the source
      * @return this

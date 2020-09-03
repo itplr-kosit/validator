@@ -36,8 +36,8 @@ public interface ResolvingConfigurationStrategy {
 
     /**
      * Returns a preconfigured {@link Processor Saxon Processor} for various tasks within the Validator. The validator
-     * leverages the saxon s9api for internal processing e.g. xml reading and writing. So this is the main object to secure
-     * for reading, transforming and writing xml files.
+     * leverages the saxon s9api for internal processing e.g. xml reading and writing. So this is the main object to
+     * secure for reading, transforming and writing xml files.
      *
      * Note: you need exactly one instance for all validator related processing.
      *
@@ -50,8 +50,8 @@ public interface ResolvingConfigurationStrategy {
      * dereferencing an absolute URI (after resolution) to return a {@link javax.xml.transform.Source}. It <b>can</b> be
      * used for resolving relative URIs against a base URI or restrict access to certain URIs.
      * <p>
-     * This URIResolver is used to dereference the URIs appearing in <code>xsl:import</code>, <code>xsl:include</code>, and
-     * <code>xsl:import-schema</code> declarations.
+     * This URIResolver is used to dereference the URIs appearing in <code>xsl:import</code>, <code>xsl:include</code>,
+     * and <code>xsl:import-schema</code> declarations.
      * </p>
      *
      * @param scenarioRepository an optional repository, your implementation might not need this
@@ -60,7 +60,8 @@ public interface ResolvingConfigurationStrategy {
     URIResolver createResolver(URI scenarioRepository);
 
     /**
-     * Creates a specific implementation for resolving objects referenced via XSLT's <code>unparsed-text()</code> function.
+     * Creates a specific implementation for resolving objects referenced via XSLT's <code>unparsed-text()</code>
+     * function.
      * 
      * @param scenarioRepository an optional repository, your implementation might not need this
      * @return a preconfigured {@link net.sf.saxon.lib.UnparsedTextURIResolver} or null for using saxons default
@@ -68,8 +69,8 @@ public interface ResolvingConfigurationStrategy {
     UnparsedTextURIResolver createUnparsedTextURIResolver(URI scenarioRepository);
 
     /**
-     * Creates a preconfigured {@link Validator } instance for a given schema for xml file validation. The implementation
-     * takes care about security and reference resolving strategies.
+     * Creates a preconfigured {@link Validator } instance for a given schema for xml file validation. The
+     * implementation takes care about security and reference resolving strategies.
      * 
      * @param schema the scheme to create a {@link Validator} for
      * @return a preconfigured {@link Validator}

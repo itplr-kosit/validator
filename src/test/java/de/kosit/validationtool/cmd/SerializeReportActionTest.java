@@ -42,7 +42,6 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
  */
 public class SerializeReportActionTest {
 
-
     private Path tmpDirectory;
 
     private SerializeReportAction action;
@@ -70,9 +69,9 @@ public class SerializeReportActionTest {
         assertThat(this.tmpDirectory.toFile().listFiles()).hasSize(1);
     }
 
-    //ERPT-83
+    // ERPT-83
     @Test
-    public void testName(){
+    public void testName() {
         final String name = "some.name.with.dots";
         final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read("ega".getBytes(), name + ".xml"));
         assertThat(b.getName()).isEqualTo(name);

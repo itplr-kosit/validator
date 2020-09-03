@@ -26,7 +26,7 @@ import de.kosit.validationtool.model.scenarios.Scenarios;
  */
 @Slf4j
 @RequiredArgsConstructor
- class ConfigHandler extends BaseHandler {
+class ConfigHandler extends BaseHandler {
 
     private final Configuration configuration;
 

@@ -28,28 +28,27 @@ public class GuiHandler extends BaseHandler {
         final String path = exchange.getRequestURI().toASCIIString();
         if (path.equals("/")) {
             write(exchange, IOUtils.toString(INDEX_HTML, Charset.defaultCharset()).getBytes(), "text/html");
-        } else{
+        } else {
             final URL resource = GuiHandler.class.getClassLoader().getResource("gui" + path);
             if (resource != null) {
                 write(exchange, IOUtils.toString(resource, Charset.defaultCharset()).getBytes(),
                         Mediatype.resolveBySuffix(resource.getPath()).getMimeType());
-            }else {
-                error(exchange,404,"not found");
+            } else {
+                error(exchange, 404, "not found");
             }
         }
     }
 
-
     @RequiredArgsConstructor
     @Getter
     protected enum Mediatype {
-        JS("application/javascript"),
-        MD("text/markdown"),
-        CSS("text/css");
+
+        JS("application/javascript"), MD("text/markdown"), CSS("text/css");
+
         private final String mimeType;
 
         static Mediatype resolveBySuffix(final String path) {
-            return Arrays.stream(values()).filter(e->path.toUpperCase().endsWith("."+e.name())).findFirst().orElse(Mediatype.MD);
+            return Arrays.stream(values()).filter(e -> path.toUpperCase().endsWith("." + e.name())).findFirst().orElse(Mediatype.MD);
         }
     }
 }

@@ -37,8 +37,8 @@ class CheckHandler extends BaseHandler {
     /**
      * Methode, die eine gegebene Anforderung verarbeitet und eine entsprechende Antwort generiert
      *
-     * @param httpExchange kapselt eine empfangene HTTP-Anforderung und eine Antwort, die in einem Exchange generiert werden
-     *            soll.
+     * @param httpExchange kapselt eine empfangene HTTP-Anforderung und eine Antwort, die in einem Exchange generiert
+     *            werden soll.
      */
     @Override
     public void handle(final HttpExchange httpExchange) throws IOException {

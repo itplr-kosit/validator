@@ -105,5 +105,4 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         }
     }
 
-
 }

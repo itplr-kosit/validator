@@ -70,8 +70,9 @@ import net.sf.saxon.s9api.XsltTransformer;
 public class CreateReportAction implements CheckAction {
 
     /**
-     * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect on
-     * {@link JAXBSource}'s XMLReader, but it throws exceptions on unknown properties. This just drops this exceptions.
+     * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect
+     * on {@link JAXBSource}'s XMLReader, but it throws exceptions on unknown properties. This just drops this
+     * exceptions.
      */
     private static class ReaderWrapper implements XMLReader {
 

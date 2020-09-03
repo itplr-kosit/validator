@@ -35,7 +35,6 @@ public class CreateReportActionTest {
 
     private ContentRepository repository;
 
-
     @Before
     public void setup() {
         this.repository = Simple.createContentRepository();

@@ -79,8 +79,8 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von dem übergebenen Pfad. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der Prüfsumme
-     * genutzt.
+     * Liest einen Prüfling von dem übergebenen Pfad. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der
+     * Prüfsumme genutzt.
      *
      * @param path der Prüflings
      * @return ein Prüf-Eingabe-Objekt
@@ -114,8 +114,8 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URI. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der Prüfsumme
-     * genutzt.
+     * Liest einen Prüfling von der übergebenen URI. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der
+     * Prüfsumme genutzt.
      *
      * @param uri URI des Prüflings
      * @return ein Prüf-Eingabe-Objekt
@@ -141,8 +141,8 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der Prüfsumme
-     * genutzt.
+     * Liest einen Prüfling von der übergebenen URL. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der
+     * Prüfsumme genutzt.
      *
      * @param url URL des Prüflings
      * @return ein Prüf-Eingabe-Objekt
@@ -173,8 +173,9 @@ public class InputFactory {
     }
 
     /**
-     * Reads a test document from a {@link Source}. Note: computing the hashcode is only supported for {@link StreamSource}.
-     * You can not directly use other {@link Source Soures}. You need to supply the hashcode for identification then.
+     * Reads a test document from a {@link Source}. Note: computing the hashcode is only supported for
+     * {@link StreamSource}. You can not directly use other {@link Source Soures}. You need to supply the hashcode for
+     * identification then.
      * 
      * @param source source
      * @return an {@link Input}
@@ -190,8 +191,8 @@ public class InputFactory {
     /**
      * Reads a test document from a {@link Source} using a specified digest algorithm.
      * 
-     * Note: computing the hashcode is only supported for {@link StreamSource}. You can not directly use other {@link Source
-     * Soures}. You need to supply the hashcode for identification then.
+     * Note: computing the hashcode is only supported for {@link StreamSource}. You can not directly use other
+     * {@link Source Soures}. You need to supply the hashcode for identification then.
      *
      * @param source source
      * @param name the digest algorithm
@@ -304,8 +305,8 @@ public class InputFactory {
     }
 
     /**
-     * Reads a saxon {@link XdmNode} with a given name. Hashcode identification is based on the name of the supplied input.
-     * Now real hashcode is computed.
+     * Reads a saxon {@link XdmNode} with a given name. Hashcode identification is based on the name of the supplied
+     * input. Now real hashcode is computed.
      * 
      * @param node the node to read
      * @param name the name of the {@link Input}
