@@ -28,7 +28,7 @@
         <xs:annotation>
             <xs:documentation>In diesem Dokument werden zum Test einer Prüftoolkonfiguration Zusicherungen zu einzelnen
                 Prüfberichten beschrieben. Ein
-                solches Dokument kann der Kommandozeilenversion des Prüftools über --implemenation-assertions übergeben werden.
+                solches Dokument kann der Kommandozeilenversion des Prüftools über --check-assertions übergeben werden.
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
