@@ -1,10 +1,12 @@
 package de.kosit.validationtool.daemon;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -15,6 +17,7 @@ import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.input.SourceInput;
+import de.kosit.validationtool.impl.input.StreamHelper;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -47,9 +50,9 @@ class CheckHandler extends BaseHandler {
             final String requestMethod = httpExchange.getRequestMethod();
             // check neccessary, since gui can be disabled
             if (requestMethod.equals("POST")) {
-                final InputStream inputStream = httpExchange.getRequestBody();
-                if (inputStream.available() > 0) {
-                    final SourceInput serverInput = (SourceInput) InputFactory.read(inputStream,
+                final BufferedInputStream buffered = StreamHelper.wrapPeekable(httpExchange.getRequestBody());
+                if (!isMultipartFormData(httpExchange) && isContentAvailable(httpExchange, buffered)) {
+                    final SourceInput serverInput = (SourceInput) InputFactory.read(buffered,
                             resolveInputName(httpExchange.getRequestURI()));
                     final Result result = this.implemenation.checkInput(serverInput);
                     write(httpExchange, serialize(result), APPLICATION_XML, resolveStatus(result));
@@ -61,8 +64,27 @@ class CheckHandler extends BaseHandler {
                 error(httpExchange, HttpStatus.SC_METHOD_NOT_ALLOWED, "Method not supported");
             }
         } catch (final Exception e) {
+            log.error("Error checking entity", e);
             error(httpExchange, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal error: " + e.getMessage());
         }
+    }
+
+    private static boolean isContentAvailable(final com.sun.net.httpserver.HttpExchange httpExchange, final BufferedInputStream buffered)
+            throws IOException {
+        final String length = httpExchange.getRequestHeaders().getFirst("Content-length");
+        if (StringUtils.isNumeric(length)) {
+            return Integer.parseInt(length) > 0;
+        }
+        return streamContainsContent(buffered);
+    }
+
+    private static boolean isMultipartFormData(final HttpExchange httpExchange) {
+        return httpExchange.getRequestHeaders().getFirst("Content-type").startsWith("multipart");
+    }
+
+    private static boolean streamContainsContent(final BufferedInputStream requestBody) throws IOException {
+        return requestBody.available() > 0;
+
     }
 
     private static String resolveInputName(final URI requestURI) {
