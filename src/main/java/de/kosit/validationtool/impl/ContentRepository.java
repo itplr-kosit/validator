@@ -47,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.impl.xml.RelativeUriResolver;
+import de.kosit.validationtool.impl.xml.StringTrimAdapter;
 import de.kosit.validationtool.model.scenarios.NamespaceType;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
@@ -284,13 +285,13 @@ public class ContentRepository {
 
     public XPathExecutable createMatchExecutable(final ScenarioType s) {
         final Map<String, String> namespaces = s.getNamespace().stream()
-                .collect(Collectors.toMap(NamespaceType::getPrefix, NamespaceType::getValue));
+                .collect(Collectors.toMap(NamespaceType::getPrefix, ns -> StringTrimAdapter.trim(ns.getValue())));
         return createXPath(s.getMatch(), namespaces);
     }
 
     public XPathExecutable createAccepptExecutable(final ScenarioType s) {
         final Map<String, String> namespaces = s.getNamespace().stream()
-                .collect(Collectors.toMap(NamespaceType::getPrefix, NamespaceType::getValue));
+                .collect(Collectors.toMap(NamespaceType::getPrefix, ns -> StringTrimAdapter.trim(ns.getValue())));
         return createXPath(s.getAcceptMatch(), namespaces);
     }
 

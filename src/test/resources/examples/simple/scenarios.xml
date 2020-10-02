@@ -31,8 +31,10 @@
         <description>
             <p>Nur Schemaprüfung.</p>
         </description>
-        <namespace prefix="cri">http://www.xoev.de/de/validator/framework/1/createreportinput</namespace>
-        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <namespace prefix="cri">http://www.xoev.de/de/validator/framework/1/createreportinput
+        </namespace>
+        <namespace prefix="test">
+            http://validator.kosit.de/test-sample</namespace>
         <namespace prefix="rpt">http://validator.kosit.de/test-report</namespace>
         <match>/test:simple</match>
 

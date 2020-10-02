@@ -26,7 +26,12 @@
         jaxb:extensionBindingPrefixes="inheritance"
         version="2.1">
     <jaxb:globalBindings>
-        <xjc:serializable uid="-1"/>
+        <xjc:serializable uid="-1" />
+        <xjc:javaType
+                name="java.lang.String"
+                xmlType="xs:string"
+                adapter="de.kosit.validationtool.impl.xml.StringTrimAdapter" />
+
     </jaxb:globalBindings>
 
 
