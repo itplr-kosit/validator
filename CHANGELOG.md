@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Fixed
 - date conversion when using [ConfigurationBuilder#date(Date)](https://github.com/itplr-kosit/validator/blob/d7beb1040418ae5cbeb9427532fd87482f55756c/src/main/java/de/kosit/validationtool/config/ConfigurationBuilder.java#L109)
-- [#51](https://github.com/itplr-kosit/validator/issues/51) Suffix of report xml is missing
+- [CLI] [#51](https://github.com/itplr-kosit/validator/issues/51) Suffix of report xml is missing
+- [#53](https://github.com/itplr-kosit/validator/issues/53) Fix copyright and licensing information
+- [#56](https://github.com/itplr-kosit/validator/issues/56) `namespace` element content needs trimming 
+- [DAEMON] [#57](https://github.com/itplr-kosit/validator/issues/57) Reading large inputs correctly  
 
 ### Added
 - read saxon XdmNode with InputFactory
@@ -16,13 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [CLI] options to set the log level (`-X` = full debug output, `-l <level>` set a specific level)
 - [CLI] return code ist <> 0 on rejected results
 - [CLI] read (single) test target from stdin
-- [DAEMON] name inputs via request URI (see [daemon documentation](./docs/daemon.md#status-codes))
+- [DAEMON] name inputs via request URI 
 
 ### Changed
 - InputFactory has methods to read any java.xml.transform.Source as Input not only StreamSources 
 - InputFactory uses a generated UUID as name for SourceInput, if no "real" name can be derived 
 - saxon dependency update (minor, 9.9.1-7)
-- [DAEMON] proper status codes when returning results
+- [DAEMON] proper status codes when returning results (see [daemon documentation](./docs/daemon.md#status-codes))
 
 ## 1.3.1 
 ### Fixed
