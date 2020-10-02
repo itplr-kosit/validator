@@ -1,5 +1,6 @@
 package de.kosit.validationtool.impl.input;
 
+import java.io.BufferedInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,35 @@ public class StreamHelper {
             this.reference.setHashCode(this.digest.digest());
         }
 
+    }
+
+    private static class PeekableInputStream extends BufferedInputStream {
+
+        public PeekableInputStream(final InputStream in) {
+            super(in);
+        }
+
+        @Override
+        public synchronized int available() throws IOException {
+            int count = super.available();
+            if (count == 0) {
+                count = peek();
+            }
+            return count;
+        }
+
+        @SuppressWarnings("ResultOfMethodCallIgnored")
+        private int peek() throws IOException {
+            try {
+                mark(2);
+                read();
+                read();
+                reset();
+            } catch (final IOException e) {
+                return 0;
+            }
+            return super.available();
+        }
     }
 
     @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
@@ -103,6 +133,10 @@ public class StreamHelper {
         return new DigestingInputStream(input, stream, createDigest(digestAlgorithm));
     }
 
+    public static BufferedInputStream wrapPeekable(final InputStream stream) {
+        return new PeekableInputStream(stream);
+    }
+
     /**
      * Drains the {@link Input} without further processing. This is useful to computing hashcode etc.
      * 
@@ -129,8 +163,10 @@ public class StreamHelper {
     public static void drain(final InputStream input) throws IOException {
         final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
+        // noinspection unused
         int n;
 
+        // noinspection StatementWithEmptyBody,UnusedAssignment
         while (EOF != (n = input.read(buffer))) {
             // nothing
         }
