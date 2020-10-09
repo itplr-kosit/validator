@@ -86,6 +86,34 @@ fetch("http://localhost:8080", requestOptions)
   .then(result => console.log(result))
   .catch(error => console.log('error', error));
 ```
+
+* `PHP` (Symfony HttpClient)
+```php
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
+class XrechnungValidator
+{
+  private $httpClient;
+
+  public function __construct(HttpClientInterface $httpClient)
+  {
+    $this->httpClient = $httpClient;
+  }
+
+  public function validate()
+  {
+    $response = $this->httpClient->request('POST', 'http://localhost:8080', [
+      'headers' => [
+        'Content-Type' => 'application/xml',
+      ],
+      'body' => fopen('/path/to/some.xml', 'r'),
+    ]);
+
+    echo $response->getContent();
+  }
+}
+```
+
 ## Status codes
 | code | description |
 |-|-|
