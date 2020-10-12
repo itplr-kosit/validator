@@ -91,7 +91,7 @@ fetch("http://localhost:8080", requestOptions)
 ```php
 $httpClient = HttpClient::create();
 
-$response = $this->httpClient->request('POST', 'http://localhost:8080', [
+$response = $httpClient->request('POST', 'http://localhost:8080', [
   'headers' => [
     'Content-Type' => 'application/xml',
   ],
