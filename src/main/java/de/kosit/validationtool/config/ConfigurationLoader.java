@@ -55,7 +55,7 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
 
 /**
- * Configuration class that loads neccessary {@link Check} configuration from an existing scenario.xml specification.
+ * Configuration class that loads necessary {@link Check} configuration from an existing scenario.xml specification.
  * This is the recommended option when an official configuration exists as is the case with 'xrechnung'.
  * 
  * @author Andreas Penski

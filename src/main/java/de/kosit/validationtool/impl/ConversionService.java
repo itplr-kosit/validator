@@ -147,7 +147,7 @@ public class ConversionService {
     }
 
     /**
-     * Unmarshalls a specifc xml model into a defined java object.
+     * Unmarshalls a specific XML model into a defined Java object.
      *
      * @param xml the xml
      * @param type the expected type created

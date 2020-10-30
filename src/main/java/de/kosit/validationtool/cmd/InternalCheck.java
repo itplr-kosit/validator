@@ -38,8 +38,8 @@ import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 /**
- * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszwerten und auszugeben.
- * Diese Klasse stellt keine fachlicher Erweiterung des eigentlichen Prüfvorganges dar!
+ * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszuwerten und auszugeben.
+ * Diese Klasse stellt keine fachliche Erweiterung des eigentlichen Prüfvorganges dar!
  * 
  * @author Andreas Penski
  */

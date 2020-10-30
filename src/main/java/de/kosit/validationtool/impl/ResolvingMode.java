@@ -33,7 +33,7 @@ import de.kosit.validationtool.impl.xml.StrictRelativeResolvingStrategy;
 public enum ResolvingMode {
 
     /**
-     * Resolving using only the configured content repository. No furthing resolving allowed. This
+     * Resolving using only the configured content repository.
      */
     STRICT_RELATIVE(new StrictRelativeResolvingStrategy()) {
 
