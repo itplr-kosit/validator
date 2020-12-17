@@ -54,7 +54,7 @@ public class StandardExample {
         // Load scenarios.xml from classpath
         URL scenarios = this.getClass().getClassLoader().getResource("scenarios.xml");
         // Load the rest of the specific Validator configuration from classpath
-        Configuration config = Configuration.load(scenarios.toURI());
+        Configuration config = Configuration.load(scenarios.toURI()).build();
         // Use the default validation procedure
         Check validator = new DefaultCheck(config);
         // Validate a single document
