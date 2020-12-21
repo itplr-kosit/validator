@@ -41,5 +41,3 @@ src/generated
 *.xpr
 # Testing stuff
 xrechnung
-
-/.idea
