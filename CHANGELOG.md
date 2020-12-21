@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Allow more than 3 customLevel elements in scenarios
+- Allow more than 3 customLevel elements in scenarios (see xrechnung
+  configuration [ issue 49](https://github.com/itplr-kosit/validator-configuration-xrechnung/issues/49))
+- Remove saxon signature from java8 uber-jar (see [67](https://github.com/itplr-kosit/validator/issues/67))
 
 ## 1.4.0
 
