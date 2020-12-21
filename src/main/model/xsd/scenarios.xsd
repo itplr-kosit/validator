@@ -126,7 +126,7 @@
     <xs:complexType name="CreateReportType">
         <xs:sequence>
             <xs:element ref="s:resource" />
-            <xs:element maxOccurs="3" minOccurs="0" name="customLevel" type="s:CustomErrorLevel" />
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="customLevel" type="s:CustomErrorLevel" />
         </xs:sequence>
     </xs:complexType>
 

@@ -38,7 +38,7 @@ src/generated
 .settings
 .vscode
 *.code-workspace
-
+*.xpr
 # Testing stuff
 xrechnung
 

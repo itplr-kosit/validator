@@ -5,16 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.4.1
+
+### Fixed
+
+- Allow more than 3 customLevel elements in scenarios (see xrechnung
+  configuration [ issue 49](https://github.com/itplr-kosit/validator-configuration-xrechnung/issues/49))
+- Remove saxon signature from java8 uber-jar (see [67](https://github.com/itplr-kosit/validator/issues/67))
+
 ## 1.4.0
 
 ### Fixed
-- date conversion when using [ConfigurationBuilder#date(Date)](https://github.com/itplr-kosit/validator/blob/d7beb1040418ae5cbeb9427532fd87482f55756c/src/main/java/de/kosit/validationtool/config/ConfigurationBuilder.java#L109)
+
+- date conversion when
+  using [ConfigurationBuilder#date(Date)](https://github.com/itplr-kosit/validator/blob/d7beb1040418ae5cbeb9427532fd87482f55756c/src/main/java/de/kosit/validationtool/config/ConfigurationBuilder.java#L109)
 - [CLI] [#51](https://github.com/itplr-kosit/validator/issues/51) Suffix of report xml is missing
 - [#53](https://github.com/itplr-kosit/validator/issues/53) Fix copyright and licensing information
-- [#56](https://github.com/itplr-kosit/validator/issues/56) `namespace` element content needs trimming 
-- [DAEMON] [#57](https://github.com/itplr-kosit/validator/issues/57) Reading large inputs correctly  
+- [#56](https://github.com/itplr-kosit/validator/issues/56) `namespace` element content needs trimming
+- [DAEMON] [#57](https://github.com/itplr-kosit/validator/issues/57) Reading large inputs correctly
 
 ### Added
+
 - read saxon XdmNode with InputFactory
 - [CLI] custom output without the various log messages
 - [CLI] options to set the log level (`-X` = full debug output, `-l <level>` set a specific level)
