@@ -544,6 +544,19 @@
                     <lineEnding>LF</lineEnding>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -585,6 +598,23 @@
         <connection>https://github.com/itplr-kosit/validationtool.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
         <tag>v1.1.0</tag>
+        <url>https://github.com/itplr-kosit/validator</url>
     </scm>
+
+    <url>https://github.com/itplr-kosit/validator</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
 
 </project>

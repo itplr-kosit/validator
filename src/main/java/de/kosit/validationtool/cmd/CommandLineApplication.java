@@ -67,7 +67,7 @@ public class CommandLineApplication {
     private static void sayGoodby(final ReturnValue resultStatus) {
         Printer.writeOut("\n##############################");
         if (resultStatus.equals(ReturnValue.SUCCESS)) {
-            Printer.writeOut("#   " + new Line(Code.GREEN).add("Validation succesful!").render(false, false) + "    #");
+            Printer.writeOut("#   " + new Line(Code.GREEN).add("Validation successful!").render(false, false) + "   #");
         } else {
             Printer.writeOut("#     " + new Line(Code.RED).add("Validation failed!").render(false, false) + "     #");
         }

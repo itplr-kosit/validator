@@ -17,6 +17,7 @@
 package de.kosit.validationtool.impl;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 /**
  * Wrapper for {@link System Systems} printing capability.
@@ -37,7 +38,7 @@ public class Printer {
      * @param params the params.
      */
     public static void writeOut(final String message, final Object... params) {
-        System.out.println(MessageFormat.format(message, params));
+        System.out.println(new MessageFormat(message, Locale.ENGLISH).format(params));
     }
 
     /**
@@ -47,6 +48,6 @@ public class Printer {
      * @param params the params.
      */
     public static void writeErr(final String message, final Object... params) {
-        System.err.println(MessageFormat.format(message, params));
+        System.err.println(new MessageFormat(message, Locale.ENGLISH).format(params));
     }
 }
