@@ -83,6 +83,10 @@ Result validationResult = validator.checkInput(document);
 
 The  [API documentation](./docs/api.md) shows further configuration options.
 
+**Note:** With Java 11+, you need to include a dependency to `org.glassfish.jaxb:jaxb-runtime` in your project explicitly,
+as that dependency is marked `optional` in this project and 
+will thus not be resolved transitively.
+
 ### Daemon-Mode
 
 You can also start the validator as a HTTP-Server. Just start it in _Daemon-Mode_ with the `-D` option.
