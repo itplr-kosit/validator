@@ -53,7 +53,7 @@ public class ScenarioSelectionAction implements CheckAction {
             report.setScenario(scenarioTypeResult.getObject().getConfiguration());
             log.info("Scenario {} identified for {}", scenarioTypeResult.getObject().getName(), results.getInput().getName());
         } else {
-            log.error("No valid scenario configuration found for {}", results.getInput().getName());
+            log.info("No valid scenario configuration found for {}", results.getInput().getName());
         }
     }
 
