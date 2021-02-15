@@ -42,9 +42,10 @@
 
   var report;
 
-  var validate = function () {
+  var validate = function validate() {
     const input = document.getElementById('file');
     const output = document.getElementById('result');
+    const download = document.getElementById('dwn-btn');
 
     var headers = new Headers();
     headers.append('Content-Type', 'application/xml');
@@ -58,12 +59,16 @@
 
     fetch('/', requestOptions)
       .then(response => response.text())
-      .then(result => output.innerText = result)
+      .then(result => {
+        output.innerHTML = result;
+        report = result;
+        download.disabled = false;
+      })
       .catch(error => output.innerText = result);
     return false;
   };
 
-  var reporting = function() {
+  var reporting = function reporting() {
     var filename = "report.html";
 
     var element = document.createElement('a');
@@ -76,7 +81,7 @@
     element.click();
 
     document.body.removeChild(element);
-  }
+  };
 
 </script>
 

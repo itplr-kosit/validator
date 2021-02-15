@@ -13,7 +13,7 @@ View [validator configuration](/server/config) or <a href="/server/health" targe
         <div>
             <label for="file">Choose a file</label>
             <input type="file" id="file" name="myFile">
-            <input type="submit" id="submit" value="Validate" onclick="return validate();"><input type="button" id="dwn-btn" value="Download Report" onclick="return reporting();">
+            <input type="button" id="submit" value="Validate" onclick="return validate();"><input type="button" id="dwn-btn" value="Download Report" onclick="return reporting();" disabled>
         </div>
             <div id="result"></div>
     </form>
