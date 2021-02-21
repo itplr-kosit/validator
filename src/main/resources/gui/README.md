@@ -16,6 +16,9 @@ View [validator configuration](/server/config) or <a href="/server/health" targe
             <input type="button" id="submit" value="Validate" onclick="return validate();">
             <input type="button" id="dwn-btn" value="Download Report" onclick="return download();" disabled>
         </div>
+            </br>
+            <div id="good_status" style="color:#008000"></div>
+            <div id="bad_status" style="color:#800000"></div>
             <div id="result"></div>
     </form>
 </div>
