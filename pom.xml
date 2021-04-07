@@ -544,25 +544,38 @@
                     <lineEnding>LF</lineEnding>
                 </configuration>
             </plugin>
-        <!--
-            <plugin>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
+
+
         </plugins>
     </build>
 
     <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>format</id>
             <activation><activeByDefault>false</activeByDefault></activation>
@@ -602,7 +615,6 @@
         <tag>v1.1.0</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
-
     <url>https://github.com/itplr-kosit/validator</url>
     <licenses>
         <license>
