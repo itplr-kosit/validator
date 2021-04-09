@@ -29,6 +29,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
 import de.kosit.validationtool.cmd.report.Line;
@@ -55,6 +56,7 @@ public class CommandLineApplication {
      * @param args die Eingabe-Argumente
      */
     public static void main(final String[] args) {
+        AnsiConsole.systemInstall();
         final ReturnValue resultStatus = mainProgram(args);
         if (!resultStatus.equals(ReturnValue.DAEMON_MODE)) {
             sayGoodby(resultStatus);
