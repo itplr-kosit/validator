@@ -140,7 +140,7 @@ public class ConversionService {
      */
     private void initialize(final String contextPath) {
         try {
-            this.jaxbContext = JAXBContext.newInstance(contextPath);
+            this.jaxbContext = JAXBContext.newInstance(contextPath, ConversionService.class.getClassLoader());
         } catch (final JAXBException e) {
             throw new IllegalStateException(String.format("Can not create JAXB context for given context: %s", contextPath), e);
         }

@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - [CLI] [#74](https://projekte.kosit.org/kosit/validator/-/issues/74) fix ansi output of the cli version
+- [#80](https://github.com/itplr-kosit/validator/issues/80) using classloader to initialize jaxb context (to support usage in OSGi
+  environments)
 
 ## 1.4.1
 
