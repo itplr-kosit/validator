@@ -1,9 +1,10 @@
 # General Architecture
 
-The validator itself is just an engine which executes validation according to a certain configuration (see [configuration documentation](docs/configurations.md)).
+The validator itself is just an engine which executes validation according to a certain configuration (
+see [configuration documentation](configurations.md)).
 
-The validator takes a scenario.xml and the configured directory with all artifacts necessary for validation (scenario repository). Then it performs
-the validation and generates a report in XML format. This report is then the input to an XSLT provided by the configuration.
+The validator takes a scenario.xml and the configured directory with all artifacts necessary for validation (scenario repository). Then it
+performs the validation and generates a report in XML format. This report is then the input to an XSLT provided by the configuration.
 
 ## Separation of concerns
 
