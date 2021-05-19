@@ -2,16 +2,22 @@ image: maven:latest
 
 variables:
   BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID "
-  MAVEN_CLI_OPTS: " --batch-mode -Dmaven.repo.local=/cache/repository -Dfile.encoding=UTF-8"
+  MAVEN_CLI_OPTS: " --batch-mode -Dmaven.repo.local=repository -Dfile.encoding=UTF-8 -s .settings/settings.xml"
 
 before_script:
   - export CI_JOB_TIMESTAMP="-Dbuild.timestamp=$(date --utc --iso-8601=seconds)"
+
+cache:
+  key: maven
+  paths:
+    - repository
 
 build-amazoncorretto:
   stage: build
   image: maven:amazoncorretto
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
   artifacts:
     name: amazoncorretto
     paths:
@@ -26,6 +32,7 @@ build-java-14:
   image: maven:3-jdk-14
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
   artifacts:
     when: on_failure
     name: java-14
@@ -41,6 +48,7 @@ build-java-11-openj9:
   image: maven:3-jdk-11-openj9
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
   artifacts:
     name: java-11-openj9
     paths:
@@ -55,6 +63,7 @@ build-java-11:
   image: maven:3-jdk-11
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
   artifacts:
     name: java-11
     paths:
@@ -70,6 +79,7 @@ build-java-8-openj9:
   image: maven:3-jdk-8-openj9
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
   artifacts:
     name: java-8-open-j9
     paths:
@@ -84,6 +94,7 @@ build-java8:
   image: maven:3-jdk-8-alpine
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
   artifacts:
     name: java-8-alpine
     paths:
@@ -92,3 +103,18 @@ build-java8:
       junit:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
+
+deploy:
+  stage: deploy
+  image: maven:3-jdk-11
+  dependencies:
+    - build-java-11
+  script:
+    - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}.jar -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-javadoc.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="javadoc" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-java8-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="java8-standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-sources.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="sources" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+  when: manual
