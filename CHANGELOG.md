@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [CLI] [#74](https://projekte.kosit.org/kosit/validator/-/issues/74) fix ansi output of the cli version
 - [#80](https://github.com/itplr-kosit/validator/issues/80) using classloader to initialize jaxb context (to support usage in OSGi
   environments)
+- [#75] (https://github.com/itplr-kosit/validator/issues/75) Improve logging on invalid documents
 
 ## 1.4.1
 
