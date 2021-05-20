@@ -2,7 +2,7 @@ image: maven:latest
 
 variables:
   BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID "
-  MAVEN_CLI_OPTS: " --batch-mode -Dmaven.repo.local=repository -Dfile.encoding=UTF-8 -s .settings/settings.xml"
+  MAVEN_CLI_OPTS: " --batch-mode -Dfile.encoding=UTF-8 -s .mvn/settings.xml -Dmaven.repo.local=.mvn/repository -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
 
 before_script:
   - export CI_JOB_TIMESTAMP="-Dbuild.timestamp=$(date --utc --iso-8601=seconds)"
@@ -10,57 +10,11 @@ before_script:
 cache:
   key: maven
   paths:
-    - repository
-
-build-amazoncorretto:
-  stage: build
-  image: maven:amazoncorretto
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    name: amazoncorretto
-    paths:
-      - target/*.jar
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
-
-build-java-14:
-  stage: build
-  image: maven:3-jdk-14
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    when: on_failure
-    name: java-14
-    paths:
-      - target/*
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
-
-build-java-11-openj9:
-  stage: build
-  image: maven:3-jdk-11-openj9
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    name: java-11-openj9
-    paths:
-      - target/*.jar
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
+    - .mvn/repository
 
 build-java-11:
   stage: build
-  image: maven:3-jdk-11
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
   retry: 2
@@ -74,9 +28,39 @@ build-java-11:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
+build-java-11-openj9:
+  stage: build
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
+  artifacts:
+    name: java-11-openj9
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+build-java8:
+  stage: build
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
+  artifacts:
+    name: java-8
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
 build-java-8-openj9:
   stage: build
-  image: maven:3-jdk-8-openj9
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
   retry: 2
@@ -89,16 +73,49 @@ build-java-8-openj9:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-build-java8:
+build-java-15:
   stage: build
-  image: maven:3-jdk-8-alpine
+  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-15
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
   retry: 2
   artifacts:
-    name: java-8-alpine
+    when: on_failure
+    name: java-15
     paths:
-      - target/*.jar
+      - target/*
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+build-java-16:
+  stage: build
+  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-16
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
+  artifacts:
+    when: on_failure
+    name: java-16
+    paths:
+      - target/*
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+build-java-17:
+  stage: build
+  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-17
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
+  artifacts:
+    when: on_failure
+    name: java-17
+    paths:
+      - target/*
     reports:
       junit:
         - target/surefire-reports/*.xml
@@ -106,7 +123,7 @@ build-java8:
 
 deploy:
   stage: deploy
-  image: maven:3-jdk-11
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
   dependencies:
     - build-java-11
   script:
@@ -118,3 +135,16 @@ deploy:
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-java8-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="java8-standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-sources.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="sources" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
   when: manual
+
+create-build-image:
+  stage: deploy
+  image: docker:latest
+  needs: [ ]
+  services:
+    - docker:dind
+  script:
+    - apk add bash
+    - bash .mvn/createBuildImages.sh
+  when: manual
+
+

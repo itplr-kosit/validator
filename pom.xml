@@ -463,6 +463,7 @@
                     <arguments>
                         <!--suppress MavenModelInspection -->
                         <argument>${jacocoFailsafe}</argument>
+                        <argument>-Xmx256m</argument>
                         <argument>-classpath</argument>
                         <classpath />
                         <argument>de.kosit.validationtool.cmd.CommandLineApplication</argument>
