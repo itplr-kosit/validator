@@ -12,7 +12,7 @@ cache:
   paths:
     - .mvn/repository
 
-build-java-11:
+java-11:
   stage: build
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
   script:
@@ -28,7 +28,7 @@ build-java-11:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-build-java-11-openj9:
+java-11-openj9:
   stage: build
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
   script:
@@ -43,7 +43,7 @@ build-java-11-openj9:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-build-java8:
+java8:
   stage: build
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
   script:
@@ -58,7 +58,7 @@ build-java8:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-build-java-8-openj9:
+java-8-openj9:
   stage: build
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
   script:
@@ -73,7 +73,7 @@ build-java-8-openj9:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-build-java-15:
+java-15:
   stage: build
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-15
   script:
@@ -89,7 +89,7 @@ build-java-15:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-build-java-16:
+java-16:
   stage: build
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-16
   script:
@@ -105,7 +105,7 @@ build-java-16:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-build-java-17:
+java-17:
   stage: build
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-17
   script:
@@ -125,7 +125,7 @@ deploy:
   stage: deploy
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
   dependencies:
-    - build-java-11
+    - java-11
   script:
     - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
