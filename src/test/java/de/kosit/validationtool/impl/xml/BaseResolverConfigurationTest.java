@@ -45,9 +45,11 @@ public class BaseResolverConfigurationTest {
     private class TestResolvingStrategy extends StrictRelativeResolvingStrategy {
 
         void setInternalProperty(final SchemaFactory factory, final boolean lenient) {
-            allowExternalSchema(factory, lenient, "quatsch");
+            allowExternalSchema(factory, lenient, NOT_EXISTING_SCHEME);
         }
     }
+
+    public static final String NOT_EXISTING_SCHEME = "not-existing-scheme";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -75,7 +77,7 @@ public class BaseResolverConfigurationTest {
         final TestResolvingStrategy s = new TestResolvingStrategy();
         s.setInternalProperty(sf, true);
         s.setInternalProperty(sf, false);
-        verify(sf, times(2)).setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "quatsch");
+        verify(sf, times(2)).setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, BaseResolverConfigurationTest.NOT_EXISTING_SCHEME);
     }
 
 }
