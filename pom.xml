@@ -54,7 +54,7 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.jacoco>0.8.5</version.jacoco>
+        <version.jacoco>0.8.7</version.jacoco>
         <version.jaxb>2.3.4</version.jaxb>
         <version.lombok>1.18.20</version.lombok>
         <version.saxon-he>9.9.1-7</version.saxon-he>
