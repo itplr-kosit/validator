@@ -38,7 +38,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Input;
-import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.input.AbstractInput;
@@ -134,8 +133,6 @@ public class SchemaValidationAction implements CheckAction {
 
     private static final String LIMIT_PARAMETER = "schema.validation.inmem.limit";
 
-    private final ResolvingConfigurationStrategy factory;
-
     private final Processor processor;
 
     @Setter(AccessLevel.PACKAGE)
@@ -147,7 +144,7 @@ public class SchemaValidationAction implements CheckAction {
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
         try ( final SourceProvider validateInput = resolveSource(results) ) {
 
-            final Validator validator = this.factory.createValidator(scenario.getSchema());
+            final Validator validator = scenario.getFactory().createValidator(scenario.getSchema());
             validator.setErrorHandler(errorHandler);
             validator.validate(validateInput.getSource());
             return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());

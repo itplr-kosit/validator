@@ -16,100 +16,176 @@
 
 package de.kosit.validationtool.cmd;
 
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import de.kosit.validationtool.cmd.CommandLineApplication.Level;
+
+import picocli.CommandLine.ArgGroup;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Help.Visibility;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 /**
+ * Commandline Interface definition.
+ * 
  * @author Andreas Penski
  */
-public class CommandLineOptions {
+@Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false,
+         separator = " ")
+@Getter
+public class CommandLineOptions implements Callable<ReturnValue> {
 
-    static final Option HELP = Option.builder("?").longOpt("help").argName("Help").desc("Displays this help").build();
+    /**
+     * @author Andreas Penski
+     */
+    @Getter
+    @NoArgsConstructor
+    static class DaemonOptions {
 
-    static final Option SCENARIOS = Option.builder("s").required().longOpt("scenarios").hasArg().desc("Location of scenarios.xml e.g.")
-            .build();
+        @Option(names = { "-D", "--daemon" }, description = "Starts a daemon listing for validation requests", defaultValue = "false",
+                required = true)
+        private boolean daemonMode;
 
-    static final Option REPOSITORY = Option.builder("r").longOpt("repository").hasArg().desc("Directory containing scenario content")
-            .build();
+        @Option(names = { "-H", "--host" }, description = "The hostname / IP address to bind the daemon.", defaultValue = "localhost",
+                showDefaultValue = Visibility.ALWAYS)
+        private String host;
 
-    static final Option PRINT = Option.builder("p").longOpt("print").desc("Prints the check result to stdout").build();
+        @Option(names = { "-P", "--port" }, description = "The port to bind the daemon.", defaultValue = "8080",
+                showDefaultValue = Visibility.ALWAYS)
+        private int port;
 
-    static final Option OUTPUT = Option.builder("o").longOpt("output-directory")
-            .desc("Defines the out directory for results. Defaults to cwd").hasArg().build();
+        @Option(names = { "-T", "--threads" },
+                description = "Number of threads processing validation requests. Default depends on processor count", defaultValue = "-1",
+                showDefaultValue = Visibility.NEVER)
+        private int workerCount;
 
-    static final Option EXTRACT_HTML = Option.builder("h").longOpt("html")
-            .desc("Extract and save any html content within  result as a separate file ").build();
-
-    static final Option DEBUG = Option.builder("d").longOpt("debug").desc("Prints some more debug information").build();
-
-    static final Option SERIALIZE_REPORT_INPUT = Option.builder("c").longOpt("serialize-report-input")
-            .desc("Serializes the report input to the cwd").build();
-
-    static final Option CHECK_ASSERTIONS = Option.builder("c").longOpt("check-assertions").hasArg()
-            .desc("Check the result using defined assertions").argName("assertions-file").build();
-
-    static final Option SERVER = Option.builder("D").longOpt("daemon").desc("Starts a daemon listing for validation requests").build();
-
-    static final Option HOST = Option.builder("H").longOpt("host").hasArg()
-            .desc("The hostname / IP address to bind the daemon. Default is localhost").build();
-
-    static final Option PORT = Option.builder("P").longOpt("port").hasArg().desc("The port to bind the daemon. Default is 8080").build();
-
-    static final Option WORKER_COUNT = Option.builder("T").longOpt("threads").hasArg()
-            .desc("Number of threads processing validation requests").build();
-
-    static final Option DISABLE_GUI = Option.builder("G").longOpt("disable-gui").desc("Disables the GUI of the daemon mode").build();
-
-    static final Option REPORT_POSTFIX = Option.builder(null).longOpt("report-postfix").hasArg()
-            .desc("Postfix of the generated report name").build();
-
-    static final Option REPORT_PREFIX = Option.builder(null).longOpt("report-prefix").hasArg().desc("Prefix of the generated report name")
-            .build();
-
-    static final Option DEBUG_LOG = Option.builder("X").longOpt("debug-logging").desc("Enables full debug log. Alias for -l debug").build();
-
-    static final Option LOG_LEVEL = Option.builder("l").longOpt("log-level").hasArg()
-            .desc("Enables a certain log level for debugging " + "purposes").build();
-
-    static final Option PRINT_MEM_STATS = Option.builder("m").longOpt("memory-stats").desc("Prints some memory stats").build();
-
-    private CommandLineOptions() {
-        // hide
+        @Option(names = { "-G", "--disable-gui" }, description = "Disables the GUI of the daemon mode")
+        private boolean disableGUI;
     }
 
-    static org.apache.commons.cli.Options createOptions() {
-        final org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
-        options.addOption(HELP);
-        options.addOption(SERVER);
-        options.addOption(HOST);
-        options.addOption(PORT);
-        options.addOption(SCENARIOS);
-        options.addOption(REPOSITORY);
-        options.addOption(PRINT);
-        options.addOption(OUTPUT);
-        options.addOption(EXTRACT_HTML);
-        options.addOption(DEBUG);
-        options.addOption(CHECK_ASSERTIONS);
-        options.addOption(PRINT_MEM_STATS);
-        options.addOption(WORKER_COUNT);
-        options.addOption(DISABLE_GUI);
-        options.addOption(REPORT_POSTFIX);
-        options.addOption(REPORT_PREFIX);
-        options.addOption(LOG_LEVEL);
-        options.addOption(DEBUG_LOG);
-        return options;
+    /**
+     * @author Andreas Penski
+     */
+    @Getter
+    @NoArgsConstructor
+    static class CliOptions {
+
+        @Option(names = { "-o", "--output-directory" }, description = "Defines the out directory for results.", defaultValue = ".",
+                required = true)
+        private Path outputPath;
+
+        @Option(names = { "-h", "--html", "--extract-html" },
+                description = "Extract and save any html content within result as a separate file")
+        private boolean extractHtml;
+
+        @Option(names = { "--serialize-report-input" }, description = "Serializes the report input to the cwd", defaultValue = "false")
+        private boolean serializeInput;
+
+        @Option(names = { "-c", "--check-assertions" }, paramLabel = "assertions-file",
+                description = "Check the result using defined assertions")
+        private Path assertions;
+
+        @Option(names = { "--report-postfix" }, description = "Postfix of the generated report name")
+        private String reportPostfix;
+
+        @Option(names = { "--report-prefix" }, description = "Prefix of the generated report name")
+        private String reportPrefix;
+
+        @Option(names = { "-m", "--memory-stats" }, description = "Prints some memory stats")
+        private boolean printMemoryStats;
+
+        @Option(names = { "-p", "--print" }, description = "Prints the check result to stdout")
+        private boolean printReport;
+
+        @Parameters(arity = "1..*", description = "Files to validate")
+        private List<Path> files;
+
     }
 
-    static void printHelp(final org.apache.commons.cli.Options options) {
-        // automatically generate the help statement
-        final HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("check-tool  -s <scenario-config-file> [OPTIONS] [FILE]... ", options, false);
+    /**
+     * Definition of logical name and a path for a configuration artifact.
+     * 
+     * @author Andreas Penski
+     */
+    @Getter
+    @Setter
+    public abstract static class Definition {
+
+        String name;
+
+        Path path;
     }
 
-    static org.apache.commons.cli.Options createHelpOptions() {
-        final org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
-        options.addOption(HELP);
-        return options;
+    /**
+     * Definition of logical name and a path for a repository.
+     * 
+     * @author Andreas Penski
+     */
+    public static class RepositoryDefinition extends Definition {
+        // just for type safety
     }
 
+    /**
+     * Definition of logical name and a path for a scenario configuration file.
+     * 
+     * @author Andreas Penski
+     */
+    public static class ScenarioDefinition extends Definition {
+        // just for type safety
+    }
+
+    @ArgGroup(exclusive = false, heading = "Daemon options\n")
+    private DaemonOptions daemonOptions;
+
+    @ArgGroup(exclusive = false, heading = "CLI usage options\n")
+    private CliOptions cliOptions;
+
+    @Option(names = { "-d", "--debug" }, description = "Prints some more debug information")
+    private boolean debugOutput;
+
+    @Option(names = { "-?", "--help" }, usageHelp = true, description = "display this help message")
+    boolean usageHelpRequested;
+
+    @Option(names = { "-X", "--debug-logging" }, description = "Enables full debug log. Alias for -l debug")
+    private boolean debugLog;
+
+    @Option(names = { "-l", "--log-level" }, description = "Enables a certain log level for debugging purposes", defaultValue = "OFF")
+    private Level logLevel;
+
+    @Option(names = { "-r", "--repository" }, paramLabel = "repository-path", description = "Directory containing scenario content",
+            converter = TypeConverter.RepositoryConverter.class)
+    private List<RepositoryDefinition> repositories;
+
+    @Option(names = { "-s", "--scenarios" }, description = "Location of scenarios.xml", paramLabel = "scenario.xml", required = true,
+            converter = TypeConverter.ScenarioConverter.class)
+    private List<ScenarioDefinition> scenarios;
+
+    @Override
+    public ReturnValue call() throws Exception {
+        configureLogging(this);
+        return Validator.mainProgram(this);
+    }
+
+    private static void configureLogging(final CommandLineOptions cmd) {
+        if (cmd.isDebugLog()) {
+            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+        } else {
+            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
+        }
+    }
+
+    public boolean isDaemonModeEnabled() {
+        return getDaemonOptions() != null;
+    }
+
+    public boolean isCliModeEnabled() {
+        return getCliOptions() != null;
+    }
 }

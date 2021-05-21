@@ -19,7 +19,6 @@ package de.kosit.validationtool.impl.tasks;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMSource;
 
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
@@ -30,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron.Results;
@@ -49,21 +49,20 @@ import net.sf.saxon.s9api.XsltTransformer;
 @Slf4j
 public class SchematronValidationAction implements CheckAction {
 
-    private final URIResolver resolver;
-
     private final ConversionService conversionService;
 
     private List<ValidationResultsSchematron> validate(final Bag results, final XdmNode document, final Scenario scenario) {
-        return scenario.getSchematronValidations().stream().map(v -> validate(results, document, v)).collect(Collectors.toList());
+        return scenario.getSchematronValidations().stream().map(v -> validate(scenario, results, document, v)).collect(Collectors.toList());
     }
 
-    private ValidationResultsSchematron validate(final Bag results, final XdmNode document, final Scenario.Transformation validation) {
+    private ValidationResultsSchematron validate(final Scenario scenario, final Bag results, final XdmNode document,
+            final Transformation validation) {
         final ValidationResultsSchematron s = new ValidationResultsSchematron();
         s.setResource(validation.getResourceType());
         try {
             final XsltTransformer transformer = validation.getExecutable().load();
             // resolving nur relative zum Repository
-            transformer.setURIResolver(this.resolver);
+            transformer.setURIResolver(scenario.getUriResolver());
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
             transformer.setMessageListener(e);
 

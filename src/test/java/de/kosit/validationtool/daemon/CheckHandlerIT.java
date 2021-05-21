@@ -27,6 +27,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
 
+import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 
 import io.restassured.builder.MultiPartSpecBuilder;
@@ -78,6 +79,13 @@ public class CheckHandlerIT extends BaseIT {
         try ( final InputStream io = Simple.SIMPLE_VALID.toURL().openStream() ) {
             final MultiPartSpecification spec = new MultiPartSpecBuilder(io).fileName("file").controlName("file").build();
             given().multiPart(spec).when().post("/").then().statusCode(HttpStatus.SC_BAD_REQUEST);
+        }
+    }
+
+    @Test
+    public void testLarge() throws IOException {
+        try ( final InputStream io = Helper.LARGE_XML.toURL().openStream() ) {
+            given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(SC_NOT_ACCEPTABLE);
         }
     }
 

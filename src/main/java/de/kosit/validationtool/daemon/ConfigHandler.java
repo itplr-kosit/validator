@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
@@ -44,7 +45,7 @@ import de.kosit.validationtool.model.scenarios.Scenarios;
 @RequiredArgsConstructor
 class ConfigHandler extends BaseHandler {
 
-    private final Configuration configuration;
+    private final List<Configuration> configuration;
 
     private final ConversionService conversionService;
 
@@ -64,7 +65,8 @@ class ConfigHandler extends BaseHandler {
     }
 
     private Optional<String> getSource() {
-        final URI fileUri = (URI) this.configuration.getAdditionalParameters().get(Keys.SCENARIOS_FILE);
+
+        final URI fileUri = (URI) this.configuration.get(0).getAdditionalParameters().get(Keys.SCENARIOS_FILE);
         return fileUri != null ? loadFile(fileUri) : loadFromConfig();
     }
 
@@ -80,7 +82,7 @@ class ConfigHandler extends BaseHandler {
 
     private Optional<String> loadFromConfig() {
         final Optional<String> result;
-        final Scenarios scenarios = (Scenarios) this.configuration.getAdditionalParameters().get(Keys.SCENARIO_DEFINITION);
+        final Scenarios scenarios = (Scenarios) this.configuration.get(0).getAdditionalParameters().get(Keys.SCENARIO_DEFINITION);
         if (scenarios != null) {
             final String s = this.conversionService.writeXml(scenarios);
             result = Optional.of(s);

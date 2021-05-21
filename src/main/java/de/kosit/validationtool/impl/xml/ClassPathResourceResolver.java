@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.kosit.validationtool.impl;
+package de.kosit.validationtool.impl.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,15 +31,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.impl.xml.RelativeUriResolver;
-
 /**
  * {@link LSResourceResolver} der objekte relativ zu einem Basis-Pfad aus dem Classpath der Anwendung laden kann.
  * 
  * @author Andreas Penski
  */
 @Slf4j
-class ClassPathResourceResolver implements LSResourceResolver {
+public class ClassPathResourceResolver implements LSResourceResolver {
 
     /**
      * Simple {@link LSInput}-Implementierung, die einen Stream liefern kann

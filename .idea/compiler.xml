@@ -7,8 +7,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="validationtool" />
         <module name="validator" />
+        <module name="validationtool" />
       </profile>
     </annotationProcessing>
   </component>

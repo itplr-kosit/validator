@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -38,6 +39,7 @@ import com.sun.net.httpserver.HttpExchange;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.config.TestConfigurationFactory;
 import de.kosit.validationtool.impl.ConversionService;
+import de.kosit.validationtool.impl.Helper;
 
 /**
  * @author Andreas Penski
@@ -51,8 +53,8 @@ public class ConfigHandlerTest {
         final OutputStream stream = mock(OutputStream.class);
         when(exchange.getResponseHeaders()).thenReturn(headers);
         when(exchange.getResponseBody()).thenReturn(stream);
-        final Configuration config = TestConfigurationFactory.createSimpleConfiguration().build();
-        final ConfigHandler handler = new ConfigHandler(config, new ConversionService());
+        final Configuration config = TestConfigurationFactory.createSimpleConfiguration().build(Helper.getTestProcessor());
+        final ConfigHandler handler = new ConfigHandler(Collections.singletonList(config), new ConversionService());
         handler.handle(exchange);
         verify(exchange, times(1)).sendResponseHeaders(HttpStatus.SC_OK, 0);
         verify(stream, atLeast(1)).write(any());
