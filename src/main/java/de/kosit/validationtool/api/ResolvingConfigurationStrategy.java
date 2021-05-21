@@ -24,7 +24,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import net.sf.saxon.lib.UnparsedTextURIResolver;
-import net.sf.saxon.s9api.Processor;
 
 /**
  * Centralized construction and configuration of XML related infrastructure components. This interface allows to use
@@ -49,17 +48,6 @@ public interface ResolvingConfigurationStrategy {
      * @return preconfigured {@link SchemaFactory}
      */
     SchemaFactory createSchemaFactory();
-
-    /**
-     * Returns a preconfigured {@link Processor Saxon Processor} for various tasks within the Validator. The validator
-     * leverages the saxon s9api for internal processing e.g. xml reading and writing. So this is the main object to
-     * secure for reading, transforming and writing xml files.
-     *
-     * Note: you need exactly one instance for all validator related processing.
-     *
-     * @return a preconfigured {@link Processor}
-     */
-    Processor getProcessor();
 
     /**
      * Creates a specific implementation for resolving referenced objects in XML files. The URIResolver is used for

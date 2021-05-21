@@ -88,6 +88,9 @@ public class ScenarioBuilder implements Builder<Scenario> {
         buildReport(repository, errors, scenario);
         buildAccept(repository, errors, scenario);
         buildNamespaces(scenario);
+        scenario.setFactory(repository.getResolvingConfigurationStrategy());
+        scenario.setUriResolver(repository.getResolver());
+        scenario.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
         return new Result<>(scenario, errors);
     }
 

@@ -44,10 +44,10 @@ import de.kosit.validationtool.api.XmlError.Severity;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.SchemaProvider;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
-import de.kosit.validationtool.impl.xml.StrictRelativeResolvingStrategy;
 
 /**
  * Tests die {@link SchemaValidationAction}.
@@ -62,7 +62,7 @@ public class SchemaValidatorActionTest {
 
     @Before
     public void setup() {
-        this.service = new SchemaValidationAction(new StrictRelativeResolvingStrategy(), TestObjectFactory.createProcessor());
+        this.service = new SchemaValidationAction(TestObjectFactory.createProcessor());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testSchemaReferences() {
-        final Schema reportInputSchema = Simple.createContentRepository().getReportInputSchema();
+        final Schema reportInputSchema = SchemaProvider.getReportInputSchema();
         assertThat(reportInputSchema).isNotNull();
     }
 

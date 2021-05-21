@@ -55,7 +55,8 @@ public class ScenarioRepositoryTest {
     @Before
     public void setup() {
         this.configInstance = new TestConfiguration();
-        this.configInstance.setContentRepository(new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
+        this.configInstance
+                .setContentRepository(new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
 
         final Scenario s = createScenario();
         this.configInstance.setScenarios(new ArrayList<>());
@@ -104,6 +105,25 @@ public class ScenarioRepositoryTest {
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");
+    }
+
+    @Test
+    public void testNoConfiguration() {
+        this.expectedException.expect(IllegalArgumentException.class);
+        this.repository = new ScenarioRepository();
+    }
+
+    @Test
+    public void testFallbackOnMultipleConfigurations() {
+        final TestConfiguration first = this.configInstance;
+        first.setFallbackScenario(createFallback());
+        setup();// create new one;
+        final TestConfiguration second = this.configInstance;
+        second.setFallbackScenario(createFallback());
+        this.repository = new ScenarioRepository(first, second);
+        final Scenario fallback = this.repository.getFallbackScenario();
+        assertThat(fallback).isSameAs(first.getFallbackScenario());
+        assertThat(fallback).isNotSameAs(second.getFallbackScenario());
     }
 
     private XdmNode load(final URI uri) throws IOException {

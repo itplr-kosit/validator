@@ -19,6 +19,7 @@ package de.kosit.validationtool.impl;
 import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import de.kosit.validationtool.impl.tasks.ScenarioSelectionAction;
 import de.kosit.validationtool.impl.tasks.SchemaValidationAction;
 import de.kosit.validationtool.impl.tasks.SchematronValidationAction;
 import de.kosit.validationtool.impl.tasks.ValidateReportInputAction;
+import de.kosit.validationtool.impl.xml.ProcessorProvider;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.EngineType;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
@@ -61,31 +63,36 @@ public class DefaultCheck implements Check {
     private final ConversionService conversionService;
 
     @Getter
-    private final Configuration configuration;
+    private final List<Configuration> configuration;
 
     @Getter
     private final List<CheckAction> checkSteps;
+
+    @Getter
+    private final Processor processor;
+
+    public DefaultCheck(final Configuration... configuration) {
+        this(ProcessorProvider.getProcessor(), configuration);
+    }
 
     /**
      * Creates a new instance for the {@link Configuration}.
      *
      * @param configuration the Configuration
      */
-    public DefaultCheck(final Configuration configuration) {
-        this.configuration = configuration;
-        final ContentRepository content = configuration.getContentRepository();
-        final Processor processor = content.getProcessor();
+    public DefaultCheck(final Processor processor, final Configuration... configuration) {
+        this.configuration = Arrays.asList(configuration);
+        this.processor = processor;
         this.conversionService = new ConversionService();
 
         this.checkSteps = new ArrayList<>();
         this.checkSteps.add(new DocumentParseAction(processor));
         this.checkSteps.add(new CreateDocumentIdentificationAction());
         this.checkSteps.add(new ScenarioSelectionAction(new ScenarioRepository(configuration)));
-        this.checkSteps.add(new SchemaValidationAction(content.getResolvingConfigurationStrategy(), processor));
-        this.checkSteps.add(new SchematronValidationAction(content.getResolver(), this.conversionService));
-        this.checkSteps.add(new ValidateReportInputAction(this.conversionService, content.getReportInputSchema()));
-        this.checkSteps.add(
-                new CreateReportAction(processor, this.conversionService, content.getResolver(), content.getUnparsedTextURIResolver()));
+        this.checkSteps.add(new SchemaValidationAction(processor));
+        this.checkSteps.add(new SchematronValidationAction(this.conversionService));
+        this.checkSteps.add(new ValidateReportInputAction(this.conversionService, SchemaProvider.getReportInputSchema()));
+        this.checkSteps.add(new CreateReportAction(processor, this.conversionService));
         this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
@@ -125,8 +132,7 @@ public class DefaultCheck implements Check {
     }
 
     private Result createResult(final Bag t) {
-        final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(),
-                new HtmlExtractor(this.configuration.getContentRepository().getProcessor()));
+        final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), new HtmlExtractor(this.processor));
         result.setWellformed(t.getParserResult().isValid());
         result.setReportInput(t.getReportInput());
         if (t.getSchemaValidationResult() != null) {

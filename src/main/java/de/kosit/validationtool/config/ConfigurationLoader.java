@@ -41,6 +41,7 @@ import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.SchemaProvider;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.xml.RelativeUriResolver;
@@ -131,12 +132,11 @@ public class ConfigurationLoader {
 
     }
 
-    public Configuration build() {
+    public Configuration build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
-        final Processor processor = resolving.getProcessor();
-        final ContentRepository contentRepository = new ContentRepository(resolving, getScenarioRepository());
+        final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
 
-        final Scenarios def = loadScenarios(contentRepository.getScenarioSchema(), processor);
+        final Scenarios def = loadScenarios(SchemaProvider.getScenarioSchema(), processor);
         final List<Scenario> scenarios = initializeScenarios(def, contentRepository);
         final Scenario fallbackScenario = createFallback(def, contentRepository);
         final DefaultConfiguration configuration = new DefaultConfiguration(scenarios, fallbackScenario);
@@ -164,10 +164,10 @@ public class ConfigurationLoader {
     }
 
     private Scenarios loadScenarios(final Schema scenarioSchema, final Processor processor) {
-        final ConversionService conversionService = new ConversionService();
         checkVersion(this.scenarioDefinition, processor);
         log.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
+        final ConversionService conversionService = new ConversionService();
         final Scenarios scenarios = conversionService.readXml(this.scenarioDefinition, Scenarios.class, scenarioSchema, handler);
         if (!handler.hasErrors()) {
             log.info("Loading scenario content from {}", this.getScenarioRepository());
@@ -185,6 +185,9 @@ public class ConfigurationLoader {
         s.setSchema(repository.createSchema(def));
         s.setSchematronValidations(repository.createSchematronTransformations(def));
         s.setReportTransformation(repository.createReportTransformation(def));
+        s.setFactory(repository.getResolvingConfigurationStrategy());
+        s.setUriResolver(repository.getResolver());
+        s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
         if (def.getAcceptMatch() != null) {
             s.setAcceptExecutable(repository.createAccepptExecutable(def));
         }

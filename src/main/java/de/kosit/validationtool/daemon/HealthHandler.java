@@ -17,6 +17,7 @@
 package de.kosit.validationtool.daemon;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -39,7 +40,7 @@ import de.kosit.validationtool.model.daemon.MemoryType;
 @RequiredArgsConstructor
 class HealthHandler extends BaseHandler {
 
-    private final Configuration scenarios;
+    private final List<Configuration> scenarios;
 
     private final ConversionService conversionService;
 
@@ -55,7 +56,7 @@ class HealthHandler extends BaseHandler {
         final HealthType h = new HealthType();
         h.setMemory(createMemory());
         h.setApplication(createApplication());
-        h.setStatus(!this.scenarios.getScenarios().isEmpty() ? "UP" : "DOWN");
+        h.setStatus(this.scenarios.stream().mapToLong(c -> c.getScenarios().size()).sum() > 0 ? "UP" : "DOWN");
         return h;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021  Koordinierungsstelle für IT-Standards (KoSIT)
+ * Copyright 2017-2020  Koordinierungsstelle für IT-Standards (KoSIT)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package de.kosit.validationtool.impl;
+package de.kosit.validationtool.impl.xml;
 
-import net.sf.saxon.s9api.Processor;
+import javax.xml.validation.SchemaFactory;
+
+import de.kosit.validationtool.impl.ResolvingMode;
 
 /**
  * @author Andreas Penski
  */
-public class TestObjectFactory {
+public class SchemaProviderTest {
 
-    private static Processor processor;
+    private final SchemaFactory schemaFactory = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
 
-    public static Processor createProcessor() {
-        if (processor == null) {
-            processor = Helper.getTestProcessor();
-        }
-        return processor;
-    }
 }
