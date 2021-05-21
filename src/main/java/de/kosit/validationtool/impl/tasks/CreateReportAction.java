@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
-import javax.xml.transform.URIResolver;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -45,7 +44,6 @@ import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
-import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.BuildingContentHandler;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
@@ -172,10 +170,6 @@ public class CreateReportAction implements CheckAction {
 
     private final ConversionService conversionService;
 
-    private final URIResolver resolver;
-
-    private final UnparsedTextURIResolver unparsedTextURIResolver;
-
     private static XsltExecutable loadFromScenario(final Scenario object) {
         return object.getReportTransformation().getExecutable();
     }
@@ -198,9 +192,11 @@ public class CreateReportAction implements CheckAction {
             transformer.setInitialContextNode(root);
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
             transformer.setMessageListener(e);
-            transformer.setURIResolver(this.resolver);
-            if (this.unparsedTextURIResolver != null) {
-                transformer.getUnderlyingController().setUnparsedTextURIResolver(this.unparsedTextURIResolver);
+            final Scenario scenario = results.getScenarioSelectionResult().getObject();
+            transformer.setURIResolver(scenario.getUriResolver());
+
+            if (scenario.getUnparsedTextURIResolver() != null) {
+                transformer.getUnderlyingController().setUnparsedTextURIResolver(scenario.getUnparsedTextURIResolver());
             }
             if (parsedDocument != null) {
                 transformer.setParameter(new QName("input-document"), parsedDocument);

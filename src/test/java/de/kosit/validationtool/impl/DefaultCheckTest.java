@@ -65,16 +65,17 @@ public class DefaultCheckTest {
 
     @Before
     public void setup() throws URISyntaxException {
-        final Configuration validConfig = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build();
+        final Configuration validConfig = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
         this.validCheck = new DefaultCheck(validConfig);
 
-        final Configuration errorConfig = Configuration.load(Simple.ERROR_SCENARIOS, Simple.REPOSITORY_URI).build();
+        final Configuration errorConfig = Configuration.load(Simple.ERROR_SCENARIOS, Simple.REPOSITORY_URI)
+                .build(Helper.getTestProcessor());
         this.errorCheck = new DefaultCheck(errorConfig);
 
         final Configuration jarConfig = Configuration
                 .load(requireNonNull(DefaultCheckTest.class.getClassLoader().getResource("simple/packaged/scenarios.xml")).toURI(),
                         requireNonNull(DefaultCheckTest.class.getClassLoader().getResource("simple/packaged/repository/")).toURI())
-                .build();
+                .build(Helper.getTestProcessor());
 
         this.jarScenarioCheck = new DefaultCheck(jarConfig);
     }
@@ -248,8 +249,7 @@ public class DefaultCheckTest {
         assertThat(result.isProcessingSuccessful()).isEqualTo(true);
 
         // test compatible configuration
-        node = this.validCheck.getConfiguration().getContentRepository().getProcessor().newDocumentBuilder()
-                .build(new StreamSource(SIMPLE_VALID.toASCIIString()));
+        node = this.validCheck.getProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         domInput = InputFactory.read(node, "node test");
         result = this.validCheck.checkInput(domInput);
         assertThat(result.isProcessingSuccessful()).isEqualTo(true);

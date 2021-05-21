@@ -174,7 +174,6 @@ When using XML related technologies you are supposed to handle certain security 
 * disables DTD validation completely
 * allows loading/resolving only from a configured local content repository (a specific folder)
 * tries to prevent known XML security issues (see [OWASP XML_Security_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/XML_Security_Cheat_Sheet.html))
-* only works with OpenJDK based XML stacks
 
 However, you can configure certain aspects related to resolving and security yourself. The validator uses a single interface for accessing or creating the necessary XML API objects like `SchemaFactory`, `Validator`,`URIResolver` or `Processor`:  [ResolvingConfigurationStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/api/ResolvingConfigurationStrategy.java)
 

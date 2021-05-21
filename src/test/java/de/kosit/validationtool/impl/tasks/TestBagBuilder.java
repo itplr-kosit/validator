@@ -30,6 +30,7 @@ import org.oclc.purl.dsdl.svrl.SchematronOutput;
 
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.ResolvingMode;
@@ -82,6 +83,8 @@ public class TestBagBuilder {
             t.setValidateWithXmlSchema(v);
             final Scenario scenario = new Scenario(t);
             scenario.setSchema(createSchema(schemafile.toURL()));
+            final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
+            scenario.setFactory(strategy);
             return scenario;
         } catch (final MalformedURLException e) {
             throw new IllegalArgumentException(e);
@@ -89,7 +92,8 @@ public class TestBagBuilder {
     }
 
     private static Schema createSchema(final URL toURL) {
-        final ContentRepository contentRepository = new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null);
+        final ContentRepository contentRepository = new ContentRepository(Helper.getTestProcessor(),
+                ResolvingMode.STRICT_RELATIVE.getStrategy(), null);
         return contentRepository.createSchema(toURL);
     }
 

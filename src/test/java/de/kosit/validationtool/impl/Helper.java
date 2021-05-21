@@ -30,6 +30,7 @@ import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
+import de.kosit.validationtool.impl.xml.ProcessorProvider;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
@@ -61,6 +62,8 @@ public class Helper {
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
+        public static final URI OTHER_SCENARIOS = ROOT.resolve("otherScenarios.xml");
+
         public static final URI ERROR_SCENARIOS = ROOT.resolve("scenarios-with-errors.xml");
 
         public static final URI REPOSITORY_URI = ROOT.resolve("repository/");
@@ -83,7 +86,7 @@ public class Helper {
 
         public static final ContentRepository createContentRepository() {
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
-            return new ContentRepository(strategy, Simple.REPOSITORY_URI);
+            return new ContentRepository(Helper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
         }
 
         public static URI getSchemaLocation() {
@@ -121,6 +124,8 @@ public class Helper {
     public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
 
     public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("simple/packaged/repository/");
+
+    public static final URI LARGE_XML = Paths.get("pom.xml").toUri();
 
     /**
      * Lädt ein XML-Dokument von der gegebenen URL
@@ -171,6 +176,6 @@ public class Helper {
     }
 
     public static Processor createProcessor() {
-        return ResolvingMode.STRICT_RELATIVE.getStrategy().getProcessor();
+        return ProcessorProvider.getProcessor();
     }
 }

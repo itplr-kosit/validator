@@ -16,6 +16,7 @@
 
 package de.kosit.validationtool.impl;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,20 +39,30 @@ import net.sf.saxon.s9api.XdmNode;
 
 public class ScenarioRepository {
 
-    private final Configuration configuration;
+    public static final String DEFAULT = "default";
 
-    public ScenarioRepository(final Configuration configuration) {
-        this.configuration = configuration;
-        log.info("Loaded scenarios for {} by {} from {}. The following scenarios are available:\n\n{}", configuration.getName(),
-                configuration.getAuthor(), configuration.getDate(), summarizeScenarios());
+    public static final String DEFAULT_ID = DEFAULT + "_1";
+
+    private final List<Configuration> configuration;
+
+    public ScenarioRepository(final Configuration... configuration) {
+        if (configuration.length == 0) {
+            throw new IllegalArgumentException("Must provide at least one configuration");
+        }
+        this.configuration = Arrays.asList(configuration);
+        this.configuration.forEach(v -> log.info("Loaded scenarios for {} by {} from {}.", v.getName(), v.getAuthor(), v.getDate()));
+        log.info("The following scenarios are available:\n{}", summarizeScenarios());
     }
 
     public Scenario getFallbackScenario() {
-        return this.configuration.getFallbackScenario();
+        if (this.configuration.size() > 1) {
+            log.warn("Multiple configurations found. Using fallback scenario from first configuration");
+        }
+        return this.configuration.get(0).getFallbackScenario();
     }
 
     public List<Scenario> getScenarios() {
-        return this.configuration.getScenarios();
+        return this.configuration.stream().flatMap(c -> c.getScenarios().stream()).collect(Collectors.toList());
     }
 
     private String summarizeScenarios() {

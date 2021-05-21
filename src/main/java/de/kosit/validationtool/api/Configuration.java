@@ -81,7 +81,7 @@ public interface Configuration {
      * Add some additional parameters to the validator configuration. Parameter usage depends on actual implementation
      * of {@link Check}
      *
-     * @return
+     * @return A Map containing the additional Parameters to be added.
      */
     Map<String, Object> getAdditionalParameters();
 

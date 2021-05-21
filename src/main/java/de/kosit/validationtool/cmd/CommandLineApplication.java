@@ -16,24 +16,18 @@
 
 package de.kosit.validationtool.cmd;
 
-import static de.kosit.validationtool.cmd.CommandLineOptions.HELP;
-import static de.kosit.validationtool.cmd.CommandLineOptions.createHelpOptions;
-import static de.kosit.validationtool.cmd.CommandLineOptions.createOptions;
-import static de.kosit.validationtool.cmd.CommandLineOptions.printHelp;
 import static de.kosit.validationtool.impl.Printer.writeErr;
 
-import java.util.Arrays;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.ObjectUtils;
+import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
 import de.kosit.validationtool.cmd.report.Line;
 import de.kosit.validationtool.impl.Printer;
+
+import picocli.CommandLine;
+import picocli.CommandLine.ParseResult;
 
 /**
  * Commandline interface of the validator. It parses the commandline args and hands over actual execution to
@@ -59,7 +53,9 @@ public class CommandLineApplication {
         AnsiConsole.systemInstall();
         final ReturnValue resultStatus = mainProgram(args);
         if (!resultStatus.equals(ReturnValue.DAEMON_MODE)) {
-            sayGoodby(resultStatus);
+            if (!resultStatus.equals(ReturnValue.HELP_REQUEST) && resultStatus.getCode() >= 0) {
+                sayGoodby(resultStatus);
+            }
             System.exit(resultStatus.getCode());
         } else {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> Printer.writeOut("Shutting down daemon ...")));
@@ -79,60 +75,37 @@ public class CommandLineApplication {
     // for testing purposes. Unless jvm is terminated during tests. See above
     static ReturnValue mainProgram(final String[] args) {
 
-        final Options options = createOptions();
         ReturnValue resultStatus;
+        final CommandLine commandLine = new CommandLine(new CommandLineOptions());
         try {
-            if (isHelpRequested(args)) {
-                printHelp(options);
-                resultStatus = ReturnValue.SUCCESS;
+            commandLine.setExecutionExceptionHandler(CommandLineApplication::logExecutionException);
+            commandLine.execute(args);
+            if (commandLine.isUsageHelpRequested()) {
+                resultStatus = ReturnValue.HELP_REQUEST;
             } else {
-                final CommandLineParser parser = new DefaultParser();
-                final CommandLine cmd = parser.parse(options, args);
-                configureLogging(cmd);
-                resultStatus = Validator.mainProgram(cmd);
+                resultStatus = ObjectUtils.defaultIfNull(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
+                if (resultStatus.getCode() != ReturnValue.PARSING_ERROR.getCode()
+                        && resultStatus.getCode() != ReturnValue.SUCCESS.getCode()) {
+                    commandLine.usage(System.out);
+                }
             }
-        } catch (final ParseException e) {
+
+        } catch (final Exception e) {
             writeErr("Error processing command line arguments: {0}", e.getMessage(), e);
-            printHelp(options);
             resultStatus = ReturnValue.PARSING_ERROR;
         }
         return resultStatus;
     }
 
-    private static boolean isHelpRequested(final String[] args) {
-        final Options helpOptions = createHelpOptions();
-        try {
-            final CommandLineParser parser = new DefaultParser();
-            final CommandLine cmd = parser.parse(helpOptions, args, true);
-            if (cmd.hasOption(HELP.getOpt()) || args.length == 0) {
-                return true;
-            }
-        } catch (final ParseException e) {
-            // we can ignore that, we just look for the help parameters
-        }
-        return false;
+    private static int logExecutionException(final Exception ex, final CommandLine cli, final ParseResult parseResult) {
+        Printer.writeErr(ex, ex.getMessage());
+        return 1;
     }
 
-    private static void configureLogging(final CommandLine cmd) throws ParseException {
-        if (cmd.hasOption(CommandLineOptions.DEBUG_LOG.getOpt())) {
-            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
-        } else if (cmd.hasOption(CommandLineOptions.LOG_LEVEL.getOpt())) {
-
-            final String level = Level.resolve(cmd.getOptionValue(CommandLineOptions.LOG_LEVEL.getOpt()));
-            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, level);
-        } else {
-            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "OFF");
-        }
-    }
-
-    private enum Level {
+    enum Level {
 
         INFO, WARN, DEBUG, TRACE, ERROR, OFF;
 
-        static String resolve(final String optionValue) throws ParseException {
-            return Arrays.stream(values()).filter(e -> e.name().equalsIgnoreCase(optionValue)).map(Enum::name).findFirst()
-                    .orElseThrow(() -> new ParseException("Either specify trace,debug,info,warn,error as log level"));
-        }
     }
 
 }

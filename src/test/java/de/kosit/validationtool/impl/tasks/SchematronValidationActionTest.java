@@ -33,7 +33,6 @@ import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.Scenario.Transformation;
-import de.kosit.validationtool.impl.xml.RelativeUriResolver;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 
 import net.sf.saxon.s9api.SaxonApiException;
@@ -51,7 +50,7 @@ public class SchematronValidationActionTest {
 
     @Before
     public void setup() {
-        this.action = new SchematronValidationAction(new RelativeUriResolver(Simple.REPOSITORY_URI), new ConversionService());
+        this.action = new SchematronValidationAction(new ConversionService());
     }
 
     @Test

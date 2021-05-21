@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.impl.ContentRepository;
+import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 
@@ -121,6 +122,7 @@ public class ComputeAcceptanceActionTest {
     }
 
     private static XPathExecutable createXpath(final String expression) {
-        return new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), null).createXPath(expression, new HashMap<>());
+        return new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null).createXPath(expression,
+                new HashMap<>());
     }
 }

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 
 import lombok.AllArgsConstructor;
@@ -27,9 +28,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
+import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XsltExecutable;
@@ -64,6 +67,12 @@ public class Scenario {
     private XPathExecutable matchExecutable;
 
     private XPathExecutable acceptExecutable;
+
+    private ResolvingConfigurationStrategy factory;
+
+    private URIResolver uriResolver;
+
+    private UnparsedTextURIResolver unparsedTextURIResolver;
 
     @Setter
     private List<Transformation> schematronValidations;

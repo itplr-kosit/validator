@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,12 +58,6 @@ public class ContentRepositoryTest {
     public void testCreateSchema() throws MalformedURLException {
         final Schema schema = this.repository.createSchema(Helper.ASSERTION_SCHEMA.toURL());
         assertThat(schema).isNotNull();
-    }
-
-    @Test
-    public void testSchemaCaching() {
-        final Schema schema = this.repository.getReportInputSchema();
-        assertThat(this.repository.getReportInputSchema()).isSameAs(schema);
     }
 
     @Test
@@ -112,36 +105,12 @@ public class ContentRepositoryTest {
     @Test
     public void loadFromJar() throws URISyntaxException {
         assert Helper.JAR_REPOSITORY != null;
-        this.repository = new ContentRepository(ResolvingMode.STRICT_RELATIVE.getStrategy(), Helper.JAR_REPOSITORY.toURI());
+        this.repository = new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
+                Helper.JAR_REPOSITORY.toURI());
         final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("report.xsl"));
         assertThat(xsltExecutable).isNotNull();
-    }
-
-    @Test
-    public void testLoadSchema() {
-        final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("loading/main.xsd");
-        assert main != null;
-        final Schema schema = this.repository.createSchema(main, new ClassPathResourceResolver("/loading"));
+        final Schema schema = this.repository.createSchema(URI.create("main.xsd"));
         assertThat(schema).isNotNull();
     }
-
-    @Test
-    public void testLoadSchemaPackaged() throws URISyntaxException {
-        final URL main = RelativeUriResolverTest.class.getClassLoader().getResource("packaged/main.xsd");
-        assert main != null;
-        final Schema schema = this.repository.createSchema(main,
-                new ClassPathResourceResolver(RelativeUriResolverTest.class.getClassLoader().getResource("packaged/").toURI()));
-        assertThat(schema).isNotNull();
-    }
-
-    // @Test
-    // public void loadFromJar() throws URISyntaxException {
-    // this.content = new ContentRepository(TestObjectFactory.createProcessor(), Helper.JAR_REPOSITORY.toURI());
-    // this.repository = new ScenarioRepository(this.content);
-    // final CheckConfiguration conf = new CheckConfiguration(
-    // ScenarioRepository.class.getClassLoader().getResource("xrechnung/scenarios.xml").toURI());
-    // ScenarioRepository.initialize(conf);
-    // assertThat(this.repository.getScenarios()).isNotNull();
-    // }
 
 }

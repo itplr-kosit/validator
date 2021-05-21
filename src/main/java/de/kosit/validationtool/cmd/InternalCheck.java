@@ -37,6 +37,8 @@ import de.kosit.validationtool.cmd.report.Line;
 import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
+import net.sf.saxon.s9api.Processor;
+
 /**
  * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszuwerten und auszugeben.
  * Diese Klasse stellt keine fachliche Erweiterung des eigentlichen Prüfvorganges dar!
@@ -55,8 +57,8 @@ class InternalCheck extends DefaultCheck {
      *
      * @param configuration die Konfiguration
      */
-    InternalCheck(final Configuration configuration) {
-        super(configuration);
+    InternalCheck(final Processor processor, final Configuration... configuration) {
+        super(processor, configuration);
     }
 
     /**

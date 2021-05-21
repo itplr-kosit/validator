@@ -68,8 +68,6 @@ public class ConfigurationBuilder {
 
     private ResolvingMode resolvingMode = ResolvingMode.STRICT_RELATIVE;
 
-    private Processor processor;
-
     private String author = "API";
 
     private String date = LocalDate.now().toString();
@@ -269,12 +267,9 @@ public class ConfigurationBuilder {
      * @return a valid configuration
      * @throws IllegalStateException when the configuration is not valid/complete
      */
-    public Configuration build() {
+    public Configuration build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
-        if (this.processor == null) {
-            this.processor = resolving.getProcessor();
-        }
-        final ContentRepository contentRepository = new ContentRepository(resolving, this.repository);
+        final ContentRepository contentRepository = new ContentRepository(processor, resolving, this.repository);
 
         final List<Scenario> list = initializeScenarios(contentRepository);
         final Scenario fallbackScenario = initializeFallback(contentRepository);

@@ -46,6 +46,9 @@ public class FallbackBuilder implements Builder<Scenario> {
             object.setCreateReport(build.getObject().getLeft());
             final Scenario s = new Scenario(object);
             s.setFallback(true);
+            s.setFactory(repository.getResolvingConfigurationStrategy());
+            s.setUriResolver(repository.getResolver());
+            s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
             s.setReportTransformation(build.getObject().getRight());
             result = new Result<>(s);
         } else {
