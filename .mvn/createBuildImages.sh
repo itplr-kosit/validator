@@ -8,8 +8,11 @@ do
   echo Creating build image for "$i"
   {
     echo "FROM maven:${i}"
+    echo "ADD * /src"
+    echo "WORKDIR /src"
+    echo "RUN mvn dependency:go-offline"
   } >>Dockerfile
   docker build -t "$CI_REGISTRY_IMAGE/maven:$i" .
-  docker push "$CI_REGISTRY_IMAGE/maven:${i}"
+#  docker push "$CI_REGISTRY_IMAGE/maven:${i}"
   rm Dockerfile
 done
