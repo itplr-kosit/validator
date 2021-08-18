@@ -8,7 +8,7 @@ do
   echo Creating build image for "$i"
   {
     echo "FROM maven:${i}"
-    echo "ADD * /src"
+    echo "ADD * /src/"
     echo "WORKDIR /src"
     echo "RUN mvn dependency:go-offline"
   } >>Dockerfile

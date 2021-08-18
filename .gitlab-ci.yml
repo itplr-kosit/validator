@@ -2,15 +2,10 @@ image: maven:latest
 
 variables:
   BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID "
-  MAVEN_CLI_OPTS: " --batch-mode -Dfile.encoding=UTF-8 -s .mvn/settings.xml -Dmaven.repo.local=.mvn/repository -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
+  MAVEN_CLI_OPTS: " --batch-mode -Dfile.encoding=UTF-8 -s .mvn/settings.xml -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
 
 before_script:
   - export CI_JOB_TIMESTAMP="-Dbuild.timestamp=$(date --utc --iso-8601=seconds)"
-
-cache:
-  key: maven
-  paths:
-    - .mvn/repository
 
 java-11:
   stage: build
