@@ -1,11 +1,18 @@
 image: maven:latest
 
 variables:
-  BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID "
-  MAVEN_CLI_OPTS: " --batch-mode -Dfile.encoding=UTF-8 -s .mvn/settings.xml -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
+  BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID -Dfile.encoding=UTF-8  -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  MAVEN_CLI_OPTS: " --batch-mode  --errors --fail-at-end --show-version -s .mvn/settings.xml"
 
 before_script:
   - export CI_JOB_TIMESTAMP="-Dbuild.timestamp=$(date --utc --iso-8601=seconds)"
+
+cache:
+  key: "$CI_JOB_NAME"
+  paths:
+    - .m2/repository
+
 
 java-11:
   stage: build
@@ -72,6 +79,8 @@ java-15:
   stage: build
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-15
   script:
+    - microdnf install libcgroup-tools
+    - cgget -n --values-only --variable memory.limit_in_bytes /
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
   retry: 2
   artifacts:
