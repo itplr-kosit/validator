@@ -4,7 +4,7 @@
     * [Third Party Validation Configurations](#third-party-validation-configurations)
 - [Usage](#usage)
     * [Standalone Command-Line Interface](#standalone-command-line-interface)
-    * [Application User Interface (API / embedded usage)](#application-user-interface--api---embedded-usage-)
+    * [Application User Interface (API / embedded usage)](#application-user-interface-api--embedded-usage)
     * [Daemon-Mode](#daemon-mode)
 - [Packages](#packages)
 
