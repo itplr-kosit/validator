@@ -122,6 +122,10 @@ The validation service can be integrated in monitoring solutions like `Icinga` o
 
 ## GUI
 
+| :warning: The GUI is just for Show Casing and not to be used in production environments |
+|---|
+
+
 The daemon provides a simple GUI when issuing `GET` requests providing the following:
  
  1. usage information 
