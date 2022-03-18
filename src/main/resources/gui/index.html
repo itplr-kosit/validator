@@ -40,10 +40,18 @@
 <body>
 <script type="text/javascript">
 
-
-  var validate = function () {
+  var validate = function validate() {
     const input = document.getElementById('file');
-    const output = document.getElementById('result');
+    const output_bad_status = document.getElementById('bad_status');
+    const output_good_status = document.getElementById('good_status');
+    const output_result = document.getElementById('result');
+    const download = document.getElementById('dwn-btn');
+
+    // Reset all variables
+    output_bad_status.innerText = "";
+    output_good_status.innerText = "";
+    download.disabled = true;
+    output_result.innerText = "";
 
     var headers = new Headers();
     headers.append('Content-Type', 'application/xml');
@@ -56,12 +64,45 @@
     };
 
     fetch('/', requestOptions)
-      .then(response => response.text())
-      .then(result => output.innerText = result)
-      .catch(error => output.innerText = result);
+      .then(response => {
+          let status = response.status + " " + response.statusText;
+          if(response.status === 200) {
+              output_good_status.innerText = status;
+          } else {
+              output_bad_status.innerText = status;
+          }
+          response.text().then(result => {
+              output_result.innerText = result;
+              download.disabled = false;
+          })
+          response.text().catch(error => output_result.innerText = error);
+      })
     return false;
   };
 
+  let download = function download() {
+    const result = document.getElementById('result');
+    const filename = "report.html";
+    const element = document.createElement('a');
+
+    // Check if there is a report to download
+    if(result.innerText !== "") {
+        // Extraction of HTML Result from div-box "result"
+        let html_result = new DOMParser().parseFromString(result.innerText, "text/html");
+        // Eliminate the abundance
+        html_result = html_result.documentElement.innerHTML.replace(/<rep:report (.+)><rep:explanation>/, "");
+
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(html_result));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+  };
 
 </script>
 
