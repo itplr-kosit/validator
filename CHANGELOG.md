@@ -14,7 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- [ResolvingConfigurationStrategy.java#getProcessor()](de/kosit/validationtool/api/ResolvingConfigurationStrategy) is removed.
+- [ResolvingConfigurationStrategy.java#getProcessor()](de/kosit/validationtool/api/ResolvingConfigurationStrategy) is
+  removed.
+- Bump [jaxb-ri](https://github.com/eclipse-ee4j/jaxb-ri) to 2.3.7
 - [INTERNAL] CLI parsing based on pico-cli, commons-cli is removed
 
 ## 1.4.2
@@ -22,7 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - [CLI] [#74](https://projekte.kosit.org/kosit/validator/-/issues/74) fix ansi output of the cli version
-- [#80](https://github.com/itplr-kosit/validator/issues/80) using classloader to initialize jaxb context (to support usage in OSGi
+- [#80](https://github.com/itplr-kosit/validator/issues/80) using classloader to initialize jaxb context (to support
+  usage in OSGi
   environments)
 - [#75] (https://github.com/itplr-kosit/validator/issues/75) Improve logging on invalid documents
 
