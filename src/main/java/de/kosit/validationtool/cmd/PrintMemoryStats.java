@@ -20,6 +20,10 @@ import java.text.NumberFormat;
 
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.impl.model.ProcessStepResult;
+import de.kosit.validationtool.impl.xvrl.XVRLReportBuilder;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
+
 /**
  *
  * Prints some memory usage information for debugging purposes.
@@ -29,21 +33,28 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class PrintMemoryStats implements de.kosit.validationtool.impl.tasks.CheckAction {
 
+    public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+
     private static final int BYTES_PER_K = 1024;
 
-    @Override
-    public void check(final Bag results) {
-        final Runtime runtime = Runtime.getRuntime();
-        long maxMemory = runtime.maxMemory();
-        long allocatedMemory = runtime.totalMemory();
-        long freeMemory = runtime.freeMemory();
+    private static XVRLReport createReport() {
+        return XVRLReportBuilder.builder("Document wellformedness Validator").name("Print Memory Stats").setValid().build();
+    }
 
-        NumberFormat format = NumberFormat.getInstance();
+    @Override
+    public ProcessStepResult<Boolean, String> check(final Process results) {
+        final Runtime runtime = Runtime.getRuntime();
+        final long maxMemory = runtime.maxMemory();
+        final long allocatedMemory = runtime.totalMemory();
+        final long freeMemory = runtime.freeMemory();
+
+        final NumberFormat format = NumberFormat.getInstance();
         final String freeStr = format.format(freeMemory / BYTES_PER_K);
         final String allocStr = format.format(allocatedMemory / BYTES_PER_K);
         final String maxStr = format.format(maxMemory / BYTES_PER_K);
         final String totalFreeStr = format.format((freeMemory + (maxMemory - allocatedMemory)) / BYTES_PER_K);
         log.info("free memory: {}MB; allocated memory: {}MB", freeStr, allocStr);
         log.info("max memory: {}MB; total free memory: {}MB", maxStr, totalFreeStr);
+        return Util.createResult(KEY, true, createReport());
     }
 }

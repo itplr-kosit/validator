@@ -55,7 +55,7 @@ public class CommandlineApplicationTest {
         this.commandLine = new CommandLine();
         CommandLine.activate();
         if (Files.exists(this.output)) {
-            FileUtils.deleteDirectory(this.output.toFile());
+            FileUtils.cleanDirectory(this.output.toFile());
         }
         TypeConverter.counter.clear();
     }
@@ -128,6 +128,14 @@ public class CommandlineApplicationTest {
     }
 
     @Test
+    public void testValidMultipleConfigurations() {
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS_WITH_MANY_CONFIGS).toString(), "-r",
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
+        CommandLineApplication.mainProgram(args);
+        assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+    }
+
+    @Test
     public void testValidNamingConfiguration() {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "somePrefix",
@@ -185,13 +193,23 @@ public class CommandlineApplicationTest {
     }
 
     @Test
-    public void testHtmlExtraktion() throws IOException {
-        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-h", "-o",
+    public void testExtraktion() throws IOException {
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-e", "-o",
                 this.output.toAbsolutePath().toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(Files.list(this.output).filter(f -> f.toString().endsWith(".html")).count()).isPositive();
+        assertThat(Files.list(this.output).filter(f -> f.toString().endsWith(".xml")).count()).isPositive();
+    }
+
+    @Test
+    public void testMultipleExtraktion() throws IOException {
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS_WITH_MANY_CONFIGS).toString(), "-e", "-o",
+                this.output.toAbsolutePath().toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
+                Paths.get(Simple.SIMPLE_VALID).toString() };
+        CommandLineApplication.mainProgram(args);
+        assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(Files.list(this.output).filter(f -> f.toString().endsWith(".xml")).count()).isPositive();
     }
 
     @Test

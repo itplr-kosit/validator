@@ -27,6 +27,9 @@ import javax.xml.validation.Schema;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.ContentRepository;
@@ -40,6 +43,8 @@ import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
  * @author Andreas Penski
  */
 @Slf4j
+@Getter(AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema>> {
 
     private static final String DEFAULT_NAME = "manually configured";
@@ -49,6 +54,14 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
     private URI schemaLocation;
 
     private String name;
+
+    private static Result<Pair<ValidateWithXmlSchema, Schema>, String> createError(final String msg) {
+        return new Result<>(null, Collections.singletonList(msg));
+    }
+
+    public static SchemaBuilder schema() {
+        return new SchemaBuilder();
+    }
 
     @Override
     public Result<Pair<ValidateWithXmlSchema, Schema>, String> build(final ContentRepository repository) {
@@ -76,10 +89,6 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
         r.setLocation(this.schemaLocation != null ? this.schemaLocation.toASCIIString() : "manuelly configured");
         o.getResource().add(r);
         return o;
-    }
-
-    private static Result<Pair<ValidateWithXmlSchema, Schema>, String> createError(final String msg) {
-        return new Result<>(null, Collections.singletonList(msg));
     }
 
     /**

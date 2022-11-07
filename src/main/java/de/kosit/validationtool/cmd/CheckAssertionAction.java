@@ -16,22 +16,31 @@
 
 package de.kosit.validationtool.cmd;
 
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.builder;
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.detection;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.cmd.assertions.AssertionType;
 import de.kosit.validationtool.cmd.assertions.Assertions;
+import de.kosit.validationtool.impl.ConversionService;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction;
+import de.kosit.validationtool.impl.tasks.XvrlSerializer;
+import de.kosit.validationtool.model.XMLSyntaxError;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -46,79 +55,119 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 @Slf4j
-@RequiredArgsConstructor
+
 class CheckAssertionAction implements CheckAction {
+
+    public static final Process.Key<Integer, XMLSyntaxError> KEY = new Process.Key<>(Integer.class, XMLSyntaxError.class);
+
+    private static final String REPORT_NAME = "Assertions Validator";
 
     private final Assertions assertions;
 
     @Getter(AccessLevel.PRIVATE)
     private final Processor processor;
 
+    private final XvrlSerializer xvrlSerializer;
+
     private Map<String, List<AssertionType>> mappedAssertions;
 
-    private static boolean matches(String key, String name) {
+    public CheckAssertionAction(final Assertions assertions, final Processor processor, final ConversionService conversionService) {
+        this.assertions = assertions;
+        this.processor = processor;
+        this.xvrlSerializer = new XvrlSerializer(conversionService, processor);
+    }
+
+    private static boolean matches(final String key, final String name) {
         return key.startsWith(name) || (name + ".xml").endsWith(key);
     }
 
+    private static XVRLReport generateXVRLReport(final Result<Integer, XMLSyntaxError> assertionResult) {
+        if (assertionResult.isValid()) {
+            return builder(REPORT_NAME).add(detection().addMessage("Assertion succesfully checked")).build();
+        }
+        return builder(REPORT_NAME).addAll(assertionResult.getErrors().stream().map(e -> detection().addError(e))).build();
+    }
+
     @Override
-    public void check(Bag results) {
+    public ProcessStepResult<Integer, XMLSyntaxError> check(final Process results) {
         log.info("Checking assertions for {}", results.getInput().getName());
+
+        final ProcessStepResult<Integer, XMLSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
+
         final List<AssertionType> toCheck = findAssertions(results.getName());
-        final List<String> errors = new ArrayList<>();
+        final List<XMLSyntaxError> errors = new ArrayList<>();
+        final Result<Integer, XMLSyntaxError> assertionResult;
         if (toCheck != null && !toCheck.isEmpty()) {
-            final XdmNode node = results.getReport();
-            toCheck.forEach(a -> {
-                if (!check(node, a)) {
-                    log.error("Assertion mismatch: {}", a.getValue());
-                    errors.add(a.getValue());
-                }
-            });
+            try {
+                final XdmNode report = this.xvrlSerializer.serialize(results.getXvrlReportSummary());
+                toCheck.forEach(e -> {
+                    final boolean result = check(report, e);
+                    if (!result) {
+                        log.error("Assertion mismatch: {}", e.getValue());
+                        final XMLSyntaxError error = new XMLSyntaxError();
+                        error.setMessage(e.getValue());
+                        errors.add(error);
+                    }
+                });
+
+            } catch (final SaxonApiException | JAXBException e) {
+                // TODO
+            }
             if (errors.isEmpty()) {
                 log.info("{} assertions successfully verified for {}", toCheck.size(), results.getName());
             } else {
                 log.warn("{} assertion of {} failed while checking {}", errors.size(), toCheck.size(), results.getName());
             }
-            results.setAssertionResult(new Result<>(toCheck.size(), errors));
+            assertionResult = new Result<>(toCheck.size(), errors);
+
         } else {
             log.warn("Can not find assertions for {}", results.getName());
+            final XMLSyntaxError error = new XMLSyntaxError();
+            error.setMessage(String.format("Can not find assertions for %s", results.getName()));
+            errors.add(error);
+            assertionResult = new Result<>(-1, errors);
         }
+        processStepResult.setResult(assertionResult);
+        processStepResult.setReport(generateXVRLReport(assertionResult));
+        return processStepResult;
     }
 
-    private List<AssertionType> findAssertions(String name) {
+    private List<AssertionType> findAssertions(final String name) {
         return getMapped().entrySet().stream().filter(e -> matches(e.getKey(), name)).map(Map.Entry::getValue).findFirst().orElse(null);
     }
 
-    private boolean check(XdmNode document, AssertionType assertion) {
+    private boolean check(final XdmNode document, final AssertionType assertion) {
         try {
             final XPathSelector selector = createSelector(assertion);
             selector.setContextItem(document);
             return selector.effectiveBooleanValue();
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             log.error("Error evaluating assertion {} for {}", assertion.getTest(), assertion.getReportDoc(), e);
         }
         return false;
 
     }
 
-    private XPathSelector createSelector(AssertionType assertion) throws SaxonApiException {
+    private XPathSelector createSelector(final AssertionType assertion) throws SaxonApiException {
         try {
             final XPathCompiler compiler = getProcessor().newXPathCompiler();
-            assertions.getNamespace().forEach(ns -> compiler.declareNamespace(ns.getPrefix(), ns.getValue()));
+            this.assertions.getNamespace().forEach(ns -> compiler.declareNamespace(ns.getPrefix(), ns.getValue()));
             return compiler.compile(assertion.getTest()).load();
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             throw new IllegalStateException(String.format("Can not compile xpath match expression '%s'",
                     StringUtils.isNotBlank(assertion.getTest()) ? assertion.getTest() : "EMPTY EXPRESSION"), e);
         }
     }
 
     private Map<String, List<AssertionType>> getMapped() {
-        if (mappedAssertions == null) {
-            mappedAssertions = new HashMap<>();
-            for (AssertionType assertionType : assertions.getAssertion()) {
-                List<AssertionType> list = mappedAssertions.computeIfAbsent(assertionType.getReportDoc(), k -> new ArrayList<>());
+        if (this.mappedAssertions == null) {
+            this.mappedAssertions = new HashMap<>();
+            for (final AssertionType assertionType : this.assertions.getAssertion()) {
+                final List<AssertionType> list = this.mappedAssertions.computeIfAbsent(assertionType.getReportDoc(),
+                        k -> new ArrayList<>());
                 list.add(assertionType);
             }
         }
-        return mappedAssertions;
+        return this.mappedAssertions;
     }
 }

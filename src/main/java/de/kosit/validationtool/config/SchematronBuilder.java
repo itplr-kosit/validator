@@ -25,6 +25,9 @@ import java.util.Collections;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.ContentRepository;
@@ -41,6 +44,8 @@ import net.sf.saxon.s9api.XsltExecutable;
  * @author Andreas Penski
  */
 @Slf4j
+@Getter(AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, Transformation>> {
 
     private static final String DEFAULT_NAME = "manually configured";
@@ -50,6 +55,10 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     private URI source;
 
     private String name;
+
+    private static Result<Pair<ValidateWithSchematron, Transformation>, String> createError(final String msg) {
+        return new Result<>(null, Collections.singletonList(msg));
+    }
 
     @Override
     public Result<Pair<ValidateWithSchematron, Transformation>, String> build(final ContentRepository repository) {
@@ -79,10 +88,6 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
         r.setName(isNotEmpty(this.name) ? this.name : DEFAULT_NAME);
         o.setResource(r);
         return o;
-    }
-
-    private static Result<Pair<ValidateWithSchematron, Transformation>, String> createError(final String msg) {
-        return new Result<>(null, Collections.singletonList(msg));
     }
 
     /**
@@ -127,6 +132,17 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
      */
     public SchematronBuilder name(final String name) {
         this.name = name;
+        return this;
+    }
+
+    /**
+     * Sets a specific pre-compiled exectutable as schematron source.
+     * 
+     * @param executable the executable
+     * @return this
+     */
+    public SchematronBuilder executable(final XsltExecutable executable) {
+        this.executable = executable;
         return this;
     }
 }

@@ -27,10 +27,12 @@ import org.junit.Test;
 
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.cmd.assertions.Assertions;
+import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-import de.kosit.validationtool.model.reportInput.CreateReportInput;
+import de.kosit.validationtool.impl.tasks.TestProcessBuilder;
+import de.kosit.validationtool.model.xvrl.XVRLMetadata;
 
 /**
  * Testet das Assertion-Feature.
@@ -45,29 +47,28 @@ public class CheckAssertionActionTest {
 
     private static final URL SAMPLE_ASSERTIONS = CheckAssertionActionTest.class.getResource("/examples/assertions/tests-xrechnung.xml");
 
-    private CommandLine commandLine;
-
     @Before
     public void setup() throws IOException {
-        this.commandLine = new CommandLine();
         CommandLine.activate();
     }
 
     @Test
     public void testEmptyInput() {
-        final CheckAssertionAction a = new CheckAssertionAction(new Assertions(), TestObjectFactory.createProcessor());
-        a.check(new CheckAction.Bag(InputFactory.read(SAMPLE), new CreateReportInput()));
+        final CheckAssertionAction a = new CheckAssertionAction(new Assertions(), TestObjectFactory.createProcessor(),
+                new ConversionService());
+        a.check(new CheckAction.Process(InputFactory.read(SAMPLE), new XVRLMetadata()));
         assertThat(CommandLine.getErrorOutput()).contains("Can not find assertions for");
     }
 
     @Test
     public void testSimple() throws URISyntaxException {
-        final CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(SAMPLE), new CreateReportInput());
-        bag.setReport(Helper.load(SAMPLE_REPORT));
+        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(SAMPLE)).setCreateReport(Helper.load(SAMPLE_REPORT))
+                .build();
 
+        assert SAMPLE_ASSERTIONS != null;
         final Assertions assertions = Helper.load(SAMPLE_ASSERTIONS, Assertions.class);
-        final CheckAssertionAction a = new CheckAssertionAction(assertions, TestObjectFactory.createProcessor());
-        a.check(bag);
+        final CheckAssertionAction a = new CheckAssertionAction(assertions, TestObjectFactory.createProcessor(), new ConversionService());
+        a.check(process);
 
         assertThat(CommandLine.getErrorOutput()).contains("Assertion mismatch");
     }

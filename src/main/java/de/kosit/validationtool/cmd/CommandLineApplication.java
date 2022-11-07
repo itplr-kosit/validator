@@ -20,7 +20,6 @@ import static de.kosit.validationtool.impl.Printer.writeErr;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.fusesource.jansi.AnsiConsole;
-import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
 import de.kosit.validationtool.cmd.report.Line;

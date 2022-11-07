@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<scenarios xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" frameworkVersion="2.1.0">
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/3/scenarios" frameworkVersion="3.1.0">
     <name>XInneres</name>
     <date>2017-08-08</date>
     <description>

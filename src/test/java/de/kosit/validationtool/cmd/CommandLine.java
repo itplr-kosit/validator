@@ -39,54 +39,6 @@ import lombok.Setter;
  */
 public class CommandLine {
 
-    /**
-     * Simpler Proxy für {@link OutputStream}, dessen target ausgetauscht werden kann.
-     *
-     * @param <O> Typ des eigentlichen {@link OutputStream}
-     */
-    private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
-
-        @Getter
-        @Setter
-        private O out;
-
-        @Override
-        public void write(final int idx) throws IOException {
-            if (this.out != null) {
-                this.out.write(idx);
-            }
-        }
-
-        @Override
-        public void write(final byte[] bts) throws IOException {
-            if (this.out != null) {
-                this.out.write(bts);
-            }
-        }
-
-        @Override
-        public void write(final byte[] bts, final int st, final int end) throws IOException {
-            if (this.out != null) {
-                this.out.write(bts, st, end);
-            }
-        }
-
-        @Override
-        public void flush() throws IOException {
-
-            if (this.out != null) {
-                this.out.flush();
-            }
-        }
-
-        @Override
-        public void close() throws IOException {
-            if (this.out != null) {
-                this.out.close();
-            }
-        }
-    }
-
     private static final ReplaceableOutputStream<ByteArrayOutputStream> out = new ReplaceableOutputStream<>();
 
     private static final ReplaceableOutputStream<ByteArrayOutputStream> error = new ReplaceableOutputStream<>();
@@ -149,6 +101,59 @@ public class CommandLine {
         out.setOut(null);
         error.setOut(null);
         setStandardInput(nullInputStream());
+    }
+
+    public static void clear() {
+        deactivate();
+        activate();
+    }
+
+    /**
+     * Simpler Proxy für {@link OutputStream}, dessen target ausgetauscht werden kann.
+     *
+     * @param <O> Typ des eigentlichen {@link OutputStream}
+     */
+    private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
+
+        @Getter
+        @Setter
+        private O out;
+
+        @Override
+        public void write(final int idx) throws IOException {
+            if (this.out != null) {
+                this.out.write(idx);
+            }
+        }
+
+        @Override
+        public void write(final byte[] bts) throws IOException {
+            if (this.out != null) {
+                this.out.write(bts);
+            }
+        }
+
+        @Override
+        public void write(final byte[] bts, final int st, final int end) throws IOException {
+            if (this.out != null) {
+                this.out.write(bts, st, end);
+            }
+        }
+
+        @Override
+        public void flush() throws IOException {
+
+            if (this.out != null) {
+                this.out.flush();
+            }
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (this.out != null) {
+                this.out.close();
+            }
+        }
     }
 
 }

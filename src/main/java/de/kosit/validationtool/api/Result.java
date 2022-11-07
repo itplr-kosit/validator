@@ -18,6 +18,7 @@ package de.kosit.validationtool.api;
 
 import java.util.List;
 
+import de.kosit.validationtool.model.xvrl.XVRLReportSummary;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
@@ -51,6 +52,8 @@ public interface Result {
      * Der generierte Report.
      */
     XdmNode getReport();
+
+    XVRLReportSummary getReportSummary();
 
     /**
      * The Recommendation based on the evaluation of this Result.

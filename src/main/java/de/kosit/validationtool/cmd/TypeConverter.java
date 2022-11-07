@@ -37,6 +37,9 @@ import picocli.CommandLine.ITypeConverter;
  */
 class TypeConverter {
 
+    private TypeConverter() {
+    }
+
     /**
      * Type converter for a repository definition specification e.g. '-r somelocation.xml OR -r myid=somelocation.xml'
      * 
@@ -63,7 +66,7 @@ class TypeConverter {
         }
     }
 
-    final static Map<Class<?>, AtomicInteger> counter = new HashMap<>();
+    static final Map<Class<?>, AtomicInteger> counter = new HashMap<>();
 
     private static String getDefaultName(final Class<?> type) {
         final AtomicInteger current = counter.computeIfAbsent(type, a -> new AtomicInteger(1));

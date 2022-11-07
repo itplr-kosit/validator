@@ -16,16 +16,24 @@
 
 package de.kosit.validationtool.cmd;
 
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.builder;
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.detection;
+
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.impl.ConversionService;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
+import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
+import de.kosit.validationtool.impl.tasks.CreateReportsAction;
+import de.kosit.validationtool.impl.xvrl.XVRLReportBuilder;
+import de.kosit.validationtool.model.xvrl.XVRLDetection;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
 
 /**
  * Schreibt das Prüfergebnis als XML-Dokument an eine definierte Stelle.
@@ -36,27 +44,44 @@ import net.sf.saxon.s9api.Serializer;
 @RequiredArgsConstructor
 class SerializeReportAction implements CheckAction {
 
+    public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+
+    private static final String REPORT_NAME = "Serialize Report";
+
     private final Path outputDirectory;
 
-    private final Processor processor;
+    private final ConversionService conversionService;
 
     private final NamingStrategy namingStrategy;
 
-    @Override
-    public void check(final Bag results) {
-        final Path file = this.outputDirectory.resolve(this.namingStrategy.createName(results.getName()));
-        try {
-            log.info("Serializing result to {}", file.toAbsolutePath());
-            final Serializer serializer = this.processor.newSerializer(file.toFile());
-            serializer.serializeNode(results.getReport());
-        } catch (final SaxonApiException e) {
-            log.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
+    private static XVRLReport generateXVRLReport(final Result<Boolean, String> result) {
+        if (result.isValid()) {
+            return builder(REPORT_NAME).add(detection().addMessage("Serialization successful").severity(XVRLDetection.Severity.INFO))
+                    .build();
         }
+        return XVRLReportBuilder.builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> detection().addError(e))).build();
     }
 
     @Override
-    public boolean isSkipped(final Bag results) {
-        if (results.getReport() == null) {
+    public ProcessStepResult<Boolean, String> check(final Process process) {
+        final Path file = this.outputDirectory.resolve(this.namingStrategy.createName(process.getName()));
+        try {
+            log.info("Serializing result to {}", file.toAbsolutePath());
+            final String xml = this.conversionService.writeXml(process.getXvrlReportSummary());
+            Files.write(file, xml.getBytes());
+        } catch (final IOException e) {
+            log.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
+        }
+        final ProcessStepResult<Boolean, String> processStepResult = new ProcessStepResult<>(KEY);
+        final Result<Boolean, String> stepResult = new Result<>();
+        processStepResult.setResult(stepResult);
+        processStepResult.setReport(generateXVRLReport(stepResult));
+        return processStepResult;
+    }
+
+    @Override
+    public boolean isSkipped(final Process results) {
+        if (results.getResult(CreateReportsAction.KEY) == null) {
             log.warn("Can not serialize result report. No document found");
             return true;
         }

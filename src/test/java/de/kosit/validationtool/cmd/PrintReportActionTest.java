@@ -18,8 +18,6 @@ package de.kosit.validationtool.cmd;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.MalformedURLException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +27,7 @@ import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
+import de.kosit.validationtool.impl.tasks.TestProcessBuilder;
 
 /**
  * @author Andreas Penski
@@ -52,9 +51,11 @@ public class PrintReportActionTest {
     }
 
     @Test
-    public void testSimpleSerialize() throws MalformedURLException {
-        final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(Simple.SIMPLE_VALID));
-        b.setReport(Helper.load(Simple.SIMPLE_VALID.toURL()));
+    public void testSimpleSerialize() {
+
+        final CheckAction.Process b = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID))
+                .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
+        CommandLine.clear();
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);
         assertThat(b.isStopped()).isFalse();

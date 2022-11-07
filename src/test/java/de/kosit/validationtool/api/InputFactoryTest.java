@@ -44,7 +44,7 @@ import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import de.kosit.validationtool.model.XMLSyntaxError;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.BuildingContentHandler;
@@ -75,8 +75,7 @@ public class InputFactoryTest {
         final byte[] s1 = drain(InputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
         final byte[] s2 = drain(InputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
         final byte[] s3 = drain(InputFactory.read(Simple.SCHEMA_INVALID.toURL())).getHashCode();
-        assertThat(s1).isNotEmpty();
-        assertThat(s1).isEqualTo(s2);
+        assertThat(s1).isNotEmpty().isEqualTo(s2);
         assertThat(s3).isNotEmpty();
         assertThat(s1).isNotEqualTo(s3);
     }
@@ -149,7 +148,7 @@ public class InputFactoryTest {
             assertThat(input.getSource()).isNotNull();
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
-            assertThat(input.getLength()).isGreaterThan(0L);
+            assertThat(input.getLength()).isPositive();
             this.expectedException.expect(IllegalStateException.class);
             input.getSource();
         }
@@ -163,7 +162,7 @@ public class InputFactoryTest {
             assertThat(input.getSource()).isNotNull();
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
-            assertThat(input.getLength()).isGreaterThan(0L);
+            assertThat(input.getLength()).isPositive();
             this.expectedException.expect(IllegalStateException.class);
             input.getSource();
         }

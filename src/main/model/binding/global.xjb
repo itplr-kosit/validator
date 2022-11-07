@@ -20,21 +20,26 @@
         xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
         xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         xmlns:inheritance="http://jaxb2-commons.dev.java.net/basic/inheritance"
-        jaxb:extensionBindingPrefixes="inheritance"
+        xmlns:simplify="http://jaxb2-commons.dev.java.net/basic/simplify"
+        jaxb:extensionBindingPrefixes="inheritance simplify"
         version="2.1">
     <jaxb:globalBindings>
-        <xjc:serializable uid="-1" />
+        <xjc:serializable uid="-1"/>
         <xjc:javaType
                 name="java.lang.String"
                 xmlType="xs:string"
-                adapter="de.kosit.validationtool.impl.xml.StringTrimAdapter" />
 
+                adapter="de.kosit.validationtool.impl.xml.StringTrimAdapter"/>
+
+        <xjc:javaType
+                name="java.lang.Long"
+                xmlType="xs:integer" adapter="de.kosit.validationtool.impl.xml.LongAdapter"/>
     </jaxb:globalBindings>
 
 
-    <jaxb:bindings schemaLocation="../xsd/createReportInput.xsd">
+    <jaxb:bindings schemaLocation="../xsd/model.xsd">
         <jaxb:schemaBindings>
-            <jaxb:package name="de.kosit.validationtool.model.reportInput"/>
+            <jaxb:package name="de.kosit.validationtool.model"/>
         </jaxb:schemaBindings>
         <jaxb:bindings node="//xs:complexType[@name='XMLSyntaxError']">
             <inheritance:extends>de.kosit.validationtool.impl.model.BaseXMLSyntaxError</inheritance:extends>
@@ -59,6 +64,58 @@
         <jaxb:schemaBindings>
             <jaxb:package name="de.kosit.validationtool.model.daemon" />
         </jaxb:schemaBindings>
+    </jaxb:bindings>
+    <jaxb:bindings schemaLocation="../xsd/xvrl.xsd">
+
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.kosit.validationtool.model.xvrl"/>
+        </jaxb:schemaBindings>
+
+
+        <jaxb:bindings node="//xs:element[@name='reportSummary']">
+            <jaxb:class name="XVRLReportSummary"/>
+
+            <inheritance:implements>de.kosit.validationtool.impl.xvrl.BaseReportSummary</inheritance:implements>
+
+            <simplify:property name="reportOrReportSummaryOrDigest">
+                <simplify:as-element-property/>
+            </simplify:property>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:element[@name='report']">
+            <jaxb:class name="XVRLReport"/>
+            <inheritance:extends>de.kosit.validationtool.impl.xvrl.BaseReport</inheritance:extends>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:element[@name='detection']">
+            <jaxb:class name="XVRLDetection"/>
+            <inheritance:implements>de.kosit.validationtool.impl.xvrl.BaseDetection</inheritance:implements>
+
+            <simplify:property name="locationOrProvenanceOrTitle">
+                <simplify:as-element-property/>
+            </simplify:property>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:element[@name='metadata']">
+            <jaxb:class name="XVRLMetadata"/>
+
+            <simplify:property name="timestampOrValidatorOrCreator">
+                <simplify:as-element-property/>
+            </simplify:property>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:element[@name='digest']">
+            <jaxb:class name="XVRLDigest"/>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:element[@name='message']">
+            <jaxb:class name="XVRLMessage"/>
+            <inheritance:implements>de.kosit.validationtool.impl.xvrl.BaseMessage</inheritance:implements>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:attribute[@name='severity']/xs:simpleType">
+            <jaxb:typesafeEnumClass name="Severity" />
+        </jaxb:bindings>
     </jaxb:bindings>
 
 </jaxb:bindings>

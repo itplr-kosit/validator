@@ -91,6 +91,6 @@ public class EngineInformation {
      * @return die Major-Versions-Nummer
      */
     public static String getFrameworkNamespace() {
-        return "http://www.xoev.de/de/validator/framework/" + getFrameworkMajorVersion() + "/createreportinput";
+        return "http://www.xoev.de/de/validator/framework/" + getFrameworkMajorVersion() + "/xvrl";
     }
 }

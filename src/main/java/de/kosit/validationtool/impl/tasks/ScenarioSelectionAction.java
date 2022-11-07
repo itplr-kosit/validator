@@ -16,13 +16,20 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.detection;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.impl.ActionMetadata;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.ScenarioRepository;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.model.reportInput.CreateReportInput;
+import de.kosit.validationtool.impl.xvrl.XVRLReportBuilder;
+import de.kosit.validationtool.model.XMLSyntaxError;
+import de.kosit.validationtool.model.xvrl.XVRLDetection;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
 
 import net.sf.saxon.s9api.XdmNode;
 
@@ -36,25 +43,46 @@ import net.sf.saxon.s9api.XdmNode;
 @Slf4j
 public class ScenarioSelectionAction implements CheckAction {
 
+    public static final Process.Key<Scenario, String> KEY = new Process.Key<>(Scenario.class, String.class);
+
+    public static final ActionMetadata METADATA = new ActionMetadata("Scenario Selection", "scenario_selection");
+
     private final ScenarioRepository repository;
 
+    private static XVRLReport generateXVRLReport(final Result<Scenario, String> scenarioTypeResult, final String name) {
+        final XVRLReportBuilder builder = XVRLReportBuilder.builder(METADATA);
+        if (scenarioTypeResult.getObject().isFallback()) {
+            builder.add(detection().addError(String.format("No valid scenario configuration found for '%s'", name)).code("fallback-match"));
+        } else {
+            builder.add(detection()
+                    .addMessage(String.format("Scenario '%s' identified for '%s'", scenarioTypeResult.getObject().getName(), name))
+                    .severity(XVRLDetection.Severity.INFO).code("scenario-matched"));
+            builder.add(detection().id("scenario").code(scenarioTypeResult.getObject().getName()));
+        }
+
+        return builder.build();
+    }
+
     @Override
-    public void check(final Bag results) {
-        final CreateReportInput report = results.getReportInput();
+    public ProcessStepResult<Scenario, String> check(final Process results) {
         final Result<Scenario, String> scenarioTypeResult;
 
-        if (results.getParserResult().isValid()) {
-            scenarioTypeResult = determineScenario(results.getParserResult().getObject());
+        final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseAction.KEY);
+        if (parseResult.isValid()) {
+            scenarioTypeResult = determineScenario(parseResult.getObject());
         } else {
             scenarioTypeResult = new Result<>(this.repository.getFallbackScenario());
         }
-        results.setScenarioSelectionResult(scenarioTypeResult);
         if (!scenarioTypeResult.getObject().isFallback()) {
-            report.setScenario(scenarioTypeResult.getObject().getConfiguration());
-            log.info("Scenario {} identified for {}", scenarioTypeResult.getObject().getName(), results.getInput().getName());
+            log.info("Scenario '{}' identified for '{}'", scenarioTypeResult.getObject().getName(), results.getInput().getName());
         } else {
-            log.info("No valid scenario configuration found for {}", results.getInput().getName());
+            log.info("No valid scenario configuration found for '{}'", results.getInput().getName());
         }
+
+        final ProcessStepResult<Scenario, String> result = new ProcessStepResult<>(ScenarioSelectionAction.KEY);
+        result.setResult(scenarioTypeResult);
+        result.setReport(generateXVRLReport(scenarioTypeResult, results.getInput().getName()));
+        return result;
     }
 
     private Result<Scenario, String> determineScenario(final XdmNode document) {

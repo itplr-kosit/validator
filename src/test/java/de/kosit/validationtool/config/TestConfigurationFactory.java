@@ -47,8 +47,7 @@ public class TestConfigurationFactory {
     public static ScenarioBuilder createScenario() {
         return scenario("simple").validate(schema("Sample Schema").schemaLocation(URI.create("simple.xsd")))
                 .with(report("Report für eRechnung").source("report.xsl")).acceptWith("count(//test:rejected) = 0")
-                .declareNamespace("cri", "http://www.xoev.de/de/validator/framework/1/createreportinput")
-                .declareNamespace("rpt", "http://validator.kosit.de/test-report")
+                .declareNamespace("xvrl", "http://www.xproc.org/ns/xvrl").declareNamespace("rpt", "http://validator.kosit.de/test-report")
                 .declareNamespace("test", "http://validator.kosit.de/test-sample").match("/test:simple");
     }
 }

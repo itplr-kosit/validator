@@ -28,25 +28,28 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.api.XmlError;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
+import de.kosit.validationtool.impl.tasks.CheckAction.Process;
 import de.kosit.validationtool.impl.tasks.ComputeAcceptanceAction;
 import de.kosit.validationtool.impl.tasks.CreateDocumentIdentificationAction;
-import de.kosit.validationtool.impl.tasks.CreateReportAction;
+import de.kosit.validationtool.impl.tasks.CreateReportsAction;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.tasks.ScenarioSelectionAction;
 import de.kosit.validationtool.impl.tasks.SchemaValidationAction;
 import de.kosit.validationtool.impl.tasks.SchematronValidationAction;
-import de.kosit.validationtool.impl.tasks.ValidateReportInputAction;
 import de.kosit.validationtool.impl.xml.ProcessorProvider;
-import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import de.kosit.validationtool.model.reportInput.EngineType;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import de.kosit.validationtool.model.ValidationResultsSchematron;
+import de.kosit.validationtool.model.XMLSyntaxError;
+import de.kosit.validationtool.model.xvrl.Timestamp;
+import de.kosit.validationtool.model.xvrl.Validator;
+import de.kosit.validationtool.model.xvrl.XVRLMetadata;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -91,19 +94,55 @@ public class DefaultCheck implements Check {
         this.checkSteps.add(new ScenarioSelectionAction(new ScenarioRepository(configuration)));
         this.checkSteps.add(new SchemaValidationAction(processor));
         this.checkSteps.add(new SchematronValidationAction(this.conversionService));
-        this.checkSteps.add(new ValidateReportInputAction(this.conversionService, SchemaProvider.getReportInputSchema()));
-        this.checkSteps.add(new CreateReportAction(processor, this.conversionService));
+        this.checkSteps.add(new CreateReportsAction(processor, this.conversionService));
         this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
-    protected static CreateReportInput createReport() {
-        final CreateReportInput type = new CreateReportInput();
-        final EngineType e = new EngineType();
-        e.setName(EngineInformation.getName() + " " + EngineInformation.getVersion());
-        type.setEngine(e);
-        type.setTimestamp(createTimestamp());
-        type.setFrameworkVersion(EngineInformation.getFrameworkVersion());
-        return type;
+    protected static XVRLMetadata createXVRLMetadata() {
+        final XVRLMetadata metadata = new XVRLMetadata();
+
+        final Timestamp timestamp = new Timestamp();
+        timestamp.setValue(createTimestamp());
+        metadata.getTimestamps().add(timestamp);
+
+        final Validator validator = new Validator();
+        validator.setName(EngineInformation.getName());
+        validator.setVersion(EngineInformation.getVersion());
+        metadata.getValidators().add(validator);
+
+        return metadata;
+    }
+
+    private static List<XmlError> convertErrors(final Collection<XMLSyntaxError> errors) {
+        // noinspection unchecked
+        return (List<XmlError>) (List<?>) errors;
+    }
+
+    private static Result createResult(final Process process) {
+
+        final de.kosit.validationtool.impl.model.Result<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
+                .getResult(ComputeAcceptanceAction.KEY);
+        final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
+
+        defaultResult.setWellformed(process.getResult(DocumentParseAction.KEY).isValid());
+
+        defaultResult.setReportSummary(process.getXvrlReportSummary());
+
+        final de.kosit.validationtool.impl.model.Result<Boolean, XMLSyntaxError> schemaValidationResult = process
+                .getResult(SchemaValidationAction.KEY);
+        if (schemaValidationResult != null) {
+            defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
+        }
+
+        final de.kosit.validationtool.impl.model.Result<List<ValidationResultsSchematron>, String> schematronValidationResult = process
+                .getResult(SchematronValidationAction.KEY);
+        if (schematronValidationResult != null) {
+            defaultResult.setSchematronResult(schematronValidationResult.getObject().stream()
+                    .map(schematronResult -> schematronResult.getResults().getSchematronOutput()).collect(Collectors.toList()));
+        }
+        defaultResult.setProcessingSuccessful(!process.isStopped() && process.isFinished());
+
+        return defaultResult;
     }
 
     protected boolean isSuccessful(final Map<String, Result> results) {
@@ -112,41 +151,23 @@ public class DefaultCheck implements Check {
 
     @Override
     public Result checkInput(final Input input) {
-        final CheckAction.Bag t = new CheckAction.Bag(input, createReport());
-        return runCheckInternal(t);
+        final Process checkProcess = new Process(input, createXVRLMetadata());
+        return runCheckInternal(checkProcess);
     }
 
-    protected Result runCheckInternal(final CheckAction.Bag t) {
+    protected Result runCheckInternal(final Process checkProcess) {
         final long started = System.currentTimeMillis();
-        log.info("Checking content of {}", t.getInput().getName());
+        log.info("Checking content of {}", checkProcess.getInput().getName());
         for (final CheckAction action : this.checkSteps) {
             final long start = System.currentTimeMillis();
-            if (!action.isSkipped(t)) {
-                action.check(t);
+            if (!action.isSkipped(checkProcess)) {
+                final ProcessStepResult result = action.check(checkProcess);
+                checkProcess.addStepResult(result);
             }
             log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
         }
-        t.setFinished(true);
-        log.info("Finished check of {} in {}ms\n", t.getInput().getName(), System.currentTimeMillis() - started);
-        return createResult(t);
+        checkProcess.setFinished(true);
+        log.info("Finished check of {} in {}ms\n", checkProcess.getInput().getName(), System.currentTimeMillis() - started);
+        return createResult(checkProcess);
     }
-
-    private Result createResult(final Bag t) {
-        final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), new HtmlExtractor(this.processor));
-        result.setWellformed(t.getParserResult().isValid());
-        result.setReportInput(t.getReportInput());
-        if (t.getSchemaValidationResult() != null) {
-            result.setSchemaViolations(convertErrors(t.getSchemaValidationResult().getErrors()));
-        }
-        result.setProcessingSuccessful(!t.isStopped() && t.isFinished());
-        result.setSchematronResult(t.getReportInput().getValidationResultsSchematron().stream().filter(e -> e.getResults() != null)
-                .map(e -> e.getResults().getSchematronOutput()).collect(Collectors.toList()));
-        return result;
-    }
-
-    private static List<XmlError> convertErrors(final Collection<XMLSyntaxError> errors) {
-        // noinspection unchecked
-        return (List<XmlError>) (List<?>) errors;
-    }
-
 }

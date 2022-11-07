@@ -122,8 +122,7 @@ public class ScenarioRepositoryTest {
         second.setFallbackScenario(createFallback());
         this.repository = new ScenarioRepository(first, second);
         final Scenario fallback = this.repository.getFallbackScenario();
-        assertThat(fallback).isSameAs(first.getFallbackScenario());
-        assertThat(fallback).isNotSameAs(second.getFallbackScenario());
+        assertThat(fallback).isSameAs(first.getFallbackScenario()).isNotSameAs(second.getFallbackScenario());
     }
 
     private XdmNode load(final URI uri) throws IOException {

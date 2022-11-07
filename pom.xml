@@ -148,7 +148,7 @@
         <dependency>
             <groupId>de.kosit.validationtool</groupId>
             <artifactId>packaged-test-scenarios</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
             <scope>test</scope>
         </dependency>
 
@@ -334,6 +334,8 @@
                     <packageLevelAnnotations>false</packageLevelAnnotations>
                     <args>
                         <arg>-Xinheritance</arg>
+                        <arg>-Xsimplify</arg>
+                        <arg>-Xsimplify-usePluralForm=true</arg>
                     </args>
                     <plugins>
                         <plugin>

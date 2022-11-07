@@ -53,7 +53,7 @@ public class StreamHelperTest {
         final String myContent = "SomeBytes";
         try ( final InputStream in = new MyLazyStream(new ByteArrayInputStream(myContent.getBytes())) ) {
             final BufferedInputStream peekable = StreamHelper.wrapPeekable(in);
-            assertThat(peekable.available()).isGreaterThan(0);
+            assertThat(peekable.available()).isPositive();
             final String read = IOUtils.toString(peekable, Charset.defaultCharset());
             assertThat(read).isEqualTo(myContent);
         }

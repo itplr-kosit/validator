@@ -16,17 +16,18 @@
   -->
 
 <!-- $Id$ -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios" targetNamespace="http://www.xoev.de/de/validator/framework/1/scenarios" version="1.1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="http://www.xoev.de/de/validator/framework/2/scenarios"
+           targetNamespace="http://www.xoev.de/de/validator/framework/2/scenarios" version="2.0.0"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
 
     <xs:element name="scenarios">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="name" type="xs:token" />
-                <xs:element minOccurs="0" name="author" type="xs:token" />
-                <xs:element name="date" type="xs:date" />
-                <xs:element name="description" type="s:DescriptionType" />
-                <xs:element ref="s:scenario" minOccurs="1" maxOccurs="unbounded" />
-                <xs:element name="noScenarioReport" type="s:NoScenarioReportType" />
+                <xs:element name="name" type="xs:token"/>
+                <xs:element minOccurs="0" name="author" type="xs:token"/>
+                <xs:element name="date" type="xs:date"/>
+                <xs:element name="description" type="s:DescriptionType"/>
+                <xs:element ref="s:scenario" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="frameworkVersion" type="xs:string" use="required" />
         </xs:complexType>
@@ -34,11 +35,6 @@
 
     <xs:element name="scenario" type="s:ScenarioType" />
 
-    <xs:complexType name="NoScenarioReportType">
-        <xs:sequence>
-            <xs:element ref="s:resource" />
-        </xs:sequence>
-    </xs:complexType>
 
     <xs:complexType name="DescriptionType">
         <xs:choice maxOccurs="unbounded">
@@ -81,7 +77,7 @@
             <xs:element name="match" type="xs:string" />
             <xs:element name="validateWithXmlSchema" type="s:ValidateWithXmlSchema" />
             <xs:element name="validateWithSchematron" maxOccurs="unbounded" minOccurs="0" type="s:ValidateWithSchematron" />
-            <xs:element name="createReport" type="s:CreateReportType" />
+            <xs:element name="createReport" type="s:CreateReportType" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="acceptMatch" type="xs:string" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>
@@ -125,6 +121,7 @@
 
     <xs:complexType name="CreateReportType">
         <xs:sequence>
+            <xs:element name="id" type="xs:string" />
             <xs:element ref="s:resource" />
             <xs:element maxOccurs="unbounded" minOccurs="0" name="customLevel" type="s:CustomErrorLevel" />
         </xs:sequence>
