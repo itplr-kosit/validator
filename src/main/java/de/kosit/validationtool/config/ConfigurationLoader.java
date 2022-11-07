@@ -45,8 +45,7 @@ import de.kosit.validationtool.impl.SchemaProvider;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.xml.RelativeUriResolver;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-import de.kosit.validationtool.model.scenarios.ResourceType;
+import de.kosit.validationtool.model.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.Scenarios;
 
@@ -65,9 +64,11 @@ import net.sf.saxon.s9api.XdmNodeKind;
 @Slf4j
 public class ConfigurationLoader {
 
-    private static final String SUPPORTED_MAJOR_VERSION = "1";
+    private static final String SUPPORTED_MAJOR_VERSION = "2";
 
-    private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = "http://www.xoev.de/de/validator/framework/1/scenarios";
+    private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = "http://www.xoev.de/de/validator/framework/2/scenarios";
+
+    protected final Map<String, Object> parameters = new HashMap<>();
 
     /**
      * URL, die auf die scenerio.xml Datei zeigt.
@@ -83,16 +84,6 @@ public class ConfigurationLoader {
     protected ResolvingMode resolvingMode = ResolvingMode.STRICT_RELATIVE;
 
     protected ResolvingConfigurationStrategy resolvingConfigurationStrategy;
-
-    protected final Map<String, Object> parameters = new HashMap<>();
-
-    URI getScenarioRepository() {
-        if (this.scenarioRepository == null) {
-            log.info("Creating default scenario repository (alongside scenario definition)");
-            return RelativeUriResolver.resolve(URI.create("."), this.scenarioDefinition);
-        }
-        return this.scenarioRepository;
-    }
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
@@ -126,10 +117,36 @@ public class ConfigurationLoader {
     }
 
     private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {
-        final ResourceType noscenarioResource = scenarios.getNoScenarioReport().getResource();
-        return new FallbackBuilder().source(noscenarioResource.getLocation()).name(noscenarioResource.getName()).build(repository)
-                .getObject();
+        log.info("create Fallback: ");
+        return new FallbackBuilder().build(repository).getObject();
 
+    }
+
+    private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
+        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).collect(Collectors.toList());
+    }
+
+    private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
+        final Scenario s = new Scenario(def);
+        s.setMatchExecutable(repository.createMatchExecutable(def));
+        s.setSchema(repository.createSchema(def));
+        s.setSchematronValidations(repository.createSchematronTransformations(def));
+        s.setReportTransformations(repository.createReportTransformations(def));
+        s.setFactory(repository.getResolvingConfigurationStrategy());
+        s.setUriResolver(repository.getResolver());
+        s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
+        if (def.getAcceptMatch() != null) {
+            s.setAcceptExecutable(repository.createAccepptExecutable(def));
+        }
+        return s;
+    }
+
+    URI getScenarioRepository() {
+        if (this.scenarioRepository == null) {
+            log.info("Creating default scenario repository (alongside scenario definition)");
+            return RelativeUriResolver.resolve(URI.create("."), this.scenarioDefinition);
+        }
+        return this.scenarioRepository;
     }
 
     public Configuration build(final Processor processor) {
@@ -148,10 +165,6 @@ public class ConfigurationLoader {
         configuration.getAdditionalParameters().put(Keys.SCENARIOS_FILE, this.scenarioDefinition);
         configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, def);
         return (configuration);
-    }
-
-    private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
-        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).collect(Collectors.toList());
     }
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
@@ -177,21 +190,6 @@ public class ConfigurationLoader {
         }
         return scenarios;
 
-    }
-
-    private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
-        final Scenario s = new Scenario(def);
-        s.setMatchExecutable(repository.createMatchExecutable(def));
-        s.setSchema(repository.createSchema(def));
-        s.setSchematronValidations(repository.createSchematronTransformations(def));
-        s.setReportTransformation(repository.createReportTransformation(def));
-        s.setFactory(repository.getResolvingConfigurationStrategy());
-        s.setUriResolver(repository.getResolver());
-        s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
-        if (def.getAcceptMatch() != null) {
-            s.setAcceptExecutable(repository.createAccepptExecutable(def));
-        }
-        return s;
     }
 
     /**

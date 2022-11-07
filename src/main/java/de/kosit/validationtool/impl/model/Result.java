@@ -16,7 +16,6 @@
 
 package de.kosit.validationtool.impl.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -37,14 +36,14 @@ public class Result<T, E> {
 
     private T object;
 
-    private Collection<E> errors = new ArrayList<>();
+    private Collection<E> errors;
 
     /**
      * Erzeugt ein neues Ergebnis mit Fehler
      * 
      * @param errors die Fehler
      */
-    public Result(Collection<E> errors) {
+    public Result(final Collection<E> errors) {
         this(null, errors);
     }
 
@@ -53,7 +52,7 @@ public class Result<T, E> {
      * 
      * @param o
      */
-    public Result(T o) {
+    public Result(final T o) {
         this(o, Collections.emptyList());
     }
 
@@ -63,7 +62,11 @@ public class Result<T, E> {
      * @return true wenn erfolgreich
      */
     public boolean isValid() {
-        return object != null && errors.isEmpty();
+        return this.object != null && getErrors().isEmpty();
+    }
+
+    public Collection<E> getErrors() {
+        return this.errors == null ? Collections.emptyList() : this.errors;
     }
 
     /**

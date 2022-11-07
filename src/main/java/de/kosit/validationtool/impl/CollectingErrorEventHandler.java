@@ -32,8 +32,8 @@ import org.xml.sax.SAXParseException;
 
 import lombok.Getter;
 
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
+import de.kosit.validationtool.model.XMLSyntaxError;
+import de.kosit.validationtool.model.XMLSyntaxErrorSeverity;
 
 import net.sf.saxon.s9api.MessageListener;
 import net.sf.saxon.s9api.XdmNode;
@@ -48,7 +48,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static final int DEFAULT_ABORT_COUNT = 50;
 
-    private static final int stopProcessCount = DEFAULT_ABORT_COUNT;
+    private static final int STOP_PROCESS_COUNT = DEFAULT_ABORT_COUNT;
 
     private final Collection<XMLSyntaxError> errors = new ArrayList<>();
 
@@ -94,7 +94,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         e.setColumnNumber(event.getLocator().getColumnNumber());
         e.setRowNumber(event.getLocator().getLineNumber());
         this.errors.add(e);
-        return stopProcessCount != this.errors.size();
+        return STOP_PROCESS_COUNT != this.errors.size();
     }
 
     /**
@@ -139,6 +139,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         }
         e.setMessage("Error procesing" + content.getStringValue());
         e.setSeverityCode(terminate ? XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR : XMLSyntaxErrorSeverity.SEVERITY_WARNING);
+        this.errors.add(e);
     }
 
     @Override

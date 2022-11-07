@@ -16,6 +16,8 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.detection;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,6 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -41,10 +45,13 @@ import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.input.AbstractInput;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import de.kosit.validationtool.model.reportInput.ValidationResultsXmlSchema;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import de.kosit.validationtool.impl.tasks.CheckAction.Process.Key;
+import de.kosit.validationtool.impl.xvrl.XVRLReportBuilder;
+import de.kosit.validationtool.model.ValidationResultsXmlSchema;
+import de.kosit.validationtool.model.XMLSyntaxError;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -68,12 +75,122 @@ import net.sf.saxon.s9api.XdmNode;
 @RequiredArgsConstructor
 public class SchemaValidationAction implements CheckAction {
 
+    public static final Key<Boolean, XMLSyntaxError> KEY = new Key<>(Boolean.class, XMLSyntaxError.class);
+
+    private static final Long BA_LIMIT = 10L;
+
+    private static final String LIMIT_PARAMETER = "schema.validation.inmem.limit";
+
+    private final Processor processor;
+
+    @Setter(AccessLevel.PACKAGE)
+    @Getter
+    private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
+
+    private static XVRLReport generateXVRLReport(final ValidationResultsXmlSchema result) {
+        final XVRLReportBuilder builder = XVRLReportBuilder.builder("Schema Validator").addSchemas(result.getResource());
+        builder.addAll(result.getXmlSyntaxError().stream().map(e -> detection().addError(e)).collect(Collectors.toList()));
+        return builder.build();
+    }
+
+    private static boolean hasNoSchema(final Process results) {
+        final Result<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionAction.KEY);
+        return scenarioSelection == null || scenarioSelection.getObject().getSchema() == null;
+    }
+
+    private Result<Boolean, XMLSyntaxError> validate(final Process process, final Scenario scenario) {
+        log.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
+        final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
+        try ( final SourceProvider validateInput = resolveSource(process) ) {
+
+            final Validator validator = scenario.getFactory().createValidator(scenario.getSchema());
+            validator.setErrorHandler(errorHandler);
+            validator.validate(validateInput.getSource());
+            return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
+        } catch (final SAXException | SaxonApiException | IOException e) {
+            final String msg = String.format("Error processing schema validation for scenario %s", scenario.getConfiguration().getName());
+            log.error(msg, e);
+            process.setStopped(true);
+            final XMLSyntaxError error = new XMLSyntaxError();
+            error.setMessage(msg);
+            return new Result<>(Boolean.FALSE, Collections.singletonList(error));
+        }
+    }
+
+    @Override
+    public ProcessStepResult<Boolean, XMLSyntaxError> check(final Process results) {
+        final Result<Scenario, String> scenarioResult = results.getResult(ScenarioSelectionAction.KEY);
+        final ProcessStepResult<Boolean, XMLSyntaxError> stepResult = new ProcessStepResult<>(KEY);
+        final Result<Boolean, XMLSyntaxError> validateResult = validate(results, scenarioResult.getObject());
+        stepResult.setResult(validateResult);
+        final ValidationResultsXmlSchema result = new ValidationResultsXmlSchema();
+        result.getResource().addAll(scenarioResult.getObject().getConfiguration().getValidateWithXmlSchema().getResource());
+        if (!validateResult.isValid()) {
+            result.getXmlSyntaxError().addAll(validateResult.getErrors());
+        }
+        stepResult.setReport(generateXVRLReport(result));
+        return stepResult;
+    }
+
+    private SourceProvider resolveSource(final Process results) throws IOException, SaxonApiException {
+        final SourceProvider source;
+        if (results.getInput() instanceof AbstractInput && (((AbstractInput) results.getInput()).supportsMultipleReads())) {
+            source = () -> results.getInput().getSource();
+        } else {
+            final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseAction.KEY);
+            source = serialize(results.getInput(), parseResult.getObject());
+        }
+        return source;
+
+    }
+
+    @SuppressWarnings("squid:S2095") // intentionally return open stream/autoclosable here
+    private SerializedDocument serialize(final Input input, final XdmNode object) throws IOException, SaxonApiException {
+        final SerializedDocument doc;
+        if (input instanceof AbstractInput && ((AbstractInput) input).getLength() < getInMemoryLimit()) {
+
+            doc = new ByteArraySerializedDocument(this.processor);
+        } else {
+            doc = new FileSerializedDocument(this.processor);
+        }
+        doc.serialize(object);
+        return doc;
+    }
+
+    @Override
+    public boolean isSkipped(final Process results) {
+        return hasNoSchema(results);
+    }
+
+    private interface SourceProvider extends AutoCloseable {
+
+        Source getSource() throws IOException;
+
+        @Override
+        default void close() throws IOException {
+            // nothing
+        }
+    }
+
+    private interface SerializedDocument extends AutoCloseable, SourceProvider {
+
+        void serialize(XdmNode node) throws SaxonApiException, IOException;
+
+        InputStream openStream() throws IOException;
+
+        @Override
+        default Source getSource() throws IOException {
+            return new StreamSource(openStream());
+        }
+
+    }
+
     @RequiredArgsConstructor
     private static class ByteArraySerializedDocument implements SerializedDocument {
 
-        private byte[] bytes;
-
         private final Processor processor;
+
+        private byte[] bytes;
 
         @Override
         public void serialize(final XdmNode node) throws SaxonApiException, IOException {
@@ -127,106 +244,6 @@ public class SchemaValidationAction implements CheckAction {
         public InputStream openStream() throws IOException {
             return Files.newInputStream(this.file);
         }
-    }
-
-    private static final Long BA_LIMIT = 10L;
-
-    private static final String LIMIT_PARAMETER = "schema.validation.inmem.limit";
-
-    private final Processor processor;
-
-    @Setter(AccessLevel.PACKAGE)
-    @Getter
-    private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
-
-    private Result<Boolean, XMLSyntaxError> validate(final Bag results, final Scenario scenario) {
-        log.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
-        final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
-        try ( final SourceProvider validateInput = resolveSource(results) ) {
-
-            final Validator validator = scenario.getFactory().createValidator(scenario.getSchema());
-            validator.setErrorHandler(errorHandler);
-            validator.validate(validateInput.getSource());
-            return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
-        } catch (final SAXException | SaxonApiException | IOException e) {
-            final String msg = String.format("Error processing schema validation for scenario %s", scenario.getConfiguration().getName());
-            log.error(msg, e);
-            results.addProcessingError(msg);
-            return new Result<>(Boolean.FALSE);
-        }
-    }
-
-    @Override
-    public void check(final Bag results) {
-        final CreateReportInput report = results.getReportInput();
-        final Scenario scenario = results.getScenarioSelectionResult().getObject();
-
-        final Result<Boolean, XMLSyntaxError> validateResult = validate(results, scenario);
-
-        results.setSchemaValidationResult(validateResult);
-        final ValidationResultsXmlSchema result = new ValidationResultsXmlSchema();
-        report.setValidationResultsXmlSchema(result);
-        result.getResource().addAll(scenario.getConfiguration().getValidateWithXmlSchema().getResource());
-        if (!validateResult.isValid()) {
-            result.getXmlSyntaxError().addAll(validateResult.getErrors());
-        }
-
-    }
-
-    private SourceProvider resolveSource(final Bag results) throws IOException, SaxonApiException {
-        final SourceProvider source;
-        if (results.getInput() instanceof AbstractInput && (((AbstractInput) results.getInput()).supportsMultipleReads())) {
-            source = () -> results.getInput().getSource();
-        } else {
-            source = serialize(results.getInput(), results.getParserResult().getObject());
-        }
-        return source;
-
-    }
-
-    @SuppressWarnings("squid:S2095") // intentionally return open stream/autoclosable here
-    private SerializedDocument serialize(final Input input, final XdmNode object) throws IOException, SaxonApiException {
-        final SerializedDocument doc;
-        if (input instanceof AbstractInput && ((AbstractInput) input).getLength() < getInMemoryLimit()) {
-
-            doc = new ByteArraySerializedDocument(this.processor);
-        } else {
-            doc = new FileSerializedDocument(this.processor);
-        }
-        doc.serialize(object);
-        return doc;
-    }
-
-    @Override
-    public boolean isSkipped(final Bag results) {
-        return hasNoSchema(results);
-    }
-
-    private static boolean hasNoSchema(final Bag results) {
-        return results.getScenarioSelectionResult() == null || results.getScenarioSelectionResult().getObject().getSchema() == null;
-    }
-
-    private interface SourceProvider extends AutoCloseable {
-
-        Source getSource() throws IOException;
-
-        @Override
-        default void close() throws IOException {
-            // nothing
-        }
-    }
-
-    private interface SerializedDocument extends AutoCloseable, SourceProvider {
-
-        void serialize(XdmNode node) throws SaxonApiException, IOException;
-
-        InputStream openStream() throws IOException;
-
-        @Override
-        default Source getSource() throws IOException {
-            return new StreamSource(openStream());
-        }
-
     }
 
 }

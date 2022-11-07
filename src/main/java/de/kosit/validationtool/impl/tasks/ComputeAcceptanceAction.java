@@ -16,7 +16,13 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.builder;
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.detection;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 
@@ -24,6 +30,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.AcceptRecommendation;
+import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.model.ValidationResultsSchematron;
+import de.kosit.validationtool.model.XMLSyntaxError;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
 
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathSelector;
@@ -38,54 +50,88 @@ import net.sf.saxon.s9api.XPathSelector;
 @Slf4j
 public class ComputeAcceptanceAction implements CheckAction {
 
-    @Override
-    public void check(final Bag results) {
-        if (results.isStopped() && results.getParserResult().isValid()) {
-            // xml wurde aus irgendwelchen Gründen nicht korrekt verarbeitet, dann lassen wir es als undefined
-            return;
+    public static final Process.Key<AcceptRecommendation, XMLSyntaxError> KEY = new Process.Key<>(AcceptRecommendation.class,
+            XMLSyntaxError.class);
+
+    private static final String REPORT_NAME = "Compute Acceptance Validator";
+
+    private static XVRLReport generateXVRLReport(final Result<AcceptRecommendation, XMLSyntaxError> currentResult) {
+        if (currentResult.isValid()) {
+            return builder(REPORT_NAME).add(detection().addMessage(currentResult.getObject().name())).build();
         }
-        if (preCondtionsMatch(results)) {
-            final Optional<XPathSelector> acceptMatch = results.getScenarioSelectionResult().getObject().getAcceptSelector();
-            if (results.getSchemaValidationResult().isValid() && acceptMatch.isPresent()) {
-                evaluateAcceptanceMatch(results, acceptMatch.get());
-            } else {
-                evaluateSchemaAndSchematron(results);
-            }
-        } else {
-            results.setAcceptStatus(AcceptRecommendation.REJECT);
-        }
+
+        return builder(REPORT_NAME)
+                .addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).collect(Collectors.toList())).build();
     }
 
-    private void evaluateSchemaAndSchematron(final Bag results) {
-        if (results.getSchemaValidationResult().isValid() && isSchematronValid(results)) {
-            results.setAcceptStatus(AcceptRecommendation.ACCEPTABLE);
-        } else {
-            results.setAcceptStatus(AcceptRecommendation.REJECT);
+    private static Result<AcceptRecommendation, XMLSyntaxError> evaluateSchemaAndSchematron(final Process results) {
+        if (results.getResult(SchemaValidationAction.KEY).isValid() && isSchematronValid(results)) {
+            return new Result<>(AcceptRecommendation.ACCEPTABLE);
         }
+        return new Result<>(AcceptRecommendation.REJECT);
+
     }
 
-    private static boolean isSchematronValid(final Bag results) {
+    private static boolean isSchematronValid(final Process results) {
         return !hasSchematronErrors(results);
     }
 
-    private static boolean hasSchematronErrors(final Bag results) {
-        return results.getReportInput().getValidationResultsSchematron().stream().map(e -> e.getResults().getSchematronOutput())
-                .flatMap(e -> e.getActivePatternAndFiredRuleAndFailedAssert().stream()).anyMatch(FailedAssert.class::isInstance);
+    private static boolean hasSchematronErrors(final Process process) {
+        final Result<List<ValidationResultsSchematron>, String> result = process.getResult(SchematronValidationAction.KEY);
+        if (result != null && result.isValid()) {
+            return result.getObject().stream().map(v -> v.getResults().getSchematronOutput())
+                    .flatMap(s -> s.getActivePatternAndFiredRuleAndFailedAssert().stream()).anyMatch(FailedAssert.class::isInstance);
+        }
+        return false;
     }
 
-    private static void evaluateAcceptanceMatch(final Bag results, final XPathSelector selector) {
+    private static Result<AcceptRecommendation, XMLSyntaxError> evaluateAcceptanceMatch(final Process results,
+            final XPathSelector selector) {
         try {
-            selector.setContextItem(results.getReport());
-            results.setAcceptStatus(selector.effectiveBooleanValue() ? AcceptRecommendation.ACCEPTABLE : AcceptRecommendation.REJECT);
+            final Result<List<BusinessReport>, XMLSyntaxError> reportResult = results.getResult(CreateReportsAction.KEY);
+            boolean result = true;
+            for (final BusinessReport report : reportResult.getObject()) {
+                selector.setContextItem(report.getContent());
+                result = result && selector.effectiveBooleanValue();
+            }
+            final AcceptRecommendation effectiveBooleanValue = result ? AcceptRecommendation.ACCEPTABLE : AcceptRecommendation.REJECT;
+            return new Result<>(effectiveBooleanValue);
         } catch (final SaxonApiException e) {
             final String msg = String.format("Error evaluating accept recommendation: %s", selector.getUnderlyingXPathContext().toString());
             log.error(msg, e);
-            results.stopProcessing(msg);
+            final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
+            xmlSyntaxError.setMessage(msg);
+            return new Result<>(AcceptRecommendation.REJECT, Collections.singletonList(xmlSyntaxError));
         }
     }
 
-    private static boolean preCondtionsMatch(final Bag results) {
-        return results.getReport() != null && results.getSchemaValidationResult() != null && results.getScenarioSelectionResult() != null;
+    private static boolean preCondtionsMatch(final Process results) {
+        final Result<List<BusinessReport>, XMLSyntaxError> report = results.getResult(CreateReportsAction.KEY);
+        return results.getResult(SchemaValidationAction.KEY) != null && results.getResult(ScenarioSelectionAction.KEY) != null;
+    }
+
+    @Override
+    public ProcessStepResult<AcceptRecommendation, XMLSyntaxError> check(final Process process) {
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = new ProcessStepResult<>(KEY);
+        Result<AcceptRecommendation, XMLSyntaxError> result = new Result<>(AcceptRecommendation.UNDEFINED);
+        if (!process.isStopped() && process.getResult(DocumentParseAction.KEY).isValid()) {
+            if (preCondtionsMatch(process)) {
+                final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionAction.KEY);
+                final Optional<XPathSelector> acceptMatch = scenarioSelection.getObject().getAcceptSelector();
+                if (process.getResult(SchemaValidationAction.KEY).isValid() && acceptMatch.isPresent()) {
+                    result = evaluateAcceptanceMatch(process, acceptMatch.get());
+                } else {
+                    result = evaluateSchemaAndSchematron(process);
+                }
+            } else {
+                final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
+                xmlSyntaxError.setMessage("Pre-Conditions not Matched");
+                result = new Result<>(AcceptRecommendation.REJECT, Collections.singleton(xmlSyntaxError));
+            }
+        }
+        stepResult.setResult(result);
+        stepResult.setReport(generateXVRLReport(result));
+        return stepResult;
     }
 
 }

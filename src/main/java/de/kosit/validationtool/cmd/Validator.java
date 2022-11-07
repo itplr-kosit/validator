@@ -134,20 +134,18 @@ public class Validator {
         final InternalCheck check = new InternalCheck(processor, config.toArray(new Configuration[0]));
         final CommandLineOptions.CliOptions cliOptions = defaultIfNull(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
-        if (cliOptions.isExtractHtml()) {
-            check.getCheckSteps().add(new ExtractHtmlContentAction(processor, outputDirectory));
+        if (cliOptions.isExtractReport()) {
+            check.getCheckSteps().add(new ExtractReportContentAction(processor, outputDirectory));
         }
-        check.getCheckSteps().add(new SerializeReportAction(outputDirectory, processor, determineNamingStrategy(cliOptions)));
-        if (cliOptions.isSerializeInput()) {
-            check.getCheckSteps().add(new SerializeReportInputAction(outputDirectory, check.getConversionService()));
-        }
+        check.getCheckSteps()
+                .add(new SerializeReportAction(outputDirectory, check.getConversionService(), determineNamingStrategy(cliOptions)));
         if (cliOptions.isPrintReport()) {
             check.getCheckSteps().add(new PrintReportAction(processor));
         }
 
         if (cliOptions.getAssertions() != null) {
             final Assertions assertions = loadAssertions(cliOptions.getAssertions());
-            check.getCheckSteps().add(new CheckAssertionAction(assertions, processor));
+            check.getCheckSteps().add(new CheckAssertionAction(assertions, processor, check.getConversionService()));
         }
         if (cliOptions.isPrintMemoryStats()) {
             check.getCheckSteps().add(new PrintMemoryStats());

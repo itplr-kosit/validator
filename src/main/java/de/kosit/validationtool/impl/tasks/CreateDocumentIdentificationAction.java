@@ -16,7 +16,19 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.builder;
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.detection;
+
+import java.util.stream.Collectors;
+
+import de.kosit.validationtool.impl.model.ProcessStepResult;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.model.DocumentIdentificationType;
+import de.kosit.validationtool.model.XMLSyntaxError;
+import de.kosit.validationtool.model.xvrl.Document;
+import de.kosit.validationtool.model.xvrl.XVRLDetection;
+import de.kosit.validationtool.model.xvrl.XVRLMetadata;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
 
 /**
  * Creates a document identification element for the report by using the generates hash.
@@ -25,14 +37,43 @@ import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
  */
 public class CreateDocumentIdentificationAction implements CheckAction {
 
+    public static final Process.Key<DocumentIdentificationType, XMLSyntaxError> KEY = new Process.Key<>(DocumentIdentificationType.class,
+            XMLSyntaxError.class);
+
+    private static final String REPORT_NAME = "CreateDocument Identification Validator";
+
+    private static XVRLReport generateXVRLReport(final Result<DocumentIdentificationType, XMLSyntaxError> currentResult) {
+        if (currentResult.isValid()) {
+            final DocumentIdentificationType result = currentResult.getObject();
+            return builder(REPORT_NAME).add(detection().addMessage(result.getDocumentReference()).severity(XVRLDetection.Severity.INFO))
+                    .build();
+        }
+        return builder(REPORT_NAME)
+                .addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).collect(Collectors.toList())).build();
+
+    }
+
+    private static void addDocumentIdentification(final Process transporter) {
+        final XVRLMetadata metadata = transporter.getXvrlReportSummary().getMetadata();
+        final Document document = new Document();
+        document.setHref(transporter.getInput().getName());
+        metadata.getDocuments().add(document);
+    }
+
     @Override
-    public void check(final Bag transporter) {
-        final DocumentIdentificationType i = new DocumentIdentificationType();
-        final DocumentIdentificationType.DocumentHash h = new DocumentIdentificationType.DocumentHash();
-        h.setHashAlgorithm(transporter.getInput().getDigestAlgorithm());
-        h.setHashValue(transporter.getInput().getHashCode());
-        i.setDocumentHash(h);
-        i.setDocumentReference(transporter.getInput().getName());
-        transporter.getReportInput().setDocumentIdentification(i);
+    public ProcessStepResult<DocumentIdentificationType, XMLSyntaxError> check(final Process process) {
+        final DocumentIdentificationType documentIdentificationType = new DocumentIdentificationType();
+        final DocumentIdentificationType.DocumentHash documentHash = new DocumentIdentificationType.DocumentHash();
+        documentHash.setHashAlgorithm(process.getInput().getDigestAlgorithm());
+        documentHash.setHashValue(process.getInput().getHashCode());
+        documentIdentificationType.setDocumentHash(documentHash);
+        documentIdentificationType.setDocumentReference(process.getInput().getName());
+        addDocumentIdentification(process);
+
+        final ProcessStepResult<DocumentIdentificationType, XMLSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
+        final Result<DocumentIdentificationType, XMLSyntaxError> result = new Result<>(documentIdentificationType);
+        processStepResult.setResult(result);
+        processStepResult.setReport(generateXVRLReport(result));
+        return processStepResult;
     }
 }

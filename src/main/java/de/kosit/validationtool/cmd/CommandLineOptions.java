@@ -42,6 +42,54 @@ import picocli.CommandLine.Parameters;
 @Getter
 public class CommandLineOptions implements Callable<ReturnValue> {
 
+    @Option(names = { "-?", "--help" }, usageHelp = true, description = "display this help message")
+    boolean usageHelpRequested;
+
+    @ArgGroup(exclusive = false, heading = "Daemon options\n")
+    private DaemonOptions daemonOptions;
+
+    @ArgGroup(exclusive = false, heading = "CLI usage options\n")
+    private CliOptions cliOptions;
+
+    @Option(names = { "-d", "--debug" }, description = "Prints some more debug information")
+    private boolean debugOutput;
+
+    @Option(names = { "-X", "--debug-logging" }, description = "Enables full debug log. Alias for -l debug")
+    private boolean debugLog;
+
+    @Option(names = { "-l", "--log-level" }, description = "Enables a certain log level for debugging purposes", defaultValue = "OFF")
+    private Level logLevel;
+
+    @Option(names = { "-r", "--repository" }, paramLabel = "repository-path", description = "Directory containing scenario content",
+            converter = TypeConverter.RepositoryConverter.class)
+    private List<RepositoryDefinition> repositories;
+
+    @Option(names = { "-s", "--scenarios" }, description = "Location of scenarios.xml", paramLabel = "scenario.xml", required = true,
+            converter = TypeConverter.ScenarioConverter.class)
+    private List<ScenarioDefinition> scenarios;
+
+    private static void configureLogging(final CommandLineOptions cmd) {
+        if (cmd.isDebugLog()) {
+            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+        } else {
+            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
+        }
+    }
+
+    @Override
+    public ReturnValue call() throws Exception {
+        configureLogging(this);
+        return Validator.mainProgram(this);
+    }
+
+    public boolean isDaemonModeEnabled() {
+        return getDaemonOptions() != null;
+    }
+
+    public boolean isCliModeEnabled() {
+        return getCliOptions() != null;
+    }
+
     /**
      * @author Andreas Penski
      */
@@ -81,11 +129,11 @@ public class CommandLineOptions implements Callable<ReturnValue> {
                 required = true)
         private Path outputPath;
 
-        @Option(names = { "-h", "--html", "--extract-html" },
-                description = "Extract and save any html content within result as a separate file")
-        private boolean extractHtml;
+        @Option(names = { "-e", "--extract-reports" }, description = "Extract and save defined reports within result as separate files")
+        private boolean extractReport;
 
-        @Option(names = { "--serialize-report-input" }, description = "Serializes the report input to the cwd", defaultValue = "false")
+        @Option(names = { "--serialize-report-input" }, description = "Serializes the report input to the cwd // deprecated",
+                defaultValue = "false")
         private boolean serializeInput;
 
         @Option(names = { "-c", "--check-assertions" }, paramLabel = "assertions-file",
@@ -111,7 +159,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     /**
      * Definition of logical name and a path for a configuration artifact.
-     * 
+     *
      * @author Andreas Penski
      */
     @Getter
@@ -125,7 +173,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     /**
      * Definition of logical name and a path for a repository.
-     * 
+     *
      * @author Andreas Penski
      */
     public static class RepositoryDefinition extends Definition {
@@ -134,58 +182,10 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     /**
      * Definition of logical name and a path for a scenario configuration file.
-     * 
+     *
      * @author Andreas Penski
      */
     public static class ScenarioDefinition extends Definition {
         // just for type safety
-    }
-
-    @ArgGroup(exclusive = false, heading = "Daemon options\n")
-    private DaemonOptions daemonOptions;
-
-    @ArgGroup(exclusive = false, heading = "CLI usage options\n")
-    private CliOptions cliOptions;
-
-    @Option(names = { "-d", "--debug" }, description = "Prints some more debug information")
-    private boolean debugOutput;
-
-    @Option(names = { "-?", "--help" }, usageHelp = true, description = "display this help message")
-    boolean usageHelpRequested;
-
-    @Option(names = { "-X", "--debug-logging" }, description = "Enables full debug log. Alias for -l debug")
-    private boolean debugLog;
-
-    @Option(names = { "-l", "--log-level" }, description = "Enables a certain log level for debugging purposes", defaultValue = "OFF")
-    private Level logLevel;
-
-    @Option(names = { "-r", "--repository" }, paramLabel = "repository-path", description = "Directory containing scenario content",
-            converter = TypeConverter.RepositoryConverter.class)
-    private List<RepositoryDefinition> repositories;
-
-    @Option(names = { "-s", "--scenarios" }, description = "Location of scenarios.xml", paramLabel = "scenario.xml", required = true,
-            converter = TypeConverter.ScenarioConverter.class)
-    private List<ScenarioDefinition> scenarios;
-
-    @Override
-    public ReturnValue call() throws Exception {
-        configureLogging(this);
-        return Validator.mainProgram(this);
-    }
-
-    private static void configureLogging(final CommandLineOptions cmd) {
-        if (cmd.isDebugLog()) {
-            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
-        } else {
-            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
-        }
-    }
-
-    public boolean isDaemonModeEnabled() {
-        return getDaemonOptions() != null;
-    }
-
-    public boolean isCliModeEnabled() {
-        return getCliOptions() != null;
     }
 }

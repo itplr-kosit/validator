@@ -33,6 +33,7 @@ import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
+import de.kosit.validationtool.impl.tasks.TestProcessBuilder;
 
 /**
  * @author Andreas Penski
@@ -47,7 +48,7 @@ public class SerializeReportActionTest {
     public void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
         final DefaultNamingStrategy namingStrategy = new DefaultNamingStrategy();
-        this.action = new SerializeReportAction(this.tmpDirectory, TestObjectFactory.createProcessor(), namingStrategy);
+        this.action = new SerializeReportAction(this.tmpDirectory, TestObjectFactory.createConversionService(), namingStrategy);
     }
 
     @After
@@ -57,9 +58,9 @@ public class SerializeReportActionTest {
 
     @Test
     public void testSimpleSerialize() throws MalformedURLException {
-        final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(Simple.SIMPLE_VALID));
-        assertThat(this.action.isSkipped(b)).isTrue();
-        b.setReport(Helper.load(Simple.SIMPLE_VALID.toURL()));
+        assertThat(this.action.isSkipped(TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID)).schemaValid().build())).isTrue();
+        final CheckAction.Process b = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID)).schemaValid()
+                .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);
         assertThat(b.isStopped()).isFalse();
@@ -70,7 +71,7 @@ public class SerializeReportActionTest {
     @Test
     public void testName() {
         final String name = "some.name.with.dots";
-        final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read("ega".getBytes(), name + ".xml"));
+        final CheckAction.Process b = new CheckAction.Process(InputFactory.read("ega".getBytes(), name + ".xml"));
         assertThat(b.getName()).isEqualTo(name);
     }
 

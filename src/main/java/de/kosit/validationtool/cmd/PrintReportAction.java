@@ -17,12 +17,20 @@
 package de.kosit.validationtool.cmd;
 
 import java.io.StringWriter;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.impl.Printer;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.tasks.BusinessReport;
 import de.kosit.validationtool.impl.tasks.CheckAction;
+import de.kosit.validationtool.impl.tasks.CreateReportsAction;
+import de.kosit.validationtool.impl.xvrl.XVRLReportBuilder;
+import de.kosit.validationtool.model.XMLSyntaxError;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -37,17 +45,28 @@ import net.sf.saxon.s9api.Serializer;
 @RequiredArgsConstructor
 class PrintReportAction implements CheckAction {
 
+    public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+
     private final Processor processor;
 
+    private static XVRLReport createReport() {
+        return XVRLReportBuilder.builder("Document wellformedness Validator").name("Print Report").setValid().build();
+    }
+
     @Override
-    public void check(final Bag results) {
+    public ProcessStepResult<Boolean, String> check(final Process results) {
         try {
             final StringWriter writer = new StringWriter();
             final Serializer serializer = this.processor.newSerializer(writer);
-            serializer.serializeNode(results.getReport());
+            final Result<List<BusinessReport>, XMLSyntaxError> result = results.getResult(CreateReportsAction.KEY);
+            for (final BusinessReport node : result.getObject()) {
+                serializer.serializeNode(node.getContent());
+            }
             Printer.writeOut(writer.toString());
         } catch (final SaxonApiException e) {
             log.error("Error while printing result to stdout", e);
         }
+
+        return Util.createResult(KEY, true, createReport());
     }
 }

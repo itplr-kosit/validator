@@ -121,7 +121,7 @@ public class ContentRepository {
      * @return ein XSLT Executable
      */
     public XsltExecutable loadXsltScript(final URI uri) {
-        log.info("Loading XSLT script from  {}", uri);
+        log.info("  Loading XSLT script from  {}", uri);
         final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
         final CollectingErrorEventHandler listener = new CollectingErrorEventHandler();
         try {
@@ -235,9 +235,10 @@ public class ContentRepository {
      *
      * @return initialisierte Transformation
      */
-    public Transformation createReportTransformation(final ScenarioType t) {
-        final ResourceType resource = t.getCreateReport().getResource();
-        return createTransformation(resource);
+    public List<Transformation> createReportTransformations(final ScenarioType t) {
+        log.info("Create Report Transformations:");
+        return t.getCreateReport().stream().map(createReportType -> createTransformation(createReportType.getResource()))
+                .collect(Collectors.toList());
     }
 
     public Transformation createTransformation(final ResourceType resource) {
@@ -263,6 +264,7 @@ public class ContentRepository {
     }
 
     public Transformation createSchematronTransformation(final ValidateWithSchematron validateWithSchematron) {
+        log.info("Create Schematron Transformation:");
         return createTransformation(validateWithSchematron.getResource());
     }
 }

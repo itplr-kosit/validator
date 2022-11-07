@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<scenarios xmlns="http://www.xoev.de/de/validator/framework/1/scenarios" frameworkVersion="1.0.0">
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" frameworkVersion="2.0.0">
     <name>XInneres</name>
     <date>2017-08-08</date>
     <description>
@@ -47,17 +47,12 @@
             </resource>
         </validateWithSchematron>
         <createReport>
+            <id>Report für eRechnung</id>
             <resource>
                 <name>Report für eRechnung</name>
                 <location>resources/eRechnung/report.xsl</location>
             </resource>
         </createReport>
     </scenario>
-    <noScenarioReport>
-        <resource>
-            <name>default</name>
-            <location>resources/eRechnung/report.xsl</location>
-        </resource>
-    </noScenarioReport>
 
 </scenarios>

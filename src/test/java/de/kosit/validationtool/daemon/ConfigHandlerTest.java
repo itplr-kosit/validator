@@ -29,7 +29,9 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Collections;
 
+import de.kosit.validationtool.impl.Helper;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 

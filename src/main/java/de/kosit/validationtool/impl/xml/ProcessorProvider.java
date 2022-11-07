@@ -43,43 +43,16 @@ import net.sf.saxon.trans.XPathException;
  */
 public class ProcessorProvider {
 
-    private static class SecureUriResolver implements CollectionFinder, OutputURIResolver, UnparsedTextURIResolver {
-
-        public static final String MESSAGE = "Configuration error. Resolving ist not allowed";
-
-        @Override
-        public OutputURIResolver newInstance() {
-            return this;
-        }
-
-        @Override
-        public Result resolve(final String href, final String base) throws TransformerException {
-            throw new IllegalStateException(MESSAGE);
-        }
-
-        @Override
-        public void close(final Result result) throws TransformerException {
-            throw new IllegalStateException(MESSAGE);
-        }
-
-        @Override
-        public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
-            throw new IllegalStateException(MESSAGE);
-        }
-
-        @Override
-        public ResourceCollection findCollection(final XPathContext context, final String collectionURI) throws XPathException {
-            throw new IllegalStateException(MESSAGE);
-        }
-    }
-
-    protected static final String DISSALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+    protected static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
 
     protected static final String LOAD_EXTERNAL_DTD_FEATURE = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
 
     protected static final String FEATURE_SECURE_PROCESSING = "http://javax.xml.XMLConstants/feature/secure-processing";
 
     private static Processor processor;
+
+    private ProcessorProvider() {
+    }
 
     @SneakyThrows
     private static String encode(final String input) {
@@ -109,9 +82,39 @@ public class ProcessorProvider {
 
         // Konfiguration des zu verwendenden Parsers, wenn Saxon selbst einen erzeugen muss, bspw. beim XSL parsen
         processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(FEATURE_SECURE_PROCESSING), true); // NOSONAR
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(DISSALLOW_DOCTYPE_DECL_FEATURE), true);// NOSONAR
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(DISALLOW_DOCTYPE_DECL_FEATURE), true);// NOSONAR
         processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(LOAD_EXTERNAL_DTD_FEATURE), false);// NOSONAR
         processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.ACCESS_EXTERNAL_DTD), false);// NOSONAR
         return processor;
+    }
+
+    private static class SecureUriResolver implements CollectionFinder, OutputURIResolver, UnparsedTextURIResolver {
+
+        public static final String MESSAGE = "Configuration error. Resolving ist not allowed";
+
+        @Override
+        public OutputURIResolver newInstance() {
+            return this;
+        }
+
+        @Override
+        public Result resolve(final String href, final String base) throws TransformerException {
+            throw new IllegalStateException(MESSAGE);
+        }
+
+        @Override
+        public void close(final Result result) {
+            throw new IllegalStateException(MESSAGE);
+        }
+
+        @Override
+        public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
+            throw new IllegalStateException(MESSAGE);
+        }
+
+        @Override
+        public ResourceCollection findCollection(final XPathContext context, final String collectionURI) {
+            throw new IllegalStateException(MESSAGE);
+        }
     }
 }

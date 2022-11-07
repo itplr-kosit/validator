@@ -19,19 +19,22 @@ package de.kosit.validationtool.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.xml.transform.stream.StreamSource;
 
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.tasks.BusinessReport;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.xml.ProcessorProvider;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import de.kosit.validationtool.model.XMLSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -45,6 +48,88 @@ import net.sf.saxon.s9api.XdmNode;
  */
 
 public class Helper {
+
+    public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
+
+    public static final URI ASSERTION_SCHEMA = MODEL_ROOT.resolve("xsd/assertions.xsd");
+
+    public static final URI TEST_ROOT = Paths.get("src/test/resources").toAbsolutePath().toUri();
+
+    public static final URI EXAMPLES_DIR = TEST_ROOT.resolve("examples/");
+
+    public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
+
+    public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("simple/packaged/repository/");
+
+    public static final URI LARGE_XML = Paths.get("pom.xml").toUri();
+
+    public static XdmNode load(final URI url) {
+        try {
+            return load(url.toURL());
+        } catch (final MalformedURLException e) {
+            throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
+        }
+    }
+
+    /**
+     * Lädt ein XML-Dokument von der gegebenen URL
+     *
+     * @param url die url die geladen werden soll
+     * @return ein result objekt mit Dokument
+     */
+    public static XdmNode load(final URL url) {
+
+        try ( final InputStream input = url.openStream() ) {
+            return TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
+        } catch (final SaxonApiException | IOException e) {
+            throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
+
+        }
+
+    }
+
+    public static <T> T load(final URL url, final Class<T> type) throws URISyntaxException {
+        final ConversionService c = new ConversionService();
+        c.initialize(de.kosit.validationtool.model.ObjectFactory.class.getPackage(),
+                de.kosit.validationtool.cmd.assertions.ObjectFactory.class.getPackage(),
+                de.kosit.validationtool.model.scenarios.ObjectFactory.class.getPackage());
+        return c.readXml(url.toURI(), type);
+    }
+
+    public static String serialize(final List<BusinessReport> reports) {
+        try ( final StringWriter writer = new StringWriter() ) {
+            final Processor processor = Helper.getTestProcessor();
+            final Serializer serializer = processor.newSerializer(writer);
+            for (final BusinessReport report : reports) {
+                final XdmNode node = report.getContent();
+                serializer.serializeNode(node);
+            }
+            return writer.toString();
+        } catch (final SaxonApiException | IOException e) {
+            throw new IllegalStateException("Can not serialize document", e);
+        }
+    }
+
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final Input input) {
+        return new DocumentParseAction(processor).parseDocument(input);
+    }
+
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Input input) {
+        return new DocumentParseAction(getTestProcessor()).parseDocument(input);
+    }
+
+    public static Processor getTestProcessor() {
+        // is always the same at the moment
+        return createProcessor();
+    }
+
+    public static Processor createProcessor() {
+        return ProcessorProvider.getProcessor();
+    }
+
+    // public static ProcessStepResult<XdmNode, XMLSyntaxError> createParseResult(final URI input) {
+    // return createParseResult(InputFactory.read(input));
+    // }
 
     public static class Simple {
 
@@ -63,6 +148,8 @@ public class Helper {
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
         public static final URI OTHER_SCENARIOS = ROOT.resolve("otherScenarios.xml");
+
+        public static final URI SCENARIOS_WITH_MANY_CONFIGS = ROOT.resolve("scenarios-with-many-configs.xml");
 
         public static final URI ERROR_SCENARIOS = ROOT.resolve("scenarios-with-errors.xml");
 
@@ -84,7 +171,7 @@ public class Helper {
 
         public static final URI SCHEMA = REPOSITORY_URI.resolve("simple.xsd");
 
-        public static final ContentRepository createContentRepository() {
+        public static ContentRepository createContentRepository() {
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
             return new ContentRepository(Helper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
         }
@@ -113,69 +200,4 @@ public class Helper {
         public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
     }
 
-    public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
-
-    public static final URI ASSERTION_SCHEMA = MODEL_ROOT.resolve("xsd/assertions.xsd");
-
-    public static final URI TEST_ROOT = Paths.get("src/test/resources").toUri();
-
-    public static final URI EXAMPLES_DIR = TEST_ROOT.resolve("examples/");
-
-    public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
-
-    public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("simple/packaged/repository/");
-
-    public static final URI LARGE_XML = Paths.get("pom.xml").toUri();
-
-    /**
-     * Lädt ein XML-Dokument von der gegebenen URL
-     * 
-     * @param url die url die geladen werden soll
-     * @return ein result objekt mit Dokument
-     */
-    public static XdmNode load(final URL url) {
-        try ( final InputStream input = url.openStream() ) {
-            return TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
-        } catch (final SaxonApiException | IOException e) {
-            throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
-
-        }
-
-    }
-
-    public static <T> T load(final URL url, final Class<T> type) throws URISyntaxException {
-        final ConversionService c = new ConversionService();
-        c.initialize(de.kosit.validationtool.model.reportInput.ObjectFactory.class.getPackage(),
-                de.kosit.validationtool.cmd.assertions.ObjectFactory.class.getPackage(),
-                de.kosit.validationtool.model.scenarios.ObjectFactory.class.getPackage());
-        return c.readXml(url.toURI(), type);
-    }
-
-    public static String serialize(final XdmNode node) {
-        try ( final StringWriter writer = new StringWriter() ) {
-            final Processor processor = Helper.getTestProcessor();
-            final Serializer serializer = processor.newSerializer(writer);
-            serializer.serializeNode(node);
-            return writer.toString();
-        } catch (final SaxonApiException | IOException e) {
-            throw new IllegalStateException("Can not serialize document", e);
-        }
-    }
-
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final Input input) {
-        return new DocumentParseAction(processor).parseDocument(input);
-    }
-
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Input input) {
-        return new DocumentParseAction(getTestProcessor()).parseDocument(input);
-    }
-
-    public static Processor getTestProcessor() {
-        // is always the same at the moment
-        return createProcessor();
-    }
-
-    public static Processor createProcessor() {
-        return ProcessorProvider.getProcessor();
-    }
 }

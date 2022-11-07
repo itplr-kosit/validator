@@ -16,29 +16,28 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Input;
-import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import de.kosit.validationtool.model.reportInput.ProcessingError;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
-import net.sf.saxon.s9api.XdmNode;
+import de.kosit.validationtool.model.xvrl.XVRLMetadata;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
+import de.kosit.validationtool.model.xvrl.XVRLReportSummary;
 
 /**
- * Interface, welches von allen Prüfschritten implementiert wird. Der Parameter vom Typ {@link Bag} dient dabei sowohl
- * als Quellce für Eingabe Parameter als auch für die Aufnahme von Ergebnisse, die an weitere Schritte weitergeleitet
- * werden sollen.
+ * Interface, welches von allen Prüfschritten implementiert wird. Der Parameter vom Typ {@link Process} dient dabei
+ * sowohl als Quellce für Eingabe Parameter als auch für die Aufnahme von Ergebnisse, die an weitere Schritte
+ * weitergeleitet werden sollen.
  * 
  * @author Andreas Penski
  */
@@ -46,61 +45,75 @@ import net.sf.saxon.s9api.XdmNode;
 public interface CheckAction {
 
     /**
+     * Ausfürhung des Prüfschrittes und Erweiterung der gesammelten Informationen.
+     *
+     * @param results die Informationssammlung
+     */
+    ProcessStepResult<?, ?> check(Process results);
+
+    /**
+     * Ermittlung, ob ein Schritt u.U. ausgelassen werden kann. Die Funktion wird vor der eigentlichen Prüfaktion
+     * aufgerufen und kann somit eine Ausführung des Prüfschrittes verhindern. Entwickler können diese Funktion
+     * überschreiben, um den Prüfschritt bedingt auszuführen.
+     *
+     * @param results die bisher gesammelten Information
+     * @return <code>true</code> wenn der Schritt ausgelassen werden soll
+     */
+    default boolean isSkipped(final Process results) {
+        return false;
+    }
+
+    /**
      * Transport-Klasse für Eingabe und Ausgabe-Objekte für die einzelnen Prüfschritte.
      */
     @Getter
     @Setter
-    class Bag {
+    class Process {
 
-        private Result<Scenario, String> scenarioSelectionResult;
+        private XVRLMetadata metadata;
 
-        @Setter(AccessLevel.NONE)
-        private CreateReportInput reportInput;
-
-        /** Das finale Ergebnis */
-        private XdmNode report;
+        private List<ProcessStepResult<?, ?>> processStepResults = new ArrayList<>();
 
         private boolean finished;
 
         private boolean stopped;
 
-        private AcceptRecommendation acceptStatus = AcceptRecommendation.UNDEFINED;
-
         /** Das zu prüfende Dokument */
         private Input input;
 
-        private Result<XdmNode, XMLSyntaxError> parserResult;
-
-        private Result<Integer, String> assertionResult;
-
-        private Result<Boolean, XMLSyntaxError> schemaValidationResult;
-
-        public Bag(final Input input) {
-            this(input, new CreateReportInput());
+        public Process(final Input input) {
+            this(input, new XVRLMetadata());
         }
 
-        public Bag(final Input input, final CreateReportInput reportInput) {
+        public Process(final Input input, final XVRLMetadata xvrlMetadata) {
             this.input = input;
-            this.reportInput = reportInput;
+            this.metadata = xvrlMetadata;
         }
 
-        /**
-         * Signalisiert einen vorzeitigen Stop der Vearbeitung.
-         */
-        public void stopProcessing(final String error) {
-            stopProcessing(Collections.singleton(error));
+        public void addStepResult(final ProcessStepResult<?, ?> result) {
+            this.processStepResults.add(result);
         }
 
-        public void stopProcessing(final Collection<String> errors) {
-            this.stopped = true;
-            if (this.reportInput.getProcessingError() == null) {
-                this.reportInput.setProcessingError(new ProcessingError());
-            }
-            this.reportInput.getProcessingError().getError().addAll(errors);
+        public XVRLReportSummary getXvrlReportSummary() {
+            final XVRLReportSummary summary = new XVRLReportSummary();
+            summary.setMetadata(this.metadata);
+            summary.getReports().addAll(this.processStepResults.stream()
+                    .flatMap(processStepResult -> processStepResult.getReport().stream()).collect(Collectors.toList()));
+            return summary;
         }
 
-        public void addProcessingError(final String msg) {
-            stopProcessing(msg);
+        public <T, E> List<XVRLReport> getReports(final Key<T, E> key) {
+            return getActionResult(key).map(ProcessStepResult::getReport).orElse(null);
+        }
+
+        public <T, E> Optional<ProcessStepResult<T, E>> getActionResult(final Key<T, E> key) {
+            final ProcessStepResult<T, E> result = (ProcessStepResult<T, E>) this.processStepResults.stream().filter(b -> b.getKey() == key)
+                    .findFirst().orElse(null);
+            return Optional.ofNullable(result);
+        }
+
+        public <T, E> Result<T, E> getResult(final Key<T, E> type) {
+            return getActionResult(type).map(ProcessStepResult::getResult).orElse(null);
         }
 
         /**
@@ -112,25 +125,15 @@ public interface CheckAction {
             final String fileName = getInput().getName().replaceAll(".*/|.*\\\\", "");
             return FilenameUtils.getBaseName(fileName);
         }
-    }
 
-    /**
-     * Ausfürhung des Prüfschrittes und Erweiterung der gesammelten Informationen.
-     *
-     * @param results die Informationssammlung
-     */
-    void check(Bag results);
+        @Getter
+        @AllArgsConstructor
+        public static class Key<T, E> {
 
-    /**
-     * Ermittlung, ob ein Schritt u.U. ausgelassen werden kann. Die Funktion wird vor der eigentlichen Prüfaktion
-     * aufgerufen und kann somit eine Ausführung des Prüfschrittes verhindern. Entwickler können diese Funktion
-     * überschreiben, um den Prüfschritt bedingt auszuführen.
-     *
-     * @param results die bisher gesammelten Information
-     * @return <code>true</code> wenn der Schritt ausgelassen werden soll
-     */
-    default boolean isSkipped(final Bag results) {
-        return false;
+            private final Class<T> type;
+
+            private final Class<E> other;
+        }
     }
 
 }

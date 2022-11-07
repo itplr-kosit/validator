@@ -16,7 +16,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -24,6 +23,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +33,9 @@ import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.Scenario.Transformation;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.model.ValidationResultsSchematron;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 
 import net.sf.saxon.s9api.SaxonApiException;
@@ -55,9 +58,10 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testProcessingError() throws IOException, SaxonApiException {
-        final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()), true);
+        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
 
-        final Scenario scenario = bag.getScenarioSelectionResult().getObject();
+        final Result<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionAction.KEY);
+        final Scenario scenario = scenarioResult.getObject();
         final XsltExecutable exec = mock(XsltExecutable.class);
         final XsltTransformer transformer = mock(XsltTransformer.class);
         doThrow(new SaxonApiException("invalid")).when(transformer).transform();
@@ -65,7 +69,9 @@ public class SchematronValidationActionTest {
         final ResourceType resourceType = new ResourceType();
         resourceType.setName("invalid internal");
         scenario.setSchematronValidations(Collections.singletonList(new Transformation(exec, resourceType)));
-        this.action.check(bag);
-        assertThat(bag.getReportInput().getProcessingError().getError()).isNotEmpty();
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+        assertThat(result.getObject()).isNotNull();
+        assertThat(result.getErrors()).isNotEmpty();
     }
 }

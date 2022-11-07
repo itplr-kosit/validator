@@ -33,22 +33,23 @@ import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
+import de.kosit.validationtool.impl.tasks.TestProcessBuilder;
 
 /**
  * Testet die HTML-Extrkation des Kommondazeilenprogramms.
  * 
  * @author Andreas Penski
  */
-public class ExtractHtmlActionTest {
+public class ExtractReportContentActionTest {
 
-    private ExtractHtmlContentAction action;
+    private ExtractReportContentAction action;
 
     private Path tmpDirectory;
 
     @Before
     public void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
-        this.action = new ExtractHtmlContentAction(TestObjectFactory.createProcessor(), this.tmpDirectory);
+        this.action = new ExtractReportContentAction(TestObjectFactory.createProcessor(), this.tmpDirectory);
     }
 
     @After
@@ -58,13 +59,13 @@ public class ExtractHtmlActionTest {
 
     @Test
     public void testSimple() throws IOException {
-        final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(Simple.SIMPLE_VALID));
-        assertThat(this.action.isSkipped(b)).isTrue();
-        b.setReport(Helper.load(Simple.SIMPLE_VALID.toURL()));
-        this.action.check(b);
-        assertThat(this.action.isSkipped(b)).isFalse();
-        this.action.check(b);
-        assertThat(b.isStopped()).isFalse();
+        assertThat(this.action.isSkipped(TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID)).build())).isTrue();
+        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID))
+                .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
+        this.action.check(process);
+        assertThat(this.action.isSkipped(process)).isFalse();
+        this.action.check(process);
+        assertThat(process.isStopped()).isFalse();
         assertThat(Files.list(this.tmpDirectory).collect(Collectors.toList())).hasSize(1);
     }
 }

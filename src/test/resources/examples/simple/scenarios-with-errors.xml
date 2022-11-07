@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<scenarios xmlns="http://www.xoev.de/de/validator/framework/1/scenarios" frameworkVersion="1.1.2">
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" frameworkVersion="2.0.0">
     <name>HTML-TestSuite</name>
     <date>2017-08-08</date>
     <description>
@@ -27,7 +27,7 @@
         <description>
             <p>Schematron-Fehler</p>
         </description>
-        <namespace prefix="cri">http://www.xoev.de/de/validator/framework/1/createreportinput</namespace>
+        <namespace prefix="xvrl">http://www.xproc.org/ns/xvrl</namespace>
         <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
         <namespace prefix="rpt">http://validator.kosit.de/test-report</namespace>
         <match>/test:simple</match>
@@ -45,18 +45,12 @@
             </resource>
         </validateWithSchematron>
         <createReport>
+            <id>Report für eRechnung</id>
             <resource>
                 <name>Report für eRechnung</name>
                 <location>report.xsl</location>
             </resource>
         </createReport>
     </scenario>
-
-    <noScenarioReport>
-        <resource>
-            <name>default</name>
-            <location>report.xsl</location>
-        </resource>
-    </noScenarioReport>
 
 </scenarios>

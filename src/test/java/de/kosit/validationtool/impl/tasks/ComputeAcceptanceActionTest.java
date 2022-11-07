@@ -16,11 +16,10 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -28,7 +27,12 @@ import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.ResolvingMode;
-import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
+import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.tasks.CheckAction.Process;
+import de.kosit.validationtool.model.ValidationResultsSchematron;
+import de.kosit.validationtool.model.XMLSyntaxError;
 
 import net.sf.saxon.s9api.XPathExecutable;
 
@@ -43,86 +47,104 @@ public class ComputeAcceptanceActionTest {
 
     private final ComputeAcceptanceAction action = new ComputeAcceptanceAction();
 
+    private static XPathExecutable createXpath(final String expression) {
+        return new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null).createXPath(expression,
+                new HashMap<>());
+    }
+
     @Test
     public void simpleTest() {
-        final Bag bag = createBag(true, true);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.UNDEFINED);
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
+        final Result<AcceptRecommendation, XMLSyntaxError> result = process.getResult(ComputeAcceptanceAction.KEY);
+        assertThat(result).isNull();
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
     public void testSchemaFailed() {
-        final Bag bag = createBag(false, true);
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
+        final Process process = TestProcessBuilder.create().schemaInvalid().setDummyReport().build();
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
     @Test
     public void testSchematronFailed() {
-        final Bag bag = createBag(true, false);
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
+        final Process process = TestProcessBuilder.create().schemaValid().schematronInvalid().setDummyReport().build();
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
     @Test
     public void testValidAcceptMatch() {
-        final Bag bag = createBag(true, true);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
+        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionAction.KEY);
+        scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
     public void testAcceptMatchNotSatisfied() {
-        final Bag bag = createBag(true, true);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath("count(//doesnotExist) = 1"));
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
+        final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
+        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionAction.KEY);
+        scenarioSelectionResult.getObject().setAcceptExecutable(createXpath("count(//doesnotExist) = 1"));
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
     @Test
     public void testAcceptMatchOverridesSchematronErrors() {
-        final Bag bag = createBag(true, false);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        final Process process = TestProcessBuilder.create().schemaValid().schematronInvalid().setDummyReport().build();
+        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionAction.KEY);
+        scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
     public void testValidAcceptMatchOnSchemaFailed() {
-        final Bag bag = createBag(false, true);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
+        final Process process = TestProcessBuilder.create().schemaInvalid().schematronValid().setDummyReport().build();
+        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionAction.KEY);
+        scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
     @Test
     public void testMissingSchemaCheck() {
-        final Bag bag = createBag(null, Collections.emptyList());
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
+        final Process process = TestProcessBuilder.create().schematronValid().setDummyReport().build();
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
     @Test
     public void testNoSchematronCheck() {
-        final Bag bag = createBag(true, true);
+        final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
         // remove schematron results
-        bag.getReportInput().getValidationResultsSchematron().clear();
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = process
+                .getActionResult(SchematronValidationAction.KEY).get();
+
+        process.getProcessStepResults().remove(processStepResult);
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
     public void testMissingReport() {
-        final Bag bag = createBag(false, true);
-        bag.setReport(null);
-        this.action.check(bag);
-        assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
-    }
-
-    private static XPathExecutable createXpath(final String expression) {
-        return new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null).createXPath(expression,
-                new HashMap<>());
+        final Process process = TestProcessBuilder.create().schemaInvalid().schematronValid().build();
+        final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
+        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
     }
 }

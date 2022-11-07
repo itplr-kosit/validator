@@ -321,7 +321,7 @@ public class Grid {
     }
 
     private static boolean isEmpty(final StringBuilder current) {
-        return current.toString().replaceAll("\\|", "").trim().length() == 0;
+        return current.toString().replace("\\|", "").trim().length() == 0;
     }
 
     private int getMaxVirtualLine() {

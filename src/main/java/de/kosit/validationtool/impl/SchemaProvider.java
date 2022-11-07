@@ -35,20 +35,25 @@ import de.kosit.validationtool.impl.xml.ClassPathResourceResolver;
  */
 public class SchemaProvider {
 
-    private static Schema reportInputSchema;
+    private static Schema xvrlSchema;
+
+    private SchemaProvider() {
+
+    }
 
     /**
-     * Liefert das definierte Schema für die Validierung des [@link CreateReportInput}
+     * Liefert das definierte Schema für die Validierung des [@link
+     * {@link de.kosit.validationtool.model.xvrl.XVRLReportSummary}}
      *
      * @return ReportInput-Schema
      */
-    public static Schema getReportInputSchema() {
-        if (reportInputSchema == null) {
+    public static Schema getXVRLSchema() {
+        if (xvrlSchema == null) {
             final SchemaFactory sf = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
-            final Source source = resolve(SchemaProvider.class.getResource("/xsd/createReportInput.xsd"));
-            reportInputSchema = createSchema(sf, new Source[] { source }, new ClassPathResourceResolver("/xsd"));
+            final Source source = resolve(SchemaProvider.class.getResource("/xsd/xvrl.xsd"));
+            xvrlSchema = createSchema(sf, new Source[] { source }, new ClassPathResourceResolver("/xsd"));
         }
-        return reportInputSchema;
+        return xvrlSchema;
     }
 
     private static Schema createSchema(final SchemaFactory sf, final Source[] schemaSources, final LSResourceResolver resourceResolver) {

@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
+import de.kosit.validationtool.model.xvrl.XVRLReportSummary;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -176,8 +177,8 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Add description for this scenario. This is part of the
-     * {@link de.kosit.validationtool.model.reportInput.CreateReportInput} configuration and can be used while creating
-     * the report
+     * {@link de.kosit.validationtool.model.xvrl.XVRLReportSummary} configuration and can be used while creating the
+     * report
      * 
      * @param description the description
      * @return this
@@ -248,8 +249,8 @@ public class ScenarioBuilder implements Builder<Scenario> {
         } else {
             final Result<Pair<CreateReportType, Transformation>, String> result = this.reportBuilder.build(repository);
             if (result.isValid()) {
-                scenario.setReportTransformation(result.getObject().getRight());
-                scenario.getConfiguration().setCreateReport(result.getObject().getLeft());
+                scenario.getReportTransformations().add(result.getObject().getRight());
+                scenario.getConfiguration().getCreateReport().add(result.getObject().getLeft());
             } else {
                 errors.addAll(result.getErrors());
             }

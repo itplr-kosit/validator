@@ -16,7 +16,7 @@
 
 package de.kosit.validationtool.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,19 +45,6 @@ import net.sf.saxon.s9api.XsltExecutable;
 @Getter
 public class Scenario {
 
-    /**
-     * Runtime objects for a transformation e.g. schematron or report.
-     */
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public static class Transformation {
-
-        private XsltExecutable executable;
-
-        private ResourceType resourceType;
-    }
-
     private final ScenarioType configuration;
 
     private Schema schema;
@@ -77,10 +64,20 @@ public class Scenario {
     @Setter
     private List<Transformation> schematronValidations;
 
-    private Transformation reportTransformation;
+    private List<Transformation> reportTransformations;
+
+    public List<Transformation> getReportTransformations() {
+        if (this.reportTransformations == null) {
+            this.reportTransformations = new ArrayList<>();
+        }
+        return this.reportTransformations;
+    }
 
     public List<Transformation> getSchematronValidations() {
-        return this.schematronValidations == null ? Collections.emptyList() : this.schematronValidations;
+        if (this.schematronValidations == null) {
+            this.schematronValidations = new ArrayList<>();
+        }
+        return this.schematronValidations;
     }
 
     public String getName() {
@@ -102,6 +99,19 @@ public class Scenario {
     public Optional<XPathSelector> getAcceptSelector() {
         final XPathSelector selector = this.acceptExecutable != null ? this.acceptExecutable.load() : null;
         return Optional.ofNullable(selector);
+    }
+
+    /**
+     * Runtime objects for a transformation e.g. schematron or report.
+     */
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class Transformation {
+
+        private XsltExecutable executable;
+
+        private ResourceType resourceType;
     }
 
 }

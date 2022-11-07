@@ -55,7 +55,7 @@ public class ConversionService {
     /**
      * Exception while serializing/deserializing with jaxb.
      */
-    public class ConversionExeption extends RuntimeException {
+    public static class ConversionExeption extends RuntimeException {
 
         /**
          * Constructor.
@@ -112,7 +112,8 @@ public class ConversionService {
      */
     public void initialize() {
         final Collection<Package> p = new ArrayList<>();
-        p.add(de.kosit.validationtool.model.reportInput.ObjectFactory.class.getPackage());
+        p.add(de.kosit.validationtool.model.ObjectFactory.class.getPackage());
+        p.add(de.kosit.validationtool.model.xvrl.ObjectFactory.class.getPackage());
         p.add(de.kosit.validationtool.model.scenarios.ObjectFactory.class.getPackage());
         initialize(p);
     }
@@ -189,7 +190,7 @@ public class ConversionService {
 
             return value;
         } catch (final JAXBException | XMLStreamException e) {
-            throw new ConversionExeption(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml.toString()), e);
+            throw new ConversionExeption(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml), e);
         }
     }
 

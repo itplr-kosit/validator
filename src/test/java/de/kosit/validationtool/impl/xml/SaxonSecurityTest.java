@@ -36,7 +36,7 @@ import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import de.kosit.validationtool.model.XMLSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;

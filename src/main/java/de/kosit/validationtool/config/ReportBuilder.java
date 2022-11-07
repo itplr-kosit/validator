@@ -51,6 +51,12 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
 
     private String name;
 
+    private String id;
+
+    private static Result<Pair<CreateReportType, Transformation>, String> createError(final String msg) {
+        return new Result<>(null, Collections.singletonList(msg));
+    }
+
     @Override
     public Result<Pair<CreateReportType, Transformation>, String> build(final ContentRepository repository) {
         if (this.executable == null && this.source == null) {
@@ -67,7 +73,7 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
         } catch (final IllegalStateException e) {
             log.error(e.getMessage(), e);
             result = createError(
-                    String.format("Can not create report configuration based on %s. Exception is %s", this.source, e.getMessage()));
+                    String.format(" Can not create report configuration based on %s. Exception is %s", this.source, e.getMessage()));
         }
         return result;
     }
@@ -77,12 +83,9 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
         final ResourceType r = new ResourceType();
         r.setLocation(this.source.toASCIIString());
         r.setName(isNotEmpty(this.name) ? this.name : DEFAULT_NAME);
+        o.setId(isNotEmpty(this.id) ? this.id : DEFAULT_NAME);
         o.setResource(r);
         return o;
-    }
-
-    private static Result<Pair<CreateReportType, Transformation>, String> createError(final String msg) {
-        return new Result<>(null, Collections.singletonList(msg));
     }
 
     /**
@@ -109,6 +112,17 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
     }
 
     /**
+     * Specifices an explicit executable for this report. for a precompiled tranformation.
+     *
+     * @param executable the compiled executable
+     * @return this
+     */
+    public ReportBuilder source(final XsltExecutable executable) {
+        this.executable = executable;
+        return this;
+    }
+
+    /**
      * Specifices a source for this report. This is either used to compile the report transformation or as documentation
      * for a precompiled tranformation.
      *
@@ -127,6 +141,11 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
      */
     public ReportBuilder name(final String name) {
         this.name = name;
+        return this;
+    }
+
+    public ReportBuilder id(final String id) {
+        this.id = id;
         return this;
     }
 }

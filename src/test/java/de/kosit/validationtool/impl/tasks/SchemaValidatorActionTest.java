@@ -16,7 +16,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -41,13 +40,15 @@ import org.xml.sax.SAXException;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.XmlError.Severity;
-import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.SchemaProvider;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.input.SourceInput;
-import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.tasks.CheckAction.Process;
+import de.kosit.validationtool.model.XMLSyntaxError;
 
 /**
  * Tests die {@link SchemaValidationAction}.
@@ -67,41 +68,42 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testSimple() throws MalformedURLException {
-        final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
-        this.service.check(bag);
-        assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
-        assertThat(bag.getSchemaValidationResult()).isNotNull();
-        assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
+        final Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+        final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
+        final Result<?, ?> result = processStepResult.getResult();
+        assertThat(result).isNotNull();
+        assertThat(result.isValid()).isTrue();
     }
 
     @Test
     public void testValidationFailure() throws MalformedURLException {
         final Input input = InputFactory.read(Simple.SCHEMA_INVALID.toURL());
-        final CheckAction.Bag bag = createBag(input);
-        this.service.check(bag);
-        assertThat(bag.getSchemaValidationResult().isValid()).isFalse();
-        bag.getSchemaValidationResult().getErrors().forEach(e -> {
-            assertThat(e.getRowNumber()).isGreaterThan(0);
-            assertThat(e.getColumnNumber()).isGreaterThan(0);
+        final Process process = TestProcessBuilder.create(input).build();
+        final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
+        final Result<Boolean, XMLSyntaxError> result = processStepResult.getResult();
+        assertThat(result.isValid()).isFalse();
+        result.getErrors().forEach(e -> {
+            assertThat(e.getRowNumber()).isPositive();
+            assertThat(e.getColumnNumber()).isPositive();
             assertThat(e.getSeverity()).isEqualTo(Severity.SEVERITY_ERROR);
         });
     }
 
     @Test
     public void testSchemaReferences() {
-        final Schema reportInputSchema = SchemaProvider.getReportInputSchema();
+        final Schema reportInputSchema = SchemaProvider.getXVRLSchema();
         assertThat(reportInputSchema).isNotNull();
     }
 
     @Test
     public void testNoRepeatableRead() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
-            final Bag bag = createBag(InputFactory.read(new StreamSource(inputStream)));
-            // don't read the real inputstream here!
-            bag.setParserResult(Helper.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
-            this.service.check(bag);
-            assertThat(bag.getSchemaValidationResult()).isNotNull();
-            assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
+            // don't read the real inputstream here, use a dummy result!
+            final Process process = TestProcessBuilder.create(InputFactory.read(new StreamSource(inputStream)), false)
+                    .setParseResult(InputFactory.read(Simple.SIMPLE_VALID)).build();
+            final Result<Boolean, XMLSyntaxError> result = this.service.check(process).getResult();
+            assertThat(result).isNotNull();
+            assertThat(result.isValid()).isTrue();
         }
     }
 
@@ -109,15 +111,16 @@ public class SchemaValidatorActionTest {
     public void testNoRepeatableReadBigFile() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
             final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(inputStream));
-            final Bag bag = createBag(input);
+            final Process process = TestProcessBuilder.create(input).build();
+            // process.addStepResult(Helper.createParseResult(Simple.SIMPLE_VALID));
+
             // set limit and length for serialization to 5 bytes
             this.service.setInMemoryLimit(5L);
             input.setLength(6L);
 
-            bag.setParserResult(Helper.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
-            this.service.check(bag);
-            assertThat(bag.getSchemaValidationResult()).isNotNull();
-            assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
+            final Result<Boolean, XMLSyntaxError> result = this.service.check(process).getResult();
+            assertThat(result).isNotNull();
+            assertThat(result.isValid()).isTrue();
         }
     }
 
@@ -126,12 +129,12 @@ public class SchemaValidatorActionTest {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
               final Reader reader = new InputStreamReader(inputStream) ) {
             final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(reader));
-            final Bag bag = createBag(input);
-            bag.setParserResult(Helper.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
-            this.service.check(bag);
-            this.service.check(bag);
-            assertThat(bag.getSchemaValidationResult()).isNotNull();
-            assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
+            final Process process = TestProcessBuilder.create(input).build();
+            this.service.check(process);
+            final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
+            final Result<Boolean, XMLSyntaxError> result = processStepResult.getResult();
+            assertThat(result).isNotNull();
+            assertThat(result.isValid()).isTrue();
         }
     }
 
@@ -140,28 +143,31 @@ public class SchemaValidatorActionTest {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
               final Reader reader = new InputStreamReader(inputStream) ) {
             final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(reader));
-            final Bag bag = createBag(input);
+            final Process process = TestProcessBuilder.create(input).setParseResult(InputFactory.read(Simple.SIMPLE_VALID)).build();
             // set limit and length for serialization to 5 bytes
             this.service.setInMemoryLimit(5L);
-            bag.setParserResult(Helper.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
-            this.service.check(bag);
-            this.service.check(bag);
-            assertThat(bag.getSchemaValidationResult()).isNotNull();
-            assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
+            this.service.check(process);
+            final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
+            final Result<Boolean, XMLSyntaxError> result = processStepResult.getResult();
+            assertThat(result).isNotNull();
+            assertThat(result.isValid()).isTrue();
         }
     }
 
     @Test
     public void testProcessingError() throws IOException, SAXException {
-        final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
-        final Scenario scenario = bag.getScenarioSelectionResult().getObject();
+        final Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+        final Result<Scenario, String> scenarioCheckResult = process.getResult(ScenarioSelectionAction.KEY);
+        final Scenario scenario = scenarioCheckResult.getObject();
         final Schema schema = mock(Schema.class);
         final Validator validator = mock(Validator.class);
         when(schema.newValidator()).thenReturn(validator);
         doThrow(SAXException.class).when(validator).validate(any());
         scenario.setSchema(schema);
-        this.service.check(bag);
-        assertThat(bag.getReportInput().getProcessingError().getError()).isNotEmpty();
+        final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
+        final Result<Boolean, XMLSyntaxError> result = processStepResult.getResult();
+        assertThat(result).isNotNull();
+        assertThat(result.getErrors()).isNotEmpty();
     }
 
 }

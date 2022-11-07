@@ -16,16 +16,6 @@
 
 package de.kosit.validationtool.cmd;
 
-import java.io.PrintWriter;
-import java.text.MessageFormat;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import org.fusesource.jansi.AnsiRenderer.Code;
-
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.Result;
@@ -36,8 +26,15 @@ import de.kosit.validationtool.cmd.report.Justify;
 import de.kosit.validationtool.cmd.report.Line;
 import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
+import org.fusesource.jansi.AnsiRenderer.Code;
+
+import java.io.PrintWriter;
+import java.text.MessageFormat;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszuwerten und auszugeben.
@@ -69,13 +66,8 @@ class InternalCheck extends DefaultCheck {
      */
     @Override
     public Result checkInput(final Input input) {
-        final CheckAction.Bag bag = new CheckAction.Bag(input, createReport());
-        final Result result = runCheckInternal(bag);
-        if (bag.getAssertionResult() != null) {
-            this.checkAssertions += bag.getAssertionResult().getObject();
-            this.failedAssertions += bag.getAssertionResult().getErrors().size();
-        }
-        return result;
+        final CheckAction.Process process = new CheckAction.Process(input, createXVRLMetadata());
+        return runCheckInternal(process);
     }
 
     void printResults(final Map<String, Result> results) {

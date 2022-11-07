@@ -17,7 +17,7 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                xmlns:in="http://www.xoev.de/de/validator/framework/1/createreportinput"
+                xmlns:xvrl="http://www.xproc.org/ns/xvrl"
                 exclude-result-prefixes="xs"
                 version="2.0">
 
@@ -26,7 +26,7 @@
     <xsl:param name="input-document" as="document-node(element())" required="yes" />
 
 
-    <xsl:template match="in:createReportInput">
+    <xsl:template match="xvrl:reportSummary">
         <report xmlns="http://validator.kosit.de/test-report">
             <input>
                 <xsl:copy-of select="$input-document" />

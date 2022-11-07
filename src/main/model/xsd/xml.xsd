@@ -20,6 +20,8 @@
     <xs:import namespace="http://purl.oclc.org/dsdl/svrl" schemaLocation="svrl-kosit.xsd" />
     <xs:attribute name="space" />
     <xs:attribute name="lang" />
+    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="base" type="xs:anyURI"/>
     <xs:attributeGroup name="local">
         <xs:anyAttribute namespace="##other" processContents="skip" />
     </xs:attributeGroup>

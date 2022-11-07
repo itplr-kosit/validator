@@ -16,19 +16,26 @@
 
 package de.kosit.validationtool.impl.tasks;
 
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.detection;
+import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.supplemantal;
+import static de.kosit.validationtool.model.xvrl.XVRLDetection.Severity.ERROR;
+import static de.kosit.validationtool.model.xvrl.XVRLDetection.Severity.INFO;
+
 import java.io.IOException;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.input.XdmNodeInput;
+import de.kosit.validationtool.impl.model.ProcessStepResult;
 import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.model.reportInput.ValidationResultsWellformedness;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
+import de.kosit.validationtool.impl.xvrl.XVRLReportBuilder;
+import de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.DetectionBuilder;
+import de.kosit.validationtool.model.XMLSyntaxError;
+import de.kosit.validationtool.model.XMLSyntaxErrorSeverity;
+import de.kosit.validationtool.model.xvrl.XVRLReport;
 
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
@@ -44,13 +51,27 @@ import net.sf.saxon.s9api.XdmNode;
 @RequiredArgsConstructor
 public class DocumentParseAction implements CheckAction {
 
+    public static final Process.Key<XdmNode, XMLSyntaxError> KEY = new Process.Key<>(XdmNode.class, XMLSyntaxError.class);
+
     private final Processor processor;
+
+    private static XVRLReport generateXVRLReport(final Result<XdmNode, XMLSyntaxError> parserResult) {
+        final XVRLReportBuilder builder = XVRLReportBuilder.builder("Document wellformedness Validator");
+        if (parserResult.isValid()) {
+            final DetectionBuilder detection = detection().severity(INFO).add(supplemantal().addContent(parserResult.getObject()));
+            builder.add(detection);
+        } else {
+            final DetectionBuilder detection = detection().severity(ERROR);
+            parserResult.getErrors().forEach(detection::addError);
+        }
+        return builder.build();
+    }
 
     /**
      * Parsed und überprüft ein übergebenes Dokument darauf ob es well-formed ist. Dies stellt den ersten
      * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem
      * Schema.
-     * 
+     *
      * @param content ein Dokument
      * @return Ergebnis des Parsings inklusive etwaiger Fehler
      */
@@ -68,7 +89,7 @@ public class DocumentParseAction implements CheckAction {
                 final DocumentBuilder builder = this.processor.newDocumentBuilder();
                 builder.setLineNumbering(true);
                 final XdmNode doc = builder.build(content.getSource());
-                result = new Result<>(doc, Collections.emptyList());
+                result = new Result<>(doc);
             }
         } catch (final SaxonApiException | IOException e) {
             log.debug("Exception while parsing {}", content.getName(), e);
@@ -86,15 +107,15 @@ public class DocumentParseAction implements CheckAction {
     }
 
     @Override
-    public void check(final Bag results) {
-        final Result<XdmNode, XMLSyntaxError> parserResult = parseDocument(results.getInput());
-        final ValidationResultsWellformedness v = new ValidationResultsWellformedness();
-        results.setParserResult(parserResult);
-        v.getXmlSyntaxError().addAll(parserResult.getErrors());
-        results.getReportInput().setValidationResultsWellformedness(v);
-        if (parserResult.isInvalid()) {
-            results.stopProcessing(parserResult.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.toList()));
-        }
-    }
+    public ProcessStepResult<XdmNode, XMLSyntaxError> check(final Process process) {
+        final ProcessStepResult<XdmNode, XMLSyntaxError> result = new ProcessStepResult<>(KEY);
+        final Result<XdmNode, XMLSyntaxError> parserResult = parseDocument(process.getInput());
+        result.setResult(parserResult);
 
+        if (parserResult.isInvalid()) {
+            process.setStopped(true);
+        }
+        result.setReport(generateXVRLReport(parserResult));
+        return result;
+    }
 }
