@@ -125,6 +125,22 @@ java-17:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
+java-18:
+  stage: build
+  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-18
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+  retry: 2
+  artifacts:
+    when: on_failure
+    name: java-18
+    paths:
+      - target/*
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
 deploy:
   stage: deploy
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
