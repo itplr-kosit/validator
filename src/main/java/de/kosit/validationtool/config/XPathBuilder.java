@@ -49,7 +49,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 @Slf4j
 class XPathBuilder implements Builder<XPathExecutable> {
 
-    private static final String[] IGNORED_PREFIXES = new String[] { "xsd", "saxon", "xsl", "xs" };
+    private static final String[] IGNORED_PREFIXES = new String[] { "xsd", "saxon", "xsl", "xs", "xml" };
 
     private final String name;
 
@@ -60,6 +60,10 @@ class XPathBuilder implements Builder<XPathExecutable> {
     @Setter(AccessLevel.PACKAGE)
     private Map<String, String> namespaces;
 
+    private static Result<XPathExecutable, String> createError(final String msg) {
+        return new Result<>(null, Collections.singletonList(msg));
+    }
+
     Map<String, String> getNamespaces() {
         if (this.namespaces == null) {
             this.namespaces = new HashMap<>();
@@ -69,7 +73,7 @@ class XPathBuilder implements Builder<XPathExecutable> {
 
     /**
      * Returns the xpath expression.
-     * 
+     *
      * @return xpath expression
      */
     public String getXPath() {
@@ -117,9 +121,5 @@ class XPathBuilder implements Builder<XPathExecutable> {
 
     private String extractExpression() {
         return this.executable.getUnderlyingExpression().getInternalExpression().toString();
-    }
-
-    private static Result<XPathExecutable, String> createError(final String msg) {
-        return new Result<>(null, Collections.singletonList(msg));
     }
 }

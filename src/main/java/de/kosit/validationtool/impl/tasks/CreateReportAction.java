@@ -33,7 +33,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.AttributesImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +43,6 @@ import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
-import net.sf.saxon.s9api.BuildingContentHandler;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
@@ -53,6 +51,8 @@ import net.sf.saxon.s9api.XdmDestination;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
+import net.sf.saxon.sapling.SaplingDocument;
+import net.sf.saxon.sapling.Saplings;
 
 /**
  * Erzeugt den Report auf Basis der gesammelten Informationen über den Prüfling. Sollte kein Szenario identifiziert
@@ -63,6 +63,64 @@ import net.sf.saxon.s9api.XsltTransformer;
 @RequiredArgsConstructor
 @Slf4j
 public class CreateReportAction implements CheckAction {
+
+    private static final String ERROR_MESSAGE_ELEMENT = "error-message";
+
+    private final Processor processor;
+
+    private final ConversionService conversionService;
+
+    private static XsltExecutable loadFromScenario(final Scenario object) {
+        return object.getReportTransformation().getExecutable();
+    }
+
+    private static XsltExecutable getTransformation(final Bag results) {
+        return loadFromScenario(results.getScenarioSelectionResult().getObject());
+    }
+
+    @Override
+    public void check(final Bag results) {
+        final DocumentBuilder documentBuilder = this.processor.newDocumentBuilder();
+        try {
+
+            final XdmNode parsedDocument = results.getParserResult().isValid() ? results.getParserResult().getObject()
+                    : createErrorInformation(results.getParserResult().getErrors());
+
+            final Marshaller marshaller = this.conversionService.getJaxbContext().createMarshaller();
+            final JAXBSource source = new JAXBSource(marshaller, results.getReportInput());
+            // wrap to circumvent inconsistency between sax and saxon
+            source.setXMLReader(new ReaderWrapper(source.getXMLReader()));
+
+            final XdmNode root = documentBuilder.build(source);
+            final XsltTransformer transformer = getTransformation(results).load();
+            transformer.setInitialContextNode(root);
+            final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
+            transformer.setMessageListener(e);
+            final Scenario scenario = results.getScenarioSelectionResult().getObject();
+            transformer.setURIResolver(scenario.getUriResolver());
+
+            if (scenario.getUnparsedTextURIResolver() != null) {
+                transformer.getUnderlyingController().setUnparsedTextURIResolver(scenario.getUnparsedTextURIResolver());
+            }
+            if (parsedDocument != null) {
+                transformer.setParameter(new QName("input-document"), parsedDocument);
+            }
+            final XdmDestination destination = new XdmDestination();
+            transformer.setDestination(destination);
+            transformer.transform();
+            results.setReport(destination.getXdmNode());
+
+        } catch (final SaxonApiException | JAXBException e) {
+            log.error("Error creating final report", e);
+            results.stopProcessing("Can not create final report: " + e.getMessage());
+        }
+    }
+
+    private XdmNode createErrorInformation(final Collection<XMLSyntaxError> errors) throws SaxonApiException {
+        final String message = errors.stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining());
+        final SaplingDocument doc = Saplings.doc(EngineInformation.getFrameworkNamespace());
+        return doc.withChild(Saplings.elem(ERROR_MESSAGE_ELEMENT).withText(message)).toXdmNode(this.processor);
+    }
 
     /**
      * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect
@@ -114,18 +172,13 @@ public class CreateReportAction implements CheckAction {
         }
 
         @Override
-        public void setEntityResolver(final EntityResolver resolver) {
-            this.delegate.setEntityResolver(resolver);
-        }
-
-        @Override
         public EntityResolver getEntityResolver() {
             return this.delegate.getEntityResolver();
         }
 
         @Override
-        public void setDTDHandler(final DTDHandler handler) {
-            this.delegate.setDTDHandler(handler);
+        public void setEntityResolver(final EntityResolver resolver) {
+            this.delegate.setEntityResolver(resolver);
         }
 
         @Override
@@ -134,8 +187,8 @@ public class CreateReportAction implements CheckAction {
         }
 
         @Override
-        public void setContentHandler(final ContentHandler handler) {
-            this.delegate.setContentHandler(handler);
+        public void setDTDHandler(final DTDHandler handler) {
+            this.delegate.setDTDHandler(handler);
         }
 
         @Override
@@ -144,13 +197,18 @@ public class CreateReportAction implements CheckAction {
         }
 
         @Override
-        public void setErrorHandler(final ErrorHandler handler) {
-            this.delegate.setErrorHandler(handler);
+        public void setContentHandler(final ContentHandler handler) {
+            this.delegate.setContentHandler(handler);
         }
 
         @Override
         public ErrorHandler getErrorHandler() {
             return this.delegate.getErrorHandler();
+        }
+
+        @Override
+        public void setErrorHandler(final ErrorHandler handler) {
+            this.delegate.setErrorHandler(handler);
         }
 
         @Override
@@ -162,69 +220,6 @@ public class CreateReportAction implements CheckAction {
         public void parse(final String systemId) throws IOException, SAXException {
             this.delegate.parse(systemId);
         }
-    }
-
-    private static final String ERROR_MESSAGE_ELEMENT = "error-message";
-
-    private final Processor processor;
-
-    private final ConversionService conversionService;
-
-    private static XsltExecutable loadFromScenario(final Scenario object) {
-        return object.getReportTransformation().getExecutable();
-    }
-
-    @Override
-    public void check(final Bag results) {
-        final DocumentBuilder documentBuilder = this.processor.newDocumentBuilder();
-        try {
-
-            final XdmNode parsedDocument = results.getParserResult().isValid() ? results.getParserResult().getObject()
-                    : createErrorInformation(results.getParserResult().getErrors());
-
-            final Marshaller marshaller = this.conversionService.getJaxbContext().createMarshaller();
-            final JAXBSource source = new JAXBSource(marshaller, results.getReportInput());
-            // wrap to circumvent inconsistency between sax and saxon
-            source.setXMLReader(new ReaderWrapper(source.getXMLReader()));
-
-            final XdmNode root = documentBuilder.build(source);
-            final XsltTransformer transformer = getTransformation(results).load();
-            transformer.setInitialContextNode(root);
-            final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
-            transformer.setMessageListener(e);
-            final Scenario scenario = results.getScenarioSelectionResult().getObject();
-            transformer.setURIResolver(scenario.getUriResolver());
-
-            if (scenario.getUnparsedTextURIResolver() != null) {
-                transformer.getUnderlyingController().setUnparsedTextURIResolver(scenario.getUnparsedTextURIResolver());
-            }
-            if (parsedDocument != null) {
-                transformer.setParameter(new QName("input-document"), parsedDocument);
-            }
-            final XdmDestination destination = new XdmDestination();
-            transformer.setDestination(destination);
-            transformer.transform();
-            results.setReport(destination.getXdmNode());
-
-        } catch (final SaxonApiException | SAXException | JAXBException e) {
-            log.error("Error creating final report", e);
-            results.stopProcessing("Can not create final report: " + e.getMessage());
-        }
-    }
-
-    private XdmNode createErrorInformation(final Collection<XMLSyntaxError> errors) throws SaxonApiException, SAXException {
-        final BuildingContentHandler contentHandler = this.processor.newDocumentBuilder().newBuildingContentHandler();
-        contentHandler.startDocument();
-        contentHandler.startElement(EngineInformation.getFrameworkNamespace(), ERROR_MESSAGE_ELEMENT, ERROR_MESSAGE_ELEMENT,
-                new AttributesImpl());
-        final String message = errors.stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining());
-        contentHandler.characters(message.toCharArray(), 0, message.length());
-        contentHandler.endElement(EngineInformation.getFrameworkNamespace(), ERROR_MESSAGE_ELEMENT, ERROR_MESSAGE_ELEMENT);
-        return contentHandler.getDocumentNode();
-    }
-
-    private static XsltExecutable getTransformation(final Bag results) {
-        return loadFromScenario(results.getScenarioSelectionResult().getObject());
     }
 
 }
