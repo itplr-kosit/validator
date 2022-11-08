@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021  Koordinierungsstelle für IT-Standards (KoSIT)
+ * Copyright 2017-2022  Koordinierungsstelle für IT-Standards (KoSIT)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,19 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import org.xml.sax.*;
+import java.io.IOException;
 
 import javax.xml.bind.util.JAXBSource;
-import java.io.IOException;
+
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 
 /**
  * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect on
@@ -70,18 +79,13 @@ public class ReaderWrapper implements XMLReader {
     }
 
     @Override
-    public void setEntityResolver(final EntityResolver resolver) {
-        this.delegate.setEntityResolver(resolver);
-    }
-
-    @Override
     public EntityResolver getEntityResolver() {
         return this.delegate.getEntityResolver();
     }
 
     @Override
-    public void setDTDHandler(final DTDHandler handler) {
-        this.delegate.setDTDHandler(handler);
+    public void setEntityResolver(final EntityResolver resolver) {
+        this.delegate.setEntityResolver(resolver);
     }
 
     @Override
@@ -90,8 +94,8 @@ public class ReaderWrapper implements XMLReader {
     }
 
     @Override
-    public void setContentHandler(final ContentHandler handler) {
-        this.delegate.setContentHandler(handler);
+    public void setDTDHandler(final DTDHandler handler) {
+        this.delegate.setDTDHandler(handler);
     }
 
     @Override
@@ -100,13 +104,18 @@ public class ReaderWrapper implements XMLReader {
     }
 
     @Override
-    public void setErrorHandler(final ErrorHandler handler) {
-        this.delegate.setErrorHandler(handler);
+    public void setContentHandler(final ContentHandler handler) {
+        this.delegate.setContentHandler(handler);
     }
 
     @Override
     public ErrorHandler getErrorHandler() {
         return this.delegate.getErrorHandler();
+    }
+
+    @Override
+    public void setErrorHandler(final ErrorHandler handler) {
+        this.delegate.setErrorHandler(handler);
     }
 
     @Override

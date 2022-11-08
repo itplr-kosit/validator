@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021  Koordinierungsstelle für IT-Standards (KoSIT)
+ * Copyright 2017-2022  Koordinierungsstelle für IT-Standards (KoSIT)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package de.kosit.validationtool.impl.xvrl;
 
-import de.kosit.validationtool.model.xvrl.XVRLReport;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import de.kosit.validationtool.model.xvrl.XVRLReport;
 
 public interface BaseReportSummary {
 
