@@ -61,9 +61,59 @@ class InternalCheck extends DefaultCheck {
         super(processor, configuration);
     }
 
+    private static String createStatusLine(final Map<String, Result> results) {
+        final long acceptable = results.entrySet().stream().filter(e -> e.getValue().isAcceptable()).count();
+        final long rejected = results.entrySet().stream().filter(e -> !e.getValue().isAcceptable()).count();
+        final long errors = results.entrySet().stream().filter(e -> !e.getValue().isProcessingSuccessful()).count();
+        final Line line = new Line();
+        line.add("Acceptable: ").add(acceptable, Code.GREEN);
+        line.add(" Rejected: ").add(rejected, Code.RED);
+        if (errors > 0) {
+            line.add(" Processing errors: ").add(errors, Code.RED);
+        }
+        return line.render(true, false);
+    }
+
+    private static Grid createResultGrid(final Map<String, Result> results) {
+        final Grid grid = new Grid(
+        //@formatter:off
+                new ColumnDefinition("File", 60, 10, 1),
+                new ColumnDefinition("Schema", 7).justify(Justify.CENTER),
+                new ColumnDefinition("Schematron", 10).justify(Justify.CENTER),
+                new ColumnDefinition("Acceptance", 10, 5).justify(Justify.CENTER),
+                new ColumnDefinition("Error/Description", 60,20,3)
+        );
+        //@formatter:on
+        results.entrySet().stream().sorted(Entry.comparingByKey()).forEach(e -> {
+            final Result value = e.getValue();
+
+            final Code textcolor = value.isAcceptable() ? Code.GREEN : Code.RED;
+            grid.addCell(e.getKey(), textcolor);
+            grid.addCell(value.isSchemaValid() ? "Y" : "N", textcolor);
+            grid.addCell(value.isSchematronValid() ? "Y" : "N", textcolor);
+            grid.addCell(value.getAcceptRecommendation(), textcolor);
+            grid.addCell(joinErrors(value));
+        });
+        return grid;
+    }
+
+    private static String joinErrors(final Result value) {
+        final StringBuilder b = new StringBuilder();
+        b.append(String.join(";", value.getProcessingErrors()));
+        if (value.getSchemaViolations() != null && !value.getSchemaViolations().isEmpty()) {
+            b.append(b.length() > 0 ? ";" : "");
+            b.append(value.getSchemaViolations().stream().map(XmlError::getMessage).collect(Collectors.joining(";")));
+        }
+        if (value.getSchematronResult() != null && !value.getSchematronResult().isEmpty()) {
+            b.append(b.length() > 0 ? ";" : "");
+            b.append(value.getSchematronResult().stream().flatMap(e -> e.getMessages().stream()).collect(Collectors.joining(";")));
+        }
+        return b.toString();
+    }
+
     /**
      * Prüft die Prüflinge und gibt Informationen über etwaige Assertions aus.
-     * 
+     *
      * @param input die Prüflinge
      * @return false wenn es Assertion-Fehler gibt, sonst true
      */
@@ -112,56 +162,6 @@ class InternalCheck extends DefaultCheck {
 
     public int getNotAcceptableCount(final Map<String, Result> results) {
         return (int) (this.failedAssertions + results.values().stream().filter(e -> !e.isAcceptable()).count());
-    }
-
-    private static String createStatusLine(final Map<String, Result> results) {
-        final long acceptable = results.entrySet().stream().filter(e -> e.getValue().isAcceptable()).count();
-        final long rejected = results.entrySet().stream().filter(e -> !e.getValue().isAcceptable()).count();
-        final long errors = results.entrySet().stream().filter(e -> !e.getValue().isProcessingSuccessful()).count();
-        final Line line = new Line();
-        line.add("Acceptable: ").add(acceptable, Code.GREEN);
-        line.add(" Rejected: ").add(rejected, Code.RED);
-        if (errors > 0) {
-            line.add(" Processing errors: ").add(errors, Code.RED);
-        }
-        return line.render(true, false);
-    }
-
-    private static Grid createResultGrid(final Map<String, Result> results) {
-        final Grid grid = new Grid(
-        //@formatter:off
-                new ColumnDefinition("filename", 60, 10, 1), 
-                new ColumnDefinition("Schema", 7).justify(Justify.CENTER),
-                new ColumnDefinition("Schematron", 10).justify(Justify.CENTER),
-                new ColumnDefinition("Acceptance", 10, 5).justify(Justify.CENTER),
-                new ColumnDefinition("Error/Description", 60,20,3) 
-        );
-        //@formatter:on
-        results.entrySet().stream().sorted(Entry.comparingByKey()).forEach(e -> {
-            final Result value = e.getValue();
-
-            final Code textcolor = value.isAcceptable() ? Code.GREEN : Code.RED;
-            grid.addCell(e.getKey(), textcolor);
-            grid.addCell(value.isSchemaValid() ? "Y" : "N", textcolor);
-            grid.addCell(value.isSchematronValid() ? "Y" : "N", textcolor);
-            grid.addCell(value.getAcceptRecommendation(), textcolor);
-            grid.addCell(joinErrors(value));
-        });
-        return grid;
-    }
-
-    private static String joinErrors(final Result value) {
-        final StringBuilder b = new StringBuilder();
-        b.append(String.join(";", value.getProcessingErrors()));
-        if (value.getSchemaViolations() != null && !value.getSchemaViolations().isEmpty()) {
-            b.append(b.length() > 0 ? ";" : "");
-            b.append(value.getSchemaViolations().stream().map(XmlError::getMessage).collect(Collectors.joining(";")));
-        }
-        if (value.getSchematronResult() != null && !value.getSchematronResult().isEmpty()) {
-            b.append(b.length() > 0 ? ";" : "");
-            b.append(value.getSchematronResult().stream().flatMap(e -> e.getMessages().stream()).collect(Collectors.joining(";")));
-        }
-        return b.toString();
     }
 
 }

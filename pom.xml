@@ -54,9 +54,14 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.jacoco>0.8.7</version.jacoco>
+        <version.assertj>3.23.1</version.assertj>
+        <version.commons-io>2.11.0</version.commons-io>
+        <version.commons-lang>3.12.0</version.commons-lang>
+        <version.jacoco>0.8.8</version.jacoco>
         <version.jaxb>2.3.7</version.jaxb>
-        <version.lombok>1.18.20</version.lombok>
+        <version.lombok>1.18.24</version.lombok>
+        <version.mockito>4.8.1</version.mockito>
+        <version.rest-assured>5.2.0</version.rest-assured>
         <version.saxon-he>11.4</version.saxon-he>
         <version.slf4j>1.7.25</version.slf4j>
     </properties>
@@ -95,7 +100,7 @@
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
-            <version>1.18</version>
+            <version>2.4.0</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -108,7 +113,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.10</version>
+            <version>${version.commons-lang}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -119,7 +124,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.16.1</version>
+            <version>${version.assertj}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -131,7 +136,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.7</version>
+            <version>${version.commons-io}</version>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
@@ -142,7 +147,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.3.3</version>
+            <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -170,7 +175,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>reserve-network-port</id>
@@ -190,7 +195,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M2</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -210,7 +215,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.10.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -221,7 +226,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>jdk11+</id>
@@ -294,7 +299,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.4.2</version>
                 <executions>
                     <execution>
                         <id>full_dist</id>
@@ -319,7 +324,7 @@
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.14.0</version>
+                <version>0.15.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -412,7 +417,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>3.0.0-M7</version>
                 <configuration>
                     <!--suppress MavenModelInspection -->
                     <argLine>-Dfile.encoding=UTF-8 ${jacocoSurefire}</argLine>
@@ -422,7 +427,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -445,7 +450,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
+                <version>3.1.0</version>
                 <executions>
                 <execution>
                         <id>run</id>
@@ -482,7 +487,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <version>3.1.0</version>
                 <configuration>
                     <target>
                         <!-- schlafen um den Start des Daemon abzuwarten -->
@@ -503,7 +508,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.1</version>
+                <version>3.0.0-M7</version>
                 <executions>
                     <execution>
                         <id>test-it</id>
@@ -522,7 +527,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.4.1</version>
                 <configuration>
                     <source>8</source>
                     <doclint>none</doclint>

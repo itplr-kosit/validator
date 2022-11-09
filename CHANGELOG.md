@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   removed.
 - [INTERNAL] Bump [Saxon HE](https://www.saxonica.com/documentation11/documentation.xml) to 11.4
 - [INTERNAL] Bump [jaxb-ri](https://github.com/eclipse-ee4j/jaxb-ri) to 2.3.7
+- (CORE) Various other dependency updates. See pom.xml
 
 - [INTERNAL] CLI parsing based on pico-cli, commons-cli is removed
 
