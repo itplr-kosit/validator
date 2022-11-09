@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-TAGS=("3-openjdk-16" "3-jdk-11" "3-jdk-11-openj9" "3-jdk-8" "3-jdk-8-openj9" "3-openjdk-15" "3-openjdk-17", "3-openjdk-18")
+TAGS=("3-openjdk-16" "3-jdk-11" "3-jdk-11-openj9" "3-jdk-8" "3-jdk-8-openj9" "3-openjdk-15" "3-openjdk-17", "3-openjdk-18", "3-eclipse-temurin-19")
 
 docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 for i in "${TAGS[@]}"
