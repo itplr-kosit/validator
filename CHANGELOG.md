@@ -9,19 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- [#93](https://projekte.kosit.org/kosit/validator/-/issues/93) Remove usage information, when validation failed (CLI)
+- [CLI][#93](https://projekte.kosit.org/kosit/validator/-/issues/93) Remove usage information, when validation failed
+- [CLI][#95](https://projekte.kosit.org/kosit/validator/-/issues/95) NPE when using empty repository definition (-r "")
 
 ### Added
 
-- Support for multiple configurations and multiple repositories. See [cli documentation](docs/cli.md) for details
-- Possibility to use preconfigured Saxon `Processor` instance for validation
+- [CLI] Support for multiple configurations and multiple repositories. See [cli documentation](docs/cli.md) for details
+- [API ]Possibility to use preconfigured Saxon `Processor` instance for validation
 
 ### Changed
 
-- [ResolvingConfigurationStrategy.java#getProcessor()](de/kosit/validationtool/api/ResolvingConfigurationStrategy) is
+- [API] [ResolvingConfigurationStrategy.java#getProcessor()](de/kosit/validationtool/api/ResolvingConfigurationStrategy)
+  is
   removed.
-- Bump [Saxon HE](https://www.saxonica.com/documentation11/documentation.xml) to 11.4
-- Bump [jaxb-ri](https://github.com/eclipse-ee4j/jaxb-ri) to 2.3.7
+- [INTERNAL] Bump [Saxon HE](https://www.saxonica.com/documentation11/documentation.xml) to 11.4
+- [INTERNAL] Bump [jaxb-ri](https://github.com/eclipse-ee4j/jaxb-ri) to 2.3.7
 
 - [INTERNAL] CLI parsing based on pico-cli, commons-cli is removed
 
