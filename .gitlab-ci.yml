@@ -34,6 +34,8 @@ java-11:
   extends: .java
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
   needs: [ ]
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
   artifacts:
     name: java-11
     paths:
