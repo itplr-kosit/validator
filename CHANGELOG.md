@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [CLI][#93](https://projekte.kosit.org/kosit/validator/-/issues/93) Remove usage information, when validation failed
 - [CLI][#95](https://projekte.kosit.org/kosit/validator/-/issues/95) NPE when using empty repository definition (-r "")
+- (CORE) [#101](https://github.com/itplr-kosit/validator/issues/101) Role is null in FailedAssert
 
 ### Added
 
