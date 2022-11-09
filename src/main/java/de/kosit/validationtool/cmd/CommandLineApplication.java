@@ -20,7 +20,6 @@ import static de.kosit.validationtool.impl.Printer.writeErr;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.fusesource.jansi.AnsiConsole;
-import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
 import de.kosit.validationtool.cmd.report.Line;
@@ -84,8 +83,7 @@ public class CommandLineApplication {
                 resultStatus = ReturnValue.HELP_REQUEST;
             } else {
                 resultStatus = ObjectUtils.defaultIfNull(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
-                if (resultStatus.getCode() != ReturnValue.PARSING_ERROR.getCode()
-                        && resultStatus.getCode() != ReturnValue.SUCCESS.getCode()) {
+                if (resultStatus.getCode() < 0) {
                     commandLine.usage(System.out);
                 }
             }
