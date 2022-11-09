@@ -102,7 +102,8 @@ create-build-image:
     - bash .mvn/createBuildImages.sh
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
-    - changes:
+    - if: $CI_COMMIT_REF_NAME == "main"
+      changes:
         - .mvn/createBuildImages.sh
 
 owasp-check:
@@ -113,7 +114,9 @@ owasp-check:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
-    - changes:
+    - if: $CI_COMMIT_REF_NAME == "main"
+      changes:
         - pom.xml
         - owasp-suppressions.xml
+
 
