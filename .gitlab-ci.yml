@@ -13,13 +13,27 @@ cache:
   paths:
     - .m2/repository
 
-
-java-11:
+.java:
   stage: build
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  needs:
+    - job: java-11
+      artifacts: false
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
+  artifacts:
+    name: artifacts
+    when: on_failure
+    paths:
+      - target/*.jar
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+
+java-11:
+  extends: .java
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  needs: [ ]
   artifacts:
     name: java-11
     paths:
@@ -30,122 +44,43 @@ java-11:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-java-11-openj9:
-  stage: build
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    name: java-11-openj9
-    paths:
-      - target/*.jar
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
-
 java8:
-  stage: build
+  extends: .java
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    name: java-8
-    paths:
-      - target/*.jar
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
+
+java-11-openj9:
+  extends: .java
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
 
 java-8-openj9:
-  stage: build
+  extends: .java
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    name: java-8-open-j9
-    paths:
-      - target/*.jar
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
 
 java-15:
-  stage: build
+  extends: .java
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-15
-  script:
-    - microdnf install libcgroup-tools
-    - cgget -n --values-only --variable memory.limit_in_bytes /
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    when: on_failure
-    name: java-15
-    paths:
-      - target/*
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
+#  script:
+#    - microdnf install libcgroup-tools
+#    - cgget -n --values-only --variable memory.limit_in_bytes /
+#    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
 
 java-16:
-  stage: build
+  extends: .java
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-16
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    when: on_failure
-    name: java-16
-    paths:
-      - target/*
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
 
 java-17:
-  stage: build
+  extends: .java
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-17
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    when: on_failure
-    name: java-17
-    paths:
-      - target/*
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
 
 java-18:
-  stage: build
+  extends: .java
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-18
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
-  retry: 2
-  artifacts:
-    when: on_failure
-    name: java-18
-    paths:
-      - target/*
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
 
 deploy:
   stage: deploy
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
-  dependencies:
-    - java-11
+  needs:
+    - job: java-11
   script:
     - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
@@ -165,6 +100,20 @@ create-build-image:
   script:
     - apk add bash
     - bash .mvn/createBuildImages.sh
-  when: manual
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - changes:
+        - .mvn/createBuildImages.sh
 
+owasp-check:
+  extends: .java
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  needs: [ ]
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - changes:
+        - pom.xml
+        - owasp-suppressions.xml
 

@@ -61,6 +61,7 @@
         <version.jaxb>2.3.7</version.jaxb>
         <version.lombok>1.18.24</version.lombok>
         <version.mockito>4.8.1</version.mockito>
+        <version.owasp-dependency-check>7.2.0</version.owasp-dependency-check>
         <version.rest-assured>5.2.0</version.rest-assured>
         <version.saxon-he>11.4</version.saxon-he>
         <version.slf4j>1.7.25</version.slf4j>
@@ -584,6 +585,35 @@
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>owasp-check</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>${version.owasp-dependency-check}</version>
+                        <configuration>
+                            <failBuildOnCVSS>0</failBuildOnCVSS>
+                            <suppressionFiles>
+                                <suppressionFile>${project.basedir}/owasp-suppressions.xml</suppressionFile>
+                            </suppressionFiles>
+
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>
+                                    validate
+                                </phase>
+                                <goals>
+                                    <goal>check</goal>
                                 </goals>
                             </execution>
                         </executions>
