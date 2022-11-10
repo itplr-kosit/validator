@@ -30,6 +30,11 @@ cache:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
+.java_extended:
+  extends: .java
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
 java-11:
   extends: .java
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
@@ -38,6 +43,7 @@ java-11:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
   artifacts:
     name: java-11
+    when: always
     paths:
       - target/*.jar
       - target/*.zip
@@ -51,23 +57,19 @@ java8:
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
 
 java-11-openj9:
-  extends: .java
+  extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
 
 java-8-openj9:
-  extends: .java
+  extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
 
 java-15:
-  extends: .java
+  extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-15
-#  script:
-#    - microdnf install libcgroup-tools
-#    - cgget -n --values-only --variable memory.limit_in_bytes /
-#    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
 
 java-16:
-  extends: .java
+  extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-16
 
 java-17:
@@ -75,8 +77,12 @@ java-17:
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-17
 
 java-18:
-  extends: .java
+  extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-18
+
+java-19:
+  extends: .java
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-19
 
 deploy:
   stage: deploy
