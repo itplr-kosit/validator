@@ -16,7 +16,7 @@
 
 package de.kosit.validationtool.cmd;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ class TypeConverter {
 
     /**
      * Type converter for a repository definition specification e.g. '-r somelocation.xml OR -r myid=somelocation.xml'
-     * 
+     *
      * @author Andreas Penski
      */
     public static class RepositoryConverter implements ITypeConverter<RepositoryDefinition> {
@@ -74,20 +74,18 @@ class TypeConverter {
     }
 
     private static <T extends Definition> T convert(final Class<T> type, final String value) {
-        T def = null;
-        if (isNotBlank(value)) {
-            final String[] splitted = value.split("=");
-            if (splitted.length == 1) {
-                def = createNewInstance(type);
-                def.setName(getDefaultName(type));
-                def.setPath(Paths.get(splitted[0].trim()));
-            } else if (splitted.length == 2) {
-                def = createNewInstance(type);
-                def.setName(splitted[0].trim());
-                def.setPath(Paths.get(splitted[1].trim()));
-            } else {
-                throw new IllegalArgumentException("Not a valid repository specification " + value);
-            }
+        final T def;
+        final String[] splitted = defaultIfBlank(value, "").split("=");
+        if (splitted.length == 1) {
+            def = createNewInstance(type);
+            def.setName(getDefaultName(type));
+            def.setPath(Paths.get(splitted[0].trim()));
+        } else if (splitted.length == 2) {
+            def = createNewInstance(type);
+            def.setName(splitted[0].trim());
+            def.setPath(Paths.get(splitted[1].trim()));
+        } else {
+            throw new IllegalArgumentException("Not a valid repository specification " + value);
         }
         return def;
     }

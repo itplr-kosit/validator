@@ -11,5 +11,8 @@
         <module name="validationtool" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="validator" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

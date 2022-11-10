@@ -17,6 +17,7 @@
 package de.kosit.validationtool.cmd;
 
 import static de.kosit.validationtool.impl.Printer.writeErr;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.fusesource.jansi.AnsiConsole;
@@ -83,8 +84,7 @@ public class CommandLineApplication {
                 resultStatus = ReturnValue.HELP_REQUEST;
             } else {
                 resultStatus = ObjectUtils.defaultIfNull(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
-                if (resultStatus.getCode() != ReturnValue.PARSING_ERROR.getCode()
-                        && resultStatus.getCode() != ReturnValue.SUCCESS.getCode()) {
+                if (resultStatus.getCode() < 0) {
                     commandLine.usage(System.out);
                 }
             }
@@ -97,7 +97,8 @@ public class CommandLineApplication {
     }
 
     private static int logExecutionException(final Exception ex, final CommandLine cli, final ParseResult parseResult) {
-        Printer.writeErr(ex, ex.getMessage());
+        final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "Es ist eine Fehler aufgetreten";
+        Printer.writeErr(ex, message);
         return 1;
     }
 

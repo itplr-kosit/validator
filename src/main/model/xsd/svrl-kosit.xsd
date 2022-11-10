@@ -18,14 +18,6 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
            targetNamespace="http://purl.oclc.org/dsdl/svrl" version="0.1" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:import schemaLocation="xml.xsd" namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:simpleType name="FailedAssertRoleType">
-        <xs:restriction base="xs:token">
-            <xs:enumeration value="error" />
-            <xs:enumeration value="fatal" />
-            <xs:enumeration value="information" />
-            <xs:enumeration value="warning" />
-        </xs:restriction>
-    </xs:simpleType>
     <xs:complexType name="rich-text" mixed="true">
         <xs:sequence>
 
@@ -42,7 +34,7 @@
         <xs:attribute name="flag" type="xs:NMTOKEN" use="optional" />
         <xs:attribute name="id" type="xs:NMTOKEN" use="required" />
         <xs:attribute name="location" use="required" />
-        <xs:attribute name="role" type="svrl:FailedAssertRoleType" use="optional" />
+        <xs:attribute name="role" type="xs:string" use="optional"/>
         <xs:attribute name="test" use="required" />
     </xs:attributeGroup>
     <xs:attributeGroup name="foreign">
