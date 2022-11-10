@@ -20,10 +20,10 @@
 
     <name>KoSIT XML Prüftool Implementierung</name>
 
-    <groupId>de.kosit</groupId>
+    <groupId>kosit</groupId>
     <version>2.0.0-SNAPSHOT</version>
 
-    <artifactId>validationtool</artifactId>
+    <artifactId>validator</artifactId>
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
         <!-- In alphabetical order by last name -->
