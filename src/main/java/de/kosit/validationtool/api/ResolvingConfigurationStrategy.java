@@ -23,6 +23,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 
 /**
@@ -51,17 +52,37 @@ public interface ResolvingConfigurationStrategy {
 
     /**
      * Creates a specific implementation for resolving referenced objects in XML files. The URIResolver is used for
-     * dereferencing an absolute URI (after resolution) to return a {@link javax.xml.transform.Source}. It <b>can</b> be
-     * used for resolving relative URIs against a base URI or restrict access to certain URIs.
+     * de-referencing an absolute URI (after resolution) to return a {@link javax.xml.transform.Source}. It <b>can</b>
+     * be used for resolving relative URIs against a base URI or restrict access to certain URIs.
      * <p>
      * This URIResolver is used to dereference the URIs appearing in <code>xsl:import</code>, <code>xsl:include</code>,
      * and <code>xsl:import-schema</code> declarations.
      * </p>
      *
+     * @deprecated since Saxon deprecates the using in favor of {@link ResourceResolver}. Support is removed, when Saxon
+     *             removes it.
      * @param scenarioRepository an optional repository, your implementation might not need this
      * @return a preconfigured {@link URIResolver}
      */
-    URIResolver createResolver(URI scenarioRepository);
+    @Deprecated
+    default URIResolver createResolver(final URI scenarioRepository) {
+        // intentionally return null, so no subclass needs to implement it.
+        return null;
+    }
+
+    /**
+     * Creates a specific implementation for resolving referenced objects in XML files. The ResourceResolver is used for
+     * de-referencing an absolute URI (after resolution) to return a {@link javax.xml.transform.Source}. It <b>can</b>
+     * be used for resolving relative URIs against a base URI or restrict access to certain URIs.
+     * <p>
+     * This ResourceResolver is used to de-reference the URIs appearing in <code>xsl:import</code>,
+     * <code>xsl:include</code>, and <code>xsl:import-schema</code> declarations.
+     * </p>
+     *
+     * @param scenarioRepository an optional repository, your implementation might not need this
+     * @return a preconfigured {@link ResourceResolver}
+     */
+    ResourceResolver createResourceResolver(URI scenarioRepository);
 
     /**
      * Creates a specific implementation for resolving objects referenced via XSLT's <code>unparsed-text()</code>

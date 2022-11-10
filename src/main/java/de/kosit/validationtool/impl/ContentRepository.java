@@ -49,6 +49,9 @@ import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
 
+import net.sf.saxon.lib.ResourceRequest;
+import net.sf.saxon.lib.ResourceResolver;
+import net.sf.saxon.lib.ResourceResolverWrappingURIResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -71,7 +74,7 @@ public class ContentRepository {
 
     private final URI repository;
 
-    private final URIResolver resolver;
+    private final ResourceResolver resolver;
 
     private final UnparsedTextURIResolver unparsedTextURIResolver;
 
@@ -91,7 +94,7 @@ public class ContentRepository {
         this.repository = repository;
         this.resolvingConfigurationStrategy = strategy;
         this.processor = processor;
-        this.resolver = this.resolvingConfigurationStrategy.createResolver(repository);
+        this.resolver = getResolver(strategy, repository);
         this.unparsedTextURIResolver = this.resolvingConfigurationStrategy.createUnparsedTextURIResolver(repository);
         this.schemaFactory = this.resolvingConfigurationStrategy.createSchemaFactory();
     }
@@ -103,6 +106,18 @@ public class ContentRepository {
         } catch (final IOException | URISyntaxException e) {
             throw new IllegalStateException("Can not load schema for resource " + resource.getPath(), e);
         }
+    }
+
+    private static ResourceResolver getResolver(final ResolvingConfigurationStrategy strategy, final URI repository) {
+        final URIResolver uriResolver = strategy.createResolver(repository);
+        final ResourceResolver resourceResolver = strategy.createResourceResolver(repository);
+        if (uriResolver != null && resourceResolver != null) {
+            throw new IllegalStateException("Must not provide both URIResolver and ResourceResolver");
+        }
+        if (uriResolver != null) {
+            return new ResourceResolverWrappingURIResolver(uriResolver);
+        }
+        return resourceResolver;
     }
 
     private Schema createSchema(final Source[] schemaSources) {
@@ -128,7 +143,7 @@ public class ContentRepository {
             xsltCompiler.setErrorListener(listener);
             if (getResolver() != null) {
                 // otherwise use default resolver
-                xsltCompiler.setURIResolver(getResolver());
+                xsltCompiler.setResourceResolver(getResolver());
             }
 
             return xsltCompiler.compile(resolveInRepository(uri));
@@ -190,7 +205,11 @@ public class ContentRepository {
                 final URI resolved = RelativeUriResolver.resolve(source, this.repository);
                 return new StreamSource(resolved.toASCIIString());
             }
-            return this.resolver.resolve(source.toString(), this.repository.toString());
+            final ResourceRequest r = new ResourceRequest();
+            r.baseUri = this.repository.toString();
+            r.relativeUri = source.toString();
+            // return this.resolver.resolve(source.toString(), this.repository.toString());
+            return this.resolver.resolve(r);
         } catch (final TransformerException e) {
             log.error("Error resolving source {}", source, e);
             throw new IllegalStateException(String.format("Can not resolve %s in repository %s", source, this.repository), e);
@@ -222,7 +241,7 @@ public class ContentRepository {
      * 
      * @return the resolver
      */
-    public URIResolver getResolver() {
+    public ResourceResolver getResolver() {
         return this.resolver;
     }
 

@@ -18,12 +18,13 @@ package de.kosit.validationtool.impl.xml;
 
 import java.net.URI;
 
-import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import lombok.extern.slf4j.Slf4j;
+
+import net.sf.saxon.lib.ResourceResolver;
 
 /**
  * This is a slightly more open implementation that allows resolving artifacts from local filesystems. Your are not
@@ -54,7 +55,7 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
      * @return null!
      */
     @Override
-    public URIResolver createResolver(final URI repository) {
+    public ResourceResolver createResourceResolver(final URI repository) {
         // intentionally return 'null', since all resolving is configured with the other objects
         return null;
     }

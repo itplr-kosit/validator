@@ -28,6 +28,8 @@ import javax.xml.transform.stream.StreamSource;
 import lombok.RequiredArgsConstructor;
 
 import net.sf.saxon.Configuration;
+import net.sf.saxon.lib.ResourceRequest;
+import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.StandardUnparsedTextResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.trans.XPathException;
@@ -39,26 +41,10 @@ import net.sf.saxon.trans.XPathException;
  * @author Andreas Penski
  */
 @RequiredArgsConstructor()
-public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver {
+public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver, ResourceResolver {
 
     /** the base uri */
     private final URI baseUri;
-
-    @Override
-    public Source resolve(final String href, final String base) throws TransformerException {
-        final URI resolved = resolve(URI.create(href), URI.create(base));
-        if (isUnderBaseUri(resolved)) {
-            try {
-                return new StreamSource(resolved.toURL().openStream(), resolved.toASCIIString());
-            } catch (final IOException e) {
-
-                throw new TransformerException(String.format("Can not resolve required  %s", href), e);
-            }
-        } else {
-            throw new TransformerException(String
-                    .format("The resolved transformation artifact %s is not within the configured repository %s", resolved, this.baseUri));
-        }
-    }
 
     /**
      * Resolves a relative uri including uris within a jar file.
@@ -78,10 +64,6 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         return uri.isOpaque() && uri.getScheme().equals("jar");
     }
 
-    private boolean isUnderBaseUri(final URI resolved) {
-        return isUnderBaseUri(resolved, this.baseUri);
-    }
-
     private static boolean isUnderBaseUri(final URI resolved, final URI baseUri) {
         if (resolved == null || baseUri == null) {
             return false;
@@ -89,6 +71,26 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         final String base = baseUri.toASCIIString().replaceAll("file:/+", "");
         final String r = resolved.toASCIIString().replaceAll("file:/+", "");
         return r.startsWith(base);
+    }
+
+    @Override
+    public Source resolve(final String href, final String base) throws TransformerException {
+        final URI resolved = resolve(URI.create(href), URI.create(base));
+        if (isUnderBaseUri(resolved)) {
+            try {
+                return new StreamSource(resolved.toURL().openStream(), resolved.toASCIIString());
+            } catch (final IOException e) {
+
+                throw new TransformerException(String.format("Can not resolve required  %s", href), e);
+            }
+        } else {
+            throw new TransformerException(String
+                    .format("The resolved transformation artifact %s is not within the configured repository %s", resolved, this.baseUri));
+        }
+    }
+
+    private boolean isUnderBaseUri(final URI resolved) {
+        return isUnderBaseUri(resolved, this.baseUri);
     }
 
     // from UnparsedTextURIResolver
@@ -102,4 +104,12 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         }
     }
 
+    @Override
+    public Source resolve(final ResourceRequest request) throws XPathException {
+        try {
+            return resolve(request.relativeUri, request.baseUri);
+        } catch (final TransformerException e) {
+            throw new XPathException(e);
+        }
+    }
 }

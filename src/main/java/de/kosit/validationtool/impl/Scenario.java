@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +31,7 @@ import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 
+import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
@@ -57,7 +57,7 @@ public class Scenario {
 
     private ResolvingConfigurationStrategy factory;
 
-    private URIResolver uriResolver;
+    private ResourceResolver uriResolver;
 
     private UnparsedTextURIResolver unparsedTextURIResolver;
 

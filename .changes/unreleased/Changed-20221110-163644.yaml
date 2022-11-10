@@ -1,0 +1,5 @@
+kind: Changed
+body: Support for Saxon's new ResourceResolver infrastructure
+time: 2022-11-10T16:36:44.7559555+01:00
+custom:
+  Issue: "102"

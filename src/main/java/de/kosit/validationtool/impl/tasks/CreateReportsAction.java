@@ -99,14 +99,13 @@ public class CreateReportsAction implements CheckAction {
         final BusinessReport r = new BusinessReport();
         r.setName(transformation.getResourceType().getName());
         try {
-            System.out.println(r.getName());
             final XdmNode root = this.xvrlSerializer.serialize(process.getXvrlReportSummary());
             final XsltTransformer transformer = transformation.getExecutable().load();
             transformer.setInitialContextNode(root);
 
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
             transformer.setMessageListener(e);
-            transformer.setURIResolver(scenario.getUriResolver());
+            transformer.setResourceResolver(scenario.getUriResolver());
 
             if (scenario.getUnparsedTextURIResolver() != null) {
                 transformer.getUnderlyingController().setUnparsedTextURIResolver(scenario.getUnparsedTextURIResolver());

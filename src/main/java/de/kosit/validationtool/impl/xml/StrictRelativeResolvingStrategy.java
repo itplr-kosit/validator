@@ -19,13 +19,13 @@ package de.kosit.validationtool.impl.xml;
 import java.net.URI;
 
 import javax.xml.XMLConstants;
-import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import lombok.RequiredArgsConstructor;
 
+import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 
 /**
@@ -45,7 +45,7 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
     }
 
     @Override
-    public URIResolver createResolver(final URI repositoryURI) {
+    public ResourceResolver createResourceResolver(final URI repositoryURI) {
         return new RelativeUriResolver(repositoryURI);
     }
 

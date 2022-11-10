@@ -122,7 +122,7 @@ public class SchematronValidationAction implements CheckAction {
         try {
             final XsltTransformer transformer = validation.getExecutable().load();
             // resolving nur relative zum Repository
-            transformer.setURIResolver(scenario.getUriResolver());
+            transformer.setResourceResolver(scenario.getUriResolver());
             final CollectingErrorEventHandler collectingErrorEventHandler = new CollectingErrorEventHandler();
             transformer.setMessageListener(collectingErrorEventHandler);
 
