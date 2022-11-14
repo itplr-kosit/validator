@@ -91,12 +91,12 @@ public class XVRLReportBuilder {
         digest.setErrorCount(countDetections(XVRLDetection.Severity.ERROR));
         digest.setFatalErrorCount(countDetections(XVRLDetection.Severity.FATAL_ERROR));
         digest.setInfoCount(countDetections(XVRLDetection.Severity.INFO));
-        digest.setValid(calcalValidity());
+        digest.setValid(calcValidity());
         this.xvrlReport.setDigest(digest);
         return this.xvrlReport;
     }
 
-    private String calcalValidity() {
+    private String calcValidity() {
         return this.xvrlReport.getDetection().stream()
                 .filter(e -> ArrayUtils.contains(
                         new XVRLDetection.Severity[] { XVRLDetection.Severity.ERROR, XVRLDetection.Severity.FATAL_ERROR }, e.getSeverity()))
