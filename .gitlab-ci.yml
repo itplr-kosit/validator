@@ -82,7 +82,7 @@ java-18:
 
 java-19:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-19
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-19-alpine
 
 deploy:
   stage: deploy
