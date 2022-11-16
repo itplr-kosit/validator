@@ -81,7 +81,7 @@ java-18:
   image: $CI_REGISTRY_IMAGE/maven:3-openjdk-18
 
 java-19:
-  extends: .java
+  extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-19-alpine
 
 deploy:
