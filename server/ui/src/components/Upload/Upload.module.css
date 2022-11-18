@@ -1,0 +1,14 @@
+.buttonGroup {
+	display: flex;
+	justify-content: flex-end;
+	margin: 1rem 0;
+}
+
+.resultDisplay {
+	margin: 1em 0;
+}
+
+.withError {
+	border: 0.2rem solid var(--text-error);
+	border-radius: var(--border-radius-small);
+}
