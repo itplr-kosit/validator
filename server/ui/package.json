@@ -64,5 +64,11 @@
   },
   "engines": {
     "node": ">=16.14"
+  },
+  "overrides": {
+    "loader-utils": "^2.0.4",
+    "react-dev-utils": {
+      "loader-utils": "^3.2.1"
+    }
   }
 }
