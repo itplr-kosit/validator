@@ -1,0 +1,55 @@
+{
+	"plugins": ["prettier", "@typescript-eslint/eslint-plugin", "react"],
+	"extends": [
+		"airbnb",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:react/recommended",
+		"plugin:react-hooks/recommended",
+		"plugin:prettier/recommended"
+	],
+	"rules": {
+		"indent": "off",
+		"@typescript-eslint/indent": "off",
+		"@typescript-eslint/explicit-member-accessibility": "off",
+		"@typescript-eslint/consistent-type-imports": [
+			"error",
+			{ "prefer": "type-imports" }
+		],
+		"react/react-in-jsx-scope": "off",
+		"react/prop-types": "off",
+		"react/jsx-props-no-spreading": "off",
+		"react/require-default-props": "off",
+		"react/jsx-filename-extension": "off",
+		"react/jsx-one-expression-per-line": "off",
+		"react/function-component-definition": "off",
+		"react/jsx-no-useless-fragment": "off",
+		"import/extensions": "off",
+		"import/no-unresolved": "off",
+		"no-console": "warn",
+		"no-shadow": "off",
+		"no-continue": "off",
+		"no-restricted-syntax": "off",
+		"@typescript-eslint/no-shadow": ["error"],
+		"import/no-relative-packages": "off"
+	},
+	"env": {
+		"es6": true,
+		"browser": true,
+		"node": true,
+		"jest": true
+	},
+	"parser": "@typescript-eslint/parser",
+	"settings": {
+		"react": {
+			"version": "17.0"
+		},
+		"import/parsers": {
+			"@typescript-eslint/parser": [".ts", ".tsx"]
+		},
+		"import/resolver": {
+			"typescript": {
+				"alwaysTryTypes": true
+			}
+		}
+	}
+}

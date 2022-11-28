@@ -5,28 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# 1.5.0 (to be released)
+# 1.5.0
 
 ### Fixed
 
 - (CLI) [#93](https://projekte.kosit.org/kosit/validator/-/issues/93) Remove usage information, when validation failed
 - (CLI) [#95](https://projekte.kosit.org/kosit/validator/-/issues/95) NPE when using empty repository definition (-r "")
-- (CORE) [#101](https://github.com/itplr-kosit/validator/issues/101) Role is null in FailedAssert
 
 ### Added
 
-- (CLI)  Support for multiple configurations and multiple repositories. See [cli documentation](docs/cli.md) for details
+- (CLI)  Support for multiple configurations and multiple repositories. See [cli documentation](https://github.com/itplr-kosit/validator/blob/master/docs/cli.md) for details
 - (API) Possibility to use preconfigured Saxon `Processor` instance for validation
 
 ### Changed
-- (CORE) [#100](https://github.com/itplr-kosit/validator/issues/100) Make createReport optional
+
 - (DAEMON) UI rewrite based on [Docusaurs](https://docusaurus.io)
 - (
-  API)  [ResolvingConfigurationStrategy.java#getProcessor()](de/kosit/validationtool/api/ResolvingConfigurationStrategy)
+  API)  [ResolvingConfigurationStrategy.java#getProcessor()](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/ResolvingConfigurationStrategy)
   is removed.
 - (CORE) Bump [Saxon HE](https://www.saxonica.com/documentation11/documentation.xml) to 11.4
 - (CORE) Bump [jaxb-ri](https://github.com/eclipse-ee4j/jaxb-ri) to 2.3.7
-- (CORE) Various other dependency updates. See pom.xml
 
 - (CORE) CLI parsing based on pico-cli, commons-cli is removed
 
@@ -73,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - InputFactory has methods to read any java.xml.transform.Source as Input not only StreamSources
 - InputFactory uses a generated UUID as name for SourceInput, if no "real" name can be derived
 - saxon dependency update (minor, 9.9.1-7)
-- [DAEMON] proper status codes when returning results (see [daemon documentation](./docs/daemon.md#status-codes))
+- [DAEMON] proper status codes when returning results (see [daemon documentation](https://github.com/itplr-kosit/validator/blob/master/docs/daemon.md#status-codes))
 
 ## 1.3.1
 
