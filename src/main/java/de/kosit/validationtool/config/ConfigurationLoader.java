@@ -69,6 +69,8 @@ public class ConfigurationLoader {
 
     private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = "http://www.xoev.de/de/validator/framework/1/scenarios";
 
+    protected final Map<String, Object> parameters = new HashMap<>();
+
     /**
      * URL, die auf die scenerio.xml Datei zeigt.
      */
@@ -83,16 +85,6 @@ public class ConfigurationLoader {
     protected ResolvingMode resolvingMode = ResolvingMode.STRICT_RELATIVE;
 
     protected ResolvingConfigurationStrategy resolvingConfigurationStrategy;
-
-    protected final Map<String, Object> parameters = new HashMap<>();
-
-    URI getScenarioRepository() {
-        if (this.scenarioRepository == null) {
-            log.info("Creating default scenario repository (alongside scenario definition)");
-            return RelativeUriResolver.resolve(URI.create("."), this.scenarioDefinition);
-        }
-        return this.scenarioRepository;
-    }
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
@@ -132,6 +124,38 @@ public class ConfigurationLoader {
 
     }
 
+    private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
+        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).collect(Collectors.toList());
+    }
+
+    private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
+        final Scenario s = new Scenario(def);
+        s.setMatchExecutable(repository.createMatchExecutable(def));
+        s.setSchema(repository.createSchema(def));
+        s.setSchematronValidations(repository.createSchematronTransformations(def));
+        if (def.getCreateReport() != null) {
+            s.setReportTransformation(repository.createReportTransformation(def));
+        } else {
+            log.warn("No report configured. Will provide an internal format as report!");
+            s.setReportTransformation(repository.createIdentityTransformation());
+        }
+        s.setFactory(repository.getResolvingConfigurationStrategy());
+        s.setUriResolver(repository.getResolver());
+        s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
+        if (def.getAcceptMatch() != null) {
+            s.setAcceptExecutable(repository.createAccepptExecutable(def));
+        }
+        return s;
+    }
+
+    URI getScenarioRepository() {
+        if (this.scenarioRepository == null) {
+            log.info("Creating default scenario repository (alongside scenario definition)");
+            return RelativeUriResolver.resolve(URI.create("."), this.scenarioDefinition);
+        }
+        return this.scenarioRepository;
+    }
+
     public Configuration build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
@@ -148,10 +172,6 @@ public class ConfigurationLoader {
         configuration.getAdditionalParameters().put(Keys.SCENARIOS_FILE, this.scenarioDefinition);
         configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, def);
         return (configuration);
-    }
-
-    private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
-        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).collect(Collectors.toList());
     }
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
@@ -177,21 +197,6 @@ public class ConfigurationLoader {
         }
         return scenarios;
 
-    }
-
-    private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
-        final Scenario s = new Scenario(def);
-        s.setMatchExecutable(repository.createMatchExecutable(def));
-        s.setSchema(repository.createSchema(def));
-        s.setSchematronValidations(repository.createSchematronTransformations(def));
-        s.setReportTransformation(repository.createReportTransformation(def));
-        s.setFactory(repository.getResolvingConfigurationStrategy());
-        s.setUriResolver(repository.getResolver());
-        s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
-        if (def.getAcceptMatch() != null) {
-            s.setAcceptExecutable(repository.createAccepptExecutable(def));
-        }
-        return s;
     }
 
     /**
