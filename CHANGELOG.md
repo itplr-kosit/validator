@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (API) Possibility to use preconfigured Saxon `Processor` instance for validation
 
 ### Changed
-
+- (CORE) [#100](https://github.com/itplr-kosit/validator/issues/100) Make createReport optional
 - (DAEMON) UI rewrite based on [Docusaurs](https://docusaurus.io)
 - (
   API)  [ResolvingConfigurationStrategy.java#getProcessor()](de/kosit/validationtool/api/ResolvingConfigurationStrategy)

@@ -81,7 +81,7 @@
             <xs:element name="match" type="xs:string" />
             <xs:element name="validateWithXmlSchema" type="s:ValidateWithXmlSchema" />
             <xs:element name="validateWithSchematron" maxOccurs="unbounded" minOccurs="0" type="s:ValidateWithSchematron" />
-            <xs:element name="createReport" type="s:CreateReportType" />
+            <xs:element name="createReport" type="s:CreateReportType" minOccurs="0"/>
             <xs:element name="acceptMatch" type="xs:string" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>
