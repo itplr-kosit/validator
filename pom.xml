@@ -60,11 +60,11 @@
         <version.jacoco>0.8.8</version.jacoco>
         <version.jaxb>2.3.7</version.jaxb>
         <version.lombok>1.18.24</version.lombok>
-        <version.mockito>4.8.1</version.mockito>
+        <version.mockito>4.9.0</version.mockito>
         <version.owasp-dependency-check>7.2.0</version.owasp-dependency-check>
         <version.rest-assured>5.2.0</version.rest-assured>
         <version.saxon-he>11.4</version.saxon-he>
-        <version.slf4j>1.7.25</version.slf4j>
+        <version.slf4j>1.7.36</version.slf4j>
     </properties>
     <repositories>
         <repository>
@@ -142,7 +142,7 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>4.3.1</version>
+            <version>5.3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
