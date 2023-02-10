@@ -45,4 +45,7 @@ public class ReturnValue {
         return new ReturnValue(count);
     }
 
+    public boolean isError() {
+        return this.code < 0 && this.code != DAEMON_MODE.code;
+    }
 }

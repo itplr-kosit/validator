@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 public class GuiHandler extends BaseHandler {
 
-    private static final URL INDEX_HTML = GuiHandler.class.getClassLoader().getResource("gui/index.html");
+    private static final URL INDEX_HTML = GuiHandler.class.getClassLoader().getResource("ui/index.html");
 
     public GuiHandler() {
         if (INDEX_HTML == null) {
@@ -45,7 +45,7 @@ public class GuiHandler extends BaseHandler {
         if (path.equals("/")) {
             write(exchange, IOUtils.toString(INDEX_HTML, Charset.defaultCharset()).getBytes(), "text/html");
         } else {
-            final URL resource = GuiHandler.class.getClassLoader().getResource("gui" + path);
+            final URL resource = GuiHandler.class.getClassLoader().getResource("ui" + path);
             if (resource != null) {
                 write(exchange, IOUtils.toString(resource, Charset.defaultCharset()).getBytes(),
                         Mediatype.resolveBySuffix(resource.getPath()).getMimeType());
@@ -59,7 +59,7 @@ public class GuiHandler extends BaseHandler {
     @Getter
     protected enum Mediatype {
 
-        JS("application/javascript"), MD("text/markdown"), CSS("text/css");
+        JS("application/javascript"), MD("text/markdown"), CSS("text/css"), SVG("image/svg+xml"), HTML("text/html"), PNG("image/png");
 
         private final String mimeType;
 

@@ -84,7 +84,7 @@ public class CommandLineApplication {
                 resultStatus = ReturnValue.HELP_REQUEST;
             } else {
                 resultStatus = ObjectUtils.defaultIfNull(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
-                if (resultStatus.getCode() < 0) {
+                if (resultStatus.isError()) {
                     commandLine.usage(System.out);
                 }
             }

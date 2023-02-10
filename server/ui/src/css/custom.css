@@ -1,0 +1,172 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+	--ifm-color-primary: var(--blue-3);
+	--ifm-color-primary-dark: var(--blue-4);
+	--ifm-color-primary-darker: var(--blue-5);
+	--ifm-color-primary-darkest: var(--blue-6);
+	--ifm-color-primary-light: var(--blue-2);
+	--ifm-color-primary-lighter: var(--blue-1);
+	--ifm-color-primary-lightest: var(--blue-0);
+
+	--ifm-code-font-size: 95%;
+	--docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+	--ifm-global-radius: var(--border-radius-small);
+
+	--ifm-font-family-base: var(--font-sans);
+	--ifm-font-family-monospace: var(--font-mono);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme="dark"]:root {
+	--docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+	--ifm-background-color: var(--surface-6);
+}
+
+[data-theme] .footer {
+	--ifm-footer-background-color: var(--surface-accent-4);
+	--ifm-footer-color: var(--text-accent-bg-main);
+	--ifm-footer-link-color: var(--text-accent-bg-main);
+	--ifm-footer-link-hover-color: var(--text-accent-bg-main);
+	--ifm-footer-title-color: var(--text-accent-bg-main);
+}
+[data-theme="dark"] .footer {
+	--ifm-footer-background-color: var(--surface-6);
+	border-top: 1px solid var(--ifm-table-border-color);
+}
+[data-theme] .navbar {
+	--ifm-navbar-background-color: var(--blue-4);
+}
+
+/* XÖV Theme */
+:where(html) {
+	--blue-0: hsl(206 100% 95%);
+	--blue-1: hsl(206 100% 80%);
+	--blue-2: hsl(206 100% 65%);
+	--blue-3: hsl(206 100% 47%);
+	--blue-4: hsl(220 41% 30%);
+	--blue-5: hsl(220 41% 24%);
+	--blue-6: hsl(220 41% 18%);
+
+	--gray-0: hsl(216 33% 100%);
+	--gray-1: hsl(216 33% 97%);
+	--gray-2: hsl(220 21% 95%);
+	--gray-3: hsl(220 21% 92%);
+	--gray-4: hsl(212 10% 73%);
+	--gray-5: hsl(212 10% 45%);
+	--gray-6: hsl(212 15% 13%);
+
+	--red-0: hsl(357 80% 96%);
+	--red-1: hsl(357 80% 89%);
+	--red-2: hsl(357 80% 75%);
+	--red-3: hsl(357 80% 60%);
+	--red-4: hsl(357 80% 40%);
+	--red-5: hsl(357 60% 22%);
+
+	--orange-0: hsl(46 80% 90%);
+	--orange-1: hsl(46 80% 80%);
+	--orange-2: hsl(46 80% 68%);
+	--orange-3: hsl(46 80% 40%);
+	--orange-4: hsl(46 80% 25%);
+	--orange-5: hsl(46 80% 10%);
+
+	--green-0: hsl(162 100% 93%);
+	--green-1: hsl(162 100% 74%);
+	--green-2: hsl(162 100% 45%);
+	--green-3: hsl(162 100% 30%);
+	--green-4: hsl(162 100% 20%);
+	--green-5: hsl(162 100% 10%);
+
+	/* Surface colors */
+	--surface-0: var(--gray-0);
+	--surface-1: var(--gray-1);
+	--surface-2: var(--gray-2);
+	--surface-3: var(--gray-3);
+	--surface-4: var(--gray-4);
+	--surface-5: var(--gray-5);
+	--surface-6: var(--gray-6);
+
+	--surface-accent-0: var(--blue-0);
+	--surface-accent-1: var(--blue-1);
+	--surface-accent-2: var(--blue-2);
+	--surface-accent-3: var(--blue-3);
+	--surface-accent-4: var(--blue-4);
+	--surface-accent-5: var(--blue-5);
+
+	/* Text colors */
+	--text-0: var(--gray-4);
+	--text-1: var(--gray-5);
+	--text-2: var(--gray-6);
+	--text-main: var(--text-2);
+	--text-faded: var(--text-1);
+
+	--text-accent-0: var(--blue-3);
+	--text-accent-1: var(--blue-4);
+	--text-accent-2: var(--blue-5);
+	--text-accent: var(--text-accent-2);
+
+	--text-accent-bg-0: var(--gray-0);
+	--text-accent-bg-1: var(--gray-1);
+	--text-accent-bg-2: var(--gray-4);
+	--text-accent-bg-3: var(--blue-4);
+	--text-accent-bg-main: var(--text-accent-bg-0);
+
+	--text-negative: var(--red-3);
+	--text-error: var(--red-3);
+	--text-warning: var(--orange-3);
+	--text-info: var(--blue-3);
+	--text-success: var(--green-3);
+
+	/* Misc elements */
+	--divider: var(--gray-4);
+	--scrollthumb: var(--gray-4);
+	--input-background: var(--surface-0);
+	--input-background-disabled: var(--surface-2);
+
+	/* Border Radius */
+	--border-radius-small: 2px;
+	--border-radius-medium: 0.2rem;
+	--border-radius-large: 1rem;
+
+	--color-border: var(--gray-4);
+	--color-border-hover: var(--gray-4);
+	--color-border-accent: var(--blue-2);
+	--color-border-accent-hover: var(--blue-2);
+
+	/* Fonts */
+	--font-sans: "Open Sans", system-ui, -apple-system, "Segoe UI", "Roboto",
+		"Ubuntu", "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji",
+		"Segoe UI Emoji", "Segoe UI Symbol";
+	--font-serif: ui-serif, serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol";
+	--font-mono: "Cascadia Code", "Dank Mono", "Operator Mono", "Inconsolata",
+		"Fira Mono", ui-monospace, "SF Mono", "Monaco", "Droid Sans Mono",
+		"Source Code Pro", monospace, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol";
+}
+
+/* Scrollbars: */
+/* Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--scrollthumb) transparent;
+}
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+	width: min(8px, 0.5rem);
+	height: min(8px, 0.5rem);
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: var(--scrollthumb);
+	border-radius: 999rem;
+}

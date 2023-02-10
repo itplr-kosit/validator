@@ -1,0 +1,16 @@
+.errorDisplay {
+	background-color: var(--red-3);
+	color: var(--text-accent-bg-0);
+	padding: 0.75em 1.25em;
+	border-radius: var(--ifm-global-radius);
+	box-shadow: var(--ifm-global-shadow-lw);
+	margin: 1em 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75em;
+}
+
+.title {
+	display: block;
+	line-height: 1;
+}

@@ -27,7 +27,7 @@ public class GuiHandlerIT extends BaseIT {
     @Test
     public void checkGui() {
         given().when().get("/").then().statusCode(200).and().contentType(ContentType.HTML);
-        given().when().get("/README.md").then().statusCode(200).and().contentType("text/markdown");
+        given().when().get("/index.html").then().statusCode(200).and().contentType("text/html");
         given().when().get("/unknown.md").then().statusCode(404).and().contentType(ContentType.TEXT);
     }
 }

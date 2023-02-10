@@ -1,0 +1,89 @@
+.codeblock {
+	box-shadow: inset var(--ifm-global-shadow-lw);
+	margin: 0;
+}
+
+.wrapper {
+	position: relative;
+}
+
+:where(.buttonWrapper) {
+	--codeblock-button-text-color: var(--text-main);
+	--codeblock-button-background-color: var(--surface-2);
+	--codeblock-button-background-color-hover: var(--surface-accent-1);
+	--codeblock-button-separator-color: var(--surface-4);
+	--codeblock-button-border-color: var(--codeblock-button-separator-color);
+	--codeblock-button-icon-size: 1.5rem;
+	--codeblock-button-size: 2rem;
+	--codeblock-button-shadow: var(--ifm-global-shadow-tl);
+}
+
+:where([data-theme="dark"] .buttonWrapper) {
+	--codeblock-button-text-color: var(--text-0);
+	--codeblock-button-background-color: var(--surface-6);
+	--codeblock-button-background-color-hover: var(--surface-5);
+	--codeblock-button-separator-color: var(--codeblock-button-text-color);
+	--codeblock-button-shadow: var(--ifm-global-shadow-tl);
+	--codeblock-button-shadow: none;
+}
+
+.button {
+	position: relative;
+	width: var(--codeblock-button-size);
+	height: var(--codeblock-button-size);
+	background: var(--codeblock-button-background-color);
+	font-family: inherit;
+	font-size: 1rem;
+	font-size: 0.875rem;
+	text-transform: uppercase;
+	color: var(--codeblock-button-text-color);
+	font-weight: var(--ifm-font-weight-semibold);
+	border: none;
+	padding: 0;
+	height: 2.25em;
+	line-height: 1;
+	border-radius: var(--border-radius-small);
+	border-radius: 0;
+	cursor: pointer;
+	transition: color 200ms ease, background-color 200ms ease;
+}
+
+.button:not(:first-child) {
+	border-left: 1px solid var(--codeblock-button-separator-color);
+}
+.button:first-child {
+	border-top-left-radius: var(--border-radius-small);
+	border-bottom-left-radius: var(--border-radius-small);
+}
+.button:last-child {
+	border-top-right-radius: var(--border-radius-small);
+	border-bottom-right-radius: var(--border-radius-small);
+}
+
+.button:hover,
+.button:focus {
+	background: var(--codeblock-button-background-color-hover);
+}
+
+.button svg {
+	width: var(--codeblock-button-icon-size);
+	height: var(--codeblock-button-icon-size);
+}
+
+.buttonWrapper {
+	position: absolute;
+	display: flex;
+	top: 1rem;
+	right: 1rem;
+	z-index: 1;
+	box-shadow: var(--codeblock-button-shadow);
+	border: 1px solid var(--codeblock-button-border-color);
+	border-radius: var(--border-radius-small);
+	opacity: 0.75;
+	transition: opacity 300ms ease;
+}
+
+.buttonWrapper:hover,
+.buttonWrapper:focus-within {
+	opacity: 1;
+}

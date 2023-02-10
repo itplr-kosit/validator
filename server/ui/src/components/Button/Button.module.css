@@ -1,0 +1,105 @@
+:where(.button) {
+	--button-shadow: var(--ifm-global-shadow-lw);
+	--button-accent-shadow: var(--ifm-global-shadow-md);
+	--button-text-color: var(--text-accent-bg-0);
+	--button-background-color: var(--surface-accent-3);
+	--button-background-color-hover: var(--surface-accent-4);
+	--button-background-color-disabled: var(--surface-4);
+	--button-accent-shadow-opacity: 0;
+}
+
+:where([data-theme="dark"] .button) {
+	--button-shadow: none;
+	--button-accent-shadow: none;
+	--button-text-color: var(--text-accent-bg-0);
+	--button-background-color: var(--surface-accent-4);
+	--button-background-color-hover: var(--surface-accent-3);
+	--button-background-color-disabled: var(--surface-5);
+	--button-accent-shadow-opacity: 0;
+}
+
+.button {
+	position: relative;
+	background: var(--button-background-color);
+	font-family: inherit;
+	font-size: 1rem;
+	font-size: 0.875rem;
+	text-transform: uppercase;
+	color: var(--button-text-color);
+	font-weight: var(--ifm-font-weight-semibold);
+	border: none;
+	padding: 0 1.25em;
+	height: 2.25em;
+	line-height: 1;
+	border-radius: var(--border-radius-small);
+	box-shadow: var(--button-shadow);
+	cursor: pointer;
+	transition: color 150ms ease, background-color 150ms ease;
+}
+
+.button::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	box-shadow: var(--button-accent-shadow);
+	opacity: var(--button-accent-shadow-opacity);
+	transition: opacity 200ms ease;
+}
+
+.button:where(:hover, :focus) {
+	--button-background-color: var(--button-background-color-hover);
+}
+.button:not([disabled]):where(:hover, :focus) {
+	--button-accent-shadow-opacity: 1;
+}
+.button:not([disabled]):where(:active) {
+	--button-accent-shadow-opacity: 0.5;
+}
+
+.button[disabled] {
+	--button-background-color: var(--button-background-color-disabled);
+	cursor: auto;
+}
+
+.spinnerWrapper {
+	opacity: 0;
+	pointer-events: none;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: grid;
+	place-content: center;
+	background: #ffffff55;
+	backdrop-filter: blur(1px);
+	transition: opacity 150ms ease;
+}
+
+.loading .spinnerWrapper {
+	opacity: 1;
+}
+
+.spinner {
+	--_size: 1.75rem;
+	--_thickness: 3px;
+
+	width: var(--_size);
+	height: var(--_size);
+	border: var(--_thickness) solid var(--button-text-color);
+	border-bottom-color: transparent;
+	border-radius: 50%;
+	animation: spin 1100ms infinite cubic-bezier(0.5, 0.1, 0.5, 0.9);
+}
+
+@keyframes spin {
+	0% {
+		rotate: 0deg;
+	}
+	100% {
+		rotate: 360deg;
+	}
+}
