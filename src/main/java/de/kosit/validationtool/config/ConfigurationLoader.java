@@ -36,12 +36,7 @@ import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
-import de.kosit.validationtool.impl.CollectingErrorEventHandler;
-import de.kosit.validationtool.impl.ContentRepository;
-import de.kosit.validationtool.impl.ConversionService;
-import de.kosit.validationtool.impl.ResolvingMode;
-import de.kosit.validationtool.impl.Scenario;
-import de.kosit.validationtool.impl.SchemaProvider;
+import de.kosit.validationtool.impl.*;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.xml.RelativeUriResolver;
@@ -67,8 +62,6 @@ public class ConfigurationLoader {
     private static final String SUPPORTED_MAJOR_VERSION = "2";
 
     private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = "http://www.xoev.de/de/validator/framework/2/scenarios";
-
-    protected final Map<String, Object> parameters = new HashMap<>();
 
     protected final Map<String, Object> parameters = new HashMap<>();
 
@@ -121,7 +114,6 @@ public class ConfigurationLoader {
     private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {
         log.info("create Fallback: ");
         return new FallbackBuilder().build(repository).getObject();
-
     }
 
     private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
@@ -134,38 +126,6 @@ public class ConfigurationLoader {
         s.setSchema(repository.createSchema(def));
         s.setSchematronValidations(repository.createSchematronTransformations(def));
         s.setReportTransformations(repository.createReportTransformations(def));
-        s.setFactory(repository.getResolvingConfigurationStrategy());
-        s.setUriResolver(repository.getResolver());
-        s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
-        if (def.getAcceptMatch() != null) {
-            s.setAcceptExecutable(repository.createAccepptExecutable(def));
-        }
-        return s;
-    }
-
-    URI getScenarioRepository() {
-        if (this.scenarioRepository == null) {
-            log.info("Creating default scenario repository (alongside scenario definition)");
-            return RelativeUriResolver.resolve(URI.create("."), this.scenarioDefinition);
-        }
-        return this.scenarioRepository;
-    }
-
-    private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
-        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).collect(Collectors.toList());
-    }
-
-    private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
-        final Scenario s = new Scenario(def);
-        s.setMatchExecutable(repository.createMatchExecutable(def));
-        s.setSchema(repository.createSchema(def));
-        s.setSchematronValidations(repository.createSchematronTransformations(def));
-        if (def.getCreateReport() != null) {
-            s.setReportTransformation(repository.createReportTransformation(def));
-        } else {
-            log.warn("No report configured. Will provide an internal format as report!");
-            s.setReportTransformation(repository.createIdentityTransformation());
-        }
         s.setFactory(repository.getResolvingConfigurationStrategy());
         s.setUriResolver(repository.getResolver());
         s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
