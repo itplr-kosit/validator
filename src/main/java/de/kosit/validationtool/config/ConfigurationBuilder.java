@@ -382,6 +382,17 @@ public class ConfigurationBuilder {
     }
 
     /**
+     * Set a specific, pre-configured {@link ContentRepository} for resolving artifacts for scenarios.
+     *
+     * @param repository the repository location
+     * @return this
+     */
+    public ConfigurationBuilder useRepository(final ContentRepository repository) {
+        this.contentRepository = repository;
+        return this;
+    }
+
+    /**
      * Set a specific repository location for resolving artifacts for scenarios.
      *
      * @param repository the repository location
