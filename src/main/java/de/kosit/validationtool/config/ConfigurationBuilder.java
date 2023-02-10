@@ -22,11 +22,7 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
@@ -68,6 +64,8 @@ public class ConfigurationBuilder {
     private ResolvingConfigurationStrategy resolvingConfigurationStrategy;
 
     private ResolvingMode resolvingMode = ResolvingMode.STRICT_RELATIVE;
+
+    private ContentRepository contentRepository;
 
     private String author = "API";
 
@@ -261,15 +259,25 @@ public class ConfigurationBuilder {
     }
 
     /**
+     * Add a parameter to the configuration.
+     * 
+     * @param key the key of the parameter
+     * @param value the value of the parameter
+     * @return this
+     */
+    public ConfigurationBuilder parameter(final String key, final Object value) {
+        this.parameters.put(key, value);
+        return this;
+    }
+
+    /**
      * Builds the actual {@link Configuration} by validating all builder inputs and constructing neccessary objects.
      *
      * @return a valid configuration
      * @throws IllegalStateException when the configuration is not valid/complete
      */
     public Configuration build(final Processor processor) {
-        final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
-        final ContentRepository contentRepository = new ContentRepository(processor, resolving, this.repository);
-
+        final ContentRepository contentRepository = resolveContentRepository(processor);
         final List<Scenario> list = initializeScenarios(contentRepository);
         final Scenario fallbackScenario = initializeFallback(contentRepository);
         final DefaultConfiguration configuration = new DefaultConfiguration(list, fallbackScenario);
@@ -280,6 +288,17 @@ public class ConfigurationBuilder {
         configuration.setContentRepository(contentRepository);
         configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, createDefinition(configuration));
         return (configuration);
+    }
+
+    private ContentRepository resolveContentRepository(final Processor processor) {
+        if (this.contentRepository == null) {
+            final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
+            this.contentRepository = new ContentRepository(processor, resolving, this.repository);
+        } else if (this.resolvingConfigurationStrategy != null) {
+            log.warn("Ignore definition of resolve strategy since a custom ContentRepository is supplied");
+        }
+        return this.contentRepository;
+
     }
 
     private Scenarios createDefinition(final DefaultConfiguration configuration) {
