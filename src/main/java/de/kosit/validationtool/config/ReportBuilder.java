@@ -16,24 +16,21 @@
 
 package de.kosit.validationtool.config;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
-
-import java.net.URI;
-import java.nio.file.Path;
-import java.util.Collections;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.scenarios.CreateReportType;
 import de.kosit.validationtool.model.scenarios.ResourceType;
-
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.XsltExecutable;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.Collections;
+
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 /**
  * Builder style configuration for the report transformation.
@@ -81,7 +78,7 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
     private CreateReportType createObject() {
         final CreateReportType o = new CreateReportType();
         final ResourceType r = new ResourceType();
-        r.setLocation(this.source.toASCIIString());
+        r.setLocation(this.source != null ? this.source.toASCIIString() : DEFAULT_NAME);
         r.setName(isNotEmpty(this.name) ? this.name : DEFAULT_NAME);
         o.setId(isNotEmpty(this.id) ? this.id : DEFAULT_NAME);
         o.setResource(r);
