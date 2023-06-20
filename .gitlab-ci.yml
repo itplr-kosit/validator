@@ -40,9 +40,8 @@ java-11:
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
   needs: [ ]
   script:
-
-    - mvn  $MAVEN_CLI_OPTS install -Pjakarta
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
+    - mvn  $MAVEN_CLI_OPTS install -Pjakarta
   artifacts:
     name: java-11
     when: always
