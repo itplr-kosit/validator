@@ -41,13 +41,27 @@ java-11:
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
-    - mvn  $MAVEN_CLI_OPTS install -Pjakarta
   artifacts:
     name: java-11
     when: always
     paths:
       - target/*.jar
       - target/*.zip
+    reports:
+      junit:
+        - target/surefire-reports/*.xml
+        - target/failsafe-reports/*.xml
+java-11-jakarta:
+  extends: .java
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  needs: [ ]
+  script:
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP -Pjakarta install
+  artifacts:
+    name: java-11-jakarta
+    when: always
+    paths:
+      - target/*jakarta.jar
     reports:
       junit:
         - target/surefire-reports/*.xml
@@ -90,6 +104,7 @@ deploy:
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
   needs:
     - job: java-11
+    - job: jakarta
   script:
     - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
