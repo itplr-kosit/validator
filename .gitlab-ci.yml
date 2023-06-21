@@ -106,14 +106,7 @@ deploy:
     - job: java-11
   script:
     - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    #    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    #    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.jar -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    #    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-javadoc.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="javadoc" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    #    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    #    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-java8-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="java8-standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    #    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-sources.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="sources" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    #    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-jakarta.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="jakarta" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS clean deploy -DskipTests -DaltDeploymentRepository=kosit::gitlab-maven::https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS clean deploy -DskipTests -DaltDeploymentRepository=gitlab-maven::default::https://projekte.kosit.org/api/v4/projects/7/packages/maven
     - mvn $MAVEN_CLI_OPTS clean deploy -DskipTests -Pjakarta -DaltDeploymentRepository=gitlab-maven::default::https://projekte.kosit.org/api/v4/projects/7/packages/maven
   when: manual
 
