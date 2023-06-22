@@ -153,6 +153,13 @@
             <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>de.kosit.validationtool</groupId>
+            <artifactId>packaged-test-scenarios</artifactId>
+            <version>1.0.3</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -462,18 +469,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>jar-tests</id>
-            <dependencies>
-                <dependency>
-                    <groupId>de.kosit.validationtool</groupId>
-                    <artifactId>packaged-test-scenarios</artifactId>
-                    <version>1.0.3</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-
-        </profile>
         <profile>
             <id>jee-standard</id>
             <activation>
