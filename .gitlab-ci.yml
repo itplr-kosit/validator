@@ -19,7 +19,7 @@ cache:
     - job: java-11
       artifacts: false
   script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP -Pjar-tests,jee-standard verify
   artifacts:
     name: artifacts
     when: on_failure
