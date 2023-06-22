@@ -227,30 +227,6 @@
             </plugin>
 
 
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.4.2</version>
-                <executions>
-                    <execution>
-                        <id>full_dist</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/assembly/assembly-dist.xml</descriptor>
-                            </descriptors>
-                            <attach>true</attach>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <outputDirectory>target/</outputDirectory>
-                            <workDirectory>target/assembly/full</workDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- Generate model classes -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -506,6 +482,29 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>3.4.2</version>
+                        <executions>
+                            <execution>
+                                <id>full_dist</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>src/assembly/assembly-dist.xml</descriptor>
+                                    </descriptors>
+                                    <attach>true</attach>
+                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <outputDirectory>target/</outputDirectory>
+                                    <workDirectory>target/assembly/full</workDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 
                 </plugins>
             </build>
@@ -527,8 +526,12 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.2.2</version>
+                        <version>3.3.0</version>
                         <executions>
+                                <execution>
+                                    <id>default-jar</id>
+                                    <phase>none</phase>
+                                </execution>
                             <execution>
                                 <id>Arbitrary</id>
                                 <goals>
@@ -548,7 +551,6 @@
                             <rules>
                                 <jakartaDefaults>true</jakartaDefaults>
                             </rules>
-                            <artifact>jakarta</artifact>
                         </configuration>
                         <executions>
                             <execution>
