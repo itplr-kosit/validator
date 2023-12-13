@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# 1.5.0 (to be released)
+# 1.6.0 (to be released)
+
+### Changed
+
+- (CORE) update to java 11 and to jakarta namespace
+
+# 1.5.0
 
 ### Fixed
 
