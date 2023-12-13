@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.util.JAXBSource;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.util.JAXBSource;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;

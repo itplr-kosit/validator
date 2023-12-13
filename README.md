@@ -103,6 +103,5 @@ The [daemon documentation](./docs/daemon.md) shows more usage details and furthe
 The validator distribution contains the following artifacts:
 
 1. **validationtool-`<version>`.jar**: Java library for embedded use within an application
-1. **validationtool-`<version`>-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java 8 and Java >= 11)
-1. **validationtool-`<version`>-java8-standalone.jar**: Uber-JAR for standalone usage with Java JDK 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
+1. **validationtool-`<version`>-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java >= 11)
 1. **libs/***: directory containing all (incl. optional) dependencies of the validator
