@@ -52,7 +52,7 @@ The validator can be used in three different ways:
 The general way using the CLI is:
 
 ```shell
-java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...
+java -jar  validationtool-<version>-standalone.jar -r <path-to-scenario-config-file> -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
 The help option displays further CLI options to customize the process:
@@ -62,7 +62,7 @@ java -jar  validationtool-<version>-standalone.jar --help
 ```
 
 A concrete example with a specific validator configuration can be found on 
-[GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
+[validator-configuration-xrechnung](https://github.com/itplr-kosit/validator-configuration-xrechnung)
 
 The  [CLI documentation](./docs/cli.md) shows further configuration options.
 
