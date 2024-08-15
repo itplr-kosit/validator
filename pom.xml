@@ -54,12 +54,13 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <version.assertj>3.23.1</version.assertj>
         <version.commons-io>2.11.0</version.commons-io>
         <version.commons-lang>3.12.0</version.commons-lang>
         <version.jacoco>0.8.8</version.jacoco>
         <version.jaxb>2.3.7</version.jaxb>
-        <version.lombok>1.18.24</version.lombok>
+        <version.lombok>1.18.30</version.lombok>
         <version.mockito>4.9.0</version.mockito>
         <version.owasp-dependency-check>7.2.0</version.owasp-dependency-check>
         <version.rest-assured>5.2.0</version.rest-assured>
@@ -174,6 +175,16 @@
 
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.2</version>
+             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+             </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>3.3.0</version>
@@ -216,7 +227,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -655,7 +666,7 @@
     </reporting>
 
     <scm>
-        <connection>https://github.com/itplr-kosit/validationtool.git</connection>
+        <connection>scm:git:shttps://github.com/itplr-kosit/validationtool.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
         <tag>v1.1.0</tag>
         <url>https://github.com/itplr-kosit/validator</url>
