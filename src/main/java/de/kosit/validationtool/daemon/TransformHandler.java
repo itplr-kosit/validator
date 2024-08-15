@@ -82,13 +82,23 @@ public class TransformHandler extends BaseHandler {
         try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
             Processor processor = new Processor(false);
             XsltCompiler xsltCompiler = processor.newXsltCompiler();
+
+            // 1. XSLT -> XR
             XsltExecutable stylesheet = xsltCompiler.compile(new StreamSource(new File("visualization/xsl/ubl-invoice-xr.xsl")));
-            Serializer serializer = processor.newSerializer(out);
-            serializer.setOutputProperty(Serializer.Property.METHOD, "html");
-            serializer.setOutputProperty(Serializer.Property.INDENT, "yes");
             Xslt30Transformer transformer = stylesheet.load30();
-            transformer.transform(source, serializer);
-            return out.toByteArray();
+            transformer.transform(source, processor.newSerializer(out));
+
+            // 2. XR -> HTML
+            XsltExecutable htmlStylesheet = xsltCompiler.compile(new StreamSource(new File("visualization/xsl/xrechnung-html.xsl")));
+            Xslt30Transformer htmlTransformer = htmlStylesheet.load30();
+
+            try ( final ByteArrayOutputStream htmlOut = new ByteArrayOutputStream() ) {
+                // Use the XR output as the input for the HTML transformation
+                htmlTransformer.transform(new StreamSource(new ByteArrayInputStream(out.toByteArray())), processor.newSerializer(htmlOut));
+
+                // Return the HTML output
+                return htmlOut.toByteArray();
+            }
         } catch (final IOException | SaxonApiException e) {
             Printer.writeOut("Error serializeXR2HTML IOException result", e);
             throw new IllegalStateException("Can not serialize result", e);
