@@ -1,0 +1,2550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xlink="http://www.w3.org/1999/xlink"
+           xmlns:Invoice="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+           xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+           xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+           xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2"
+           xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+           xmlns="http://docbook.org/ns/docbook"
+           xmlns:xr="urn:ce.eu:en16931:2017:xoev-de:kosit:standard:xrechnung-1"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           targetNamespace="urn:ce.eu:en16931:2017:xoev-de:kosit:standard:xrechnung-1"
+           version="1.1-SNAPSHOT">
+   <xs:annotation>
+      <xs:documentation>Dieses Schema bildet die Struktur der Informationselemente (Business Groups und Business Terms) des semantischen Datenmodells der Spezifikation XRechnung in
+                            XML ab. Die Elementnamen in diesem Schema entsprechen den Bezeichnern der Informationselemente, wobei Leerzeichen durch Unterstriche ersetzt
+                            wurden. Die Dokumentation der Informationselemente in diesem Schema entspricht ihrer Dokumentation in der Spezifikation. Das Schema ist ausschließlich als
+                            einheitliche Grundlage zur Visualisierung von elektronischen Rechnungsdokumenten vorgesehen. </xs:documentation>
+   </xs:annotation>
+   <xs:attributeGroup name="xr-attributes">
+      <xs:annotation>
+         <xs:documentation>Diese zusätzlichen Attribute können in allen XML-Elementen für Business Groups und Business Terms eingefügt werden.</xs:documentation>
+      </xs:annotation>
+      <xs:attribute name="id" type="xs:token" form="qualified">
+         <xs:annotation>
+            <xs:documentation>Das Label der / des entsprechenden Business Group oder Business Terms gemäß der Spezifikation XRechnung, zum Beispiel BT-1 oder BG-12.</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="src" type="xs:token" form="qualified">
+         <xs:annotation>
+            <xs:documentation>Rückbezug auf Element der elektronischen Rechnung in der technischen Syntax UBL oder CII, welches durch das vorliegende Element abgebildet wird (in Form eines XPath
+                                    Ausdrucks).</xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+   </xs:attributeGroup>
+   <xs:element name="invoice">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="Invoice_number"
+                        type="xr:identifier"
+                        minOccurs="1"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-1</xs:appinfo>
+                  <xs:documentation>Eine eindeutige Kennung der Rechnung, die diese im System des Verkäufers identifiziert. Anmerkung: Es ist kein «identification scheme» zu verwenden.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Invoice_issue_date"
+                        type="xr:date"
+                        minOccurs="1"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-2</xs:appinfo>
+                  <xs:documentation>Das Datum, an dem die Rechnung ausgestellt wurde.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Invoice_type_code"
+                        type="xr:code"
+                        minOccurs="1"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-3</xs:appinfo>
+                  <xs:documentation>Ein Code, der den Funktionstyp der Rechnung angibt. Anmerkung: Der Rechnungstyp muss gemäß UNTDID 1001 spezifiziert werden.  Folgende Codes aus der Codeliste sollen verwendet werden: 
+326 (Partial invoice)
+380 (Commercial invoice)
+384 (Corrected invoice)
+389 (Self-billed invoice)
+381 (Credit note)
+875 (Partial construction invoice)
+876 (Partial final construction invoice)
+877 (Final construction invoice)
+</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Invoice_currency_code"
+                        type="xr:code"
+                        minOccurs="1"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-5</xs:appinfo>
+                  <xs:documentation>Die Währung, in der alle Rechnungsbeträge angegeben werden, ausgenommen ist der Umsatzsteuer-Gesamtbetrag, der in der Abrechnungswährung anzugeben ist. Anmerkung: Nur eine Währung ist in der Rechnung zu verwenden, der Invoice_total_VAT_amount_in_accounting_currency-BT-111; ist in der Abrechnungswährung auszuweisen. Die gültigen Währungen sind bei der ISO 4217 «Codes for the representation of currencies and funds» registriert. Nur die Alpha-3-Darstellung darf verwendet werden.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="VAT_accounting_currency_code"
+                        type="xr:code"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-6</xs:appinfo>
+                  <xs:documentation>Die für die Umsatzsteuer-Abrechnungs- und -Meldezwecke verwendete Währung, die im Land des Verkäufers gültig ist oder verlangt wird. Anmerkung: Zu Verwenden in Kombination mit Invoice_total_VAT_amount_in_accounting_currency-BT-111;, wenn die Umsatzsteuerabrechnungswährung von der Rechnungswährung abweicht. Die gültigen Währungen sind bei der ISO 4217 «Codes for the representation of currencies and funds» registriert. Nur die Alpha-3-Darstellung darf verwendet werden.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Value_added_tax_point_date"
+                        type="xr:date"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-7</xs:appinfo>
+                  <xs:documentation>Das Datum, zu dem die Umsatzsteuer für den Verkäufer und für den Erwerber abrechnungsrelevant wird. Die Anwendung von BT-7 und 8 schließen sich gegenseitig aus.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Value_added_tax_point_date_code"
+                        type="xr:code"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-8</xs:appinfo>
+                  <xs:documentation>Ein Code für den Zeitpunkt, an dem die Umsatzsteuer für den Erwerber und den Verkäufer in der Buchführung nachzuweisen ist. Folgende Codes aus der Codeliste UNTDID 2005 werden verwendet: 
+3 (Invoice document issue date time)
+35 (Delivery date/time, actual)
+432 (Paid to date)
+ Das Informationselement Value_added_tax_point_date_code-BT-8; wird verwendet, wenn das Informationselement Value_added_tax_point_date-BT-7; zum Zeitpunkt der Rechnungsstellung noch nicht bekannt ist. Die Anwendung von BT-7 und 8 schließen sich gegenseitig aus.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Payment_due_date"
+                        type="xr:date"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-9</xs:appinfo>
+                  <xs:documentation>Das Fälligkeitsdatum des Rechnungsbetrages.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Buyer_reference"
+                        type="xr:text"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-10</xs:appinfo>
+                  <xs:documentation>Ein vom Erwerber zugewiesener und für interne Lenkungszwecke benutzter Bezeichner. Anmerkung: Im Rahmen des Steuerungsprojekts eRechnung ist mit der so genannten Leitweg-ID eine Zuordnungsmöglichkeit entwickelt worden, deren verbindliche Nutzung von Bund und mehreren Ländern vorgegeben wird. Die Leitweg-ID ist prinzipiell für Bund, Länder und Kommunen einsetzbar. Für die Darstellung der Leitweg-ID wird das in XRechnung verpflichtende Feld Buyer Reference benutzt. Länder und Kommunen, die ihren Rechnungsstellern abweichend von der Leitweg-ID eigene Zuordnungsmuster mitteilen, können diese statt der Leitweg-ID im Feld Buyer Reference verwenden. Hinweis: Es existiert eine Handreichung zur Bildung der Leitweg-ID, die über die KoSIT zu erhalten ist (siehe Website XRechnung bzw. FAQ-Liste).</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Project_reference"
+                        type="xr:document_reference"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-11</xs:appinfo>
+                  <xs:documentation>Die Kennung eines Projektes, auf das sich die Rechnung bezieht.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Contract_reference"
+                        type="xr:document_reference"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-12</xs:appinfo>
+                  <xs:documentation>Eine eindeutige Bezeichnung des Vertrages (z. B. Vertragsnummer).</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Purchase_order_reference"
+                        type="xr:document_reference"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-13</xs:appinfo>
+                  <xs:documentation>Eine vom Erwerber ausgegebene Kennung für eine referenzierte Bestellung.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Sales_order_reference"
+                        type="xr:document_reference"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-14</xs:appinfo>
+                  <xs:documentation>Eine vom Verkäufer ausgegebene Kennung für einen referenzierten  Auftrag.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Receiving_advice_reference"
+                        type="xr:document_reference"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-15</xs:appinfo>
+                  <xs:documentation>Eine Kennung für eine referenzierte Empfangsbestätigung.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Despatch_advice_reference"
+                        type="xr:document_reference"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-16</xs:appinfo>
+                  <xs:documentation>Eine Kennung für eine referenzierte Versandanzeige.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Tender_or_lot_reference"
+                        type="xr:document_reference"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-17</xs:appinfo>
+                  <xs:documentation>Die Kennung der Ausschreibung oder des Loses auf die/das sich die Rechnung  bezieht.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Invoiced_object_identifier"
+                        type="xr:identifier"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-18</xs:appinfo>
+                  <xs:documentation>Eine vom Verkäufer angegebene Kennung für ein Objekt, auf das sich die Rechnung bezieht (z. B. Zählernummer, Telefonnummer, Kfz-Kennzeichen, versicherte Person, Abonnement-Nummer, Rufnummer).</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Buyer_accounting_reference"
+                        type="xr:text"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-19</xs:appinfo>
+                  <xs:documentation>Ein Textwert, der angibt, an welcher Stelle die betreffenden Daten in den Finanzkonten des Erwerbers zu buchen sind.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="Payment_terms" type="xr:text" minOccurs="0" maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BT-20</xs:appinfo>
+                  <xs:documentation>Eine Textbeschreibung der Zahlungsbedingungen, die für den fälligen Zahlungsbetrag gelten (einschließlich Beschreibung möglicher Skontobedingungen). Dieses Informationselement kann mehrere Zeilen und mehrere Angaben zu Zahlungsbedingungen beinhalten und sowohl unstrukturierten als strukturierten Text enthalten. Der unstrukturierte Text darf dabei keine # enthalten. Werden Informationen zur Gewährung von Skonto angegeben, sind sie wie folgt darzustellen: Anzugeben ist im ersten Segment «SKONTO», im zweiten «TAGE=n», im dritten «PROZENT=n».
+Prozentzahlen sind ohne Vorzeichen sowie mit Punkt getrennt von zwei Nachkommastellen anzugeben. Liegt dem zu berechnenden Betrag nicht BT-115, «fälliger Betrag» zugrunde, sondern nur ein Teil des fälligen Betrags der Rechnung, ist der Grundwert zur Berechnung von Skonto als viertes Segment «BASISBETRAG=n» gemäß dem semantischen Datentypen Amount anzugeben. Jeder Eintrag beginnt mit einer #, die Segmente sind mit einer # getrennt und eine Zeile schließt mit einer # ab. Am Ende einer vollständigen Skontoangabe muss ein XML-konformer Zeilenumbruch folgen. Beispiele mit drei Segmenten je Zeile: #SKONTO#TAGE=14#PROZENT=2.25# #SKONTO#TAGE=28#PROZENT=1.00# Beispiele mit vier Segmenten je Zeile (die Gewährung von Skonto bezieht sich nur auf einen Teilbetrag der Rechnung (z. B. Material) und der Grundwert zur Berechnung des Skonto muss mit angegeben werden): #SKONTO#TAGE=14#PROZENT=2.25#BASISBETRAG=357.93# #SKONTO#TAGE=28#PROZENT=1.00#BASISBETRAG=357.93# Alle Angaben zur Gewährung von Skonto müssen in Großbuchstaben gemacht werden. Zusätzliches Whitespace (Leerzeichen, Tabulatoren oder Zeilenumbrüche) ist nicht zulässig. Andere Zeichen oder Texte als in den oberen Beispielen genannt sind nicht zulässig.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="INVOICE_NOTE"
+                        type="xr:INVOICE_NOTEType"
+                        minOccurs="0"
+                        maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>BG-1</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen für rechnungsrelevante Erläuterungen mit Hinweisen auf den Rechnungsbetreff.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="PROCESS_CONTROL"
+                        type="xr:PROCESS_CONTROLType"
+                        minOccurs="1"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BG-2</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den Geschäftsprozess und für die Rechnung geltende Regeln liefern.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="PRECEDING_INVOICE_REFERENCE"
+                        type="xr:PRECEDING_INVOICE_REFERENCEType"
+                        minOccurs="0"
+                        maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>BG-3</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über eine vorausgegangene Rechnung liefern, die berichtigt oder gutgeschrieben werden soll. Anmerkung: Das Informationselement ist zu verwenden, wenn eine vorangegangene Rechnung korrigiert wird, eine Abschlussrechnung auf vorangegangene Teilrechnungen Bezug nimmt oder eine Abschlussrechnung auf vorangegangene Vorauszahlungsrechnungen Bezug nimmt.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="SELLER" type="xr:SELLERType" minOccurs="1" maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BG-4</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den Verkäufer liefern.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="BUYER" type="xr:BUYERType" minOccurs="1" maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BG-7</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den Erwerber liefern.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="PAYEE" type="xr:PAYEEType" minOccurs="0" maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BG-10</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den Zahlungsempfänger liefern. Die Gruppe wird genutzt, wenn der Zahlungsempfänger nicht mit dem Verkäufer identisch ist.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="SELLER_TAX_REPRESENTATIVE_PARTY"
+                        type="xr:SELLER_TAX_REPRESENTATIVE_PARTYType"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BG-11</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den Steuervertreter des Verkäufers liefern.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="DELIVERY_INFORMATION"
+                        type="xr:DELIVERY_INFORMATIONType"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BG-13</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen darüber liefern, wo und wann die in Rechnung gestellten Waren und Dienstleistungen geliefert bzw. erbracht werden.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="INVOICING_PERIOD"
+               type="xr:INVOICING_PERIODType"
+               minOccurs="0"
+               maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BG-14</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den Rechnungszeitraum liefern.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="PAYMENT_INSTRUCTIONS"
+                        type="xr:PAYMENT_INSTRUCTIONSType"
+                        minOccurs="0"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BG-16</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen darüber liefern, wie die Zahlung erfolgen soll.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="DOCUMENT_LEVEL_ALLOWANCES"
+                        type="xr:DOCUMENT_LEVEL_ALLOWANCESType"
+                        minOccurs="0"
+                        maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>BG-20</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über Nachlässe liefern, die für die Rechnung als Ganzes gelten. Anmerkung: Abzüge, wie z. B. einbehaltene Steuern, können auch in dieser Gruppe ausgewiesen werden.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="DOCUMENT_LEVEL_CHARGES"
+                        type="xr:DOCUMENT_LEVEL_CHARGESType"
+                        minOccurs="0"
+                        maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>BG-21</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über Kosten, Zuschläge, und Steuern ndash; ausgenommen die Umsatzsteuer ndash;  enthalten, die für die Rechnung als Ganzes gelten.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="DOCUMENT_TOTALS"
+                        type="xr:DOCUMENT_TOTALSType"
+                        minOccurs="1"
+                        maxOccurs="1">
+               <xs:annotation>
+                  <xs:appinfo>BG-22</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die die monetären Gesamtbeträge der Rechnung liefern.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="VAT_BREAKDOWN"
+                        type="xr:VAT_BREAKDOWNType"
+                        minOccurs="1"
+                        maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>BG-23</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die Umsatzsteueraufschlüsselung in verschiedene Kategorien liefern.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="ADDITIONAL_SUPPORTING_DOCUMENTS"
+                        type="xr:ADDITIONAL_SUPPORTING_DOCUMENTSType"
+                        minOccurs="0"
+                        maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>BG-24</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen mit Informationen über rechnungsbegründende Unterlagen, die Belege für die in der Rechnung gestellten Ansprüche enthalten. Dateinamen rechnungsbegründender Unterlagen müssen innerhalb einer Rechnung eindeutig sein (nicht case-sensitiv). Die Dateinamenserweiterung (extension), in der meist der Typ der Datei angegeben wird, ist dabei Teil des Dateinamens und wird bei der Bestimmung der Eindeutigkeit einbezogen. Anmerkung: 
+Die Gruppe kann verwendet werden, um auf eine dem Erwerber bekannte Dokumentennummer oder ein externes Dokument (referenziert über eine URL als separat herunterladbare Ressource) oder ein eingebettetes Dokument (wie z. B. ein Leistungsnachweis als pdf) zu referenzieren. Von der Möglichkeit der Trennung von Rechnung und rechnungsbegründenden Unterlagen kann insbesondere im Fall großer Anlagen oder sensibler Daten Gebrauch gemacht werden.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="INVOICE_LINE"
+                        type="xr:INVOICE_LINEType"
+                        minOccurs="1"
+                        maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>BG-25</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über einzelne Rechnungspositionen liefern.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="THIRD_PARTY_PAYMENT" type="xr:THIRD_PARTY_PAYMENTType" minOccurs="0" maxOccurs="unbounded">
+               <xs:annotation>
+                  <xs:appinfo>BG-DEX-09</xs:appinfo>
+                  <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über Fremdforderungen enthalten.</xs:documentation>
+               </xs:annotation>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:complexType name="INVOICE_NOTEType">
+      <xs:sequence>
+         <xs:element name="Invoice_note_subject_code"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-21</xs:appinfo>
+               <xs:documentation>Der Betreff für den nachfolgenden Textvermerk zur Rechnung. Anmerkung: Die Auswahl erfolgt aus UNTDID 4451.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_note" type="xr:text" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-22</xs:appinfo>
+               <xs:documentation>Ein Textvermerk, der unstrukturierte Informationen enthält, die für die Rechnung als Ganzes maßgeblich sind. Erforderlichenfalls können Angaben zur Aufbewahrungspflicht gem. § 14 Abs. 4 UStG hier aufgenommen werden. Anmerkung: Im Falle einer bereits fakturierten Rechnung kann hier z. B. der Grund der Korrektur angegeben werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="PROCESS_CONTROLType">
+      <xs:sequence>
+         <xs:element name="Business_process_type_identifier"
+                     type="xr:text"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-23</xs:appinfo>
+               <xs:documentation>Identifiziert den Kontext des Geschäftsprozesses, in dem die Transaktion erfolgt. Er ermöglicht es dem Erwerber, die Rechnung in angemessener Weise zu verarbeiten. Anmerkung: Die mit diesem Informationselement zu übermittelnde Angabe wird vom Erwerber spezifiziert.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Specification_identifier"
+                     type="xr:identifier"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-24</xs:appinfo>
+               <xs:documentation>Eine Kennung der Spezifikation, die das gesamte Regelwerk zum semantischen Inhalt, zu den Kardinalitäten und den Geschäftsregeln enthält, denen die in der Rechnung enthaltenen Daten entsprechen. Anmerkung: Damit wird die Konformität zum jeweiligen Dokument erklärt. Für den Verweis auf die EU-Norm ist urn:cen.eu:en16931:2017 anzugeben. Rechnungen, die zum Standard XRechnung konform sind, geben hier urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_1.2 an. Es ist kein Schema zu verwenden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="PRECEDING_INVOICE_REFERENCEType">
+      <xs:sequence>
+         <xs:element name="Preceding_Invoice_reference"
+                     type="xr:document_reference"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-25</xs:appinfo>
+               <xs:documentation>Die Kennung der vorausgegangenen Rechnung, auf die Bezug genommen wird.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Preceding_Invoice_issue_date"
+                     type="xr:date"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-26</xs:appinfo>
+               <xs:documentation>Das Datum, zu dem die vorausgegangene Rechnung ausgestellt wurde. Anmerkung: Für den Fall, dass die Nummer der vorausgegangenen Rechnung (Preceding invoice identifier) nicht eindeutig ist, soll das Datum der vorausgegangenen Rechnung (Preceding invoice issue date) angegeben werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SELLERType">
+      <xs:sequence>
+         <xs:element name="Seller_name" type="xr:text" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-27</xs:appinfo>
+               <xs:documentation>Der vollständige Name, unter dem der Verkäufer im nationalen Register für juristische Personen oder als steuerpflichtige
+Person eingetragen ist oder anderweitig als Person(en) handelt (Firma).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_trading_name"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-28</xs:appinfo>
+               <xs:documentation>Ein Name, unter dem der Verkäufer bekannt ist, sofern abweichend vom Namen des Verkäufers.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BT-29</xs:appinfo>
+               <xs:documentation>Eine (i. d. R. vom Erwerber vergebene) Kennung des Verkäufers, wie z. B. die Kreditorennummer für das Mittelbewirtschaftungsverfahren oder die Lieferantennummer für das Bestellsystem.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_legal_registration_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-30</xs:appinfo>
+               <xs:documentation>Eine von einer offiziellen Registrierstelle ausgegebene Kennung, die den Verkäufer als Rechtsträger oder juristische Person identifiziert.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_VAT_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-31</xs:appinfo>
+               <xs:documentation>Die Umsatzsteuer-Identifikationsnummer des Verkäufers. Verfügt der Verkäufer über eine solche, ist sie hier anzugeben, sofern nicht Angaben zum Seller tax representative gemacht werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_tax_registration_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-32</xs:appinfo>
+               <xs:documentation>Eine örtliche steuerrechtliche Kennung des Verkäufers (bestimmt durch dessen Adresse) oder ein Verweis auf seinen eingetragenen Steuerstatus. (Hier ist ggf. die Angabe «Steuerschuldnerschaft des Leistungsempfängers» oder die USt-Befreiung des Rechnungsstellers einzutragen.)</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_additional_legal_information"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-33</xs:appinfo>
+               <xs:documentation>Weitere rechtliche Informationen, die für den Verkäufer maßgeblich sind (wie z. B. Grundkapital).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_electronic_address"
+                     type="xr:identifier"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-34</xs:appinfo>
+               <xs:documentation>Gibt die elektronische Adresse des Verkäufers an, an die die Antwort der Anwendungsebene auf eine Rechnung gesendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SELLER_POSTAL_ADDRESS"
+                     type="xr:SELLER_POSTAL_ADDRESSType"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-5</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die Verkäuferanschrift liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SELLER_CONTACT"
+                     type="xr:SELLER_CONTACTType"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-6</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Kontaktinformationen des Verkäufers enthalten.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SELLER_POSTAL_ADDRESSType">
+      <xs:sequence>
+         <xs:element name="Seller_address_line_1"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-35</xs:appinfo>
+               <xs:documentation>Die Hauptzeile in einer Anschrift. Üblicherweise ist dies entweder Strasse und Hausnummer oder der Text "Postfach" gefolgt von der Postfachnummer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_address_line_2"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-36</xs:appinfo>
+               <xs:documentation>Eine zusätzliche Adresszeile in einer Anschrift, die verwendet werden kann, um weitere Einzelheiten in Ergänzung zur Hauptzeile anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_address_line_3"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-162</xs:appinfo>
+               <xs:documentation>Eine zusätzliche Adresszeile in einer Anschrift, die verwendet werden kann, um weitere Einzelheiten in Ergänzung zur Hauptzeile anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_city" type="xr:text" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-37</xs:appinfo>
+               <xs:documentation>Die Bezeichnung der Stadt oder Gemeinde, in der sich die Verkäuferanschrift befindet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_post_code"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-38</xs:appinfo>
+               <xs:documentation>Der Bezeichner für eine dem zuständigen Postdienst entsprechend adressierbare Gruppe
+von Eigenschaften.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_country_subdivision"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-39</xs:appinfo>
+               <xs:documentation>Die Unterteilung eines Landes (wie Region, Bundesland, Provinz etc.).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_country_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-40</xs:appinfo>
+               <xs:documentation>Ein Code, mit dem das Land bezeichnet wird. Anmerkung: Die Liste der zulässigen Länder ist bei der ISO 3166-1 «Codes for the representation of names of countries and their subdivisions» erhältlich. Nur die Alpha-2-Darstellung darf verwendet werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SELLER_CONTACTType">
+      <xs:sequence>
+         <xs:element name="Seller_contact_point"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-41</xs:appinfo>
+               <xs:documentation>Angaben zu Ansprechpartner oder Kontaktstelle (wie z. B. Name einer Person, Abteilungs- oder Bürobezeichnung).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_contact_telephone_number"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-42</xs:appinfo>
+               <xs:documentation>Telefonnummer des Ansprechpartners oder der Kontaktstelle</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_contact_email_address"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-43</xs:appinfo>
+               <xs:documentation>Eine E-Mail-Adresse des Ansprechpartners oder der Kontaktstelle.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="BUYERType">
+      <xs:sequence>
+         <xs:element name="Buyer_name" type="xr:text" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-44</xs:appinfo>
+               <xs:documentation>Der vollständige Name des Erwerbers.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_trading_name"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-45</xs:appinfo>
+               <xs:documentation>Ein Name, unter dem der Erwerber bekannt ist, sofern abweichend vom Namen des Erwerbers.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-46</xs:appinfo>
+               <xs:documentation>Eine (i. d. R. vom Verkäufer vergebene) Kennung des Erwerbers, wie z. B. die Debitorennummer für die Buchhaltung oder die Kundennnummer für die Auftragsverwaltung. Anmerkung: Für die Bildung des Buyer Identifier ist kein einheitliches Schema erforderlich.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_legal_registration_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-47</xs:appinfo>
+               <xs:documentation>Ein von einer offiziellen Registrierstelle ausgegebener Bezeichner, der den Erwerber als Rechtsträger oder juristische Person identifiziert. Z. B. Handelsregister-Eintrag, Vereinsregister etc.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_VAT_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-48</xs:appinfo>
+               <xs:documentation>Die Umsatzsteuer-Identifikationsnummer des Erwerbers.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_electronic_address"
+                     type="xr:identifier"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-49</xs:appinfo>
+               <xs:documentation>Gibt eine elektronische Adresse des Erwerbers an, an die eine Rechnung gesendet werden sollte.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="BUYER_POSTAL_ADDRESS"
+                     type="xr:BUYER_POSTAL_ADDRESSType"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-8</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die Anschrift des Erwerbers liefern. Anmerkung: Es ist eine gültige vollständige Anschrift anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="BUYER_CONTACT"
+                     type="xr:BUYER_CONTACTType"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-9</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Angaben zum Ansprechpartner oder der Kontaktstelle beim Erwerber liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="BUYER_POSTAL_ADDRESSType">
+      <xs:sequence>
+         <xs:element name="Buyer_address_line_1"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-50</xs:appinfo>
+               <xs:documentation>Die Hauptzeile einer Anschrift. Üblicherweise ist dies entweder Strasse und Hausnummer oder der Text "Postfach" gefolgt von der Postfachnummer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_address_line_2"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-51</xs:appinfo>
+               <xs:documentation>Eine zusätzliche Adresszeile in einer Anschrift, die verwendet werden kann, um weitere Einzelheiten in Ergänzung zur Hauptzeile anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_address_line_3"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-163</xs:appinfo>
+               <xs:documentation>Eine zusätzliche Adresszeile in einer Anschrift, die verwendet werden kann, um weitere Einzelheiten in Ergänzung zur Hauptzeile anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_city" type="xr:text" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-52</xs:appinfo>
+               <xs:documentation>Die Bezeichnung der Stadt oder Gemeinde, in der sich die Erwerberanschrift befindet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_post_code"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-53</xs:appinfo>
+               <xs:documentation>Der Bezeichner für eine dem zuständigen Postdienst entsprechend adressierbare Gruppe von Eigenschaften.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_country_subdivision"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-54</xs:appinfo>
+               <xs:documentation>Die Unterteilung eines Landes (wie Region, Bundesland, Provinz etc.).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_country_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-55</xs:appinfo>
+               <xs:documentation>Ein Code, mit dem das Land bezeichnet wird. Anmerkung: Die Liste der zulässigen Länder ist bei der ISO 3166-1 «Codes for the representation of names of countries and their subdivisions» erhältlich. Nur die Alpha-2-Darstellung darf verwendet werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="BUYER_CONTACTType">
+      <xs:sequence>
+         <xs:element name="Buyer_contact_point"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-56</xs:appinfo>
+               <xs:documentation>Ansprechpartner oder Kontaktstelle beim Erwerber (wie z. B. Name einer Person, Abteilungs- oder Bürobezeichnung).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_contact_telephone_number"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-57</xs:appinfo>
+               <xs:documentation>Eine Telefonnummer der Kontaktstelle.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Buyer_contact_email_address"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-58</xs:appinfo>
+               <xs:documentation>Eine E-Mail-Adresse der Kontaktstelle.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="PAYEEType">
+      <xs:sequence>
+         <xs:element name="Payee_name" type="xr:text" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-59</xs:appinfo>
+               <xs:documentation>Der Name des Zahlungsempfängers. Anmerkung: Wird verwendet, wenn der Zahlungsempfänger nicht mit dem Verkäufer identisch ist. Gleichwohl kann der Name des Zahlungsempfänger identisch sein mit dem Namen des Verkäufers.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Payee_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-60</xs:appinfo>
+               <xs:documentation>Eine Kennung für den Zahlungsempfänger. Anmerkung: Wenn kein Schema verwendet wird, sollte die Kennung Erwerber und Verkäufer bekannt sein, z. B. eine von Verkäufer oder Erwerber zugewiesene Kennung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Payee_legal_registration_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-61</xs:appinfo>
+               <xs:documentation>Eine von einer offiziellen Registrierstelle ausgegebene Kennung, die den Zahlungsempfänger als einen Rechtsträger oder eine juristische Person identifiziert.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SELLER_TAX_REPRESENTATIVE_PARTYType">
+      <xs:sequence>
+         <xs:element name="Seller_tax_representative_name"
+                     type="xr:text"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-62</xs:appinfo>
+               <xs:documentation>Der vollständige Name des Steuervertreters des Verkäufers.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Seller_tax_representative_VAT_identifier"
+                     type="xr:identifier"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-63</xs:appinfo>
+               <xs:documentation>Die Umsatzsteuer-Identifikationsnummer des Steuervertreters des Verkäufers.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SELLER_TAX_REPRESENTATIVE_POSTAL_ADDRESS"
+                     type="xr:SELLER_TAX_REPRESENTATIVE_POSTAL_ADDRESSType"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-12</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die Postanschrift des Steuervertreters liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SELLER_TAX_REPRESENTATIVE_POSTAL_ADDRESSType">
+      <xs:sequence>
+         <xs:element name="Tax_representative_address_line_1"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-64</xs:appinfo>
+               <xs:documentation>Die Hauptzeile in einer Anschrift. Üblicherweise ist dies entweder Strasse und Hausnummer oder der Text "Postfach" gefolgt von der Postfachnummer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Tax_representative_address_line_2"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-65</xs:appinfo>
+               <xs:documentation>Eine zusätzliche Adresszeile in einer Anschrift, die verwendet werden kann, um weitere Einzelheiten in Ergänzung zur Hauptzeile anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Tax_representative_address_line_3"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-164</xs:appinfo>
+               <xs:documentation>Eine zusätzliche Adresszeile in einer Anschrift, die verwendet werden kann, um weitere Einzelheiten in Ergänzung zur Hauptzeile anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Tax_representative_city"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-66</xs:appinfo>
+               <xs:documentation>Die Bezeichnung der Stadt oder Gemeinde, in der sich die Anschrift des Steuervertreters befindet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Tax_representative_post_code"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-67</xs:appinfo>
+               <xs:documentation>Der Bezeichner für eine dem zuständigen Postdienst entsprechend adressierbare Gruppe von Eigenschaften.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Tax_representative_country_subdivision"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-68</xs:appinfo>
+               <xs:documentation>Die Unterteilung eines Landes.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Tax_representative_country_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-69</xs:appinfo>
+               <xs:documentation>Ein Code, mit dem das Land bezeichnet wird. Anmerkung: Die Liste der zulässigen Länder ist bei der ISO 3166-1 «Codes for the representation of names of countries and their subdivisions» erhältlich. Nur die Alpha-2-Darstellung darf verwendet werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="DELIVERY_INFORMATIONType">
+      <xs:sequence>
+         <xs:element name="Deliver_to_party_name"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-70</xs:appinfo>
+               <xs:documentation>Der Name des Empfängers, an den die Waren geliefert bzw. für den die Dienstleistungen erbracht werden. Das Informationselement ist zu verwenden, wenn der Empfänger vom Erwerber abweicht.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Deliver_to_location_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-71</xs:appinfo>
+               <xs:documentation>Ein Bezeichner für den Ort, an den die Waren geliefert oder an dem die Dienstleistungen erbracht werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Actual_delivery_date"
+                     type="xr:date"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-72</xs:appinfo>
+               <xs:documentation>Datum, an dem die Lieferung tatsächlich erfolgt bzw. die Dienstleistung tatsächlich erbracht wird.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <!--<xs:element name="INVOICING_PERIOD"
+                     type="xr:INVOICING_PERIODType"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-14</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den Rechnungszeitraum liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>-->
+         <xs:element name="DELIVER_TO_ADDRESS"
+                     type="xr:DELIVER_TO_ADDRESSType"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-15</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die Anschrift liefern, an die die Waren geliefert oder an der die Dienstleistungen erbracht werden. Die Gruppe ist nur zu verwenden, wenn die Lieferanschrift von der Erwerberanschrift abweicht. Wenn die Waren abgeholt werden, ist die Abholadresse die Lieferadresse. Eine vollständige gültige Anschrift ist anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="INVOICING_PERIODType">
+      <xs:sequence>
+         <xs:element name="Invoicing_period_start_date"
+                     type="xr:date"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-73</xs:appinfo>
+               <xs:documentation>Das Datum, an dem der Rechnungszeitraum beginnt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoicing_period_end_date"
+                     type="xr:date"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-74</xs:appinfo>
+               <xs:documentation>Das Datum, an dem der Rechnungszeitraum endet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="DELIVER_TO_ADDRESSType">
+      <xs:sequence>
+         <xs:element name="Deliver_to_address_line_1"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-75</xs:appinfo>
+               <xs:documentation>Die Hauptzeile einer Anschrift. Üblicherweise ist dies entweder Strasse und Hausnummer oder der Text "Postfach" gefolgt von der Postfachnummer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Deliver_to_address_line_2"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-76</xs:appinfo>
+               <xs:documentation>Eine zusätzliche Adresszeile in einer Anschrift, die verwendet werden kann, um weitere Einzelheiten in Ergänzung zur Hauptzeile anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Deliver_to_address_line_3"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-165</xs:appinfo>
+               <xs:documentation>Eine zusätzliche Adresszeile in einer Anschrift, die verwendet werden kann, um weitere Einzelheiten in Ergänzung zur Hauptzeile anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Deliver_to_city"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-77</xs:appinfo>
+               <xs:documentation>Die Bezeichnung der Stadt oder Gemeinde, in der sich die Erwerberanschrift befindet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Deliver_to_post_code"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-78</xs:appinfo>
+               <xs:documentation>Der Bezeichner für eine dem zuständigen Postdienst entsprechend adressierbare Gruppe von Eigenschaften.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Deliver_to_country_subdivision"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-79</xs:appinfo>
+               <xs:documentation>Die Unterteilung eines Landes (wie Region, Bundesland, Provinz etc.).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Deliver_to_country_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-80</xs:appinfo>
+               <xs:documentation>Ein Code, mit dem das Land bezeichnet wird. Anmerkung: Die Liste der zulässigen Länder ist bei der ISO 3166-1 «Codes for the representation of names of countries and their subdivisions» erhältlich. Nur die Alpha-2-Darstellung darf verwendet werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="PAYMENT_INSTRUCTIONSType">
+      <xs:sequence>
+         <xs:element name="Payment_means_type_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-81</xs:appinfo>
+               <xs:documentation>Das als Code ausgedrückte erwartete oder genutzte Zahlungsmittel. Hierzu wird auf die Codeliste UN/ECE 4461 verwiesen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Payment_means_text"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-82</xs:appinfo>
+               <xs:documentation>Das in Textform ausgedrückte erwartete oder genutzte Zahlungsmittel.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Remittance_information"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-83</xs:appinfo>
+               <xs:documentation>Ein Textwert, der zur Verknüpfung der Zahlung mit der vom Verkäufer ausgestellten Rechnung verwendet wird. Anmerkung: Die Angabe eines Verwendungszwecks hilft dem Verkäufer bei der Zuweisung einer eingehenden Zahlung zum jeweiligen Zahlungsprozess. Wenn  Remittance information in der Rechnung übermittelt wurde, sollte diese daher bei der Zahlung genutzt werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="CREDIT_TRANSFER"
+                     type="xr:CREDIT_TRANSFERType"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BG-17</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über das Bankkonto geben, auf das die Überweisung zu leisten ist. Die Gruppe ist alternativ zu PAYMENT_CARD_INFORMATION-BG-18; oder zu DIRECT_DEBIT-BG-19; anzugeben, wenn eine Zahlung per Überweisung erfolgen soll.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="PAYMENT_CARD_INFORMATION"
+                     type="xr:PAYMENT_CARD_INFORMATIONType"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-18</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die für die Zahlung genutzte Karte liefern. Die Gruppe ist alternativ zu DIRECT_DEBIT-BG-19; (Lastschrift mit Vorliegen einer Mandatsreferenz) oder zu CREDIT_TRANSFER-BG-17; (Überweisung) anzugeben, wenn eine Zahlung per Zahlungskarte/Kreditkarte erfolgte.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="DIRECT_DEBIT"
+                     type="xr:DIRECT_DEBITType"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-19</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die spezifische Informationen über die vorgesehene Lastschrift geben. Die Gruppe ist alternativ zu CREDIT_TRANSFER-BG-17; oder zu PAYMENT_CARD_INFORMATION-BG-18; anzugeben, wenn ein Mandat erteilt wurde und der Rechnungsbetrag per Lastschrift beglichen werden soll. </xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="CREDIT_TRANSFERType">
+      <xs:sequence>
+         <xs:element name="Payment_account_identifier"
+                     type="xr:identifier"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-84</xs:appinfo>
+               <xs:documentation>Die Kennung des Kontos, auf das die Zahlung erfolgen soll: IBAN für Zahlungen im SEPA-Raum, Kontonummer oder IBAN im Falle von Auslandszahlungen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Payment_account_name"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-85</xs:appinfo>
+               <xs:documentation>Name des Kontos bei einem Zahlungsdienstleister, auf das die Zahlung erfolgen soll. (z. B. Kontoinhaber)</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Payment_service_provider_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-86</xs:appinfo>
+               <xs:documentation>Die Kennung des Konto führenden Kreditinstitutes, ergibt sich bei Zahlungen im SEPA-Raum im Regelfall aus IBAN; für Auslandszahlungen, bei denen um BIC ergänzt werden muss: 
+        
+            für alle Zahlungen an Bankverbindungen des SEPA-Raumes als SCT (Code 58 des Payment_means_type_code-BT-81;) oder SDD (Code 59 des Payment_means_type_code-BT-81;) mit Ausnahme der nachstehenden Ausnahmen, reicht die Angabe der IBAN, die in der Länge variiert; BIC nicht erforderlich. Ausnahmen: z. B. San Marino, Monaco, Schweiz, Saint Pierre und Miquelon, wobei die Länge der IBAN variiert, aber immer 1. und 2. Stelle = Ländercode nach ISO, 3. und 4. Stelle = Prüfziffer; Angabe des BIC ist neben der Angabe der IBAN zwingend erforderlich
+        
+        
+            für alle Zahlungen an Bankverbindungen außerhalb des SEPA-Raumes (Code 30 (Credit transfer (non-SEPA)) bzw. (Code 49 Direct debit (non-SEPA)) des Payment_means_type_code-BT-81;) sind, abhängig vom empfangenden Institut, IBAN bzw. Kontonummer und BIC nötig
+        
+    </xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="PAYMENT_CARD_INFORMATIONType">
+      <xs:sequence>
+         <xs:element name="Payment_card_primary_account_number"
+                     type="xr:text"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-87</xs:appinfo>
+               <xs:documentation>Die Nummer der Kreditkarte, die für die Zahlung genutzt wurde. Anmerkung: In Übereinstimmung mit den für Kreditkarten geltenden Sicherheitsstandards darf eine Rechnung nicht die vollständige Kartennummer enthalten.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Payment_card_holder_name"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-88</xs:appinfo>
+               <xs:documentation>Name des Karteninhabers.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="DIRECT_DEBITType">
+      <xs:sequence>
+         <xs:element name="Mandate_reference_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-89</xs:appinfo>
+               <xs:documentation>Eindeutige Kennung, die vom Zahlungsempfänger zur Referenzierung der Einzugsermächtigung zugewiesen wird (Mandatsreferenznummer).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Bank_assigned_creditor_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-90</xs:appinfo>
+               <xs:documentation>Die eindeutige Kennung des Verkäufers  (Seller) oder des Zahlungsempfängers (Payee), um am SEPA-Lastschriftverfahren teilnehmen zu können (Gläubiger-ID).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Debited_account_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-91</xs:appinfo>
+               <xs:documentation>Die Kennung des Kontos, von dem die Lastschrift erfolgen soll: IBAN für Zahlungen im SEPA-Raum, Kontonummer oder IBAN im Falle von Auslandszahlungen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="DOCUMENT_LEVEL_ALLOWANCESType">
+      <xs:sequence>
+         <xs:element name="Document_level_allowance_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-92</xs:appinfo>
+               <xs:documentation>Der Nachlassbetrag ohne Umsatzsteuer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_allowance_base_amount"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-93</xs:appinfo>
+               <xs:documentation>Der Grundbetrag, der in Verbindung mit dem Prozentsatz des Nachlasses auf der Dokumentenebene zur Berechnung des Betrags des Nachlasses auf der Dokumentenebene verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_allowance_percentage"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-94</xs:appinfo>
+               <xs:documentation>Der Prozentsatz, der in Verbindung mit dem Grundbetrag des Nachlasses auf der Dokumentenebene zur Berechnung des Betrags des Nachlasses auf der Dokumentenebene verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_allowance_VAT_category_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-95</xs:appinfo>
+               <xs:documentation>Ein Code für das Umsatzsteuermerkmal, das auf den Nachlass auf Dokumentenebene anzuwenden ist. Anmerkung: Folgende Codes aus der Codeliste UNTDID 5305 müssen verwendet werden: 
+S (Standard rate)
+Z (Zero rated goods)
+E (Exempt from tax)
+AE (VAT Reverse Charge)
+K (VAT exempt for EEA intra-community supply of goods and services)
+G (Free export item, tax not charged)
+O (Services outside scope of tax)
+L (Canary Islands general indirect tax)
+M (Tax for production, services and importation in Ceuta and Melilla)
+</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_allowance_VAT_rate"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-96</xs:appinfo>
+               <xs:documentation>Der für den Nachlass auf der Dokumentenebene geltende und in Prozent angegebene Umsatzsteuersatz.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_allowance_reason"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-97</xs:appinfo>
+               <xs:documentation>Der in Textform angegebene Grund für den Nachlass auf der Dokumentenebene.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_allowance_reason_code"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-98</xs:appinfo>
+               <xs:documentation>Der als Code angegebene Grund für den Nachlass auf der Dokumentenebene. Anmerkung: Hier sind die Codes aus der Codeliste UNTDID 5189 zu verwenden. Dabei müssen Document level allowance reason code und Document level allowance reason text den gleichen Grund für den Nachlass angeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="DOCUMENT_LEVEL_CHARGESType">
+      <xs:sequence>
+         <xs:element name="Document_level_charge_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-99</xs:appinfo>
+               <xs:documentation>Der Betrag einer Abgabe ohne die Umsatzsteuer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_charge_base_amount"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-100</xs:appinfo>
+               <xs:documentation>Der Grundbetrag, der in Verbindung mit dem Prozentsatz der Abgaben auf der Dokumentenebene zur Berechnung des Betrags der Abgaben auf der Dokumentenebene verwendet werden kann (Bemessungsgrundlage).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_charge_percentage"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-101</xs:appinfo>
+               <xs:documentation>Der Prozentsatz, der in Verbindung mit dem Grundbetrag der Abgaben auf der Dokumentenebene zur Berechnung des Betrags der Abgaben auf der Dokumentenebene verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_charge_VAT_category_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-102</xs:appinfo>
+               <xs:documentation>Ein Code für das Umsatzsteuermerkmal dieser Elementgruppe. Anmerkung: Folgende Codes aus der Codeliste UNTDID 5305 müssen verwendet werden: 
+S (Standard rate)
+Z (Zero rated goods)
+E (Exempt from tax)
+AE (VAT Reverse Charge)
+K (VAT exempt for EEA intra-community supply of goods and services)
+G (Free export item, tax not charged)
+O (Services outside scope of tax)
+L (Canary Islands general indirect tax)
+M (Tax for production, services and importation in Ceuta and Melilla)
+</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_charge_VAT_rate"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-103</xs:appinfo>
+               <xs:documentation>Der Umsatzsteuersatz, dargestellt als Prozentsatz, der für die Abgaben auf der Dokumentenebene gilt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_charge_reason"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-104</xs:appinfo>
+               <xs:documentation>Der in Textform angegebene Grund für die Abgaben auf der Dokumentenebene.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Document_level_charge_reason_code"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-105</xs:appinfo>
+               <xs:documentation>Der als Code angegebene Grund für die Abgaben auf der Dokumentenebene. Anmerkung: Hier sind die Codes aus der Codeliste UNTDID 7161 zu verwenden. Document level charge reason code und Document level charge reason müssen auf den gleichen Grund für die Abgaben auf Dokumentenebene verweisen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="DOCUMENT_TOTALSType">
+      <xs:sequence>
+         <xs:element name="Sum_of_Invoice_line_net_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-106</xs:appinfo>
+               <xs:documentation>Summe aller Rechnungspositionen-Nettobeträge der Rechnung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Sum_of_allowances_on_document_level"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-107</xs:appinfo>
+               <xs:documentation>Summe aller in der Rechnung enthaltenen Nachlässe der Dokumentenebene.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Sum_of_charges_on_document_level"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-108</xs:appinfo>
+               <xs:documentation>Summe aller in der Rechnung enthaltenen Abgaben der Dokumentenebene.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_total_amount_without_VAT"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-109</xs:appinfo>
+               <xs:documentation>Der Gesamtbetrag der Rechnung ohne Umsatzsteuer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_total_VAT_amount"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-110</xs:appinfo>
+               <xs:documentation>Der Gesamtbetrag der Umsatzsteuer für die Rechnung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_total_VAT_amount_in_accounting_currency"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-111</xs:appinfo>
+               <xs:documentation>Der Umsatzsteuergesamtbetrag, angegeben in der Abrechnungswährung, die im Land des Verkäufers gültig ist oder verlangt wird.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_total_amount_with_VAT"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-112</xs:appinfo>
+               <xs:documentation>Der Gesamtbetrag der Rechnung mit Umsatzsteuer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Paid_amount" type="xr:amount" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-113</xs:appinfo>
+               <xs:documentation>Summe bereits gezahlter Beträge.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Rounding_amount"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-114</xs:appinfo>
+               <xs:documentation>Der Betrag, um den der Rechnungsbetrag gerundet wurde.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Amount_due_for_payment"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-115</xs:appinfo>
+               <xs:documentation>Der ausstehende Betrag. Dies ist der Rechnungsbetrag inkl. Umsatzsteuer abzüglich des bereits gezahlten Betrags. Dieser Betrag ist der Rechnungsgesamtbetrag einschließlich Umsatzsteuer abzüglich der Summe bereits gezahlter Beträge. Im Falle einer vollständig beglichenen Rechnung ist dieser Betrag gleich null. Der Betrag ist negativ, falls der gezahlte Betrag größer als der Rechnungsgesamtbetrag einschließlich Umsatzsteuer ist.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="VAT_BREAKDOWNType">
+      <xs:sequence>
+         <xs:element name="VAT_category_taxable_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-116</xs:appinfo>
+               <xs:documentation>Summe aller zu versteuernden Beträge, für die ein bestimmter Code der Umsatzsteuerkategorie und ein bestimmter Umsatzsteuersatz gelten (falls ein kategoriespezifischer Umsatzsteuersatz gilt).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="VAT_category_tax_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-117</xs:appinfo>
+               <xs:documentation>Der für die betreffende Umsatzsteuerkategorie zu entrichtende Gesamtbetrag. Anmerkung: Die Berechnung erfolgt durch Multiplikation des VAT category taxable amount mit der VAT category rate der jeweiligen VAT category.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="VAT_category_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-118</xs:appinfo>
+               <xs:documentation>Codierte Bezeichnung einer Umsatzsteuerkategorie. Anmerkung: Folgende Codes aus der Codeliste UNTDID 5305 müssen verwendet werden: 
+S (Standard rate)
+Z (Zero rated goods)
+E (Exempt from tax)
+AE (VAT Reverse Charge)
+K (VAT exempt for EEA intra-community supply of goods and services)
+G (Free export item, tax not charged)
+O (Services outside scope of tax)
+L (Canary Islands general indirect tax)
+M (Tax for production, services and importation in Ceuta and Melilla)
+</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="VAT_category_rate"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-119</xs:appinfo>
+               <xs:documentation>Der Umsatzsteuersatz, angegeben als für die betreffende Umsatzsteuerkategorie geltender Prozentsatz.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="VAT_exemption_reason_text"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-120</xs:appinfo>
+               <xs:documentation>In Textform angegebener Grund für die Ausnahme des Betrages von der Umsatzsteuerpflicht. Sofern die Umsatzsteuerkategorie «AE» für die Rechnung gilt, ist hier der Text «Umkehrung der Steuerschuldnerschaft» oder der entsprechende Normtext in der für die Rechnung gewählten Sprache anzugeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="VAT_exemption_reason_code"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-121</xs:appinfo>
+               <xs:documentation>Ein Code für den Grund für die Ausnahme des Betrages von der Umsatzsteuerpflicht. Die Codeliste «VAT exemption reason code list (VATEX)» wird von der Connecting Europe Facility gepflegt und herausgegeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="ADDITIONAL_SUPPORTING_DOCUMENTSType">
+      <xs:sequence>
+         <xs:element name="Supporting_document_reference"
+                     type="xr:document_reference"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-122</xs:appinfo>
+               <xs:documentation>Eine Kennung der rechnungsbegründenden Unterlage.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Supporting_document_description"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-123</xs:appinfo>
+               <xs:documentation>Eine Beschreibung der rechnungsbegründenden Unterlage.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="External_document_location"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-124</xs:appinfo>
+               <xs:documentation>Die Internetadresse bzw. URL (Uniform Resource Locator), unter der das externe Dokument verfügbar ist.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Attached_document"
+                     type="xr:binary_object"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-125</xs:appinfo>
+               <xs:documentation>Ein als Binärobjekt eingebettetes
+Anhangsdokument.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="INVOICE_LINEType">
+      <xs:sequence>
+         <xs:element name="Invoice_line_identifier"
+                     type="xr:identifier"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-126</xs:appinfo>
+               <xs:documentation>Eindeutige Bezeichnung für die betreffende Rechnungsposition.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_note"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-127</xs:appinfo>
+               <xs:documentation>Ein Textvermerk, der unstrukturierte Informationen enthält, die für die Rechnungsposition maßgeblich sind.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_object_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-128</xs:appinfo>
+               <xs:documentation>Eine vom Verkäufer angegebene Kennung für ein Objekt, auf das sich die Rechnungsposition bezieht (z. B. Zählernummer, Telefonnummer, Kfz-Kennzeichen, versicherte Person, Abonnement-Nummer, Rufnummer).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoiced_quantity"
+                     type="xr:quantity"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-129</xs:appinfo>
+               <xs:documentation>Die Menge zu dem in der betreffenden Zeile in Rechnung gestellten Einzelposten (Waren oder Dienstleistungen).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoiced_quantity_unit_of_measure_code"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-130</xs:appinfo>
+               <xs:documentation>Die für die in Rechnung gestellte Menge geltende Maßeinheit. Die Maßeinheit muss unter Anwendung der in UN/ECE Rec No 20 Intro 2.a) beschriebenen Methode aus den Listen UN/ECE Recommendation No. 20 «Codes for Units of Measure Used in International Trade» und UN/ECE Recommendation No 21 «Codes for Passengers, Types of Cargo, Packages and Packaging Materials (with Complementary Codes for Package Names)» ausgewählt werden. In den meisten Fällen ist es nicht erforderlich, dass Verkäufer und Erwerber diese Listen vollständig in ihren Anwendungen implementieren. Verkäufer müssen nur die erforderlichen Einheiten für ihre Güter und Dienstleistungen unterstützen. Erwerber überprüfen lediglich, ob die in der Rechnung verwendeten Einheiten mit denen in anderen Dokumenten zum Erwerb (wie z. B. Vertrag, Katalog, Bestellung oder Lieferschein) identisch sind. </xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_net_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-131</xs:appinfo>
+               <xs:documentation>Der Gesamtbetrag der Rechnungsposition. Dies ist der Betrag ohne Umsatzsteuer, aber einschließlich aller für die Rechnungsposition geltenden Nachlässe und Abgaben sowie sonstiger anfallender Steuern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Referenced_purchase_order_line_reference"
+                     type="xr:document_reference"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-132</xs:appinfo>
+               <xs:documentation>Eine vom Erwerber ausgegebene Kennung für eine referenzierte Position einer Bestellung/eines Auftrags. Anmerkung: Auf den Auftrag wird auf Rechnungsebene Bezug genommen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_Buyer_accounting_reference"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-133</xs:appinfo>
+               <xs:documentation>Ein Textwert, der angibt, an welcher Stelle die betreffenden Daten in den Finanzkonten des Erwerbers zu buchen sind. Anmerkung: Wenn die Angabe genutzt werden soll, muss der Erwerber dem Verkäufer diese Referenz vor der Rechnungserstellung mitteilen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="INVOICE_LINE_PERIOD"
+                     type="xr:INVOICE_LINE_PERIODType"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-26</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den für die Rechnungsposition maßgeblichen Rechnungszeitraum liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="INVOICE_LINE_ALLOWANCES"
+                     type="xr:INVOICE_LINE_ALLOWANCESType"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BG-27</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die für die betreffende Rechnungsposition geltenden Nachlässe liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="INVOICE_LINE_CHARGES"
+                     type="xr:INVOICE_LINE_CHARGESType"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BG-28</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über Kosten, Zuschläge, und Steuern ndash; ausgenommen die Umsatzsteuer ndash;  enthalten, die für die jeweilige Rechnungsposition gelten. Anmerkung: Es wird davon ausgegangen, dass alle Kosten und Zuschläge dem gleichen Umsatzsteuersatz unterliegen wie die Rechnungsposition.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="PRICE_DETAILS"
+                     type="xr:PRICE_DETAILSType"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-29</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den Preis für die in der betreffenden Rechnungsposition in Rechnung gestellten Waren und Dienstleistungen liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="LINE_VAT_INFORMATION"
+                     type="xr:LINE_VAT_INFORMATIONType"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BG-30</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die Umsatzsteuer liefern, die für die in der betreffenden Zeile in Rechnung gestellten Waren und Dienstleistungen gilt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="ITEM_INFORMATION"
+                     type="xr:ITEM_INFORMATIONType"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-31</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die in Rechnung gestellten Waren und Dienstleistungen liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SUB_INVOICE_LINE"
+                     type="xr:INVOICE_LINEType"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BG-DEX-01</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über einzelne Rechnungspositionen liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="INVOICE_LINE_PERIODType">
+      <xs:sequence>
+         <xs:element name="Invoice_line_period_start_date"
+                     type="xr:date"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-134</xs:appinfo>
+               <xs:documentation>Das Datum, an dem der Rechnungszeitraum der betreffenden Rechnungsposition beginnt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_period_end_date"
+                     type="xr:date"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-135</xs:appinfo>
+               <xs:documentation>Das Datum, an dem der Rechnungszeitraum der betreffenden Rechnungsposition endet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="INVOICE_LINE_ALLOWANCESType">
+      <xs:sequence>
+         <xs:element name="Invoice_line_allowance_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-136</xs:appinfo>
+               <xs:documentation>Der Nachlassbetrag ohne Umsatzsteuer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_allowance_base_amount"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-137</xs:appinfo>
+               <xs:documentation>Der Grundbetrag, der in Verbindung mit dem prozentualen Rechnungspositionennachlass zur Berechnung des Betrags des Rechnungspositionennachlasses verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_allowance_percentage"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-138</xs:appinfo>
+               <xs:documentation>Der Prozentsatz, der in Verbindung mit dem Grundbetrag des Rechnungspositionennachlasses zur Berechnung des Betrags des Rechnungspositionennachlasses verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_allowance_reason"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-139</xs:appinfo>
+               <xs:documentation>Der in Textform angegebene Grund für den Rechnungspositionennachlass.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_allowance_reason_code"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-140</xs:appinfo>
+               <xs:documentation>Der als Code angegebene Grund für den Rechnungspositionennachlass. Anmerkung: Hier sind die Codes aus der Codeliste UNTDID 5189 zu verwenden. Invoice line level allowance reason code und Invoice line level allowance reason müssen den gleichen Nachlassgrund angeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="INVOICE_LINE_CHARGESType">
+      <xs:sequence>
+         <xs:element name="Invoice_line_charge_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-141</xs:appinfo>
+               <xs:documentation>Der Betrag einer Abgabe ohne die Umsatzsteuer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_charge_base_amount"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-142</xs:appinfo>
+               <xs:documentation>Der Grundbetrag, der in Verbindung mit den prozentualen Rechnungspositionenabgaben zur Berechnung des Betrags der Rechnungspositionenabgaben verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_charge_percentage"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-143</xs:appinfo>
+               <xs:documentation>Der Prozentsatz, der in Verbindung mit dem Grundbetrag der Rechnungspositionenabgaben zur Berechnung des Betrags der Rechnungspositionenabgaben verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_charge_reason"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-144</xs:appinfo>
+               <xs:documentation>Der in Textform angegebene Grund für die Rechnungspositionenabgaben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_charge_reason_code"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-145</xs:appinfo>
+               <xs:documentation>Der als Code angegebene Grund für die Rechnungspositionenabgaben. Anmerkung: Hier sind die Codes aus der Codeliste UNTDID 7161 zu verwenden. Invoice line charge reason code und Invoice line charge reason müssen auf den gleichen Grund für die Abgaben auf die Rechnungsposition verweisen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="PRICE_DETAILSType">
+      <xs:sequence>
+         <xs:element name="Item_net_price"
+                     type="xr:unit_price_amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-146</xs:appinfo>
+               <xs:documentation>Der Preis eines Postens, ohne Umsatzsteuer, nach Abzug des für diese Rechnungsposition geltenden Rabatts. Anmerkung: Item net price muss gleich Item gross price abzüglich Item price discount sein.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_price_discount"
+                     type="xr:unit_price_amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-147</xs:appinfo>
+               <xs:documentation>Der gesamte zur Berechnung des Netto-Postenpreises vom Brutto-Postenpreis subtrahierte Rabatt. Anmerkung: Nur anzugeben, wenn der Nachlass pro Verpackungseinheit gegeben wird und nicht in den Item gross price inkludiert ist.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_gross_price"
+                     type="xr:unit_price_amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-148</xs:appinfo>
+               <xs:documentation>Der Postenpreis ohne Umsatzsteuer vor Abzug des Postenpreisrabatts.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_price_base_quantity"
+                     type="xr:quantity"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-149</xs:appinfo>
+               <xs:documentation>Die Anzahl von Einheiten, für die der Postenpreis gilt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_price_base_quantity_unit_of_measure"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-150</xs:appinfo>
+               <xs:documentation>Der Code der zu Grunde gelegten Maßeinheit. Die Maßeinheit der Item price base quantity unit of measure sollte gleich der Maßeinheit der in Rechnung gestellten Menge (BT-130) sein.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="LINE_VAT_INFORMATIONType">
+      <xs:sequence>
+         <xs:element name="Invoiced_item_VAT_category_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-151</xs:appinfo>
+               <xs:documentation>Der Code der für den in Rechnung gestellten Posten geltenden Umsatzsteuerkategorie. Anmerkung: Folgende Codes aus der Codeliste UNTDID 5305 müssen verwendet werden: 
+S (Standard rate)
+Z (Zero rated goods)
+E (Exempt from tax)
+AE (VAT Reverse Charge)
+K (VAT exempt for EEA intra-community supply of goods and services)
+G (Free export item, tax not charged)
+O (Services outside scope of tax)
+L (Canary Islands general indirect tax)
+M (Tax for production, services and importation in Ceuta and Melilla)
+</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoiced_item_VAT_rate"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-152</xs:appinfo>
+               <xs:documentation>Der für den in Rechnung gestellten Posten geltende und als Prozentsatz angegebene Umsatzsteuersatz. Anmerkung: Ein Umsatzsteuersatz von 0 Prozent wird für Kalkulationszwecke auch dann angewandt, wenn der Posten außerhalb der Reichweite der Umsatzsteuer ist.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="ITEM_INFORMATIONType">
+      <xs:sequence>
+         <xs:element name="Item_name" type="xr:text" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-153</xs:appinfo>
+               <xs:documentation>Ein Name des Postens.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_description"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-154</xs:appinfo>
+               <xs:documentation>Eine Beschreibung des Postens. Anmerkung: Hier kann der Posten detaillierter beschrieben werden als im Namen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_Sellers_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-155</xs:appinfo>
+               <xs:documentation>Eine dem Posten vom Verkäufer zugewiesene Kennung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_Buyers_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-156</xs:appinfo>
+               <xs:documentation>Eine dem Posten vom Erwerber zugewiesene Kennung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_standard_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-157</xs:appinfo>
+               <xs:documentation>Eine auf einem registrierten Schema basierende Postenkennung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_classification_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BT-158</xs:appinfo>
+               <xs:documentation>Ein Code für die Klassifizierung des Postens nach Typ bzw. Art oder Wesen bzw. Beschaffenheit. Anmerkung: Klassifizierungscodes werden verwendet, um die Zusammenfassung gleichartiger Posten für unterschiedliche Zwecke zu ermöglichen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_country_of_origin"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-159</xs:appinfo>
+               <xs:documentation>Der Ländercode, der das Land angibt, aus dem die Ware stammt oder in dem die Dienstleistung erbracht wird. Anmerkung: Die Liste der zulässigen Länder ist bei der ISO 3166-1 «Codes for the representation of names of countries and their subdivisions» erhältlich. Nur die Alpha-2-Darstellung darf verwendet werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="ITEM_ATTRIBUTES"
+                     type="xr:ITEM_ATTRIBUTESType"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BG-32</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die Eigenschaften der in Rechnung gestellten Waren und Dienstleistungen liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="ITEM_ATTRIBUTESType">
+      <xs:sequence>
+         <xs:element name="Item_attribute_name"
+                     type="xr:text"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-160</xs:appinfo>
+               <xs:documentation>Der Name der Eigenschaft des Postens, wie z. B. «Farbe».</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_attribute_value"
+                     type="xr:text"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-161</xs:appinfo>
+               <xs:documentation>Der Wert der Eigenschaft des Postens, wie z. B. «rot».</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SUB_INVOICE_LINEType">
+      <xs:sequence>
+         <xs:element name="Invoice_line_identifier"
+                     type="xr:identifier"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-126</xs:appinfo>
+               <xs:documentation>Eindeutige Bezeichnung für die betreffende Rechnungsposition.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_note"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-127</xs:appinfo>
+               <xs:documentation>Ein Textvermerk, der unstrukturierte Informationen enthält, die für die Rechnungsposition maßgeblich sind.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_object_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-128</xs:appinfo>
+               <xs:documentation>Eine vom Verkäufer angegebene Kennung für ein Objekt, auf das sich die Rechnungsposition bezieht (z. B. Zählernummer, Telefonnummer, Kfz-Kennzeichen, versicherte Person, Abonnement-Nummer, Rufnummer).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoiced_quantity"
+                     type="xr:quantity"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-129</xs:appinfo>
+               <xs:documentation>Die Menge zu dem in der betreffenden Zeile in Rechnung gestellten Einzelposten (Waren oder Dienstleistungen).</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoiced_quantity_unit_of_measure_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-130</xs:appinfo>
+               <xs:documentation>Die für die in Rechnung gestellte Menge geltende Maßeinheit. Die Maßeinheit muss unter Anwendung der in UN/ECE Rec No 20 Intro 2.a) beschriebenen Methode aus den Listen UN/ECE Recommendation No. 20 «Codes for Units of Measure Used in International Trade» und UN/ECE Recommendation No 21 «Codes for Passengers, Types of Cargo, Packages and Packaging Materials (with Complementary Codes for Package Names)» ausgewählt werden. In den meisten Fällen ist es nicht erforderlich, dass Verkäufer und Erwerber diese Listen vollständig in ihren Anwendungen implementieren. Verkäufer müssen nur die erforderlichen Einheiten für ihre Güter und Dienstleistungen unterstützen. Erwerber überprüfen lediglich, ob die in der Rechnung verwendeten Einheiten mit denen in anderen Dokumenten zum Erwerb (wie z. B. Vertrag, Katalog, Bestellung oder Lieferschein) identisch sind. </xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_net_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-131</xs:appinfo>
+               <xs:documentation>Der Gesamtbetrag der Rechnungsposition. Dies ist der Betrag ohne Umsatzsteuer, aber einschließlich aller für die Rechnungsposition geltenden Nachlässe und Abgaben sowie sonstiger anfallender Steuern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Referenced_purchase_order_line_reference"
+                     type="xr:document_reference"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-132</xs:appinfo>
+               <xs:documentation>Eine vom Erwerber ausgegebene Kennung für eine referenzierte Position einer Bestellung/eines Auftrags. Anmerkung: Auf den Auftrag wird auf Rechnungsebene Bezug genommen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_Buyer_accounting_reference"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-133</xs:appinfo>
+               <xs:documentation>Ein Textwert, der angibt, an welcher Stelle die betreffenden Daten in den Finanzkonten des Erwerbers zu buchen sind. Anmerkung: Wenn die Angabe genutzt werden soll, muss der Erwerber dem Verkäufer diese Referenz vor der Rechnungserstellung mitteilen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SUB_INVOICE_ITEM_INFORMATION"
+                     type="xr:SUB_INVOICE_ITEM_INFORMATIONType"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-DEX-02</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die in Rechnung gestellten Waren und Dienstleistungen liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SUB_INVOICE_LINE_ALLOWANCES"
+                     type="xr:SUB_INVOICE_LINE_ALLOWANCESType"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BG-DEX-03</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die für die betreffende Rechnungsposition geltenden Nachlässe liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SUB_INVOICE_LINE_CHARGES"
+                     type="xr:SUB_INVOICE_LINE_CHARGESType"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BG-DEX-04</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über Kosten, Zuschläge, und Steuern ndash; ausgenommen die Umsatzsteuer ndash;  enthalten, die für die jeweilige Rechnungsposition gelten. Anmerkung: Es wird davon ausgegangen, dass alle Kosten und Zuschläge dem gleichen Umsatzsteuersatz unterliegen wie die Rechnungsposition.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SUB_INVOICE_LINE_PERIOD"
+                     type="xr:SUB_INVOICE_LINE_PERIODType"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-DEX-05</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den für die Rechnungsposition maßgeblichen Rechnungszeitraum liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SUB_INVOICE_LINE_VAT_INFORMATION"
+                     type="xr:SUB_INVOICE_LINE_VAT_INFORMATIONType"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-DEX-06</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die Umsatzsteuer liefern, die für die in der betreffenden Zeile in Rechnung gestellten Waren und Dienstleistungen gilt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SUB_INVOICE_PRICE_DETAILS"
+                     type="xr:SUB_INVOICE_PRICE_DETAILSType"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BG-DEX-07</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über den Preis für die in der betreffenden Rechnungsposition in Rechnung gestellten Waren und Dienstleistungen liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SUB_INVOICE_ITEM_INFORMATIONType">
+      <xs:sequence>
+         <xs:element name="Item_name" type="xr:text" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-153</xs:appinfo>
+               <xs:documentation>Ein Name des Postens.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_description"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-154</xs:appinfo>
+               <xs:documentation>Eine Beschreibung des Postens. Anmerkung: Hier kann der Posten detaillierter beschrieben werden als im Namen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_Sellers_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-155</xs:appinfo>
+               <xs:documentation>Eine dem Posten vom Verkäufer zugewiesene Kennung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_Buyers_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-156</xs:appinfo>
+               <xs:documentation>Eine dem Posten vom Erwerber zugewiesene Kennung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_standard_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-157</xs:appinfo>
+               <xs:documentation>Eine auf einem registrierten Schema basierende Postenkennung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_classification_identifier"
+                     type="xr:identifier"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BT-158</xs:appinfo>
+               <xs:documentation>Ein Code für die Klassifizierung des Postens nach Typ bzw. Art oder Wesen bzw. Beschaffenheit. Anmerkung: Klassifizierungscodes werden verwendet, um die Zusammenfassung gleichartiger Posten für unterschiedliche Zwecke zu ermöglichen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_country_of_origin"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-159</xs:appinfo>
+               <xs:documentation>Der Ländercode, der das Land angibt, aus dem die Ware stammt oder in dem die Dienstleistung erbracht wird. Anmerkung: Die Liste der zulässigen Länder ist bei der ISO 3166-1 «Codes for the representation of names of countries and their subdivisions» erhältlich. Nur die Alpha-2-Darstellung darf verwendet werden.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="SUB_INVOICE_ITEM_ATTRIBUTES"
+                     type="xr:SUB_INVOICE_ITEM_ATTRIBUTESType"
+                     minOccurs="0"
+                     maxOccurs="unbounded">
+            <xs:annotation>
+               <xs:appinfo>BG-DEX-08</xs:appinfo>
+               <xs:documentation>Eine Gruppe von Informationselementen, die Informationen über die Eigenschaften der in Rechnung gestellten Waren und Dienstleistungen liefern.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SUB_INVOICE_ITEM_ATTRIBUTESType">
+      <xs:sequence>
+         <xs:element name="Item_attribute_name"
+                     type="xr:text"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-160</xs:appinfo>
+               <xs:documentation>Der Name der Eigenschaft des Postens, wie z. B. «Farbe».</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_attribute_value"
+                     type="xr:text"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-161</xs:appinfo>
+               <xs:documentation>Der Wert der Eigenschaft des Postens, wie z. B. «rot».</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SUB_INVOICE_LINE_ALLOWANCESType">
+      <xs:sequence>
+         <xs:element name="Invoice_line_allowance_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-136</xs:appinfo>
+               <xs:documentation>Der Nachlassbetrag ohne Umsatzsteuer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_allowance_base_amount"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-137</xs:appinfo>
+               <xs:documentation>Der Grundbetrag, der in Verbindung mit dem prozentualen Rechnungspositionennachlass zur Berechnung des Betrags des Rechnungspositionennachlasses verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_allowance_percentage"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-138</xs:appinfo>
+               <xs:documentation>Der Prozentsatz, der in Verbindung mit dem Grundbetrag des Rechnungspositionennachlasses zur Berechnung des Betrags des Rechnungspositionennachlasses verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_allowance_reason"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-139</xs:appinfo>
+               <xs:documentation>Der in Textform angegebene Grund für den Rechnungspositionennachlass.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_allowance_reason_code"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-140</xs:appinfo>
+               <xs:documentation>Der als Code angegebene Grund für den Rechnungspositionennachlass. Anmerkung: Hier sind die Codes aus der Codeliste UNTDID 5189 zu verwenden. Invoice line level allowance reason code und Invoice line level allowance reason müssen den gleichen Nachlassgrund angeben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SUB_INVOICE_LINE_CHARGESType">
+      <xs:sequence>
+         <xs:element name="Invoice_line_charge_amount"
+                     type="xr:amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-141</xs:appinfo>
+               <xs:documentation>Der Betrag einer Abgabe ohne die Umsatzsteuer.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_charge_base_amount"
+                     type="xr:amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-142</xs:appinfo>
+               <xs:documentation>Der Grundbetrag, der in Verbindung mit den prozentualen Rechnungspositionenabgaben zur Berechnung des Betrags der Rechnungspositionenabgaben verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_charge_percentage"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-143</xs:appinfo>
+               <xs:documentation>Der Prozentsatz, der in Verbindung mit dem Grundbetrag der Rechnungspositionenabgaben zur Berechnung des Betrags der Rechnungspositionenabgaben verwendet werden kann.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_charge_reason"
+                     type="xr:text"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-144</xs:appinfo>
+               <xs:documentation>Der in Textform angegebene Grund für die Rechnungspositionenabgaben.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_charge_reason_code"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-145</xs:appinfo>
+               <xs:documentation>Der als Code angegebene Grund für die Rechnungspositionenabgaben. Anmerkung: Hier sind die Codes aus der Codeliste UNTDID 7161 zu verwenden. Invoice line charge reason code und Invoice line charge reason müssen auf den gleichen Grund für die Abgaben auf die Rechnungsposition verweisen.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SUB_INVOICE_LINE_PERIODType">
+      <xs:sequence>
+         <xs:element name="Invoice_line_period_start_date"
+                     type="xr:date"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-134</xs:appinfo>
+               <xs:documentation>Das Datum, an dem der Rechnungszeitraum der betreffenden Rechnungsposition beginnt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoice_line_period_end_date"
+                     type="xr:date"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-135</xs:appinfo>
+               <xs:documentation>Das Datum, an dem der Rechnungszeitraum der betreffenden Rechnungsposition endet.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SUB_INVOICE_LINE_VAT_INFORMATIONType">
+      <xs:sequence>
+         <xs:element name="Invoiced_item_VAT_category_code"
+                     type="xr:code"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-151</xs:appinfo>
+               <xs:documentation>Der Code der für den in Rechnung gestellten Posten geltenden Umsatzsteuerkategorie. Anmerkung: Folgende Codes aus der Codeliste UNTDID 5305 müssen verwendet werden: 
+S (Standard rate)
+Z (Zero rated goods)
+E (Exempt from tax)
+AE (VAT Reverse Charge)
+K (VAT exempt for EEA intra-community supply of goods and services)
+G (Free export item, tax not charged)
+O (Services outside scope of tax)
+L (Canary Islands general indirect tax)
+M (Tax for production, services and importation in Ceuta and Melilla)
+</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Invoiced_item_VAT_rate"
+                     type="xr:percentage"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-152</xs:appinfo>
+               <xs:documentation>Der für den in Rechnung gestellten Posten geltende und als Prozentsatz angegebene Umsatzsteuersatz. Anmerkung: Ein Umsatzsteuersatz von 0 Prozent wird für Kalkulationszwecke auch dann angewandt, wenn der Posten außerhalb der Reichweite der Umsatzsteuer ist.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="SUB_INVOICE_PRICE_DETAILSType">
+      <xs:sequence>
+         <xs:element name="Item_net_price"
+                     type="xr:unit_price_amount"
+                     minOccurs="1"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-146</xs:appinfo>
+               <xs:documentation>Der Preis eines Postens, ohne Umsatzsteuer, nach Abzug des für diese Rechnungsposition geltenden Rabatts. Anmerkung: Item net price muss gleich Item gross price abzüglich Item price discount sein.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_price_discount"
+                     type="xr:unit_price_amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-147</xs:appinfo>
+               <xs:documentation>Der gesamte zur Berechnung des Netto-Postenpreises vom Brutto-Postenpreis subtrahierte Rabatt. Anmerkung: Nur anzugeben, wenn der Nachlass pro Verpackungseinheit gegeben wird und nicht in den Item gross price inkludiert ist.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_gross_price"
+                     type="xr:unit_price_amount"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-148</xs:appinfo>
+               <xs:documentation>Der Postenpreis ohne Umsatzsteuer vor Abzug des Postenpreisrabatts.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_price_base_quantity"
+                     type="xr:quantity"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-149</xs:appinfo>
+               <xs:documentation>Die Anzahl von Einheiten, für die der Postenpreis gilt.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Item_price_base_quantity_unit_of_measure"
+                     type="xr:code"
+                     minOccurs="0"
+                     maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-150</xs:appinfo>
+               <xs:documentation>Der Code der zu Grunde gelegten Maßeinheit. Die Maßeinheit der Item price base quantity unit of measure sollte gleich der Maßeinheit der in Rechnung gestellten Menge (BT-130) sein.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="THIRD_PARTY_PAYMENTType">
+      <xs:sequence>
+         <xs:element name="Third_party_payment_type" type="xr:text" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-DEX-001</xs:appinfo>
+               <xs:documentation>Die Art der Fremdforderung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Third_party_payment_amount" type="xr:amount" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-DEX-002</xs:appinfo>
+               <xs:documentation>Der Betrag der Fremdforderung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="Third_party_payment_description" type="xr:text" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+               <xs:appinfo>BT-DEX-003</xs:appinfo>
+               <xs:documentation>Eine innerhalb der Rechnung eindeutige Beschreibung der Fremdforderung.</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="xr:xr-attributes"/>
+   </xs:complexType>
+   <xs:complexType name="amount">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   <xs:complexType name="binary_object">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+            <xs:attribute name="mime_code" form="unqualified" use="optional"/>
+            <xs:attribute name="filename" form="unqualified" use="optional"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   <xs:complexType name="code">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   <xs:complexType name="date">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   <xs:complexType name="document_reference">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   <xs:complexType name="identifier">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+            <xs:attribute name="scheme_identifier" form="unqualified" use="optional"/>
+            <xs:attribute name="scheme_version_identifier" form="unqualified" use="optional"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   <xs:complexType name="percentage">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   <xs:complexType name="quantity">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   <xs:complexType name="text">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+   <xs:complexType name="unit_price_amount">
+      <xs:simpleContent>
+         <xs:extension base="xs:token">
+            <xs:attributeGroup ref="xr:xr-attributes"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+</xs:schema>

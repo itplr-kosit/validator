@@ -87,7 +87,10 @@ public class Daemon {
             final DefaultCheck check = new DefaultCheck(processor, config);
 
             server = HttpServer.create(getSocket(), 0);
+
             server.createContext("/", createRootHandler(check, processor));
+            server.createContext("/transform", transformRootHandler(check, processor));
+
             server.createContext("/server/health", new HealthHandler(check.getConfiguration(), healthConverter));
             server.createContext("/server/config", new ConfigHandler(check.getConfiguration(), converter));
             server.setExecutor(createExecutor());
@@ -97,6 +100,13 @@ public class Daemon {
         } catch (final IOException e) {
             log.error("Error starting HttpServer for Valdidator: {}", e.getMessage(), e);
         }
+    }
+
+    private HttpHandler transformRootHandler(final DefaultCheck check, final Processor processor) {
+        final TransformHandler checkHandler = new TransformHandler(check, processor);
+
+        final GuiHandler gui = new GuiHandler();
+        return new TransformRoutingHandler(checkHandler);
     }
 
     private HttpHandler createRootHandler(final DefaultCheck check, final Processor processor) {
