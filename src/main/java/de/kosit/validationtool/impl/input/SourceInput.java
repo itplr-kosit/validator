@@ -22,16 +22,23 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import javax.xml.bind.util.JAXBSource;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
+import de.kosit.validationtool.impl.Printer;
 import org.apache.commons.io.input.ReaderInputStream;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import net.sf.saxon.om.TreeInfo;
+import org.w3c.dom.Document;
 
 /**
  * A validator {@link de.kosit.validationtool.api.Input} based on a {@link Source}.

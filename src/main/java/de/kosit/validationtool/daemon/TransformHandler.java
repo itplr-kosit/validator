@@ -27,8 +27,10 @@ import de.kosit.validationtool.impl.input.StreamHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.*;
+import org.w3c.dom.Document;
 
-import javax.xml.transform.Source;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.URI;
@@ -79,28 +81,70 @@ public class TransformHandler extends BaseHandler {
     }
 
     private byte[] serializeXR2HTML(final Source source) {
-        try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
+        try ( final ByteArrayOutputStream out = new ByteArrayOutputStream();
+              final ByteArrayOutputStream sourceCopy = new ByteArrayOutputStream() ) {
             Processor processor = new Processor(false);
             XsltCompiler xsltCompiler = processor.newXsltCompiler();
 
+            // Copy source content if it's a StreamSource
+            if (source instanceof StreamSource) {
+                try ( InputStream sourceInputStream = ((StreamSource) source).getInputStream() ) {
+                    sourceInputStream.transferTo(sourceCopy);
+                }
+            }
+
+            // 0. Check Namespace of the XML Source
+            Source namespaceCheckSource = (source instanceof StreamSource)
+                    ? new StreamSource(new ByteArrayInputStream(sourceCopy.toByteArray()))
+                    : source;
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMResult domResult = new DOMResult();
+            transformer.transform(namespaceCheckSource, domResult);
+            Document doc = (Document) domResult.getNode();
+            String namespace = doc.getDocumentElement().getNamespaceURI();
+            String xsltStyle = "visualization/xsl/";
+            switch (namespace) {
+                case "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2":
+                    xsltStyle += "ubl-invoice-xr.xsl";
+                    break;
+                case "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2":
+                    xsltStyle += "ubl-creditnote-xr.xsl";
+                    break;
+                case "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100":
+                    xsltStyle += "cii-xr.xsl";
+                    break;
+                default:
+                    throw new TransformerException("Unknown namespace:" + namespace);
+            }
+
             // 1. XSLT -> XR
-            XsltExecutable stylesheet = xsltCompiler.compile(new StreamSource(new File("visualization/xsl/ubl-invoice-xr.xsl")));
-            Xslt30Transformer transformer = stylesheet.load30();
-            transformer.transform(source, processor.newSerializer(out));
+            Source firstTransformSource = (source instanceof StreamSource)
+                    ? new StreamSource(new ByteArrayInputStream(sourceCopy.toByteArray()))
+                    : source;
+            XsltExecutable stylesheet = xsltCompiler.compile(new StreamSource(new File(xsltStyle)));
+            Xslt30Transformer xslt30Transformer = stylesheet.load30();
+            xslt30Transformer.transform(firstTransformSource, processor.newSerializer(out));
 
             // 2. XR -> HTML
-            XsltExecutable htmlStylesheet = xsltCompiler.compile(new StreamSource(new File("visualization/xsl/xrechnung-html.xsl")));
+            String htmlStylePath = "visualization/xsl/xrechnung-html.xsl";
+            XsltExecutable htmlStylesheet = xsltCompiler.compile(new StreamSource(new File(htmlStylePath)));
             Xslt30Transformer htmlTransformer = htmlStylesheet.load30();
 
             try ( final ByteArrayOutputStream htmlOut = new ByteArrayOutputStream() ) {
-                // Use the XR output as the input for the HTML transformation
-                htmlTransformer.transform(new StreamSource(new ByteArrayInputStream(out.toByteArray())), processor.newSerializer(htmlOut));
-
-                // Return the HTML output
+                // Create a new ByteArrayInputStream from out's content without closing out
+                ByteArrayInputStream xrInputStream = new ByteArrayInputStream(out.toByteArray());
+                htmlTransformer.transform(new StreamSource(xrInputStream), processor.newSerializer(htmlOut));
                 return htmlOut.toByteArray();
             }
-        } catch (final IOException | SaxonApiException e) {
+        } catch (final IOException e) {
             Printer.writeOut("Error serializeXR2HTML IOException result", e);
+            throw new IllegalStateException("Can not serialize result", e);
+        } catch (final SaxonApiException e) {
+            Printer.writeOut("Error serializeXR2HTML SaxonApiException result", e);
+            throw new IllegalStateException("Can not serialize result", e);
+        } catch (TransformerException e) {
+            Printer.writeOut("Error serializeXR2HTML TransformerException result", e);
             throw new IllegalStateException("Can not serialize result", e);
         }
     }
