@@ -16,7 +16,7 @@
 
 package de.kosit.validationtool.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,7 +80,7 @@ public class Scenario {
     private Transformation reportTransformation;
 
     public List<Transformation> getSchematronValidations() {
-        return this.schematronValidations == null ? Collections.emptyList() : this.schematronValidations;
+        return this.schematronValidations == null ? new ArrayList<>() : this.schematronValidations;
     }
 
     public String getName() {

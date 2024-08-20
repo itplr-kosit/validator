@@ -141,6 +141,25 @@ public class ScenarioBuilderTest {
     }
 
     @Test
+    public void testConfigureWithSchematron() {
+        final ContentRepository repository = Simple.createContentRepository();
+        final XPathExecutable match = repository.createXPath("//*", null);
+        final XPathExecutable accept = repository.createXPath("//*", null);
+        final ScenarioBuilder builder = createScenario();
+        builder.getNamespaces().clear();
+
+        builder.match(match);
+        builder.acceptWith(accept);
+        final Result<Scenario, String> result = builder.build(repository);
+        assertThat(result.isValid()).isTrue();
+        final ScenarioType configuration = result.getObject().getConfiguration();
+        assertThat(configuration.getMatch()).isNotEmpty();
+        assertThat(configuration.getAcceptMatch()).isNotEmpty();
+        assertThat(configuration.getNamespace()).isEmpty();
+        assertThat(configuration.getValidateWithSchematron()).isNotEmpty();
+    }
+
+    @Test
     public void testBasicAttributes() {
         final ContentRepository repository = Simple.createContentRepository();
         final String random = RandomStringUtils.random(5);
