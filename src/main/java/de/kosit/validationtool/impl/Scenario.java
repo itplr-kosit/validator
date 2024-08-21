@@ -80,7 +80,10 @@ public class Scenario {
     private Transformation reportTransformation;
 
     public List<Transformation> getSchematronValidations() {
-        return this.schematronValidations == null ? new ArrayList<>() : this.schematronValidations;
+        if (this.schematronValidations == null) {
+            this.schematronValidations = new ArrayList<>();
+        }
+        return this.schematronValidations;
     }
 
     public String getName() {
