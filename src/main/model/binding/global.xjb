@@ -18,10 +18,10 @@
 <jaxb:bindings
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-        xmlns:inheritance="http://jaxb2-commons.dev.java.net/basic/inheritance"
+        xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+        xmlns:inheritance="urn:jaxb.jvnet.org:plugin:inheritance"
         jaxb:extensionBindingPrefixes="inheritance"
-        version="2.1">
+        version="3.0">
     <jaxb:globalBindings>
         <xjc:serializable uid="-1" />
         <xjc:javaType
