@@ -64,7 +64,7 @@ public class SchematronValidationAction implements CheckAction {
             // resolving nur relative zum Repository
             transformer.setURIResolver(scenario.getUriResolver());
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
-            transformer.setMessageListener(e);
+            transformer.setErrorListener(e);
 
             final XdmDestination result = new XdmDestination();
             transformer.setDestination(result);

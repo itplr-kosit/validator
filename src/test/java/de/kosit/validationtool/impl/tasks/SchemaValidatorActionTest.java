@@ -67,7 +67,7 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testSimple() throws MalformedURLException {
-        final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
+        final Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
         this.service.check(bag);
         assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
         assertThat(bag.getSchemaValidationResult()).isNotNull();
@@ -77,7 +77,7 @@ public class SchemaValidatorActionTest {
     @Test
     public void testValidationFailure() throws MalformedURLException {
         final Input input = InputFactory.read(Simple.SCHEMA_INVALID.toURL());
-        final CheckAction.Bag bag = createBag(input);
+        final Bag bag = createBag(input);
         this.service.check(bag);
         assertThat(bag.getSchemaValidationResult().isValid()).isFalse();
         bag.getSchemaValidationResult().getErrors().forEach(e -> {
@@ -153,7 +153,7 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testProcessingError() throws IOException, SAXException {
-        final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
+        final Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
         final Scenario scenario = bag.getScenarioSelectionResult().getObject();
         final Schema schema = mock(Schema.class);
         final Validator validator = mock(Validator.class);

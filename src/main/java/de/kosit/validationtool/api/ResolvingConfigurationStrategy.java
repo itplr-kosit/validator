@@ -68,7 +68,7 @@ public interface ResolvingConfigurationStrategy {
      * function.
      * 
      * @param scenarioRepository an optional repository, your implementation might not need this
-     * @return a preconfigured {@link net.sf.saxon.lib.UnparsedTextURIResolver} or null for using saxons default
+     * @return a preconfigured {@link UnparsedTextURIResolver} or null for using saxons default
      */
     UnparsedTextURIResolver createUnparsedTextURIResolver(URI scenarioRepository);
 

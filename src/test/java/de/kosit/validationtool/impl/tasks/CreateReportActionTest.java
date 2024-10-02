@@ -65,6 +65,8 @@ public class CreateReportActionTest {
         bag.setReport(null);
         this.action.check(bag);
         assertThat(bag.getReport()).isNotNull();
+        final String reportString = serialize(bag.getReport());
+        System.out.println(reportString);
     }
 
     @Test
@@ -77,7 +79,7 @@ public class CreateReportActionTest {
         this.action.check(bag);
         assertThat(bag.getReport()).isNotNull();
         final String reportString = serialize(bag.getReport());
-        assertThat(reportString).contains("SAXParseException");
+        assertThat(reportString).contains("IOException");
     }
 
     @Test

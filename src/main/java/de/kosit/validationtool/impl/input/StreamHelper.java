@@ -97,7 +97,7 @@ public class StreamHelper {
         private final LazyReadInput reference;
 
         public CountInputStream(final LazyReadInput input, final InputStream stream) {
-            super(new org.apache.commons.io.input.CountingInputStream(stream));
+            super(new CountingInputStream(stream));
             this.reference = input;
         }
 
