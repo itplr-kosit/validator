@@ -112,11 +112,11 @@ public class DefaultCheck implements Check {
 
     @Override
     public Result checkInput(final Input input) {
-        final CheckAction.Bag t = new CheckAction.Bag(input, createReport());
+        final Bag t = new Bag(input, createReport());
         return runCheckInternal(t);
     }
 
-    protected Result runCheckInternal(final CheckAction.Bag t) {
+    protected Result runCheckInternal(final Bag t) {
         final long started = System.currentTimeMillis();
         log.info("Checking content of {}", t.getInput().getName());
         for (final CheckAction action : this.checkSteps) {

@@ -132,7 +132,7 @@ public class Validator {
         final Processor processor = ProcessorProvider.getProcessor();
         final List<Configuration> config = getConfiguration(cmd);
         final InternalCheck check = new InternalCheck(processor, config.toArray(new Configuration[0]));
-        final CommandLineOptions.CliOptions cliOptions = defaultIfNull(cmd.getCliOptions(), new CliOptions());
+        final CliOptions cliOptions = defaultIfNull(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
         if (cliOptions.isExtractHtml()) {
             check.getCheckSteps().add(new ExtractHtmlContentAction(processor, outputDirectory));
@@ -235,7 +235,7 @@ public class Validator {
 
     }
 
-    private static NamingStrategy determineNamingStrategy(final CommandLineOptions.CliOptions cmd) {
+    private static NamingStrategy determineNamingStrategy(final CliOptions cmd) {
         final DefaultNamingStrategy namingStrategy = new DefaultNamingStrategy();
         if (isNotEmpty(cmd.getReportPrefix())) {
             namingStrategy.setPrefix(cmd.getReportPrefix());
@@ -256,7 +256,7 @@ public class Validator {
         return a;
     }
 
-    private static Path determineOutputDirectory(final CommandLineOptions.CliOptions cmd) {
+    private static Path determineOutputDirectory(final CliOptions cmd) {
         final Path dir;
         if (cmd.getOutputPath() != null) {
             dir = cmd.getOutputPath();
@@ -269,7 +269,7 @@ public class Validator {
         return dir;
     }
 
-    private static Collection<Input> determineTestTargets(final CommandLineOptions.CliOptions cmd) throws IOException {
+    private static Collection<Input> determineTestTargets(final CliOptions cmd) throws IOException {
         final Collection<Input> targets = new ArrayList<>();
         if (cmd.getFiles() != null && !cmd.getFiles().isEmpty()) {
             cmd.getFiles().forEach(e -> targets.addAll(determineTestTarget(e)));
