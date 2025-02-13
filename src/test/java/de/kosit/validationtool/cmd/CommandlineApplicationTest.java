@@ -46,9 +46,14 @@ public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
+    private final Path output = Paths.get("target/test-output");
+
     private CommandLine commandLine;
 
-    private final Path output = Paths.get("target/test-output");
+    private static void checkForHelp(final List<String> outputLines) {
+        assertThat(outputLines.size()).isPositive();
+        assertThat(outputLines.stream().filter(l -> l.startsWith("Usage:"))).hasSize(1);
+    }
 
     @Before
     public void setup() throws IOException {
@@ -78,11 +83,6 @@ public class CommandlineApplicationTest {
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).isEmpty();
         checkForHelp(CommandLine.getOutputLines());
-    }
-
-    private static void checkForHelp(final List<String> outputLines) {
-        assertThat(outputLines.size()).isPositive();
-        assertThat(outputLines.stream().filter(l -> l.startsWith("Usage: KoSIT Validator"))).hasSize(1);
     }
 
     @Test

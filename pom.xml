@@ -55,11 +55,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.assertj>3.23.1</version.assertj>
-        <version.commons-io>2.11.0</version.commons-io>
+        <version.commons-io>2.18.0</version.commons-io>
         <version.commons-lang>3.12.0</version.commons-lang>
-        <version.jacoco>0.8.8</version.jacoco>
+        <version.jacoco>0.8.12</version.jacoco>
         <version.jaxb>2.3.7</version.jaxb>
-        <version.lombok>1.18.24</version.lombok>
+        <version.lombok>1.18.36</version.lombok>
         <version.mockito>4.9.0</version.mockito>
         <version.owasp-dependency-check>7.2.0</version.owasp-dependency-check>
         <version.rest-assured>5.2.0</version.rest-assured>
@@ -218,11 +218,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.13.0</version>
+
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.36</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -337,7 +345,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
+                <version>3.1.1</version>
                 <configuration>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
