@@ -47,7 +47,8 @@ java -jar  validationtool-<version>-standalone.jar -s "NAME1=<scenario-config-fi
 Besides the obvious functionality of validating, the cli provides additional functionality to customize the processing:
 
 | name | option | description | 
-| - | - | - | | [Daemon mode](daemon.md) | `-D` | Starts the validator in daemon mode as an HTTP service | 
+| - | - | - | 
+| [Daemon mode](daemon.md) | `-D` | Starts the validator in daemon mode as an HTTP service | 
 | print mode | `-p` | Print the report to stdout | 
 | extract html | `-h` | Extracts any html blocks within the report and saves the content to the filesystem. Note: the file name is derived from the node name the html appears in | 
 | print memory stats | `-m` | Prints some memory usage information. Mainly for debugging purposes on processing huge xml files | 
