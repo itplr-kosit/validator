@@ -15,13 +15,14 @@
   ~ limitations under the License.
   -->
 
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <name>KoSIT XML Prüftool Implementierung</name>
 
     <groupId>de.kosit</groupId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
 
     <artifactId>validationtool</artifactId>
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
@@ -37,7 +38,7 @@
             <id>renzo.kottmann</id>
             <name>Renzo Kottmann</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.xoev.de</organizationUrl>
+            <organizationUrl>http://www.xeinkauf.de</organizationUrl>
             <roles>
                 <role>Product Owner</role>
             </roles>
@@ -55,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.assertj>3.23.1</version.assertj>
-        <version.commons-io>2.11.0</version.commons-io>
+        <version.commons-io>2.18.0</version.commons-io>
         <version.commons-lang>3.12.0</version.commons-lang>
         <version.jacoco>0.8.8</version.jacoco>
         <version.jaxb>2.3.7</version.jaxb>
@@ -400,11 +401,11 @@
                             <goal>dump</goal>
 
                         </goals>
-                            <configuration>
-                                <address>localhost</address>
-                                <port>${jacoco.tcp.port}</port>
-                                <append>true</append>
-                            </configuration>
+                        <configuration>
+                            <address>localhost</address>
+                            <port>${jacoco.tcp.port}</port>
+                            <append>true</append>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>generateJacocoReport</id>
@@ -453,15 +454,15 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
-                <execution>
+                    <execution>
                         <id>run</id>
-                    <phase>pre-integration-test</phase>
-                    <goals>
+                        <phase>pre-integration-test</phase>
+                        <goals>
                             <goal>exec</goal>
-                    </goals>
+                        </goals>
                     </execution>
                 </executions>
-                    <configuration>
+                <configuration>
                     <executable>java</executable>
                     <longClasspath>false</longClasspath>
                     <async>true</async>
@@ -518,8 +519,8 @@
                             <goal>verify</goal>
                         </goals>
                         <configuration>
-                        <!--suppress MavenModelInspection -->
-                        <argLine>-Dfile.encoding=UTF-8 -Ddaemon.port=${validator.server.port}</argLine>
+                            <!--suppress MavenModelInspection -->
+                            <argLine>-Dfile.encoding=UTF-8 -Ddaemon.port=${validator.server.port}</argLine>
                         </configuration>
 
                     </execution>
@@ -623,7 +624,9 @@
         </profile>
         <profile>
             <id>format</id>
-            <activation><activeByDefault>false</activeByDefault></activation>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
