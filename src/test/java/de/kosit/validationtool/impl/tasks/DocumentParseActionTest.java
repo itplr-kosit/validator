@@ -18,11 +18,10 @@ package de.kosit.validationtool.impl.tasks;
 
 import static de.kosit.validationtool.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
@@ -37,9 +36,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class DocumentParseActionTest {
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     private DocumentParseAction action;
 
@@ -68,9 +64,6 @@ public class DocumentParseActionTest {
 
     @Test
     public void testNullInput() {
-        this.exception.expect(IllegalArgumentException.class);
-        this.action.parseDocument(null);
-
+        assertThrows(IllegalArgumentException.class, () -> this.action.parseDocument(null));
     }
-
 }

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 import org.junit.Test;
 
 import de.kosit.validationtool.impl.ContentRepository;
@@ -40,7 +40,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testSimpleString() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = getRandomString(5);
         final XPathBuilder b = new XPathBuilder(name);
         b.setXpath("//*");
         final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
@@ -54,7 +54,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testStringWithNamespace() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = getRandomString(5);
         final XPathBuilder b = new XPathBuilder(name);
         final Map<String, String> ns = new HashMap<>();
         ns.put("p", "http://somens");
@@ -69,7 +69,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testStringWithUnknownNamespace() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = getRandomString(5);
         final XPathBuilder b = new XPathBuilder(name);
         final Map<String, String> ns = new HashMap<>();
         ns.put("p", "http://somens");
@@ -82,7 +82,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testExecutable() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = getRandomString(5);
         final ContentRepository repository = Simple.createContentRepository();
         final XPathExecutable xpath = repository.createXPath("//*", Collections.emptyMap());
         final XPathBuilder b = new XPathBuilder(name);
@@ -96,7 +96,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testExecutableWithNamespace() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = getRandomString(5);
         final ContentRepository repository = Simple.createContentRepository();
         final Map<String, String> ns = new HashMap<>();
         ns.put("p", "http://somens");
@@ -123,10 +123,16 @@ public class XPathBuilderTest {
 
     @Test
     public void testNoConfig() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = getRandomString(5);
         final XPathBuilder b = new XPathBuilder(name);
         final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isFalse();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private String getRandomString(final int length) {
+        RandomStringGenerator rsg = new RandomStringGenerator.Builder().filteredBy(Character::isLetterOrDigit).get();
+        return rsg.generate(length);
     }
 }

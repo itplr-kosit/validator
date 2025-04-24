@@ -19,6 +19,7 @@ package de.kosit.validationtool.api;
 import static de.kosit.validationtool.impl.Helper.Simple.SIMPLE_VALID;
 import static de.kosit.validationtool.impl.input.StreamHelper.drain;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -32,9 +33,7 @@ import java.nio.file.Paths;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -61,9 +60,6 @@ public class InputFactoryTest {
 
     public static final String SOME_VALUE = "some value";
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
     @Test
     public void testDefaultDigestAlgorithm() {
         assertThat(new InputFactory().getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITH);
@@ -83,14 +79,12 @@ public class InputFactoryTest {
 
     @Test
     public void testWrongAlgorithm() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        new InputFactory("unknown");
+        assertThrows(IllegalArgumentException.class, () -> new InputFactory("unknown"));
     }
 
     @Test
     public void testNullInputURL() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        InputFactory.read((URL) null);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read((URL) null));
     }
 
     @Test
@@ -107,8 +101,7 @@ public class InputFactoryTest {
 
     @Test
     public void testNullStream() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        final Input input = InputFactory.read((InputStream) null, SOME_VALUE);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read((InputStream) null, SOME_VALUE));
     }
 
     @Test
@@ -125,21 +118,20 @@ public class InputFactoryTest {
 
     @Test
     public void testNullInput() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        InputFactory.read((byte[]) null, SOME_VALUE);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read((byte[]) null, SOME_VALUE));
     }
 
     @Test
     public void testNullInputName() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        InputFactory.read(SOME_VALUE.getBytes(), null);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read(SOME_VALUE.getBytes(), null));
     }
 
     @Test
     public void testEmptyInputName() throws IOException {
-        this.expectedException.expect(IllegalArgumentException.class);
-        final Input input = InputFactory.read(SOME_VALUE.getBytes(), "");
-        drain(input);
+        assertThrows(IllegalArgumentException.class, () -> {
+            final Input input = InputFactory.read(SOME_VALUE.getBytes(), "");
+            drain(input);
+        });
     }
 
     @Test
@@ -150,8 +142,7 @@ public class InputFactoryTest {
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
             assertThat(input.getLength()).isGreaterThan(0L);
-            this.expectedException.expect(IllegalStateException.class);
-            input.getSource();
+            assertThrows(IllegalStateException.class, input::getSource);
         }
     }
 
@@ -164,15 +155,13 @@ public class InputFactoryTest {
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
             assertThat(input.getLength()).isGreaterThan(0L);
-            this.expectedException.expect(IllegalStateException.class);
-            input.getSource();
+            assertThrows(IllegalStateException.class, input::getSource);
         }
     }
 
     @Test
     public void testUnexistingInput() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        InputFactory.read(Simple.NOT_EXISTING);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read(Simple.NOT_EXISTING));
     }
 
     @Test

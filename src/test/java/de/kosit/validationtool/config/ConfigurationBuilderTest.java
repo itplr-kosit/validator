@@ -20,15 +20,13 @@ import static de.kosit.validationtool.config.ConfigurationBuilder.report;
 import static de.kosit.validationtool.config.ConfigurationBuilder.schematron;
 import static de.kosit.validationtool.config.TestConfigurationFactory.createSimpleConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Date;
 
-import org.hamcrest.Matchers;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.Helper;
 
@@ -41,58 +39,49 @@ public class ConfigurationBuilderTest {
 
     public static final LocalDate EPOCH = LocalDate.of(1970, 1, 1);
 
-    @Rule
-    public ExpectedException exceptions = ExpectedException.none();
-
     @Test
     public void testNoConfiguration() {
-        this.exceptions.expect(IllegalStateException.class);
-        new ConfigurationBuilder().build(Helper.getTestProcessor());
+        assertThrows(IllegalStateException.class, () -> new ConfigurationBuilder().build(Helper.getTestProcessor()));
     }
 
     @Test
     public void testNoFallback() {
-        this.exceptions.expect(IllegalStateException.class);
-        this.exceptions.expectMessage(Matchers.containsString("fallback"));
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.with((FallbackBuilder) null);
-        builder.build(Helper.getTestProcessor());
+        Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
+        assertThat(e).hasMessageContaining("fallback");
     }
 
     @Test
     public void testNoSchema() {
-        this.exceptions.expect(IllegalStateException.class);
-        this.exceptions.expectMessage(Matchers.containsString("schema"));
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).validate((SchemaBuilder) null);
-        builder.build(Helper.getTestProcessor());
+        Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
+        assertThat(e).hasMessageContaining("schema");
     }
 
     @Test
     public void testInvalidSchematron() {
-        this.exceptions.expect(IllegalStateException.class);
-        this.exceptions.expectMessage(Matchers.containsString("schematron"));
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).validate(schematron("invalid").source(URI.create("DoesNotExist")));
-        builder.build(Helper.getTestProcessor());
+        Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
+        assertThat(e).hasMessageContaining("schematron");
     }
 
     @Test
     public void testInsufficientSchematron() {
-        this.exceptions.expect(IllegalStateException.class);
-        this.exceptions.expectMessage(Matchers.containsString("schematron"));
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).validate(schematron("invalid"));
-        builder.build(Helper.getTestProcessor());
+        Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
+        assertThat(e).hasMessageContaining("schematron");
     }
 
     @Test
     public void testNoReport() {
-        this.exceptions.expect(IllegalStateException.class);
-        this.exceptions.expectMessage(Matchers.containsString("report"));
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).with(report("invalid"));
-        builder.build(Helper.getTestProcessor());
+        Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
+        assertThat(e).hasMessageContaining("report");
     }
 
     @Test

@@ -23,10 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper.Simple;
@@ -43,9 +42,6 @@ import net.sf.saxon.s9api.XPathExecutable;
  * @author Andreas Penski
  */
 public class ScenarioBuilderTest {
-
-    @Rule
-    public ExpectedException exceptions = ExpectedException.none();
 
     @Test
     public void simpleValid() {
@@ -143,7 +139,7 @@ public class ScenarioBuilderTest {
     @Test
     public void testBasicAttributes() {
         final ContentRepository repository = Simple.createContentRepository();
-        final String random = RandomStringUtils.random(5);
+        final String random = getRandomString(5);
         final ScenarioBuilder builder = createScenario();
         builder.name(random).description(random);
         final Result<Scenario, String> result = builder.build(repository);
@@ -165,5 +161,11 @@ public class ScenarioBuilderTest {
         assertThat(config.getName()).contains("manually");
         assertThat(config.getDescription()).isNotNull();
         assertThat(config.getDescription().getPOrOlOrUl()).isNotEmpty();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private String getRandomString(final int length) {
+        RandomStringGenerator rsg = new RandomStringGenerator.Builder().filteredBy(Character::isLetterOrDigit).get();
+        return rsg.generate(length);
     }
 }

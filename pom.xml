@@ -82,6 +82,7 @@
     <version.checkstyle>10.23.0</version.checkstyle>
     <version.commons-io>2.19.0</version.commons-io>
     <version.commons-lang3>3.17.0</version.commons-lang3>
+    <version.commons-text>1.13.1</version.commons-text>
     <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api>
     <version.jansi>2.4.1</version.jansi>
     <version.jaxb-runtime>4.0.5</version.jaxb-runtime>
@@ -185,6 +186,12 @@
       <scope>provided</scope>
     </dependency>
     <!-- Test -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>${version.commons-text}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>de.kosit.validationtool</groupId>
       <artifactId>packaged-test-scenarios</artifactId>

@@ -17,14 +17,13 @@
 package de.kosit.validationtool.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.model.scenarios.Scenarios;
@@ -43,9 +42,6 @@ public class VersioningTest {
     private static final URL NEW_FEATURE = VersioningTest.class.getResource("/examples/versioning/scenarios-newfeature.xml");
 
     private static final URL NEW_VERSION = VersioningTest.class.getResource("/examples/versioning/scenarios-newversion.xml");
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     private ConversionService service;
 
@@ -71,13 +67,13 @@ public class VersioningTest {
 
     @Test
     public void testNewFeature() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionException.class);
-        this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
+        assertThrows(ConversionService.ConversionException.class,
+                () -> this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
     }
 
     @Test
     public void testNewVersion() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionException.class);
-        this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
+        assertThrows(ConversionService.ConversionException.class,
+                () -> this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
     }
 }

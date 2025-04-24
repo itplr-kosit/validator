@@ -54,6 +54,7 @@ import net.sf.saxon.s9api.XsltTransformer;
 @Slf4j
 public class SaxonSecurityTest {
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testEvilStylesheets() throws IOException {
         final Processor p = TestObjectFactory.createProcessor();
@@ -62,11 +63,13 @@ public class SaxonSecurityTest {
                 final URL resource = SaxonSecurityTest.class.getResource(String.format("/evil/evil%s.xsl", i));
                 final XsltCompiler compiler = p.newXsltCompiler();
                 final RelativeUriResolver resolver = new RelativeUriResolver(Simple.REPOSITORY_URI);
+                // TODO: Replace call to deprecated method.
                 compiler.setURIResolver(resolver);
                 final XsltExecutable executable = compiler.compile(new StreamSource(resource.openStream()));
                 final XsltTransformer transformer = executable.load();
                 final Source document = InputFactory.read("<root/>".getBytes(), "dummy").getSource();
                 // transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
+                // TODO: Replace call to deprecated method.
                 transformer.setURIResolver(resolver);
                 transformer.setSource(document);
                 final XdmDestination result = new XdmDestination();

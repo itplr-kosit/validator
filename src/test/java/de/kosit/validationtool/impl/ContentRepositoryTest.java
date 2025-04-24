@@ -17,6 +17,7 @@
 package de.kosit.validationtool.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -28,9 +29,7 @@ import java.util.Map;
 import javax.xml.validation.Schema;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.Helper.Simple;
 
@@ -46,9 +45,6 @@ public class ContentRepositoryTest {
 
     private ContentRepository repository;
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @Before
     public void setup() {
         this.repository = Simple.createContentRepository();
@@ -62,8 +58,7 @@ public class ContentRepositoryTest {
 
     @Test
     public void testCreateSchemaNotExisting() throws Exception {
-        this.exception.expect(IllegalStateException.class);
-        this.repository.createSchema(Simple.NOT_EXISTING.toURL());
+        assertThrows(IllegalStateException.class, () -> this.repository.createSchema(Simple.NOT_EXISTING.toURL()));
     }
 
     @Test
@@ -74,8 +69,7 @@ public class ContentRepositoryTest {
 
     @Test
     public void testLoadXSLTNotExisting() {
-        this.exception.expect(IllegalStateException.class);
-        this.repository.loadXsltScript(Simple.NOT_EXISTING);
+        assertThrows(IllegalStateException.class, () -> this.repository.loadXsltScript(Simple.NOT_EXISTING));
     }
 
     @Test
@@ -92,14 +86,12 @@ public class ContentRepositoryTest {
 
     @Test
     public void testXpathCreationWithoutNamespace() {
-        this.exception.expect(IllegalStateException.class);
-        this.repository.createXPath("//html:html", null);
+        assertThrows(IllegalStateException.class, () -> this.repository.createXPath("//html:html", null));
     }
 
     @Test
     public void testIllegalXpath() {
-        this.exception.expect(IllegalStateException.class);
-        this.repository.createXPath("kein Xpath Ausdruck", null);
+        assertThrows(IllegalStateException.class, () -> this.repository.createXPath("kein Xpath Ausdruck", null));
     }
 
     @Test
