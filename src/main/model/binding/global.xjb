@@ -16,45 +16,98 @@
   -->
 
 <jaxb:bindings
+        xmlns:annox="urn:jaxb.jvnet.org:annox"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-        xmlns:inheritance="http://jaxb2-commons.dev.java.net/basic/inheritance"
-        jaxb:extensionBindingPrefixes="inheritance"
-        version="2.1">
+        xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+        xmlns:inheritance="urn:jaxb.jvnet.org:plugin:inheritance"
+        jaxb:extensionBindingPrefixes="xjc annox inheritance"
+        version="3.0">
+
     <jaxb:globalBindings>
         <xjc:serializable uid="-1" />
         <xjc:javaType
                 name="java.lang.String"
                 xmlType="xs:string"
                 adapter="de.kosit.validationtool.impl.xml.StringTrimAdapter" />
-
     </jaxb:globalBindings>
-
 
     <jaxb:bindings schemaLocation="../xsd/createReportInput.xsd">
         <jaxb:schemaBindings>
             <jaxb:package name="de.kosit.validationtool.model.reportInput"/>
         </jaxb:schemaBindings>
+        <jaxb:bindings node="/xs:schema/xs:element[@name='createReportInput']/xs:complexType">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='Document']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='EngineType']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='ValidationResultsWellformedness']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='ValidationResultsXmlSchema']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='ProcessingError']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
         <jaxb:bindings node="//xs:complexType[@name='XMLSyntaxError']">
             <inheritance:extends>de.kosit.validationtool.impl.model.BaseXMLSyntaxError</inheritance:extends>
         </jaxb:bindings>
     </jaxb:bindings>
+
     <jaxb:bindings schemaLocation="../xsd/scenarios.xsd">
         <jaxb:schemaBindings>
             <jaxb:package name="de.kosit.validationtool.model.scenarios"/>
         </jaxb:schemaBindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='CreateReportType']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='CustomErrorLevel']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='DescriptionType']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='ScenarioType']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:element[@name='scenarios']/xs:complexType">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='ValidateWithXmlSchema']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
     </jaxb:bindings>
+
     <jaxb:bindings schemaLocation="../xsd/assertions.xsd">
         <jaxb:schemaBindings>
             <jaxb:package name="de.kosit.validationtool.cmd.assertions" />
         </jaxb:schemaBindings>
-    </jaxb:bindings>
-    <jaxb:bindings schemaLocation="../xsd/svrl-kosit.xsd">
-        <jaxb:bindings node="//xs:element[@name='schematron-output']/xs:complexType">
-            <inheritance:extends>de.kosit.validationtool.impl.model.BaseOutput</inheritance:extends>
+        <jaxb:bindings node="/xs:schema/xs:element[@name='assertions']/xs:complexType">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
         </jaxb:bindings>
     </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="../xsd/svrl-kosit.xsd">
+        <jaxb:bindings node="/xs:schema/xs:element[@name='failed-assert']/xs:complexType">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:complexType[@name='rich-text']">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xs:element[@name='schematron-output']/xs:complexType">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+            <inheritance:extends>de.kosit.validationtool.impl.model.BaseOutput</inheritance:extends>
+        </jaxb:bindings>
+        <jaxb:bindings node="/xs:schema/xs:element[@name='successful-report']/xs:complexType">
+            <annox:annotate target="class">@java.lang.SuppressWarnings("serial")</annox:annotate>
+        </jaxb:bindings>
+    </jaxb:bindings>
+
     <jaxb:bindings schemaLocation="../xsd/daemon.xsd">
         <jaxb:schemaBindings>
             <jaxb:package name="de.kosit.validationtool.model.daemon" />

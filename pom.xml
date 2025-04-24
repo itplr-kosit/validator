@@ -79,26 +79,28 @@
     <version.maven>3.6.3</version.maven>
     <!-- Dependencies -->
     <version.assertj-core>3.27.3</version.assertj-core>
-    <version.commons-io>2.18.0</version.commons-io>
+    <version.commons-io>2.19.0</version.commons-io>
     <version.commons-lang3>3.17.0</version.commons-lang3>
+    <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api>
     <version.jansi>2.4.1</version.jansi>
-    <version.jaxb-runtime>2.3.9</version.jaxb-runtime>
-    <version.junit>4.13.1</version.junit>
+    <version.jaxb-runtime>4.0.5</version.jaxb-runtime>
+    <version.junit>4.13.2</version.junit>
     <version.lombok>1.18.38</version.lombok>
-    <version.mockito-core>4.11.0</version.mockito-core>
+    <version.mockito-core>5.17.0</version.mockito-core>
     <version.packaged-test-scenarios>1.0.2</version.packaged-test-scenarios>
-    <version.picocli>4.7.6</version.picocli>
-    <version.rest-assured>5.3.0</version.rest-assured>
-    <version.saxon-he>11.4</version.saxon-he>
-    <version.slf4j-api>1.7.36</version.slf4j-api>
-    <version.slf4j-simple>1.7.36</version.slf4j-simple>
+    <version.picocli>4.7.7</version.picocli>
+    <version.rest-assured>5.5.1</version.rest-assured>
+    <version.saxon-he>12.5</version.saxon-he>
+    <version.slf4j-api>2.0.17</version.slf4j-api>
+    <version.slf4j-simple>2.0.17</version.slf4j-simple>
     <!-- Plugins -->
     <version.build-helper-maven-plugin>3.6.0</version.build-helper-maven-plugin>
     <version.dependency-check-maven>12.1.1</version.dependency-check-maven>
     <version.exec-maven-plugin>3.5.0</version.exec-maven-plugin>
     <version.formatter-maven-plugin>2.26.0</version.formatter-maven-plugin>
     <version.jacoco-maven-plugin>0.8.13</version.jacoco-maven-plugin>
-    <version.jaxb2-basics>0.13.1</version.jaxb2-basics>
+    <version.jaxb-maven-plugin>4.0.9</version.jaxb-maven-plugin>
+    <version.jaxb-plugins>4.0.9</version.jaxb-plugins>
     <version.maven-antrun-plugin>3.1.0</version.maven-antrun-plugin>
     <version.maven-assembly-plugin>3.7.1</version.maven-assembly-plugin>
     <version.maven-compiler-plugin>3.14.0</version.maven-compiler-plugin>
@@ -106,7 +108,6 @@
     <version.maven-failsafe-plugin>3.5.3</version.maven-failsafe-plugin>
     <version.maven-gpg-plugin>3.2.7</version.maven-gpg-plugin>
     <version.maven-javadoc-plugin>3.11.2</version.maven-javadoc-plugin>
-    <version.maven-jaxb2-plugin>0.15.3</version.maven-jaxb2-plugin>
     <version.maven-release-plugin>3.1.1</version.maven-release-plugin>
     <version.maven-resources-plugin>3.3.1</version.maven-resources-plugin>
     <version.maven-shade-plugin>3.6.0</version.maven-shade-plugin>
@@ -142,6 +143,11 @@
       <artifactId>picocli</artifactId>
       <version>${version.picocli}</version>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>${version.jakarta.xml.bind-api}</version>
     </dependency>
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
@@ -379,9 +385,9 @@
       </plugin>
       <!-- Generate model classes -->
       <plugin>
-        <groupId>org.jvnet.jaxb2.maven2</groupId>
-        <artifactId>maven-jaxb2-plugin</artifactId>
-        <version>${version.maven-jaxb2-plugin}</version>
+        <groupId>org.jvnet.jaxb</groupId>
+        <artifactId>jaxb-maven-plugin</artifactId>
+        <version>${version.jaxb-maven-plugin}</version>
         <executions>
           <execution>
             <goals>
@@ -396,23 +402,21 @@
           <packageLevelAnnotations>false</packageLevelAnnotations>
           <args>
             <arg>-Xinheritance</arg>
+            <arg>-Xannotate</arg>
           </args>
           <plugins>
             <plugin>
-              <groupId>org.jvnet.jaxb2_commons</groupId>
-              <artifactId>jaxb2-basics</artifactId>
-              <version>${version.jaxb2-basics}</version>
+              <groupId>org.jvnet.jaxb</groupId>
+              <artifactId>jaxb-plugins</artifactId>
+              <version>${version.jaxb-plugins}</version>
+            </plugin>
+            <plugin>
+              <groupId>org.jvnet.jaxb</groupId>
+              <artifactId>jaxb-plugin-annotate</artifactId>
+              <version>${version.jaxb-plugins}</version>
             </plugin>
           </plugins>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>${version.jaxb-runtime}</version>
-            <optional>true</optional>
-          </dependency>
-        </dependencies>
       </plugin>
       <!-- Integrate code coverage -->
       <plugin>

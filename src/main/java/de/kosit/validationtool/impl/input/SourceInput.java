@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import javax.xml.bind.util.JAXBSource;
+import jakarta.xml.bind.util.JAXBSource;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
@@ -43,7 +43,7 @@ import net.sf.saxon.om.TreeInfo;
  * <ul>
  * <li>{@link StreamSource} - both {@link java.io.InputStream} based and {@link java.io.Reader} based</li>
  * <li>{@link javax.xml.transform.dom.DOMSource}</li>
- * <li>{@link javax.xml.bind.util.JAXBSource}</li>
+ * <li>{@link jakarta.xml.bind.util.JAXBSource}</li>
  * <li>{@link TreeInfo}</li>
  * </ul>
  *
