@@ -93,7 +93,8 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testNotExistingScenarioFile() {
-        final String[] args = new String[] { "-s", Paths.get(Simple.NOT_EXISTING).toString(), Paths.get(Simple.NOT_EXISTING).toString() };
+        final String s = Paths.get(Simple.NOT_EXISTING).toString();
+        final String[] args = new String[] { "-s", s, s };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).isNotEmpty();
         assertThat(CommandLine.getErrorOutput()).contains("Not a valid path for scenario definition specified");
@@ -153,7 +154,6 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testValidOutputConfiguration() throws IOException {
-
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
@@ -173,7 +173,6 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testPrint() {
-
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-p", "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), "-o", this.output.toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
@@ -196,9 +195,9 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testAssertionsExtraktion() {
-        final String[] args = new String[] { "-d", "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
-                Paths.get(Simple.REPOSITORY_URI).toString(), "-o", this.output.toString(), "-c", Paths.get(ASSERTIONS).toString(),
-                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
+        final String s = Paths.get(Simple.REPOSITORY_URI).toString();
+        final String[] args = new String[] { "-d", "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", s, "-o", this.output.toString(),
+                "-c", Paths.get(ASSERTIONS).toString(), s, Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(CommandLine.getErrorOutput()).contains("Can not find assertions for ");
@@ -248,9 +247,9 @@ public class CommandlineApplicationTest {
 
     @Test
     public void loadMultipleScenarios() {
+        final Path p = Paths.get(Simple.REPOSITORY_URI);
         final String[] args = new String[] { "-s", "s1=" + Paths.get(Simple.SCENARIOS), "-s", "s2=" + Paths.get(Simple.OTHER_SCENARIOS),
-                "-r", "s1=" + Paths.get(Simple.REPOSITORY_URI), "-r", "s2=" + Paths.get(Simple.REPOSITORY_URI),
-                Paths.get(Simple.SIMPLE_VALID).toString() };
+                "-r", "s1=" + p, "-r", "s2=" + p, Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getOutput()).contains("Processing of 1 objects completed");
     }
@@ -265,26 +264,27 @@ public class CommandlineApplicationTest {
 
     @Test
     public void loadMultipleScenariosMissingRepository() {
+        final Path p = Paths.get(Simple.REPOSITORY_URI);
         final String[] args = new String[] { "-s", "s1=" + Paths.get(Simple.SCENARIOS), "-s", "s2=" + Paths.get(Simple.OTHER_SCENARIOS),
-                "-r", "s1=" + Paths.get(Simple.REPOSITORY_URI), "-r", "typo=" + Paths.get(Simple.REPOSITORY_URI),
-                Paths.get(Simple.SIMPLE_VALID).toString() };
+                "-r", "s1=" + p, "-r", "typo=" + p, Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).contains("No repository location for scenario definition 's2' specified");
     }
 
     @Test
     public void loadMultipleOrderedScenarios() {
+        final String s = Paths.get(Simple.REPOSITORY_URI).toString();
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-s",
-                Paths.get(Simple.OTHER_SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(), "-r",
-                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
+                Paths.get(Simple.OTHER_SCENARIOS).toString(), "-r", s, "-r", s, Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getOutput()).contains("Processing of 1 objects completed");
     }
 
     @Test
     public void checkUnusedRepository() {
-        final String[] args = new String[] { "-s", "s1=" + Paths.get(Simple.SCENARIOS), "-r", "s1=" + Paths.get(Simple.REPOSITORY_URI),
-                "-r", "unused=" + Paths.get(Simple.REPOSITORY_URI), Paths.get(Simple.SIMPLE_VALID).toString() };
+        final Path p = Paths.get(Simple.REPOSITORY_URI);
+        final String[] args = new String[] { "-s", "s1=" + Paths.get(Simple.SCENARIOS), "-r", "s1=" + p, "-r", "unused=" + p,
+                Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getOutput()).contains("Processing of 1 objects completed");
         assertThat(CommandLine.getErrorOutput()).contains("Warning: repository definition \"unused\" is not used");
@@ -292,8 +292,9 @@ public class CommandlineApplicationTest {
 
     @Test
     public void checkDuplicationScenarioDefinition() {
-        final String[] args = new String[] { "-s", "s1=" + Paths.get(Simple.SCENARIOS), "-r", "s1=" + Paths.get(Simple.REPOSITORY_URI),
-                "-r", "unused=" + Paths.get(Simple.REPOSITORY_URI), Paths.get(Simple.SIMPLE_VALID).toString() };
+        final Path p = Paths.get(Simple.REPOSITORY_URI);
+        final String[] args = new String[] { "-s", "s1=" + Paths.get(Simple.SCENARIOS), "-r", "s1=" + p, "-r", "unused=" + p,
+                Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getOutput()).contains("Processing of 1 objects completed");
         assertThat(CommandLine.getErrorOutput()).contains("Warning: repository definition \"unused\" is not used");
