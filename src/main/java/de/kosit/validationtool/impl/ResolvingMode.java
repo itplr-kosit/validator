@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
  *
  * @author Andreas Penski
  */
+@Getter
 @RequiredArgsConstructor
 public enum ResolvingMode {
 
@@ -46,7 +47,6 @@ public enum ResolvingMode {
     @SuppressWarnings("unused")
     CUSTOM(null);
 
-    @Getter
     private final ResolvingConfigurationStrategy strategy;
 
 }

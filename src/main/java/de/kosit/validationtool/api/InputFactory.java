@@ -46,6 +46,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  *
  * @author Andreas Penski
  */
+@Getter
 @Slf4j
 public class InputFactory {
 
@@ -58,7 +59,6 @@ public class InputFactory {
 
     private static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
 
-    @Getter
     private final String algorithm;
 
     InputFactory() {

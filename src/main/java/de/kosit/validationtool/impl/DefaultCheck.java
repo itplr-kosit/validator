@@ -55,19 +55,16 @@ import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
  *
  * @author Andreas Penski
  */
+@Getter
 @Slf4j
 public class DefaultCheck implements Check {
 
-    @Getter
     private final ConversionService conversionService;
 
-    @Getter
     private final List<Configuration> configuration;
 
-    @Getter
     private final List<CheckAction> checkSteps;
 
-    @Getter
     private final Processor processor;
 
     public DefaultCheck(final Configuration... configuration) {

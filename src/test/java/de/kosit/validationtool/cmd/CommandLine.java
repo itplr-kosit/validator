@@ -43,10 +43,10 @@ public class CommandLine {
      *
      * @param <O> Typ des eigentlichen {@link OutputStream}
      */
+    @Setter
+    @Getter
     private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
 
-        @Getter
-        @Setter
         private O out;
 
         @Override

@@ -68,8 +68,14 @@ public class ContentRepository {
 
     private final URI repository;
 
+    /**
+     * -- GETTER -- Returns the to use for resolving xml artifacts.
+     *
+     */
+    @Getter
     private final URIResolver resolver;
 
+    @Getter
     private final UnparsedTextURIResolver unparsedTextURIResolver;
 
     private final SchemaFactory schemaFactory;
@@ -214,19 +220,6 @@ public class ContentRepository {
             throw new IllegalStateException(String.format("Can not compile xpath match expression '%s'",
                     StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION"), e);
         }
-    }
-
-    /**
-     * Returns the {@link URIResolver} to use for resolving xml artifacts.
-     *
-     * @return the resolver
-     */
-    public URIResolver getResolver() {
-        return this.resolver;
-    }
-
-    public UnparsedTextURIResolver getUnparsedTextURIResolver() {
-        return this.unparsedTextURIResolver;
     }
 
     /**
