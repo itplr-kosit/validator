@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,6 +65,8 @@ public class ExtractHtmlActionTest {
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);
         assertThat(b.isStopped()).isFalse();
-        assertThat(Files.list(this.tmpDirectory).collect(Collectors.toList())).hasSize(1);
+        try ( Stream<Path> stream = Files.list(this.tmpDirectory) ) {
+            assertThat(stream.collect(Collectors.toList())).hasSize(1);
+        }
     }
 }

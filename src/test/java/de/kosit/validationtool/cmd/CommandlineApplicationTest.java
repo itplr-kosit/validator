@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static de.kosit.validationtool.impl.Helper.ASSERTIONS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,13 +58,15 @@ public class CommandlineApplicationTest {
 
     @After
     public void cleanup() throws IOException {
-        Files.list(Paths.get("")).filter(p -> p.getFileName().toString().endsWith("-report.xml")).forEach(path -> {
-            try {
-                Files.delete(path);
-            } catch (final IOException e) {
-                log.error("Error deleting file", e);
-            }
-        });
+        try ( Stream<Path> stream = Files.list(Paths.get("")) ) {
+            stream.filter(p -> p.getFileName().toString().endsWith("-report.xml")).forEach(path -> {
+                try {
+                    Files.delete(path);
+                } catch (final IOException e) {
+                    log.error("Error deleting file", e);
+                }
+            });
+        }
         CommandLine.deactivate();
     }
 
@@ -186,7 +189,9 @@ public class CommandlineApplicationTest {
                 Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(Files.list(this.output).filter(f -> f.toString().endsWith(".html")).count()).isPositive();
+        try ( Stream<Path> stream = Files.list(this.output) ) {
+            assertThat(stream.filter(f -> f.toString().endsWith(".html")).count()).isPositive();
+        }
     }
 
     @Test
