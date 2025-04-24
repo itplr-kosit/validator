@@ -41,7 +41,7 @@ public class ComputeAcceptanceAction implements CheckAction {
             // xml wurde aus irgendwelchen Gründen nicht korrekt verarbeitet, dann lassen wir es als undefined
             return;
         }
-        if (preCondtionsMatch(results)) {
+        if (preConditionsMatch(results)) {
             final Optional<XPathSelector> acceptMatch = results.getScenarioSelectionResult().getObject().getAcceptSelector();
             if (results.getSchemaValidationResult().isValid() && acceptMatch.isPresent()) {
                 evaluateAcceptanceMatch(results, acceptMatch.get());
@@ -81,7 +81,7 @@ public class ComputeAcceptanceAction implements CheckAction {
         }
     }
 
-    private static boolean preCondtionsMatch(final Bag results) {
+    private static boolean preConditionsMatch(final Bag results) {
         return results.getReport() != null && results.getSchemaValidationResult() != null && results.getScenarioSelectionResult() != null;
     }
 

@@ -69,7 +69,7 @@ public class ConfigurationLoader {
     protected final Map<String, Object> parameters = new HashMap<>();
 
     /**
-     * URL, die auf die scenerio.xml Datei zeigt.
+     * URL, die auf die scenario.xml Datei zeigt.
      */
     @Getter(AccessLevel.PACKAGE)
     private final URI scenarioDefinition;
@@ -115,8 +115,8 @@ public class ConfigurationLoader {
     }
 
     private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {
-        final ResourceType noscenarioResource = scenarios.getNoScenarioReport().getResource();
-        return new FallbackBuilder().source(noscenarioResource.getLocation()).name(noscenarioResource.getName()).build(repository)
+        final ResourceType noScenarioResource = scenarios.getNoScenarioReport().getResource();
+        return new FallbackBuilder().source(noScenarioResource.getLocation()).name(noScenarioResource.getName()).build(repository)
                 .getObject();
 
     }
@@ -140,7 +140,7 @@ public class ConfigurationLoader {
         s.setUriResolver(repository.getResolver());
         s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
         if (def.getAcceptMatch() != null) {
-            s.setAcceptExecutable(repository.createAccepptExecutable(def));
+            s.setAcceptExecutable(repository.createAcceptExecutable(def));
         }
         return s;
     }

@@ -58,8 +58,8 @@ public class InputFactoryTest {
 
     @Test
     public void testDefaultDigestAlgorithm() {
-        assertThat(new InputFactory().getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITH);
-        assertThat(new InputFactory("").getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITH);
+        assertThat(new InputFactory().getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITHM);
+        assertThat(new InputFactory("").getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITHM);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class InputFactoryTest {
     }
 
     @Test
-    public void testUnexistingInput() {
+    public void testNotExistingInput() {
         assertThrows(IllegalArgumentException.class, () -> InputFactory.read(Simple.NOT_EXISTING));
     }
 

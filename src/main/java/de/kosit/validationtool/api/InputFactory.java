@@ -50,10 +50,10 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Slf4j
 public class InputFactory {
 
-    static final String DEFAULT_ALGORITH = "SHA-256";
+    static final String DEFAULT_ALGORITHM = "SHA-256";
 
     /**
-     * Pseudo hashcode algorithm name, which indicates, thate the hashcode of the {@link Input} is actually the name.
+     * Pseudo hashcode algorithm name, which indicates that the hashcode of the {@link Input} is actually the name.
      */
     static final String PSEUDO_NAME_ALGORITHM = "NAME";
 
@@ -66,7 +66,7 @@ public class InputFactory {
     }
 
     InputFactory(final String specifiedAlgorithm) {
-        this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITH;
+        this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITHM;
         // check validity
         StreamHelper.createDigest(this.algorithm);
     }
@@ -79,11 +79,11 @@ public class InputFactory {
      * @return ein Prüf-Eingabe-Objekt
      */
     public static Input read(final Path path) {
-        return read(path, DEFAULT_ALGORITH);
+        return read(path, DEFAULT_ALGORITHM);
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmis zur Ermittlung der Prüfsumme
+     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmus zur Ermittlung der Prüfsumme
      * genutzt.
      *
      * @param path der Prüflings
@@ -103,7 +103,7 @@ public class InputFactory {
      * @return ein Prüf-Eingabe-Objekt
      */
     public static Input read(final File file) {
-        return read(file, DEFAULT_ALGORITH);
+        return read(file, DEFAULT_ALGORITHM);
     }
 
     /**
@@ -114,11 +114,11 @@ public class InputFactory {
      * @return ein Prüf-Eingabe-Objekt
      */
     public static Input read(final URI uri) {
-        return read(uri, DEFAULT_ALGORITH);
+        return read(uri, DEFAULT_ALGORITHM);
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmis zur Ermittlung der Prüfsumme
+     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmus zur Ermittlung der Prüfsumme
      * genutzt.
      *
      * @param uri URI des Prüflings
@@ -141,7 +141,7 @@ public class InputFactory {
      * @return ein Prüf-Eingabe-Objekt
      */
     public static Input read(final URL url) {
-        return read(url, DEFAULT_ALGORITH);
+        return read(url, DEFAULT_ALGORITHM);
     }
 
     /**
@@ -175,7 +175,7 @@ public class InputFactory {
      */
     public static Input read(final Source source) {
         if (source instanceof StreamSource) {
-            return read(source, source.getSystemId(), DEFAULT_ALGORITH);
+            return read(source, source.getSystemId(), DEFAULT_ALGORITHM);
         }
         final String name = UUID.randomUUID().toString();
         return read(source, name, PSEUDO_NAME_ALGORITHM, name.getBytes());
@@ -219,7 +219,7 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmis zur Ermittlung der Prüfsumme
+     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmus zur Ermittlung der Prüfsumme
      * genutzt.
      *
      * @param file der Prüflings
@@ -237,7 +237,7 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen byte-Sequenz. Es wird ein definierter Algorithmis zur Ermittlung der
+     * Liest einen Prüfling von der übergebenen byte-Sequenz. Es wird ein definierter Algorithmus zur Ermittlung der
      * Prüfsumme genutzt.
      *
      * @param input URL des Prüflings
@@ -245,11 +245,11 @@ public class InputFactory {
      */
     public static Input read(final byte[] input, final String name) {
         checkNull(input);
-        return read(input, name, DEFAULT_ALGORITH);
+        return read(input, name, DEFAULT_ALGORITHM);
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen byte-Sequenz. Es wird ein definierter Algorithmis zur Ermittlung der
+     * Liest einen Prüfling von der übergebenen byte-Sequenz. Es wird ein definierter Algorithmus zur Ermittlung der
      * Prüfsumme genutzt.
      *
      * @param input URL des Prüflings
@@ -282,7 +282,7 @@ public class InputFactory {
      * @return einen Prüfling in eingelesener Form
      */
     public static Input read(final InputStream inputStream, final String name) {
-        return read(inputStream, name, DEFAULT_ALGORITH);
+        return read(inputStream, name, DEFAULT_ALGORITHM);
     }
 
     /**

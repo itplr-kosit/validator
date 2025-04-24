@@ -138,7 +138,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     /**
      * Add a xpath expression to compute acceptance for the scenario. You can leverage declared namespaces.
      *
-     * @param acceptXpath the xpath expresison
+     * @param acceptXpath the xpath expression
      * @return this
      */
     public ScenarioBuilder acceptWith(final String acceptXpath) {

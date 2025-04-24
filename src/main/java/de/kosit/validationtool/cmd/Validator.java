@@ -56,7 +56,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
- * Actual evaluation and processing of CommandLineOptions argumtens.
+ * Actual evaluation and processing of CommandLineOptions arguments.
  *
  * @author Andreas Penski
  */
@@ -184,7 +184,7 @@ public class Validator {
         checkUnused(mappedScenarios, mappedRepos);
 
         return mappedScenarios.entrySet().stream().map(e -> {
-            assertFileExistance(e.getValue(), "scenario");
+            assertFileExistence(e.getValue(), "scenario");
             final URI scenarioLocation = e.getValue().toUri();
             final URI repositoryLocation = findRepository(e.getKey(), mappedRepos);
 
@@ -321,7 +321,7 @@ public class Validator {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static void assertFileExistance(final Path f, final String type) {
+    private static void assertFileExistence(final Path f, final String type) {
         if (!Files.isRegularFile(f)) {
             throw new IllegalArgumentException(
                     String.format("Not a valid path for %s definition specified: '%s'", type, f.toAbsolutePath()));

@@ -84,11 +84,11 @@ class InternalCheck extends DefaultCheck {
         results.entrySet().stream().sorted(Entry.comparingByKey()).forEach(e -> {
             final Result value = e.getValue();
 
-            final Code textcolor = value.isAcceptable() ? Code.GREEN : Code.RED;
-            grid.addCell(e.getKey(), textcolor);
-            grid.addCell(value.isSchemaValid() ? "Y" : "N", textcolor);
-            grid.addCell(value.isSchematronValid() ? "Y" : "N", textcolor);
-            grid.addCell(value.getAcceptRecommendation(), textcolor);
+            final Code textColor = value.isAcceptable() ? Code.GREEN : Code.RED;
+            grid.addCell(e.getKey(), textColor);
+            grid.addCell(value.isSchemaValid() ? "Y" : "N", textColor);
+            grid.addCell(value.isSchematronValid() ? "Y" : "N", textColor);
+            grid.addCell(value.getAcceptRecommendation(), textColor);
             grid.addCell(joinErrors(value));
         });
         return grid;

@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Testet die HTML-Extrkation des Kommondazeilenprogramms.
+ * Testet die HTML-Extraktion des Kommandozeilenprogramms.
  *
  * @author Andreas Penski
  */

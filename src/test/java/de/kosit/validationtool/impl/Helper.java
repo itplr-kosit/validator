@@ -70,7 +70,7 @@ public class Helper {
 
         public static final URI SCHEMATRON_INVALID = ROOT.resolve("input/simple-schematron-invalid.xml");
 
-        public static final URI NOT_WELLFORMED = ROOT.resolve("input/simple-not-wellformed.xml");
+        public static final URI NOT_WELL_FORMED = ROOT.resolve("input/simple-not-wellformed.xml");
 
         public static final URI UNKNOWN = ROOT.resolve("input/unknown.xml");
 
@@ -95,11 +95,11 @@ public class Helper {
 
     public static class Invalid {
 
-        public static final URI ROOT = EXAMPLES_DIR.resolve("invaid/");
+        public static final URI ROOT = EXAMPLES_DIR.resolve("invalid/");
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
-        public static final URI SCENARIOS_ILLFORMED = ROOT.resolve("scenarios-illformed.xml");
+        public static final URI SCENARIOS_ILL_FORMED = ROOT.resolve("scenarios-illformed.xml");
 
     }
 

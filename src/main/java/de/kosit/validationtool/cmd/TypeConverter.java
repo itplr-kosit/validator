@@ -45,15 +45,15 @@ class TypeConverter {
 
     private static <T extends Definition> T convert(final Class<T> type, final String value) {
         final T def;
-        final String[] splitted = defaultIfBlank(value, "").split("=");
-        if (splitted.length == 1) {
+        final String[] items = defaultIfBlank(value, "").split("=");
+        if (items.length == 1) {
             def = createNewInstance(type);
             def.setName(getDefaultName(type));
-            def.setPath(Paths.get(splitted[0].trim()));
-        } else if (splitted.length == 2) {
+            def.setPath(Paths.get(items[0].trim()));
+        } else if (items.length == 2) {
             def = createNewInstance(type);
-            def.setName(splitted[0].trim());
-            def.setPath(Paths.get(splitted[1].trim()));
+            def.setName(items[0].trim());
+            def.setPath(Paths.get(items[1].trim()));
         } else {
             throw new IllegalArgumentException("Not a valid repository specification " + value);
         }

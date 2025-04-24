@@ -42,7 +42,7 @@ public class XdmNodeInput implements Input {
 
     @Override
     public Source getSource() {
-        // usually not neccessary to be called.
+        // usually not necessary to be called.
         return this.node.getUnderlyingNode();
     }
 }

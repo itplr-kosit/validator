@@ -45,7 +45,7 @@ class CheckHandler extends BaseHandler {
 
     private static final AtomicLong counter = new AtomicLong(0);
 
-    private final Check implemenation;
+    private final Check implementation;
 
     private final Processor processor;
 
@@ -59,13 +59,13 @@ class CheckHandler extends BaseHandler {
         try {
             log.debug("Incoming request");
             final String requestMethod = httpExchange.getRequestMethod();
-            // check neccessary, since gui can be disabled
+            // check necessary, since gui can be disabled
             if (requestMethod.equals("POST")) {
                 final BufferedInputStream buffered = StreamHelper.wrapPeekable(httpExchange.getRequestBody());
                 if (!isMultipartFormData(httpExchange) && isContentAvailable(httpExchange, buffered)) {
                     final SourceInput serverInput = (SourceInput) InputFactory.read(buffered,
                             resolveInputName(httpExchange.getRequestURI()));
-                    final Result result = this.implemenation.checkInput(serverInput);
+                    final Result result = this.implementation.checkInput(serverInput);
                     write(httpExchange, serialize(result), APPLICATION_XML, resolveStatus(result));
                 } else {
                     error(httpExchange, HttpStatus.SC_BAD_REQUEST, "No content supplied");

@@ -70,7 +70,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
         final ValidateWithXmlSchema o = new ValidateWithXmlSchema();
         final ResourceType r = new ResourceType();
         r.setName(isNotEmpty(this.name) ? this.name : DEFAULT_NAME);
-        r.setLocation(this.schemaLocation != null ? this.schemaLocation.toASCIIString() : "manuelly configured");
+        r.setLocation(this.schemaLocation != null ? this.schemaLocation.toASCIIString() : "manually configured");
         o.getResource().add(r);
         return o;
     }

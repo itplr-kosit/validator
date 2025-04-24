@@ -55,7 +55,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Repository für verschiedene XML Artefakte zur Vearbeitung der Prüfszenarien.
+ * Repository für verschiedene XML Artefakte zur Verarbeitung der Prüfszenarien.
  *
  * @author Andreas Penski
  */
@@ -163,7 +163,7 @@ public class ContentRepository {
     }
 
     /**
-     * Erzeugt ein Schema auf Basis der übegebenen URIs
+     * Erzeugt ein Schema auf Basis der übergebenen URIs
      *
      * @param uris die uris in String-Repräsentation
      * @return das Schema
@@ -243,7 +243,7 @@ public class ContentRepository {
         return createXPath(s.getMatch(), namespaces);
     }
 
-    public XPathExecutable createAccepptExecutable(final ScenarioType s) {
+    public XPathExecutable createAcceptExecutable(final ScenarioType s) {
         final Map<String, String> namespaces = s.getNamespace().stream()
                 .collect(Collectors.toMap(NamespaceType::getPrefix, ns -> StringTrimAdapter.trim(ns.getValue())));
         return createXPath(s.getAcceptMatch(), namespaces);

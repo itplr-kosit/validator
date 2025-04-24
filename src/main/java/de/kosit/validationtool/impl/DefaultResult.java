@@ -70,7 +70,7 @@ public class DefaultResult implements Result {
 
     @Getter
     @Setter
-    private boolean wellformed;
+    private boolean wellFormed;
 
     public DefaultResult(final XdmNode report, final AcceptRecommendation recommendation, final HtmlExtractor htmlExtractor) {
         this.report = report;
@@ -109,7 +109,7 @@ public class DefaultResult implements Result {
     }
 
     /**
-     * Extrahiert evtl. im Report vorhandene HTML-Fragmente als String.
+     * Extrahiert eventuell im Report vorhandene HTML-Fragmente als String.
      *
      * @return Liste mit HTML Strings.
      */
@@ -118,7 +118,7 @@ public class DefaultResult implements Result {
     }
 
     /**
-     * Extrahiert evtl. im Report vorhandene HTML-Fragmente.
+     * Extrahiert eventuell im Report vorhandene HTML-Fragmente.
      *
      * @return Liste mit HTML Nodes.
      */
@@ -127,7 +127,7 @@ public class DefaultResult implements Result {
     }
 
     /**
-     * Extrahiert evtl. im Report vorhandene HTML-Fragmente als {@link Element}.
+     * Extrahiert eventuell im Report vorhandene HTML-Fragmente als {@link Element}.
      *
      * @return Liste mit HTML Elementen.
      */

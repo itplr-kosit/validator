@@ -48,14 +48,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Schema valiation of the {@link Input} with the schema of the supplied scenario. This implementation is based on JDK
+ * Schema validation of the {@link Input} with the schema of the supplied scenario. This implementation is based on JDK
  * functionality and therefore needs a {@link Source} to do the actual validation. Since we base the validator on Saxon
  * HE functionality, we have no support for schema in Saxon (e.g. the in memory version of the document is not
  * schema-aware) and need to re-read the actual source.
  * <p>
  * Since the actual {@link Input} implementation may not be read twice, we must serialize the previously read document.
  * This implementation tries to do the validation in an efficient manner. If possible the source is read a second time
- * to validate. If not, the source is serialized to the heap upon re-read/validaiton up to a configurable file size. The
+ * to validate. If not, the source is serialized to the heap upon re-read/validation up to a configurable file size. The
  * document is serialized to a temporary file otherwise.
  *
  * @author Andreas Penski
@@ -180,7 +180,7 @@ public class SchemaValidationAction implements CheckAction {
 
     }
 
-    @SuppressWarnings("squid:S2095") // intentionally return open stream/autoclosable here
+    @SuppressWarnings("squid:S2095") // intentionally return open stream/autocloseable here
     private SerializedDocument serialize(final Input input, final XdmNode object) throws IOException, SaxonApiException {
         final SerializedDocument doc;
         if (input instanceof AbstractInput && ((AbstractInput) input).getLength() < getInMemoryLimit()) {

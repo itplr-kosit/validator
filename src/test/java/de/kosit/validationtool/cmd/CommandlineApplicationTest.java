@@ -178,7 +178,7 @@ public class CommandlineApplicationTest {
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(CommandLine.getOutputLines()).haveAtLeastOne(new Condition<>(
-                s -> StringUtils.contains(s, "<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
+                s -> StringUtils.contains(s, "<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preamble"));
     }
 
     @Test

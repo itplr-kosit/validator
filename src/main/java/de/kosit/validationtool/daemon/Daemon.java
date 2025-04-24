@@ -92,7 +92,7 @@ public class Daemon {
             log.info("Server {} started", server.getAddress());
             writeOut("Daemon started. Visit http://{0}", this.bindAddress + ":" + this.port);
         } catch (final IOException e) {
-            log.error("Error starting HttpServer for Valdidator: {}", e.getMessage(), e);
+            log.error("Error starting HttpServer for Validator: {}", e.getMessage(), e);
         }
     }
 

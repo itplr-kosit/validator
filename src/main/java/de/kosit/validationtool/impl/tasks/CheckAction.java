@@ -34,7 +34,7 @@ import java.util.Collections;
 
 /**
  * Interface, welches von allen Prüfschritten implementiert wird. Der Parameter vom Typ {@link Bag} dient dabei sowohl
- * als Quellce für Eingabe Parameter als auch für die Aufnahme von Ergebnisse, die an weitere Schritte weitergeleitet
+ * als Quelle für Eingabeparameter als auch für die Aufnahme von Ergebnissen, die an weitere Schritte weitergeleitet
  * werden sollen.
  *
  * @author Andreas Penski
@@ -82,7 +82,7 @@ public interface CheckAction {
         }
 
         /**
-         * Signalisiert einen vorzeitigen Stop der Vearbeitung.
+         * Signalisiert einen vorzeitigen Stop der Verarbeitung.
          */
         public void stopProcessing(final String error) {
             stopProcessing(Collections.singleton(error));
@@ -112,7 +112,7 @@ public interface CheckAction {
     }
 
     /**
-     * Ausfürhung des Prüfschrittes und Erweiterung der gesammelten Informationen.
+     * Ausführung des Prüfschrittes und Erweiterung der gesammelten Informationen.
      *
      * @param results die Informationssammlung
      */

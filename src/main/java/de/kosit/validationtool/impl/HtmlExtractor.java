@@ -97,7 +97,7 @@ public class HtmlExtractor {
     }
 
     /**
-     * Extrahiert evtl. vorhandene HTML-Knoten als String.
+     * Extrahiert eventuell vorhandene HTML-Knoten als String.
      *
      * @param node der root knoten
      * @return HTML-Fragment als String

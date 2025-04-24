@@ -49,7 +49,7 @@ public class ValidateReportInputAction implements CheckAction {
     }
 
     /**
-     * Validatiert das gegebene JAXB-Objekt gegen das konfigurierte Schema
+     * Validiert das gegebene JAXB-Objekt gegen das konfigurierte Schema
      *
      * @param object das JAXB-Objekt
      * @param <T> der Typ des Objekts

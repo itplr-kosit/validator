@@ -122,7 +122,7 @@ public class ConversionService {
     }
 
     /**
-     * Initialisiert den conversion service mit den angegegebenen Packages.
+     * Initialisiert den conversion service mit den angegebenen Packages.
      *
      * @param context packages für den JAXB Kontext
      */
@@ -134,7 +134,7 @@ public class ConversionService {
     }
 
     /**
-     * Initialsiert den conversion service mit dem angegebenen Kontextpfad
+     * Initialisiert den conversion service mit dem angegebenen Kontextpfad
      *
      * @param contextPath der Kontextpfad
      */

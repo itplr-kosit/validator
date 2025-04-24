@@ -89,7 +89,7 @@ public class SchemaValidatorActionTest {
     public void testNoRepeatableRead() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
             final Bag bag = createBag(InputFactory.read(new StreamSource(inputStream)));
-            // don't read the real inputstream here!
+            // don't read the real input stream here!
             bag.setParserResult(Helper.parseDocument(InputFactory.read(Simple.SIMPLE_VALID.toURL())));
             this.service.check(bag);
             assertThat(bag.getSchemaValidationResult()).isNotNull();

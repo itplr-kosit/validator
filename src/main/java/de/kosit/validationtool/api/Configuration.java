@@ -35,7 +35,7 @@ import java.util.Map;
  * {@link Check}</li>
  * </ol>
  * <p>
- * Both methods can be used via convinience methods. See below.
+ * Both methods can be used via convenience methods. See below.
  *
  * @author Andreas Penski
  */

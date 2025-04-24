@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Zentrale Konfigration einer Prüf-Instanz.
+ * Zentrale Konfiguration einer Prüf-Instanz.
  *
  * @author Andreas Penski
  * @deprecated since 1.3.0 use {@link Configuration} instead. Will be removed in 2.0
@@ -42,7 +42,7 @@ import java.util.Map;
 public class CheckConfiguration implements Configuration {
 
     /**
-     * URL, die auf die scenerio.xml Datei zeigt.
+     * URL, die auf die scenario.xml Datei zeigt.
      */
     private final URI scenarioDefinition;
 

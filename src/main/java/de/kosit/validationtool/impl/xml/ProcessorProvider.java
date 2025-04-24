@@ -69,7 +69,7 @@ public class ProcessorProvider {
         }
     }
 
-    protected static final String DISSALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+    protected static final String DISALLOW_DTD_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
 
     protected static final String LOAD_EXTERNAL_DTD_FEATURE = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
 
@@ -105,11 +105,11 @@ public class ProcessorProvider {
         processor.setConfigurationProperty(Feature.XINCLUDE, false);
         processor.setConfigurationProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, false);
 
-        // Konfiguration des zu verwendenden Parsers, wenn Saxon selbst einen erzeugen muss, bspw. beim XSL parsen
+        // Konfiguration des zu verwendenden Parsers, wenn Saxon selbst einen erzeugen muss
         processor.getUnderlyingConfiguration().setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(FEATURE_SECURE_PROCESSING),
                 true); // NOSONAR
-        processor.getUnderlyingConfiguration()
-                .setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(DISSALLOW_DOCTYPE_DECL_FEATURE), true); // NOSONAR
+        processor.getUnderlyingConfiguration().setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(DISALLOW_DTD_FEATURE),
+                true); // NOSONAR
         processor.getUnderlyingConfiguration().setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(LOAD_EXTERNAL_DTD_FEATURE),
                 false); // NOSONAR
         processor.getUnderlyingConfiguration()

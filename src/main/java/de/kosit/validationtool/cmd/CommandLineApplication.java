@@ -52,7 +52,7 @@ public class CommandLineApplication {
         final ReturnValue resultStatus = mainProgram(args);
         if (!resultStatus.equals(ReturnValue.DAEMON_MODE)) {
             if (!resultStatus.equals(ReturnValue.HELP_REQUEST) && resultStatus.getCode() >= 0) {
-                sayGoodby(resultStatus);
+                sayGoodbye(resultStatus);
             }
             System.exit(resultStatus.getCode());
         } else {
@@ -60,7 +60,7 @@ public class CommandLineApplication {
         }
     }
 
-    private static void sayGoodby(final ReturnValue resultStatus) {
+    private static void sayGoodbye(final ReturnValue resultStatus) {
         Printer.writeOut("\n##############################");
         if (resultStatus.equals(ReturnValue.SUCCESS)) {
             Printer.writeOut("#   " + new Line(Code.GREEN).add("Validation successful!").render(false, false) + "   #");

@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ComputeAcceptanceActionTest {
 
-    private static final String DOESNOT_EXIST = "count(//doesnotExist) = 0";
+    private static final String DOES_NOT_EXIST = "count(//doesnotExist) = 0";
 
     private final ComputeAcceptanceAction action = new ComputeAcceptanceAction();
 
@@ -66,7 +66,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testValidAcceptMatch() {
         final Bag bag = createBag(true, true);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
+        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOES_NOT_EXIST));
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
@@ -82,7 +82,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testAcceptMatchOverridesSchematronErrors() {
         final Bag bag = createBag(true, false);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
+        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOES_NOT_EXIST));
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
@@ -90,7 +90,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testValidAcceptMatchOnSchemaFailed() {
         final Bag bag = createBag(false, true);
-        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
+        bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOES_NOT_EXIST));
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
     }

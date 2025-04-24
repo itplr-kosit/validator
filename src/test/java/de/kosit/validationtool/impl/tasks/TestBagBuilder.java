@@ -68,18 +68,18 @@ public class TestBagBuilder {
         return bag;
     }
 
-    private static Scenario createScenario(final URI schemafile) {
+    private static Scenario createScenario(final URI schemaFile) {
 
         try {
             final ScenarioType t = new ScenarioType();
             final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
             final ResourceType r = new ResourceType();
-            r.setLocation(schemafile.getRawPath());
+            r.setLocation(schemaFile.getRawPath());
             r.setName("invoice");
             v.getResource().add(r);
             t.setValidateWithXmlSchema(v);
             final Scenario scenario = new Scenario(t);
-            scenario.setSchema(createSchema(schemafile.toURL()));
+            scenario.setSchema(createSchema(schemaFile.toURL()));
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
             scenario.setFactory(strategy);
             return scenario;

@@ -66,8 +66,8 @@ public class FallbackBuilder implements Builder<Scenario> {
     }
 
     /**
-     * Specifices a source for this report. This is either used to compile the report transformation or as documentation
-     * for a precompiled tranformation.
+     * Specifies a source for this report. This is either used to compile the report transformation or as documentation
+     * for a precompiled transformation.
      *
      * @param source the source
      * @return this
@@ -78,8 +78,8 @@ public class FallbackBuilder implements Builder<Scenario> {
     }
 
     /**
-     * Specifices a source for this report. This is either used to compile the report transformation or as documentation
-     * for a precompiled tranformation.
+     * Specifies a source for this report. This is either used to compile the report transformation or as documentation
+     * for a precompiled transformation.
      *
      * @param source the source
      * @return this
@@ -91,8 +91,8 @@ public class FallbackBuilder implements Builder<Scenario> {
     }
 
     /**
-     * Specifices a source for this report. This is either used to compile the report transformation or as documentation
-     * for a precompiled tranformation.
+     * Specifies a source for this report. This is either used to compile the report transformation or as documentation
+     * for a precompiled transformation.
      *
      * @param source the source
      * @return this

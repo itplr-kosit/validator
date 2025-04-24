@@ -84,7 +84,7 @@ public class ConversionServiceTest {
     @Test
     public void testUnmarshalIllFormed() {
         assertThrows(ConversionService.ConversionException.class,
-                () -> this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, this.repository.createSchema(SCHEMA)));
+                () -> this.service.readXml(Invalid.SCENARIOS_ILL_FORMED, Scenarios.class, this.repository.createSchema(SCHEMA)));
     }
 
     @Test

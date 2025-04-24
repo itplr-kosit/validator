@@ -144,7 +144,7 @@ public class DefaultCheckTest {
     public void testGarbage() {
         final Result result = this.validCheck.checkInput(read(GARBAGE));
         assertThat(result).isNotNull();
-        assertThat(result.isWellformed()).isFalse();
+        assertThat(result.isWellFormed()).isFalse();
         assertThat(result.isSchemaValid()).isFalse();
         assertThat(result.isProcessingSuccessful()).isFalse();
     }
@@ -153,7 +153,7 @@ public class DefaultCheckTest {
     public void testNoScenario() {
         final Result result = this.validCheck.checkInput(read(UNKNOWN));
         assertThat(result).isNotNull();
-        assertThat(result.isWellformed()).isTrue();
+        assertThat(result.isWellFormed()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
         assertThat(result.isSchemaValid()).isFalse();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
@@ -162,9 +162,9 @@ public class DefaultCheckTest {
 
     @Test
     public void testNotWellFormed() {
-        final Result result = this.validCheck.checkInput(read(NOT_WELLFORMED));
+        final Result result = this.validCheck.checkInput(read(NOT_WELL_FORMED));
         assertThat(result).isNotNull();
-        assertThat(result.isWellformed()).isFalse();
+        assertThat(result.isWellFormed()).isFalse();
         assertThat(result.isSchemaValid()).isFalse();
         assertThat(result.isProcessingSuccessful()).isFalse();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
@@ -176,7 +176,7 @@ public class DefaultCheckTest {
     public void testRejectAcceptMatch() {
         final Result result = this.validCheck.checkInput(read(REJECTED));
         assertThat(result).isNotNull();
-        assertThat(result.isWellformed()).isTrue();
+        assertThat(result.isWellFormed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
@@ -189,13 +189,13 @@ public class DefaultCheckTest {
     public void testSchematronFailed() {
         final Result result = this.validCheck.checkInput(read(SCHEMATRON_INVALID));
         assertThat(result).isNotNull();
-        assertThat(result.isWellformed()).isTrue();
+        assertThat(result.isWellFormed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
         assertThat(result.getFailedAsserts()).isNotEmpty();
         assertThat(result.isSchematronValid()).isFalse();
         assertThat(result.getSchematronResult().get(0).findFailedAssert("content-1")).isPresent();
         assertThat(result.isProcessingSuccessful()).isTrue();
-        // acceptMatch overules schematron!!!
+        // acceptMatch overrules schematron!!!
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
         assertThat(result.isAcceptable()).isTrue();
         assertThat(result.getReport()).isNotNull();
@@ -207,7 +207,7 @@ public class DefaultCheckTest {
     public void testSchematronFailedWithoutAcceptMatch() {
         final Result result = this.validCheck.checkInput(read(FOO_SCHEMATRON_INVALID));
         assertThat(result).isNotNull();
-        assertThat(result.isWellformed()).isTrue();
+        assertThat(result.isWellFormed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
         result.getFailedAsserts();
         assertThat(result.isSchematronValid()).isFalse();

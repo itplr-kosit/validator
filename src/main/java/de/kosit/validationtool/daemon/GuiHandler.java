@@ -46,7 +46,7 @@ public class GuiHandler extends BaseHandler {
             final URL resource = GuiHandler.class.getClassLoader().getResource("ui" + path);
             if (resource != null) {
                 write(exchange, IOUtils.toString(resource, Charset.defaultCharset()).getBytes(),
-                        Mediatype.resolveBySuffix(resource.getPath()).getMimeType());
+                        MediaType.resolveBySuffix(resource.getPath()).getMimeType());
             } else {
                 error(exchange, 404, "not found");
             }
@@ -55,14 +55,14 @@ public class GuiHandler extends BaseHandler {
 
     @RequiredArgsConstructor
     @Getter
-    protected enum Mediatype {
+    protected enum MediaType {
 
         JS("application/javascript"), MD("text/markdown"), CSS("text/css"), SVG("image/svg+xml"), HTML("text/html"), PNG("image/png");
 
         private final String mimeType;
 
-        static Mediatype resolveBySuffix(final String path) {
-            return Arrays.stream(values()).filter(e -> path.toUpperCase().endsWith("." + e.name())).findFirst().orElse(Mediatype.MD);
+        static MediaType resolveBySuffix(final String path) {
+            return Arrays.stream(values()).filter(e -> path.toUpperCase().endsWith("." + e.name())).findFirst().orElse(MediaType.MD);
         }
     }
 }

@@ -104,7 +104,7 @@ public interface Result {
      *
      * @return true wenn well-formed
      */
-    boolean isWellformed();
+    boolean isWellFormed();
 
     /**
      * Returns true, if schematron has been checked and the result does not contain any {@link FailedAssert

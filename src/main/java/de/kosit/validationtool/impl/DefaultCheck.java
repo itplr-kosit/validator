@@ -50,8 +50,8 @@ import java.util.stream.Collectors;
 import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 
 /**
- * The reference implementation for the validation process. After initialisation, instances are threadsafe and should be
- * reused since initializing saxon runtime objects is a rather heavyweight process.
+ * The reference implementation for the validation process. After initialisation, instances are thread safe and should
+ * be reused since initializing saxon runtime objects is a rather heavyweight process.
  *
  * @author Andreas Penski
  */
@@ -129,7 +129,7 @@ public class DefaultCheck implements Check {
 
     private Result createResult(final Bag t) {
         final DefaultResult result = new DefaultResult(t.getReport(), t.getAcceptStatus(), new HtmlExtractor(this.processor));
-        result.setWellformed(t.getParserResult().isValid());
+        result.setWellFormed(t.getParserResult().isValid());
         result.setReportInput(t.getReportInput());
         if (t.getSchemaValidationResult() != null) {
             result.setSchemaViolations(convertErrors(t.getSchemaValidationResult().getErrors()));

@@ -101,14 +101,14 @@ public class SchematronValidationAction implements CheckAction {
 
     @Override
     public boolean isSkipped(final Bag results) {
-        return hasNoSchematrons(results.getScenarioSelectionResult().getObject()) || isSchemaInvalid(results);
+        return hasNoSchematron(results.getScenarioSelectionResult().getObject()) || isSchemaInvalid(results);
     }
 
     private static boolean isSchemaInvalid(final Bag results) {
         return results.getSchemaValidationResult() == null || results.getSchemaValidationResult().isInvalid();
     }
 
-    private static boolean hasNoSchematrons(final Scenario object) {
+    private static boolean hasNoSchematron(final Scenario object) {
         return object.getSchematronValidations().isEmpty();
     }
 }

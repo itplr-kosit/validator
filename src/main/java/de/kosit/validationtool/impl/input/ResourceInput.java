@@ -31,7 +31,7 @@ import java.net.URL;
  * An {@link Input} carries an {@link URL} which can be used for all 'locatable' inputs such as {@link File},
  * {@link java.nio.file.Path} and any other {@link URL}.
  * <p>
- * This stream is NOT read into memory. So this implementation has good in memory efficieny. The validation process MAY
+ * This stream is NOT read into memory. So this implementation has good in memory efficiency. The validation process MAY
  * read the stream more than once. Make sure, that the {@link URL} points to fast I/O devices
  *
  * @author Andreas Penski

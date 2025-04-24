@@ -60,7 +60,7 @@ public class DocumentParseAction implements CheckAction {
 
         try {
             if (content instanceof XdmNodeInput && hasCompatibleConfiguration((XdmNodeInput) content)) {
-                // parsing not neccessary
+                // parsing not necessary
                 result = new Result<>(((XdmNodeInput) content).getNode());
             } else {
                 final DocumentBuilder builder = this.processor.newDocumentBuilder();

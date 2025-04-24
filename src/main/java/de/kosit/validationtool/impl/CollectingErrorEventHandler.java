@@ -102,7 +102,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     /**
-     * Zeigt an, ob es Validierungs-Ereignisse gab.
+     * Zeigt an, ob es Validierungsereignisse gab.
      *
      * @return true, wenn mindestens ein Validierungsereignis aufgetreten ist
      */

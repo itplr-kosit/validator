@@ -64,7 +64,7 @@ public class DefaultNamingStrategyTest {
     }
 
     @Test
-    public void testUnknownExtenson() {
+    public void testUnknownExtension() {
         final DefaultNamingStrategy strategy = new DefaultNamingStrategy();
         assertThat(strategy.createName("test.ext")).isEqualTo("test.ext-report.xml");
         strategy.setPrefix("prefix");

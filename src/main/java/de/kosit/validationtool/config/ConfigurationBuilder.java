@@ -151,7 +151,7 @@ public class ConfigurationBuilder {
     /**
      * Adds a description to this configuration.
      *
-     * @param description the descriptioin
+     * @param description the description
      * @return this
      */
     public ConfigurationBuilder description(final String description) {
@@ -262,7 +262,7 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Builds the actual {@link Configuration} by validating all builder inputs and constructing neccessary objects.
+     * Builds the actual {@link Configuration} by validating all builder inputs and constructing necessary objects.
      *
      * @return a valid configuration
      * @throws IllegalStateException when the configuration is not valid/complete

@@ -150,7 +150,7 @@ public class CreateReportAction implements CheckAction {
 
         @Override
         public void setFeature(final String name, final boolean value) throws SAXNotRecognizedException {
-            // this inverts the logic from JaxbSource pseude parser
+            // this inverts the logic from JaxbSource pseudo parser
             if (name.equals(SAX_FEATURES_NAMESPACES) && !value) {
                 throw new SAXNotRecognizedException(name);
             }

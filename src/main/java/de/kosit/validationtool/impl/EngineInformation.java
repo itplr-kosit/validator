@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Hält statische Informatione über diesen Validator.
+ * Hält statische Informationen über diesen Validator.
  *
  * @author Andreas Penski
  */

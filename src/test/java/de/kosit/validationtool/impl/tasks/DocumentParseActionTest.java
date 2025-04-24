@@ -52,8 +52,8 @@ public class DocumentParseActionTest {
     }
 
     @Test
-    public void testIllformed() {
-        final Result<XdmNode, XMLSyntaxError> result = this.action.parseDocument(read(Simple.NOT_WELLFORMED));
+    public void testIllFormed() {
+        final Result<XdmNode, XMLSyntaxError> result = this.action.parseDocument(read(Simple.NOT_WELL_FORMED));
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
         assertThat(result.getObject()).isNull();
