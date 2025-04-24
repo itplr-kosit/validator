@@ -257,7 +257,7 @@ public class Validator {
         if (cmd.getOutputPath() != null) {
             dir = cmd.getOutputPath();
             if ((!Files.exists(dir) && !dir.toFile().mkdirs()) || !Files.isDirectory(dir)) {
-                throw new IllegalStateException(String.format("Invalid target directory %s specified", dir.toString()));
+                throw new IllegalStateException(String.format("Invalid target directory %s specified", dir));
             }
         } else {
             dir = Paths.get(""/* cwd */);

@@ -69,7 +69,7 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         final boolean jarURI = isJarURI(base);
         final URI tmpBase = jarURI ? URI.create(base.toASCIIString().substring(4)) : base;
         final URI result = tmpBase.resolve(href);
-        return jarURI ? URI.create("jar:" + result.toString()) : result;
+        return jarURI ? URI.create("jar:" + result) : result;
     }
 
     static boolean isJarURI(final URI uri) {

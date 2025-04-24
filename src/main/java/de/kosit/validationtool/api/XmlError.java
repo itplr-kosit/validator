@@ -53,7 +53,7 @@ public interface XmlError {
     Integer getColumnNumber();
 
     enum Severity {
-        SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL_ERROR;
+        SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL_ERROR
     }
 
 }

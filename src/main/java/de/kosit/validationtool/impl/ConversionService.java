@@ -189,7 +189,7 @@ public class ConversionService {
 
             return value;
         } catch (final JAXBException | XMLStreamException e) {
-            throw new ConversionException(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml.toString()), e);
+            throw new ConversionException(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml), e);
         }
     }
 

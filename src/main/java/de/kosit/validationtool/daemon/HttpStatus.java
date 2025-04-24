@@ -40,7 +40,7 @@ public interface HttpStatus {
     int SC_NOT_ACCEPTABLE = 406;
 
     /** {@code 422 Unprocessable Entity} (WebDAV - RFC 2518) */
-    public static final int SC_UNPROCESSABLE_ENTITY = 422;
+    int SC_UNPROCESSABLE_ENTITY = 422;
 
     /** {@code 500 Server Error} (HTTP/1.0 - RFC 1945) */
     int SC_INTERNAL_SERVER_ERROR = 500;
