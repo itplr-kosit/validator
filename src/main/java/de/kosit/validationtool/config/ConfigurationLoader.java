@@ -114,7 +114,7 @@ public class ConfigurationLoader {
         final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
         return startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
-                && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
+                && root.getNodeName().getNamespace().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
     }
 
     private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {

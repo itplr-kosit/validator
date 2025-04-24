@@ -55,13 +55,13 @@ public class ConversionServiceTest {
 
     @Test
     public void testMarshalNull() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.exception.expect(ConversionService.ConversionException.class);
         this.service.writeXml(null);
     }
 
     @Test
     public void testMarshalUnknown() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.exception.expect(ConversionService.ConversionException.class);
         this.service.writeXml(new Serializable() {
         });
     }
@@ -82,31 +82,31 @@ public class ConversionServiceTest {
 
     @Test
     public void testUnmarshalInvalidXml() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.exception.expect(ConversionService.ConversionException.class);
         this.service.readXml(Invalid.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA));
     }
 
     @Test
     public void testUnmarshalIllFormed() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.exception.expect(ConversionService.ConversionException.class);
         this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, this.repository.createSchema(SCHEMA));
     }
 
     @Test
     public void testUnmarshalEmpty() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.exception.expect(ConversionService.ConversionException.class);
         this.service.readXml(null, Scenarios.class);
     }
 
     @Test
     public void testUnmarshalUnknownType() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.exception.expect(ConversionService.ConversionException.class);
         this.service.readXml(Simple.SCENARIOS, ConversionService.class);
     }
 
     @Test
     public void testUnmarshalWithoutType() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.exception.expect(ConversionService.ConversionException.class);
         this.service.readXml(Simple.SCENARIOS, null);
     }
 

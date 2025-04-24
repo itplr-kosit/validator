@@ -26,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.io.input.CountingInputStream;
+import org.apache.commons.io.input.BoundedInputStream;
 
 import de.kosit.validationtool.api.Input;
 
@@ -39,7 +39,7 @@ public class StreamHelper {
 
     /**
      * Helper class, which generates the hashcode while reading the stream e.g. for parsing the document. This allows
-     * generating the hashcode without an aditional reading step.
+     * generating the hashcode without an additional reading step.
      */
     @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
     private static class DigestingInputStream extends FilterInputStream {
@@ -96,15 +96,15 @@ public class StreamHelper {
 
         private final LazyReadInput reference;
 
-        public CountInputStream(final LazyReadInput input, final InputStream stream) {
-            super(new org.apache.commons.io.input.CountingInputStream(stream));
+        public CountInputStream(final LazyReadInput input, final InputStream stream) throws IOException {
+            super(BoundedInputStream.builder().setInputStream(stream).get());
             this.reference = input;
         }
 
         @Override
         public void close() throws IOException {
             super.close();
-            this.reference.setLength(((CountingInputStream) this.in).getByteCount());
+            this.reference.setLength(((BoundedInputStream) this.in).getCount());
         }
     }
 
@@ -134,7 +134,7 @@ public class StreamHelper {
      * @param stream the stream
      * @return a wrapped stream
      */
-    public static InputStream wrapCount(final LazyReadInput input, final InputStream stream) {
+    public static InputStream wrapCount(final LazyReadInput input, final InputStream stream) throws IOException {
         return new CountInputStream(input, stream);
     }
 

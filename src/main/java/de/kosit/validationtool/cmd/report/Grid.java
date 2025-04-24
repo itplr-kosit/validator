@@ -217,7 +217,7 @@ public class Grid {
      * @param def {@link ColumnDefinition}s
      */
     public Grid(final ColumnDefinition... def) {
-        Stream.of(def).forEach(this::addColumn);
+        this.definitions.addAll(Arrays.asList(def));
     }
 
     private String generateGridStart() {

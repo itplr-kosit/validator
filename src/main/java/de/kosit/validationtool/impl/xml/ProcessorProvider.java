@@ -93,12 +93,14 @@ public class ProcessorProvider {
         return processor;
     }
 
+    @SuppressWarnings("deprecation")
     private static Processor createProcessor() {
         final Processor processor = new Processor(false);
         // verhindere global im Prinzip alle resolving strategien
         final SecureUriResolver resolver = new SecureUriResolver();
         processor.getUnderlyingConfiguration().setCollectionFinder(resolver);
-        processor.getUnderlyingConfiguration().setOutputURIResolver(resolver);// NOSONAR
+        // TODO: Replace call to deprecated method.
+        processor.getUnderlyingConfiguration().setOutputURIResolver(resolver); // NOSONAR
         processor.getUnderlyingConfiguration().setUnparsedTextURIResolver(resolver);
 
         // grundsätzlich Feature-konfiguration:
@@ -108,10 +110,14 @@ public class ProcessorProvider {
         processor.setConfigurationProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, false);
 
         // Konfiguration des zu verwendenden Parsers, wenn Saxon selbst einen erzeugen muss, bspw. beim XSL parsen
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(FEATURE_SECURE_PROCESSING), true); // NOSONAR
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(DISSALLOW_DOCTYPE_DECL_FEATURE), true);// NOSONAR
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(LOAD_EXTERNAL_DTD_FEATURE), false);// NOSONAR
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.ACCESS_EXTERNAL_DTD), false);// NOSONAR
+        processor.getUnderlyingConfiguration().setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(FEATURE_SECURE_PROCESSING),
+                true); // NOSONAR
+        processor.getUnderlyingConfiguration()
+                .setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(DISSALLOW_DOCTYPE_DECL_FEATURE), true); // NOSONAR
+        processor.getUnderlyingConfiguration().setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(LOAD_EXTERNAL_DTD_FEATURE),
+                false); // NOSONAR
+        processor.getUnderlyingConfiguration()
+                .setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.ACCESS_EXTERNAL_DTD), false); // NOSONAR
         return processor;
     }
 }

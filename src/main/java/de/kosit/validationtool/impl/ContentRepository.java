@@ -121,14 +121,16 @@ public class ContentRepository {
      * @param uri die URI der XSL Definition
      * @return ein XSLT Executable
      */
+    @SuppressWarnings("deprecation")
     public XsltExecutable loadXsltScript(final URI uri) {
         log.info("Loading XSLT script from  {}", uri);
         final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
         final CollectingErrorEventHandler listener = new CollectingErrorEventHandler();
         try {
-            xsltCompiler.setErrorListener(listener);
+            xsltCompiler.setErrorReporter(er -> log.error(listener.getErrorDescription()));
             if (getResolver() != null) {
                 // otherwise use default resolver
+                // TODO: Replace call to deprecated method.
                 xsltCompiler.setURIResolver(getResolver());
             }
 

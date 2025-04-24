@@ -17,6 +17,7 @@
 package de.kosit.validationtool.impl.input;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.transform.Source;
@@ -47,7 +48,7 @@ public class ByteArrayInput extends AbstractInput {
     }
 
     @Override
-    public Source getSource() {
+    public Source getSource() throws IOException {
         final InputStream stream = wrap(new ByteArrayInputStream(this.content));
         return new StreamSource(stream, getName());
     }

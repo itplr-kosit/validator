@@ -37,7 +37,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 @Slf4j
 
-public class ScenarioRepository {
+public final class ScenarioRepository {
 
     public static final String DEFAULT = "default";
 

@@ -35,7 +35,7 @@ import lombok.Getter;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
 
-import net.sf.saxon.s9api.MessageListener2;
+import net.sf.saxon.s9api.MessageListener;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;
 
@@ -45,7 +45,7 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 @Getter
-public class CollectingErrorEventHandler implements ValidationEventHandler, ErrorHandler, MessageListener2, ErrorListener {
+public class CollectingErrorEventHandler implements ValidationEventHandler, ErrorHandler, MessageListener, ErrorListener {
 
     private static final int DEFAULT_ABORT_COUNT = 50;
 
@@ -132,14 +132,15 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     @Override
-    public void message(final XdmNode content, final QName errorCode, final boolean terminate, final SourceLocator locator) {
+    public void message(final XdmNode content, final boolean terminate, final SourceLocator locator) {
         final XMLSyntaxError e = new XMLSyntaxError();
         if (locator != null) {
             e.setColumnNumber(locator.getColumnNumber());
             e.setRowNumber(locator.getLineNumber());
         }
-        e.setMessage("Error procesing" + content.getStringValue());
+        e.setMessage("Error processing" + content.getStringValue());
         e.setSeverityCode(terminate ? XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR : XMLSyntaxErrorSeverity.SEVERITY_WARNING);
+        this.errors.add(e);
     }
 
     @Override

@@ -55,16 +55,18 @@ public class SchematronValidationAction implements CheckAction {
         return scenario.getSchematronValidations().stream().map(v -> validate(scenario, results, document, v)).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("deprecation")
     private ValidationResultsSchematron validate(final Scenario scenario, final Bag results, final XdmNode document,
             final Transformation validation) {
         final ValidationResultsSchematron s = new ValidationResultsSchematron();
         s.setResource(validation.getResourceType());
         try {
             final XsltTransformer transformer = validation.getExecutable().load();
-            // resolving nur relative zum Repository
+            // Resolving nur relativ zum Repository
+            // TODO: Replace call to deprecated method.
             transformer.setURIResolver(scenario.getUriResolver());
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
-            transformer.setMessageListener(e);
+            transformer.setErrorReporter(er -> log.error(e.getErrorDescription()));
 
             final XdmDestination result = new XdmDestination();
             transformer.setDestination(result);

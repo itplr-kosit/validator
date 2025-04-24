@@ -129,7 +129,7 @@ class InternalCheck extends DefaultCheck {
     }
 
     void printResults(final Map<String, Result> results) {
-        final PrintWriter writer = new PrintWriter(System.out);// NOSONAR
+        final PrintWriter writer = new PrintWriter(System.out); // NOSONAR
         writer.write("Results:\n");
         writer.write(createResultGrid(results).render());
         writer.write(createStatusLine(results));

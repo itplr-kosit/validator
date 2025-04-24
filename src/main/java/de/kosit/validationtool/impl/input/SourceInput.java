@@ -53,7 +53,7 @@ import net.sf.saxon.om.TreeInfo;
  */
 @Getter
 @Slf4j
-public class SourceInput extends AbstractInput {
+public final class SourceInput extends AbstractInput {
 
     private final Source source;
 
@@ -133,14 +133,16 @@ public class SourceInput extends AbstractInput {
         return this.source instanceof JAXBSource;
     }
 
-    private Source wrappedSource() {
+    private Source wrappedSource() throws IOException {
         Source result = this.source;
         if (isStreamSource()) {
             final StreamSource ss = (StreamSource) this.source;
             if (ss.getInputStream() != null) {
                 result = new StreamSource(wrap(ss.getInputStream()), this.source.getSystemId());
             } else if (ss.getReader() != null) {
-                result = new StreamSource(wrap(new ReaderInputStream(ss.getReader(), Charset.defaultCharset())), this.source.getSystemId());
+                result = new StreamSource(
+                        wrap(ReaderInputStream.builder().setReader(ss.getReader()).setCharset(Charset.defaultCharset()).get()),
+                        this.source.getSystemId());
             }
         }
         return result;

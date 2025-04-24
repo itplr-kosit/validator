@@ -55,7 +55,9 @@ public class ConversionService {
     /**
      * Exception while serializing/deserializing with jaxb.
      */
-    public class ConversionExeption extends RuntimeException {
+    public class ConversionException extends RuntimeException {
+
+        private static final long serialVersionUID = 7950889507519996452L;
 
         /**
          * Constructor.
@@ -63,7 +65,7 @@ public class ConversionService {
          * @param message the message.
          * @param cause the cause
          */
-        public ConversionExeption(final String message, final Exception cause) {
+        public ConversionException(final String message, final Exception cause) {
             super(message, cause);
         }
 
@@ -72,7 +74,7 @@ public class ConversionService {
          *
          * @param message the message.
          */
-        public ConversionExeption(final String message) {
+        public ConversionException(final String message) {
             super(message);
         }
     }
@@ -97,13 +99,13 @@ public class ConversionService {
 
     private void checkInputEmpty(final URI xml) {
         if (xml == null) {
-            throw new ConversionExeption("Can not unmarshal from empty input");
+            throw new ConversionException("Can not unmarshal from empty input");
         }
     }
 
     private <T> void checkTypeEmpty(final Class<T> type) {
         if (type == null) {
-            throw new ConversionExeption("Can not unmarshal without type information. Need to specify a target type");
+            throw new ConversionException("Can not unmarshal without type information. Need to specify a target type");
         }
     }
 
@@ -183,13 +185,13 @@ public class ConversionService {
             u.setEventHandler(handler2Use);
             final T value = u.unmarshal(xsr, type).getValue();
             if (defaultHandler != null && defaultHandler.hasErrors()) {
-                throw new ConversionExeption(
+                throw new ConversionException(
                         String.format("Schema errors while reading content from %s: %s", xml, defaultHandler.getErrorDescription()));
             }
 
             return value;
         } catch (final JAXBException | XMLStreamException e) {
-            throw new ConversionExeption(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml.toString()), e);
+            throw new ConversionException(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml.toString()), e);
         }
     }
 
@@ -204,9 +206,10 @@ public class ConversionService {
         return writeXml(model, null, null);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> String writeXml(final T model, final Schema schema, final ValidationEventHandler handler) {
         if (model == null) {
-            throw new ConversionExeption("Can not serialize null");
+            throw new ConversionException("Can not serialize null");
         }
         try ( final StringWriter w = new StringWriter() ) {
             final JAXBIntrospector introspector = getJaxbContext().createJAXBIntrospector();
@@ -219,7 +222,8 @@ public class ConversionService {
             final XMLOutputFactory xof = XMLOutputFactory.newFactory();
             final XMLStreamWriter xmlStreamWriter = xof.createXMLStreamWriter(w);
             if (null == introspector.getElementName(model)) {
-                final JAXBElement jaxbElement = new JAXBElement(createQName(model), model.getClass(), model);
+                // TODO: Replace unchecked cast.
+                final JAXBElement<T> jaxbElement = new JAXBElement<>(createQName(model), (Class<T>) model.getClass(), model);
                 marshaller.marshal(jaxbElement, xmlStreamWriter);
             } else {
                 marshaller.marshal(model, xmlStreamWriter);
@@ -227,7 +231,7 @@ public class ConversionService {
             xmlStreamWriter.flush();
             return w.toString();
         } catch (final JAXBException | IOException | XMLStreamException e) {
-            throw new ConversionExeption(String.format("Error serializing Object %s", model.getClass().getName()), e);
+            throw new ConversionException(String.format("Error serializing Object %s", model.getClass().getName()), e);
         }
     }
 
@@ -238,7 +242,7 @@ public class ConversionService {
             return u.unmarshal(source, type).getValue();
 
         } catch (final JAXBException e) {
-            throw new ConversionExeption(String.format("Can not unmarshal to type %s: %s", type.getSimpleName(),
+            throw new ConversionException(String.format("Can not unmarshal to type %s: %s", type.getSimpleName(),
                     StringUtils.abbreviate(source.getSystemId(), MAX_LOG_CONTENT)), e);
         }
     }

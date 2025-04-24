@@ -79,6 +79,7 @@ public class CreateReportAction implements CheckAction {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void check(final Bag results) {
         final DocumentBuilder documentBuilder = this.processor.newDocumentBuilder();
         try {
@@ -95,8 +96,9 @@ public class CreateReportAction implements CheckAction {
             final XsltTransformer transformer = getTransformation(results).load();
             transformer.setInitialContextNode(root);
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
-            transformer.setMessageListener(e);
+            transformer.setErrorReporter(er -> log.error(e.getErrorDescription()));
             final Scenario scenario = results.getScenarioSelectionResult().getObject();
+            // TODO: Replace call to deprecated method.
             transformer.setURIResolver(scenario.getUriResolver());
 
             if (scenario.getUnparsedTextURIResolver() != null) {

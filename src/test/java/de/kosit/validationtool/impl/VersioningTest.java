@@ -71,13 +71,13 @@ public class VersioningTest {
 
     @Test
     public void testNewFeature() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.exception.expect(ConversionService.ConversionException.class);
         this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
     }
 
     @Test
     public void testNewVersion() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+        this.exception.expect(ConversionService.ConversionException.class);
         this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
     }
 }

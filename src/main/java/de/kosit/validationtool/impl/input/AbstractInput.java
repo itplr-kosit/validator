@@ -58,7 +58,7 @@ public abstract class AbstractInput implements Input, LazyReadInput {
         }
     }
 
-    protected InputStream wrap(final InputStream stream) {
+    protected InputStream wrap(final InputStream stream) throws IOException {
         InputStream result = stream;
         if (!isHashcodeComputed()) {
             result = StreamHelper.wrapDigesting(this, result, getDigestAlgorithm());

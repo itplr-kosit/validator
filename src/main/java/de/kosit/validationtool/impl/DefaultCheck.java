@@ -21,6 +21,7 @@ import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -145,8 +146,13 @@ public class DefaultCheck implements Check {
     }
 
     private static List<XmlError> convertErrors(final Collection<XMLSyntaxError> errors) {
-        // noinspection unchecked
-        return (List<XmlError>) (List<?>) errors;
+        List<XmlError> rv = new LinkedList<>();
+        for (XMLSyntaxError error : errors) {
+            if (error != null) {
+                rv.add(error);
+            }
+        }
+        return rv;
     }
 
 }
