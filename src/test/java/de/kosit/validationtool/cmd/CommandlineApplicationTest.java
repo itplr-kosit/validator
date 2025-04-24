@@ -44,13 +44,10 @@ public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
-    private CommandLine commandLine;
-
     private final Path output = Paths.get("target/test-output");
 
     @Before
     public void setup() throws IOException {
-        this.commandLine = new CommandLine();
         CommandLine.activate();
         if (Files.exists(this.output)) {
             FileUtils.deleteDirectory(this.output.toFile());

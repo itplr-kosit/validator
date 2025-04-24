@@ -82,7 +82,7 @@ public class Helper {
 
         public static final URI SCHEMA = REPOSITORY_URI.resolve("simple.xsd");
 
-        public static final ContentRepository createContentRepository() {
+        public static ContentRepository createContentRepository() {
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
             return new ContentRepository(Helper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
         }

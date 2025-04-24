@@ -34,13 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class PrintReportActionTest {
 
-    private CommandLine commandLine;
-
     private PrintReportAction action;
 
     @Before
     public void setup() {
-        this.commandLine = new CommandLine();
         CommandLine.activate();
         this.action = new PrintReportAction(TestObjectFactory.createProcessor());
     }

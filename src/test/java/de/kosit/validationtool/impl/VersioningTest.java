@@ -44,11 +44,8 @@ public class VersioningTest {
 
     private ConversionService service;
 
-    private ContentRepository repository;
-
     @Before
     public void setup() {
-        this.repository = Simple.createContentRepository();
         this.service = new ConversionService();
     }
 

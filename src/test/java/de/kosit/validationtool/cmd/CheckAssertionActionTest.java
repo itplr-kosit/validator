@@ -44,11 +44,8 @@ public class CheckAssertionActionTest {
 
     private static final URL SAMPLE_ASSERTIONS = CheckAssertionActionTest.class.getResource("/examples/assertions/tests-xrechnung.xml");
 
-    private CommandLine commandLine;
-
     @Before
     public void setup() throws IOException {
-        this.commandLine = new CommandLine();
         CommandLine.activate();
     }
 
