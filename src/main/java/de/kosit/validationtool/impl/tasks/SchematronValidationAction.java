@@ -42,7 +42,7 @@ import net.sf.saxon.s9api.XsltTransformer;
 
 /**
  * Ausführung von konfigurierten Schematron Validierungen eines Szenarios.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor

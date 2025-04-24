@@ -32,7 +32,7 @@ import de.kosit.validationtool.impl.Helper.Resolving;
 
 /**
  * Tests {@link StrictLocalResolvingStrategy}
- * 
+ *
  * @author Andreas Penski
  */
 public class StrictLocalResolvingTest {

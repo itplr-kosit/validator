@@ -52,8 +52,8 @@ public interface Check {
     /**
      * Checks an incoming xml files in batch mode. Processing is sequential. The result-{@link Document Documents} are
      * readonly. To change the this document you need to copy them into new {@link Document Documents}.
-     * 
-     * 
+     *
+     *
      * @param input list of xml {@link Input Inputs}
      * @return list of result-{@link Document Documents} (readonly)
      */

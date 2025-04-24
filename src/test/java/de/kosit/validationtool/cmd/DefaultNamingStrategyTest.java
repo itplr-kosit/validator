@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * Tests {@link DefaultNamingStrategy}
- * 
+ *
  * @author Andreas Penski
  */
 public class DefaultNamingStrategyTest {

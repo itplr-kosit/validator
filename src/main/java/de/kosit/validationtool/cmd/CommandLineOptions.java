@@ -34,7 +34,7 @@ import picocli.CommandLine.Parameters;
 
 /**
  * Commandline Interface definition.
- * 
+ *
  * @author Andreas Penski
  */
 @Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false,
@@ -111,7 +111,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     /**
      * Definition of logical name and a path for a configuration artifact.
-     * 
+     *
      * @author Andreas Penski
      */
     @Getter
@@ -125,7 +125,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     /**
      * Definition of logical name and a path for a repository.
-     * 
+     *
      * @author Andreas Penski
      */
     public static class RepositoryDefinition extends Definition {
@@ -134,7 +134,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     /**
      * Definition of logical name and a path for a scenario configuration file.
-     * 
+     *
      * @author Andreas Penski
      */
     public static class ScenarioDefinition extends Definition {

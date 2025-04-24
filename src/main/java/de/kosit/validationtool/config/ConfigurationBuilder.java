@@ -53,7 +53,7 @@ import net.sf.saxon.s9api.Processor;
 
 /**
  * Implements a builder style creation of a {@link Configuration}.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j
@@ -82,7 +82,7 @@ public class ConfigurationBuilder {
 
     /**
      * Add a specific author name to this configuration.
-     * 
+     *
      * @param authorName the name of the author
      * @return this
      */
@@ -93,7 +93,7 @@ public class ConfigurationBuilder {
 
     /**
      * Add a specific nam to this configuration
-     * 
+     *
      * @param name the name of the configuration
      * @return this
      */
@@ -104,7 +104,7 @@ public class ConfigurationBuilder {
 
     /**
      * Sets the date for this configuration.
-     * 
+     *
      * @param date the date
      * @return this
      */
@@ -117,7 +117,7 @@ public class ConfigurationBuilder {
 
     /**
      * Sets the date for this configuration.
-     * 
+     *
      * @param date the date
      * @return this
      */
@@ -128,7 +128,7 @@ public class ConfigurationBuilder {
     /**
      * Adds a {@link Scenario} to this list of know scenarios. Note: order of calling this methods defines order of
      * scenarios when determining the target scenario for a given xml file.
-     * 
+     *
      * @param scenarioBuilder the {@link ScenarioBuilder} building the {@link Scenario}
      * @return this
      */
@@ -140,7 +140,7 @@ public class ConfigurationBuilder {
     /**
      * Sets a specific fallback scenario configuration. Note: calling this more than once is possible, but the last call
      * will define the actual fallback scenario used. There can be only one
-     * 
+     *
      * @param builder the {@link FallbackBuilder}
      * @return this
      */
@@ -154,7 +154,7 @@ public class ConfigurationBuilder {
 
     /**
      * Adds a description to this configuration.
-     * 
+     *
      * @param description the descriptioin
      * @return this
      */
@@ -184,7 +184,7 @@ public class ConfigurationBuilder {
 
     /**
      * Create a named schematron configuration.
-     * 
+     *
      * @param name the name of the schematron configuration
      * @return new {@link SchemaBuilder}
      */
@@ -234,7 +234,7 @@ public class ConfigurationBuilder {
 
     /**
      * Create a new named scenario configuration.
-     * 
+     *
      * @param name the name of the scenario
      * @return the scenario configuration builder
      */
@@ -253,7 +253,7 @@ public class ConfigurationBuilder {
 
     /**
      * Create named report configuration.
-     * 
+     *
      * @param name the name of the report
      * @return the report configuration builder
      */
@@ -263,7 +263,7 @@ public class ConfigurationBuilder {
 
     /**
      * Builds the actual {@link Configuration} by validating all builder inputs and constructing neccessary objects.
-     * 
+     *
      * @return a valid configuration
      * @throws IllegalStateException when the configuration is not valid/complete
      */
@@ -339,7 +339,7 @@ public class ConfigurationBuilder {
     /**
      * Sets a specific resolving mode, for resolving xml artifacts for this configuration. See {@link ResolvingMode} for
      * details.
-     * 
+     *
      * @param mode the mode
      * @return this
      */
@@ -350,7 +350,7 @@ public class ConfigurationBuilder {
 
     /**
      * Sets a specific strategy to use for resolving artefacts for scenarios.
-     * 
+     *
      * @param strategy the strategy
      * @return this
      */
@@ -361,7 +361,7 @@ public class ConfigurationBuilder {
 
     /**
      * Set a specific repository location for resolving artifacts for scenarios.
-     * 
+     *
      * @param repository the repository location
      * @return this
      */

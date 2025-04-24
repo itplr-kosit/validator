@@ -25,7 +25,7 @@ import lombok.Getter;
 
 /**
  * Ansi formatted text for outputting to the console.
- * 
+ *
  * @author Andreas Penski
  */
 @Getter

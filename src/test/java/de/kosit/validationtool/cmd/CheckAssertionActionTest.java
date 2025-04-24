@@ -34,7 +34,7 @@ import de.kosit.validationtool.model.reportInput.CreateReportInput;
 
 /**
  * Testet das Assertion-Feature.
- * 
+ *
  * @author Andreas Penski
  */
 public class CheckAssertionActionTest {

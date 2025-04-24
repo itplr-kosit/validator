@@ -37,7 +37,7 @@ import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Builder for schematron validation configuration.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j
@@ -88,7 +88,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     /**
      * Specifices a source for this schematron validation. This is either used to compile the schematron transformation
      * or as documentation for a precompiled tranformation.
-     * 
+     *
      * @param source the source
      * @return this
      */
@@ -99,7 +99,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     /**
      * Specifices a source for this schematron validation. This is either used to compile the schematron transformation
      * or as documentation for a precompiled tranformation.
-     * 
+     *
      * @param source the source
      * @return this
      */
@@ -111,7 +111,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     /**
      * Specifices a source for this schematron validation. This is either used to compile the schematron transformation
      * or as documentation for a precompiled tranformation.
-     * 
+     *
      * @param source the source
      * @return this
      */
@@ -121,7 +121,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
 
     /**
      * Sets the name of the schematron source to a specific value.
-     * 
+     *
      * @param name the name
      * @return this
      */

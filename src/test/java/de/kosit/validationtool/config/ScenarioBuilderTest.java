@@ -39,7 +39,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 
 /**
  * Test {@link ScenarioBuilder}.
- * 
+ *
  * @author Andreas Penski
  */
 public class ScenarioBuilderTest {

@@ -60,7 +60,7 @@ import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Repository für verschiedene XML Artefakte zur Vearbeitung der Prüfszenarien.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
@@ -84,7 +84,7 @@ public class ContentRepository {
     /**
      * Creates a new {@link ContentRepository} based on configured security and resolving strategy and the specified
      * repository location.
-     * 
+     *
      * @param strategy the security and resolving strategy
      * @param repository the repository.
      */
@@ -160,7 +160,7 @@ public class ContentRepository {
 
     /**
      * Erzeugt ein Schema auf Basis der übegebenen URIs
-     * 
+     *
      * @param uris die uris in String-Repräsentation
      * @return das Schema
      */
@@ -200,7 +200,7 @@ public class ContentRepository {
 
     /**
      * Erzeugt einen [@link XPathExecutable} auf Basis der angegebenen Informationen.
-     * 
+     *
      * @param expression der XPATH-Ausdruck
      * @param namespaces optionale Namespace-Mappings
      * @return ein kompiliertes Executable
@@ -220,7 +220,7 @@ public class ContentRepository {
 
     /**
      * Returns the {@link URIResolver} to use for resolving xml artifacts.
-     * 
+     *
      * @return the resolver
      */
     public URIResolver getResolver() {

@@ -20,7 +20,7 @@ import de.kosit.validationtool.model.reportInput.DocumentIdentificationType;
 
 /**
  * Creates a document identification element for the report by using the generates hash.
- * 
+ *
  * @author Andreas Penski
  */
 public class CreateDocumentIdentificationAction implements CheckAction {

@@ -51,7 +51,7 @@ import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 
 /**
  * Tests die {@link SchemaValidationAction}.
- * 
+ *
  * @author Andreas Penski
  */
 public class SchemaValidatorActionTest {

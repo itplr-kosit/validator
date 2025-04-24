@@ -58,7 +58,7 @@ import net.sf.saxon.s9api.XdmNodeKind;
 /**
  * Configuration class that loads necessary {@link Check} configuration from an existing scenario.xml specification.
  * This is the recommended option when an official configuration exists as is the case with 'xrechnung'.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
@@ -201,7 +201,7 @@ public class ConfigurationLoader {
 
     /**
      * Sets actual {@link ResolvingMode}, when the validator needs to resolve stuff on startup.
-     * 
+     *
      * @param mode the resolving mode
      * @return this
      */
@@ -220,7 +220,7 @@ public class ConfigurationLoader {
 
     /**
      * Add a parameter to the configuration.
-     * 
+     *
      * @param name the name of the parameter
      * @param value the parameter value object
      * @return this

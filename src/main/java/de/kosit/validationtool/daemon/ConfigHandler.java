@@ -38,7 +38,7 @@ import de.kosit.validationtool.model.scenarios.Scenarios;
 
 /**
  * Handler that returns the actual configuration used for this daemon instance.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

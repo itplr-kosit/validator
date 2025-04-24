@@ -30,7 +30,7 @@ import net.sf.saxon.s9api.Serializer;
 
 /**
  * Gibt das Ergebnis-Document auf std-out aus.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

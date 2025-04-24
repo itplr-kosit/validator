@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /**
  * Hält statische Informatione über diesen Validator.
- * 
+ *
  * @author Andreas Penski
  */
 public class EngineInformation {
@@ -46,7 +46,7 @@ public class EngineInformation {
 
     /**
      * Gibt die Versions-Nummer des Validators zurück.
-     * 
+     *
      * @return die Version
      */
     public static String getVersion() {
@@ -55,7 +55,7 @@ public class EngineInformation {
 
     /**
      * Gibt den Namen der Engine zurück.
-     * 
+     *
      * @return der Name
      */
     public static String getName() {
@@ -74,7 +74,7 @@ public class EngineInformation {
 
     /**
      * Gibt die Major-Versions-Nummer des eingesetzten Frameworks zurück.
-     * 
+     *
      * @return die Major-Versions-Nummer
      */
     public static String getFrameworkMajorVersion() {
@@ -87,7 +87,7 @@ public class EngineInformation {
 
     /**
      * Gibt den Namespace des eingesetzten Frameworks zurück.
-     * 
+     *
      * @return die Major-Versions-Nummer
      */
     public static String getFrameworkNamespace() {

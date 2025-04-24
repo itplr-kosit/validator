@@ -34,7 +34,7 @@ import lombok.Setter;
 
 /**
  * Helferlein um Ausgaben auf der Kommandozeile zu testen.
- * 
+ *
  * @author Andreas Penski
  */
 public class CommandLine {

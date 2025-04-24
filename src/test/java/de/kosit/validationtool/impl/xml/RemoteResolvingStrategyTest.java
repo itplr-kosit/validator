@@ -30,7 +30,7 @@ import de.kosit.validationtool.impl.Helper.Resolving;
 
 /**
  * Tests {@link RemoteResolvingStrategy}.
- * 
+ *
  * @author Andreas Penski
  */
 public class RemoteResolvingStrategyTest {

@@ -24,7 +24,7 @@ import de.kosit.validationtool.impl.Helper.Simple;
 
 /**
  * Test {@link CheckConfiguration }.
- * 
+ *
  * @author Andreas Penski
  */
 @Deprecated

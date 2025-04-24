@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * An text based grid for cli based programs.
- * 
+ *
  * @author Andreas Penski
  */
 public class Grid {

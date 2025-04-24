@@ -32,7 +32,7 @@ import picocli.CommandLine.ITypeConverter;
 
 /**
  * Custom type converters for dealing with command line input.
- * 
+ *
  * @author Andreas Penski
  */
 class TypeConverter {

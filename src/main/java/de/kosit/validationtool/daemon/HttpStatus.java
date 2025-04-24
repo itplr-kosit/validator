@@ -18,7 +18,7 @@ package de.kosit.validationtool.daemon;
 
 /**
  * Status codes for the HTTP daemon.
- * 
+ *
  * @author Andreas Penski
  */
 public interface HttpStatus {

@@ -62,7 +62,7 @@ public class Daemon {
 
     /**
      * Create a new daemon.
-     * 
+     *
      * @param hostname the interface to bind to
      * @param port the port to expose
      * @param threadCount the number of working threads
@@ -75,7 +75,7 @@ public class Daemon {
 
     /**
      * Methode zum Starten des Servers
-     * 
+     *
      * @param config the configuration to use
      */
     public void startServer(final Processor processor, final Configuration... config) {

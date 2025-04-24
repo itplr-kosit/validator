@@ -28,7 +28,7 @@ import org.oclc.purl.dsdl.svrl.FiredRule;
 /**
  * Basis-Klasse um spezifische Erweiterungen an der generierten Klasse {@link org.oclc.purl.dsdl.svrl.SchematronOutput}
  * umzusetzen.
- * 
+ *
  * @author Andreas Penski
  */
 public abstract class BaseOutput {
@@ -37,7 +37,7 @@ public abstract class BaseOutput {
 
     /**
      * Gibt die Liste der {@link FailedAssert} zurück
-     * 
+     *
      * @return Liste mit {@link FailedAssert}
      */
     public List<FailedAssert> getFailedAsserts() {
@@ -46,7 +46,7 @@ public abstract class BaseOutput {
 
     /**
      * Gibt die Liste der {@link FailedAssert} zurück
-     * 
+     *
      * @return Liste mit {@link FailedAssert}
      */
     public List<FiredRule> getFiredRules() {
@@ -55,7 +55,7 @@ public abstract class BaseOutput {
 
     /**
      * Ermittelt, ob es bei der Validierung {@link FailedAssert}s gab.
-     * 
+     *
      * @return true wenn mindestens ein {@link FailedAssert} vorhanden ist
      */
     public boolean hasFailedAsserts() {
@@ -77,7 +77,7 @@ public abstract class BaseOutput {
 
     /**
      * Sucht nach einem {@link FailedAssert} mit einem definierten Namen.
-     * 
+     *
      * @param name der Name
      * @return Optional mit dem {@link FailedAssert}
      */

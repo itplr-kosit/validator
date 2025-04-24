@@ -29,7 +29,7 @@ import net.sf.saxon.s9api.Serializer;
 
 /**
  * Schreibt das Prüfergebnis als XML-Dokument an eine definierte Stelle.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

@@ -42,7 +42,7 @@ import net.sf.saxon.s9api.SaxonApiException;
 
 /**
  * Test for {@link CreateReportAction}.
- * 
+ *
  * @author Andreas Penski
  */
 public class CreateReportActionTest {

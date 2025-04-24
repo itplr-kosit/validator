@@ -39,7 +39,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Das Default-{@link Result} für die Rückgabe in der API
- * 
+ *
  * @author Andreas Penski
  */
 public class DefaultResult implements Result {
@@ -113,7 +113,7 @@ public class DefaultResult implements Result {
 
     /**
      * Extrahiert evtl. im Report vorhandene HTML-Fragmente als String.
-     * 
+     *
      * @return Liste mit HTML Strings.
      */
     public List<String> extractHtmlAsString() {
@@ -140,7 +140,7 @@ public class DefaultResult implements Result {
 
     /**
      * Gibt alle Schematron-Ergebnisse vom Typ {@link FailedAssert} zurück.
-     * 
+     *
      * @return die {@link FailedAssert}
      */
     @Override

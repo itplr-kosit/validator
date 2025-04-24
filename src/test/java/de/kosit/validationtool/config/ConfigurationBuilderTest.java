@@ -34,7 +34,7 @@ import de.kosit.validationtool.impl.Helper;
 
 /**
  * Test {@link ConfigurationBuilder}.
- * 
+ *
  * @author Andreas Penski
  */
 public class ConfigurationBuilderTest {

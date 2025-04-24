@@ -29,7 +29,7 @@ import de.kosit.validationtool.api.Input;
 
 /**
  * Base class for all {@link Input Inputs}.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

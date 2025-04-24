@@ -33,7 +33,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 
 /**
  * Tests {@link XPathBuilder}.
- * 
+ *
  * @author Andreas Penski
  */
 public class XPathBuilderTest {

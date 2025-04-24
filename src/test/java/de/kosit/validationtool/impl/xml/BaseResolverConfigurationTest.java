@@ -34,9 +34,9 @@ import org.xml.sax.SAXNotSupportedException;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 
+ *
  * Tests the internal functions used to create a secure resolver
- * 
+ *
  * @author Andreas Penski
  */
 public class BaseResolverConfigurationTest {

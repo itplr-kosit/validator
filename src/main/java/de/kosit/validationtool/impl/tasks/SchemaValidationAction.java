@@ -61,7 +61,7 @@ import net.sf.saxon.s9api.XdmNode;
  * This implementation tries to do the validation in an efficient manner. If possible the source is read a second time
  * to validate. If not, the source is serialized to the heap upon re-read/validaiton up to a configurable file size. The
  * document is serialized to a temporary file otherwise.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

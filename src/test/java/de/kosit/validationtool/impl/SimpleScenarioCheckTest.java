@@ -31,7 +31,7 @@ import de.kosit.validationtool.impl.Helper.Simple;
 
 /**
  * Prüft die Funktionen des Validator auf Basis eines reduzierten Szenarios.
- * 
+ *
  * @author Andreas Penski
  */
 public class SimpleScenarioCheckTest {

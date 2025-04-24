@@ -60,7 +60,7 @@ import net.sf.saxon.s9api.Processor;
 
 /**
  * Actual evaluation and processing of CommandLineOptions argumtens.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

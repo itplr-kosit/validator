@@ -30,7 +30,7 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 /**
  * Validiert die gesammelten Informationen über den Prüfling. Zusätzlich Check.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor

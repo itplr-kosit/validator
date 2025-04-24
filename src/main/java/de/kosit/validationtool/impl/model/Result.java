@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Ein Ergebnisobjekt, dass das eigentliche Ergebnis hält und optional auch verschiedene Fehlerobjekte.
- * 
+ *
  * @param <T> der Typ des Ergebnis-Objekts
  * @param <E> der Typ des Fehler-Objekts
  */
@@ -41,7 +41,7 @@ public class Result<T, E> {
 
     /**
      * Erzeugt ein neues Ergebnis mit Fehler
-     * 
+     *
      * @param errors die Fehler
      */
     public Result(Collection<E> errors) {
@@ -50,7 +50,7 @@ public class Result<T, E> {
 
     /**
      * Erzeugt ein neues Ergebnis mit einem Ergebnisobjekt
-     * 
+     *
      * @param o
      */
     public Result(T o) {
@@ -59,7 +59,7 @@ public class Result<T, E> {
 
     /**
      * Zeigt an, ob das Ergebnis valide, also ohne Fehler ist.
-     * 
+     *
      * @return true wenn erfolgreich
      */
     public boolean isValid() {
@@ -68,7 +68,7 @@ public class Result<T, E> {
 
     /**
      * Zeigt an, ob das Ergebnis nicht valide ist, als entsprechend Fehler gesammelt wurden.
-     * 
+     *
      * @return true wenn erfolgreich wenn Fehler vorhanden sind.
      */
     public boolean isInvalid() {

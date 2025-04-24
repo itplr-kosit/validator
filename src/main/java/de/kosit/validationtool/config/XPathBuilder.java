@@ -40,7 +40,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 
 /**
  * Internal class to represent xpath configuration.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor

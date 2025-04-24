@@ -24,14 +24,14 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
 /**
  * Basis-Klasse für Syntax-Error. Wird über die JAXB-generierte Klasse
  * {@link de.kosit.validationtool.model.reportInput.XMLSyntaxError} erweitert.
- * 
+ *
  * @author Andreas Penski
  */
 public abstract class BaseXMLSyntaxError implements XmlError {
 
     /**
      * Logged den Syntax-Fehler über einen definierten Logger.
-     * 
+     *
      * @param logger der Logger
      */
     public void log(final Logger logger) {
@@ -59,7 +59,7 @@ public abstract class BaseXMLSyntaxError implements XmlError {
 
     /**
      * Dies ist der API-Zugriff. Es gibt zwei Methoden, weil es für die API einen abweichenden Typ gibt.
-     * 
+     *
      * @return der Schweregrad
      */
     @Override

@@ -42,7 +42,7 @@ import net.sf.saxon.s9api.Processor;
 /**
  * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszuwerten und auszugeben.
  * Diese Klasse stellt keine fachliche Erweiterung des eigentlichen Prüfvorganges dar!
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

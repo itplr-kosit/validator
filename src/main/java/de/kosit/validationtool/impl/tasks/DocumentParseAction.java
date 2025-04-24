@@ -37,7 +37,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Setzt Parsing-Funktionalitäten um. Prüft auf well-formedness
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j
@@ -50,7 +50,7 @@ public class DocumentParseAction implements CheckAction {
      * Parsed und überprüft ein übergebenes Dokument darauf ob es well-formed ist. Dies stellt den ersten
      * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem
      * Schema.
-     * 
+     *
      * @param content ein Dokument
      * @return Ergebnis des Parsings inklusive etwaiger Fehler
      */

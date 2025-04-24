@@ -38,7 +38,7 @@ import de.kosit.validationtool.impl.Helper.Simple;
 
 /**
  * Testet die Parameter des Kommandozeilen-Tools.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

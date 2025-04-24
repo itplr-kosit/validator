@@ -24,7 +24,7 @@ import io.restassured.http.ContentType;
 
 /**
  * Checks the health endpoint.
- * 
+ *
  * @author Andreas Penski
  */
 public class HealthHandlerIT extends BaseIT {

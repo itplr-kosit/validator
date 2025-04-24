@@ -40,7 +40,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Helferlein für Test-Artefakte
- * 
+ *
  * @author Andreas Penski
  */
 
@@ -129,7 +129,7 @@ public class Helper {
 
     /**
      * Lädt ein XML-Dokument von der gegebenen URL
-     * 
+     *
      * @param url die url die geladen werden soll
      * @return ein result objekt mit Dokument
      */

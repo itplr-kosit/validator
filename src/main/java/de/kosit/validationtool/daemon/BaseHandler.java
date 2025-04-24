@@ -24,7 +24,7 @@ import com.sun.net.httpserver.HttpHandler;
 
 /**
  * Simple base implemenation for http handlers. Doing I/O stuff.
- * 
+ *
  * @author Andreas Penski
  */
 abstract class BaseHandler implements HttpHandler {

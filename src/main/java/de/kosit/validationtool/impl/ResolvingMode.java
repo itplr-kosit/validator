@@ -26,7 +26,7 @@ import de.kosit.validationtool.impl.xml.StrictRelativeResolvingStrategy;
 
 /**
  * Defines how artefacts are resolved internally.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor

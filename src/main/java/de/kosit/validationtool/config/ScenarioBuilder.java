@@ -50,7 +50,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 
 /**
  * Builder for {@link Scenario} configuration.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
@@ -96,7 +96,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Add a preconfiguration {@link XPathExecutable} to match the scenario
-     * 
+     *
      * @param executable the xpath executable
      * @return this
      */
@@ -107,7 +107,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Add an xpath expression to match the scenario. You can leverage declared namespaces.
-     * 
+     *
      * @param xpath the expression
      * @return this
      */
@@ -118,7 +118,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Declare a namespace to use for match and accept configurations.
-     * 
+     *
      * @param prefix the prefix to use
      * @param uri the uri of this namespace
      * @return this
@@ -130,7 +130,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Add a preconfiguration {@link XPathExecutable} to compute acceptance for the scenario
-     * 
+     *
      * @param executable the xpath executable
      * @return this
      */
@@ -141,7 +141,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Add an xpath expression to compute acceptance for the scenario. You can leverage declared namespaces.
-     * 
+     *
      * @param acceptXpath the xpath expresison
      * @return this
      */
@@ -152,7 +152,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Add a schematron validation configuration for this scenario.
-     * 
+     *
      * @param schematron the schematron configuration
      * @return this
      */
@@ -165,7 +165,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Validate matching {@link de.kosit.validationtool.api.Input Inputs} with the specified schema configuration.
-     * 
+     *
      * @param schema the schema configuration
      * @return this
      */
@@ -178,7 +178,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
      * Add description for this scenario. This is part of the
      * {@link de.kosit.validationtool.model.reportInput.CreateReportInput} configuration and can be used while creating
      * the report
-     * 
+     *
      * @param description the description
      * @return this
      */
@@ -189,7 +189,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     /**
      * Add a configuration for generating the final report for the {@link de.kosit.validationtool.api.Input}.
-     * 
+     *
      * @param reportBuilder the report configuration
      * @return this
      */

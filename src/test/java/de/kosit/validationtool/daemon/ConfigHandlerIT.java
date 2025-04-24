@@ -24,7 +24,7 @@ import io.restassured.http.ContentType;
 
 /**
  * Integration test for the {@link ConfigHandler}.
- * 
+ *
  * @author Andreas Penski
  */
 public class ConfigHandlerIT extends BaseIT {

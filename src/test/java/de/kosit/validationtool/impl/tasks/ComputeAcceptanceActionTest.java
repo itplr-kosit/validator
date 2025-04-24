@@ -34,7 +34,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 
 /**
  * Tests the 'acceptMatch' functionality.
- * 
+ *
  * @author Andreas Penski
  */
 public class ComputeAcceptanceActionTest {

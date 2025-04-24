@@ -33,7 +33,7 @@ import de.kosit.validationtool.model.daemon.MemoryType;
 
 /**
  * Handler that implements a simple health check. Useful for monitoring the service.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

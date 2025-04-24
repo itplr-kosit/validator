@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link LSResourceResolver} der objekte relativ zu einem Basis-Pfad aus dem Classpath der Anwendung laden kann.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j
@@ -65,7 +65,7 @@ public class ClassPathResourceResolver implements LSResourceResolver {
 
         /**
          * Instantiierung einer neue Instanz.
-         * 
+         *
          * @param publicId die publicId
          * @param systemId die systemId
          * @param baseURI die baseURI

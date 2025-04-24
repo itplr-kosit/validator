@@ -34,7 +34,7 @@ import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
 
 /**
  * Tests {@link SchemaBuilder}.
- * 
+ *
  * @author Andreas Penski
  */
 public class SchemaBuilderTest {

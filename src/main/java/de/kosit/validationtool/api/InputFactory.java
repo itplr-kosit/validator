@@ -47,7 +47,7 @@ import net.sf.saxon.s9api.XdmNode;
 /**
  * Service zum Einlesen des Test-Objekts in den Speicher. Beim Einlesen wird gleichzeitig eine Prüfsumme ermittelt und
  * mit dem Ergebnis mitgeführt.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j
@@ -151,7 +151,7 @@ public class InputFactory {
     /**
      * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmus zur Ermittlung der Prüfsumme
      * genutzt.
-     * 
+     *
      * @param url URL des Prüflings
      * @param digestAlgorithm der Prüfsummenalgorithmus
      * @return ein Prüf-Eingabe-Objekt
@@ -173,7 +173,7 @@ public class InputFactory {
      * Reads a test document from a {@link Source}. Note: computing the hashcode is only supported for
      * {@link StreamSource}. You can not directly use other {@link Source Soures}. You need to supply the hashcode for
      * identification then.
-     * 
+     *
      * @param source source
      * @return an {@link Input}
      */
@@ -187,7 +187,7 @@ public class InputFactory {
 
     /**
      * Reads a test document from a {@link Source} using a specified digest algorithm.
-     * 
+     *
      * Note: computing the hashcode is only supported for {@link StreamSource}. You can not directly use other
      * {@link Source Soures}. You need to supply the hashcode for identification then.
      *
@@ -279,7 +279,7 @@ public class InputFactory {
 
     /**
      * Liest einen Prüfling vom übergebenen {@link InputStream}.
-     * 
+     *
      * @param inputStream der {@link InputStream}
      * @param name der Name/Bezeichner des Prüflings
      * @return einen Prüfling in eingelesener Form
@@ -304,7 +304,7 @@ public class InputFactory {
     /**
      * Reads a saxon {@link XdmNode} with a given name. Hashcode identification is based on the name of the supplied
      * input. Now real hashcode is computed.
-     * 
+     *
      * @param node the node to read
      * @param name the name of the {@link Input}
      * @return an {@link Input} to validate

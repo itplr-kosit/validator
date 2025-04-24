@@ -32,7 +32,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Repository for die aktiven Szenario einer Prüfinstanz.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

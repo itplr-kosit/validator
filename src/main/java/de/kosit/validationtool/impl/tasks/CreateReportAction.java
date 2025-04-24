@@ -57,7 +57,7 @@ import net.sf.saxon.sapling.Saplings;
 /**
  * Erzeugt den Report auf Basis der gesammelten Informationen über den Prüfling. Sollte kein Szenario identifiziert
  * worden sein, so wird ein das Fallback-Szenario verwend und ein default report} erzeugt.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor

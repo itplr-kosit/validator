@@ -36,7 +36,7 @@ import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
 
 /**
  * Builder for Schema validation configuration.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j
@@ -84,7 +84,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
 
     /**
      * Set a specific precompiled schema to check.
-     * 
+     *
      * @param schema the {@link Schema}
      * @return this
      */
@@ -95,7 +95,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
 
     /**
      * Set a specific schema location either to compile or to document the precompiled one .
-     * 
+     *
      * @param schemaLocation the schema location as uri
      * @return this
      */
@@ -126,7 +126,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
 
     /**
      * Set a specific name to identify this schema.
-     * 
+     *
      * @param name the name of the schema
      * @return this
      */

@@ -38,7 +38,7 @@ import net.sf.saxon.om.TreeInfo;
  * <p>
  * Note: The various implementations of {@link Source} varies wether the can be read twice or no. This implementation
  * tries to handle this with respect document identification (hashcode).
- * 
+ *
  * This class is known to work with:
  * <ul>
  * <li>{@link StreamSource} - both {@link java.io.InputStream} based and {@link java.io.Reader} based</li>
@@ -46,9 +46,9 @@ import net.sf.saxon.om.TreeInfo;
  * <li>{@link javax.xml.bind.util.JAXBSource}</li>
  * <li>{@link TreeInfo}</li>
  * </ul>
- * 
+ *
  * Other {@link Source Sources} may work as well, please try and let us know.
- * 
+ *
  * @author Andreas Penski
  */
 @Getter

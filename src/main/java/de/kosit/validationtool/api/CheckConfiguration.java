@@ -31,7 +31,7 @@ import de.kosit.validationtool.impl.xml.ProcessorProvider;
 
 /**
  * Zentrale Konfigration einer Prüf-Instanz.
- * 
+ *
  * @author Andreas Penski
  * @deprecated since 1.3.0 use {@link Configuration} instead. Will be removed in 2.0
  */

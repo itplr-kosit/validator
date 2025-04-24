@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  *
  * Prints some memory usage information for debugging purposes.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

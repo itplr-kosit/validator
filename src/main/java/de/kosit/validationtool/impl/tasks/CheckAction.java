@@ -39,7 +39,7 @@ import net.sf.saxon.s9api.XdmNode;
  * Interface, welches von allen Prüfschritten implementiert wird. Der Parameter vom Typ {@link Bag} dient dabei sowohl
  * als Quellce für Eingabe Parameter als auch für die Aufnahme von Ergebnisse, die an weitere Schritte weitergeleitet
  * werden sollen.
- * 
+ *
  * @author Andreas Penski
  */
 @FunctionalInterface

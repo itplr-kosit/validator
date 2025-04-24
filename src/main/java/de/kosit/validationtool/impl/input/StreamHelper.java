@@ -32,7 +32,7 @@ import de.kosit.validationtool.api.Input;
 
 /**
  * Helper for stream handling.
- * 
+ *
  * @author Andreas Penski
  */
 public class StreamHelper {
@@ -129,7 +129,7 @@ public class StreamHelper {
 
     /**
      * Wraps the {@link InputStream} with a counting length implementation.
-     * 
+     *
      * @param input the {@link LazyReadInput input}
      * @param stream the stream
      * @return a wrapped stream
@@ -155,7 +155,7 @@ public class StreamHelper {
 
     /**
      * Drains the {@link Input} without further processing. This is useful to computing hashcode etc.
-     * 
+     *
      * @param input the input
      * @return the input drained once
      * @throws IOException on I/O errors

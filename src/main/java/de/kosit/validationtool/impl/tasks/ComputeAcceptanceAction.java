@@ -31,7 +31,7 @@ import net.sf.saxon.s9api.XPathSelector;
 /**
  * Computes a {@link AcceptRecommendation} for this instance. This is either based on an 'acceptMatch'-configuration of
  * the active scenario or based on overall evaluation about schema and semantic (schematron) correctness of the
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor

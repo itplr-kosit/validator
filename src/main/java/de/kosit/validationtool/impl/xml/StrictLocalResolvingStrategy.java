@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * This is a slightly more open implementation that allows resolving artifacts from local filesystems. Your are not
  * bound to a specific 'repository'. But your validation artifacts (schema, xsl, etc.) must be available locally. This
  * implementation does not allow loading from http sources
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j
@@ -37,7 +37,7 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
 
     /**
      * Allow loading schema files from any local location.
-     * 
+     *
      * @return a configured {@link SchemaFactory}
      */
     @Override
@@ -49,7 +49,7 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
 
     /**
      * The default resolver is able to resolve locally and relative.
-     * 
+     *
      * @param repository the repository is not used by this strategy
      * @return null!
      */

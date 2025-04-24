@@ -31,7 +31,7 @@ import de.kosit.validationtool.impl.Scenario;
 /**
  * Default implementation class for {@link Configuration}. This class contains all information to run a
  * {@link de.kosit.validationtool.impl.DefaultCheck}.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

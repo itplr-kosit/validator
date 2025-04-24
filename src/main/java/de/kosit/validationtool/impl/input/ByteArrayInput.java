@@ -28,7 +28,7 @@ import lombok.Getter;
 /**
  * Classical in-memory {@link de.kosit.validationtool.api.Input}. It is not memory efficient to read the whole file into
  * memory prio validating. Consider using the {@link ResourceInput}.
- * 
+ *
  * @author Andreas Penski
  */
 @Getter

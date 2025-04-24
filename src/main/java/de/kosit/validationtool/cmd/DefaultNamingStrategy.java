@@ -27,7 +27,7 @@ import lombok.Setter;
 
 /**
  * A default {@link NamingStrategy} supporting prefix and postfix configurations for generating report names
- * 
+ *
  * @author Andreas Penski
  */
 @Setter

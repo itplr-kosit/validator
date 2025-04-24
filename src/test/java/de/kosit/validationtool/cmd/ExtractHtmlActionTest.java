@@ -36,7 +36,7 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
 
 /**
  * Testet die HTML-Extrkation des Kommondazeilenprogramms.
- * 
+ *
  * @author Andreas Penski
  */
 public class ExtractHtmlActionTest {

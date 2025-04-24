@@ -100,7 +100,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     /**
      * Zeigt an, ob Validierungsfehler vorhanden sind.
-     * 
+     *
      * @return true wenn mindestens ein Fehler vorhanden ist.
      */
     public boolean hasErrors() {
@@ -109,7 +109,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     /**
      * Zeigt an, ob es Validierungs-Ereignisse gab.
-     * 
+     *
      * @return true wenn mindestens ein Validierungsereignis aufgetreten ist
      */
     public boolean hasEvents() {

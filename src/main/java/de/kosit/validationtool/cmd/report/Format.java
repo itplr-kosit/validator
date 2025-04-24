@@ -32,7 +32,7 @@ import lombok.Getter;
 
 /**
  * Simple value holder for ansi formatting codes.
- * 
+ *
  * @author Andreas Penski
  */
 @Getter

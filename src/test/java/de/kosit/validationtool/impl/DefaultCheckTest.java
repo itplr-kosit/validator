@@ -49,7 +49,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Test das Check-Interface
- * 
+ *
  * @author Andreas Penski
  */
 public class DefaultCheckTest {

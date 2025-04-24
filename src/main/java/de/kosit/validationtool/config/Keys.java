@@ -18,7 +18,7 @@ package de.kosit.validationtool.config;
 
 /**
  * Defines some keys used for supplying additional parameters internally.
- * 
+ *
  * @author Andreas Penski
  */
 public final class Keys {

@@ -22,7 +22,7 @@ import io.restassured.RestAssured;
 
 /**
  * Base for integration tests.
- * 
+ *
  * @author Andreas Penski
  */
 public abstract class BaseIT {

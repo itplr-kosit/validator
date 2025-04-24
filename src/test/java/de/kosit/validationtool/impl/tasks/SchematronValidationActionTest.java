@@ -41,7 +41,7 @@ import net.sf.saxon.s9api.XsltTransformer;
 
 /**
  * Tests {@link SchematronValidationAction}.
- * 
+ *
  * @author Andreas Penski
  */
 public class SchematronValidationActionTest {

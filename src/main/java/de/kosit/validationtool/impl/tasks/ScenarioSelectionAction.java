@@ -29,7 +29,7 @@ import net.sf.saxon.s9api.XdmNode;
 /**
  * Identifiziert das der Eingabe entsprechende Szenario, sofern eines konfiguriert ist. Setzt das Fallback-Szenario,
  * wenn keines identifiziert werden konnte.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor

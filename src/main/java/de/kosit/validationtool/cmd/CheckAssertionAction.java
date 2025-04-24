@@ -42,7 +42,7 @@ import net.sf.saxon.s9api.XdmNode;
 /**
  * Überprüft den Report mittels bereitgestellter Assertions. Diese {@link CheckAction} dient der Überprüfung der von der
  * KoSIT bereitgestellten Prüfszenarien und den darin enthaltenen Artefakten.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

@@ -33,7 +33,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Extrahiert HTML-Dokumente aus dem Report und persistiert diese im konfigurierten Ausgabe-Verzeichnis.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor

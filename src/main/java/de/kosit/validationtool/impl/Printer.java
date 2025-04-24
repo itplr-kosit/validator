@@ -21,7 +21,7 @@ import java.util.Locale;
 
 /**
  * Wrapper for {@link System Systems} printing capability.
- * 
+ *
  * @author Andreas Penski
  */
 @SuppressWarnings("squid:S106")
@@ -33,7 +33,7 @@ public class Printer {
 
     /**
      * Writes to standard output channel.
-     * 
+     *
      * @param message the message with placeholders
      * @param params the params.
      */
@@ -53,7 +53,7 @@ public class Printer {
 
     /**
      * Writes to standard error channel and prints a stacktrace.
-     * 
+     *
      * @param ex the exception
      * @param message the message with placeholders
      * @param params the params

@@ -37,7 +37,7 @@ import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Builder style configuration for the report transformation.
- * 
+ *
  * @author Andreas Penski
  */
 @Slf4j

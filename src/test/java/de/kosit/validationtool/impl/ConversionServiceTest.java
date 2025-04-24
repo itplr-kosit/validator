@@ -33,7 +33,7 @@ import de.kosit.validationtool.model.scenarios.Scenarios;
 
 /**
  * Simple test for testing the jaxb conversion service.
- * 
+ *
  * @author apenski
  */
 public class ConversionServiceTest {

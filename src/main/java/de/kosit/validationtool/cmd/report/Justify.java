@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * Justification modes for the text in grid columns.
- * 
+ *
  * @author Andreas Penski
  */
 public enum Justify {

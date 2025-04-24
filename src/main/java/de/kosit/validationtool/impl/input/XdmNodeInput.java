@@ -27,7 +27,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * An {@link Input} implementation holding saxon's {@link XdmNode} object.
- * 
+ *
  * @author Andreas Penski
  */
 @RequiredArgsConstructor
