@@ -120,7 +120,7 @@ public class Validator {
         final Daemon validDaemon = new Daemon(daemonOptions.getHost(), daemonOptions.getPort(), determineThreads(daemonOptions));
         validDaemon.setGuiEnabled(!daemonOptions.isDisableGUI());
         Printer.writeOut("\nStarting daemon mode ...");
-        validDaemon.startServer(ProcessorProvider.getProcessor(), configuration.toArray(new Configuration[configuration.size()]));
+        validDaemon.startServer(ProcessorProvider.getProcessor(), configuration.toArray(new Configuration[0]));
     }
 
     private static ReturnValue processActions(final CommandLineOptions cmd) throws IOException {

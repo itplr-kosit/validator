@@ -45,7 +45,7 @@ public class Format {
     private final Set<Code> codes = new HashSet<>();
 
     public Code[] mergeCodes(final Collection<Code> newCodes) {
-        return mergeCodes(newCodes.toArray(new Code[newCodes.size()]));
+        return mergeCodes(newCodes.toArray(new Code[0]));
     }
 
     public Code[] mergeCodes(final Code... newCodes) {
