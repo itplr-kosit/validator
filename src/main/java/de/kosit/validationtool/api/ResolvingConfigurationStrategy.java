@@ -27,9 +27,9 @@ import java.net.URI;
 /**
  * Centralized construction and configuration of XML related infrastructure components. This interface allows to use
  * custom implementations and configurations of internal xml related factories and objects.
- *
+ * <p>
  * The KoSIT Validator provides out of the box implementations with various security levels based on openjdk SAX stack.
- *
+ * <p>
  * If you decide to implement a custom strategy, please be aware of XML security within your stack. The validator
  * components beyond this strategy asume secured implementation of the interfaces provided by this strategy. There is no
  * effort to mitigate or prevent xml related security issues such as XXE, loading external sources etc. Your would be

@@ -35,7 +35,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
  * <p>
  * Note: The various implementations of {@link Source} varies wether the can be read twice or no. This implementation
  * tries to handle this with respect document identification (hashcode).
- *
+ * <p>
  * This class is known to work with:
  * <ul>
  * <li>{@link StreamSource} - both {@link java.io.InputStream} based and {@link java.io.Reader} based</li>

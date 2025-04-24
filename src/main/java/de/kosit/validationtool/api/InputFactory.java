@@ -183,7 +183,7 @@ public class InputFactory {
 
     /**
      * Reads a test document from a {@link Source} using a specified digest algorithm.
-     *
+     * <p>
      * Note: computing the hashcode is only supported for {@link StreamSource}. You can not directly use other
      * {@link Source Soures}. You need to supply the hashcode for identification then.
      *

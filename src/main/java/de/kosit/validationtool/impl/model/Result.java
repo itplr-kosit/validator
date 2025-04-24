@@ -52,7 +52,6 @@ public class Result<T, E> {
     /**
      * Erzeugt ein neues Ergebnis mit einem Ergebnisobjekt
      *
-     * @param o
      */
     public Result(T o) {
         this(o, Collections.emptyList());

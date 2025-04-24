@@ -52,7 +52,7 @@ import java.nio.file.Path;
  * functionality and therefore needs a {@link Source} to do the actual validation. Since we base the validator on Saxon
  * HE functionality, we have no support for schema in Saxon (e.g. the in memory version of the document is not
  * schema-aware) and need to re-read the actual source.
- *
+ * <p>
  * Since the actual {@link Input} implementation may not be read twice, we must serialize the previously read document.
  * This implementation tries to do the validation in an efficient manner. If possible the source is read a second time
  * to validate. If not, the source is serialized to the heap upon re-read/validaiton up to a configurable file size. The

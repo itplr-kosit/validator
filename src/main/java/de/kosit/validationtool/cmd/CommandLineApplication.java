@@ -30,7 +30,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 /**
  * Commandline interface of the validator. It parses the commandline args and hands over actual execution to
  * {@link Validator}.
- *
+ * <p>
  * This separated from {@link Validator} to configure the slf4j simple logging.
  *
  * @author Andreas Penski
