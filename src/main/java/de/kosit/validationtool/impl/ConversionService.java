@@ -53,7 +53,7 @@ public class ConversionService {
     /**
      * Exception while serializing/deserializing with jaxb.
      */
-    public class ConversionException extends RuntimeException {
+    public static class ConversionException extends RuntimeException {
 
         private static final long serialVersionUID = 7950889507519996452L;
 

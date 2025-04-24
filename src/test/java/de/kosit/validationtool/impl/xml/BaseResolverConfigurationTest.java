@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 public class BaseResolverConfigurationTest {
 
     @RequiredArgsConstructor
-    private class TestResolvingStrategy extends StrictRelativeResolvingStrategy {
+    private static class TestResolvingStrategy extends StrictRelativeResolvingStrategy {
 
         void setInternalProperty(final SchemaFactory factory, final boolean lenient) {
             allowExternalSchema(factory, lenient, NOT_EXISTING_SCHEME);
