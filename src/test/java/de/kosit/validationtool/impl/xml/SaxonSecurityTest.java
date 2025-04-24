@@ -61,6 +61,7 @@ public class SaxonSecurityTest {
                 final RelativeUriResolver resolver = new RelativeUriResolver(Simple.REPOSITORY_URI);
                 // TODO: Replace call to deprecated method.
                 compiler.setURIResolver(resolver);
+                assert resource != null;
                 final XsltExecutable executable = compiler.compile(new StreamSource(resource.openStream()));
                 final XsltTransformer transformer = executable.load();
                 final Source document = InputFactory.read("<root/>".getBytes(), "dummy").getSource();

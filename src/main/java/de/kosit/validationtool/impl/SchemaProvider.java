@@ -27,6 +27,7 @@ import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
 
 /**
  * @author Andreas Penski
@@ -43,7 +44,7 @@ public class SchemaProvider {
     public static Schema getReportInputSchema() {
         if (reportInputSchema == null) {
             final SchemaFactory sf = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
-            final Source source = resolve(SchemaProvider.class.getResource("/xsd/createReportInput.xsd"));
+            final Source source = resolve(Objects.requireNonNull(SchemaProvider.class.getResource("/xsd/createReportInput.xsd")));
             reportInputSchema = createSchema(sf, new Source[] { source }, new ClassPathResourceResolver("/xsd"));
         }
         return reportInputSchema;
@@ -79,7 +80,7 @@ public class SchemaProvider {
      */
     public static Schema getScenarioSchema() {
         final SchemaFactory sf = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
-        return createSchema(sf, resolve(SchemaProvider.class.getResource("/xsd/scenarios.xsd")));
+        return createSchema(sf, resolve(Objects.requireNonNull(SchemaProvider.class.getResource("/xsd/scenarios.xsd"))));
     }
 
 }

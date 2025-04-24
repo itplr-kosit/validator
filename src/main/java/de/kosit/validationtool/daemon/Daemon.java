@@ -76,7 +76,7 @@ public class Daemon {
      * @param config the configuration to use
      */
     public void startServer(final Processor processor, final Configuration... config) {
-        HttpServer server = null;
+        HttpServer server;
         try {
             final ConversionService healthConverter = new ConversionService();
             healthConverter.initialize(HealthType.class.getPackage());

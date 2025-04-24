@@ -39,7 +39,7 @@ class RoutingHandler extends BaseHandler {
         } else if (requestMethod.equals("GET")) {
             this.guiHandler.handle(exchange);
         } else {
-            error(exchange, 405, String.format("Method % not supported", requestMethod));
+            error(exchange, 405, String.format("Method %s not supported", requestMethod));
         }
     }
 }

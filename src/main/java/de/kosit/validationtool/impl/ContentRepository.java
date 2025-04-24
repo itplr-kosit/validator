@@ -267,13 +267,16 @@ public class ContentRepository {
 
     public Transformation createIdentityTransformation() {
         final URL url = ContentRepository.class.getClassLoader().getResource("transform/identity.xsl");
-        try ( final InputStream input = url.openStream() ) {
-            final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
-            final XsltExecutable executable = xsltCompiler.compile(new StreamSource(input));
-            final ResourceType resource = new ResourceType();
-            resource.setName("identity");
-            resource.setLocation(url.toString());
-            return new Transformation(executable, resource);
+        try {
+            assert url != null;
+            try ( final InputStream input = url.openStream() ) {
+                final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
+                final XsltExecutable executable = xsltCompiler.compile(new StreamSource(input));
+                final ResourceType resource = new ResourceType();
+                resource.setName("identity");
+                resource.setLocation(url.toString());
+                return new Transformation(executable, resource);
+            }
         } catch (final IOException | SaxonApiException e) {
             throw new IllegalStateException("Error creating identity transformation", e);
         }

@@ -110,6 +110,7 @@ public class ClassPathResourceResolver implements LSResourceResolver {
                         : ClassPathResourceResolver.class.getResource(resolved.toASCIIString());
                 final LSInputImpl input = new LSInputImpl(publicId, systemId, resolved.toASCIIString());
                 // intentionally not closed, since xml stack wants it open upon return
+                assert resource != null;
                 final InputStream in = resource.openStream();
                 input.setByteStream(in);
                 return input;

@@ -50,25 +50,31 @@ public class VersioningTest {
 
     @Test
     public void testBase() throws URISyntaxException {
+        assert BASE != null;
         final Scenarios result = this.service.readXml(BASE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testFrameworkIncrement() throws URISyntaxException {
+        assert INCREMENT != null;
         final Scenarios result = this.service.readXml(INCREMENT.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testNewFeature() {
-        assertThrows(ConversionService.ConversionException.class,
-                () -> this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
+        assertThrows(ConversionService.ConversionException.class, () -> {
+            assert NEW_FEATURE != null;
+            this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
+        });
     }
 
     @Test
     public void testNewVersion() {
-        assertThrows(ConversionService.ConversionException.class,
-                () -> this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
+        assertThrows(ConversionService.ConversionException.class, () -> {
+            assert NEW_VERSION != null;
+            this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
+        });
     }
 }

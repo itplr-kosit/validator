@@ -60,6 +60,7 @@ public class CheckAssertionActionTest {
         final CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(SAMPLE), new CreateReportInput());
         bag.setReport(Helper.load(SAMPLE_REPORT));
 
+        assert SAMPLE_ASSERTIONS != null;
         final Assertions assertions = Helper.load(SAMPLE_ASSERTIONS, Assertions.class);
         final CheckAssertionAction a = new CheckAssertionAction(assertions, TestObjectFactory.createProcessor());
         a.check(bag);

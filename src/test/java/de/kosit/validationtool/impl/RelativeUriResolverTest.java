@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThrows;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -42,7 +43,7 @@ public class RelativeUriResolverTest {
 
     static {
         try {
-            BASE = RelativeUriResolver.class.getResource("/examples/assertions/").toURI();
+            BASE = Objects.requireNonNull(RelativeUriResolver.class.getResource("/examples/assertions/")).toURI();
         } catch (final URISyntaxException e) {
             throw new IllegalStateException(e);
         }
@@ -68,16 +69,20 @@ public class RelativeUriResolverTest {
 
     @Test
     public void testClasspathLocal() throws URISyntaxException, TransformerException {
-        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("loading").toURI());
+        this.resolver = new RelativeUriResolver(
+                Objects.requireNonNull(RelativeUriResolver.class.getClassLoader().getResource("loading")).toURI());
         final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("loading/main.xsd");
+        assert moz != null;
         final Source resolved = this.resolver.resolve("./resources/reference.xsd", moz.toURI().toASCIIString());
         assertThat(resolved).isNotNull();
     }
 
     @Test
     public void testClasspathJAR() throws URISyntaxException, TransformerException {
-        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("packaged").toURI());
+        this.resolver = new RelativeUriResolver(
+                Objects.requireNonNull(RelativeUriResolver.class.getClassLoader().getResource("packaged")).toURI());
         final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("packaged/main.xsd");
+        assert moz != null;
         final Source resolved = this.resolver.resolve("./resources/reference.xsd", moz.toURI().toASCIIString());
         assertThat(resolved).isNotNull();
     }

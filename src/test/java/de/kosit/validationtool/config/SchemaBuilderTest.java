@@ -61,7 +61,8 @@ public class SchemaBuilderTest {
         final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = builder.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
-        assertThat(result.getObject().getKey().getResource().stream().map(ResourceType::getName).findFirst().get()).isEqualTo("myname");
+        assertThat(result.getObject().getKey().getResource().stream().map(ResourceType::getName).findFirst().orElse(null))
+                .isEqualTo("myname");
     }
 
     @Test
