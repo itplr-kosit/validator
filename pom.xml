@@ -79,6 +79,7 @@
     <version.maven>3.6.3</version.maven>
     <!-- Dependencies -->
     <version.assertj-core>3.27.3</version.assertj-core>
+    <version.checkstyle>10.23.0</version.checkstyle>
     <version.commons-io>2.19.0</version.commons-io>
     <version.commons-lang3>3.17.0</version.commons-lang3>
     <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api>
@@ -89,12 +90,14 @@
     <version.mockito-core>5.17.0</version.mockito-core>
     <version.packaged-test-scenarios>1.0.2</version.packaged-test-scenarios>
     <version.picocli>4.7.7</version.picocli>
+    <version.pmd>7.12.0</version.pmd>
     <version.rest-assured>5.5.1</version.rest-assured>
     <version.saxon-he>12.5</version.saxon-he>
     <version.slf4j-api>2.0.17</version.slf4j-api>
     <version.slf4j-simple>2.0.17</version.slf4j-simple>
     <!-- Plugins -->
     <version.build-helper-maven-plugin>3.6.0</version.build-helper-maven-plugin>
+    <version.cyclonedx-maven-plugin>2.9.1</version.cyclonedx-maven-plugin>
     <version.dependency-check-maven>12.1.1</version.dependency-check-maven>
     <version.exec-maven-plugin>3.5.0</version.exec-maven-plugin>
     <version.formatter-maven-plugin>2.26.0</version.formatter-maven-plugin>
@@ -103,16 +106,23 @@
     <version.jaxb-plugins>4.0.9</version.jaxb-plugins>
     <version.maven-antrun-plugin>3.1.0</version.maven-antrun-plugin>
     <version.maven-assembly-plugin>3.7.1</version.maven-assembly-plugin>
+    <version.maven-checkstyle-plugin>3.6.0</version.maven-checkstyle-plugin>
     <version.maven-compiler-plugin>3.14.0</version.maven-compiler-plugin>
+    <version.maven-dependency-plugin>3.8.1</version.maven-dependency-plugin>
     <version.maven-enforcer-plugin>3.5.0</version.maven-enforcer-plugin>
     <version.maven-failsafe-plugin>3.5.3</version.maven-failsafe-plugin>
     <version.maven-gpg-plugin>3.2.7</version.maven-gpg-plugin>
     <version.maven-javadoc-plugin>3.11.2</version.maven-javadoc-plugin>
+    <version.maven-jxr-plugin>3.6.0</version.maven-jxr-plugin>
+    <version.maven-pmd-plugin>3.26.0</version.maven-pmd-plugin>
+    <version.maven-project-info-reports-plugin>3.9.0</version.maven-project-info-reports-plugin>
     <version.maven-release-plugin>3.1.1</version.maven-release-plugin>
     <version.maven-resources-plugin>3.3.1</version.maven-resources-plugin>
     <version.maven-shade-plugin>3.6.0</version.maven-shade-plugin>
+    <version.maven-site-plugin>3.21.0</version.maven-site-plugin>
     <version.maven-source-plugin>3.3.1</version.maven-source-plugin>
     <version.maven-surefire-plugin>3.5.3</version.maven-surefire-plugin>
+    <version.spotbugs-maven-plugin>4.9.3.0</version.spotbugs-maven-plugin>
     <version.versions-maven-plugin>2.18.0</version.versions-maven-plugin>
   </properties>
   <dependencies>
@@ -225,6 +235,108 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${version.spotbugs-maven-plugin}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${version.maven-checkstyle-plugin}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${version.checkstyle}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <consoleOutput>false</consoleOutput>
+          <failOnViolation>false</failOnViolation>
+          <linkXRef>true</linkXRef>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${version.maven-dependency-plugin}</version>
+        <executions>
+          <execution>
+            <id>analyze</id>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>false</failOnWarning>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+          <execution>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+              <includeScope/>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <usedDependencies>
+            <dependency>org.glassfish.jaxb:jaxb-runtime</dependency>
+            <dependency>de.kosit.validationtool:packaged-test-scenarios</dependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>${version.maven-jxr-plugin}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${version.maven-pmd-plugin}</version>
+        <dependencies>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>${version.pmd}</version>
+          </dependency>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>${version.pmd}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>${version.java}</targetJdk>
+          <excludes>
+            <exclude>**/*Bean.java</exclude>
+            <exclude>**/generated/*.java</exclude>
+          </excludes>
+          <excludeRoots>
+            <excludeRoot>${project.build.directory}/generated-sources/stubs</excludeRoot>
+          </excludeRoots>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>${version.maven-project-info-reports-plugin}</version>
+      </plugin>
       <!-- for PR 152 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -595,6 +707,11 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>${version.maven-site-plugin}</version>
+      </plugin>
+      <plugin>
         <groupId>net.revelc.code.formatter</groupId>
         <artifactId>formatter-maven-plugin</artifactId>
         <version>${version.formatter-maven-plugin}</version>
@@ -627,10 +744,137 @@
           </ruleSet>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>${version.cyclonedx-maven-plugin}</version>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>package</phase>
+            <goals>
+              <goal>makeBom</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <phase>package</phase>
+            <goals>
+              <goal>makeAggregateBom</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputFormat>xml</outputFormat>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>
-    <plugins/>
+    <plugins>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${version.spotbugs-maven-plugin}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${version.maven-checkstyle-plugin}</version>
+        <reportSets>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>checkstyle</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <reports>
+              <report>checkstyle-aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <consoleOutput>false</consoleOutput>
+          <failOnViolation>false</failOnViolation>
+          <linkXRef>true</linkXRef>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${version.maven-javadoc-plugin}</version>
+        <reportSets>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>${version.maven-jxr-plugin}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${version.maven-pmd-plugin}</version>
+        <reportSets>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>pmd</report>
+              <report>cpd</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <reports>
+              <report>aggregate-pmd</report>
+              <report>aggregate-cpd</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${version.maven-surefire-plugin}</version>
+        <configuration>
+          <showSuccess>true</showSuccess>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${version.jacoco-maven-plugin}</version>
+        <reportSets>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
   </reporting>
   <profiles>
     <profile>
