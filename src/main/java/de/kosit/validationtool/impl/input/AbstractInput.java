@@ -16,16 +16,15 @@
 
 package de.kosit.validationtool.impl.input;
 
-import static de.kosit.validationtool.impl.input.StreamHelper.drain;
-
-import java.io.IOException;
-import java.io.InputStream;
-
+import de.kosit.validationtool.api.Input;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.api.Input;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static de.kosit.validationtool.impl.input.StreamHelper.drain;
 
 /**
  * Base class for all {@link Input Inputs}.

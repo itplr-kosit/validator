@@ -16,28 +16,23 @@
 
 package de.kosit.validationtool.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.StringJoiner;
-
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
 import jakarta.xml.bind.ValidationEvent;
 import jakarta.xml.bind.ValidationEventHandler;
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.TransformerException;
-
+import lombok.Getter;
+import net.sf.saxon.s9api.MessageListener;
+import net.sf.saxon.s9api.XdmNode;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import lombok.Getter;
-
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
-
-import net.sf.saxon.s9api.MessageListener;
-import net.sf.saxon.s9api.QName;
-import net.sf.saxon.s9api.XdmNode;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.StringJoiner;
 
 /**
  * Sammelt Fehler-Ereignisinformation beim Schema-Validieren und weiteren XML-basierten Aktionen

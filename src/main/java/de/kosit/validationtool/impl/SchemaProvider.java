@@ -16,19 +16,17 @@
 
 package de.kosit.validationtool.impl;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import de.kosit.validationtool.impl.xml.ClassPathResourceResolver;
+import org.w3c.dom.ls.LSResourceResolver;
+import org.xml.sax.SAXException;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
-import org.w3c.dom.ls.LSResourceResolver;
-import org.xml.sax.SAXException;
-
-import de.kosit.validationtool.impl.xml.ClassPathResourceResolver;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  * @author Andreas Penski

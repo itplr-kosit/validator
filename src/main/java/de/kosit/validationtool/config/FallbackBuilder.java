@@ -16,17 +16,16 @@
 
 package de.kosit.validationtool.config;
 
-import java.net.URI;
-import java.nio.file.Path;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.scenarios.CreateReportType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.net.URI;
+import java.nio.file.Path;
 
 /**
  * Create a fallback {@link Scenario} configuration.

@@ -16,6 +16,18 @@
 
 package de.kosit.validationtool.impl;
 
+import de.kosit.validationtool.api.Input;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.impl.tasks.DocumentParseAction;
+import de.kosit.validationtool.impl.xml.ProcessorProvider;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.XdmNode;
+
+import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -23,20 +35,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-
-import javax.xml.transform.stream.StreamSource;
-
-import de.kosit.validationtool.api.Input;
-import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
-import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.impl.tasks.DocumentParseAction;
-import de.kosit.validationtool.impl.xml.ProcessorProvider;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
-import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Helferlein für Test-Artefakte

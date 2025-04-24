@@ -16,14 +16,14 @@
 
 package de.kosit.validationtool.impl.model;
 
+import org.oclc.purl.dsdl.svrl.ActivePattern;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.FiredRule;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.oclc.purl.dsdl.svrl.ActivePattern;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.FiredRule;
 
 /**
  * Basis-Klasse um spezifische Erweiterungen an der generierten Klasse {@link org.oclc.purl.dsdl.svrl.SchematronOutput}

@@ -16,21 +16,19 @@
 
 package de.kosit.validationtool.cmd;
 
-import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.Callable;
-
+import de.kosit.validationtool.cmd.CommandLineApplication.Level;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import de.kosit.validationtool.cmd.CommandLineApplication.Level;
-
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Visibility;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Commandline Interface definition.

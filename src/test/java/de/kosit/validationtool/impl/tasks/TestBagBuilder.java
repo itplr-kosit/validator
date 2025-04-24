@@ -16,18 +16,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.xml.validation.Schema;
-
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
-
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
@@ -44,8 +32,17 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
-
 import net.sf.saxon.s9api.XdmNode;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
+
+import javax.xml.validation.Schema;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Utilities for creating test objects.

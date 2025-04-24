@@ -16,21 +16,20 @@
 
 package de.kosit.validationtool.cmd;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.cmd.assertions.Assertions;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Testet das Assertion-Feature.

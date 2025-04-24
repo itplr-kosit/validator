@@ -16,18 +16,16 @@
 
 package de.kosit.validationtool.cmd;
 
-import static de.kosit.validationtool.impl.Printer.writeErr;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
+import de.kosit.validationtool.cmd.report.Line;
+import de.kosit.validationtool.impl.Printer;
 import org.apache.commons.lang3.ObjectUtils;
 import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiRenderer.Code;
-
-import de.kosit.validationtool.cmd.report.Line;
-import de.kosit.validationtool.impl.Printer;
-
 import picocli.CommandLine;
 import picocli.CommandLine.ParseResult;
+
+import static de.kosit.validationtool.impl.Printer.writeErr;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Commandline interface of the validator. It parses the commandline args and hands over actual execution to

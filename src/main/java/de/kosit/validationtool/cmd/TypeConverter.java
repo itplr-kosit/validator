@@ -16,19 +16,18 @@
 
 package de.kosit.validationtool.cmd;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import de.kosit.validationtool.cmd.CommandLineOptions.Definition;
+import de.kosit.validationtool.cmd.CommandLineOptions.RepositoryDefinition;
+import de.kosit.validationtool.cmd.CommandLineOptions.ScenarioDefinition;
+import de.kosit.validationtool.impl.ScenarioRepository;
+import picocli.CommandLine.ITypeConverter;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import de.kosit.validationtool.cmd.CommandLineOptions.Definition;
-import de.kosit.validationtool.cmd.CommandLineOptions.RepositoryDefinition;
-import de.kosit.validationtool.cmd.CommandLineOptions.ScenarioDefinition;
-import de.kosit.validationtool.impl.ScenarioRepository;
-
-import picocli.CommandLine.ITypeConverter;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 /**
  * Custom type converters for dealing with command line input.

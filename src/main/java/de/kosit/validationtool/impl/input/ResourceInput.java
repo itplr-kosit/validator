@@ -16,18 +16,16 @@
 
 package de.kosit.validationtool.impl.input;
 
+import de.kosit.validationtool.api.Input;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-import de.kosit.validationtool.api.Input;
 
 /**
  * An {@link Input} carries an {@link URL} which can be used for all 'locatable' inputs such as {@link File},

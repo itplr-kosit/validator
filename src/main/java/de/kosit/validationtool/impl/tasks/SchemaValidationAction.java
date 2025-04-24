@@ -16,27 +16,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Validator;
-
-import org.apache.commons.io.FileUtils;
-import org.xml.sax.SAXException;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.Scenario;
@@ -45,11 +24,28 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsXmlSchema;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
+import org.apache.commons.io.FileUtils;
+import org.xml.sax.SAXException;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Validator;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Schema valiation of the {@link Input} with the schema of the supplied scenario. This implementation is based on JDK

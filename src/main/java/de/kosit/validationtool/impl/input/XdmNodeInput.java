@@ -16,14 +16,12 @@
 
 package de.kosit.validationtool.impl.input;
 
-import javax.xml.transform.Source;
-
+import de.kosit.validationtool.api.Input;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import de.kosit.validationtool.api.Input;
-
 import net.sf.saxon.s9api.XdmNode;
+
+import javax.xml.transform.Source;
 
 /**
  * An {@link Input} implementation holding saxon's {@link XdmNode} object.

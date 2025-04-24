@@ -16,8 +16,18 @@
 
 package de.kosit.validationtool.api;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import de.kosit.validationtool.impl.input.ByteArrayInput;
+import de.kosit.validationtool.impl.input.ResourceInput;
+import de.kosit.validationtool.impl.input.SourceInput;
+import de.kosit.validationtool.impl.input.StreamHelper;
+import de.kosit.validationtool.impl.input.XdmNodeInput;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.s9api.XdmNode;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,21 +38,7 @@ import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.UUID;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import de.kosit.validationtool.impl.input.ByteArrayInput;
-import de.kosit.validationtool.impl.input.ResourceInput;
-import de.kosit.validationtool.impl.input.SourceInput;
-import de.kosit.validationtool.impl.input.StreamHelper;
-import de.kosit.validationtool.impl.input.XdmNodeInput;
-
-import net.sf.saxon.s9api.XdmNode;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Service zum Einlesen des Test-Objekts in den Speicher. Beim Einlesen wird gleichzeitig eine Prüfsumme ermittelt und

@@ -16,14 +16,13 @@
 
 package de.kosit.validationtool.impl.xml;
 
-import java.net.URI;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
-import lombok.extern.slf4j.Slf4j;
+import java.net.URI;
 
 /**
  * This is a slightly more open implementation that allows resolving artifacts from local filesystems. Your are not

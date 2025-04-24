@@ -16,28 +16,24 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.Collections;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.model.scenarios.ResourceType;
-
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.Collections;
+
+import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests {@link SchematronValidationAction}.

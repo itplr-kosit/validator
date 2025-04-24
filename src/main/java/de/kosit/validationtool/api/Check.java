@@ -16,10 +16,10 @@
 
 package de.kosit.validationtool.api;
 
+import org.w3c.dom.Document;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.w3c.dom.Document;
 
 /**
  * Main validator interface for checking incoming files.

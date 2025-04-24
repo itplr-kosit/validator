@@ -16,19 +16,17 @@
 
 package de.kosit.validationtool.impl;
 
+import de.kosit.validationtool.api.Configuration;
+import de.kosit.validationtool.impl.model.Result;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathSelector;
+import net.sf.saxon.s9api.XdmNode;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import lombok.extern.slf4j.Slf4j;
-
-import de.kosit.validationtool.api.Configuration;
-import de.kosit.validationtool.impl.model.Result;
-
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XPathSelector;
-import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Repository for die aktiven Szenario einer Prüfinstanz.

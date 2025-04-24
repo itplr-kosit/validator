@@ -16,14 +16,13 @@
 
 package de.kosit.validationtool.api;
 
-import java.net.URI;
+import net.sf.saxon.lib.UnparsedTextURIResolver;
 
 import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
-import net.sf.saxon.lib.UnparsedTextURIResolver;
+import java.net.URI;
 
 /**
  * Centralized construction and configuration of XML related infrastructure components. This interface allows to use

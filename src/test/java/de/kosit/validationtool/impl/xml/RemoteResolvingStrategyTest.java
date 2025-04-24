@@ -16,15 +16,14 @@
 
 package de.kosit.validationtool.impl.xml;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.impl.Helper.Resolving;
+import org.junit.Test;
 
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.junit.Test;
-
-import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
-import de.kosit.validationtool.impl.Helper.Resolving;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests {@link RemoteResolvingStrategy}.

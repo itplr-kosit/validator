@@ -16,24 +16,6 @@
 
 package de.kosit.validationtool.config;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.xml.validation.Schema;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.Scenario.Transformation;
@@ -45,8 +27,22 @@ import de.kosit.validationtool.model.scenarios.ObjectFactory;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
 import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.XPathExecutable;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.xml.validation.Schema;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 /**
  * Builder for {@link Scenario} configuration.

@@ -16,9 +16,9 @@
 
 package de.kosit.validationtool.impl.xml;
 
-import javax.xml.validation.SchemaFactory;
-
 import de.kosit.validationtool.impl.ResolvingMode;
+
+import javax.xml.validation.SchemaFactory;
 
 /**
  * @author Andreas Penski

@@ -16,28 +16,13 @@
 
 package de.kosit.validationtool.impl.xml;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.stream.Collectors;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmDestination;
@@ -45,6 +30,17 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.net.URL;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Testet verschiedene Saxon Security Einstellungen.

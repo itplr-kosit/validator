@@ -16,11 +16,10 @@
 
 package de.kosit.validationtool.daemon;
 
-import java.io.IOException;
-
 import com.sun.net.httpserver.HttpExchange;
-
 import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
 
 /**
  * A simple handler which routes between the {@link CheckHandler} and the {@link GuiHandler} depending on the request.

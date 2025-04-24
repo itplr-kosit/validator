@@ -16,8 +16,24 @@
 
 package de.kosit.validationtool.config;
 
-import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
+import de.kosit.validationtool.api.Configuration;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.impl.ContentRepository;
+import de.kosit.validationtool.impl.ResolvingMode;
+import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.model.scenarios.DescriptionType;
+import de.kosit.validationtool.model.scenarios.NoScenarioReportType;
+import de.kosit.validationtool.model.scenarios.ObjectFactory;
+import de.kosit.validationtool.model.scenarios.Scenarios;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.s9api.Processor;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.xml.validation.Schema;
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -29,27 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.xml.validation.Schema;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import de.kosit.validationtool.api.Configuration;
-import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
-import de.kosit.validationtool.impl.ContentRepository;
-import de.kosit.validationtool.impl.ResolvingMode;
-import de.kosit.validationtool.impl.Scenario;
-import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.model.scenarios.DescriptionType;
-import de.kosit.validationtool.model.scenarios.NoScenarioReportType;
-import de.kosit.validationtool.model.scenarios.ObjectFactory;
-import de.kosit.validationtool.model.scenarios.Scenarios;
-
-import net.sf.saxon.s9api.Processor;
+import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 
 /**
  * Implements a builder style creation of a {@link Configuration}.

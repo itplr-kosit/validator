@@ -16,17 +16,15 @@
 
 package de.kosit.validationtool.cmd;
 
-import java.io.StringWriter;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.Printer;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
+
+import java.io.StringWriter;
 
 /**
  * Gibt das Ergebnis-Document auf std-out aus.

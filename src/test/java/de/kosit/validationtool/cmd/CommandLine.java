@@ -16,6 +16,11 @@
 
 package de.kosit.validationtool.cmd;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.TeeOutputStream;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,12 +30,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.TeeOutputStream;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Helferlein um Ausgaben auf der Kommandozeile zu testen.

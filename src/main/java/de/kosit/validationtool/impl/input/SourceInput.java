@@ -16,22 +16,19 @@
 
 package de.kosit.validationtool.impl.input;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-
 import jakarta.xml.bind.util.JAXBSource;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.om.TreeInfo;
+import org.apache.commons.io.input.ReaderInputStream;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
-import org.apache.commons.io.input.ReaderInputStream;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import net.sf.saxon.om.TreeInfo;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 /**
  * A validator {@link de.kosit.validationtool.api.Input} based on a {@link Source}.

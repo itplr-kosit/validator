@@ -16,16 +16,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.xml.transform.dom.DOMSource;
-
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Scenario;
@@ -33,12 +23,18 @@ import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron.Results;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmDestination;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
+
+import javax.xml.transform.dom.DOMSource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Ausführung von konfigurierten Schematron Validierungen eines Szenarios.

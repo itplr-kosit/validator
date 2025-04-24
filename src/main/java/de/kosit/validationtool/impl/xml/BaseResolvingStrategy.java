@@ -16,17 +16,15 @@
 
 package de.kosit.validationtool.impl.xml;
 
-import static java.lang.String.format;
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import lombok.extern.slf4j.Slf4j;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.xml.sax.SAXException;
-
-import lombok.extern.slf4j.Slf4j;
-
-import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import static java.lang.String.format;
 
 /**
  * @author Andreas Penski

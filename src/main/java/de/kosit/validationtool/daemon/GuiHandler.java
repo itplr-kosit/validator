@@ -16,17 +16,15 @@
 
 package de.kosit.validationtool.daemon;
 
+import com.sun.net.httpserver.HttpExchange;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-
-import org.apache.commons.io.IOUtils;
-
-import com.sun.net.httpserver.HttpExchange;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 public class GuiHandler extends BaseHandler {
 

@@ -16,6 +16,11 @@
 
 package de.kosit.validationtool.cmd.report;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.fusesource.jansi.AnsiRenderer.Code;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,13 +28,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.StringUtils;
-import org.fusesource.jansi.AnsiRenderer.Code;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * An text based grid for cli based programs.

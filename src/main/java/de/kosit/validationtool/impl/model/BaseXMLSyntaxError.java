@@ -16,10 +16,9 @@
 
 package de.kosit.validationtool.impl.model;
 
-import org.slf4j.Logger;
-
 import de.kosit.validationtool.api.XmlError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
+import org.slf4j.Logger;
 
 /**
  * Basis-Klasse für Syntax-Error. Wird über die JAXB-generierte Klasse

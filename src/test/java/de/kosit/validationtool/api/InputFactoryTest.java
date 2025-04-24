@@ -16,11 +16,24 @@
 
 package de.kosit.validationtool.api;
 
-import static de.kosit.validationtool.impl.Helper.Simple.SIMPLE_VALID;
-import static de.kosit.validationtool.impl.input.StreamHelper.drain;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import de.kosit.validationtool.impl.Helper;
+import de.kosit.validationtool.impl.Helper.Simple;
+import de.kosit.validationtool.impl.TestObjectFactory;
+import de.kosit.validationtool.impl.input.SourceInput;
+import de.kosit.validationtool.impl.model.Result;
+import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import net.sf.saxon.dom.NodeOverNodeInfo;
+import net.sf.saxon.s9api.BuildingContentHandler;
+import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmNode;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -30,26 +43,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
-import de.kosit.validationtool.impl.Helper;
-import de.kosit.validationtool.impl.Helper.Simple;
-import de.kosit.validationtool.impl.TestObjectFactory;
-import de.kosit.validationtool.impl.input.SourceInput;
-import de.kosit.validationtool.impl.model.Result;
-import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
-import net.sf.saxon.dom.NodeOverNodeInfo;
-import net.sf.saxon.s9api.BuildingContentHandler;
-import net.sf.saxon.s9api.DocumentBuilder;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XdmNode;
+import static de.kosit.validationtool.impl.Helper.Simple.SIMPLE_VALID;
+import static de.kosit.validationtool.impl.input.StreamHelper.drain;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 /**
  * Testet den Hashcode-Service.

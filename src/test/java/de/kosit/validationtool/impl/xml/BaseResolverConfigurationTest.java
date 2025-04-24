@@ -16,21 +16,17 @@
 
 package de.kosit.validationtool.impl.xml;
 
-import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import javax.xml.XMLConstants;
-import javax.xml.validation.SchemaFactory;
-
+import lombok.RequiredArgsConstructor;
 import org.junit.Test;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
-import lombok.RequiredArgsConstructor;
+import javax.xml.XMLConstants;
+import javax.xml.validation.SchemaFactory;
+
+import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  *

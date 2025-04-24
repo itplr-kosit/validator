@@ -16,19 +16,17 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import static de.kosit.validationtool.api.InputFactory.read;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
 import net.sf.saxon.s9api.XdmNode;
+import org.junit.Before;
+import org.junit.Test;
+
+import static de.kosit.validationtool.api.InputFactory.read;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 /**
  * Testet die Document Parsing-Funktionalitäten.

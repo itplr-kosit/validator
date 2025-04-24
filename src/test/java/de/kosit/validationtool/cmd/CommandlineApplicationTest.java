@@ -16,15 +16,8 @@
 
 package de.kosit.validationtool.cmd;
 
-import static de.kosit.validationtool.impl.Helper.ASSERTIONS;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
+import de.kosit.validationtool.impl.Helper.Simple;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Condition;
@@ -32,9 +25,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
-import de.kosit.validationtool.impl.Helper.Simple;
+import static de.kosit.validationtool.impl.Helper.ASSERTIONS;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Testet die Parameter des Kommandozeilen-Tools.

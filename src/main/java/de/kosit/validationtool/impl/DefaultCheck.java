@@ -16,19 +16,6 @@
 
 package de.kosit.validationtool.impl;
 
-import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
@@ -48,8 +35,19 @@ import de.kosit.validationtool.impl.xml.ProcessorProvider;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.EngineType;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 
 /**
  * The reference implementation for the validation process. After initialisation, instances are threadsafe and should be

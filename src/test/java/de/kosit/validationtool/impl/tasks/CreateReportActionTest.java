@@ -16,18 +16,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import static de.kosit.validationtool.config.TestConfigurationFactory.createScenario;
-import static de.kosit.validationtool.impl.Helper.serialize;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import javax.xml.transform.Source;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.ConversionService;
@@ -35,10 +23,20 @@ import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
-
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.xml.transform.Source;
+
+import static de.kosit.validationtool.config.TestConfigurationFactory.createScenario;
+import static de.kosit.validationtool.impl.Helper.serialize;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Test for {@link CreateReportAction}.

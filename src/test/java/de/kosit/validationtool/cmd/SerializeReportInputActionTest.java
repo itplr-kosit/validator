@@ -16,20 +16,19 @@
 
 package de.kosit.validationtool.cmd;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
+import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.impl.ConversionService;
+import de.kosit.validationtool.impl.tasks.CheckAction;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.impl.ConversionService;
-import de.kosit.validationtool.impl.tasks.CheckAction;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Andreas Penski

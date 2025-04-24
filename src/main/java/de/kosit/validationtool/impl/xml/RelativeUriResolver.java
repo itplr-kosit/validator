@@ -16,21 +16,19 @@
 
 package de.kosit.validationtool.impl.xml;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URI;
+import lombok.RequiredArgsConstructor;
+import net.sf.saxon.Configuration;
+import net.sf.saxon.lib.StandardUnparsedTextResolver;
+import net.sf.saxon.lib.UnparsedTextURIResolver;
+import net.sf.saxon.trans.XPathException;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
-
-import lombok.RequiredArgsConstructor;
-
-import net.sf.saxon.Configuration;
-import net.sf.saxon.lib.StandardUnparsedTextResolver;
-import net.sf.saxon.lib.UnparsedTextURIResolver;
-import net.sf.saxon.trans.XPathException;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URI;
 
 /**
  * {@link URIResolver} that resolves artifacts relative to a given base uri. The resolved URI must be resolving as child

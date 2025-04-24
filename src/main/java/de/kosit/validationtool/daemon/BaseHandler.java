@@ -16,11 +16,11 @@
 
 package de.kosit.validationtool.daemon;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Simple base implemenation for http handlers. Doing I/O stuff.

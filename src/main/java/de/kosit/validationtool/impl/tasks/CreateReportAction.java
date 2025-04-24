@@ -16,33 +16,16 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.stream.Collectors;
-
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.util.JAXBSource;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLReader;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.util.JAXBSource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
@@ -53,6 +36,19 @@ import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 import net.sf.saxon.sapling.SaplingDocument;
 import net.sf.saxon.sapling.Saplings;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * Erzeugt den Report auf Basis der gesammelten Informationen über den Prüfling. Sollte kein Szenario identifiziert

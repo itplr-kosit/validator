@@ -16,9 +16,9 @@
 
 package de.kosit.validationtool.impl.input;
 
-import java.io.InputStream;
-
 import de.kosit.validationtool.api.Input;
+
+import java.io.InputStream;
 
 /**
  * Internal interface used for lazy generation of the hashcode for document identification.

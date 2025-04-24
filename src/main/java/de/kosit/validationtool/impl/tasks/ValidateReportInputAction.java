@@ -16,17 +16,15 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import javax.xml.validation.Schema;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.xml.validation.Schema;
 
 /**
  * Validiert die gesammelten Informationen über den Prüfling. Zusätzlich Check.

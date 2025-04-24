@@ -16,14 +16,6 @@
 
 package de.kosit.validationtool.impl;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.StringJoiner;
-
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
@@ -32,6 +24,9 @@ import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.ValidationEventHandler;
 import jakarta.xml.bind.annotation.XmlRegistry;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -41,10 +36,13 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.StringJoiner;
 
 /**
  * JAXB Conversion Utility.

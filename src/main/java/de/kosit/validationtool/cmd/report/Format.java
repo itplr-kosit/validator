@@ -16,6 +16,10 @@
 
 package de.kosit.validationtool.cmd.report;
 
+import lombok.Getter;
+import org.apache.commons.lang3.ArrayUtils;
+import org.fusesource.jansi.AnsiRenderer.Code;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,11 +28,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.fusesource.jansi.AnsiRenderer.Code;
-
-import lombok.Getter;
 
 /**
  * Simple value holder for ansi formatting codes.

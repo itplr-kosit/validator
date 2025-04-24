@@ -16,13 +16,12 @@
 
 package de.kosit.validationtool.impl;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.xml.RemoteResolvingStrategy;
 import de.kosit.validationtool.impl.xml.StrictLocalResolvingStrategy;
 import de.kosit.validationtool.impl.xml.StrictRelativeResolvingStrategy;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Defines how artefacts are resolved internally.

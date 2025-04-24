@@ -16,6 +16,33 @@
 
 package de.kosit.validationtool.impl;
 
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.impl.Scenario.Transformation;
+import de.kosit.validationtool.impl.xml.RelativeUriResolver;
+import de.kosit.validationtool.impl.xml.StringTrimAdapter;
+import de.kosit.validationtool.model.scenarios.NamespaceType;
+import de.kosit.validationtool.model.scenarios.ResourceType;
+import de.kosit.validationtool.model.scenarios.ScenarioType;
+import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.lib.UnparsedTextURIResolver;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XPathExecutable;
+import net.sf.saxon.s9api.XsltCompiler;
+import net.sf.saxon.s9api.XsltExecutable;
+import org.apache.commons.lang3.StringUtils;
+import org.xml.sax.SAXException;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -26,37 +53,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
-import org.apache.commons.lang3.StringUtils;
-import org.xml.sax.SAXException;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
-import de.kosit.validationtool.impl.Scenario.Transformation;
-import de.kosit.validationtool.impl.xml.RelativeUriResolver;
-import de.kosit.validationtool.impl.xml.StringTrimAdapter;
-import de.kosit.validationtool.model.scenarios.NamespaceType;
-import de.kosit.validationtool.model.scenarios.ResourceType;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
-import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
-
-import net.sf.saxon.lib.UnparsedTextURIResolver;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XPathExecutable;
-import net.sf.saxon.s9api.XsltCompiler;
-import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Repository für verschiedene XML Artefakte zur Vearbeitung der Prüfszenarien.

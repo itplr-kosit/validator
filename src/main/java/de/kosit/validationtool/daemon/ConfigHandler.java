@@ -16,6 +16,15 @@
 
 package de.kosit.validationtool.daemon;
 
+import com.sun.net.httpserver.HttpExchange;
+import de.kosit.validationtool.api.Configuration;
+import de.kosit.validationtool.config.Keys;
+import de.kosit.validationtool.impl.ConversionService;
+import de.kosit.validationtool.model.scenarios.Scenarios;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -23,18 +32,6 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.commons.io.IOUtils;
-
-import com.sun.net.httpserver.HttpExchange;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import de.kosit.validationtool.api.Configuration;
-import de.kosit.validationtool.config.Keys;
-import de.kosit.validationtool.impl.ConversionService;
-import de.kosit.validationtool.model.scenarios.Scenarios;
 
 /**
  * Handler that returns the actual configuration used for this daemon instance.

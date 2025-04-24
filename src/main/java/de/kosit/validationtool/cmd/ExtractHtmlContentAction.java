@@ -16,20 +16,18 @@
 
 package de.kosit.validationtool.cmd;
 
-import java.nio.file.Path;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.HtmlExtractor;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
+
+import java.nio.file.Path;
 
 /**
  * Extrahiert HTML-Dokumente aus dem Report und persistiert diese im konfigurierten Ausgabe-Verzeichnis.

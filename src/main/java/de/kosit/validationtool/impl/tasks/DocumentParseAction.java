@@ -16,24 +16,22 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.input.XdmNodeInput;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.ValidationResultsWellformedness;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 /**
  * Setzt Parsing-Funktionalitäten um. Prüft auf well-formedness

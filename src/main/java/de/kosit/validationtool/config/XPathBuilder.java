@@ -16,7 +16,16 @@
 
 package de.kosit.validationtool.config;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+import de.kosit.validationtool.impl.ContentRepository;
+import de.kosit.validationtool.impl.model.Result;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.s9api.XPathExecutable;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,19 +33,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
-import de.kosit.validationtool.impl.ContentRepository;
-import de.kosit.validationtool.impl.model.Result;
-
-import net.sf.saxon.s9api.XPathExecutable;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 /**
  * Internal class to represent xpath configuration.

@@ -16,21 +16,19 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Collections;
-import java.util.HashMap;
-
-import org.junit.Test;
-
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
-
 import net.sf.saxon.s9api.XPathExecutable;
+import org.junit.Test;
+
+import java.util.Collections;
+import java.util.HashMap;
+
+import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests the 'acceptMatch' functionality.

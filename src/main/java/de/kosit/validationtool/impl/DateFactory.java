@@ -16,13 +16,12 @@
 
 package de.kosit.validationtool.impl;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
+import lombok.SneakyThrows;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import lombok.SneakyThrows;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * @author Andreas Penski

@@ -16,20 +16,18 @@
 
 package de.kosit.validationtool.daemon;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.sun.net.httpserver.HttpExchange;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.model.daemon.ApplicationType;
 import de.kosit.validationtool.model.daemon.HealthType;
 import de.kosit.validationtool.model.daemon.MemoryType;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Handler that implements a simple health check. Useful for monitoring the service.

@@ -16,23 +16,22 @@
 
 package de.kosit.validationtool.cmd;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import de.kosit.validationtool.api.InputFactory;
+import de.kosit.validationtool.impl.Helper;
+import de.kosit.validationtool.impl.Helper.Simple;
+import de.kosit.validationtool.impl.TestObjectFactory;
+import de.kosit.validationtool.impl.tasks.CheckAction;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.impl.Helper;
-import de.kosit.validationtool.impl.Helper.Simple;
-import de.kosit.validationtool.impl.TestObjectFactory;
-import de.kosit.validationtool.impl.tasks.CheckAction;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Testet die HTML-Extrkation des Kommondazeilenprogramms.

@@ -16,24 +16,21 @@
 
 package de.kosit.validationtool.config;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
-
-import java.net.URI;
-import java.nio.file.Path;
-import java.util.Collections;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
-
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.XsltExecutable;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.Collections;
+
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 /**
  * Builder for schematron validation configuration.

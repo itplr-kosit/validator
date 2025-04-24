@@ -16,36 +16,27 @@
 
 package de.kosit.validationtool.impl;
 
-import static de.kosit.validationtool.api.InputFactory.read;
-import static de.kosit.validationtool.impl.Helper.Simple.FOO_SCHEMATRON_INVALID;
-import static de.kosit.validationtool.impl.Helper.Simple.GARBAGE;
-import static de.kosit.validationtool.impl.Helper.Simple.NOT_WELLFORMED;
-import static de.kosit.validationtool.impl.Helper.Simple.REJECTED;
-import static de.kosit.validationtool.impl.Helper.Simple.SCHEMATRON_INVALID;
-import static de.kosit.validationtool.impl.Helper.Simple.SIMPLE_VALID;
-import static de.kosit.validationtool.impl.Helper.Simple.UNKNOWN;
-import static java.util.Objects.requireNonNull;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import javax.xml.transform.stream.StreamSource;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.w3c.dom.Document;
-
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.Helper.Simple;
-
 import net.sf.saxon.s9api.XdmNode;
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Document;
+
+import javax.xml.transform.stream.StreamSource;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static de.kosit.validationtool.api.InputFactory.read;
+import static de.kosit.validationtool.impl.Helper.Simple.*;
+import static java.util.Objects.requireNonNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test das Check-Interface

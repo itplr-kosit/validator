@@ -16,14 +16,13 @@
 
 package de.kosit.validationtool.cmd;
 
-import static org.apache.commons.io.FilenameUtils.isExtension;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
+import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.Setter;
+import static org.apache.commons.io.FilenameUtils.isExtension;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * A default {@link NamingStrategy} supporting prefix and postfix configurations for generating report names

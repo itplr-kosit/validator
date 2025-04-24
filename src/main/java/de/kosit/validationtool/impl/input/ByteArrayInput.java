@@ -16,15 +16,14 @@
 
 package de.kosit.validationtool.impl.input;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Classical in-memory {@link de.kosit.validationtool.api.Input}. It is not memory efficient to read the whole file into

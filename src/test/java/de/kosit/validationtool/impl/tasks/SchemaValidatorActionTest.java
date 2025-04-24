@@ -16,27 +16,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
-
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.Validator;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.xml.sax.SAXException;
-
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.XmlError.Severity;
@@ -47,6 +26,23 @@ import de.kosit.validationtool.impl.SchemaProvider;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
+import org.junit.Before;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.MalformedURLException;
+
+import static de.kosit.validationtool.impl.tasks.TestBagBuilder.createBag;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests die {@link SchemaValidationAction}.

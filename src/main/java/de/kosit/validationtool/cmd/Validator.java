@@ -16,29 +16,6 @@
 
 package de.kosit.validationtool.cmd;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.fusesource.jansi.AnsiRenderer.Code;
-
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
@@ -55,8 +32,28 @@ import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.impl.Printer;
 import de.kosit.validationtool.impl.ScenarioRepository;
 import de.kosit.validationtool.impl.xml.ProcessorProvider;
-
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
+import org.fusesource.jansi.AnsiRenderer.Code;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Actual evaluation and processing of CommandLineOptions argumtens.

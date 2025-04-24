@@ -16,26 +16,23 @@
 
 package de.kosit.validationtool.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import de.kosit.validationtool.api.AcceptRecommendation;
+import de.kosit.validationtool.api.Result;
+import de.kosit.validationtool.api.XmlError;
+import de.kosit.validationtool.model.reportInput.CreateReportInput;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import net.sf.saxon.dom.NodeOverNodeInfo;
+import net.sf.saxon.s9api.XdmNode;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
-import de.kosit.validationtool.api.AcceptRecommendation;
-import de.kosit.validationtool.api.Result;
-import de.kosit.validationtool.api.XmlError;
-import de.kosit.validationtool.model.reportInput.CreateReportInput;
-
-import net.sf.saxon.dom.NodeOverNodeInfo;
-import net.sf.saxon.s9api.XdmNode;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Das Default-{@link Result} für die Rückgabe in der API

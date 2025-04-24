@@ -16,28 +16,25 @@
 
 package de.kosit.validationtool.cmd;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.cmd.assertions.AssertionType;
 import de.kosit.validationtool.cmd.assertions.Assertions;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Überprüft den Report mittels bereitgestellter Assertions. Diese {@link CheckAction} dient der Überprüfung der von der

@@ -16,26 +16,23 @@
 
 package de.kosit.validationtool.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import javax.xml.transform.URIResolver;
-import javax.xml.validation.Schema;
-
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.model.scenarios.ResourceType;
+import de.kosit.validationtool.model.scenarios.ScenarioType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
-import de.kosit.validationtool.model.scenarios.ResourceType;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
-
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XsltExecutable;
+
+import javax.xml.transform.URIResolver;
+import javax.xml.validation.Schema;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Andreas Penski

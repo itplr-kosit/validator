@@ -16,22 +16,6 @@
 
 package de.kosit.validationtool.config;
 
-import static org.apache.commons.lang3.StringUtils.startsWith;
-
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.xml.validation.Schema;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.InputFactory;
@@ -49,11 +33,24 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.Scenarios;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
+
+import javax.xml.validation.Schema;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.startsWith;
 
 /**
  * Configuration class that loads necessary {@link Check} configuration from an existing scenario.xml specification.

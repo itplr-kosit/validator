@@ -16,13 +16,13 @@
 
 package de.kosit.validationtool.impl.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Ein Ergebnisobjekt, dass das eigentliche Ergebnis hält und optional auch verschiedene Fehlerobjekte.

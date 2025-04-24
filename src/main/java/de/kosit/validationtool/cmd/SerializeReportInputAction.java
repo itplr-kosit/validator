@@ -16,15 +16,14 @@
 
 package de.kosit.validationtool.cmd;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
+import de.kosit.validationtool.impl.ConversionService;
+import de.kosit.validationtool.impl.tasks.CheckAction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.impl.ConversionService;
-import de.kosit.validationtool.impl.tasks.CheckAction;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Serializes the {@link de.kosit.validationtool.model.reportInput.CreateReportInput report input} document.

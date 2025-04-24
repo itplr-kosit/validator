@@ -16,9 +16,8 @@
 
 package de.kosit.validationtool.api;
 
-import java.io.IOException;
-
 import javax.xml.transform.Source;
+import java.io.IOException;
 
 /**
  * An input for the validator.

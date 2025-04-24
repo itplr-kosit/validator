@@ -16,28 +16,24 @@
 
 package de.kosit.validationtool.daemon;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.sun.net.httpserver.HttpExchange;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.input.StreamHelper;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Wir benötigen einen Handler, der zur Verarbeitung von HTTP-Anforderungen aufgerufen wird um hier die Verarbeitung des

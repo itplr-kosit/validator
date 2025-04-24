@@ -16,14 +16,14 @@
 
 package de.kosit.validationtool.api;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
 import de.kosit.validationtool.config.ConfigurationBuilder;
 import de.kosit.validationtool.config.ConfigurationLoader;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Configuration of the actual {@link Check} instance. This is an interface and can be implemented by custom

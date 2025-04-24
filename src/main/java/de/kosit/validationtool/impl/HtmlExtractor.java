@@ -16,17 +16,7 @@
 
 package de.kosit.validationtool.impl;
 
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Element;
-
 import lombok.RequiredArgsConstructor;
-
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -36,6 +26,14 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
+import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Element;
+
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Funktion zum Extrahieren von HTML-Artefakten / Knoten aus einem XML-Dokument.

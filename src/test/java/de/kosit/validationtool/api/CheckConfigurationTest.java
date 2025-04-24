@@ -16,11 +16,10 @@
 
 package de.kosit.validationtool.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import de.kosit.validationtool.impl.Helper.Simple;
 import org.junit.Test;
 
-import de.kosit.validationtool.impl.Helper.Simple;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test {@link CheckConfiguration }.

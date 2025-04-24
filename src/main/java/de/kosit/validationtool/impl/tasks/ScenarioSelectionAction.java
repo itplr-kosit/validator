@@ -16,14 +16,12 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.ScenarioRepository;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.XdmNode;
 
 /**

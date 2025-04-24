@@ -16,12 +16,11 @@
 
 package de.kosit.validationtool.cmd.report;
 
-import java.util.Arrays;
-
+import lombok.Getter;
 import org.fusesource.jansi.AnsiRenderer;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
-import lombok.Getter;
+import java.util.Arrays;
 
 /**
  * Ansi formatted text for outputting to the console.

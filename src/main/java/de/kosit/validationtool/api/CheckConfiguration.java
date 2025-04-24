@@ -16,18 +16,17 @@
 
 package de.kosit.validationtool.api;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
+import de.kosit.validationtool.impl.ContentRepository;
+import de.kosit.validationtool.impl.Scenario;
+import de.kosit.validationtool.impl.xml.ProcessorProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import de.kosit.validationtool.impl.ContentRepository;
-import de.kosit.validationtool.impl.Scenario;
-import de.kosit.validationtool.impl.xml.ProcessorProvider;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Zentrale Konfigration einer Prüf-Instanz.

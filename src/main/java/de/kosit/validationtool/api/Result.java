@@ -16,13 +16,12 @@
 
 package de.kosit.validationtool.api;
 
-import java.util.List;
-
+import net.sf.saxon.s9api.XdmNode;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 
-import net.sf.saxon.s9api.XdmNode;
+import java.util.List;
 
 /**
  * API result object holding various information of the validation process results.

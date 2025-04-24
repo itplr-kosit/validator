@@ -16,20 +16,19 @@
 
 package de.kosit.validationtool.impl.xml;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
-
-import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.ls.LSInput;
-import org.w3c.dom.ls.LSResourceResolver;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link LSResourceResolver} der objekte relativ zu einem Basis-Pfad aus dem Classpath der Anwendung laden kann.

@@ -16,17 +16,7 @@
 
 package de.kosit.validationtool.impl.xml;
 
-import java.io.Reader;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
-import javax.xml.XMLConstants;
-import javax.xml.transform.Result;
-import javax.xml.transform.TransformerException;
-
 import lombok.SneakyThrows;
-
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.CollectionFinder;
@@ -37,6 +27,14 @@ import net.sf.saxon.lib.ResourceCollection;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.trans.XPathException;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.Result;
+import javax.xml.transform.TransformerException;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Andreas Penski

@@ -16,14 +16,13 @@
 
 package de.kosit.validationtool.cmd.report;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
-import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Helper for printing a colored lines (with newline at the end) to the console.

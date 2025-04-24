@@ -16,15 +16,6 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import org.apache.commons.io.FilenameUtils;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.Scenario;
@@ -32,8 +23,14 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ProcessingError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.sf.saxon.s9api.XdmNode;
+import org.apache.commons.io.FilenameUtils;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Interface, welches von allen Prüfschritten implementiert wird. Der Parameter vom Typ {@link Bag} dient dabei sowohl

@@ -16,17 +16,14 @@
 
 package de.kosit.validationtool.impl.tasks;
 
-import java.util.Optional;
-
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-
+import de.kosit.validationtool.api.AcceptRecommendation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import de.kosit.validationtool.api.AcceptRecommendation;
-
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathSelector;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+
+import java.util.Optional;
 
 /**
  * Computes a {@link AcceptRecommendation} for this instance. This is either based on an 'acceptMatch'-configuration of

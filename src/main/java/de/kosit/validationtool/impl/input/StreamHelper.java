@@ -16,6 +16,10 @@
 
 package de.kosit.validationtool.impl.input;
 
+import de.kosit.validationtool.api.Input;
+import org.apache.commons.io.input.BoundedInputStream;
+
+import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -23,12 +27,6 @@ import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.io.input.BoundedInputStream;
-
-import de.kosit.validationtool.api.Input;
 
 /**
  * Helper for stream handling.

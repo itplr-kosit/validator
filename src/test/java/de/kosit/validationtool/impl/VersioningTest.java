@@ -16,17 +16,16 @@
 
 package de.kosit.validationtool.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import de.kosit.validationtool.impl.Helper.Simple;
+import de.kosit.validationtool.model.scenarios.Scenarios;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import de.kosit.validationtool.impl.Helper.Simple;
-import de.kosit.validationtool.model.scenarios.Scenarios;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 /**
  * Testet die Versionierung von Scenario-Dateien aka Konfigurationsdaten.

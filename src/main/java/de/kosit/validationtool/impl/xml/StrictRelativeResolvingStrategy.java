@@ -16,17 +16,15 @@
 
 package de.kosit.validationtool.impl.xml;
 
-import java.net.URI;
+import lombok.RequiredArgsConstructor;
+import net.sf.saxon.lib.UnparsedTextURIResolver;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
-import lombok.RequiredArgsConstructor;
-
-import net.sf.saxon.lib.UnparsedTextURIResolver;
+import java.net.URI;
 
 /**
  * @author Andreas Penski

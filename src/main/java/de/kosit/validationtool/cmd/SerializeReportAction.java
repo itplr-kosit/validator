@@ -16,16 +16,14 @@
 
 package de.kosit.validationtool.cmd;
 
-import java.nio.file.Path;
-
+import de.kosit.validationtool.impl.tasks.CheckAction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import de.kosit.validationtool.impl.tasks.CheckAction;
-
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
+
+import java.nio.file.Path;
 
 /**
  * Schreibt das Prüfergebnis als XML-Dokument an eine definierte Stelle.

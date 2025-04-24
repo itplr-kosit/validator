@@ -16,7 +16,8 @@
 
 package de.kosit.validationtool.impl.input;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -25,8 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Andreas Penski
