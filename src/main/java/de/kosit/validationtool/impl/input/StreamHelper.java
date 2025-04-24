@@ -132,6 +132,7 @@ public class StreamHelper {
      * @param stream the stream
      * @return a wrapped stream
      */
+    @SuppressWarnings("ClassEscapesDefinedScope")
     public static InputStream wrapCount(final LazyReadInput input, final InputStream stream) throws IOException {
         return new CountInputStream(input, stream);
     }
@@ -143,6 +144,7 @@ public class StreamHelper {
      * @param stream the stream
      * @return a wrapped stream
      */
+    @SuppressWarnings("ClassEscapesDefinedScope")
     public static InputStream wrapDigesting(final LazyReadInput input, final InputStream stream, final String digestAlgorithm) {
         return new DigestingInputStream(input, stream, createDigest(digestAlgorithm));
     }

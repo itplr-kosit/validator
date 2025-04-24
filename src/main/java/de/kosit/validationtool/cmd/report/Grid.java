@@ -256,12 +256,14 @@ public class Grid {
         });
     }
 
+    @SuppressWarnings("ClassEscapesDefinedScope")
     public List<Cell> getColumn(final int index) {
 
         return IntStream.range(0, this.values.size()).filter(n -> n % this.definitions.size() == index).mapToObj(this.values::get)
                 .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("ClassEscapesDefinedScope")
     public Grid addCell(final Cell cell) {
         this.values.add(cell);
         return this;
