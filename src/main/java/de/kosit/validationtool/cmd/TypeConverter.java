@@ -76,7 +76,7 @@ class TypeConverter {
     public static class RepositoryConverter implements ITypeConverter<RepositoryDefinition> {
 
         @Override
-        public RepositoryDefinition convert(final String value) throws Exception {
+        public RepositoryDefinition convert(final String value) {
             return TypeConverter.convert(RepositoryDefinition.class, value);
         }
     }
@@ -89,7 +89,7 @@ class TypeConverter {
     public static class ScenarioConverter implements ITypeConverter<ScenarioDefinition> {
 
         @Override
-        public ScenarioDefinition convert(final String value) throws Exception {
+        public ScenarioDefinition convert(final String value) {
             return TypeConverter.convert(ScenarioDefinition.class, value);
         }
     }

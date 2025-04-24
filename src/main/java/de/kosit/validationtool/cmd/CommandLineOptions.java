@@ -35,8 +35,7 @@ import java.util.concurrent.Callable;
  *
  * @author Andreas Penski
  */
-@Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false,
-         separator = " ")
+@Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", separator = " ")
 @Getter
 public class CommandLineOptions implements Callable<ReturnValue> {
 
@@ -166,7 +165,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
     private List<ScenarioDefinition> scenarios;
 
     @Override
-    public ReturnValue call() throws Exception {
+    public ReturnValue call() {
         configureLogging(this);
         return Validator.mainProgram(this);
     }

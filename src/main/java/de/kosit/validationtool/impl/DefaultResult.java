@@ -145,6 +145,7 @@ public class DefaultResult implements Result {
         return filterSchematronResult(FailedAssert.class);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private <T> List<T> filterSchematronResult(final Class<T> type) {
         return getSchematronResult() != null
                 ? getSchematronResult().stream().flatMap(e -> e.getActivePatternAndFiredRuleAndFailedAssert().stream())

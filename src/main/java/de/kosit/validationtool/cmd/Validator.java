@@ -320,6 +320,7 @@ public class Validator {
 
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static void assertFileExistance(final Path f, final String type) {
         if (!Files.isRegularFile(f)) {
             throw new IllegalArgumentException(

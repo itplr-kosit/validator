@@ -112,6 +112,7 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
      * @param source the source
      * @return this
      */
+    @SuppressWarnings("UnusedReturnValue")
     public ReportBuilder source(final Path source) {
         return source(source.toUri());
     }

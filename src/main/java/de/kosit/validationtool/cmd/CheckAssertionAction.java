@@ -97,7 +97,7 @@ class CheckAssertionAction implements CheckAction {
 
     }
 
-    private XPathSelector createSelector(AssertionType assertion) throws SaxonApiException {
+    private XPathSelector createSelector(AssertionType assertion) {
         try {
             final XPathCompiler compiler = getProcessor().newXPathCompiler();
             assertions.getNamespace().forEach(ns -> compiler.declareNamespace(ns.getPrefix(), ns.getValue()));

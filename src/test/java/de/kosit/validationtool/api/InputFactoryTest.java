@@ -39,7 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
@@ -102,13 +101,13 @@ public class InputFactoryTest {
     }
 
     @Test
-    public void testInputFile() throws URISyntaxException {
+    public void testInputFile() {
         final Input input = InputFactory.read(new File(Simple.SIMPLE_VALID));
         assertThat(input).isNotNull();
     }
 
     @Test
-    public void testInputPath() throws URISyntaxException {
+    public void testInputPath() {
         final Input input = InputFactory.read(Paths.get(Simple.SIMPLE_VALID));
         assertThat(input).isNotNull();
     }
@@ -124,7 +123,7 @@ public class InputFactoryTest {
     }
 
     @Test
-    public void testEmptyInputName() throws IOException {
+    public void testEmptyInputName() {
         assertThrows(IllegalArgumentException.class, () -> {
             final Input input = InputFactory.read(SOME_VALUE.getBytes(), "");
             drain(input);

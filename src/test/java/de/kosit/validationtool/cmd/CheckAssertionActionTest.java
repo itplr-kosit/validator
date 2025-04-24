@@ -25,7 +25,6 @@ import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -45,7 +44,7 @@ public class CheckAssertionActionTest {
     private static final URL SAMPLE_ASSERTIONS = CheckAssertionActionTest.class.getResource("/examples/assertions/tests-xrechnung.xml");
 
     @Before
-    public void setup() throws IOException {
+    public void setup() {
         CommandLine.activate();
     }
 

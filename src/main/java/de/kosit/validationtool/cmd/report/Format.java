@@ -68,6 +68,7 @@ public class Format {
      *
      * @return this {@link Format}
      */
+    @SuppressWarnings("unused")
     public Format color(final Code textColor) {
         this.textColor = textColor;
         return this;
@@ -80,6 +81,7 @@ public class Format {
      *
      * @return this {@link Format}
      */
+    @SuppressWarnings("unused")
     public Format background(final Code color) {
         this.background = color;
         return this;

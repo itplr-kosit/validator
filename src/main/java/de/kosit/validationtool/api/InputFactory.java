@@ -191,6 +191,7 @@ public class InputFactory {
      * @param name the digest algorithm
      * @return an {@link Input}
      */
+    @SuppressWarnings("unused")
     public static Input read(final Source source, final String name) {
         checkNotEmpty(name);
         return read(source, name, PSEUDO_NAME_ALGORITHM, name.getBytes());

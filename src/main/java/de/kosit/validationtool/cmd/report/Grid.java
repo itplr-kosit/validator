@@ -61,6 +61,7 @@ public class Grid {
          *
          * @param name the name of the column
          */
+        @SuppressWarnings("unused")
         public ColumnDefinition(final String name) {
             this(name, -1, -1, 1);
         }
@@ -147,6 +148,7 @@ public class Grid {
             this.text.add(txt);
         }
 
+        @SuppressWarnings("unused")
         public Cell(final Object object, final Code... codes) {
             this(new Text(object, codes));
         }
@@ -192,6 +194,7 @@ public class Grid {
 
         }
 
+        @SuppressWarnings("unused")
         public Cell add(final Object object, final Code... codes) {
             this.text.add(new Text(object, codes));
             return this;
@@ -237,6 +240,7 @@ public class Grid {
      * @param def definitions
      * @return this grid
      */
+    @SuppressWarnings("unused")
     public Grid addColumn(final ColumnDefinition def) {
         this.definitions.add(def);
         return this;
@@ -263,6 +267,7 @@ public class Grid {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public Grid addCell(final Text... text) {
         return addCell(new Cell(Arrays.asList(text)));
     }
@@ -274,6 +279,7 @@ public class Grid {
         return addCell(new Cell(t));
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public Grid addCell(final Object cell) {
         return addCell(cell, DEFAULT_FORMAT.getTextColor());
     }

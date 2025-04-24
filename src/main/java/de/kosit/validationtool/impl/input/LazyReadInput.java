@@ -40,6 +40,7 @@ interface LazyReadInput {
      *
      * @return true when computed
      */
+    @SuppressWarnings("unused")
     boolean isHashcodeComputed();
 
     /**

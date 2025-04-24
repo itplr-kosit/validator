@@ -71,6 +71,7 @@ public class HtmlExtractor {
         return this.executable.load();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private XPathExecutable createXPath(final String expression, final Map<String, String> namespaces) {
         try {
             final XPathCompiler compiler = this.processor.newXPathCompiler();

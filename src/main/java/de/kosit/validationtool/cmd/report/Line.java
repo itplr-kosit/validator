@@ -71,6 +71,7 @@ public class Line {
         return add(new Text(text, codes));
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public Line add(final Object text, final Format format) {
         return add(new Text(text, format));
     }
@@ -107,6 +108,7 @@ public class Line {
         return this.texts.stream().mapToInt(Text::getLength).sum();
     }
 
+    @SuppressWarnings("unused")
     public static String render(final String text, final Code... codes) {
         return new Line().add(text, codes).render();
     }

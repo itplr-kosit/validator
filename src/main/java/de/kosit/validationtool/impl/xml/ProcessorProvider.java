@@ -26,11 +26,9 @@ import net.sf.saxon.lib.OutputURIResolver;
 import net.sf.saxon.lib.ResourceCollection;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.trans.XPathException;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Result;
-import javax.xml.transform.TransformerException;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -51,22 +49,22 @@ public class ProcessorProvider {
         }
 
         @Override
-        public Result resolve(final String href, final String base) throws TransformerException {
+        public Result resolve(final String href, final String base) {
             throw new IllegalStateException(MESSAGE);
         }
 
         @Override
-        public void close(final Result result) throws TransformerException {
+        public void close(final Result result) {
             throw new IllegalStateException(MESSAGE);
         }
 
         @Override
-        public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
+        public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) {
             throw new IllegalStateException(MESSAGE);
         }
 
         @Override
-        public ResourceCollection findCollection(final XPathContext context, final String collectionURI) throws XPathException {
+        public ResourceCollection findCollection(final XPathContext context, final String collectionURI) {
             throw new IllegalStateException(MESSAGE);
         }
     }

@@ -174,6 +174,7 @@ public class ConfigurationBuilder {
      *
      * @return a fallback configuration
      */
+    @SuppressWarnings("unused")
     public static FallbackBuilder defaultFallback() {
         throw new NotImplementedException("Not yet defined");
     }
@@ -193,6 +194,7 @@ public class ConfigurationBuilder {
      *
      * @return a configuration builder for schema
      */
+    @SuppressWarnings("unused")
     public static SchemaBuilder schema() {
         return new SchemaBuilder();
     }
@@ -204,6 +206,7 @@ public class ConfigurationBuilder {
      * @param schema the actual precompiled schema to use
      * @return a configuration builder for schema
      */
+    @SuppressWarnings("unused")
     public static SchemaBuilder schema(final String name, final Schema schema) {
         return new SchemaBuilder().name(name).schema(schema);
     }
@@ -243,6 +246,7 @@ public class ConfigurationBuilder {
      *
      * @return the scenario configuration builder
      */
+    @SuppressWarnings("unused")
     public static ScenarioBuilder scenario() {
         return scenario(null);
     }
@@ -350,6 +354,7 @@ public class ConfigurationBuilder {
      * @param strategy the strategy
      * @return this
      */
+    @SuppressWarnings("unused")
     public ConfigurationBuilder resolvingStrategy(final ResolvingConfigurationStrategy strategy) {
         this.resolvingConfigurationStrategy = strategy;
         return this;
@@ -372,6 +377,7 @@ public class ConfigurationBuilder {
      * @param repository the repository location
      * @return this
      */
+    @SuppressWarnings("unused")
     public ConfigurationBuilder useRepository(final Path repository) {
         return useRepository(repository.toUri());
     }

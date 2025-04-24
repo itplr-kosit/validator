@@ -94,16 +94,22 @@ public class CommandLineApplication {
         return resultStatus;
     }
 
-    private static int logExecutionException(final Exception ex, final CommandLine cli, final ParseResult parseResult) {
+    @SuppressWarnings("SameReturnValue")
+    private static int logExecutionException(final Exception ex, @SuppressWarnings("unused") final CommandLine cli,
+            @SuppressWarnings("unused") final ParseResult parseResult) {
         final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "Es ist eine Fehler aufgetreten";
         Printer.writeErr(ex, message);
         return 1;
     }
 
+    @SuppressWarnings("unused")
     enum Level {
-
-        INFO, WARN, DEBUG, TRACE, ERROR, OFF
-
+        @SuppressWarnings("unused")
+        INFO, @SuppressWarnings("unused")
+        WARN, @SuppressWarnings("unused")
+        DEBUG, @SuppressWarnings("unused")
+        TRACE, @SuppressWarnings("unused")
+        ERROR, @SuppressWarnings("unused")
+        OFF
     }
-
 }

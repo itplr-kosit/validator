@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.text.RandomStringGenerator;
-import org.junit.Rule;
 import org.junit.Test;
 
 import de.kosit.validationtool.impl.ContentRepository;

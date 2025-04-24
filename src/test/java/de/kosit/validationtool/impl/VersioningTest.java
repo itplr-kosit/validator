@@ -16,7 +16,6 @@
 
 package de.kosit.validationtool.impl;
 
-import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.model.scenarios.Scenarios;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,13 +61,13 @@ public class VersioningTest {
     }
 
     @Test
-    public void testNewFeature() throws URISyntaxException {
+    public void testNewFeature() {
         assertThrows(ConversionService.ConversionException.class,
                 () -> this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
     }
 
     @Test
-    public void testNewVersion() throws URISyntaxException {
+    public void testNewVersion() {
         assertThrows(ConversionService.ConversionException.class,
                 () -> this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
     }

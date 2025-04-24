@@ -112,6 +112,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
      * @param source the source
      * @return this
      */
+    @SuppressWarnings("unused")
     public SchematronBuilder source(final Path source) {
         return source(source.toUri());
     }

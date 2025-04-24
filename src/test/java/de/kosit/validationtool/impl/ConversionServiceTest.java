@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import java.io.Serializable;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Before;
@@ -94,12 +93,12 @@ public class ConversionServiceTest {
     }
 
     @Test
-    public void testUnmarshalUnknownType() throws URISyntaxException {
+    public void testUnmarshalUnknownType() {
         assertThrows(ConversionService.ConversionException.class, () -> this.service.readXml(Simple.SCENARIOS, ConversionService.class));
     }
 
     @Test
-    public void testUnmarshalWithoutType() throws URISyntaxException {
+    public void testUnmarshalWithoutType() {
         assertThrows(ConversionService.ConversionException.class, () -> this.service.readXml(Simple.SCENARIOS, null));
     }
 

@@ -35,7 +35,7 @@ import static org.junit.Assert.assertThrows;
 public class StrictLocalResolvingTest {
 
     @Test
-    public void testRemoteSchemaResolving() throws Exception {
+    public void testRemoteSchemaResolving() {
         final ResolvingConfigurationStrategy s = new StrictLocalResolvingStrategy();
         final SchemaFactory schemaFactory = s.createSchemaFactory();
         Throwable e = assertThrows(SAXParseException.class, () -> schemaFactory.newSchema(Resolving.SCHEMA_WITH_REMOTE_REFERENCE.toURL()));

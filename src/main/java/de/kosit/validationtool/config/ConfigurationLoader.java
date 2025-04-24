@@ -222,6 +222,7 @@ public class ConfigurationLoader {
      * @param value the parameter value object
      * @return this
      */
+    @SuppressWarnings("unused")
     public ConfigurationLoader addParameter(final String name, final Object value) {
         this.parameters.put(name, value);
         return this;

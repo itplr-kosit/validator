@@ -25,7 +25,6 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 
 import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**

@@ -23,8 +23,10 @@ import javax.xml.validation.SchemaFactory;
 /**
  * @author Andreas Penski
  */
+@SuppressWarnings("unused")
 public class SchemaProviderTest {
 
+    @SuppressWarnings("unused")
     private final SchemaFactory schemaFactory = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
 
 }

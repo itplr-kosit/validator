@@ -38,10 +38,12 @@ public enum ResolvingMode {
 
     },
 
+    @SuppressWarnings("unused")
     STRICT_LOCAL(new StrictLocalResolvingStrategy()),
 
     ALLOW_REMOTE(new RemoteResolvingStrategy()),
 
+    @SuppressWarnings("unused")
     CUSTOM(null);
 
     @Getter

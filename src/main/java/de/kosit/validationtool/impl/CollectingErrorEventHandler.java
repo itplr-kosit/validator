@@ -24,7 +24,6 @@ import lombok.Getter;
 import net.sf.saxon.s9api.MessageListener;
 import net.sf.saxon.s9api.XdmNode;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import javax.xml.transform.ErrorListener;
@@ -112,17 +111,17 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     @Override
-    public void warning(final SAXParseException exception) throws SAXException {
+    public void warning(final SAXParseException exception) {
         this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_WARNING, exception));
     }
 
     @Override
-    public void error(final SAXParseException exception) throws SAXException {
+    public void error(final SAXParseException exception) {
         this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_ERROR, exception));
     }
 
     @Override
-    public void fatalError(final SAXParseException exception) throws SAXException {
+    public void fatalError(final SAXParseException exception) {
         this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR, exception));
     }
 
@@ -139,17 +138,17 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     @Override
-    public void warning(final TransformerException exception) throws TransformerException {
+    public void warning(final TransformerException exception) {
         this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_WARNING, exception));
     }
 
     @Override
-    public void error(final TransformerException exception) throws TransformerException {
+    public void error(final TransformerException exception) {
         this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_ERROR, exception));
     }
 
     @Override
-    public void fatalError(final TransformerException exception) throws TransformerException {
+    public void fatalError(final TransformerException exception) {
         this.errors.add(createError(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR, exception));
     }
 

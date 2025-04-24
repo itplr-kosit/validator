@@ -138,7 +138,7 @@ public class CreateReportAction implements CheckAction {
         }
 
         @Override
-        public boolean getFeature(final String name) throws SAXNotRecognizedException, SAXNotSupportedException {
+        public boolean getFeature(final String name) {
             if (SAX_FEATURES_NAMESPACES.equals(name)) {
                 return true;
             } else if (SAX_FEATURES_NAMESPACE_PREFIXES.equals(name)) {
@@ -149,7 +149,7 @@ public class CreateReportAction implements CheckAction {
         }
 
         @Override
-        public void setFeature(final String name, final boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
+        public void setFeature(final String name, final boolean value) throws SAXNotRecognizedException {
             // this inverts the logic from JaxbSource pseude parser
             if (name.equals(SAX_FEATURES_NAMESPACES) && !value) {
                 throw new SAXNotRecognizedException(name);

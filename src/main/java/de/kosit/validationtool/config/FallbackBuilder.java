@@ -84,6 +84,7 @@ public class FallbackBuilder implements Builder<Scenario> {
      * @param source the source
      * @return this
      */
+    @SuppressWarnings("unused")
     public FallbackBuilder source(final URI source) {
         this.internal.source(source);
         return this;
@@ -96,6 +97,7 @@ public class FallbackBuilder implements Builder<Scenario> {
      * @param source the source
      * @return this
      */
+    @SuppressWarnings("unused")
     public FallbackBuilder source(final Path source) {
         this.internal.source(source);
         return this;

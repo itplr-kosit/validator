@@ -43,7 +43,7 @@ public class StreamHelperTest {
         }
 
         @Override
-        public int available() throws IOException {
+        public int available() {
             return 0;
         }
     }

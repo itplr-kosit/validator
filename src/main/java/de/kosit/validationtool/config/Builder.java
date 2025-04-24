@@ -32,5 +32,6 @@ interface Builder<T> {
      * @param repository the {@link ContentRepository}
      * @return the result of building the object
      */
+    @SuppressWarnings("unused")
     Result<T, String> build(ContentRepository repository);
 }

@@ -106,7 +106,7 @@ public class CommandLine {
         return new InputStream() {
 
             @Override
-            public int read() throws IOException {
+            public int read() {
                 return 0;
             }
         };
@@ -124,6 +124,7 @@ public class CommandLine {
         return readLines(out.getOut().toByteArray());
     }
 
+    @SuppressWarnings("unused")
     public static List<String> getErrorLines() {
         return readLines(error.getOut().toByteArray());
     }

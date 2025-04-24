@@ -73,6 +73,7 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
         allowExternalSchema(schemaFactory, false, scheme);
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected void allowExternalSchema(final Validator validator, final boolean lenient, final String... schemes) {
         final String schemeString = String.join(",", schemes);
         setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient, format(
@@ -93,6 +94,7 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
         disableExternalEntities(schemaFactory, false);
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected void disableExternalEntities(final Validator validator, final boolean lenient) {
         log.debug("Try to disable extern DTD access");
         setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
@@ -100,6 +102,7 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
 
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected void disableExternalEntities(final SchemaFactory schemaFactory, final boolean lenient) {
         log.debug("Try to disable extern DTD access");
         setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,

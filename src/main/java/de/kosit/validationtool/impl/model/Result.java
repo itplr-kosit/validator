@@ -37,6 +37,7 @@ public class Result<T, E> {
 
     private T object;
 
+    @SuppressWarnings("CanBeFinal")
     private Collection<E> errors = new ArrayList<>();
 
     /**

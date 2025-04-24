@@ -58,6 +58,7 @@ public final class SourceInput extends AbstractInput {
 
     private final String digestAlgorithm;
 
+    @SuppressWarnings("unused")
     public SourceInput(final StreamSource source, final String name, final String digestAlgorithm) {
         this(source, name, digestAlgorithm, null);
     }
@@ -99,7 +100,7 @@ public final class SourceInput extends AbstractInput {
         return isStreamSource();
     }
 
-    private boolean isConsumed() throws IOException {
+    private boolean isConsumed() {
         if (isStreamSource()) {
 
             final StreamSource ss = (StreamSource) this.source;

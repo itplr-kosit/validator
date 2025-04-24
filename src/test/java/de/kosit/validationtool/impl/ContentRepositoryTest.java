@@ -57,7 +57,7 @@ public class ContentRepositoryTest {
     }
 
     @Test
-    public void testCreateSchemaNotExisting() throws Exception {
+    public void testCreateSchemaNotExisting() {
         assertThrows(IllegalStateException.class, () -> this.repository.createSchema(Simple.NOT_EXISTING.toURL()));
     }
 

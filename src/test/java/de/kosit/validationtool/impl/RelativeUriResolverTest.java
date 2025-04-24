@@ -57,12 +57,12 @@ public class RelativeUriResolverTest {
     }
 
     @Test
-    public void testNotExisting() throws TransformerException {
+    public void testNotExisting() {
         assertThrows(TransformerException.class, () -> this.resolver.resolve("ubl-0001", BASE.toASCIIString()));
     }
 
     @Test
-    public void testOutOfPath() throws TransformerException {
+    public void testOutOfPath() {
         assertThrows(TransformerException.class, () -> this.resolver.resolve("../results/report.xml", BASE.toASCIIString()));
     }
 

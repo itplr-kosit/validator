@@ -87,6 +87,7 @@ public class Helper {
             return new ContentRepository(Helper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
         }
 
+        @SuppressWarnings("SameReturnValue")
         public static URI getSchemaLocation() {
             return SCHEMA;
         }

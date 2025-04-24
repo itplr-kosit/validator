@@ -36,6 +36,7 @@ public interface XmlError {
      * @return der Schweregrad
      * @see Severity
      */
+    @SuppressWarnings("unused")
     Severity getSeverity();
 
     /**
@@ -53,7 +54,9 @@ public interface XmlError {
     Integer getColumnNumber();
 
     enum Severity {
-        SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL_ERROR
+        @SuppressWarnings("unused")
+        SEVERITY_WARNING, SEVERITY_ERROR, @SuppressWarnings("unused")
+        SEVERITY_FATAL_ERROR
     }
 
 }

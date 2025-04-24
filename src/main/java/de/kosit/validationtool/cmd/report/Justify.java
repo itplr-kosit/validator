@@ -39,8 +39,10 @@ public enum Justify {
             return StringUtils.center(string, length);
         }
     },
+    @SuppressWarnings("unused")
     RIGHT {
 
+        @SuppressWarnings("unused")
         @Override
         public String apply(final String string, final int length) {
             return StringUtils.leftPad(string, length);

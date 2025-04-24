@@ -121,10 +121,12 @@ public class ScenarioRepositoryTest {
         assertThat(fallback).isNotSameAs(second.getFallbackScenario());
     }
 
+    @SuppressWarnings("SameParameterValue")
     private XdmNode load(final URI uri) throws IOException {
         return Helper.parseDocument(this.configInstance.getContentRepository().getProcessor(), read(uri.toURL())).getObject();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private XPathExecutable createXpath(final String expression) {
         return this.configInstance.getContentRepository().createXPath(expression, new HashMap<>());
     }
