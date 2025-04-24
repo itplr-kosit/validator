@@ -31,7 +31,7 @@ public abstract class BaseIT {
     public void setup() {
         final String port = System.getProperty("daemon.port");
         if (port != null) {
-            RestAssured.port = Integer.valueOf(port);
+            RestAssured.port = Integer.parseInt(port);
         }
         final String baseHost = System.getProperty("daemon.host");
         if (baseHost != null) {
