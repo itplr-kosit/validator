@@ -25,8 +25,8 @@ import javax.xml.validation.Validator;
 import java.net.URI;
 
 /**
- * This is a slightly more open implementation that allows resolving artifacts from local filesystems. Your are not
- * bound to a specific 'repository'. But your validation artifacts (schema, xsl, etc.) must be available locally. This
+ * This is a slightly more open implementation that allows resolving artifacts from local filesystems. You are not bound
+ * to a specific 'repository'. But your validation artifacts (schema, xsl, etc.) must be available locally. This
  * implementation does not allow loading from http sources
  *
  * @author Andreas Penski

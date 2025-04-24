@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 
 /**
  * Erzeugt den Report auf Basis der gesammelten Informationen über den Prüfling. Sollte kein Szenario identifiziert
- * worden sein, so wird ein das Fallback-Szenario verwend und ein default report} erzeugt.
+ * worden sein, so wird ein das Fallback-Szenario verwendet und ein default report erzeugt.
  *
  * @author Andreas Penski
  */
@@ -122,7 +122,7 @@ public class CreateReportAction implements CheckAction {
 
     /**
      * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect
-     * on {@link JAXBSource}'s XMLReader, but it throws exceptions on unknown properties. This just drops this
+     * on {@link JAXBSource}'s XMLReader, but it throws exceptions on unknown properties. This just drops these
      * exceptions.
      */
     private static class ReaderWrapper implements XMLReader {

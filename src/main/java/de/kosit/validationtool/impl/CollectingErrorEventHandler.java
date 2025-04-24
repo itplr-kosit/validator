@@ -95,7 +95,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     /**
      * Zeigt an, ob Validierungsfehler vorhanden sind.
      *
-     * @return true wenn mindestens ein Fehler vorhanden ist.
+     * @return true, wenn mindestens ein Fehler vorhanden ist.
      */
     public boolean hasErrors() {
         return hasEvents() && this.errors.stream().anyMatch(e -> e.getSeverityCode() != XMLSyntaxErrorSeverity.SEVERITY_WARNING);
@@ -104,7 +104,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     /**
      * Zeigt an, ob es Validierungs-Ereignisse gab.
      *
-     * @return true wenn mindestens ein Validierungsereignis aufgetreten ist
+     * @return true, wenn mindestens ein Validierungsereignis aufgetreten ist
      */
     public boolean hasEvents() {
         return !this.errors.isEmpty();

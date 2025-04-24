@@ -63,7 +63,7 @@ public class ClassPathResourceResolver implements LSResourceResolver {
         private String stringData;
 
         /**
-         * Instantiierung einer neue Instanz.
+         * Instantiierung einer neuen Instanz.
          *
          * @param publicId die publicId
          * @param systemId die systemId

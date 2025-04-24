@@ -56,7 +56,7 @@ public abstract class BaseOutput {
     /**
      * Ermittelt, ob es bei der Validierung {@link FailedAssert}s gab.
      *
-     * @return true wenn mindestens ein {@link FailedAssert} vorhanden ist
+     * @return true, wenn mindestens ein {@link FailedAssert} vorhanden ist
      */
     public boolean hasFailedAsserts() {
         return !getFailedAsserts().isEmpty();

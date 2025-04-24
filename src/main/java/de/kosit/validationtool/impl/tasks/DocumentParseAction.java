@@ -45,7 +45,7 @@ public class DocumentParseAction implements CheckAction {
     private final Processor processor;
 
     /**
-     * Parsed und überprüft ein übergebenes Dokument darauf ob es well-formed ist. Dies stellt den ersten
+     * Parsed und überprüft ein übergebenes Dokument darauf, ob es well-formed ist. Dies stellt den ersten
      * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem
      * Schema.
      *

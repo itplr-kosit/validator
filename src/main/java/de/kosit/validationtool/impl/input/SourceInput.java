@@ -33,7 +33,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 /**
  * A validator {@link de.kosit.validationtool.api.Input} based on a {@link Source}.
  * <p>
- * Note: The various implementations of {@link Source} varies wether the can be read twice or no. This implementation
+ * Note: The various implementations of {@link Source} varies whether they can be read twice or not. This implementation
  * tries to handle this with respect document identification (hashcode).
  * <p>
  * This class is known to work with:

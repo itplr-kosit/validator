@@ -51,7 +51,7 @@ import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 
 /**
  * The reference implementation for the validation process. After initialisation, instances are threadsafe and should be
- * reused since initializing saxon runtime objects is an rather heavyweight process.
+ * reused since initializing saxon runtime objects is a rather heavyweight process.
  *
  * @author Andreas Penski
  */

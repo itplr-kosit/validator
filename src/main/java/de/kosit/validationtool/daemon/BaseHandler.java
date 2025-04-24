@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Simple base implemenation for http handlers. Doing I/O stuff.
+ * Simple base implementation for http handlers (doing I/O stuff).
  *
  * @author Andreas Penski
  */

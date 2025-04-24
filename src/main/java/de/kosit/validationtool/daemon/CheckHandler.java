@@ -36,8 +36,8 @@ import java.net.URI;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Wir benötigen einen Handler, der zur Verarbeitung von HTTP-Anforderungen aufgerufen wird um hier die Verarbeitung des
- * POST Request zu realisieren.
+ * Wir benötigen einen Handler, der zur Verarbeitung von HTTP-Anforderungen aufgerufen wird, um hier die Verarbeitung
+ * des POST Request zu realisieren.
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -52,8 +52,7 @@ class CheckHandler extends BaseHandler {
     /**
      * Methode, die eine gegebene Anforderung verarbeitet und eine entsprechende Antwort generiert
      *
-     * @param httpExchange kapselt eine empfangene HTTP-Anforderung und eine Antwort, die in einem Exchange generiert
-     *            werden soll.
+     * @param httpExchange kapselt eine empfangene HTTP-Anforderung und eine Antwort.
      */
     @Override
     public void handle(final HttpExchange httpExchange) throws IOException {

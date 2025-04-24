@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 public interface Check {
 
     /**
-     * Checks an incoming xml {@link Input Inputs}. The result-{@link Document} is readonly. To change the this document
-     * you need to copy the nodes into an new {@link Document}.
+     * Checks an incoming xml {@link Input Inputs}. The result-{@link Document} is readonly. To change this document you
+     * need to copy the nodes into a new {@link Document}.
      *
      * @param input the resource / xml file to validate.
      * @return a result-{@link Document} (readonly)
@@ -51,7 +51,7 @@ public interface Check {
 
     /**
      * Checks an incoming xml files in batch mode. Processing is sequential. The result-{@link Document Documents} are
-     * readonly. To change the this document you need to copy them into new {@link Document Documents}.
+     * readonly. To change this document you need to copy them into new {@link Document Documents}.
      *
      *
      * @param input list of xml {@link Input Inputs}

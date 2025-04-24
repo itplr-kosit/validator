@@ -103,7 +103,7 @@ public interface Configuration {
     }
 
     /**
-     * Loads an XML based scenario definition from the file with an specific repository / source location specified via
+     * Loads an XML based scenario definition from the file with a specific repository / source location specified via
      * URIs.
      *
      * @param scenarioDefinition the XML file with scenario definition

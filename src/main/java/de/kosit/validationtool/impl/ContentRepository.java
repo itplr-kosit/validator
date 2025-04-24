@@ -203,7 +203,7 @@ public class ContentRepository {
     }
 
     /**
-     * Erzeugt einen [@link XPathExecutable} auf Basis der angegebenen Informationen.
+     * Erzeugt einen {@link XPathExecutable} auf Basis der angegebenen Informationen.
      *
      * @param expression der XPATH-Ausdruck
      * @param namespaces optionale Namespace-Mappings

@@ -122,7 +122,7 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Adds a {@link Scenario} to this list of know scenarios. Note: order of calling this methods defines order of
+     * Adds a {@link Scenario} to this list of know scenarios. Note: order of calling these methods defines order of
      * scenarios when determining the target scenario for a given xml file.
      *
      * @param scenarioBuilder the {@link ScenarioBuilder} building the {@link Scenario}

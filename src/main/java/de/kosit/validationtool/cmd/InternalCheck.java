@@ -112,7 +112,7 @@ class InternalCheck extends DefaultCheck {
      * Prüft die Prüflinge und gibt Informationen über etwaige Assertions aus.
      *
      * @param input die Prüflinge
-     * @return false wenn es Assertion-Fehler gibt, sonst true
+     * @return false, wenn es Assertion-Fehler gibt, sonst true
      */
     @Override
     public Result checkInput(final Input input) {

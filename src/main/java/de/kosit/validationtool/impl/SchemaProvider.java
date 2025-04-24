@@ -37,7 +37,8 @@ public class SchemaProvider {
     private static Schema reportInputSchema;
 
     /**
-     * Liefert das definierte Schema für die Validierung des [@link CreateReportInput}
+     * Liefert das definierte Schema für die Validierung des
+     * {@link de.kosit.validationtool.model.reportInput.CreateReportInput}
      *
      * @return ReportInput-Schema
      */
@@ -74,7 +75,7 @@ public class SchemaProvider {
     }
 
     /**
-     * Liefert das definiert Schema für die Szenario-Konfiguration
+     * Liefert das definierte Schema für die Szenario-Konfiguration
      *
      * @return Scenario-Schema
      */

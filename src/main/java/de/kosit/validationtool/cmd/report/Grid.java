@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * An text based grid for cli based programs.
+ * A text based grid for cli based programs.
  *
  * @author Andreas Penski
  */

@@ -84,7 +84,7 @@ public class SchemaValidationAction implements CheckAction {
 
         @Override
         public void close() {
-            // nothing do do
+            // nothing to do
         }
 
         @Override

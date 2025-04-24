@@ -102,7 +102,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     }
 
     /**
-     * Add an xpath expression to match the scenario. You can leverage declared namespaces.
+     * Add a xpath expression to match the scenario. You can leverage declared namespaces.
      *
      * @param xpath the expression
      * @return this
@@ -136,7 +136,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     }
 
     /**
-     * Add an xpath expression to compute acceptance for the scenario. You can leverage declared namespaces.
+     * Add a xpath expression to compute acceptance for the scenario. You can leverage declared namespaces.
      *
      * @param acceptXpath the xpath expresison
      * @return this

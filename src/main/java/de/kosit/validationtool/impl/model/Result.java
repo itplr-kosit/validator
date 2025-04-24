@@ -60,7 +60,7 @@ public class Result<T, E> {
     /**
      * Zeigt an, ob das Ergebnis valide, also ohne Fehler ist.
      *
-     * @return true wenn erfolgreich
+     * @return true, wenn erfolgreich
      */
     public boolean isValid() {
         return object != null && errors.isEmpty();
@@ -69,7 +69,7 @@ public class Result<T, E> {
     /**
      * Zeigt an, ob das Ergebnis nicht valide ist, als entsprechend Fehler gesammelt wurden.
      *
-     * @return true wenn erfolgreich wenn Fehler vorhanden sind.
+     * @return true, wenn erfolgreich, false, wenn Fehler vorhanden sind.
      */
     public boolean isInvalid() {
         return !isValid();
