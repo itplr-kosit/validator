@@ -20,8 +20,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * CLI return codes. Codes > 0 indicate a processing error. Codes < indicates a configuration error. Code 0 indicates a
- * successful processing.
+ * CLI return codes. Codes &gt; 0 indicate a processing error. Codes &lt; indicates a configuration error. Code 0
+ * indicates a successful processing.
  *
  * @author Andreas Penski
  */
