@@ -87,7 +87,6 @@ public class Validator {
                 returnValue = ReturnValue.CONFIGURATION_ERROR;
             }
         } catch (final Exception e) {
-            e.printStackTrace();
             Printer.writeErr(e.getMessage());
             if (cmd.isDebugOutput()) {
                 log.error(e.getMessage(), e);

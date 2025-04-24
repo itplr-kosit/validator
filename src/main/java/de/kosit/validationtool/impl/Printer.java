@@ -16,6 +16,8 @@
 
 package de.kosit.validationtool.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -62,7 +64,10 @@ public class Printer {
     public static void writeErr(final Exception ex, final String message, final Object... params) {
         writeErr(message, params);
         if (ex != null) {
-            ex.printStackTrace();
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            ex.printStackTrace(pw);
+            writeErr(sw.toString());
         }
     }
 
