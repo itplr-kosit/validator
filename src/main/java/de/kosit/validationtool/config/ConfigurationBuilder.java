@@ -280,7 +280,7 @@ public class ConfigurationBuilder {
         configuration.setName(this.name);
         configuration.setContentRepository(contentRepository);
         configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, createDefinition(configuration));
-        return (configuration);
+        return configuration;
     }
 
     private Scenarios createDefinition(final DefaultConfiguration configuration) {

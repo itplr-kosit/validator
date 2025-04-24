@@ -21,9 +21,9 @@ import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 
@@ -32,23 +32,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Andreas Penski
  */
-public class PrintReportActionTest {
+class PrintReportActionTest {
 
     private PrintReportAction action;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         CommandLine.activate();
         this.action = new PrintReportAction(TestObjectFactory.createProcessor());
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         CommandLine.deactivate();
     }
 
     @Test
-    public void testSimpleSerialize() throws MalformedURLException {
+    void simpleSerialize() throws MalformedURLException {
         final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(Simple.SIMPLE_VALID));
         b.setReport(Helper.load(Simple.SIMPLE_VALID.toURL()));
         assertThat(this.action.isSkipped(b)).isFalse();

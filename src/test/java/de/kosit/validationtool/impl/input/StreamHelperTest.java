@@ -17,7 +17,7 @@
 package de.kosit.validationtool.impl.input;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Andreas Penski
  */
-public class StreamHelperTest {
+class StreamHelperTest {
 
     /**
      * Simulates a stream that is return 0 for {@link InputStream#available()} even though content is supplied.
@@ -49,7 +49,7 @@ public class StreamHelperTest {
     }
 
     @Test
-    public void testLazyStream() throws IOException {
+    void lazyStream() throws IOException {
         final String myContent = "SomeBytes";
         try ( final InputStream in = new MyLazyStream(new ByteArrayInputStream(myContent.getBytes())) ) {
             final BufferedInputStream peekable = StreamHelper.wrapPeekable(in);

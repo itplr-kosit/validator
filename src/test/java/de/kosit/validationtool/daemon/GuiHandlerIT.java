@@ -18,14 +18,13 @@ package de.kosit.validationtool.daemon;
 
 import static io.restassured.RestAssured.given;
 
-import org.junit.Test;
-
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Test;
 
-public class GuiHandlerIT extends BaseIT {
+class GuiHandlerIT extends BaseIT {
 
     @Test
-    public void checkGui() {
+    void checkGui() {
         given().when().get("/").then().statusCode(200).and().contentType(ContentType.HTML);
         given().when().get("/index.html").then().statusCode(200).and().contentType("text/html");
         given().when().get("/unknown.md").then().statusCode(404).and().contentType(ContentType.TEXT);

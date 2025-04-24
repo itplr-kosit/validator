@@ -21,29 +21,29 @@ import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import net.sf.saxon.s9api.XdmNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.kosit.validationtool.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Testet die Document Parsing-Funktionalitäten.
  *
  * @author Andreas Penski
  */
-public class DocumentParseActionTest {
+class DocumentParseActionTest {
 
     private DocumentParseAction action;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         this.action = new DocumentParseAction(Helper.createProcessor());
     }
 
     @Test
-    public void testSimple() {
+    void simple() {
         final Result<XdmNode, XMLSyntaxError> result = this.action.parseDocument(read(Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
         assertThat(result.getObject()).isNotNull();
@@ -52,7 +52,7 @@ public class DocumentParseActionTest {
     }
 
     @Test
-    public void testIllFormed() {
+    void illFormed() {
         final Result<XdmNode, XMLSyntaxError> result = this.action.parseDocument(read(Simple.NOT_WELL_FORMED));
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
@@ -61,7 +61,7 @@ public class DocumentParseActionTest {
     }
 
     @Test
-    public void testNullInput() {
+    void nullInput() {
         assertThrows(IllegalArgumentException.class, () -> this.action.parseDocument(null));
     }
 }

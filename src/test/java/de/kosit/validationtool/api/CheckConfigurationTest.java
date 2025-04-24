@@ -17,7 +17,7 @@
 package de.kosit.validationtool.api;
 
 import de.kosit.validationtool.impl.Helper.Simple;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,10 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Andreas Penski
  */
 @Deprecated
-public class CheckConfigurationTest {
+class CheckConfigurationTest {
 
     @Test
-    public void testDelegation() {
+    void delegation() {
         final CheckConfiguration config = new CheckConfiguration(Simple.SCENARIOS);
         config.setScenarioRepository(Simple.REPOSITORY_URI);
         assertThat(config.getScenarios()).isNotEmpty();

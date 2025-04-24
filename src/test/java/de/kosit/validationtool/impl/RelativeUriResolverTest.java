@@ -17,7 +17,7 @@
 package de.kosit.validationtool.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,16 +28,15 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
-import org.junit.Test;
-
 import de.kosit.validationtool.impl.xml.RelativeUriResolver;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testet den Uri-Resolver der relative auflösen soll
  *
  * @author Andreas Penski
  */
-public class RelativeUriResolverTest {
+class RelativeUriResolverTest {
 
     private static final URI BASE;
 
@@ -52,23 +51,23 @@ public class RelativeUriResolverTest {
     private URIResolver resolver = new RelativeUriResolver(BASE);
 
     @Test
-    public void testSuccess() throws TransformerException {
+    void success() throws TransformerException {
         final Source resource = this.resolver.resolve("ubl-0001.xml", BASE.toASCIIString());
         assertThat(resource).isNotNull();
     }
 
     @Test
-    public void testNotExisting() {
+    void notExisting() {
         assertThrows(TransformerException.class, () -> this.resolver.resolve("ubl-0001", BASE.toASCIIString()));
     }
 
     @Test
-    public void testOutOfPath() {
+    void outOfPath() {
         assertThrows(TransformerException.class, () -> this.resolver.resolve("../results/report.xml", BASE.toASCIIString()));
     }
 
     @Test
-    public void testClasspathLocal() throws URISyntaxException, TransformerException {
+    void classpathLocal() throws URISyntaxException, TransformerException {
         this.resolver = new RelativeUriResolver(
                 Objects.requireNonNull(RelativeUriResolver.class.getClassLoader().getResource("loading")).toURI());
         final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("loading/main.xsd");
@@ -78,7 +77,7 @@ public class RelativeUriResolverTest {
     }
 
     @Test
-    public void testClasspathJAR() throws URISyntaxException, TransformerException {
+    void classpathJAR() throws URISyntaxException, TransformerException {
         this.resolver = new RelativeUriResolver(
                 Objects.requireNonNull(RelativeUriResolver.class.getClassLoader().getResource("packaged")).toURI());
         final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("packaged/main.xsd");

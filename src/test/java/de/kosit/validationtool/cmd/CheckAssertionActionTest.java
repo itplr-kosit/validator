@@ -22,8 +22,8 @@ import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andreas Penski
  */
-public class CheckAssertionActionTest {
+class CheckAssertionActionTest {
 
     private static final URL SAMPLE = CheckAssertionActionTest.class.getResource("/examples/assertions/ubl-0001.xml");
 
@@ -43,20 +43,20 @@ public class CheckAssertionActionTest {
 
     private static final URL SAMPLE_ASSERTIONS = CheckAssertionActionTest.class.getResource("/examples/assertions/tests-xrechnung.xml");
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         CommandLine.activate();
     }
 
     @Test
-    public void testEmptyInput() {
+    void emptyInput() {
         final CheckAssertionAction a = new CheckAssertionAction(new Assertions(), TestObjectFactory.createProcessor());
         a.check(new CheckAction.Bag(InputFactory.read(SAMPLE), new CreateReportInput()));
         assertThat(CommandLine.getErrorOutput()).contains("Can not find assertions for");
     }
 
     @Test
-    public void testSimple() throws URISyntaxException {
+    void simple() throws URISyntaxException {
         final CheckAction.Bag bag = new CheckAction.Bag(InputFactory.read(SAMPLE), new CreateReportInput());
         bag.setReport(Helper.load(SAMPLE_REPORT));
 

@@ -73,14 +73,14 @@ class InternalCheck extends DefaultCheck {
 
     private static Grid createResultGrid(final Map<String, Result> results) {
         final Grid grid = new Grid(
-        //@formatter:off
+        // @formatter:off
                 new ColumnDefinition("File", 60, 10, 1),
                 new ColumnDefinition("Schema", 7).justify(Justify.CENTER),
                 new ColumnDefinition("Schematron", 10).justify(Justify.CENTER),
                 new ColumnDefinition("Acceptance", 10, 5).justify(Justify.CENTER),
-                new ColumnDefinition("Error/Description", 60,20,3)
+                new ColumnDefinition("Error/Description", 60, 20, 3)
         );
-        //@formatter:on
+        // @formatter:on
         results.entrySet().stream().sorted(Entry.comparingByKey()).forEach(e -> {
             final Result value = e.getValue();
 

@@ -24,8 +24,7 @@ import java.nio.file.Paths;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
@@ -37,10 +36,10 @@ import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
  *
  * @author Andreas Penski
  */
-public class SchemaBuilderTest {
+class SchemaBuilderTest {
 
     @Test
-    public void testBuildSchema() {
+    void buildSchema() {
         final SchemaBuilder builder = schema(Simple.SCHEMA);
         final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = builder.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
@@ -48,7 +47,7 @@ public class SchemaBuilderTest {
     }
 
     @Test
-    public void testNoConfiguration() {
+    void noConfiguration() {
         final SchemaBuilder builder = schema("no-config");
         final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = builder.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
@@ -56,7 +55,7 @@ public class SchemaBuilderTest {
     }
 
     @Test
-    public void testBuildNamedSchema() {
+    void buildNamedSchema() {
         final SchemaBuilder builder = schema("myname").schemaLocation(Simple.SCHEMA);
         final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = builder.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
@@ -66,7 +65,7 @@ public class SchemaBuilderTest {
     }
 
     @Test
-    public void testInvalidSchema() {
+    void invalidSchema() {
         final SchemaBuilder builder = schema("myname").schemaLocation(Simple.SCHEMA_INVALID);
         final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = builder.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
@@ -74,7 +73,7 @@ public class SchemaBuilderTest {
     }
 
     @Test
-    public void testNonExisting() {
+    void nonExisting() {
         final SchemaBuilder builder = schema("myname").schemaLocation(Simple.REPOSITORY_URI.resolve("doesNotExist.xsd"));
         final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = builder.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
@@ -82,7 +81,7 @@ public class SchemaBuilderTest {
     }
 
     @Test
-    public void testPath() {
+    void path() {
         final SchemaBuilder builder = schema("myname").schemaLocation(Paths.get(Simple.SCHEMA));
         final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = builder.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
@@ -90,7 +89,7 @@ public class SchemaBuilderTest {
     }
 
     @Test
-    public void testStringLocation() {
+    void stringLocation() {
         final SchemaBuilder builder = schema("myname").schemaLocation("simple.xsd");
         final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = builder.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
@@ -98,7 +97,7 @@ public class SchemaBuilderTest {
     }
 
     @Test
-    public void testPrecompiled() {
+    void precompiled() {
         final ContentRepository repository = Simple.createContentRepository();
         final Schema schema = repository.createSchema(Simple.SCHEMA);
 

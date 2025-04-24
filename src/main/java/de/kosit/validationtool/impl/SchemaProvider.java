@@ -84,4 +84,7 @@ public class SchemaProvider {
         return createSchema(sf, resolve(Objects.requireNonNull(SchemaProvider.class.getResource("/xsd/scenarios.xsd"))));
     }
 
+    private SchemaProvider() {
+    }
+
 }

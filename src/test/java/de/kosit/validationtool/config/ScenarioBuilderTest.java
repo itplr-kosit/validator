@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.text.RandomStringGenerator;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.Scenario;
@@ -40,17 +39,17 @@ import net.sf.saxon.s9api.XPathExecutable;
  *
  * @author Andreas Penski
  */
-public class ScenarioBuilderTest {
+class ScenarioBuilderTest {
 
     @Test
-    public void simpleValid() {
+    void simpleValid() {
         final Result<Scenario, String> result = createScenario().build(Simple.createContentRepository());
         assertThat(result.isValid()).isTrue();
         assertThat(result.getObject().getConfiguration()).isNotNull();
     }
 
     @Test
-    public void testNoSchema() {
+    void noSchema() {
         final ScenarioBuilder builder = createScenario();
         builder.validate((SchemaBuilder) null);
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
@@ -59,7 +58,7 @@ public class ScenarioBuilderTest {
     }
 
     @Test
-    public void testNoMatch() {
+    void noMatch() {
         final ScenarioBuilder builder = createScenario();
         builder.match((String) null);
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
@@ -68,7 +67,7 @@ public class ScenarioBuilderTest {
     }
 
     @Test
-    public void testInvalidMatch() {
+    void invalidMatch() {
         final ScenarioBuilder builder = createScenario();
         builder.match("/////");
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
@@ -77,7 +76,7 @@ public class ScenarioBuilderTest {
     }
 
     @Test
-    public void testNoAccept() {
+    void noAccept() {
         final ScenarioBuilder builder = createScenario();
         builder.acceptWith((String) null);
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
@@ -85,7 +84,7 @@ public class ScenarioBuilderTest {
     }
 
     @Test
-    public void testInvalidAccept() {
+    void invalidAccept() {
         final ScenarioBuilder builder = createScenario();
         builder.acceptWith("/////");
         final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
@@ -94,7 +93,7 @@ public class ScenarioBuilderTest {
     }
 
     @Test
-    public void testCombinedNamespaces() {
+    void combinedNamespaces() {
         final ContentRepository repository = Simple.createContentRepository();
         final Map<String, String> ns1 = new HashMap<>();
         ns1.put("n1", "http://n1.org");
@@ -118,7 +117,7 @@ public class ScenarioBuilderTest {
     }
 
     @Test
-    public void testConfigureWithExecutable() {
+    void configureWithExecutable() {
         final ContentRepository repository = Simple.createContentRepository();
         final XPathExecutable match = repository.createXPath("//*", null);
         final XPathExecutable accept = repository.createXPath("//*", null);
@@ -136,7 +135,7 @@ public class ScenarioBuilderTest {
     }
 
     @Test
-    public void testBasicAttributes() {
+    void basicAttributes() {
         final ContentRepository repository = Simple.createContentRepository();
         final String random = getRandomString(5);
         final ScenarioBuilder builder = createScenario();
@@ -150,7 +149,7 @@ public class ScenarioBuilderTest {
     }
 
     @Test
-    public void testNoBasicAttributes() {
+    void noBasicAttributes() {
         final ContentRepository repository = Simple.createContentRepository();
         final ScenarioBuilder builder = createScenario();
         builder.name(null);

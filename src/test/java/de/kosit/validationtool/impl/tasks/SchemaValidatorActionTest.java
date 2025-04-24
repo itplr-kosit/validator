@@ -26,8 +26,8 @@ import de.kosit.validationtool.impl.SchemaProvider;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -48,17 +48,17 @@ import static org.mockito.Mockito.*;
  *
  * @author Andreas Penski
  */
-public class SchemaValidatorActionTest {
+class SchemaValidatorActionTest {
 
     private SchemaValidationAction service;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         this.service = new SchemaValidationAction(TestObjectFactory.createProcessor());
     }
 
     @Test
-    public void testSimple() throws MalformedURLException {
+    void simple() throws MalformedURLException {
         final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
         this.service.check(bag);
         assertThat(bag.getSchemaValidationResult().isValid()).isTrue();
@@ -67,7 +67,7 @@ public class SchemaValidatorActionTest {
     }
 
     @Test
-    public void testValidationFailure() throws MalformedURLException {
+    void validationFailure() throws MalformedURLException {
         final Input input = InputFactory.read(Simple.SCHEMA_INVALID.toURL());
         final CheckAction.Bag bag = createBag(input);
         this.service.check(bag);
@@ -80,13 +80,13 @@ public class SchemaValidatorActionTest {
     }
 
     @Test
-    public void testSchemaReferences() {
+    void schemaReferences() {
         final Schema reportInputSchema = SchemaProvider.getReportInputSchema();
         assertThat(reportInputSchema).isNotNull();
     }
 
     @Test
-    public void testNoRepeatableRead() throws Exception {
+    void noRepeatableRead() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
             final Bag bag = createBag(InputFactory.read(new StreamSource(inputStream)));
             // don't read the real input stream here!
@@ -98,7 +98,7 @@ public class SchemaValidatorActionTest {
     }
 
     @Test
-    public void testNoRepeatableReadBigFile() throws Exception {
+    void noRepeatableReadBigFile() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
             final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(inputStream));
             final Bag bag = createBag(input);
@@ -114,7 +114,7 @@ public class SchemaValidatorActionTest {
     }
 
     @Test
-    public void testNoRepeatableReaderInput() throws Exception {
+    void noRepeatableReaderInput() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
               final Reader reader = new InputStreamReader(inputStream) ) {
             final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(reader));
@@ -128,7 +128,7 @@ public class SchemaValidatorActionTest {
     }
 
     @Test
-    public void testNoRepeatableReaderInputBigFile() throws Exception {
+    void noRepeatableReaderInputBigFile() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
               final Reader reader = new InputStreamReader(inputStream) ) {
             final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(reader));
@@ -144,7 +144,7 @@ public class SchemaValidatorActionTest {
     }
 
     @Test
-    public void testProcessingError() throws IOException, SAXException {
+    void processingError() throws IOException, SAXException {
         final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
         final Scenario scenario = bag.getScenarioSelectionResult().getObject();
         final Schema schema = mock(Schema.class);

@@ -18,16 +18,15 @@ package de.kosit.validationtool.impl;
 
 import static de.kosit.validationtool.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import de.kosit.validationtool.config.TestConfiguration;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
@@ -42,14 +41,14 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 
-public class ScenarioRepositoryTest {
+class ScenarioRepositoryTest {
 
     private ScenarioRepository repository;
 
     private TestConfiguration configInstance;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         this.configInstance = new TestConfiguration();
         this.configInstance
                 .setContentRepository(new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
@@ -67,14 +66,14 @@ public class ScenarioRepositoryTest {
     }
 
     @Test
-    public void testHappyCase() throws Exception {
+    void happyCase() throws Exception {
         final Result<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isTrue();
     }
 
     @Test
-    public void testNonMatch() throws Exception {
+    void nonMatch() throws Exception {
         this.configInstance.setScenarios(new ArrayList<>());
         final Scenario fallback = createFallback();
         this.configInstance.setFallbackScenario(fallback);
@@ -94,7 +93,7 @@ public class ScenarioRepositoryTest {
     }
 
     @Test
-    public void testMultiMatch() throws Exception {
+    void multiMatch() throws Exception {
         this.configInstance.getScenarios().add(createScenario());
         this.configInstance.setFallbackScenario(createFallback());
         final Result<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
@@ -104,12 +103,12 @@ public class ScenarioRepositoryTest {
     }
 
     @Test
-    public void testNoConfiguration() {
+    void noConfiguration() {
         assertThrows(IllegalArgumentException.class, () -> this.repository = new ScenarioRepository());
     }
 
     @Test
-    public void testFallbackOnMultipleConfigurations() {
+    void fallbackOnMultipleConfigurations() {
         final TestConfiguration first = this.configInstance;
         first.setFallbackScenario(createFallback());
         setup();// create new one;

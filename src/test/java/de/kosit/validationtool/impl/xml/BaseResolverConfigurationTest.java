@@ -17,14 +17,14 @@
 package de.kosit.validationtool.impl.xml;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -46,7 +46,7 @@ public class BaseResolverConfigurationTest {
     public static final String NOT_EXISTING_SCHEME = "not-existing-scheme";
 
     @Test
-    public void testIgnoreUnsupportedProperty() throws SAXNotRecognizedException, SAXNotSupportedException {
+    void ignoreUnsupportedProperty() throws SAXNotRecognizedException, SAXNotSupportedException {
         final SchemaFactory sf = mock(SchemaFactory.class);
         final TestResolvingStrategy s = new TestResolvingStrategy();
         doThrow(new SAXNotRecognizedException("not supported")).when(sf).setProperty(any(), any());
@@ -54,7 +54,7 @@ public class BaseResolverConfigurationTest {
     }
 
     @Test
-    public void testFailOnUnsupportedProperty() throws SAXNotRecognizedException, SAXNotSupportedException {
+    void failOnUnsupportedProperty() throws SAXNotRecognizedException, SAXNotSupportedException {
         final SchemaFactory sf = mock(SchemaFactory.class);
         final TestResolvingStrategy s = new TestResolvingStrategy();
         doThrow(new SAXNotRecognizedException("not supported")).when(sf).setProperty(any(), any());
@@ -62,7 +62,7 @@ public class BaseResolverConfigurationTest {
     }
 
     @Test
-    public void testSimpleSuccess() throws SAXNotRecognizedException, SAXNotSupportedException {
+    void simpleSuccess() throws SAXNotRecognizedException, SAXNotSupportedException {
         final SchemaFactory sf = mock(SchemaFactory.class);
         final TestResolvingStrategy s = new TestResolvingStrategy();
         s.setInternalProperty(sf, true);

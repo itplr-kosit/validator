@@ -25,8 +25,7 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 
@@ -40,24 +39,24 @@ import io.restassured.specification.MultiPartSpecification;
  * @author Roula Antoun
  * @author Andreas Penski
  */
-public class CheckHandlerIT extends BaseIT {
+class CheckHandlerIT extends BaseIT {
 
     private static final String APPLICATION_XML = "application/xml";
 
     @Test
-    public void simpleTest() throws IOException {
+    void simpleTest() throws IOException {
         try ( final InputStream io = Simple.SIMPLE_VALID.toURL().openStream() ) {
             given().contentType(ContentType.XML).body(toContent(io)).when().post("/").then().statusCode(SC_OK);
         }
     }
 
     @Test
-    public void noInputTest() {
+    void noInputTest() {
         given().body("").contentType(APPLICATION_XML).when().post("/").then().statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
     @Test
-    public void testUnknown() throws IOException {
+    void unknown() throws IOException {
         try ( final InputStream io = Simple.UNKNOWN.toURL().openStream() ) {
             given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(SC_NOT_ACCEPTABLE);
         }
@@ -68,14 +67,14 @@ public class CheckHandlerIT extends BaseIT {
     }
 
     @Test
-    public void xmlResultTest() throws IOException {
+    void xmlResultTest() throws IOException {
         try ( final InputStream io = Simple.SIMPLE_VALID.toURL().openStream() ) {
             given().body(toContent(io)).when().post("/").then().contentType(APPLICATION_XML).and().statusCode(SC_OK);
         }
     }
 
     @Test
-    public void testMultipart() throws IOException {
+    void multipart() throws IOException {
         try ( final InputStream io = Simple.SIMPLE_VALID.toURL().openStream() ) {
             final MultiPartSpecification spec = new MultiPartSpecBuilder(io).fileName("file").controlName("file").build();
             given().multiPart(spec).when().post("/").then().statusCode(HttpStatus.SC_BAD_REQUEST);
@@ -83,7 +82,7 @@ public class CheckHandlerIT extends BaseIT {
     }
 
     @Test
-    public void testLarge() throws IOException {
+    void large() throws IOException {
         try ( final InputStream io = Helper.LARGE_XML.toURL().openStream() ) {
             given().contentType(APPLICATION_XML).body(toContent(io)).when().post("/").then().statusCode(SC_NOT_ACCEPTABLE);
         }

@@ -26,8 +26,8 @@ import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.transform.Source;
 
@@ -43,20 +43,20 @@ import static org.mockito.Mockito.when;
  *
  * @author Andreas Penski
  */
-public class CreateReportActionTest {
+class CreateReportActionTest {
 
     private CreateReportAction action;
 
     private ContentRepository repository;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         this.repository = Simple.createContentRepository();
         this.action = new CreateReportAction(this.repository.getProcessor(), new ConversionService());
     }
 
     @Test
-    public void testSimpleCreate() {
+    void simpleCreate() {
         final Bag bag = TestBagBuilder.createBag(true, true);
         final Scenario scenario = createScenario().build(this.repository).getObject();
         bag.setScenarioSelectionResult(new Result<>(scenario));
@@ -66,7 +66,7 @@ public class CreateReportActionTest {
     }
 
     @Test
-    public void testNoValidParseResult() {
+    void noValidParseResult() {
         // e.g. no valid xml file specified
         final Bag bag = TestBagBuilder.createBag(InputFactory.read("someBytes".getBytes(), "invalid"), true);
         final Scenario scenario = createScenario().build(this.repository).getObject();
@@ -79,7 +79,7 @@ public class CreateReportActionTest {
     }
 
     @Test
-    public void testExecutionException() throws SaxonApiException {
+    void executionException() throws SaxonApiException {
         final Processor p = mock(Processor.class);
         final DocumentBuilder documentBuilder = mock(DocumentBuilder.class);
         this.action = new CreateReportAction(p, new ConversionService());

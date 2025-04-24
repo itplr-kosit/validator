@@ -151,4 +151,7 @@ public class CommandLine {
         setStandardInput(nullInputStream());
     }
 
+    private CommandLine() {
+    }
+
 }

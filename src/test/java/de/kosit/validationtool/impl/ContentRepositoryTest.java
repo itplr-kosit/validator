@@ -17,7 +17,7 @@
 package de.kosit.validationtool.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -28,9 +28,8 @@ import java.util.Map;
 
 import javax.xml.validation.Schema;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import de.kosit.validationtool.impl.Helper.Simple;
 
 import net.sf.saxon.s9api.XPathExecutable;
@@ -41,39 +40,39 @@ import net.sf.saxon.s9api.XsltExecutable;
  *
  * @author Andreas Penski
  */
-public class ContentRepositoryTest {
+class ContentRepositoryTest {
 
     private ContentRepository repository;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         this.repository = Simple.createContentRepository();
     }
 
     @Test
-    public void testCreateSchema() throws MalformedURLException {
+    void createSchema() throws MalformedURLException {
         final Schema schema = this.repository.createSchema(Helper.ASSERTION_SCHEMA.toURL());
         assertThat(schema).isNotNull();
     }
 
     @Test
-    public void testCreateSchemaNotExisting() {
+    void createSchemaNotExisting() {
         assertThrows(IllegalStateException.class, () -> this.repository.createSchema(Simple.NOT_EXISTING.toURL()));
     }
 
     @Test
-    public void testLoadXSLT() {
+    void loadXSLT() {
         final XsltExecutable executable = this.repository.loadXsltScript(Simple.REPORT_XSL);
         assertThat(executable).isNotNull();
     }
 
     @Test
-    public void testLoadXSLTNotExisting() {
+    void loadXSLTNotExisting() {
         assertThrows(IllegalStateException.class, () -> this.repository.loadXsltScript(Simple.NOT_EXISTING));
     }
 
     @Test
-    public void testXpathCreation() {
+    void xpathCreation() {
         XPathExecutable xPath = this.repository.createXPath("//html", null);
         assertThat(xPath).isNotNull();
         xPath = this.repository.createXPath("//html", Collections.emptyMap());
@@ -85,17 +84,17 @@ public class ContentRepositoryTest {
     }
 
     @Test
-    public void testXpathCreationWithoutNamespace() {
+    void xpathCreationWithoutNamespace() {
         assertThrows(IllegalStateException.class, () -> this.repository.createXPath("//html:html", null));
     }
 
     @Test
-    public void testIllegalXpath() {
+    void illegalXpath() {
         assertThrows(IllegalStateException.class, () -> this.repository.createXPath("kein Xpath Ausdruck", null));
     }
 
     @Test
-    public void loadFromJar() throws URISyntaxException {
+    void loadFromJar() throws URISyntaxException {
         assert Helper.JAR_REPOSITORY != null;
         this.repository = new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
                 Helper.JAR_REPOSITORY.toURI());

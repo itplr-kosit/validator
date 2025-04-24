@@ -16,19 +16,20 @@
 
 package de.kosit.validationtool.cmd;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests {@link DefaultNamingStrategy}
  *
  * @author Andreas Penski
  */
-public class DefaultNamingStrategyTest {
+class DefaultNamingStrategyTest {
 
     @Test
-    public void testSimple() {
+    void simple() {
         final DefaultNamingStrategy strategy = new DefaultNamingStrategy();
         assertThat(strategy.createName("test")).isEqualTo("test-report.xml");
         strategy.setPrefix("prefix");
@@ -40,7 +41,7 @@ public class DefaultNamingStrategyTest {
     }
 
     @Test
-    public void testDotted() {
+    void dotted() {
         final DefaultNamingStrategy strategy = new DefaultNamingStrategy();
         assertThat(strategy.createName("test.xml")).isEqualTo("test-report.xml");
         strategy.setPrefix("prefix");
@@ -52,7 +53,7 @@ public class DefaultNamingStrategyTest {
     }
 
     @Test
-    public void testDoubleDotted() {
+    void doubleDotted() {
         final DefaultNamingStrategy strategy = new DefaultNamingStrategy();
         assertThat(strategy.createName("test.second.xml")).isEqualTo("test.second-report.xml");
         strategy.setPrefix("prefix");
@@ -64,7 +65,7 @@ public class DefaultNamingStrategyTest {
     }
 
     @Test
-    public void testUnknownExtension() {
+    void unknownExtension() {
         final DefaultNamingStrategy strategy = new DefaultNamingStrategy();
         assertThat(strategy.createName("test.ext")).isEqualTo("test.ext-report.xml");
         strategy.setPrefix("prefix");
@@ -75,8 +76,8 @@ public class DefaultNamingStrategyTest {
         assertThat(strategy.createName("test.ext")).isEqualTo("test.ext-postfix.xml");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testEmptyInput() {
-        new DefaultNamingStrategy().createName(null);
+    @Test
+    void emptyInput() {
+        assertThrows(IllegalArgumentException.class, () -> new DefaultNamingStrategy().createName(null));
     }
 }

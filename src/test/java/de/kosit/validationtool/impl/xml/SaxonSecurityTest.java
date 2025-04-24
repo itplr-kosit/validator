@@ -31,7 +31,7 @@ import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -40,7 +40,7 @@ import java.net.URL;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Testet verschiedene Saxon Security Einstellungen.
@@ -48,11 +48,11 @@ import static org.junit.Assert.fail;
  * @author Andreas Penski
  */
 @Slf4j
-public class SaxonSecurityTest {
+class SaxonSecurityTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    public void testEvilStylesheets() throws IOException {
+    void evilStylesheets() throws IOException {
         final Processor p = TestObjectFactory.createProcessor();
         for (int i = 1; i <= 5; i++) {
             try {
@@ -80,13 +80,13 @@ public class SaxonSecurityTest {
                 }
 
             } catch (final SaxonApiException | RuntimeException e) {
-                log.info("Expected exception detected {}", e.getMessage(), e);
+                log.error("Expected exception detected {}", e.getMessage(), e);
             }
         }
     }
 
     @Test
-    public void testXxe() {
+    void xxe() {
         final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
         final Result<XdmNode, XMLSyntaxError> result = Helper.parseDocument(InputFactory.read(resource));
         assertThat(result.isValid()).isFalse();

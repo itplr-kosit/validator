@@ -29,8 +29,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.sun.net.httpserver.Headers;
@@ -44,10 +43,10 @@ import de.kosit.validationtool.impl.Helper;
 /**
  * @author Andreas Penski
  */
-public class ConfigHandlerTest {
+class ConfigHandlerTest {
 
     @Test
-    public void testApiConfiguration() throws IOException {
+    void apiConfiguration() throws IOException {
         final HttpExchange exchange = mock(HttpExchange.class);
         final Headers headers = mock(Headers.class);
         final OutputStream stream = mock(OutputStream.class);
@@ -61,7 +60,7 @@ public class ConfigHandlerTest {
     }
 
     @Test
-    public void testError() throws IOException {
+    void error() throws IOException {
         final HttpExchange exchange = mock(HttpExchange.class);
         final Headers headers = mock(Headers.class);
         final OutputStream stream = mock(OutputStream.class);

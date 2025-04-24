@@ -87,13 +87,17 @@
     <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api>
     <version.jansi>2.4.1</version.jansi>
     <version.jaxb-runtime>4.0.5</version.jaxb-runtime>
-    <version.junit>4.13.2</version.junit>
+    <version.junit-jupiter-api>5.12.2</version.junit-jupiter-api>
     <version.lombok>1.18.38</version.lombok>
     <version.mockito-core>5.17.0</version.mockito-core>
     <version.packaged-test-scenarios>1.0.2</version.packaged-test-scenarios>
     <version.picocli>4.7.7</version.picocli>
     <version.pmd>7.12.0</version.pmd>
     <version.rest-assured>5.5.1</version.rest-assured>
+    <version.rewrite-logging-frameworks>3.6.1</version.rewrite-logging-frameworks>
+    <version.rewrite-migrate-java>3.7.0</version.rewrite-migrate-java>
+    <version.rewrite-static-analysis>2.7.1</version.rewrite-static-analysis>
+    <version.rewrite-testing-frameworks>3.6.1</version.rewrite-testing-frameworks>
     <version.saxon-he>12.5</version.saxon-he>
     <version.slf4j-api>2.0.17</version.slf4j-api>
     <version.slf4j-simple>2.0.17</version.slf4j-simple>
@@ -124,6 +128,7 @@
     <version.maven-site-plugin>3.21.0</version.maven-site-plugin>
     <version.maven-source-plugin>3.3.1</version.maven-source-plugin>
     <version.maven-surefire-plugin>3.5.3</version.maven-surefire-plugin>
+    <version.rewrite-maven-plugin>6.6.1</version.rewrite-maven-plugin>
     <version.spotbugs-maven-plugin>4.9.3.0</version.spotbugs-maven-plugin>
     <version.versions-maven-plugin>2.18.0</version.versions-maven-plugin>
   </properties>
@@ -212,15 +217,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${version.junit}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <version>${version.assertj-core}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${version.junit-jupiter-api}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -230,6 +235,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <!--
   <repositories>
     <repository>
       <id>project.local</id>
@@ -237,6 +243,7 @@
       <url>file:${project.basedir}/libs</url>
     </repository>
   </repositories>
+  -->
   <build>
     <resources>
       <resource>
@@ -784,6 +791,79 @@
         </executions>
         <configuration>
           <outputFormat>xml</outputFormat>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.openrewrite.maven</groupId>
+        <artifactId>rewrite-maven-plugin</artifactId>
+        <version>${version.rewrite-maven-plugin}</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>dryRunNoFork</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-logging-frameworks</artifactId>
+            <version>${version.rewrite-logging-frameworks}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-migrate-java</artifactId>
+            <version>${version.rewrite-migrate-java}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-static-analysis</artifactId>
+            <version>${version.rewrite-static-analysis}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-testing-frameworks</artifactId>
+            <version>${version.rewrite-testing-frameworks}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <activeRecipes>
+            <recipe>org.openrewrite.maven.BestPractices</recipe>
+            <recipe>org.openrewrite.maven.ModernizeObsoletePoms</recipe>
+            <recipe>org.openrewrite.maven.OrderPomElements</recipe>
+            <!-- <recipe>org.openrewrite.java.OrderImports</recipe> -->
+            <recipe>org.openrewrite.java.RemoveUnusedImports</recipe>
+            <recipe>org.openrewrite.java.ShortenFullyQualifiedTypeReferences</recipe>
+            <!-- <recipe>org.openrewrite.java.format.AutoFormat</recipe> -->
+            <recipe>org.openrewrite.java.format.BlankLines</recipe>
+            <recipe>org.openrewrite.java.format.EmptyNewlineAtEndOfFile</recipe>
+            <recipe>org.openrewrite.java.format.MethodParamPad</recipe>
+            <recipe>org.openrewrite.java.format.NoWhitespaceAfter</recipe>
+            <recipe>org.openrewrite.java.format.NoWhitespaceBefore</recipe>
+            <recipe>org.openrewrite.java.format.NormalizeFormat</recipe>
+            <recipe>org.openrewrite.java.format.NormalizeLineBreaks</recipe>
+            <recipe>org.openrewrite.java.format.NormalizeTabsOrSpaces</recipe>
+            <recipe>org.openrewrite.java.format.RemoveTrailingWhitespace</recipe>
+            <recipe>org.openrewrite.java.format.SingleLineComments</recipe>
+            <recipe>org.openrewrite.java.format.Spaces</recipe>
+            <!-- <recipe>org.openrewrite.java.format.TabsAndIndents</recipe> -->
+            <recipe>org.openrewrite.java.format.TypecastParenPad</recipe>
+            <recipe>org.openrewrite.java.format.WrappingAndBraces</recipe>
+            <recipe>org.openrewrite.java.logging.PrintStackTraceToLogError</recipe>
+            <recipe>org.openrewrite.java.logging.slf4j.Slf4jBestPractices</recipe>
+            <recipe>org.openrewrite.java.migrate.UpgradeToJava8</recipe>
+            <recipe>org.openrewrite.java.testing.junit5.JUnit4to5Migration</recipe>
+            <recipe>org.openrewrite.java.testing.junit5.JUnit5BestPractices</recipe>
+            <recipe>org.openrewrite.staticanalysis.CovariantEquals</recipe>
+            <!-- <recipe>org.openrewrite.staticanalysis.FinalizeLocalVariables</recipe> -->
+            <recipe>org.openrewrite.staticanalysis.HideUtilityClassConstructor</recipe>
+            <recipe>org.openrewrite.staticanalysis.UnnecessaryParentheses</recipe>
+          </activeRecipes>
+          <activeStyles>
+            <style>org.openrewrite.java.IntelliJ</style>
+          </activeStyles>
+          <checkstyleDetectionEnabled>false</checkstyleDetectionEnabled>
         </configuration>
       </plugin>
     </plugins>

@@ -80,8 +80,7 @@ class CheckHandler extends BaseHandler {
         }
     }
 
-    private static boolean isContentAvailable(final com.sun.net.httpserver.HttpExchange httpExchange, final BufferedInputStream buffered)
-            throws IOException {
+    private static boolean isContentAvailable(final HttpExchange httpExchange, final BufferedInputStream buffered) throws IOException {
         final String length = httpExchange.getRequestHeaders().getFirst("Content-length");
         if (StringUtils.isNumeric(length)) {
             return Integer.parseInt(length) > 0;

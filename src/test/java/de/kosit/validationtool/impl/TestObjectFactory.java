@@ -31,4 +31,7 @@ public class TestObjectFactory {
         }
         return processor;
     }
+
+    private TestObjectFactory() {
+    }
 }

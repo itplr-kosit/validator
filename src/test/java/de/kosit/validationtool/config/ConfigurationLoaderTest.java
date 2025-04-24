@@ -18,21 +18,20 @@ package de.kosit.validationtool.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.xml.RemoteResolvingStrategy;
 import de.kosit.validationtool.impl.xml.StrictRelativeResolvingStrategy;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Andreas Penski
  */
-public class ConfigurationLoaderTest {
+class ConfigurationLoaderTest {
 
     @Test
-    public void testCustomResolvingStrategy() {
+    void customResolvingStrategy() {
         final ConfigurationLoader loader = TestConfigurationFactory.loadSimpleConfiguration();
         loader.setResolvingStrategy(new StrictRelativeResolvingStrategy());
         loader.setResolvingMode(ResolvingMode.ALLOW_REMOTE);

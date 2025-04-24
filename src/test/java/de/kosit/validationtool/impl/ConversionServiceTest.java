@@ -17,14 +17,13 @@
 package de.kosit.validationtool.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.Serializable;
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import de.kosit.validationtool.impl.Helper.Invalid;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.model.scenarios.Scenarios;
@@ -34,7 +33,7 @@ import de.kosit.validationtool.model.scenarios.Scenarios;
  *
  * @author apenski
  */
-public class ConversionServiceTest {
+class ConversionServiceTest {
 
     private static final URL SCHEMA = ConversionServiceTest.class.getResource("/xsd/scenarios.xsd");
 
@@ -42,19 +41,19 @@ public class ConversionServiceTest {
 
     private ContentRepository repository;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         this.service = new ConversionService();
         this.repository = Simple.createContentRepository();
     }
 
     @Test
-    public void testMarshalNull() {
+    void marshalNull() {
         assertThrows(ConversionService.ConversionException.class, () -> this.service.writeXml(null));
     }
 
     @Test
-    public void testMarshalUnknown() {
+    void marshalUnknown() {
         assertThrows(ConversionService.ConversionException.class, () -> this.service.writeXml(new Serializable() {
 
             private static final long serialVersionUID = 8745690876369610705L;
@@ -62,43 +61,43 @@ public class ConversionServiceTest {
     }
 
     @Test
-    public void testUnmarshal() {
+    void unmarshal() {
         final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class);
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
 
     @Test
-    public void testUnmarshalWithSchema() {
+    void unmarshalWithSchema() {
         final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA));
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
 
     @Test
-    public void testUnmarshalInvalidXml() {
+    void unmarshalInvalidXml() {
         assertThrows(ConversionService.ConversionException.class,
                 () -> this.service.readXml(Invalid.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA)));
     }
 
     @Test
-    public void testUnmarshalIllFormed() {
+    void unmarshalIllFormed() {
         assertThrows(ConversionService.ConversionException.class,
                 () -> this.service.readXml(Invalid.SCENARIOS_ILL_FORMED, Scenarios.class, this.repository.createSchema(SCHEMA)));
     }
 
     @Test
-    public void testUnmarshalEmpty() {
+    void unmarshalEmpty() {
         assertThrows(ConversionService.ConversionException.class, () -> this.service.readXml(null, Scenarios.class));
     }
 
     @Test
-    public void testUnmarshalUnknownType() {
+    void unmarshalUnknownType() {
         assertThrows(ConversionService.ConversionException.class, () -> this.service.readXml(Simple.SCENARIOS, ConversionService.class));
     }
 
     @Test
-    public void testUnmarshalWithoutType() {
+    void unmarshalWithoutType() {
         assertThrows(ConversionService.ConversionException.class, () -> this.service.readXml(Simple.SCENARIOS, null));
     }
 

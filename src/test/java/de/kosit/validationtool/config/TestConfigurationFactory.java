@@ -51,4 +51,7 @@ public class TestConfigurationFactory {
                 .declareNamespace("rpt", "http://validator.kosit.de/test-report")
                 .declareNamespace("test", "http://validator.kosit.de/test-sample").match("/test:simple");
     }
+
+    private TestConfigurationFactory() {
+    }
 }

@@ -58,7 +58,7 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
 
             if (lenient) {
                 log.warn(errorMessage);
-                log.debug(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             } else {
                 throw new IllegalStateException(errorMessage);
             }

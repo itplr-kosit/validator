@@ -18,7 +18,7 @@ package de.kosit.validationtool.impl.xml;
 
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.Helper.Resolving;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -30,10 +30,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andreas Penski
  */
-public class RemoteResolvingStrategyTest {
+class RemoteResolvingStrategyTest {
 
     @Test
-    public void testRemoteSchemaResolving() throws Exception {
+    void remoteSchemaResolving() throws Exception {
         final ResolvingConfigurationStrategy s = new RemoteResolvingStrategy();
         final SchemaFactory schemaFactory = s.createSchemaFactory();
         final Schema schema = schemaFactory.newSchema(Resolving.SCHEMA_WITH_REMOTE_REFERENCE.toURL());
@@ -41,7 +41,7 @@ public class RemoteResolvingStrategyTest {
     }
 
     @Test
-    public void testLocalSchemaResolving() throws Exception {
+    void localSchemaResolving() throws Exception {
         final ResolvingConfigurationStrategy s = new StrictLocalResolvingStrategy();
         final SchemaFactory schemaFactory = s.createSchemaFactory();
         final Schema schema = schemaFactory.newSchema(Resolving.SCHEMA_WITH_REFERENCE.toURL());

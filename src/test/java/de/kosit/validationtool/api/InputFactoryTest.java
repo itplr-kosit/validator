@@ -27,7 +27,7 @@ import net.sf.saxon.s9api.BuildingContentHandler;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -45,7 +45,7 @@ import java.nio.file.Paths;
 import static de.kosit.validationtool.impl.Helper.Simple.SIMPLE_VALID;
 import static de.kosit.validationtool.impl.input.StreamHelper.drain;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Testet den Hashcode-Service.
@@ -57,13 +57,13 @@ public class InputFactoryTest {
     public static final String SOME_VALUE = "some value";
 
     @Test
-    public void testDefaultDigestAlgorithm() {
+    void defaultDigestAlgorithm() {
         assertThat(new InputFactory().getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITHM);
         assertThat(new InputFactory("").getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITHM);
     }
 
     @Test
-    public void testHashCodeGeneration() throws IOException {
+    void hashCodeGeneration() throws IOException {
         final byte[] s1 = drain(InputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
         final byte[] s2 = drain(InputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
         final byte[] s3 = drain(InputFactory.read(Simple.SCHEMA_INVALID.toURL())).getHashCode();
@@ -74,64 +74,61 @@ public class InputFactoryTest {
     }
 
     @Test
-    public void testWrongAlgorithm() {
+    void wrongAlgorithm() {
         assertThrows(IllegalArgumentException.class, () -> new InputFactory("unknown"));
     }
 
     @Test
-    public void testNullInputURL() {
+    void nullInputURL() {
         assertThrows(IllegalArgumentException.class, () -> InputFactory.read((URL) null));
     }
 
     @Test
-    public void testInputByte() {
+    void inputByte() {
         final Input input = InputFactory.read(SOME_VALUE.getBytes(), SOME_VALUE);
         assertThat(input).isNotNull();
     }
 
     @Test
-    public void testInputStream() {
+    void inputStream() {
         final Input input = InputFactory.read(new ByteArrayInputStream(SOME_VALUE.getBytes()), SOME_VALUE);
         assertThat(input).isNotNull();
     }
 
     @Test
-    public void testNullStream() {
+    void nullStream() {
         assertThrows(IllegalArgumentException.class, () -> InputFactory.read((InputStream) null, SOME_VALUE));
     }
 
     @Test
-    public void testInputFile() {
+    void inputFile() {
         final Input input = InputFactory.read(new File(Simple.SIMPLE_VALID));
         assertThat(input).isNotNull();
     }
 
     @Test
-    public void testInputPath() {
+    void inputPath() {
         final Input input = InputFactory.read(Paths.get(Simple.SIMPLE_VALID));
         assertThat(input).isNotNull();
     }
 
     @Test
-    public void testNullInput() {
+    void nullInput() {
         assertThrows(IllegalArgumentException.class, () -> InputFactory.read((byte[]) null, SOME_VALUE));
     }
 
     @Test
-    public void testNullInputName() {
+    void nullInputName() {
         assertThrows(IllegalArgumentException.class, () -> InputFactory.read(SOME_VALUE.getBytes(), null));
     }
 
     @Test
-    public void testEmptyInputName() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            final Input input = InputFactory.read(SOME_VALUE.getBytes(), "");
-            drain(input);
-        });
+    void emptyInputName() {
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read(SOME_VALUE.getBytes(), ""));
     }
 
     @Test
-    public void testSourceInput() throws IOException {
+    void sourceInput() throws IOException {
         try ( final InputStream s = Simple.SIMPLE_VALID.toURL().openStream() ) {
             final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(s));
             assertThat(input.getSource()).isNotNull();
@@ -143,7 +140,7 @@ public class InputFactoryTest {
     }
 
     @Test
-    public void testSourceInputReader() throws IOException {
+    void sourceInputReader() throws IOException {
         try ( final InputStream s = Simple.SIMPLE_VALID.toURL().openStream();
               final InputStreamReader reader = new InputStreamReader(s) ) {
             final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(reader));
@@ -156,12 +153,12 @@ public class InputFactoryTest {
     }
 
     @Test
-    public void testNotExistingInput() {
+    void notExistingInput() {
         assertThrows(IllegalArgumentException.class, () -> InputFactory.read(Simple.NOT_EXISTING));
     }
 
     @Test
-    public void testDomSource() throws SaxonApiException, SAXException, IOException {
+    void domSource() throws SaxonApiException, SAXException, IOException {
         final DocumentBuilder builder = TestObjectFactory.createProcessor().newDocumentBuilder();
 
         final BuildingContentHandler handler = builder.newBuildingContentHandler();
@@ -179,7 +176,7 @@ public class InputFactoryTest {
     }
 
     @Test
-    public void testXdmNode() throws Exception {
+    void xdmNode() throws Exception {
         final XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         final Input nodeInput = InputFactory.read(node, "node test");
         assertThat(nodeInput).isNotNull();

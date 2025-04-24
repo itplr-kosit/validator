@@ -20,9 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.MalformedURLException;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.InputFactory;
@@ -34,25 +33,25 @@ import de.kosit.validationtool.impl.Helper.Simple;
  *
  * @author Andreas Penski
  */
-public class SimpleScenarioCheckTest {
+class SimpleScenarioCheckTest {
 
     private DefaultCheck implementation;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         final Configuration d = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
         this.implementation = new DefaultCheck(d);
     }
 
     @Test
-    public void testSimple() throws MalformedURLException {
+    void simple() throws MalformedURLException {
         final Result result = this.implementation.checkInput(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
-    public void testInvalid() throws MalformedURLException {
+    void invalid() throws MalformedURLException {
         final Result result = this.implementation.checkInput(InputFactory.read(Simple.SCHEMA_INVALID.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
@@ -60,7 +59,7 @@ public class SimpleScenarioCheckTest {
     }
 
     @Test
-    public void testUnknown() throws MalformedURLException {
+    void unknown() throws MalformedURLException {
         final Result result = this.implementation.checkInput(InputFactory.read(Simple.UNKNOWN.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.isProcessingSuccessful()).isTrue();
@@ -70,7 +69,7 @@ public class SimpleScenarioCheckTest {
     }
 
     @Test
-    public void testWithoutAcceptMatch() throws MalformedURLException {
+    void withoutAcceptMatch() throws MalformedURLException {
         final Result result = this.implementation.checkInput(InputFactory.read(Simple.FOO.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);

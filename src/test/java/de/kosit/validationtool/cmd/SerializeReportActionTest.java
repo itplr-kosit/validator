@@ -22,9 +22,9 @@ import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -36,26 +36,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Andreas Penski
  */
-public class SerializeReportActionTest {
+class SerializeReportActionTest {
 
     private Path tmpDirectory;
 
     private SerializeReportAction action;
 
-    @Before
-    public void setup() throws IOException {
+    @BeforeEach
+    void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
         final DefaultNamingStrategy namingStrategy = new DefaultNamingStrategy();
         this.action = new SerializeReportAction(this.tmpDirectory, TestObjectFactory.createProcessor(), namingStrategy);
     }
 
-    @After
-    public void tearDown() throws IOException {
+    @AfterEach
+    void tearDown() throws IOException {
         FileUtils.deleteDirectory(this.tmpDirectory.toFile());
     }
 
     @Test
-    public void testSimpleSerialize() throws MalformedURLException {
+    void simpleSerialize() throws MalformedURLException {
         final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(Simple.SIMPLE_VALID));
         assertThat(this.action.isSkipped(b)).isTrue();
         b.setReport(Helper.load(Simple.SIMPLE_VALID.toURL()));
@@ -67,7 +67,7 @@ public class SerializeReportActionTest {
 
     // ERPT-83
     @Test
-    public void testName() {
+    void name() {
         final String name = "some.name.with.dots";
         final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read("ega".getBytes(), name + ".xml"));
         assertThat(b.getName()).isEqualTo(name);

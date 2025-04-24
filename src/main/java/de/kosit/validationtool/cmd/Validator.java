@@ -25,6 +25,7 @@ import de.kosit.validationtool.cmd.CommandLineOptions.Definition;
 import de.kosit.validationtool.cmd.CommandLineOptions.RepositoryDefinition;
 import de.kosit.validationtool.cmd.CommandLineOptions.ScenarioDefinition;
 import de.kosit.validationtool.cmd.assertions.Assertions;
+import de.kosit.validationtool.cmd.assertions.ObjectFactory;
 import de.kosit.validationtool.cmd.report.Line;
 import de.kosit.validationtool.daemon.Daemon;
 import de.kosit.validationtool.impl.ConversionService;
@@ -91,7 +92,7 @@ public class Validator {
             if (cmd.isDebugOutput()) {
                 log.error(e.getMessage(), e);
             } else {
-                log.error(e.getMessage());
+                log.error("", e);
             }
             return ReturnValue.CONFIGURATION_ERROR;
         }
@@ -246,7 +247,7 @@ public class Validator {
         Assertions a = null;
         if (Files.exists(p)) {
             final ConversionService c = new ConversionService();
-            c.initialize(de.kosit.validationtool.cmd.assertions.ObjectFactory.class.getPackage());
+            c.initialize(ObjectFactory.class.getPackage());
             a = c.readXml(p.toUri(), Assertions.class);
         }
         return a;

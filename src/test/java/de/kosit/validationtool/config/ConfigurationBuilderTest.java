@@ -20,15 +20,14 @@ import static de.kosit.validationtool.config.ConfigurationBuilder.report;
 import static de.kosit.validationtool.config.ConfigurationBuilder.schematron;
 import static de.kosit.validationtool.config.TestConfigurationFactory.createSimpleConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Date;
 
-import org.junit.Test;
-
 import de.kosit.validationtool.impl.Helper;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test {@link ConfigurationBuilder}.
@@ -40,12 +39,12 @@ public class ConfigurationBuilderTest {
     public static final LocalDate EPOCH = LocalDate.of(1970, 1, 1);
 
     @Test
-    public void testNoConfiguration() {
+    void noConfiguration() {
         assertThrows(IllegalStateException.class, () -> new ConfigurationBuilder().build(Helper.getTestProcessor()));
     }
 
     @Test
-    public void testNoFallback() {
+    void noFallback() {
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.with((FallbackBuilder) null);
         Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
@@ -53,7 +52,7 @@ public class ConfigurationBuilderTest {
     }
 
     @Test
-    public void testNoSchema() {
+    void noSchema() {
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).validate((SchemaBuilder) null);
         Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
@@ -61,7 +60,7 @@ public class ConfigurationBuilderTest {
     }
 
     @Test
-    public void testInvalidSchematron() {
+    void invalidSchematron() {
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).validate(schematron("invalid").source(URI.create("DoesNotExist")));
         Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
@@ -69,7 +68,7 @@ public class ConfigurationBuilderTest {
     }
 
     @Test
-    public void testInsufficientSchematron() {
+    void insufficientSchematron() {
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).validate(schematron("invalid"));
         Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
@@ -77,7 +76,7 @@ public class ConfigurationBuilderTest {
     }
 
     @Test
-    public void testNoReport() {
+    void noReport() {
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).with(report("invalid"));
         Throwable e = assertThrows(IllegalStateException.class, () -> builder.build(Helper.getTestProcessor()));
@@ -85,7 +84,7 @@ public class ConfigurationBuilderTest {
     }
 
     @Test
-    public void testDate() {
+    void date() {
         assertThat(createSimpleConfiguration().date(EPOCH).build(Helper.getTestProcessor()).getDate()).isEqualTo("1970-01-01");
         assertThat(createSimpleConfiguration().date(new Date(EPOCH.toEpochDay())).build(Helper.getTestProcessor()).getDate())
                 .isEqualTo("1970-01-01");

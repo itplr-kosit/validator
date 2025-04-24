@@ -22,7 +22,7 @@ import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 import net.sf.saxon.s9api.XPathExecutable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,14 +35,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andreas Penski
  */
-public class ComputeAcceptanceActionTest {
+class ComputeAcceptanceActionTest {
 
     private static final String DOES_NOT_EXIST = "count(//doesnotExist) = 0";
 
     private final ComputeAcceptanceAction action = new ComputeAcceptanceAction();
 
     @Test
-    public void simpleTest() {
+    void simpleTest() {
         final Bag bag = createBag(true, true);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.UNDEFINED);
         this.action.check(bag);
@@ -50,21 +50,21 @@ public class ComputeAcceptanceActionTest {
     }
 
     @Test
-    public void testSchemaFailed() {
+    void schemaFailed() {
         final Bag bag = createBag(false, true);
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
     @Test
-    public void testSchematronFailed() {
+    void schematronFailed() {
         final Bag bag = createBag(true, false);
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
     @Test
-    public void testValidAcceptMatch() {
+    void validAcceptMatch() {
         final Bag bag = createBag(true, true);
         bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOES_NOT_EXIST));
         this.action.check(bag);
@@ -72,7 +72,7 @@ public class ComputeAcceptanceActionTest {
     }
 
     @Test
-    public void testAcceptMatchNotSatisfied() {
+    void acceptMatchNotSatisfied() {
         final Bag bag = createBag(true, true);
         bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath("count(//doesnotExist) = 1"));
         this.action.check(bag);
@@ -80,7 +80,7 @@ public class ComputeAcceptanceActionTest {
     }
 
     @Test
-    public void testAcceptMatchOverridesSchematronErrors() {
+    void acceptMatchOverridesSchematronErrors() {
         final Bag bag = createBag(true, false);
         bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOES_NOT_EXIST));
         this.action.check(bag);
@@ -88,7 +88,7 @@ public class ComputeAcceptanceActionTest {
     }
 
     @Test
-    public void testValidAcceptMatchOnSchemaFailed() {
+    void validAcceptMatchOnSchemaFailed() {
         final Bag bag = createBag(false, true);
         bag.getScenarioSelectionResult().getObject().setAcceptExecutable(createXpath(DOES_NOT_EXIST));
         this.action.check(bag);
@@ -96,14 +96,14 @@ public class ComputeAcceptanceActionTest {
     }
 
     @Test
-    public void testMissingSchemaCheck() {
+    void missingSchemaCheck() {
         final Bag bag = createBag(null, Collections.emptyList());
         this.action.check(bag);
         assertThat(bag.getAcceptStatus()).isEqualTo(AcceptRecommendation.REJECT);
     }
 
     @Test
-    public void testNoSchematronCheck() {
+    void noSchematronCheck() {
         final Bag bag = createBag(true, true);
         // remove schematron results
         bag.getReportInput().getValidationResultsSchematron().clear();
@@ -112,7 +112,7 @@ public class ComputeAcceptanceActionTest {
     }
 
     @Test
-    public void testMissingReport() {
+    void missingReport() {
         final Bag bag = createBag(false, true);
         bag.setReport(null);
         this.action.check(bag);

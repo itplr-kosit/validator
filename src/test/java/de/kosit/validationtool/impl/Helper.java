@@ -21,6 +21,7 @@ import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.xml.ProcessorProvider;
+import de.kosit.validationtool.model.reportInput.ObjectFactory;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -91,6 +92,9 @@ public class Helper {
         public static URI getSchemaLocation() {
             return SCHEMA;
         }
+
+        private Simple() {
+        }
     }
 
     public static class Invalid {
@@ -101,6 +105,9 @@ public class Helper {
 
         public static final URI SCENARIOS_ILL_FORMED = ROOT.resolve("scenarios-illformed.xml");
 
+        private Invalid() {
+        }
+
     }
 
     public static class Resolving {
@@ -110,6 +117,9 @@ public class Helper {
         public static final URI SCHEMA_WITH_REMOTE_REFERENCE = ROOT.resolve("withRemote.xsd");
 
         public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
+
+        private Resolving() {
+        }
     }
 
     public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
@@ -144,8 +154,7 @@ public class Helper {
 
     public static <T> T load(final URL url, final Class<T> type) throws URISyntaxException {
         final ConversionService c = new ConversionService();
-        c.initialize(de.kosit.validationtool.model.reportInput.ObjectFactory.class.getPackage(),
-                de.kosit.validationtool.cmd.assertions.ObjectFactory.class.getPackage(),
+        c.initialize(ObjectFactory.class.getPackage(), de.kosit.validationtool.cmd.assertions.ObjectFactory.class.getPackage(),
                 de.kosit.validationtool.model.scenarios.ObjectFactory.class.getPackage());
         return c.readXml(url.toURI(), type);
     }
@@ -176,5 +185,8 @@ public class Helper {
 
     public static Processor createProcessor() {
         return ProcessorProvider.getProcessor();
+    }
+
+    private Helper() {
     }
 }

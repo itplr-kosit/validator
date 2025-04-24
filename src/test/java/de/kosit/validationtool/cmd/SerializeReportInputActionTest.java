@@ -20,9 +20,9 @@ import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,25 +33,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Andreas Penski
  */
-public class SerializeReportInputActionTest {
+class SerializeReportInputActionTest {
 
     private Path tmpDirectory;
 
     private SerializeReportInputAction action;
 
-    @Before
-    public void setup() throws IOException {
+    @BeforeEach
+    void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("validator");
         this.action = new SerializeReportInputAction(this.tmpDirectory, new ConversionService());
     }
 
-    @After
-    public void tearDown() throws IOException {
+    @AfterEach
+    void tearDown() throws IOException {
         FileUtils.deleteDirectory(this.tmpDirectory.toFile());
     }
 
     @Test
-    public void testSimpleSerialize() {
+    void simpleSerialize() {
         final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read("someBytes".getBytes(), "someDoc"));
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);

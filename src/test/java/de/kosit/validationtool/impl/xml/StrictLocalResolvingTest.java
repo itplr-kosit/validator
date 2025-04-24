@@ -18,24 +18,24 @@ package de.kosit.validationtool.impl.xml;
 
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.Helper.Resolving;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXParseException;
 
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests {@link StrictLocalResolvingStrategy}
  *
  * @author Andreas Penski
  */
-public class StrictLocalResolvingTest {
+class StrictLocalResolvingTest {
 
     @Test
-    public void testRemoteSchemaResolving() {
+    void remoteSchemaResolving() {
         final ResolvingConfigurationStrategy s = new StrictLocalResolvingStrategy();
         final SchemaFactory schemaFactory = s.createSchemaFactory();
         Throwable e = assertThrows(SAXParseException.class, () -> schemaFactory.newSchema(Resolving.SCHEMA_WITH_REMOTE_REFERENCE.toURL()));
@@ -43,7 +43,7 @@ public class StrictLocalResolvingTest {
     }
 
     @Test
-    public void testLocalSchemaResolving() throws Exception {
+    void localSchemaResolving() throws Exception {
         final ResolvingConfigurationStrategy s = new StrictLocalResolvingStrategy();
         final SchemaFactory schemaFactory = s.createSchemaFactory();
         final Schema schema = schemaFactory.newSchema(Resolving.SCHEMA_WITH_REFERENCE.toURL());

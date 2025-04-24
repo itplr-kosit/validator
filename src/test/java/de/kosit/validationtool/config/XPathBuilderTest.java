@@ -23,8 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.text.RandomStringGenerator;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
@@ -36,10 +35,10 @@ import net.sf.saxon.s9api.XPathExecutable;
  *
  * @author Andreas Penski
  */
-public class XPathBuilderTest {
+class XPathBuilderTest {
 
     @Test
-    public void testSimpleString() {
+    void simpleString() {
         final String name = getRandomString(5);
         final XPathBuilder b = new XPathBuilder(name);
         b.setXpath("//*");
@@ -53,7 +52,7 @@ public class XPathBuilderTest {
     }
 
     @Test
-    public void testStringWithNamespace() {
+    void stringWithNamespace() {
         final String name = getRandomString(5);
         final XPathBuilder b = new XPathBuilder(name);
         final Map<String, String> ns = new HashMap<>();
@@ -68,7 +67,7 @@ public class XPathBuilderTest {
     }
 
     @Test
-    public void testStringWithUnknownNamespace() {
+    void stringWithUnknownNamespace() {
         final String name = getRandomString(5);
         final XPathBuilder b = new XPathBuilder(name);
         final Map<String, String> ns = new HashMap<>();
@@ -81,7 +80,7 @@ public class XPathBuilderTest {
     }
 
     @Test
-    public void testExecutable() {
+    void executable() {
         final String name = getRandomString(5);
         final ContentRepository repository = Simple.createContentRepository();
         final XPathExecutable xpath = repository.createXPath("//*", Collections.emptyMap());
@@ -95,7 +94,7 @@ public class XPathBuilderTest {
     }
 
     @Test
-    public void testExecutableWithNamespace() {
+    void executableWithNamespace() {
         final String name = getRandomString(5);
         final ContentRepository repository = Simple.createContentRepository();
         final Map<String, String> ns = new HashMap<>();
@@ -112,7 +111,7 @@ public class XPathBuilderTest {
     }
 
     @Test
-    public void testNoName() {
+    void noName() {
         final XPathBuilder b = new XPathBuilder(null);
         b.setXpath("//*");
         final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
@@ -122,7 +121,7 @@ public class XPathBuilderTest {
     }
 
     @Test
-    public void testNoConfig() {
+    void noConfig() {
         final String name = getRandomString(5);
         final XPathBuilder b = new XPathBuilder(name);
         final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());

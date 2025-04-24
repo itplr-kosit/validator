@@ -69,7 +69,7 @@ public class DocumentParseAction implements CheckAction {
                 result = new Result<>(doc, Collections.emptyList());
             }
         } catch (final SaxonApiException | IOException e) {
-            log.debug("Exception while parsing {}", content.getName(), e);
+            log.error("Exception while parsing {}", content.getName(), e);
             final XMLSyntaxError error = new XMLSyntaxError();
             error.setSeverityCode(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
             error.setMessage(String.format("IOException while reading resource %s: %s", content.getName(), e.getMessage()));

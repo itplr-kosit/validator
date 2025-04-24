@@ -125,4 +125,7 @@ public class TestBagBuilder {
         b.setReport(createReport());
         return b;
     }
+
+    private TestBagBuilder() {
+    }
 }

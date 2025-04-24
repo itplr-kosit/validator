@@ -16,9 +16,8 @@
 
 package de.kosit.validationtool.daemon;
 
-import org.junit.Before;
-
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Base for integration tests.
@@ -27,7 +26,7 @@ import io.restassured.RestAssured;
  */
 public abstract class BaseIT {
 
-    @Before
+    @BeforeEach
     public void setup() {
         final String port = System.getProperty("daemon.port");
         if (port != null) {

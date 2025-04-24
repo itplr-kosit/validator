@@ -16,6 +16,7 @@
 
 package de.kosit.validationtool.cmd;
 
+import de.kosit.validationtool.impl.tasks.CheckAction;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.NumberFormat;
@@ -27,7 +28,7 @@ import java.text.NumberFormat;
  * @author Andreas Penski
  */
 @Slf4j
-class PrintMemoryStats implements de.kosit.validationtool.impl.tasks.CheckAction {
+class PrintMemoryStats implements CheckAction {
 
     private static final int BYTES_PER_K = 1024;
 

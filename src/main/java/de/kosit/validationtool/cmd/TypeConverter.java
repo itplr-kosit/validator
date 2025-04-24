@@ -93,4 +93,7 @@ class TypeConverter {
             return TypeConverter.convert(ScenarioDefinition.class, value);
         }
     }
+
+    private TypeConverter() {
+    }
 }

@@ -52,7 +52,7 @@
     <xs:complexType name="AssertionType">
         <xs:annotation>
             <xs:documentation>Zusicherung: für das in report-doc angegebene Dokument (relativ zum aktuellen
-                Ausgabeverzeichnis) hat der angebene
+                Ausgabeverzeichnis) hat der angegebene
                 XPath-Test den "Effective Truth Value" true(). Im Textknoten kann eine textuelle Zusammenfassung des
                 Tests stehen.
             </xs:documentation>

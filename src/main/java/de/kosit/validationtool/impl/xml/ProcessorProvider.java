@@ -116,4 +116,7 @@ public class ProcessorProvider {
                 .setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.ACCESS_EXTERNAL_DTD), false); // NOSONAR
         return processor;
     }
+
+    private ProcessorProvider() {
+    }
 }

@@ -23,8 +23,8 @@ import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.Helper.Simple;
 import net.sf.saxon.s9api.XdmNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
 import javax.xml.transform.stream.StreamSource;
@@ -54,8 +54,8 @@ public class DefaultCheckTest {
 
     private DefaultCheck jarScenarioCheck;
 
-    @Before
-    public void setup() throws URISyntaxException {
+    @BeforeEach
+    void setup() throws URISyntaxException {
         final Configuration validConfig = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
         this.validCheck = new DefaultCheck(validConfig);
 
@@ -72,7 +72,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testHappyCase() {
+    void happyCase() {
         final Result doc = this.validCheck.checkInput(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
@@ -90,7 +90,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testJarCase() {
+    void jarCase() {
         final Result doc = this.jarScenarioCheck.checkInput(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
@@ -101,7 +101,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testWithoutAcceptMatch() {
+    void withoutAcceptMatch() {
         final Result doc = this.validCheck.checkInput(read(Simple.FOO));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
@@ -110,27 +110,27 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testHappyCaseDocument() {
+    void happyCaseDocument() {
         final Document doc = this.validCheck.check(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
     }
 
     @Test
-    public void testMultipleCase() {
+    void multipleCase() {
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
         final List<Result> docs = this.validCheck.checkInput(input);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
     @Test
-    public void testMultipleCaseDocument() {
+    void multipleCaseDocument() {
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
         final List<Document> docs = this.validCheck.check(input);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
     @Test
-    public void testExtractHtml() {
+    void extractHtml() {
         final DefaultResult doc = (DefaultResult) this.validCheck.checkInput(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
@@ -141,7 +141,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testGarbage() {
+    void garbage() {
         final Result result = this.validCheck.checkInput(read(GARBAGE));
         assertThat(result).isNotNull();
         assertThat(result.isWellFormed()).isFalse();
@@ -150,7 +150,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testNoScenario() {
+    void noScenario() {
         final Result result = this.validCheck.checkInput(read(UNKNOWN));
         assertThat(result).isNotNull();
         assertThat(result.isWellFormed()).isTrue();
@@ -161,7 +161,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testNotWellFormed() {
+    void notWellFormed() {
         final Result result = this.validCheck.checkInput(read(NOT_WELL_FORMED));
         assertThat(result).isNotNull();
         assertThat(result.isWellFormed()).isFalse();
@@ -173,7 +173,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testRejectAcceptMatch() {
+    void rejectAcceptMatch() {
         final Result result = this.validCheck.checkInput(read(REJECTED));
         assertThat(result).isNotNull();
         assertThat(result.isWellFormed()).isTrue();
@@ -186,7 +186,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testSchematronFailed() {
+    void schematronFailed() {
         final Result result = this.validCheck.checkInput(read(SCHEMATRON_INVALID));
         assertThat(result).isNotNull();
         assertThat(result.isWellFormed()).isTrue();
@@ -204,7 +204,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testSchematronFailedWithoutAcceptMatch() {
+    void schematronFailedWithoutAcceptMatch() {
         final Result result = this.validCheck.checkInput(read(FOO_SCHEMATRON_INVALID));
         assertThat(result).isNotNull();
         assertThat(result.isWellFormed()).isTrue();
@@ -220,7 +220,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testSchematronExecutionError() {
+    void schematronExecutionError() {
         final Result result = this.errorCheck.checkInput(read(SIMPLE_VALID));
         assertThat(result).isNotNull();
         assertThat(result.isProcessingSuccessful()).isFalse();
@@ -233,7 +233,7 @@ public class DefaultCheckTest {
     }
 
     @Test
-    public void testXdmNode() throws Exception {
+    void xdmNode() throws Exception {
         XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         Input domInput = InputFactory.read(node, "node test");
         Result result = this.validCheck.checkInput(domInput);

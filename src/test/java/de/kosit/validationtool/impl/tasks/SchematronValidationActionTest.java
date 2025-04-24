@@ -25,8 +25,8 @@ import de.kosit.validationtool.model.scenarios.ResourceType;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -40,17 +40,17 @@ import static org.mockito.Mockito.*;
  *
  * @author Andreas Penski
  */
-public class SchematronValidationActionTest {
+class SchematronValidationActionTest {
 
     private SchematronValidationAction action;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         this.action = new SchematronValidationAction(new ConversionService());
     }
 
     @Test
-    public void testProcessingError() throws IOException, SaxonApiException {
+    void processingError() throws IOException, SaxonApiException {
         final CheckAction.Bag bag = createBag(InputFactory.read(Simple.SIMPLE_VALID.toURL()), true);
 
         final Scenario scenario = bag.getScenarioSelectionResult().getObject();

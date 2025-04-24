@@ -22,9 +22,9 @@ import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,25 +39,25 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andreas Penski
  */
-public class ExtractHtmlActionTest {
+class ExtractHtmlActionTest {
 
     private ExtractHtmlContentAction action;
 
     private Path tmpDirectory;
 
-    @Before
-    public void setup() throws IOException {
+    @BeforeEach
+    void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
         this.action = new ExtractHtmlContentAction(TestObjectFactory.createProcessor(), this.tmpDirectory);
     }
 
-    @After
-    public void tearDown() throws IOException {
+    @AfterEach
+    void tearDown() throws IOException {
         FileUtils.deleteDirectory(this.tmpDirectory.toFile());
     }
 
     @Test
-    public void testSimple() throws IOException {
+    void simple() throws IOException {
         final CheckAction.Bag b = new CheckAction.Bag(InputFactory.read(Simple.SIMPLE_VALID));
         assertThat(this.action.isSkipped(b)).isTrue();
         b.setReport(Helper.load(Simple.SIMPLE_VALID.toURL()));

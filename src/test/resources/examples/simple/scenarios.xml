@@ -60,7 +60,7 @@
         <name>NoAcceptMatch</name>
         <description>
             <p>Nur Schemaprüfung. Keine AcceptMatch deklaration</p>
-            <p>Testen, ob auch alte Konfiguration funktionioeren</p>
+            <p>Testen, ob auch alte Konfiguration funktionieren</p>
         </description>
         <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
         <match>/test:foo</match>

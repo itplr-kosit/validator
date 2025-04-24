@@ -16,6 +16,7 @@
 
 package de.kosit.validationtool.impl;
 
+import de.kosit.validationtool.model.reportInput.ObjectFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
@@ -112,7 +113,7 @@ public class ConversionService {
      */
     public void initialize() {
         final Collection<Package> p = new ArrayList<>();
-        p.add(de.kosit.validationtool.model.reportInput.ObjectFactory.class.getPackage());
+        p.add(ObjectFactory.class.getPackage());
         p.add(de.kosit.validationtool.model.scenarios.ObjectFactory.class.getPackage());
         initialize(p);
     }

@@ -17,21 +17,21 @@
 package de.kosit.validationtool.impl;
 
 import de.kosit.validationtool.model.scenarios.Scenarios;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Testet die Versionierung von Scenario-Dateien aka Konfigurationsdaten.
  *
  * @author Andreas Penski
  */
-public class VersioningTest {
+class VersioningTest {
 
     private static final URL BASE = VersioningTest.class.getResource("/examples/versioning/scenarios-base.xml");
 
@@ -43,38 +43,36 @@ public class VersioningTest {
 
     private ConversionService service;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         this.service = new ConversionService();
     }
 
     @Test
-    public void testBase() throws URISyntaxException {
+    void base() throws URISyntaxException {
         assert BASE != null;
         final Scenarios result = this.service.readXml(BASE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
         assertThat(result).isNotNull();
     }
 
     @Test
-    public void testFrameworkIncrement() throws URISyntaxException {
+    void frameworkIncrement() throws URISyntaxException {
         assert INCREMENT != null;
         final Scenarios result = this.service.readXml(INCREMENT.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
         assertThat(result).isNotNull();
     }
 
     @Test
-    public void testNewFeature() {
-        assertThrows(ConversionService.ConversionException.class, () -> {
-            assert NEW_FEATURE != null;
-            this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
-        });
+    void newFeature() {
+        assert NEW_FEATURE != null;
+        assertThrows(ConversionService.ConversionException.class,
+                () -> this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
     }
 
     @Test
-    public void testNewVersion() {
-        assertThrows(ConversionService.ConversionException.class, () -> {
-            assert NEW_VERSION != null;
-            this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
-        });
+    void newVersion() {
+        assert NEW_VERSION != null;
+        assertThrows(ConversionService.ConversionException.class,
+                () -> this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
     }
 }

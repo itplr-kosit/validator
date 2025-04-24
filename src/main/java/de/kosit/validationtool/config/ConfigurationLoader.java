@@ -168,7 +168,7 @@ public class ConfigurationLoader {
         configuration.setContentRepository(contentRepository);
         configuration.getAdditionalParameters().put(Keys.SCENARIOS_FILE, this.scenarioDefinition);
         configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, def);
-        return (configuration);
+        return configuration;
     }
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
