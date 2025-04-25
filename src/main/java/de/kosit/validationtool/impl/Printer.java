@@ -64,10 +64,13 @@ public class Printer {
     public static void writeErr(final Exception ex, final String message, final Object... params) {
         writeErr(message, params);
         if (ex != null) {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            ex.printStackTrace(pw);
-            writeErr(sw.toString());
+            try ( StringWriter sw = new StringWriter();
+                  PrintWriter pw = new PrintWriter(sw) ) {
+                ex.printStackTrace(pw);
+                writeErr(sw.toString());
+            } catch (IOException e) {
+                writeErr("Error while printing stack trace.");
+            }
         }
     }
 
