@@ -16,6 +16,7 @@
 
 package de.kosit.validationtool.impl;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
@@ -73,5 +74,4 @@ public class Printer {
             }
         }
     }
-
 }
