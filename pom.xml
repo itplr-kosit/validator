@@ -84,20 +84,24 @@
     <version.commons-lang3>3.17.0</version.commons-lang3>
     <version.commons-text>1.13.1</version.commons-text>
     <version.httpcore>4.4.16</version.httpcore>
-    <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api>
+    <!-- Requires JDK 11 at run time -->
+    <!-- <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api> -->
+    <version.jakarta.xml.bind-api>3.0.1</version.jakarta.xml.bind-api>
     <version.jansi>2.4.1</version.jansi>
-    <version.jaxb-runtime>4.0.5</version.jaxb-runtime>
+    <!-- Requires JDK 11 at run time -->
+    <!-- <version.jaxb-runtime>4.0.5</version.jaxb-runtime> -->
+    <version.jaxb-runtime>3.0.2</version.jaxb-runtime>
     <version.junit-jupiter-api>5.12.2</version.junit-jupiter-api>
     <version.lombok>1.18.38</version.lombok>
     <version.mockito-core>5.17.0</version.mockito-core>
     <version.packaged-test-scenarios>1.0.2</version.packaged-test-scenarios>
     <version.picocli>4.7.7</version.picocli>
-    <version.pmd>7.12.0</version.pmd>
+    <version.pmd>7.13.0</version.pmd>
     <version.rest-assured>5.5.1</version.rest-assured>
-    <version.rewrite-logging-frameworks>3.6.1</version.rewrite-logging-frameworks>
-    <version.rewrite-migrate-java>3.7.0</version.rewrite-migrate-java>
-    <version.rewrite-static-analysis>2.7.1</version.rewrite-static-analysis>
-    <version.rewrite-testing-frameworks>3.6.1</version.rewrite-testing-frameworks>
+    <version.rewrite-logging-frameworks>3.7.0</version.rewrite-logging-frameworks>
+    <version.rewrite-migrate-java>3.8.0</version.rewrite-migrate-java>
+    <version.rewrite-static-analysis>2.8.0</version.rewrite-static-analysis>
+    <version.rewrite-testing-frameworks>3.7.0</version.rewrite-testing-frameworks>
     <version.saxon-he>12.5</version.saxon-he>
     <version.slf4j-api>2.0.17</version.slf4j-api>
     <version.slf4j-simple>2.0.17</version.slf4j-simple>
@@ -106,7 +110,9 @@
     <version.cyclonedx-maven-plugin>2.9.1</version.cyclonedx-maven-plugin>
     <version.dependency-check-maven>12.1.1</version.dependency-check-maven>
     <version.exec-maven-plugin>3.5.0</version.exec-maven-plugin>
-    <version.formatter-maven-plugin>2.26.0</version.formatter-maven-plugin>
+    <!-- Requires JDK 17 at compile time -->
+    <!-- <version.formatter-maven-plugin>2.26.0</version.formatter-maven-plugin> -->
+    <version.formatter-maven-plugin>2.16.0</version.formatter-maven-plugin>
     <version.jacoco-maven-plugin>0.8.13</version.jacoco-maven-plugin>
     <version.jaxb-maven-plugin>4.0.9</version.jaxb-maven-plugin>
     <version.jaxb-plugins>4.0.9</version.jaxb-plugins>
@@ -128,7 +134,7 @@
     <version.maven-site-plugin>3.21.0</version.maven-site-plugin>
     <version.maven-source-plugin>3.3.1</version.maven-source-plugin>
     <version.maven-surefire-plugin>3.5.3</version.maven-surefire-plugin>
-    <version.rewrite-maven-plugin>6.6.1</version.rewrite-maven-plugin>
+    <version.rewrite-maven-plugin>6.7.0</version.rewrite-maven-plugin>
     <version.spotbugs-maven-plugin>4.9.3.0</version.spotbugs-maven-plugin>
     <version.versions-maven-plugin>2.18.0</version.versions-maven-plugin>
   </properties>
@@ -462,6 +468,7 @@
             <configuration>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <shadedClassifierName>java8-standalone</shadedClassifierName>
+              <!--
               <artifactSet>
                 <excludes>
                   <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
@@ -473,6 +480,7 @@
                   <exclude>org.glassfish.jaxb:txw2</exclude>
                 </excludes>
               </artifactSet>
+              -->
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>de.kosit.validationtool.cmd.CommandLineApplication</mainClass>
