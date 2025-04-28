@@ -102,7 +102,7 @@ class CheckHandler extends BaseHandler {
         if (path.equalsIgnoreCase("/")) {
             return "supplied_instance_" + counter.incrementAndGet();
         }
-        return path.substring((path.lastIndexOf('/') + 1));
+        return path.substring(path.lastIndexOf('/') + 1);
     }
 
     private static int resolveStatus(final Result result) {
