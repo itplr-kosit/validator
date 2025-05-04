@@ -88,7 +88,7 @@
     <!-- <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api> -->
     <!-- Requires JDK 8 at run time -->
     <version.jakarta.xml.bind-api>3.0.1</version.jakarta.xml.bind-api>
-    <version.jansi>2.4.1</version.jansi>
+    <version.jansi>2.4.2</version.jansi>
     <!-- Requires JDK 11 at run time -->
     <!-- <version.jaxb-runtime>4.0.5</version.jaxb-runtime> -->
     <!-- Requires JDK 8 at run time -->
@@ -104,7 +104,7 @@
     <version.rewrite-migrate-java>3.8.0</version.rewrite-migrate-java>
     <version.rewrite-static-analysis>2.8.0</version.rewrite-static-analysis>
     <version.rewrite-testing-frameworks>3.7.0</version.rewrite-testing-frameworks>
-    <version.saxon-he>12.5</version.saxon-he>
+    <version.saxon-he>12.6</version.saxon-he>
     <version.slf4j-api>2.0.17</version.slf4j-api>
     <version.slf4j-simple>2.0.17</version.slf4j-simple>
     <!-- Plugins -->
