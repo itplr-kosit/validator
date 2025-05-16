@@ -49,7 +49,9 @@ public final class ScenarioRepository {
         }
         this.configuration = Arrays.asList(configuration);
         this.configuration.forEach(v -> log.info("Loaded scenarios for {} by {} from {}.", v.getName(), v.getAuthor(), v.getDate()));
-        log.info("The following scenarios are available:\n{}", summarizeScenarios());
+        if (log.isInfoEnabled()) {
+            log.info("The following scenarios are available:\n{}", summarizeScenarios());
+        }
     }
 
     public Scenario getFallbackScenario() {

@@ -44,7 +44,9 @@ class SerializeReportAction implements CheckAction {
     public void check(final Bag results) {
         final Path file = this.outputDirectory.resolve(this.namingStrategy.createName(results.getName()));
         try {
-            log.info("Serializing result to {}", file.toAbsolutePath());
+            if (log.isInfoEnabled()) {
+                log.info("Serializing result to {}", file.toAbsolutePath());
+            }
             final Serializer serializer = this.processor.newSerializer(file.toFile());
             serializer.serializeNode(results.getReport());
         } catch (final SaxonApiException e) {

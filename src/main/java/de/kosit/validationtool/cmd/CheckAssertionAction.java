@@ -59,7 +59,9 @@ class CheckAssertionAction implements CheckAction {
 
     @Override
     public void check(Bag results) {
-        log.info("Checking assertions for {}", results.getInput().getName());
+        if (log.isInfoEnabled()) {
+            log.info("Checking assertions for {}", results.getInput().getName());
+        }
         final List<AssertionType> toCheck = findAssertions(results.getName());
         final List<String> errors = new ArrayList<>();
         if (toCheck != null && !toCheck.isEmpty()) {
@@ -71,7 +73,9 @@ class CheckAssertionAction implements CheckAction {
                 }
             });
             if (errors.isEmpty()) {
-                log.info("{} assertions successfully verified for {}", toCheck.size(), results.getName());
+                if (log.isInfoEnabled()) {
+                    log.info("{} assertions successfully verified for {}", toCheck.size(), results.getName());
+                }
             } else {
                 log.warn("{} assertion of {} failed while checking {}", errors.size(), toCheck.size(), results.getName());
             }

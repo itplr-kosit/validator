@@ -63,7 +63,9 @@ class ExtractHtmlContentAction implements CheckAction {
         final Path file = this.outputDirectory.resolve(name + ".html");
         final Serializer serializer = this.processor.newSerializer(file.toFile());
         try {
-            log.info("Writing report html '{}' to {}", name, file.toAbsolutePath());
+            if (log.isInfoEnabled()) {
+                log.info("Writing report html '{}' to {}", name, file.toAbsolutePath());
+            }
             serializer.serializeNode(node);
         } catch (final SaxonApiException e) {
             log.error("Error extracting html content to {}", file.toAbsolutePath(), e);

@@ -167,7 +167,9 @@ public class Validator {
         Printer.writeOut("Processing of {0} objects completed in {1}ms", targets.size(), processingTime);
 
         check.printResults(results);
-        log.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
+        if (log.isInfoEnabled()) {
+            log.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
+        }
         return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
     }
 

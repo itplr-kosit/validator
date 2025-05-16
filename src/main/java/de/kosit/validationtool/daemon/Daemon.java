@@ -89,7 +89,9 @@ public class Daemon {
             server.createContext("/server/config", new ConfigHandler(check.getConfiguration(), converter));
             server.setExecutor(createExecutor());
             server.start();
-            log.info("Server {} started", server.getAddress());
+            if (log.isInfoEnabled()) {
+                log.info("Server {} started", server.getAddress());
+            }
             writeOut("Daemon started. Visit http://{0}", this.bindAddress + ":" + this.port);
         } catch (final IOException e) {
             log.error("Error starting HttpServer for Validator: {}", e.getMessage(), e);

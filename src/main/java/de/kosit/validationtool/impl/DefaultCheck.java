@@ -114,16 +114,22 @@ public class DefaultCheck implements Check {
 
     protected Result runCheckInternal(final CheckAction.Bag t) {
         final long started = System.currentTimeMillis();
-        log.info("Checking content of {}", t.getInput().getName());
+        if (log.isInfoEnabled()) {
+            log.info("Checking content of {}", t.getInput().getName());
+        }
         for (final CheckAction action : this.checkSteps) {
             final long start = System.currentTimeMillis();
             if (!action.isSkipped(t)) {
                 action.check(t);
             }
-            log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
+            if (log.isDebugEnabled()) {
+                log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
+            }
         }
         t.setFinished(true);
-        log.info("Finished check of {} in {}ms\n", t.getInput().getName(), System.currentTimeMillis() - started);
+        if (log.isInfoEnabled()) {
+            log.info("Finished check of {} in {}ms\n", t.getInput().getName(), System.currentTimeMillis() - started);
+        }
         return createResult(t);
     }
 

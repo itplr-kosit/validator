@@ -136,7 +136,9 @@ public class SchemaValidationAction implements CheckAction {
     private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
 
     private Result<Boolean, XMLSyntaxError> validate(final Bag results, final Scenario scenario) {
-        log.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
+        if (log.isDebugEnabled()) {
+            log.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
+        }
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
         try ( final SourceProvider validateInput = resolveSource(results) ) {
 

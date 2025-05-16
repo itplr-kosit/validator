@@ -42,7 +42,9 @@ public class SerializeReportInputAction implements CheckAction {
     public void check(final Bag results) {
         final Path file = this.outputDirectory.resolve(results.getName() + "-reportInput.xml");
         try {
-            log.info("Serializing result to {}", file.toAbsolutePath());
+            if (log.isInfoEnabled()) {
+                log.info("Serializing result to {}", file.toAbsolutePath());
+            }
             final String xml = this.conversionService.writeXml(results.getReportInput());
             Files.write(file, xml.getBytes());
         } catch (final IOException e) {

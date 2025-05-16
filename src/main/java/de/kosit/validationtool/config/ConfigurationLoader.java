@@ -187,7 +187,9 @@ public class ConfigurationLoader {
         final ConversionService conversionService = new ConversionService();
         final Scenarios scenarios = conversionService.readXml(this.scenarioDefinition, Scenarios.class, scenarioSchema, handler);
         if (!handler.hasErrors()) {
-            log.info("Loading scenario content from {}", this.getScenarioRepository());
+            if (log.isInfoEnabled()) {
+                log.info("Loading scenario content from {}", this.getScenarioRepository());
+            }
         } else {
             throw new IllegalStateException(
                     String.format("Can not load scenarios from %s due to %s", getScenarioDefinition(), handler.getErrorDescription()));
