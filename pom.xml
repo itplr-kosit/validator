@@ -79,7 +79,7 @@
     <version.maven>3.6.3</version.maven>
     <!-- Dependencies -->
     <version.assertj-core>3.27.3</version.assertj-core>
-    <version.checkstyle>10.23.1</version.checkstyle>
+    <version.checkstyle>10.24.0</version.checkstyle>
     <version.commons-io>2.19.0</version.commons-io>
     <version.commons-lang3>3.17.0</version.commons-lang3>
     <version.commons-text>1.13.1</version.commons-text>
@@ -95,15 +95,15 @@
     <version.jaxb-runtime>3.0.2</version.jaxb-runtime>
     <version.junit-jupiter-api>5.12.2</version.junit-jupiter-api>
     <version.lombok>1.18.38</version.lombok>
-    <version.mockito-core>5.17.0</version.mockito-core>
+    <version.mockito-core>5.18.0</version.mockito-core>
     <version.packaged-test-scenarios>1.0.2</version.packaged-test-scenarios>
     <version.picocli>4.7.7</version.picocli>
     <version.pmd>7.13.0</version.pmd>
-    <version.rest-assured>5.5.2</version.rest-assured>
+    <version.rest-assured>5.5.5</version.rest-assured>
     <version.rewrite-logging-frameworks>3.8.0</version.rewrite-logging-frameworks>
-    <version.rewrite-migrate-java>3.9.0</version.rewrite-migrate-java>
+    <version.rewrite-migrate-java>3.10.1</version.rewrite-migrate-java>
     <version.rewrite-static-analysis>2.9.0</version.rewrite-static-analysis>
-    <version.rewrite-testing-frameworks>3.8.0</version.rewrite-testing-frameworks>
+    <version.rewrite-testing-frameworks>3.9.0</version.rewrite-testing-frameworks>
     <version.saxon-he>12.7</version.saxon-he>
     <version.slf4j-api>2.0.17</version.slf4j-api>
     <version.slf4j-simple>2.0.17</version.slf4j-simple>
@@ -137,7 +137,7 @@
     <version.maven-site-plugin>3.21.0</version.maven-site-plugin>
     <version.maven-source-plugin>3.3.1</version.maven-source-plugin>
     <version.maven-surefire-plugin>3.5.3</version.maven-surefire-plugin>
-    <version.rewrite-maven-plugin>6.8.1</version.rewrite-maven-plugin>
+    <version.rewrite-maven-plugin>6.9.0</version.rewrite-maven-plugin>
     <version.spotbugs-maven-plugin>4.9.3.0</version.spotbugs-maven-plugin>
     <version.versions-maven-plugin>2.18.0</version.versions-maven-plugin>
   </properties>
