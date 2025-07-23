@@ -231,6 +231,14 @@ public class CommandlineApplicationTest {
     }
 
     @Test
+    public void testAndre() throws IOException {
+        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "andre1" };
+        CommandLineApplication.mainProgram(args);
+        assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+    }
+
+    @Test
     public void testUnexpectedDaemonFlag() {
         final String[] args = new String[] { "-D", "-s", Paths.get(Simple.SCENARIOS).toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
