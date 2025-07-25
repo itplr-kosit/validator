@@ -56,16 +56,16 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.assertj>3.27.3</version.assertj>
-        <version.commons-io>2.18.0</version.commons-io>
-        <version.commons-lang>3.17.0</version.commons-lang>
+        <version.commons-io>2.20.0</version.commons-io>
+        <version.commons-lang>3.18.0</version.commons-lang>
         <version.jacoco>0.8.13</version.jacoco>
         <version.jaxb>2.3.9</version.jaxb>
         <version.lombok>1.18.38</version.lombok>
         <version.mockito>4.11.0</version.mockito>
-        <version.owasp-dependency-check>7.2.0</version.owasp-dependency-check>
-        <version.rest-assured>5.2.0</version.rest-assured>
-        <version.saxon-he>11.4</version.saxon-he>
-        <version.slf4j>1.7.36</version.slf4j>
+        <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
+        <version.rest-assured>5.5.5</version.rest-assured>
+        <version.saxon-he>12.8</version.saxon-he>
+        <version.slf4j>2.0.17</version.slf4j>
     </properties>
     <repositories>
         <repository>
@@ -96,13 +96,13 @@
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
-            <version>4.7.6</version>
+            <version>4.7.7</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
-            <version>2.4.1</version>
+            <version>2.4.2</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -132,7 +132,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -143,7 +143,7 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>5.3.0</version>
+            <version>${version.rest-assured}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -187,7 +187,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>reserve-network-port</id>
@@ -207,7 +207,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -588,8 +588,9 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.7</version>
+                        <version>3.2.8</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
