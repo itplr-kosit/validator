@@ -84,6 +84,14 @@ java-19:
   extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-19-alpine
 
+java-21:
+  extends: .java
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-21-alpine
+
+java-24:
+  extends: .java_extended
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-24-alpine
+
 deploy:
   stage: deploy
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
