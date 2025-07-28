@@ -22,7 +22,7 @@
     <name>KoSIT XML Prüftool Implementierung</name>
 
     <groupId>de.kosit</groupId>
-    <version>1.5.1</version>
+    <version>1.6.0</version>
 
     <artifactId>validationtool</artifactId>
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
@@ -59,13 +59,14 @@
         <version.commons-io>2.20.0</version.commons-io>
         <version.commons-lang>3.18.0</version.commons-lang>
         <version.jacoco>0.8.13</version.jacoco>
-        <version.jaxb>2.3.9</version.jaxb>
+        <version.jaxb>4.0.2</version.jaxb>
         <version.lombok>1.18.38</version.lombok>
         <version.mockito>4.11.0</version.mockito>
         <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
         <version.rest-assured>5.5.5</version.rest-assured>
         <version.saxon-he>12.8</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
+        <version.jaxb-maven-plugin>4.0.9</version.jaxb-maven-plugin>
     </properties>
     <repositories>
         <repository>
@@ -124,6 +125,11 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${version.jaxb}</version>
+        </dependency>
+        <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${version.assertj}</version>
@@ -158,7 +164,6 @@
             <version>1.0.2</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -229,8 +234,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -249,44 +254,6 @@
                         <configuration>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>standalone</shadedClassifierName>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>de.kosit.validationtool.cmd.CommandLineApplication</mainClass>
-                                </transformer>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>**/module-info.class</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>jdk8</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>java8-standalone</shadedClassifierName>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
-                                    <exclude>com.sun.istack:istack-commons-runtime</exclude>
-                                    <exclude>com.sun.xml.fastinfoset:FastInfoset</exclude>
-                                    <exclude>jakarta.activation:jakarta.activation-api</exclude>
-                                    <exclude>jakarta.xml.bind:jakarta.xml.bind-api</exclude>
-                                    <exclude>org.jvnet.staxex:stax-ex</exclude>
-                                    <exclude>org.glassfish.jaxb:txw2</exclude>
-                                </excludes>
-                            </artifactSet>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>de.kosit.validationtool.cmd.CommandLineApplication</mainClass>
@@ -334,9 +301,9 @@
 
             <!-- Generate model classes -->
             <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.15.3</version>
+                <groupId>org.jvnet.jaxb</groupId>
+                <artifactId>jaxb-maven-plugin</artifactId>
+                <version>${version.jaxb-maven-plugin}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -354,20 +321,12 @@
                     </args>
                     <plugins>
                         <plugin>
-                            <groupId>org.jvnet.jaxb2_commons</groupId>
-                            <artifactId>jaxb2-basics</artifactId>
-                            <version>0.13.1</version>
+                            <groupId>org.jvnet.jaxb</groupId>
+                            <artifactId>jaxb-plugins</artifactId>
+                            <version>${version.jaxb-maven-plugin}</version>
                         </plugin>
                     </plugins>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                        <version>${version.jaxb}</version>
-                        <optional>true</optional>
-                    </dependency>
-                </dependencies>
             </plugin>
 
             <!-- Integrate code coverage -->
@@ -541,7 +500,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.11.2</version>
                 <configuration>
-                    <source>8</source>
+                    <source>11</source>
                     <doclint>none</doclint>
                 </configuration>
                 <executions>
