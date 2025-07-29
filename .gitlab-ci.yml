@@ -52,17 +52,9 @@ java-11:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-java8:
-  extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
-
 java-11-openj9:
   extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
-
-java-8-openj9:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
 
 java-15:
   extends: .java_extended
