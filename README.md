@@ -52,7 +52,8 @@ The validator can be used in three different ways:
 The general way using the CLI is:
 
 ```shell
-java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...
+java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -r <repository-path>
+[OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
 The help option displays further CLI options to customize the process:

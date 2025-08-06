@@ -16,26 +16,24 @@
   -->
 
 <jaxb:bindings
-        xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-        xmlns:inheritance="http://jaxb2-commons.dev.java.net/basic/inheritance"
-        xmlns:simplify="http://jaxb2-commons.dev.java.net/basic/simplify"
-        jaxb:extensionBindingPrefixes="inheritance simplify"
-        version="2.1">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+    xmlns:inheritance="urn:jaxb.jvnet.org:plugin:inheritance"
+    xmlns:simplify="http://jaxb2-commons.dev.java.net/basic/simplify"
+    jaxb:extensionBindingPrefixes="inheritance"
+    version="3.0">
+
     <jaxb:globalBindings>
         <xjc:serializable uid="-1"/>
         <xjc:javaType
                 name="java.lang.String"
                 xmlType="xs:string"
-
                 adapter="de.kosit.validationtool.impl.xml.StringTrimAdapter"/>
-
         <xjc:javaType
                 name="java.lang.Long"
                 xmlType="xs:integer" adapter="de.kosit.validationtool.impl.xml.LongAdapter"/>
     </jaxb:globalBindings>
-
 
     <jaxb:bindings schemaLocation="../xsd/model.xsd">
         <jaxb:schemaBindings>
@@ -45,24 +43,28 @@
             <inheritance:extends>de.kosit.validationtool.impl.model.BaseXMLSyntaxError</inheritance:extends>
         </jaxb:bindings>
     </jaxb:bindings>
+
     <jaxb:bindings schemaLocation="../xsd/scenarios.xsd">
         <jaxb:schemaBindings>
             <jaxb:package name="de.kosit.validationtool.model.scenarios"/>
         </jaxb:schemaBindings>
     </jaxb:bindings>
+
     <jaxb:bindings schemaLocation="../xsd/assertions.xsd">
         <jaxb:schemaBindings>
-            <jaxb:package name="de.kosit.validationtool.cmd.assertions" />
+            <jaxb:package name="de.kosit.validationtool.cmd.assertions"/>
         </jaxb:schemaBindings>
     </jaxb:bindings>
+
     <jaxb:bindings schemaLocation="../xsd/svrl-kosit.xsd">
         <jaxb:bindings node="//xs:element[@name='schematron-output']/xs:complexType">
             <inheritance:extends>de.kosit.validationtool.impl.model.BaseOutput</inheritance:extends>
         </jaxb:bindings>
     </jaxb:bindings>
+
     <jaxb:bindings schemaLocation="../xsd/daemon.xsd">
         <jaxb:schemaBindings>
-            <jaxb:package name="de.kosit.validationtool.model.daemon" />
+            <jaxb:package name="de.kosit.validationtool.model.daemon"/>
         </jaxb:schemaBindings>
     </jaxb:bindings>
     <jaxb:bindings schemaLocation="../xsd/xvrl.xsd">

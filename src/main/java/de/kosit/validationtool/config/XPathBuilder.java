@@ -114,7 +114,7 @@ class XPathBuilder implements Builder<XPathExecutable> {
         final Iterable<String> iterable = () -> iterator;
         StreamSupport.stream(iterable.spliterator(), false).filter(e -> !ArrayUtils.contains(IGNORED_PREFIXES, e))
                 .filter(StringUtils::isNotBlank).forEach(e -> ns.put(e, this.executable.getUnderlyingExpression().getInternalExpression()
-                        .getRetainedStaticContext().getURIForPrefix(e, false)));
+                        .getRetainedStaticContext().getURIForPrefix(e, false).toString()));
         getNamespaces().putAll(ns);
 
     }
