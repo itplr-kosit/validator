@@ -35,9 +35,18 @@ cache:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
 
+# Note: image "maven:3-eclipse-temurin-8-alpine" does not work!
+java-8:
+  extends: .java
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
+
+java-8-openj9:
+  extends: .java_extended
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
+
 java-11:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
@@ -52,37 +61,13 @@ java-11:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-java8:
-  extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
-
 java-11-openj9:
   extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
 
-java-8-openj9:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
-
-java-15:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-15
-
-java-16:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-16
-
 java-17:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-17
-
-java-18:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-18
-
-java-19:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-19-alpine
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
 
 java-21:
   extends: .java
@@ -94,7 +79,7 @@ java-24:
 
 deploy:
   stage: deploy
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
   needs:
     - job: java-11
   script:
@@ -124,7 +109,7 @@ create-build-image:
 
 owasp-check:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check
@@ -134,5 +119,3 @@ owasp-check:
       changes:
         - pom.xml
         - owasp-suppressions.xml
-
-
