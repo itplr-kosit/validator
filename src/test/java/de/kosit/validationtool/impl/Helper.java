@@ -32,7 +32,6 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.DocumentParseAction;
 import de.kosit.validationtool.impl.xml.ProcessorProvider;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
@@ -83,6 +82,8 @@ public class Helper {
         public static final URI REPORT_XSL = REPOSITORY_URI.resolve("report.xsl");
 
         public static final URI SCHEMA = REPOSITORY_URI.resolve("simple.xsd");
+
+        public static final URI SCHEMATRON = REPOSITORY_URI.resolve("simple-schematron-error.xsl");
 
         public static final ContentRepository createContentRepository() {
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
