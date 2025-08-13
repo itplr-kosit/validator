@@ -21,10 +21,10 @@
 
     <name>KoSIT XML Prüftool Implementierung</name>
 
-    <groupId>de.kosit</groupId>
-    <version>1.5.1</version>
-
+    <groupId>org.kosit</groupId>
     <artifactId>validationtool</artifactId>
+    <version>1.5.1-SNAPSHOT</version>
+    
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
         <!-- In alphabetical order by last name -->
@@ -67,11 +67,24 @@
         <version.saxon-he>12.8</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
     </properties>
+    
     <repositories>
         <repository>
             <id>project.local</id>
             <name>project</name>
             <url>file:${project.basedir}/libs</url>
+        </repository>
+
+        <repository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -172,6 +185,26 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.8.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>central</publishingServerId>
+                        <autoPublish>true</autoPublish>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.2.8</version>
+                </plugin>    
+            </plugins>
+        </pluginManagement>
 
         <plugins>
            <!-- for PR 152 -->
@@ -590,7 +623,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.8</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -660,6 +692,17 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>release-snapshot</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <reporting>
@@ -669,12 +712,14 @@
     </reporting>
 
     <scm>
-        <connection>https://github.com/itplr-kosit/validationtool.git</connection>
+        <connection>scm:git:https://github.com/itplr-kosit/validator.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>v1.1.0</tag>
+        <tag>release/1.5.x</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
+    
     <url>https://github.com/itplr-kosit/validator</url>
+    
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -682,12 +727,4 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <distributionManagement>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
-
 </project>

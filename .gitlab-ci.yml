@@ -3,7 +3,8 @@ image: maven:latest
 variables:
   BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID -Dfile.encoding=UTF-8  -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
-  MAVEN_CLI_OPTS: " --batch-mode  --errors --fail-at-end --show-version -s .mvn/settings.xml"
+  MAVEN_CLI_OPTS: " --batch-mode  --update-snapshots --errors --fail-at-end --show-version -s .mvn/settings.xml"
+  MAVEN_CLI_OPTS_CENTRAL: " --batch-mode --show-version -s .mvn/settings-maven-central.xml"
 
 before_script:
   - export CI_JOB_TIMESTAMP="-Dbuild.timestamp=$(date --utc --iso-8601=seconds)"
@@ -91,6 +92,11 @@ deploy:
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-java8-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="java8-standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-sources.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="sources" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
   when: manual
+
+deploy-snapshot:
+  extends: java-8
+  script:
+    - mvn $MAVEN_CLI_OPTS_CENTRAL -P release-snapshot deploy
 
 create-build-image:
   stage: deploy
