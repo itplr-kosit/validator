@@ -20,6 +20,7 @@ import static de.kosit.validationtool.config.ConfigurationBuilder.fallback;
 import static de.kosit.validationtool.config.ConfigurationBuilder.report;
 import static de.kosit.validationtool.config.ConfigurationBuilder.scenario;
 import static de.kosit.validationtool.config.ConfigurationBuilder.schema;
+import static de.kosit.validationtool.config.ConfigurationBuilder.schematron;
 
 import java.net.URI;
 import java.util.Date;
@@ -46,6 +47,7 @@ public class TestConfigurationFactory {
 
     public static ScenarioBuilder createScenario() {
         return scenario("simple").validate(schema("Sample Schema").schemaLocation(URI.create("simple.xsd")))
+                .validate(schematron("Sample Schematron").source(Simple.SCHEMATRON))
                 .with(report("Report für eRechnung").source("report.xsl")).acceptWith("count(//test:rejected) = 0")
                 .declareNamespace("cri", "http://www.xoev.de/de/validator/framework/1/createreportinput")
                 .declareNamespace("rpt", "http://validator.kosit.de/test-report")
