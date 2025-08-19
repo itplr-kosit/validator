@@ -10,7 +10,8 @@ before_script:
   - export CI_JOB_TIMESTAMP="-Dbuild.timestamp=$(date --utc --iso-8601=seconds)"
 
 cache:
-  key: "$CI_JOB_NAME"
+# Change the cache key if major dependencies change  
+  key: constant151
   paths:
     - .m2/repository
 
