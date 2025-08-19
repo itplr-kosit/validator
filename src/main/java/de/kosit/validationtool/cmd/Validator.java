@@ -16,7 +16,7 @@
 
 package de.kosit.validationtool.cmd;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -37,14 +37,11 @@ import java.util.stream.Stream;
 
 import org.fusesource.jansi.AnsiRenderer.Code;
 
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.cmd.CommandLineOptions.CliOptions;
-import de.kosit.validationtool.cmd.CommandLineOptions.Definition;
 import de.kosit.validationtool.cmd.CommandLineOptions.RepositoryDefinition;
 import de.kosit.validationtool.cmd.CommandLineOptions.ScenarioDefinition;
 import de.kosit.validationtool.cmd.assertions.Assertions;
@@ -55,7 +52,7 @@ import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.impl.Printer;
 import de.kosit.validationtool.impl.ScenarioRepository;
 import de.kosit.validationtool.impl.xml.ProcessorProvider;
-
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 
 /**
@@ -132,7 +129,7 @@ public class Validator {
         final Processor processor = ProcessorProvider.getProcessor();
         final List<Configuration> config = getConfiguration(cmd);
         final InternalCheck check = new InternalCheck(processor, config.toArray(new Configuration[0]));
-        final CommandLineOptions.CliOptions cliOptions = defaultIfNull(cmd.getCliOptions(), new CliOptions());
+        final CommandLineOptions.CliOptions cliOptions = getIfNull(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
         if (cliOptions.isExtractHtml()) {
             check.getCheckSteps().add(new ExtractHtmlContentAction(processor, outputDirectory));
@@ -180,17 +177,19 @@ public class Validator {
      * @return a list of configurations of the scenarios and repositories passed in cmd
      */
     private static List<Configuration> getConfiguration(final CommandLineOptions cmd) {
-        final List<ScenarioDefinition> scenarios = defaultIfNull(cmd.getScenarios(), Collections.emptyList());
+        final List<ScenarioDefinition> scenarios = getIfNull(cmd.getScenarios(), Collections.emptyList());
+        // Map from scenario name to scenario path
         final Map<String, Path> mappedScenarios = scenarios.stream()
                 .collect(Collectors.toMap(ScenarioDefinition::getName, ScenarioDefinition::getPath));
-        final List<RepositoryDefinition> repos = defaultIfNull(cmd.getRepositories(), Collections.emptyList());
-        final Map<String, Path> mappedRepos = repos.stream().collect(Collectors.toMap(Definition::getName, Definition::getPath));
+        final List<RepositoryDefinition> repos = getIfNull(cmd.getRepositories(), Collections.emptyList());
+        final Map<String, Path> mappedRepos = repos.stream()
+                .collect(Collectors.toMap(RepositoryDefinition::getName, RepositoryDefinition::getPath));
         checkUnused(mappedScenarios, mappedRepos);
 
         return mappedScenarios.entrySet().stream().map(e -> {
             assertFileExistance(e.getValue(), "scenario");
             final URI scenarioLocation = e.getValue().toUri();
-            final URI repositoryLocation = findRepository(e.getKey(), mappedRepos);
+            final URI repositoryLocation = findRepository(scenarioLocation, e.getKey(), mappedRepos);
 
             reportLoading(scenarioLocation, repositoryLocation);
             final Configuration configuration = Configuration.load(scenarioLocation, repositoryLocation)
@@ -208,9 +207,14 @@ public class Validator {
         unused.forEach(e -> Printer.writeErr("Warning: repository definition \"{0}\" is not used", e.getKey()));
     }
 
-    private static URI findRepository(final String key, final Map<String, Path> repositories) {
+    private static URI findRepository(final URI scenarioLocation, final String key, final Map<String, Path> repositories) {
         final Path path = repositories.getOrDefault(key, repositories.get(ScenarioRepository.DEFAULT_ID));
         if (path == null) {
+            // If it is an unnamed scenario, use the CWD instead
+            if (key.startsWith(ScenarioRepository.DEFAULT)) {
+                // Assume directory of scenario location instead
+                return Paths.get(scenarioLocation).getParent().toUri();
+            }
             throw new IllegalArgumentException(String.format("No repository location for scenario definition '%s' specified", key));
         }
         return determineRepository(path);
