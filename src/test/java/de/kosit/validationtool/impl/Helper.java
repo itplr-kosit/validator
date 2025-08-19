@@ -51,15 +51,17 @@ public class Helper {
 
         public static final URI EXAMPLES = ROOT.resolve("input/");
 
-        public static final URI SIMPLE_VALID = Simple.ROOT.resolve("input/simple.xml");
+        public static final URI SIMPLE_VALID = ROOT.resolve("input/simple.xml");
 
-        public static final URI FOO = Simple.ROOT.resolve("input/foo.xml");
+        public static final URI FOO = ROOT.resolve("input/foo.xml");
 
         public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");
 
-        public static final URI REJECTED = Simple.ROOT.resolve("input/withManualReject.xml");
+        public static final URI REJECTED = ROOT.resolve("input/withManualReject.xml");
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
+
+        public static final URI SCENARIOS_WITH_RELATIVE_PATHS = ROOT.resolve("scenarios-with-relative-paths.xml");
 
         public static final URI OTHER_SCENARIOS = ROOT.resolve("otherScenarios.xml");
 
