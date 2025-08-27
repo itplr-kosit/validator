@@ -85,6 +85,14 @@ public class CommandlineApplicationTest {
     }
 
     @Test
+    public void testNoArguments() {
+        final String[] args = {};
+        CommandLineApplication.mainProgram(args);
+        assertThat(CommandLine.getErrorOutput()).isNotEmpty();
+        checkForHelp(CommandLine.getErrorLines());
+    }
+
+    @Test
     public void testRequiredScenarioFile() {
         final String[] args = { "arguments", "egal welche", "argumente drin sind" };
         CommandLineApplication.mainProgram(args);
