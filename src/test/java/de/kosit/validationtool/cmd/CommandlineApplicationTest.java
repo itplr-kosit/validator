@@ -76,11 +76,17 @@ public class CommandlineApplicationTest {
         final String[] args = { "-?" };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).isEmpty();
+        log.warn("Philip1");
         checkForHelp(CommandLine.getOutputLines());
+        log.warn("Philip2");
     }
 
     private static void checkForHelp(final List<String> outputLines) {
         assertThat(outputLines.size()).isPositive();
+        log.warn("!!!!");
+        for (final String s : outputLines)
+            log.warn(s);
+        log.warn("!!!");
         assertThat(outputLines.stream().filter(l -> l.startsWith("Usage: KoSIT Validator"))).hasSize(1);
     }
 
