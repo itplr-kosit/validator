@@ -464,6 +464,12 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.3</version>
                 <configuration>
+                    <systemProperties>
+                        <property>
+                            <name>java.net.useSystemProxies</name>
+                            <value>true</value>
+                        </property>
+                    </systemProperties>
                     <!--suppress MavenModelInspection -->
                     <argLine>-Dfile.encoding=UTF-8 ${jacocoSurefire}</argLine>
                 </configuration>
