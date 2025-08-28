@@ -2,16 +2,45 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# 1.5.0 (to be released)
+# 1.5.1 - 2025-09-01
+
+### Fixed
+
+- (CORE) [#130](https://projekte.kosit.org/kosit/validator/-/issues/130) Check result to stdout causes an exception. This also fixes [GitHub #131](https://github.com/itplr-kosit/validator/issues/131)
+- (CORE) [#131](https://projekte.kosit.org/kosit/validator/-/issues/131) `UnsupportedOperationException` because of read-only list. This also fixes [GitHub #136](https://github.com/itplr-kosit/validator/issues/136)
+- (CLI) [#104](https://projekte.kosit.org/kosit/validator/-/issues/104) made the usage of the `-r` parameter optional, if only one unnamed scenario is used
+- (CLI) [#145](https://projekte.kosit.org/kosit/validator/-/issues/145) If the CLI is invoked without any parameter, the usage is shown twice
+- (DOC) [#129](https://projekte.kosit.org/kosit/validator/-/issues/129) API documentation is outdated. This also fixes [GitHub #130](https://github.com/itplr-kosit/validator/issues/130)
+- (BUILD) [#62](https://projekte.kosit.org/kosit/validator/-/issues/62) Surefire Test Error running `de.kosit.validationtool.impl.xml.RemoteResolvingStrategyTest` fails without `http.proxy` setting
+- (BUILD) [#110](https://projekte.kosit.org/kosit/validator/-/issues/110) reactivated the GitLab CI environment
+
+
+### Added
+
+- (BUILD) [#140](https://projekte.kosit.org/kosit/validator/-/issues/140) prepare pom.xml to be able to release to Maven Central
+- (BUILD) [#144](https://projekte.kosit.org/kosit/validator/-/issues/144) created a Maven profile to release on Maven Central
+
+### Changed
+
+- (CORE) [#109](https://projekte.kosit.org/kosit/validator/-/issues/109) dependencies were updated to the latest Java 1.8 compatible versions
+    - Bump [Saxon HE](https://www.saxonica.com/documentation11/documentation.xml) to 12.8
+    - Bump [jaxb-ri](https://github.com/eclipse-ee4j/jaxb-ri) to 2.3.9
+    - Bump [SLF4J](https://www.slf4j.org/) to 2.0.17
+- (CORE) [#136](https://projekte.kosit.org/kosit/validator/-/issues/136) removed IDE project folders from git
+- (BUILD) [#135](https://projekte.kosit.org/kosit/validator/-/issues/135) protected specific git branches
+- (BUILD) [#137](https://projekte.kosit.org/kosit/validator/-/issues/137) GitLab CI should only run on Java LTS versions as well as the latest Java version
+- (BUILD) [#147](https://projekte.kosit.org/kosit/validator/-/issues/147) Change Maven coordinates from `de.kosit:validationtool` to `org.kosit:validator`
+
+# 1.5.0
 
 ### Fixed
 
 - (CLI) [#93](https://projekte.kosit.org/kosit/validator/-/issues/93) Remove usage information, when validation failed
 - (CLI) [#95](https://projekte.kosit.org/kosit/validator/-/issues/95) NPE when using empty repository definition (-r "")
-- (CORE) [#101](https://github.com/itplr-kosit/validator/issues/101) Role is null in FailedAssert
+- (CORE) [GitHub #101](https://github.com/itplr-kosit/validator/issues/101) Role is null in FailedAssert
 
 ### Added
 
@@ -19,15 +48,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (API) Possibility to use preconfigured Saxon `Processor` instance for validation
 
 ### Changed
-- (CORE) [#100](https://github.com/itplr-kosit/validator/issues/100) Make createReport optional
+- (CORE) [GitHub #100](https://github.com/itplr-kosit/validator/issues/100) Make createReport optional
 - (DAEMON) UI rewrite based on [Docusaurs](https://docusaurus.io)
-- (
-  API)  [ResolvingConfigurationStrategy.java#getProcessor()](de/kosit/validationtool/api/ResolvingConfigurationStrategy)
-  is removed.
+- (API)  [ResolvingConfigurationStrategy.java#getProcessor()](de/kosit/validationtool/api/ResolvingConfigurationStrategy) is removed.
 - (CORE) Bump [Saxon HE](https://www.saxonica.com/documentation11/documentation.xml) to 11.4
 - (CORE) Bump [jaxb-ri](https://github.com/eclipse-ee4j/jaxb-ri) to 2.3.7
 - (CORE) Various other dependency updates. See pom.xml
-
 - (CORE) CLI parsing based on pico-cli, commons-cli is removed
 
 ## 1.4.2
