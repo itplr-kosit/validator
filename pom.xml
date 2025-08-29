@@ -42,7 +42,8 @@
         <version.commons-io>2.20.0</version.commons-io>
         <version.commons-lang>3.18.0</version.commons-lang>
         <version.jacoco>0.8.13</version.jacoco>
-        <version.jaxb>4.0.2</version.jaxb>
+        <version.jaxb-api>4.0.2</version.jaxb-api>
+        <version.jaxb-impl>4.0.5</version.jaxb-impl>
         <version.lombok>1.18.38</version.lombok>
         <version.mockito>4.11.0</version.mockito>
         <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
@@ -117,13 +118,13 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>${version.jaxb}</version>
+            <version>${version.jaxb-impl}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>${version.jaxb}</version>
+            <version>${version.jaxb-api}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
