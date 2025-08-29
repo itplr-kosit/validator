@@ -1,4 +1,5 @@
 # KoSIT Validator
+
 - [Introduction](#introduction)
 - [Validation Configurations](#validation-configurations)
     * [Third Party Validation Configurations](#third-party-validation-configurations)
@@ -9,17 +10,18 @@
 - [Packages](#packages)
 
 ## Introduction
-The validator is an XML validation engine to validate and process  XML files in various formats. It basically does the following in order:
 
-1. identify actual xml format 
-1. validate the xml file (using schema  and schematron rules)
-1. generate a custom report / extract custom data from the xml file
+The validator is an XML validation engine to validate and process XML files in various formats. It basically does the following in order:
+
+1. identify actual XML format 
+1. validate the XML file (using schema  and schematron rules)
+1. generate a custom report / extract custom data from the XML file
 1. compute an acceptance status (according the supplied schema and rules)
 
-The validator depends on self defined [scenarios](docs/configurations.md) which are used to fully configure the process.
-It always creates a [validation report in XML](docs/configurations.md#validators-report). The actual content of this is controlled by the scenario.
+The validator depends on self defined [scenarios](docs/configurations.md) in order to fully configure the whole process.
+It always creates a [validation report in XML](docs/configurations.md#validators-report). The actual content of the report can also be controlled by the scenario.
 
-See [architecture](docs/architecture.md) for information about the actual validation process.
+See [architecture](docs/architecture.md) for information about the whole validation process.
 
 
 ## Validation configurations
@@ -30,7 +32,7 @@ All configurations are self-contained modules which are deployed and developed o
 
 ### Third party validation configurations
 
-Currently, there are two public third party validation configurations available.
+Here are two public third party validation configurations available which might serve as examples:
 
 * Validation Configuration for [XRechnung](http://www.xoev.de/de/xrechnung):
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
@@ -43,28 +45,31 @@ Currently, there are two public third party validation configurations available.
 
 The validator can be used in three different ways:
 
-* as standalone application running from the cli
+* as standalone application running from the CLI
 * as library embedded within a custom application
 * as a daemon providing a http interface
 
-### Standalone Command-Line Interface
+### Standalone Command Line Interface (CLI)
+
+**Important hint**: since v1.5.1 the filename has been changed from `validationtool-*` to `validator-*`
 
 The general way using the CLI is:
 
 ```shell
-java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...
+java -jar  validator-<version>-standalone.jar  -s <scenario-config-file> -r <repository-path>
+[OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
 The help option displays further CLI options to customize the process:
 
 ```shell
-java -jar  validationtool-<version>-standalone.jar --help
+java -jar  validator-<version>-standalone.jar --help
 ```
 
 A concrete example with a specific validator configuration can be found on 
 [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
 
-The  [CLI documentation](./docs/cli.md) shows further configuration options.
+The [CLI documentation](./docs/cli.md) shows further configuration options.
 
 ### Application User Interface (API / embedded usage)
 
@@ -92,7 +97,7 @@ will thus not be resolved transitively.
 You can also start the validator as a HTTP-Server. Just start it in _Daemon-Mode_ with the `-D` option.
 
 ```shell
-java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
+java -jar  validator-<version>-standalone.jar  -s <scenario-config-file> -D
 ```
 
 
@@ -102,7 +107,7 @@ The [daemon documentation](./docs/daemon.md) shows more usage details and furthe
 
 The validator distribution contains the following artifacts:
 
-1. **validationtool-`<version>`.jar**: Java library for embedded use within an application
-1. **validationtool-`<version`>-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java 8 and Java >= 11)
-1. **validationtool-`<version`>-java8-standalone.jar**: Uber-JAR for standalone usage with Java JDK 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
+1. **validator-`<version>`.jar**: Java library for embedded use within an application
+1. **validator-`<version`>-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java 8 and Java >= 11)
+1. **validator-`<version`>-java8-standalone.jar**: Uber-JAR for standalone usage with Java JDK 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
 1. **libs/***: directory containing all (incl. optional) dependencies of the validator

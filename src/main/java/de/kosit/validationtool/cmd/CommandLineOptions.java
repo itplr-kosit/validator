@@ -20,12 +20,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import de.kosit.validationtool.cmd.CommandLineApplication.Level;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import de.kosit.validationtool.cmd.CommandLineApplication.Level;
-
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Visibility;
@@ -38,9 +36,11 @@ import picocli.CommandLine.Parameters;
  * @author Andreas Penski
  */
 @Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false,
-         separator = " ")
+         separator = " ", synopsisHeading = CommandLineOptions.SYNOSIS_HEADING)
 @Getter
 public class CommandLineOptions implements Callable<ReturnValue> {
+
+    static final String SYNOSIS_HEADING = "Usage: ";
 
     /**
      * @author Andreas Penski
@@ -175,9 +175,9 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     private static void configureLogging(final CommandLineOptions cmd) {
         if (cmd.isDebugLog()) {
-            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
         } else {
-            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
+            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
         }
     }
 

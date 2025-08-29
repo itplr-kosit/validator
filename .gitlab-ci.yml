@@ -3,13 +3,15 @@ image: maven:latest
 variables:
   BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID -Dfile.encoding=UTF-8  -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
-  MAVEN_CLI_OPTS: " --batch-mode  --errors --fail-at-end --show-version -s .mvn/settings.xml"
+  MAVEN_CLI_OPTS: " --batch-mode  --update-snapshots --errors --fail-at-end --show-version -s .mvn/settings.xml"
+  MAVEN_CLI_OPTS_CENTRAL: " --batch-mode --show-version -s .mvn/settings-maven-central.xml"
 
 before_script:
   - export CI_JOB_TIMESTAMP="-Dbuild.timestamp=$(date --utc --iso-8601=seconds)"
 
 cache:
-  key: "$CI_JOB_NAME"
+# Change the cache key if major dependencies change  
+  key: constant151
   paths:
     - .m2/repository
 
@@ -35,9 +37,18 @@ cache:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
 
+# Note: image "maven:3-eclipse-temurin-8-alpine" does not work!
+java-8:
+  extends: .java
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
+
+java-8-openj9:
+  extends: .java_extended
+  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
+
 java-11:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
@@ -52,41 +63,25 @@ java-11:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-java8:
-  extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
-
 java-11-openj9:
   extends: .java_extended
   image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
 
-java-8-openj9:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
-
-java-15:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-15
-
-java-16:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-16
-
 java-17:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-17
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
 
-java-18:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-openjdk-18
+java-21:
+  extends: .java
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-21-alpine
 
-java-19:
+java-24:
   extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-19-alpine
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-24-alpine
 
 deploy:
   stage: deploy
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
   needs:
     - job: java-11
   script:
@@ -98,6 +93,11 @@ deploy:
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-java8-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="java8-standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-sources.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="sources" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
   when: manual
+
+deploy-snapshot:
+  extends: java-8
+  script:
+    - mvn $MAVEN_CLI_OPTS_CENTRAL -P release-snapshot deploy
 
 create-build-image:
   stage: deploy
@@ -116,7 +116,7 @@ create-build-image:
 
 owasp-check:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check
@@ -126,5 +126,3 @@ owasp-check:
       changes:
         - pom.xml
         - owasp-suppressions.xml
-
-

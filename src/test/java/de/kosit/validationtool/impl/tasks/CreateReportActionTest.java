@@ -77,7 +77,7 @@ public class CreateReportActionTest {
         this.action.check(bag);
         assertThat(bag.getReport()).isNotNull();
         final String reportString = serialize(bag.getReport());
-        assertThat(reportString).contains("SAXParseException");
+        assertThat(reportString).contains("SXXP0003");
     }
 
     @Test
