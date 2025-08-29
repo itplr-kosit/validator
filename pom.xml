@@ -19,12 +19,12 @@
     xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>KoSIT XML Prüftool Implementierung</name>
+    <name>KoSIT XML Validator</name>
 
     <groupId>org.kosit</groupId>
     <artifactId>validator</artifactId>
     <version>1.5.1-SNAPSHOT</version>
-    
+
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
         <!-- In alphabetical order by last name -->
@@ -67,7 +67,7 @@
         <version.saxon-he>12.8</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
     </properties>
-    
+
     <repositories>
         <repository>
             <id>project.local</id>
@@ -185,7 +185,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -202,13 +202,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>3.2.8</version>
-                </plugin>    
+                </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
-           <!-- for PR 152 -->
-           <plugin>
+            <!-- for PR 152 -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.3.1</version>
@@ -216,7 +216,7 @@
                     <propertiesEncoding>ISO-8859-1</propertiesEncoding>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -727,9 +727,9 @@
         <tag>release/1.5.x</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
-    
+
     <url>https://github.com/itplr-kosit/validator</url>
-    
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
