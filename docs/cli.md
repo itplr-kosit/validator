@@ -48,12 +48,13 @@ java -jar  validator-<version>-standalone.jar -s "NAME1=<scenario-config-file1>"
 
 Besides the obvious functionality of validating, the cli provides additional functionality to customize the processing:
 
-|name | option | description | | - | - | - | | [Daemon mode](daemon.md) | `-D` | Starts the validator in daemon mode as an HTTP service | |
-print mode | `-p` | Print the report to stdout | | extract html | `-h` | Extracts any html blocks within the report and saves the content to
-the filesystem. Note: the file name is derived from the node name the html appears in | | print memory stats | `-m` | Prints some memory
-usage information. Mainly for debugging purposes on processing huge xml files | | check assertions | `-c <file>` | Check assertions on the
-generated reports. This is mainly useful for scenario developers. Ask KoSIT for documentation, if you want to use this feauture |
-
+| name | option | description | 
+| - | - | - | 
+| [Daemon mode](daemon.md) | `-D` | Starts the validator in daemon mode as an HTTP service | 
+| print mode | `-p` | Print the report to stdout | 
+| extract html | `-h` | Extracts any html blocks within the report and saves the content to the filesystem. Note: the file name is derived from the node name the html appears in | 
+| print memory stats | `-m` | Prints some memory usage information. Mainly for debugging purposes on processing huge xml files | 
+| check assertions | `-c <file>` | Check assertions on the generated reports. This is mainly useful for scenario developers. Ask KoSIT for documentation, if you want to use this feauture |
 
 ## Return codes
 
