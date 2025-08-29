@@ -22,7 +22,7 @@
     <name>KoSIT XML Prüftool Implementierung</name>
 
     <groupId>org.kosit</groupId>
-    <artifactId>validationtool</artifactId>
+    <artifactId>validator</artifactId>
     <version>1.5.1-SNAPSHOT</version>
     
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
