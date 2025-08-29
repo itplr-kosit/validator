@@ -25,7 +25,6 @@ import org.fusesource.jansi.AnsiRenderer.Code;
 
 import de.kosit.validationtool.cmd.report.Line;
 import de.kosit.validationtool.impl.Printer;
-
 import picocli.CommandLine;
 import picocli.CommandLine.ParseResult;
 
@@ -79,11 +78,11 @@ public class CommandLineApplication {
         final CommandLine commandLine = new CommandLine(new CommandLineOptions());
         try {
             commandLine.setExecutionExceptionHandler(CommandLineApplication::logExecutionException);
-            commandLine.execute(args);
-            if (commandLine.isUsageHelpRequested()) {
+            final int cmdlineRetVal = commandLine.execute(args);
+            if (commandLine.isUsageHelpRequested() || cmdlineRetVal == CommandLine.ExitCode.USAGE) {
                 resultStatus = ReturnValue.HELP_REQUEST;
             } else {
-                resultStatus = ObjectUtils.defaultIfNull(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
+                resultStatus = ObjectUtils.getIfNull(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
                 if (resultStatus.isError()) {
                     commandLine.usage(System.out);
                 }

@@ -16,22 +16,20 @@
 
 package de.kosit.validationtool.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.model.scenarios.ResourceType;
+import de.kosit.validationtool.model.scenarios.ScenarioType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
-import de.kosit.validationtool.model.scenarios.ResourceType;
-import de.kosit.validationtool.model.scenarios.ScenarioType;
-
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
@@ -80,7 +78,11 @@ public class Scenario {
     private Transformation reportTransformation;
 
     public List<Transformation> getSchematronValidations() {
-        return this.schematronValidations == null ? Collections.emptyList() : this.schematronValidations;
+        // Must return a mutable list
+        if (this.schematronValidations == null) {
+            this.schematronValidations = new ArrayList<>();
+        }
+        return this.schematronValidations;
     }
 
     public String getName() {
@@ -95,9 +97,9 @@ public class Scenario {
     }
 
     /**
-     * Liefert einen neuen XPath-Selector zur Evaluierung der {@link de.kosit.validationtool.api.AcceptRecommendation}.
+     * Returns a new XPath selector for evaluating the {@link de.kosit.validationtool.api.AcceptRecommendation}.
      *
-     * @return neuer Selector
+     * @return new selector
      */
     public Optional<XPathSelector> getAcceptSelector() {
         final XPathSelector selector = this.acceptExecutable != null ? this.acceptExecutable.load() : null;

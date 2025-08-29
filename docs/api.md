@@ -12,8 +12,8 @@ Then you can declare the dependency as follows:
 
 ```xml
 <dependency>
-   <groupId>de.kosit</groupId>
-   <artifactId>validationtool</artifactId>
+   <groupId>org.kosit</groupId>
+   <artifactId>validator</artifactId>
    <version>${validator.version}</version>
 </dependency>
 ```
@@ -22,9 +22,11 @@ Then you can declare the dependency as follows:
 
 ```js
 dependencies {
-    compile group: 'de.kosit', name: 'validationtool', version: '1.1.0'
+    compile group: 'org.kosit', name: 'validator', version: '1.5.1'
 }
 ```
+
+Hint: prior to v1.5.1 the group ID was `de.kosit` and the artifact ID was `validationtool`.
 
 ## Usage
 
@@ -33,12 +35,14 @@ Prerequisite for use is a valid [scenario definition](configurations.md) and the
 The following example demonstrates loading scenario.xml and whole configuration from classpath and validating one XML document:
 
 ```java
-package org.kosit.validator.example;
+package de.kosit.validationtool.docs;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.w3c.dom.Document;
 
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.Configuration;
@@ -46,21 +50,24 @@ import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.DefaultCheck;
-import org.w3c.dom.Document;
+import de.kosit.validationtool.impl.xml.ProcessorProvider;
 
+/**
+ * Example code that is used in the docs/api.md file
+ */
 public class StandardExample {
 
-    public void run(Path testDocument) throws URISyntaxException {
+    public void run(final Path testDocument) throws URISyntaxException {
         // Load scenarios.xml from classpath
-        URL scenarios = this.getClass().getClassLoader().getResource("scenarios.xml");
+        final URL scenarios = this.getClass().getClassLoader().getResource("examples/simple/scenarios-with-relative-paths.xml");
         // Load the rest of the specific Validator configuration from classpath
-        Configuration config = Configuration.load(scenarios.toURI()).build();
+        final Configuration config = Configuration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
         // Use the default validation procedure
-        Check validator = new DefaultCheck(config);
+        final Check validator = new DefaultCheck(config);
         // Validate a single document
-        Input document = InputFactory.read(testDocument);
+        final Input document = InputFactory.read(testDocument);
         // Get Result including information about the whole validation
-        Result report = validator.checkInput(document);
+        final Result report = validator.checkInput(document);
         System.out.println("Is processing succesful=" + report.isProcessingSuccessful());
         // Get report document if processing was successful
         Document result = null;
@@ -70,13 +77,16 @@ public class StandardExample {
         // continue processing results...
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
+        // Use e.g. "src/test/resources/examples/simple/input/foo.xml"
+        if (args.length == 0) {
+            throw new IllegalStateException("Provide a test document filename on the commandline");
+        }
         // Path of document for validation
-        Path testDoc = Paths.get(args[0]);
-        StandardExample example = new StandardExample();
+        final Path testDoc = Paths.get(args[0]);
+        final StandardExample example = new StandardExample();
         // run example validation
         example.run(testDoc);
-
     }
 }
 ```
@@ -134,26 +144,36 @@ Instead of pre-configured [scenario files](configurations.md) it is possible to 
 A simple configuration looks like this:
 
 ```java
-import static de.kosit.validationtool.config.ConfigurationBuilder.*;
-import de.kosit.validationtool.api.Configuration;
-import java.net.URI;
-import java.nio.file.Path;
+package de.kosit.validationtool.docs;
 
+import static de.kosit.validationtool.config.ConfigurationBuilder.fallback;
+import static de.kosit.validationtool.config.ConfigurationBuilder.report;
+import static de.kosit.validationtool.config.ConfigurationBuilder.scenario;
+import static de.kosit.validationtool.config.ConfigurationBuilder.schema;
+import static de.kosit.validationtool.config.ConfigurationBuilder.schematron;
+
+import java.net.URI;
+import java.nio.file.Paths;
+
+import de.kosit.validationtool.api.Check;
+import de.kosit.validationtool.api.Configuration;
+import de.kosit.validationtool.impl.DefaultCheck;
+import de.kosit.validationtool.impl.xml.ProcessorProvider;
+
+/**
+ * Example code that is used in the docs/api.md file
+ */
 public class MyValidator {
 
- public static void main(String[] args) {
-    Configuration config = Configuration.create().name("myconfiguration")
-                          .with(scenario("firstScenario")
-                                          .match("//myNode")
-                                          .validate(schema("Sample Schema").schemaLocation(URI.create("simple.xsd")))
-                                          .validate(schematron("my rules").source("myRules.xsl"))
-                                          .with(report("my report").source("report.xsl")))
-                          .with(fallback().name("default-report").source("fallback.xsl"))
-                          .useRepository(Paths.get("/opt/myrepository"))
-                          .build();
-    Check validator = new DefaultCheck(config);
-    // .. run your checks
- }
+    public static void main(final String[] args) {
+        final Configuration config = Configuration.create().name("myconfiguration")
+                .with(scenario("firstScenario").match("//myNode").validate(schema("Sample Schema").schemaLocation(URI.create("simple.xsd")))
+                        .validate(schematron("my rules").source("myRules.xsl")).with(report("my report").source("report.xsl")))
+                .with(fallback().name("default-report").source("fallback.xsl")).useRepository(Paths.get("/opt/myrepository"))
+                .build(ProcessorProvider.getProcessor());
+        final Check validator = new DefaultCheck(config);
+        // .. run your checks
+    }
 }
 ```
 
@@ -188,19 +208,17 @@ which further opens the second to load resources also from remote locations via 
 
 You can configure usage of one of these implementations using the `ResolvingMode` via
 
-````java
-Conifuguration config = Configuration.load(URI.create("myscenarios.xml"))
-                            .resolvingMode(ResolvingMode.STRICT_LOCAL)
-                            .build();
-````
+```java
+final Configuration config = Configuration.load(URI.create("myscenarios.xml")).setResolvingMode(ResolvingMode.STRICT_LOCAL)
+        .build(ProcessorProvider.getProcessor());
+```
 
 If you decide to implement your own strategy, you can configure this via:
 
-````java
-Conifuguration config = Configuration.load(URI.create("myscenarios.xml"))
-                            .resolvingStrategy(new MyCustomResolvingConfigurationStrategy())
-                            .build();
-````
+```java
+final Configuration config = Configuration.load(URI.create("myscenarios.xml"))
+        .setResolvingStrategy(new MyCustomResolvingConfigurationStrategy()).build(ProcessorProvider.getProcessor());
+```
 
 ---
 
