@@ -466,6 +466,12 @@
                 <configuration>
                     <!--suppress MavenModelInspection -->
                     <argLine>-Dfile.encoding=UTF-8 ${jacocoSurefire}</argLine>
+                    <systemProperties>
+                        <property>
+                            <name>java.net.useSystemProxies</name>
+                            <value>true</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
 
@@ -632,6 +638,10 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
