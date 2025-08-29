@@ -22,7 +22,7 @@
 
     <groupId>org.kosit</groupId>
     <artifactId>validator</artifactId>
-    <version>1.5.1</version>
+    <version>1.5.2-SNAPSHOT</version>
     
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
