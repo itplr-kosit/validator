@@ -8,8 +8,10 @@ and should work with OpenJDK based distributions. Keep this in mind, if you want
 To use the validator daemon as is, start the _Daemon-Mode_ with the `-D` option and supply a suitable
  [validator configuration](configurations.md).
 
+**Important hint**: since v1.5.1 the filename has been changed from `validationtool-*` to `validator-*`
+
 ```shell
-java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D
+java -jar  validator-<version>-standalone.jar  -s <scenario-config-file> -D
 ```
 
 Per default the HTTP-Server listens on _localhost_ at Port 8080.
@@ -17,7 +19,7 @@ Per default the HTTP-Server listens on _localhost_ at Port 8080.
 You can configure the daemon with `-H` for IP Adress and `-P` for port number:
 
 ```shell
-java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D -H 192.168.1.x -P 8081
+java -jar  validator-<version>-standalone.jar  -s <scenario-config-file> -D -H 192.168.1.x -P 8081
 ```
 
 ## Customized usage
@@ -135,5 +137,5 @@ The daemon provides a simple GUI when issuing `GET` requests providing the follo
  The GUI can be disabled using the API (see above) or via CLI:
  
  ```shell script
-java -jar  validationtool-<version>-standalone.jar  -s <scenario-config-file> -D --disable-gui
+java -jar  validator-<version>-standalone.jar  -s <scenario-config-file> -D --disable-gui
 ```
