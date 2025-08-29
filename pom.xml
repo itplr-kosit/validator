@@ -22,7 +22,7 @@
     <name>KoSIT XML Prüftool Implementierung</name>
 
     <groupId>org.kosit</groupId>
-    <artifactId>validator</artifactId>
+    <artifactId>validationtool</artifactId>
     <version>1.5.1-SNAPSHOT</version>
     
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
@@ -464,12 +464,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.3</version>
                 <configuration>
-                    <systemProperties>
-                        <property>
-                            <name>java.net.useSystemProxies</name>
-                            <value>true</value>
-                        </property>
-                    </systemProperties>
                     <!--suppress MavenModelInspection -->
                     <argLine>-Dfile.encoding=UTF-8 ${jacocoSurefire}</argLine>
                 </configuration>
@@ -638,10 +632,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.central</groupId>
-                        <artifactId>central-publishing-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
