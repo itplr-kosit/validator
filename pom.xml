@@ -667,7 +667,7 @@
     <scm>
         <connection>scm:git:https://github.com/itplr-kosit/validator.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>release/1.5.x</tag>
+        <tag>release/1.6.x</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
 
