@@ -4,15 +4,6 @@
 [![Apache 2.0 license](https://img.shields.io/badge/license-Apache%202-blue)](https://www.apache.org/licenses/LICENSE-2.0)
 
 
-- [Introduction](#introduction)
-- [Validation Configurations](#validation-configurations)
-    * [Third Party Validation Configurations](#third-party-validation-configurations)
-- [Usage](#usage)
-    * [Standalone Command-Line Interface](#standalone-command-line-interface)
-    * [Application User Interface (API / embedded usage)](#application-user-interface--api---embedded-usage-)
-    * [Daemon-Mode](#daemon-mode)
-- [Packages](#packages)
-
 ## Introduction
 
 The Validator is an XML validation engine to validate and process XML files in various formats. It basically does the following in order:
