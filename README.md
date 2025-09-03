@@ -1,5 +1,7 @@
 # KoSIT Validator
 
+[![Maven Central](https://img.shields.io/maven-central/v/org.kosit/validator)](https://img.shields.io/maven-central/v/org.kosit/validator)
+
 - [Introduction](#introduction)
 - [Validation Configurations](#validation-configurations)
     * [Third Party Validation Configurations](#third-party-validation-configurations)
