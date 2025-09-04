@@ -107,7 +107,7 @@ The Validator distribution contains the following artifacts:
 
 ## Installation
 
-The Validator distribution can be publicly download from the following sources:
+Download from the following sources is possible:
 
 * GitHub releases: https://github.com/itplr-kosit/validator/releases
     * This release contains a ZIP file with all the different JAR variants
