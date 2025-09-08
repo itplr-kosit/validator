@@ -92,25 +92,26 @@ public class StandardExample {
 ```
 
 The `Result` interface has convenience methods to retrieve details about XSD validation errors and Schematron messages and other processing results. See
-[Result.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Result.java) for details.
+[Result.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Result.java) for details.
+
 
 Initializing all XML artifacts and XSLT-executables is expensive. The `Check` instance is *threadsafe* and keeps all artifacts. Therefore,
 we recommend the re-use of a `Check` instance.
 
-Beside the validator's configuration the only input are instances of [Input](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Input.java)
-which can be created by various methods of the [InputFactory](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/InputFactory.java).
-The [InputFactory](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/InputFactory.java)
+Beside the validator's configuration the only input are instances of [Input](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Input.java)
+which can be created by various methods of the [InputFactory](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/InputFactory.java).
+The [InputFactory](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/InputFactory.java)
  calculates a hash sum for each Input which is also written to the Report. _SHA-256_ from the JDK is the default algorithm.
-It can be changed using other `read`-methods of [InputFactory](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/InputFactory.java).
+It can be changed using other `read`-methods of [InputFactory](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/InputFactory.java).
 
-The main interface [Check.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Check.java)
-allows using a batch interface (processing list of [Inputs](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Input.java)).
+The main interface [Check.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Check.java)
+allows using a batch interface (processing list of [Inputs](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Input.java)).
 However, there is no parallel processing implemented at the moment.
 
 ## Accept Recommendation and Accept Match
 
-A tri-state object [AcceptRecommendation](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/AcceptRecommendation.java)
-can be retrieved from the [Result](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Result.java) using `getAcceptRecommendation()`.
+A tri-state object [AcceptRecommendation](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/AcceptRecommendation.java)
+can be retrieved from the [Result](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Result.java) using `getAcceptRecommendation()`.
 
 The three defined states are:
 
@@ -195,15 +196,15 @@ When using XML related technologies you are supposed to handle certain security 
 * allows loading/resolving only from a configured local content repository (a specific folder)
 * tries to prevent known XML security issues (see [OWASP XML_Security_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/XML_Security_Cheat_Sheet.html))
 
-However, you can configure certain aspects related to resolving and security yourself. The validator uses a single interface for accessing or creating the necessary XML API objects like `SchemaFactory`, `Validator`,`URIResolver` or `Processor`:  [ResolvingConfigurationStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/api/ResolvingConfigurationStrategy.java)
+However, you can configure certain aspects related to resolving and security yourself. The validator uses a single interface for accessing or creating the necessary XML API objects like `SchemaFactory`, `Validator`,`URIResolver` or `Processor`:  [ResolvingConfigurationStrategy.java](https://github.com/itplr-kosit/validator/tree/main/src/main/java/de/kosit/validationtool/api/ResolvingConfigurationStrategy.java)
 
 There are 3 implementations available out of the box:
 
-1. [StrictRelativeResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/StrictRelativeResolvingStrategy.java)
+1. [StrictRelativeResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/main/src/main/java/de/kosit/validationtool/impl/xml/StrictRelativeResolvingStrategy.java)
 which is the **default**, prevents known XML attacks and only allows loading from a specific local repository location
-1. [StrictLocalResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/StrictLocalResolvingStrategy.java)
+1. [StrictLocalResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/main/src/main/java/de/kosit/validationtool/impl/xml/StrictLocalResolvingStrategy.java)
 which opens the first strategy to load resources from local locations
-1. [RemoteResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/RemoteResolvingStrategy.java)
+1. [RemoteResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/main/src/main/java/de/kosit/validationtool/impl/xml/RemoteResolvingStrategy.java)
 which further opens the second to load resources also from remote locations via http and https
 
 You can configure usage of one of these implementations using the `ResolvingMode` via
@@ -222,6 +223,6 @@ final Configuration config = Configuration.load(URI.create("myscenarios.xml"))
 
 ---
 
-:warning: **Attention:** If you decide to implement a custom strategy you need to handle XML security risks on your own. Please make sure, that you prevent XXE and other kind of attacks. Consider using [BaseResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/master/src/main/java/de/kosit/validationtool/impl/xml/BaseResolvingStrategy.java) and the protected methods within to disable certain features.
+:warning: **Attention:** If you decide to implement a custom strategy you need to handle XML security risks on your own. Please make sure, that you prevent XXE and other kind of attacks. Consider using [BaseResolvingStrategy.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/impl/xml/BaseResolvingStrategy.java) and the protected methods within to disable certain features.
 
 ---
