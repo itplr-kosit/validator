@@ -127,7 +127,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `getFailedAsserts()` and `isSchematronValid()`
-  in [DefaultResult.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/impl/DefaultResult.java)
+  in [DefaultResult.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/impl/DefaultResult.java)
   do not reflect actual schematron validation result
 - processing aborts on schematron execution errors (e.g. errors within schematron logic). The validator now generates a
   report in such cases.
@@ -175,7 +175,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Provide access to schematron result
-  through [Result.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Result.java)
+  through [Result.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Result.java)
   - *Result#getFailedAsserts()* returns a list of failed asserts found by schematron
   - *Result#isSchematronValid()* convinience access to evaluate whether schematron was processed without any *
     FailedAsserts*
