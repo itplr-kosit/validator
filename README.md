@@ -32,7 +32,7 @@ Here are some public validation configurations:
 * Validation Configuration for [XRechnung](https://xeinkauf.de/xrechnung/):
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
   * [Releases](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases) can also be downloaded
-* Validation Configuration for [Peppol BIS Billing](docs.peppol.eu/poacc/billing/3.0/):
+* Validation Configuration for [Peppol BIS Billing](https://docs.peppol.eu/poacc/billing/3.0/):
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-bis)
   * [Releases](https://github.com/itplr-kosit/validator-configuration-bis/releases) can also be downloaded
 * Validation Configuration for [XGewerbeanzeige](https://xgewerbeanzeige.de/)
