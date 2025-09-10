@@ -15,13 +15,13 @@
             <id>fabian.buettner</id>
             <name>Fabian Büttner</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.xoev.de</organizationUrl>
+            <organizationUrl>https://xeinkauf.de/</organizationUrl>
         </developer>
         <developer>
             <id>renzo.kottmann</id>
             <name>Renzo Kottmann</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.xeinkauf.de</organizationUrl>
+            <organizationUrl>https://xeinkauf.de</organizationUrl>
             <roles>
                 <role>Product Owner</role>
             </roles>
