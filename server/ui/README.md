@@ -5,12 +5,12 @@ the moment, this is generated within this module and copied to the actual source
 location of the daemon. There are plans to modularize the whole validator source
 in the future so that this will be done by build process.
 
-This ui is built using [Docusaurus 2](https://docusaurus.io/), a modern static
+This ui is built using [Docusaurus 3](https://docusaurus.io/), a modern static
 website generator.
 
 ### Local Development
 
-```
+```shell
 $ npm start
 ```
 
@@ -19,8 +19,8 @@ Most changes are reflected live without having to restart the server.
 
 ### Build
 
-```
-$ npm build
+```shell
+$ npm run build
 ```
 
 This command generates static content into the `build` directory and must be
