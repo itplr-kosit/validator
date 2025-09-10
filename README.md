@@ -25,13 +25,16 @@ The Validator is just an engine and does not know anything about XML documents a
 Validation rules and details are defined in [validation scenarios](docs/configurations.md) which are used to fully configure the validation process.
 All configurations are self-contained modules which are deployed and developed on their own.
 
-### Third party validation configurations
+### Example validation configurations
 
-Here are two public third party validation configurations available which might serve as examples:
+Here are some public validation configurations:
 
-* Validation Configuration for [XRechnung](http://www.xoev.de/de/xrechnung):
+* Validation Configuration for [XRechnung](https://xeinkauf.de/xrechnung/):
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
   * [Releases](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases) can also be downloaded
+* Validation Configuration for [Peppol BIS Billing](docs.peppol.eu/poacc/billing/3.0/):
+  * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-bis)
+  * [Releases](https://github.com/itplr-kosit/validator-configuration-bis/releases) can also be downloaded
 * Validation Configuration for [XGewerbeanzeige](https://xgewerbeanzeige.de/)
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige)
   * [Releases](https://github.com/itplr-kosit/validator-configuration-xgewerbeanzeige/releases) can also be downloaded
@@ -42,7 +45,7 @@ The Validator can be used in three different ways:
 
 * as standalone application running from the CLI
 * as library embedded within a custom application
-* as a daemon providing a http interface
+* as a daemon providing an http interface
 
 ### Standalone Command Line Interface (CLI)
 
@@ -51,18 +54,18 @@ The Validator can be used in three different ways:
 The general way using the CLI is:
 
 ```shell
-java -jar  validator-<version>-standalone.jar  -s <scenario-config-file> -r <repository-path>
+java -jar validator-<version>-standalone.jar -s <scenario-config-file> [-r <repository-path>]
 [OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
 The help option displays further CLI options to customize the process:
 
 ```shell
-java -jar  validator-<version>-standalone.jar --help
+java -jar validator-<version>-standalone.jar --help
 ```
 
-A concrete example with a specific validator configuration can be found on 
-[GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
+A concrete example with a specific Validator configuration can be found on 
+[validator-configuration-bis](https://github.com/itplr-kosit/validator-configuration-bis)
 
 The [CLI documentation](./docs/cli.md) shows further configuration options.
 
