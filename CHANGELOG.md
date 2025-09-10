@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.6.0
 
+### Fixed
+
+- (DOC) [GitHub PR#166](https://github.com/itplr-kosit/validator/pull/166) Fixed broken links in `docs/api.md` 
+
 ### Changed
 
 - (CORE) Migration from javax to jakarta xml bind
+- (DOC) [GitHub PR#132](https://github.com/itplr-kosit/validator/pull/132) Updated the link to the example Validator scenario configuration
 
 ### Removed
 
@@ -19,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- (BUILD) [#148](https://projekte.kosit.org/kosit/validator/-/issues/148): Regression that due to renaming from `validationtool` to `validator` the distribution zip did not contain all jars anymore
+- (BUILD) [#148](https://projekte.kosit.org/kosit/validator/-/issues/148) Regression that due to renaming from `validationtool` to `validator` the distribution zip did not contain all jars anymore
 
 ## 1.5.1 - 2025-09-01
 
