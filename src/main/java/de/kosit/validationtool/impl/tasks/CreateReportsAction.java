@@ -23,7 +23,7 @@ import static de.kosit.validationtool.impl.xvrl.XVRLReportBuilder.supplemantal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -22,6 +22,9 @@ import de.kosit.validationtool.api.XmlError;
 import de.kosit.validationtool.impl.tasks.CreateReportsAction;
 import de.kosit.validationtool.impl.tasks.ReaderWrapper;
 import de.kosit.validationtool.model.xvrl.XVRLReportSummary;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.util.JAXBSource;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,14 +35,8 @@ import net.sf.saxon.s9api.XdmNode;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.util.JAXBSource;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DefaultResult implements Result {
