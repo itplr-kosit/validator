@@ -69,6 +69,8 @@ public class Helper {
 
         public static final URI OTHER_SCENARIOS = ROOT.resolve("otherScenarios.xml");
 
+        public static final URI SCENARIOS_WITH_MANY_CONFIGS = ROOT.resolve("scenarios-with-many-configs.xml");
+
         public static final URI ERROR_SCENARIOS = ROOT.resolve("scenarios-with-errors.xml");
 
         public static final URI REPOSITORY_URI = ROOT.resolve("repository/");

@@ -46,6 +46,8 @@ public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
+    private final Path output = Paths.get("target/test-output");
+
     private CommandLine commandLine;
 
     private static void checkForHelp(final List<String> outputLines) {

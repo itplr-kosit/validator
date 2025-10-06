@@ -11,6 +11,7 @@ import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.xml.ProcessorProvider;
+import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 
 public class MiscDocExampleCodes {
@@ -29,6 +30,11 @@ public class MiscDocExampleCodes {
 
         public URIResolver createResolver(final URI scenarioRepository) {
             // TODO
+            return null;
+        }
+
+        @Override
+        public ResourceResolver createResourceResolver(URI scenarioRepository) {
             return null;
         }
 

@@ -357,7 +357,7 @@
                     <dependency>
                         <groupId>org.glassfish.jaxb</groupId>
                         <artifactId>jaxb-runtime</artifactId>
-                        <version>${version.jaxb}</version>
+                        <version>${version.jaxb-impl}</version>
                         <optional>true</optional>
                     </dependency>
                 </dependencies>

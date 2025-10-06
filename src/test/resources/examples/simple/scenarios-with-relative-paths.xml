@@ -15,10 +15,10 @@
   ~ limitations under the License.
   -->
 
-<scenarios xmlns="http://www.xoev.de/de/validator/framework/1/scenarios" frameworkVersion="1.1.2">
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" frameworkVersion="2.0.0">
     <name>HTML-TestSuite</name>
     <author>QA</author>
-    <date>2025-08-19</date>
+    <date>2017-08-08</date>
     <description>
         <p>Szenario für Tests</p>
     </description>
@@ -28,7 +28,7 @@
         <description>
             <p>Nur Schemaprüfung.</p>
         </description>
-        <namespace prefix="cri">http://www.xoev.de/de/validator/framework/1/createreportinput
+        <namespace prefix="xvrl">http://www.xproc.org/ns/xvrl
         </namespace>
         <namespace prefix="test">
             http://validator.kosit.de/test-sample</namespace>
@@ -48,6 +48,14 @@
             </resource>
         </validateWithSchematron>
         <createReport>
+            <id>Report für eRechnung</id>
+            <resource>
+                <name>Report für eRechnung</name>
+                <location>repository/report.xsl</location>
+            </resource>
+        </createReport>
+        <createReport>
+            <id>Report für eRechnung2</id>
             <resource>
                 <name>Report für eRechnung</name>
                 <location>repository/report.xsl</location>
@@ -77,19 +85,12 @@
             </resource>
         </validateWithSchematron>
         <createReport>
+            <id>Report für eRechnung</id>
             <resource>
                 <name>Report für eRechnung</name>
                 <location>repository/report.xsl</location>
             </resource>
         </createReport>
     </scenario>
-
-
-    <noScenarioReport>
-        <resource>
-            <name>default</name>
-            <location>repository/report.xsl</location>
-        </resource>
-    </noScenarioReport>
 
 </scenarios>
