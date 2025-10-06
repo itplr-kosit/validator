@@ -22,6 +22,9 @@ import java.util.Optional;
 
 import javax.xml.validation.Schema;
 
+import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
+import de.kosit.validationtool.model.scenarios.ResourceType;
+import de.kosit.validationtool.model.scenarios.ScenarioType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +47,19 @@ import net.sf.saxon.s9api.XsltExecutable;
 @Setter
 @Getter
 public class Scenario {
+
+    /**
+     * Runtime objects for a transformation e.g. schematron or report.
+     */
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class Transformation {
+
+        private XsltExecutable executable;
+
+        private ResourceType resourceType;
+    }
 
     private final ScenarioType configuration;
 
@@ -92,26 +108,13 @@ public class Scenario {
     }
 
     /**
-     * Liefert einen neuen XPath-Selector zur Evaluierung der {@link de.kosit.validationtool.api.AcceptRecommendation}.
+     * Returns a new XPath selector for evaluating the {@link de.kosit.validationtool.api.AcceptRecommendation}.
      *
-     * @return neuer Selector
+     * @return new selector
      */
     public Optional<XPathSelector> getAcceptSelector() {
         final XPathSelector selector = this.acceptExecutable != null ? this.acceptExecutable.load() : null;
         return Optional.ofNullable(selector);
-    }
-
-    /**
-     * Runtime objects for a transformation e.g. schematron or report.
-     */
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public static class Transformation {
-
-        private XsltExecutable executable;
-
-        private ResourceType resourceType;
     }
 
 }

@@ -34,7 +34,6 @@ import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.scenarios.NamespaceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
-
 import net.sf.saxon.s9api.XPathExecutable;
 
 /**
@@ -138,6 +137,25 @@ public class ScenarioBuilderTest {
         assertThat(configuration.getMatch()).isNotEmpty();
         assertThat(configuration.getAcceptMatch()).isNotEmpty();
         assertThat(configuration.getNamespace()).isEmpty();
+    }
+
+    @Test
+    public void testConfigureWithSchematron() {
+        final ContentRepository repository = Simple.createContentRepository();
+        final XPathExecutable match = repository.createXPath("//*", null);
+        final XPathExecutable accept = repository.createXPath("//*", null);
+        final ScenarioBuilder builder = createScenario();
+        builder.getNamespaces().clear();
+
+        builder.match(match);
+        builder.acceptWith(accept);
+        final Result<Scenario, String> result = builder.build(repository);
+        assertThat(result.isValid()).isTrue();
+        final ScenarioType configuration = result.getObject().getConfiguration();
+        assertThat(configuration.getMatch()).isNotEmpty();
+        assertThat(configuration.getAcceptMatch()).isNotEmpty();
+        assertThat(configuration.getNamespace()).isEmpty();
+        assertThat(configuration.getValidateWithSchematron()).isNotEmpty();
     }
 
     @Test

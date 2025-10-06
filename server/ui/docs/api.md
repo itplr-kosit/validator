@@ -14,22 +14,22 @@ Examples:
 
 ```shell script
 curl --location --request POST 'http://localhost:8080' \
---header 'Content-Type: application/xml' \
---data-binary '@/target.xml'
+     --header 'Content-Type: application/xml' \
+     --data-binary '@/target.xml'
 ```
 
-* `java` (Apache HttpClient)
+* `Java` (Apache HttpClient)
 
 ```java
 HttpClient httpClient=HttpClientBuilder.create().build();
-        HttpPost postRequest=new HttpPost("http://localhost:8080/");
-        FileEntity entity=new FileEntity(Paths.get("some.xml").toFile(),ContentType.APPLICATION_XML);
-        postRequest.setEntity(entity);
-        HttpResponse response=httpClient.execute(postRequest);
-        System.out.println(IOUtils.toString(response.getEntity().getContent()));
+HttpPost postRequest=new HttpPost("http://localhost:8080/");
+FileEntity entity=new FileEntity(Paths.get("some.xml").toFile(),ContentType.APPLICATION_XML);
+postRequest.setEntity(entity);
+HttpResponse response=httpClient.execute(postRequest);
+System.out.println(IOUtils.toString(response.getEntity().getContent()));
 ```
 
-* `javascript`
+* `JavaScript`
 
 ```javascript
 var myHeaders = new Headers();

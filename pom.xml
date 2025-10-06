@@ -1,29 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-  ~ Copyright 2017-2022  Koordinierungsstelle für IT-Standards (KoSIT)
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>KoSIT XML Prüftool Implementierung</name>
+    <name>KoSIT XML Validator</name>
 
-    <groupId>kosit</groupId>
+    <groupId>org.kosit</groupId>
+    <artifactId>validator</artifactId>
     <version>2.0.0-SNAPSHOT</version>
 
-    <artifactId>validator</artifactId>
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
         <!-- In alphabetical order by last name -->
@@ -31,13 +15,13 @@
             <id>fabian.buettner</id>
             <name>Fabian Büttner</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.xoev.de</organizationUrl>
+            <organizationUrl>https://xeinkauf.de/</organizationUrl>
         </developer>
         <developer>
             <id>renzo.kottmann</id>
             <name>Renzo Kottmann</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.xoev.de</organizationUrl>
+            <organizationUrl>https://xeinkauf.de</organizationUrl>
             <roles>
                 <role>Product Owner</role>
             </roles>
@@ -58,7 +42,8 @@
         <version.commons-io>2.20.0</version.commons-io>
         <version.commons-lang>3.18.0</version.commons-lang>
         <version.jacoco>0.8.13</version.jacoco>
-        <version.jaxb>4.0.2</version.jaxb>
+        <version.jaxb-api>4.0.2</version.jaxb-api>
+        <version.jaxb-impl>4.0.5</version.jaxb-impl>
         <version.lombok>1.18.38</version.lombok>
         <version.mockito>4.11.0</version.mockito>
         <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
@@ -67,11 +52,24 @@
         <version.slf4j>2.0.17</version.slf4j>
         <version.jaxb-maven-plugin>4.0.9</version.jaxb-maven-plugin>
     </properties>
+
     <repositories>
         <repository>
             <id>project.local</id>
             <name>project</name>
             <url>file:${project.basedir}/libs</url>
+        </repository>
+
+        <repository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -120,13 +118,13 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>${version.jaxb}</version>
+            <version>${version.jaxb-impl}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>${version.jaxb}</version>
+            <version>${version.jaxb-api}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -177,9 +175,29 @@
             </resource>
         </resources>
 
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.8.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>central</publishingServerId>
+                        <autoPublish>true</autoPublish>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.2.8</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
-           <!-- for PR 152 -->
-           <plugin>
+            <!-- for PR 152 -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.3.1</version>
@@ -408,6 +426,12 @@
                 <configuration>
                     <!--suppress MavenModelInspection -->
                     <argLine>-Dfile.encoding=UTF-8 ${jacocoSurefire}</argLine>
+                    <systemProperties>
+                        <property>
+                            <name>java.net.useSystemProxies</name>
+                            <value>true</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
 
@@ -641,6 +665,10 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -701,6 +729,17 @@
             </build>
         </profile>
         <profile>
+            <id>release-snapshot</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>standalone</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -753,12 +792,14 @@
     </reporting>
 
     <scm>
-        <connection>https://github.com/itplr-kosit/validationtool.git</connection>
+        <connection>scm:git:https://github.com/itplr-kosit/validator.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>v1.1.0</tag>
+        <tag>release/1.6.x</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
+
     <url>https://github.com/itplr-kosit/validator</url>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -766,12 +807,4 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <distributionManagement>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
-
 </project>
