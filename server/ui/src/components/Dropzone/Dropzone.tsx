@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
+import React, { JSX } from "react";
 import clsx from "clsx";
 import type { DropEvent } from "react-dropzone";
 import { useDropzone } from "react-dropzone";

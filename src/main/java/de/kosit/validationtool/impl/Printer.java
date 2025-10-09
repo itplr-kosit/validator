@@ -38,7 +38,11 @@ public class Printer {
      * @param params the params.
      */
     public static void writeOut(final String message, final Object... params) {
-        System.out.println(new MessageFormat(message, Locale.ENGLISH).format(params));
+        try {
+            System.out.println(new MessageFormat(message, Locale.ENGLISH).format(params));
+        } catch (final RuntimeException ex) {
+            System.err.println("[Format error!] <" + message + "> with params <" + params + ">");
+        }
     }
 
     /**
@@ -48,7 +52,11 @@ public class Printer {
      * @param params the params.
      */
     public static void writeErr(final String message, final Object... params) {
-        System.err.println(new MessageFormat(message, Locale.ENGLISH).format(params));
+        try {
+            System.err.println(new MessageFormat(message, Locale.ENGLISH).format(params));
+        } catch (final RuntimeException ex) {
+            System.err.println("[Format error!] <" + message + "> with params <" + params + ">");
+        }
     }
 
     /**

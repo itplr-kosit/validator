@@ -24,8 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
-
+import jakarta.xml.bind.JAXBException;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.AccessLevel;

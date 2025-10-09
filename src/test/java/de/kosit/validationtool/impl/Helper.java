@@ -49,6 +49,79 @@ import net.sf.saxon.s9api.XdmNode;
 
 public class Helper {
 
+    public static class Simple {
+
+        public static final URI ROOT = EXAMPLES_DIR.resolve("simple/");
+
+        public static final URI EXAMPLES = ROOT.resolve("input/");
+
+        public static final URI SIMPLE_VALID = ROOT.resolve("input/simple.xml");
+
+        public static final URI FOO = ROOT.resolve("input/foo.xml");
+
+        public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");
+
+        public static final URI REJECTED = ROOT.resolve("input/withManualReject.xml");
+
+        public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
+
+        public static final URI SCENARIOS_WITH_RELATIVE_PATHS = ROOT.resolve("scenarios-with-relative-paths.xml");
+
+        public static final URI OTHER_SCENARIOS = ROOT.resolve("otherScenarios.xml");
+
+        public static final URI SCENARIOS_WITH_MANY_CONFIGS = ROOT.resolve("scenarios-with-many-configs.xml");
+
+        public static final URI ERROR_SCENARIOS = ROOT.resolve("scenarios-with-errors.xml");
+
+        public static final URI REPOSITORY_URI = ROOT.resolve("repository/");
+
+        public static final URI SCHEMA_INVALID = ROOT.resolve("input/simple-schema-invalid.xml");
+
+        public static final URI SCHEMATRON_INVALID = ROOT.resolve("input/simple-schematron-invalid.xml");
+
+        public static final URI NOT_WELLFORMED = ROOT.resolve("input/simple-not-wellformed.xml");
+
+        public static final URI UNKNOWN = ROOT.resolve("input/unknown.xml");
+
+        public static final URI GARBAGE = ROOT.resolve("input/no-xml.file");
+
+        public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
+
+        public static final URI REPORT_XSL = REPOSITORY_URI.resolve("report.xsl");
+
+        public static final URI SCHEMA = REPOSITORY_URI.resolve("simple.xsd");
+
+        public static final URI SCHEMATRON = REPOSITORY_URI.resolve("simple-schematron-error.xsl");
+
+        public static final ContentRepository createContentRepository() {
+            final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
+            return new ContentRepository(Helper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
+        }
+
+        public static URI getSchemaLocation() {
+            return SCHEMA;
+        }
+    }
+
+    public static class Invalid {
+
+        public static final URI ROOT = EXAMPLES_DIR.resolve("invaid/");
+
+        public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
+
+        public static final URI SCENARIOS_ILLFORMED = ROOT.resolve("scenarios-illformed.xml");
+
+    }
+
+    public static class Resolving {
+
+        public static final URI ROOT = EXAMPLES_DIR.resolve("resolving/");
+
+        public static final URI SCHEMA_WITH_REMOTE_REFERENCE = ROOT.resolve("withRemote.xsd");
+
+        public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
+    }
+
     public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
 
     public static final URI ASSERTION_SCHEMA = MODEL_ROOT.resolve("xsd/assertions.xsd");
@@ -78,7 +151,6 @@ public class Helper {
      * @return ein result objekt mit Dokument
      */
     public static XdmNode load(final URL url) {
-
         try ( final InputStream input = url.openStream() ) {
             return TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
         } catch (final SaxonApiException | IOException e) {
@@ -126,78 +198,4 @@ public class Helper {
     public static Processor createProcessor() {
         return ProcessorProvider.getProcessor();
     }
-
-    // public static ProcessStepResult<XdmNode, XMLSyntaxError> createParseResult(final URI input) {
-    // return createParseResult(InputFactory.read(input));
-    // }
-
-    public static class Simple {
-
-        public static final URI ROOT = EXAMPLES_DIR.resolve("simple/");
-
-        public static final URI EXAMPLES = ROOT.resolve("input/");
-
-        public static final URI SIMPLE_VALID = Simple.ROOT.resolve("input/simple.xml");
-
-        public static final URI FOO = Simple.ROOT.resolve("input/foo.xml");
-
-        public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");
-
-        public static final URI REJECTED = Simple.ROOT.resolve("input/withManualReject.xml");
-
-        public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
-
-        public static final URI OTHER_SCENARIOS = ROOT.resolve("otherScenarios.xml");
-
-        public static final URI SCENARIOS_WITH_MANY_CONFIGS = ROOT.resolve("scenarios-with-many-configs.xml");
-
-        public static final URI ERROR_SCENARIOS = ROOT.resolve("scenarios-with-errors.xml");
-
-        public static final URI REPOSITORY_URI = ROOT.resolve("repository/");
-
-        public static final URI SCHEMA_INVALID = ROOT.resolve("input/simple-schema-invalid.xml");
-
-        public static final URI SCHEMATRON_INVALID = ROOT.resolve("input/simple-schematron-invalid.xml");
-
-        public static final URI NOT_WELLFORMED = ROOT.resolve("input/simple-not-wellformed.xml");
-
-        public static final URI UNKNOWN = ROOT.resolve("input/unknown.xml");
-
-        public static final URI GARBAGE = ROOT.resolve("input/no-xml.file");
-
-        public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
-
-        public static final URI REPORT_XSL = REPOSITORY_URI.resolve("report.xsl");
-
-        public static final URI SCHEMA = REPOSITORY_URI.resolve("simple.xsd");
-
-        public static ContentRepository createContentRepository() {
-            final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
-            return new ContentRepository(Helper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
-        }
-
-        public static URI getSchemaLocation() {
-            return SCHEMA;
-        }
-    }
-
-    public static class Invalid {
-
-        public static final URI ROOT = EXAMPLES_DIR.resolve("invaid/");
-
-        public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
-
-        public static final URI SCENARIOS_ILLFORMED = ROOT.resolve("scenarios-illformed.xml");
-
-    }
-
-    public static class Resolving {
-
-        public static final URI ROOT = EXAMPLES_DIR.resolve("resolving/");
-
-        public static final URI SCHEMA_WITH_REMOTE_REFERENCE = ROOT.resolve("withRemote.xsd");
-
-        public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
-    }
-
 }

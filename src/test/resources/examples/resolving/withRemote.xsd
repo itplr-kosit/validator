@@ -18,9 +18,8 @@
 <schema xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.w3.org/2001/XMLSchema"
         targetNamespace="http://www.example.org/main"
         elementFormDefault="qualified">
-
     <import namespace="http://www.springframework.org/schema/context"
-            schemaLocation="http://www.springframework.org/schema/context/spring-context.xsd" />
+            schemaLocation="https://www.springframework.org/schema/context/spring-context.xsd" />
 
     <complexType name="MainType">
         <sequence>

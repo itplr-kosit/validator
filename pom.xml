@@ -1,29 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-  ~ Copyright 2017-2022  Koordinierungsstelle für IT-Standards (KoSIT)
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>KoSIT XML Prüftool Implementierung</name>
+    <name>KoSIT XML Validator</name>
 
-    <groupId>kosit</groupId>
+    <groupId>org.kosit</groupId>
+    <artifactId>validator</artifactId>
     <version>2.0.0-SNAPSHOT</version>
 
-    <artifactId>validator</artifactId>
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
         <!-- In alphabetical order by last name -->
@@ -31,13 +15,13 @@
             <id>fabian.buettner</id>
             <name>Fabian Büttner</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.xoev.de</organizationUrl>
+            <organizationUrl>https://xeinkauf.de/</organizationUrl>
         </developer>
         <developer>
             <id>renzo.kottmann</id>
             <name>Renzo Kottmann</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.xoev.de</organizationUrl>
+            <organizationUrl>https://xeinkauf.de</organizationUrl>
             <roles>
                 <role>Product Owner</role>
             </roles>
@@ -54,23 +38,38 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.assertj>3.23.1</version.assertj>
-        <version.commons-io>2.18.0</version.commons-io>
-        <version.commons-lang>3.12.0</version.commons-lang>
-        <version.jacoco>0.8.12</version.jacoco>
-        <version.jaxb>2.3.7</version.jaxb>
-        <version.lombok>1.18.36</version.lombok>
-        <version.mockito>4.9.0</version.mockito>
-        <version.owasp-dependency-check>7.2.0</version.owasp-dependency-check>
-        <version.rest-assured>5.2.0</version.rest-assured>
-        <version.saxon-he>11.4</version.saxon-he>
-        <version.slf4j>1.7.36</version.slf4j>
+        <version.assertj>3.27.3</version.assertj>
+        <version.commons-io>2.20.0</version.commons-io>
+        <version.commons-lang>3.18.0</version.commons-lang>
+        <version.jacoco>0.8.13</version.jacoco>
+        <version.jaxb-api>4.0.2</version.jaxb-api>
+        <version.jaxb-impl>4.0.5</version.jaxb-impl>
+        <version.lombok>1.18.38</version.lombok>
+        <version.mockito>4.11.0</version.mockito>
+        <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
+        <version.rest-assured>5.5.5</version.rest-assured>
+        <version.saxon-he>12.8</version.saxon-he>
+        <version.slf4j>2.0.17</version.slf4j>
+        <version.jaxb-maven-plugin>4.0.9</version.jaxb-maven-plugin>
     </properties>
+
     <repositories>
         <repository>
             <id>project.local</id>
             <name>project</name>
             <url>file:${project.basedir}/libs</url>
+        </repository>
+
+        <repository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -95,13 +94,13 @@
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
-            <version>4.7.0</version>
+            <version>4.7.7</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
-            <version>2.4.0</version>
+            <version>2.4.2</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -119,11 +118,14 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>${version.jaxb}</version>
+            <version>${version.jaxb-impl}</version>
             <optional>true</optional>
         </dependency>
-
-
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${version.jaxb-api}</version>
+        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
@@ -133,7 +135,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -144,7 +146,7 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>5.3.0</version>
+            <version>${version.rest-assured}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -159,7 +161,6 @@
             <version>1.0.3</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -174,11 +175,41 @@
             </resource>
         </resources>
 
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.8.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>central</publishingServerId>
+                        <autoPublish>true</autoPublish>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.2.8</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
+            <!-- for PR 152 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <propertiesEncoding>ISO-8859-1</propertiesEncoding>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>reserve-network-port</id>
@@ -198,7 +229,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -218,11 +249,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-
+                <version>3.14.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                     <encoding>UTF-8</encoding>
                     <annotationProcessorPaths>
                         <path>
@@ -234,12 +264,70 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>jdk11+</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>standalone</shadedClassifierName>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>de.kosit.validationtool.cmd.CommandLineApplication</mainClass>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>**/module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.7.1</version>
+                <executions>
+                    <execution>
+                        <id>full_dist</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assembly/assembly-dist.xml</descriptor>
+                            </descriptors>
+                            <attach>true</attach>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <outputDirectory>target/</outputDirectory>
+                            <workDirectory>target/assembly/full</workDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- Generate model classes -->
             <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.15.1</version>
+                <groupId>org.jvnet.jaxb</groupId>
+                <artifactId>jaxb-maven-plugin</artifactId>
+                <version>${version.jaxb-maven-plugin}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -259,9 +347,9 @@
                     </args>
                     <plugins>
                         <plugin>
-                            <groupId>org.jvnet.jaxb2_commons</groupId>
-                            <artifactId>jaxb2-basics</artifactId>
-                            <version>0.11.1</version>
+                            <groupId>org.jvnet.jaxb</groupId>
+                            <artifactId>jaxb-plugins</artifactId>
+                            <version>${version.jaxb-maven-plugin}</version>
                         </plugin>
                     </plugins>
                 </configuration>
@@ -269,7 +357,7 @@
                     <dependency>
                         <groupId>org.glassfish.jaxb</groupId>
                         <artifactId>jaxb-runtime</artifactId>
-                        <version>${version.jaxb}</version>
+                        <version>${version.jaxb-impl}</version>
                         <optional>true</optional>
                     </dependency>
                 </dependencies>
@@ -334,13 +422,32 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M7</version>
+                <version>3.5.3</version>
                 <configuration>
                     <!--suppress MavenModelInspection -->
                     <argLine>-Dfile.encoding=UTF-8 ${jacocoSurefire}</argLine>
+                    <systemProperties>
+                        <property>
+                            <name>java.net.useSystemProxies</name>
+                            <value>true</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -354,17 +461,17 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.5.0</version>
                 <executions>
-                <execution>
+                    <execution>
                         <id>run</id>
-                    <phase>pre-integration-test</phase>
-                    <goals>
+                        <phase>pre-integration-test</phase>
+                        <goals>
                             <goal>exec</goal>
-                    </goals>
+                        </goals>
                     </execution>
                 </executions>
-                    <configuration>
+                <configuration>
                     <executable>java</executable>
                     <longClasspath>false</longClasspath>
                     <async>true</async>
@@ -412,7 +519,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M7</version>
+                <version>3.5.3</version>
                 <executions>
                     <execution>
                         <id>test-it</id>
@@ -421,14 +528,31 @@
                             <goal>verify</goal>
                         </goals>
                         <configuration>
-                        <!--suppress MavenModelInspection -->
-                        <argLine>-Dfile.encoding=UTF-8 -Ddaemon.port=${validator.server.port}</argLine>
+                            <!--suppress MavenModelInspection -->
+                            <argLine>-Dfile.encoding=UTF-8 -Ddaemon.port=${validator.server.port}</argLine>
                         </configuration>
 
                     </execution>
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.11.2</version>
+                <configuration>
+                    <source>11</source>
+                    <doclint>none</doclint>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
@@ -518,61 +642,6 @@
             </build>
         </profile>
         <profile>
-            <id>jakarta</id>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-                <exec.skip>true</exec.skip>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.3.0</version>
-                        <executions>
-                                <execution>
-                                    <id>default-jar</id>
-                                    <phase>none</phase>
-                                </execution>
-                            <execution>
-                                <id>Arbitrary</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                                <configuration>
-                                    <classifier>jakarta</classifier>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.eclipse.transformer</groupId>
-                        <artifactId>transformer-maven-plugin</artifactId>
-                        <version>0.5.0</version>
-                        <configuration>
-                            <rules>
-                                <jakartaDefaults>true</jakartaDefaults>
-                            </rules>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>default-transform</id>
-                                <goals>
-                                    <goal>transform</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>release-sign-artifacts</id>
             <activation>
                 <property>
@@ -583,8 +652,9 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
+                        <version>3.2.8</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -594,6 +664,10 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
@@ -629,13 +703,15 @@
         </profile>
         <profile>
             <id>format</id>
-            <activation><activeByDefault>false</activeByDefault></activation>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>net.revelc.code.formatter</groupId>
                         <artifactId>formatter-maven-plugin</artifactId>
-                        <version>2.12.2</version>
+                        <version>2.13.0</version>
                         <executions>
                             <execution>
                                 <id>maven-formatting</id>
@@ -648,6 +724,17 @@
                         <configuration>
                             <configFile>${project.basedir}/formatter.xml</configFile>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>release-snapshot</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
@@ -691,44 +778,6 @@
                                     </filters>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <id>jdk8</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>shade</goal>
-                                </goals>
-                                <configuration>
-                                    <shadedArtifactAttached>true</shadedArtifactAttached>
-                                    <shadedClassifierName>java8-standalone</shadedClassifierName>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
-                                            <exclude>com.sun.istack:istack-commons-runtime</exclude>
-                                            <exclude>com.sun.xml.fastinfoset:FastInfoset</exclude>
-                                            <exclude>jakarta.activation:jakarta.activation-api</exclude>
-                                            <exclude>jakarta.xml.bind:jakarta.xml.bind-api</exclude>
-                                            <exclude>org.jvnet.staxex:stax-ex</exclude>
-                                            <exclude>org.glassfish.jaxb:txw2</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <transformers>
-                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>de.kosit.validationtool.cmd.CommandLineApplication</mainClass>
-                                        </transformer>
-                                    </transformers>
-                                    <filters>
-                                        <filter>
-                                            <artifact>*:*</artifact>
-                                            <excludes>
-                                                <exclude>META-INF/*.SF</exclude>
-                                                <exclude>META-INF/*.DSA</exclude>
-                                                <exclude>META-INF/*.RSA</exclude>
-                                                <exclude>**/module-info.class</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
-                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
@@ -743,12 +792,14 @@
     </reporting>
 
     <scm>
-        <connection>https://github.com/itplr-kosit/validationtool.git</connection>
+        <connection>scm:git:https://github.com/itplr-kosit/validator.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>v1.1.0</tag>
+        <tag>release/1.6.x</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
+
     <url>https://github.com/itplr-kosit/validator</url>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -756,12 +807,4 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <distributionManagement>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
-
 </project>

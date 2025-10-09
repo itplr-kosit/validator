@@ -20,12 +20,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import de.kosit.validationtool.cmd.CommandLineApplication.Level;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import de.kosit.validationtool.cmd.CommandLineApplication.Level;
-
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Visibility;
@@ -38,57 +36,11 @@ import picocli.CommandLine.Parameters;
  * @author Andreas Penski
  */
 @Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false,
-         separator = " ")
+         separator = " ", synopsisHeading = CommandLineOptions.SYNOSIS_HEADING)
 @Getter
 public class CommandLineOptions implements Callable<ReturnValue> {
 
-    @Option(names = { "-?", "--help" }, usageHelp = true, description = "display this help message")
-    boolean usageHelpRequested;
-
-    @ArgGroup(exclusive = false, heading = "Daemon options\n")
-    private DaemonOptions daemonOptions;
-
-    @ArgGroup(exclusive = false, heading = "CLI usage options\n")
-    private CliOptions cliOptions;
-
-    @Option(names = { "-d", "--debug" }, description = "Prints some more debug information")
-    private boolean debugOutput;
-
-    @Option(names = { "-X", "--debug-logging" }, description = "Enables full debug log. Alias for -l debug")
-    private boolean debugLog;
-
-    @Option(names = { "-l", "--log-level" }, description = "Enables a certain log level for debugging purposes", defaultValue = "OFF")
-    private Level logLevel;
-
-    @Option(names = { "-r", "--repository" }, paramLabel = "repository-path", description = "Directory containing scenario content",
-            converter = TypeConverter.RepositoryConverter.class)
-    private List<RepositoryDefinition> repositories;
-
-    @Option(names = { "-s", "--scenarios" }, description = "Location of scenarios.xml", paramLabel = "scenario.xml", required = true,
-            converter = TypeConverter.ScenarioConverter.class)
-    private List<ScenarioDefinition> scenarios;
-
-    private static void configureLogging(final CommandLineOptions cmd) {
-        if (cmd.isDebugLog()) {
-            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
-        } else {
-            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
-        }
-    }
-
-    @Override
-    public ReturnValue call() throws Exception {
-        configureLogging(this);
-        return Validator.mainProgram(this);
-    }
-
-    public boolean isDaemonModeEnabled() {
-        return getDaemonOptions() != null;
-    }
-
-    public boolean isCliModeEnabled() {
-        return getCliOptions() != null;
-    }
+    static final String SYNOSIS_HEADING = "Usage: ";
 
     /**
      * @author Andreas Penski
@@ -187,5 +139,53 @@ public class CommandLineOptions implements Callable<ReturnValue> {
      */
     public static class ScenarioDefinition extends Definition {
         // just for type safety
+    }
+
+    @ArgGroup(exclusive = false, heading = "Daemon options\n")
+    private DaemonOptions daemonOptions;
+
+    @ArgGroup(exclusive = false, heading = "CLI usage options\n")
+    private CliOptions cliOptions;
+
+    @Option(names = { "-d", "--debug" }, description = "Prints some more debug information")
+    private boolean debugOutput;
+
+    @Option(names = { "-?", "--help" }, usageHelp = true, description = "display this help message")
+    boolean usageHelpRequested;
+
+    @Option(names = { "-X", "--debug-logging" }, description = "Enables full debug log. Alias for -l debug")
+    private boolean debugLog;
+
+    @Option(names = { "-l", "--log-level" }, description = "Enables a certain log level for debugging purposes", defaultValue = "OFF")
+    private Level logLevel;
+
+    @Option(names = { "-r", "--repository" }, paramLabel = "repository-path", description = "Directory containing scenario content",
+            converter = TypeConverter.RepositoryConverter.class)
+    private List<RepositoryDefinition> repositories;
+
+    @Option(names = { "-s", "--scenarios" }, description = "Location of scenarios.xml", paramLabel = "scenario.xml", required = true,
+            converter = TypeConverter.ScenarioConverter.class)
+    private List<ScenarioDefinition> scenarios;
+
+    @Override
+    public ReturnValue call() throws Exception {
+        configureLogging(this);
+        return Validator.mainProgram(this);
+    }
+
+    private static void configureLogging(final CommandLineOptions cmd) {
+        if (cmd.isDebugLog()) {
+            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+        } else {
+            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
+        }
+    }
+
+    public boolean isDaemonModeEnabled() {
+        return getDaemonOptions() != null;
+    }
+
+    public boolean isCliModeEnabled() {
+        return getCliOptions() != null;
     }
 }

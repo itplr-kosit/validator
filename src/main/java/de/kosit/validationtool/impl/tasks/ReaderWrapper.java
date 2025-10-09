@@ -18,7 +18,7 @@ package de.kosit.validationtool.impl.tasks;
 
 import java.io.IOException;
 
-import javax.xml.bind.util.JAXBSource;
+import jakarta.xml.bind.util.JAXBSource;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
