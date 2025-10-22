@@ -25,15 +25,14 @@ import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.api.XmlError;
+import de.kosit.validationtool.impl.model.CustomFailedAssert;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.XdmNode;
 
@@ -66,6 +65,11 @@ public class DefaultResult implements Result {
     @Getter
     @Setter(AccessLevel.PACKAGE)
     private List<SchematronOutput> schematronResult;
+
+    /**
+     * List of custom failed asserts per Schematron level. Only failed assertions with a custom level are contained.
+     */
+    private List<CustomFailedAssert> customFailedAsserts;
 
     @Getter
     @Setter
@@ -149,19 +153,28 @@ public class DefaultResult implements Result {
     }
 
     private <T> List<T> filterSchematronResult(final Class<T> type) {
-        return getSchematronResult() != null
-                ? getSchematronResult().stream().flatMap(e -> e.getActivePatternAndFiredRuleAndFailedAssert().stream())
+        return this.schematronResult != null
+                ? this.schematronResult.stream().flatMap(e -> e.getActivePatternAndFiredRuleAndFailedAssert().stream())
                         .filter(type::isInstance).map(type::cast).collect(Collectors.toList())
                 : Collections.emptyList();
     }
 
     private boolean isSchematronEvaluated() {
-        return getSchematronResult() != null
-                && getSchematronResult().stream().noneMatch(e -> e.getActivePatternAndFiredRuleAndFailedAssert().isEmpty());
+        return this.schematronResult != null
+                && this.schematronResult.stream().noneMatch(e -> e.getActivePatternAndFiredRuleAndFailedAssert().isEmpty());
     }
 
     @Override
     public boolean isSchematronValid() {
         return isSchematronEvaluated() && getFailedAsserts().isEmpty();
+    }
+
+    @Override
+    public List<CustomFailedAssert> getCustomFailedAsserts() {
+        return this.customFailedAsserts;
+    }
+
+    public void setCustomFailedAsserts(List<CustomFailedAssert> customFailedAsserts) {
+        this.customFailedAsserts = customFailedAsserts;
     }
 }

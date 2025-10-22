@@ -17,6 +17,7 @@
 package de.kosit.validationtool.impl;
 
 import static de.kosit.validationtool.api.InputFactory.read;
+import static de.kosit.validationtool.impl.Helper.Simple.FOO_CUSTOM_LEVEL_ERROR;
 import static de.kosit.validationtool.impl.Helper.Simple.FOO_SCHEMATRON_INVALID;
 import static de.kosit.validationtool.impl.Helper.Simple.GARBAGE;
 import static de.kosit.validationtool.impl.Helper.Simple.NOT_WELLFORMED;
@@ -44,7 +45,8 @@ import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.Helper.Simple;
-
+import de.kosit.validationtool.impl.model.CustomFailedAssert;
+import de.kosit.validationtool.model.scenarios.ErrorLevelType;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -239,6 +241,8 @@ public class DefaultCheckTest {
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getProcessingErrors()).hasSize(1);
+        assertThat(result.getCustomFailedAsserts()).isNotNull();
+        assertThat(result.getCustomFailedAsserts()).hasSize(0);
     }
 
     @Test
@@ -254,4 +258,19 @@ public class DefaultCheckTest {
         result = this.validCheck.checkInput(domInput);
         assertThat(result.isProcessingSuccessful()).isEqualTo(true);
     }
+
+    @Test
+    public void testCustomFailedAssertsWarning() {
+        final Result result = this.errorCheck.checkInput(read(FOO_CUSTOM_LEVEL_ERROR));
+        assertThat(result.isSchematronValid()).isFalse();
+        assertThat(result.getFailedAsserts()).isNotEmpty();
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+
+        assertThat(result.getCustomFailedAsserts()).isNotNull();
+        assertThat(result.getCustomFailedAsserts()).hasSize(1);
+        CustomFailedAssert customFailedAssert = result.getCustomFailedAsserts().get(0);
+        assertThat(result.getFailedAsserts().get(0).getId()).isEqualTo(customFailedAssert.getFailedAssert().getId());
+        assertThat(customFailedAssert.getCustomLevelFlag()).isEqualTo(ErrorLevelType.WARNING);
+    }
+
 }

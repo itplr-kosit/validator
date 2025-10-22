@@ -22,6 +22,7 @@ import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 
+import de.kosit.validationtool.impl.model.CustomFailedAssert;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -69,22 +70,30 @@ public interface Result {
     /**
      * Schnellzugriff auf die Empfehlung zur Weiterverarbeitung des Dokuments.
      *
-     * @return true wenn {@link AcceptRecommendation#ACCEPTABLE}
+     * @return <code>true</code> wenn {@link AcceptRecommendation#ACCEPTABLE}
      */
     boolean isAcceptable();
 
     /**
      * Gibt eine Liste mit gefundenen Schema-Validation-Fehler zurück. Diese Liste ist leer, wenn keine Fehler gefunden
      * wurden.
+     * 
+     * @return List of schema validation errors.
      */
     List<XmlError> getSchemaViolations();
 
     /**
      * Liefert die Ergebnisse der Schematron-Prüfungen, in der Reihenfolge der Szenario-Konfiguration.
      *
-     * @return Liste mit Schematron-Ergebnissen
+     * @return List with Schematron results
      */
     List<SchematronOutput> getSchematronResult();
+
+    /**
+     * @return List of custom failed asserts per Schematron level. Only failed assertions with a custom level are
+     *         contained. Never <code>null</code> but maybe empty.
+     */
+    List<CustomFailedAssert> getCustomFailedAsserts();
 
     /**
      * Returns {@link org.oclc.purl.dsdl.svrl.FailedAssert FailedAsserts} of a schematron evaluation.
@@ -96,14 +105,14 @@ public interface Result {
     /**
      * Liefert ein true, wenn keine Schema-Violations vorhanden sind.
      *
-     * @return true wenn Schema-valide
+     * @return <code>true</code> if XML Schema compliant
      */
     boolean isSchemaValid();
 
     /**
      * Liefert ein true, wenn der Prüfling eine well-formed XML-Datei ist.
      *
-     * @return true wenn well-formed
+     * @return <code>true</code> if wellformed
      */
     boolean isWellformed();
 
@@ -111,7 +120,7 @@ public interface Result {
      * Returns true, if schematron has been checked and the result does not contain any {@link FailedAssert
      * FailedAsserts}.
      *
-     * @return true, if valid
+     * @return <code>true</code>, if valid
      */
     boolean isSchematronValid();
 }

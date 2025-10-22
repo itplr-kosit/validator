@@ -57,6 +57,8 @@ public class Helper {
 
         public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");
 
+        public static final URI FOO_CUSTOM_LEVEL_ERROR = EXAMPLES.resolve("foo-custom-level-error.xml");
+
         public static final URI REJECTED = ROOT.resolve("input/withManualReject.xml");
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");

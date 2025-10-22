@@ -17,7 +17,6 @@
 package de.kosit.validationtool.impl;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,10 +80,9 @@ public class ScenarioRepository {
         if (collect.size() == 1) {
             result = new Result<>(collect.get(0));
         } else if (collect.isEmpty()) {
-            result = new Result<>(getFallbackScenario(),
-                    Collections.singleton("None of the loaded scenarios matches the specified document"));
+            result = new Result<>(getFallbackScenario(), Arrays.asList("None of the loaded scenarios matches the specified document"));
         } else {
-            result = new Result<>(getFallbackScenario(), Collections.singleton("More than one scenario matches the specified document"));
+            result = new Result<>(getFallbackScenario(), Arrays.asList("More than one scenario matches the specified document"));
         }
         return result;
 

@@ -17,8 +17,8 @@
 package de.kosit.validationtool.impl.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,14 +37,14 @@ public class Result<T, E> {
 
     private T object;
 
-    private Collection<E> errors = new ArrayList<>();
+    private List<E> errors = new ArrayList<>();
 
     /**
      * Erzeugt ein neues Ergebnis mit Fehler
      * 
      * @param errors die Fehler
      */
-    public Result(Collection<E> errors) {
+    public Result(final List<E> errors) {
         this(null, errors);
     }
 
@@ -53,7 +53,7 @@ public class Result<T, E> {
      * 
      * @param o
      */
-    public Result(T o) {
+    public Result(final T o) {
         this(o, Collections.emptyList());
     }
 
