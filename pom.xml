@@ -44,7 +44,7 @@
         <version.jacoco>0.8.13</version.jacoco>
         <version.jaxb-api>4.0.2</version.jaxb-api>
         <version.jaxb-impl>4.0.5</version.jaxb-impl>
-        <version.lombok>1.18.38</version.lombok>
+        <version.lombok>1.18.42</version.lombok>
         <version.mockito>4.11.0</version.mockito>
         <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
         <version.rest-assured>5.5.5</version.rest-assured>
