@@ -52,6 +52,38 @@
         </createReport>
     </scenario>
 
+    <scenario>
+        <name>Simple</name>
+        <description>
+            <p>Foo schematron error</p>
+        </description>
+        <namespace prefix="cri">http://www.xoev.de/de/validator/framework/1/createreportinput</namespace>
+        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <namespace prefix="rpt">http://validator.kosit.de/test-report</namespace>
+        <match>/test:foo</match>
+
+        <validateWithXmlSchema>
+            <resource>
+                <name>Sample Schema</name>
+                <location>simple.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+        <validateWithSchematron>
+            <resource>
+                <name>Sample Schematron</name>
+                <location>simple-schematron-error.xsl</location>
+            </resource>
+        </validateWithSchematron>
+        <createReport>
+            <resource>
+                <name>Report für eRechnung</name>
+                <location>report.xsl</location>
+            </resource>
+            <customLevel level="warning">content-2</customLevel>
+        </createReport>
+        <acceptMatch>count(//test:rejected) = 0</acceptMatch>
+    </scenario>
+
     <noScenarioReport>
         <resource>
             <name>default</name>

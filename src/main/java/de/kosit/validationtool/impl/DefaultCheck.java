@@ -20,19 +20,21 @@ import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
 
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.api.XmlError;
+import de.kosit.validationtool.impl.model.CustomFailedAssert;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 import de.kosit.validationtool.impl.tasks.ComputeAcceptanceAction;
@@ -47,7 +49,10 @@ import de.kosit.validationtool.impl.xml.ProcessorProvider;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.EngineType;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
+import de.kosit.validationtool.model.scenarios.ErrorLevelType;
+import de.kosit.validationtool.model.scenarios.ScenarioType;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 
 /**
@@ -141,10 +146,30 @@ public class DefaultCheck implements Check {
         result.setProcessingSuccessful(!t.isStopped() && t.isFinished());
         result.setSchematronResult(t.getReportInput().getValidationResultsSchematron().stream().filter(e -> e.getResults() != null)
                 .map(e -> e.getResults().getSchematronOutput()).collect(Collectors.toList()));
+
+        result.setCustomFailedAsserts(buildCustomFailedAssertsList(t, result.getSchematronResult()));
+
         return result;
     }
 
-    private static List<XmlError> convertErrors(final Collection<XMLSyntaxError> errors) {
+    private List<CustomFailedAssert> buildCustomFailedAssertsList(final Bag t, final List<SchematronOutput> schematronResult) {
+        // Get Map of Assertion ID to custom error levels for the current scenario
+        final Map<String, ErrorLevelType> customLevels = Optional.ofNullable(t.getScenarioSelectionResult())
+                .map(de.kosit.validationtool.impl.model.Result::getObject).map(Scenario::getConfiguration)
+                .map(ScenarioType::getCreateReport)
+                .map(r -> r.getCustomLevel().stream()
+                        .flatMap(customLevel -> customLevel.getValue().stream().map(id -> Map.entry(id, customLevel.getLevel())))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+                .orElse(Collections.emptyMap());
+
+        // Now check all failed assertions of all schematron validations if they contain a failed assertion with one of
+        // the changed IDs
+        return schematronResult.stream().flatMap(x -> x.getActivePatternAndFiredRuleAndFailedAssert().stream())
+                .filter(FailedAssert.class::isInstance).map(FailedAssert.class::cast).filter(fa -> customLevels.containsKey(fa.getId()))
+                .map(fa -> new CustomFailedAssert(fa, customLevels.get(fa.getId()))).collect(Collectors.toList());
+    }
+
+    private static List<XmlError> convertErrors(final List<XMLSyntaxError> errors) {
         // noinspection unchecked
         return (List<XmlError>) (List<?>) errors;
     }

@@ -17,11 +17,9 @@
 package de.kosit.validationtool.impl.tasks;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.input.XdmNodeInput;
@@ -29,7 +27,8 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.ValidationResultsWellformedness;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -75,7 +74,7 @@ public class DocumentParseAction implements CheckAction {
             final XMLSyntaxError error = new XMLSyntaxError();
             error.setSeverityCode(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
             error.setMessage(String.format("IOException while reading resource %s: %s", content.getName(), e.getMessage()));
-            result = new Result<>(Collections.singleton(error));
+            result = new Result<>(Arrays.asList(error));
         }
 
         return result;

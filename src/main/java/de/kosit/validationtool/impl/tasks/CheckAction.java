@@ -21,10 +21,6 @@ import java.util.Collections;
 
 import org.apache.commons.io.FilenameUtils;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 import de.kosit.validationtool.api.AcceptRecommendation;
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.Scenario;
@@ -32,7 +28,9 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ProcessingError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -55,9 +53,9 @@ public interface CheckAction {
         private Result<Scenario, String> scenarioSelectionResult;
 
         @Setter(AccessLevel.NONE)
-        private CreateReportInput reportInput;
+        private final CreateReportInput reportInput;
 
-        /** Das finale Ergebnis */
+        /** The final result */
         private XdmNode report;
 
         private boolean finished;
@@ -66,7 +64,7 @@ public interface CheckAction {
 
         private AcceptRecommendation acceptStatus = AcceptRecommendation.UNDEFINED;
 
-        /** Das zu prüfende Dokument */
+        /** The document to validate */
         private Input input;
 
         private Result<XdmNode, XMLSyntaxError> parserResult;
@@ -85,7 +83,9 @@ public interface CheckAction {
         }
 
         /**
-         * Signalisiert einen vorzeitigen Stop der Vearbeitung.
+         * Indicates an early stop in processing.
+         * 
+         * @param error Error text
          */
         public void stopProcessing(final String error) {
             stopProcessing(Collections.singleton(error));
