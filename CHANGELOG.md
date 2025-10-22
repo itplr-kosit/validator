@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - (CORE) Migration from javax to jakarta xml bind
 - (DOC) [GitHub PR#132](https://github.com/itplr-kosit/validator/pull/132) Updated the link to the example Validator scenario configuration
+- (BUILD) Support for *building and compilation* is restricted to the following Java versions:
+    - Java 11: any version &ge; 11.0.23
+    - Java 12 to 16 will not work
+    - Java 17: any version &ge; 17.0.11
+    - Java 18 to 20 will not work
+    - Any version from Java 21 onwards will work
+    - The reason for this is the usage of the `-proc:full` compiler parameter which in turn is needed for Lombok usage in JDK 23+.
 
 ### Removed
 

@@ -241,6 +241,16 @@
                                 <requireMavenVersion>
                                     <version>[3.3.9,)</version>
                                 </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <!-- Required for "-proc:full" required for Lombok: 
+                                      Any Java 11 (LTS) >= 11.0.23
+                                      No Java 12 to 16
+                                      Any Java 17 (LTS) >= 17.0.11
+                                      No Java 18 to 20
+                                      Any Java 21 or higher
+                                    -->
+                                    <version>[11.0.23,12),[17.0.11,18),[21,)</version>
+                                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
@@ -253,6 +263,11 @@
                 <configuration>
                     <release>11</release>
                     <encoding>UTF-8</encoding>
+                    <!-- This is required for Lombok only since JDK 23
+                         Was backported to 17.0.11 and 11.0.23.
+                         See: https://inside.java/2024/06/18/quality-heads-up/ 
+                    -->
+                    <proc>full</proc>
                 </configuration>
             </plugin>
 
