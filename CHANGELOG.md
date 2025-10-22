@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.6.0
 
+### Added
+
+- (CORE) [GitHub #127](https://github.com/itplr-kosit/validator/issues/127) New API method `Result.getCustomFailedAsserts()` to access failed asserts with custom error levels
+
 ### Fixed
 
 - (DOC) [GitHub PR#166](https://github.com/itplr-kosit/validator/pull/166) Fixed broken links in `docs/api.md` 
