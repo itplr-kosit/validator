@@ -19,18 +19,18 @@ package de.kosit.validationtool.impl.input;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 
-import jakarta.xml.bind.util.JAXBSource;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.ReaderInputStream;
 
+import jakarta.xml.bind.util.JAXBSource;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
 import net.sf.saxon.om.TreeInfo;
 
 /**
@@ -102,7 +102,7 @@ public class SourceInput extends AbstractInput {
         return isStreamSource();
     }
 
-    private boolean isConsumed() throws IOException {
+    private boolean isConsumed() {
         if (isStreamSource()) {
 
             final StreamSource ss = (StreamSource) this.source;
@@ -140,7 +140,13 @@ public class SourceInput extends AbstractInput {
             if (ss.getInputStream() != null) {
                 result = new StreamSource(wrap(ss.getInputStream()), this.source.getSystemId());
             } else if (ss.getReader() != null) {
-                result = new StreamSource(wrap(new ReaderInputStream(ss.getReader(), Charset.defaultCharset())), this.source.getSystemId());
+                try {
+                    result = new StreamSource(
+                            wrap(ReaderInputStream.builder().setReader(ss.getReader()).setCharset(Charset.defaultCharset()).get()),
+                            this.source.getSystemId());
+                } catch (final IOException ex) {
+                    throw new UncheckedIOException(ex);
+                }
             }
         }
         return result;

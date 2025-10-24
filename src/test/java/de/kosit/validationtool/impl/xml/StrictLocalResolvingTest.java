@@ -17,14 +17,13 @@
 package de.kosit.validationtool.impl.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertTrue;
 
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.hamcrest.Matchers;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.xml.sax.SAXParseException;
 
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
@@ -37,16 +36,16 @@ import de.kosit.validationtool.impl.Helper.Resolving;
  */
 public class StrictLocalResolvingTest {
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
     @Test
     public void testRemoteSchemaResolving() throws Exception {
-        this.expectedException.expect(SAXParseException.class);
-        this.expectedException.expectMessage(Matchers.containsString("schema_reference"));
-        final ResolvingConfigurationStrategy s = new StrictLocalResolvingStrategy();
-        final SchemaFactory schemaFactory = s.createSchemaFactory();
-        schemaFactory.newSchema(Resolving.SCHEMA_WITH_REMOTE_REFERENCE.toURL());
+        try {
+            final ResolvingConfigurationStrategy s = new StrictLocalResolvingStrategy();
+            final SchemaFactory schemaFactory = s.createSchemaFactory();
+            schemaFactory.newSchema(Resolving.SCHEMA_WITH_REMOTE_REFERENCE.toURL());
+            fail();
+        } catch (SAXParseException ex) {
+            assertTrue(ex.getMessage().contains("schema_reference"));
+        }
     }
 
     @Test

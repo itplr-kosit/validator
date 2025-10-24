@@ -15,6 +15,7 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
 
 public class MiscDocExampleCodes {
 
+    @SuppressWarnings("unused")
     void m1() {
         final Configuration config = Configuration.load(URI.create("myscenarios.xml")).setResolvingMode(ResolvingMode.STRICT_LOCAL)
                 .build(ProcessorProvider.getProcessor());
@@ -43,6 +44,7 @@ public class MiscDocExampleCodes {
         }
     }
 
+    @SuppressWarnings("unused")
     void m2() {
         final Configuration config = Configuration.load(URI.create("myscenarios.xml"))
                 .setResolvingStrategy(new MyCustomResolvingConfigurationStrategy()).build(ProcessorProvider.getProcessor());

@@ -28,12 +28,9 @@ import java.util.Map;
 import javax.xml.validation.Schema;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.Helper.Simple;
-
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XsltExecutable;
 
@@ -46,9 +43,6 @@ public class ContentRepositoryTest {
 
     private ContentRepository repository;
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @Before
     public void setup() {
         this.repository = Simple.createContentRepository();
@@ -60,9 +54,8 @@ public class ContentRepositoryTest {
         assertThat(schema).isNotNull();
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testCreateSchemaNotExisting() throws Exception {
-        this.exception.expect(IllegalStateException.class);
         this.repository.createSchema(Simple.NOT_EXISTING.toURL());
     }
 
@@ -72,9 +65,8 @@ public class ContentRepositoryTest {
         assertThat(executable).isNotNull();
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testLoadXSLTNotExisting() {
-        this.exception.expect(IllegalStateException.class);
         this.repository.loadXsltScript(Simple.NOT_EXISTING);
     }
 
@@ -90,15 +82,13 @@ public class ContentRepositoryTest {
         assertThat(xPath).isNotNull();
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testXpathCreationWithoutNamespace() {
-        this.exception.expect(IllegalStateException.class);
         this.repository.createXPath("//html:html", null);
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testIllegalXpath() {
-        this.exception.expect(IllegalStateException.class);
         this.repository.createXPath("kein Xpath Ausdruck", null);
     }
 

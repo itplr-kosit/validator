@@ -18,7 +18,6 @@ package de.kosit.validationtool.cmd;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -45,11 +44,8 @@ public class CheckAssertionActionTest {
 
     private static final URL SAMPLE_ASSERTIONS = CheckAssertionActionTest.class.getResource("/examples/assertions/tests-xrechnung.xml");
 
-    private CommandLine commandLine;
-
     @Before
-    public void setup() throws IOException {
-        this.commandLine = new CommandLine();
+    public void setup() {
         CommandLine.activate();
     }
 

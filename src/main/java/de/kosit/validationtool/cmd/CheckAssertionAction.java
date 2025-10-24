@@ -23,16 +23,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.cmd.assertions.AssertionType;
 import de.kosit.validationtool.cmd.assertions.Assertions;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
@@ -56,12 +54,12 @@ class CheckAssertionAction implements CheckAction {
 
     private Map<String, List<AssertionType>> mappedAssertions;
 
-    private static boolean matches(String key, String name) {
+    private static boolean matches(final String key, final String name) {
         return key.startsWith(name) || (name + ".xml").endsWith(key);
     }
 
     @Override
-    public void check(Bag results) {
+    public void check(final Bag results) {
         log.info("Checking assertions for {}", results.getInput().getName());
         final List<AssertionType> toCheck = findAssertions(results.getName());
         final List<String> errors = new ArrayList<>();
@@ -84,28 +82,28 @@ class CheckAssertionAction implements CheckAction {
         }
     }
 
-    private List<AssertionType> findAssertions(String name) {
+    private List<AssertionType> findAssertions(final String name) {
         return getMapped().entrySet().stream().filter(e -> matches(e.getKey(), name)).map(Map.Entry::getValue).findFirst().orElse(null);
     }
 
-    private boolean check(XdmNode document, AssertionType assertion) {
+    private boolean check(final XdmNode document, final AssertionType assertion) {
         try {
             final XPathSelector selector = createSelector(assertion);
             selector.setContextItem(document);
             return selector.effectiveBooleanValue();
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             log.error("Error evaluating assertion {} for {}", assertion.getTest(), assertion.getReportDoc(), e);
         }
         return false;
 
     }
 
-    private XPathSelector createSelector(AssertionType assertion) throws SaxonApiException {
+    private XPathSelector createSelector(final AssertionType assertion) {
         try {
             final XPathCompiler compiler = getProcessor().newXPathCompiler();
             assertions.getNamespace().forEach(ns -> compiler.declareNamespace(ns.getPrefix(), ns.getValue()));
             return compiler.compile(assertion.getTest()).load();
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             throw new IllegalStateException(String.format("Can not compile xpath match expression '%s'",
                     StringUtils.isNotBlank(assertion.getTest()) ? assertion.getTest() : "EMPTY EXPRESSION"), e);
         }
@@ -114,8 +112,8 @@ class CheckAssertionAction implements CheckAction {
     private Map<String, List<AssertionType>> getMapped() {
         if (mappedAssertions == null) {
             mappedAssertions = new HashMap<>();
-            for (AssertionType assertionType : assertions.getAssertion()) {
-                List<AssertionType> list = mappedAssertions.computeIfAbsent(assertionType.getReportDoc(), k -> new ArrayList<>());
+            for (final AssertionType assertionType : assertions.getAssertion()) {
+                final List<AssertionType> list = mappedAssertions.computeIfAbsent(assertionType.getReportDoc(), k -> new ArrayList<>());
                 list.add(assertionType);
             }
         }

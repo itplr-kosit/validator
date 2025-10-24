@@ -82,6 +82,7 @@ public class Grid {
          *
          * @param name the name of the column
          * @param maxLength the max length of the column
+         * @param minLength the minimum length of the column
          */
         public ColumnDefinition(final String name, final int maxLength, final int minLength) {
             this(name, maxLength, minLength, 1);
@@ -91,7 +92,8 @@ public class Grid {
          * Constructor.
          *
          * @param name the name of the column
-         * @param minLength the max length of the column
+         * @param maxLength the max length of the column
+         * @param minLength the minimum length of the column
          * @param maxLines the max lines per cell
          */
         public ColumnDefinition(final String name, final int maxLength, final int minLength, final int maxLines) {
@@ -149,10 +151,6 @@ public class Grid {
             this.text.add(txt);
         }
 
-        public Cell(final Object object, final Code... codes) {
-            this(new Text(object, codes));
-        }
-
         protected Line getFormattedLine(final int lineNumber, final ColumnDefinition def) {
             final Line line = new Line();
             int startSubstring = lineNumber * def.getLength();
@@ -192,11 +190,6 @@ public class Grid {
             }
             return def.getJustify().apply("", def.getLength());
 
-        }
-
-        public Cell add(final Object object, final Code... codes) {
-            this.text.add(new Text(object, codes));
-            return this;
         }
 
     }
@@ -321,7 +314,7 @@ public class Grid {
     }
 
     private static boolean isEmpty(final StringBuilder current) {
-        return current.toString().replaceAll("\\|", "").trim().length() == 0;
+        return current.toString().replace("|", "").trim().length() == 0;
     }
 
     private int getMaxVirtualLine() {

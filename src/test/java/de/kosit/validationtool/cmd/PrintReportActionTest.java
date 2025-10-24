@@ -35,13 +35,10 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
  */
 public class PrintReportActionTest {
 
-    private CommandLine commandLine;
-
     private PrintReportAction action;
 
     @Before
     public void setup() {
-        this.commandLine = new CommandLine();
         CommandLine.activate();
         this.action = new PrintReportAction(TestObjectFactory.createProcessor());
     }

@@ -24,14 +24,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.StringJoiner;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.JAXBIntrospector;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.ValidationEventHandler;
-import jakarta.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -44,6 +36,14 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBIntrospector;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.ValidationEventHandler;
+import jakarta.xml.bind.annotation.XmlRegistry;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -219,6 +219,7 @@ public class ConversionService {
             final XMLOutputFactory xof = XMLOutputFactory.newFactory();
             final XMLStreamWriter xmlStreamWriter = xof.createXMLStreamWriter(w);
             if (null == introspector.getElementName(model)) {
+                @SuppressWarnings({ "rawtypes", "unchecked" })
                 final JAXBElement jaxbElement = new JAXBElement(createQName(model), model.getClass(), model);
                 marshaller.marshal(jaxbElement, xmlStreamWriter);
             } else {

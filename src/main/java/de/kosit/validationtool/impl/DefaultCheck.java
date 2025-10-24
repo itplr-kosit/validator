@@ -169,6 +169,7 @@ public class DefaultCheck implements Check {
                 .map(fa -> new CustomFailedAssert(fa, customLevels.get(fa.getId()))).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     private static List<XmlError> convertErrors(final List<XMLSyntaxError> errors) {
         // noinspection unchecked
         return (List<XmlError>) (List<?>) errors;

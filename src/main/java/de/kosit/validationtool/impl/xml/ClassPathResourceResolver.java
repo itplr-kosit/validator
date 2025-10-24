@@ -22,7 +22,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
@@ -90,7 +90,7 @@ public class ClassPathResourceResolver implements LSResourceResolver {
      * @param basePath der Basispfad
      */
     public ClassPathResourceResolver(final String basePath) {
-        if (!StringUtils.startsWith(basePath, "/")) {
+        if (!Strings.CS.startsWith(basePath, "/")) {
             throw new IllegalArgumentException("Base path must start with a slash");
         }
         this.base = URI.create(basePath + (basePath.endsWith("/") == basePath.length() > 1 ? "" : "/"));

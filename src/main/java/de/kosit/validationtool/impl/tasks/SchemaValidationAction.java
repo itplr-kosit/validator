@@ -31,12 +31,6 @@ import javax.xml.validation.Validator;
 import org.apache.commons.io.FileUtils;
 import org.xml.sax.SAXException;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.Scenario;
@@ -45,7 +39,11 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsXmlSchema;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
@@ -216,7 +214,7 @@ public class SchemaValidationAction implements CheckAction {
         }
     }
 
-    private interface SerializedDocument extends AutoCloseable, SourceProvider {
+    private interface SerializedDocument extends SourceProvider {
 
         void serialize(XdmNode node) throws SaxonApiException, IOException;
 
