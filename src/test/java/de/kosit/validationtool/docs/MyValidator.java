@@ -19,6 +19,7 @@ import de.kosit.validationtool.impl.xml.ProcessorProvider;
  */
 public class MyValidator {
 
+    @SuppressWarnings("unused")
     public static void main(final String[] args) {
         final Configuration config = Configuration.create().name("myconfiguration")
                 .with(scenario("firstScenario").match("//myNode").validate(schema("Sample Schema").schemaLocation(URI.create("simple.xsd")))

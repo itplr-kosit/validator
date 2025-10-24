@@ -26,9 +26,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.xml.RelativeUriResolver;
 
@@ -49,9 +47,6 @@ public class RelativeUriResolverTest {
         }
     }
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     private URIResolver resolver = new RelativeUriResolver(BASE);
 
     @Test
@@ -60,15 +55,13 @@ public class RelativeUriResolverTest {
         assertThat(resource).isNotNull();
     }
 
-    @Test
+    @Test(expected = TransformerException.class)
     public void testNotExisting() throws TransformerException {
-        this.exception.expect(TransformerException.class);
         this.resolver.resolve("ubl-0001", BASE.toASCIIString());
     }
 
-    @Test
+    @Test(expected = TransformerException.class)
     public void testOutOfPath() throws TransformerException {
-        this.exception.expect(TransformerException.class);
         this.resolver.resolve("../results/report.xml", BASE.toASCIIString());
     }
 

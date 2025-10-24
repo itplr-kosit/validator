@@ -16,7 +16,11 @@
 
 package de.kosit.validationtool.impl.xml;
 
+import static org.junit.Assert.assertNotNull;
+
 import javax.xml.validation.SchemaFactory;
+
+import org.junit.Test;
 
 import de.kosit.validationtool.impl.ResolvingMode;
 
@@ -25,6 +29,10 @@ import de.kosit.validationtool.impl.ResolvingMode;
  */
 public class SchemaProviderTest {
 
-    private final SchemaFactory schemaFactory = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
+    @Test
+    public void testBasic() {
+        final SchemaFactory schemaFactory = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
+        assertNotNull(schemaFactory);
+    }
 
 }

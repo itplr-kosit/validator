@@ -21,9 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.impl.Helper.Resolving;
@@ -34,9 +32,6 @@ import de.kosit.validationtool.impl.Helper.Resolving;
  * @author Andreas Penski
  */
 public class RemoteResolvingStrategyTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testRemoteSchemaResolving() throws Exception {

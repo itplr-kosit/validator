@@ -95,6 +95,8 @@ public class CommandLineApplication {
         return resultStatus;
     }
 
+    // The signature is required, because the method is used a lambda
+    @SuppressWarnings("unused")
     private static int logExecutionException(final Exception ex, final CommandLine cli, final ParseResult parseResult) {
         final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "Es ist eine Fehler aufgetreten";
         Printer.writeErr(ex, message);

@@ -16,16 +16,13 @@
 
 package de.kosit.validationtool.impl;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Serializable;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.Helper.Invalid;
 import de.kosit.validationtool.impl.Helper.Simple;
@@ -40,9 +37,6 @@ public class ConversionServiceTest {
 
     private static final URL SCHEMA = ConversionServiceTest.class.getResource("/xsd/scenarios.xsd");
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     private ConversionService service;
 
     private ContentRepository repository;
@@ -53,15 +47,13 @@ public class ConversionServiceTest {
         this.repository = Simple.createContentRepository();
     }
 
-    @Test
+    @Test(expected = ConversionService.ConversionExeption.class)
     public void testMarshalNull() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
         this.service.writeXml(null);
     }
 
-    @Test
+    @Test(expected = ConversionService.ConversionExeption.class)
     public void testMarshalUnknown() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
         this.service.writeXml(new Serializable() {
         });
     }
@@ -80,33 +72,28 @@ public class ConversionServiceTest {
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
 
-    @Test
+    @Test(expected = ConversionService.ConversionExeption.class)
     public void testUnmarshalInvalidXml() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
         this.service.readXml(Invalid.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA));
     }
 
-    @Test
+    @Test(expected = ConversionService.ConversionExeption.class)
     public void testUnmarshalIllFormed() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
         this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, this.repository.createSchema(SCHEMA));
     }
 
-    @Test
+    @Test(expected = ConversionService.ConversionExeption.class)
     public void testUnmarshalEmpty() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
         this.service.readXml(null, Scenarios.class);
     }
 
-    @Test
-    public void testUnmarshalUnknownType() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+    @Test(expected = ConversionService.ConversionExeption.class)
+    public void testUnmarshalUnknownType() {
         this.service.readXml(Simple.SCENARIOS, ConversionService.class);
     }
 
-    @Test
-    public void testUnmarshalWithoutType() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
+    @Test(expected = ConversionService.ConversionExeption.class)
+    public void testUnmarshalWithoutType() {
         this.service.readXml(Simple.SCENARIOS, null);
     }
 

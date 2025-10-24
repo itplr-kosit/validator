@@ -20,15 +20,12 @@ import static de.kosit.validationtool.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -37,9 +34,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class DocumentParseActionTest {
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     private DocumentParseAction action;
 
@@ -66,9 +60,8 @@ public class DocumentParseActionTest {
         assertThat(result.isValid()).isFalse();
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testNullInput() {
-        this.exception.expect(IllegalArgumentException.class);
         this.action.parseDocument(null);
 
     }

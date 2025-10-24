@@ -20,6 +20,7 @@ import de.kosit.validationtool.impl.xml.ProcessorProvider;
  */
 public class StandardExample {
 
+    @SuppressWarnings("unused")
     public void run(final Path testDocument) throws URISyntaxException {
         // Load scenarios.xml from classpath
         final URL scenarios = this.getClass().getClassLoader().getResource("examples/simple/scenarios-with-relative-paths.xml");

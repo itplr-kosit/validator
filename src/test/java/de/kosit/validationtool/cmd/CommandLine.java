@@ -46,6 +46,7 @@ public class CommandLine {
      */
     private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
 
+        @SuppressWarnings("hiding")
         @Getter
         @Setter
         private O out;
