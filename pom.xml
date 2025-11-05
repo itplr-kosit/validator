@@ -458,7 +458,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.6.2</version>
                 <executions>
                     <execution>
                         <id>run</id>
@@ -469,10 +469,15 @@
                     </execution>
                 </executions>
                 <configuration>
+                <inheritIo>true</inheritIo>
+                    <!-- have to catch exit codes, cause daemon throws 1 if shutdown is not proper-->
+                    <successCodes>0,1</successCodes>
                     <executable>java</executable>
                     <longClasspath>false</longClasspath>
                     <async>true</async>
                     <asyncDestroyOnShutdown>true</asyncDestroyOnShutdown>
+
+                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
                     <arguments>
                         <!--suppress MavenModelInspection -->
                         <argument>${jacocoFailsafe}</argument>
@@ -500,7 +505,7 @@
                     <target>
                         <!-- schlafen um den Start des Daemon abzuwarten -->
                         <sleep seconds="10" />
-                        <echo>${jacoco.tcp.port}</echo>
+                        <echo >jacoco.tcp.port=${jacoco.tcp.port}</echo>
                     </target>
                 </configuration>
                 <executions>
