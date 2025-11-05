@@ -50,7 +50,7 @@
         <version.rest-assured>5.5.5</version.rest-assured>
         <version.saxon-he>12.8</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
-        <version.jaxb-maven-plugin>4.0.9</version.jaxb-maven-plugin>
+        <version.jaxb-maven-plugin>4.0.11</version.jaxb-maven-plugin>
     </properties>
 
     <repositories>
