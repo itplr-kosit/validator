@@ -39,7 +39,7 @@ cache:
 
 java-11:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
+  image: maven:3-eclipse-temurin-11-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
@@ -56,27 +56,27 @@ java-11:
 
 java-11-openj9:
   extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
+  image: maven:3-jdk-11-openj9
 
 java-17:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
+  image: maven:3-eclipse-temurin-17-alpine
 
 java-21:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-21-alpine
+  image: maven:3-eclipse-temurin-21-alpine
 
 java-24:
   extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-24-alpine
+  image: maven:3-eclipse-temurin-24-alpine
 
 java-25:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-25-alpine
+  image: maven:3-eclipse-temurin-25-alpine
   
 deploy:
   stage: deploy
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
+  image: maven:3-eclipse-temurin-11-alpine
   needs:
     - job: java-11
   script:
@@ -110,7 +110,7 @@ create-build-image:
 
 owasp-check:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
+  image: maven:3-eclipse-temurin-11-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check
