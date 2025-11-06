@@ -6,7 +6,7 @@
 
     <groupId>org.kosit</groupId>
     <artifactId>validator</artifactId>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0</version>
 
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
@@ -505,7 +505,7 @@
                     <target>
                         <!-- schlafen um den Start des Daemon abzuwarten -->
                         <sleep seconds="10" />
-                        <echo >jacoco.tcp.port=${jacoco.tcp.port}</echo>
+                        <echo>jacoco.tcp.port=${jacoco.tcp.port}</echo>
                     </target>
                 </configuration>
                 <executions>
@@ -686,7 +686,7 @@
     <scm>
         <connection>scm:git:https://github.com/itplr-kosit/validator.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>release/1.6.x</tag>
+        <tag>v1.6.0</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
 
