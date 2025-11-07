@@ -17,15 +17,12 @@
 package de.kosit.validationtool.impl;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.model.Result;
-
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
@@ -67,17 +64,14 @@ public class ScenarioRepository {
 
     private String summarizeScenarios() {
         final StringBuilder b = new StringBuilder();
-        getScenarios().forEach(s -> {
-            b.append(s.getName());
-            b.append("\n");
-        });
+        getScenarios().forEach(s -> b.append(s.getName()).append('\n'));
         return b.toString();
     }
 
     /**
-     * Ermittelt für das gegebene Dokument das passende Szenario.
+     * Determine the matching Scenario for the provided input document
      *
-     * @param document das Eingabedokument
+     * @param document input document
      * @return ein Ergebnis-Objekt zur weiteren Verarbeitung
      */
     public Result<Scenario, String> selectScenario(final XdmNode document) {
@@ -86,10 +80,9 @@ public class ScenarioRepository {
         if (collect.size() == 1) {
             result = new Result<>(collect.get(0));
         } else if (collect.isEmpty()) {
-            result = new Result<>(getFallbackScenario(),
-                    Collections.singleton("None of the loaded scenarios matches the specified document"));
+            result = new Result<>(getFallbackScenario(), Arrays.asList("None of the loaded scenarios matches the specified document"));
         } else {
-            result = new Result<>(getFallbackScenario(), Collections.singleton("More than on scenario matches the specified document"));
+            result = new Result<>(getFallbackScenario(), Arrays.asList("More than one scenario matches the specified document"));
         }
         return result;
 

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import type { PrismTheme, Language } from "prism-react-renderer";
-import Highlight, { defaultProps } from "prism-react-renderer";
+import { Highlight, themes } from "prism-react-renderer";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import clsx from "clsx";
 import downloadFile from "js-file-download";
@@ -63,7 +63,6 @@ function Codeblock({
 	return (
 		<div className={styles.wrapper}>
 			<Highlight
-				{...defaultProps}
 				code={children}
 				language={language}
 				theme={codeTheme}

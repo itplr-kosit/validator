@@ -16,8 +16,6 @@
 
 package de.kosit.validationtool.config;
 
-import static org.apache.commons.lang3.StringUtils.startsWith;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashMap;
@@ -27,10 +25,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.Strings;
 
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.Configuration;
@@ -49,7 +44,10 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.Scenarios;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;
@@ -113,8 +111,8 @@ public class ConfigurationLoader {
     private static boolean isSupportedDocument(final XdmNode doc) {
         final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
-        return startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
-                && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
+        return Strings.CS.startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
+                && root.getNodeName().getNamespace().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
     }
 
     private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {

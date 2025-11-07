@@ -32,7 +32,7 @@ Here are some public validation configurations:
 * Validation Configuration for [XRechnung](https://xeinkauf.de/xrechnung/):
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-xrechnung)
   * [Releases](https://github.com/itplr-kosit/validator-configuration-xrechnung/releases) can also be downloaded
-* Validation Configuration for [Peppol BIS Billing](docs.peppol.eu/poacc/billing/3.0/):
+* Validation Configuration for [Peppol BIS Billing](https://docs.peppol.eu/poacc/billing/3.0/):
   * Source code is available on [GitHub](https://github.com/itplr-kosit/validator-configuration-bis)
   * [Releases](https://github.com/itplr-kosit/validator-configuration-bis/releases) can also be downloaded
 * Validation Configuration for [XGewerbeanzeige](https://xgewerbeanzeige.de/)
@@ -105,9 +105,8 @@ The [daemon documentation](./docs/daemon.md) shows more usage details and furthe
 The Validator distribution contains the following artifacts:
 
 1. **validator-`<version>`.jar**: Java library for embedded use within an application
-1. **validator-`<version>`-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java 8 and Java >= 11)
-1. **validator-`<version>`-java8-standalone.jar**: Uber-JAR for standalone usage with Java JDK 8 containing all dependencies in one jar file. This file file *does not* contain JAXB and depends on the bundled version of the JDK.
-1. **libs/***: directory containing all (incl. optional) dependencies of the validator
+1. **validator-`<version>`-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java >= 11)
+1. **libs/**: directory containing all (incl. optional) dependencies of the validator
 
 ## Installation
 

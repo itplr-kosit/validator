@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
@@ -45,13 +45,10 @@ public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
-    private CommandLine commandLine;
-
     private final Path output = Paths.get("target/test-output");
 
     @Before
     public void setup() throws IOException {
-        this.commandLine = new CommandLine();
         CommandLine.activate();
         if (Files.exists(this.output)) {
             FileUtils.deleteDirectory(this.output.toFile());
@@ -164,7 +161,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.EXAMPLES).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(CommandLine.getErrorOutput()).contains("Processing 8 object(s) completed");
+        assertThat(CommandLine.getErrorOutput()).contains("Processing 9 object(s) completed");
     }
 
     @Test
@@ -194,7 +191,7 @@ public class CommandlineApplicationTest {
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(CommandLine.getOutputLines()).haveAtLeastOne(new Condition<>(
-                s -> StringUtils.contains(s, "<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
+                s -> Strings.CS.contains(s, "<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
     }
 
     @Test
@@ -242,7 +239,7 @@ public class CommandlineApplicationTest {
     }
 
     @Test
-    public void testAndre() throws IOException {
+    public void testAndre() {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "andre1" };
         CommandLineApplication.mainProgram(args);

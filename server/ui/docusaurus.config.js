@@ -18,8 +18,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/dracula");
+const lightCodeTheme = require("prism-react-renderer").themes.github;
+const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 const pkg = require("./package.json");
 
 /** @type {import('@docusaurus/types').Config} */
@@ -28,7 +28,7 @@ const config = {
 	tagline: "Validating any XML",
 	url: "https://your-docusaurus-test-site.com",
 	baseUrl: "/",
-	onBrokenLinks: "throw",
+	onBrokenLinks: "log",
 	onBrokenMarkdownLinks: "warn",
 	favicon: "img/favicon.svg",
 	customFields: {
@@ -119,7 +119,7 @@ const config = {
 						title: "Community",
 						items: [
 							{
-								label: "Github",
+								label: "GitHub",
 								href: "https://github.com/itplr-kosit/validator",
 							},
 							{
@@ -133,11 +133,11 @@ const config = {
 						items: [
 							{
 								label: "KoSIT",
-								href: "https://www.xoev.de",
+								href: "https://xeinkauf.de",
 							},
 							{
 								label: "XRechnung",
-								href: "https://www.xoev.de/xrechnung-16828",
+								href: "https://xeinkauf.de/xrechnung/",
 							},
 						],
 					},

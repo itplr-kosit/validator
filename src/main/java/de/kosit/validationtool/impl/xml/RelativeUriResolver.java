@@ -26,7 +26,6 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
 import lombok.RequiredArgsConstructor;
-
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.StandardUnparsedTextResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
@@ -54,10 +53,9 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
 
                 throw new TransformerException(String.format("Can not resolve required  %s", href), e);
             }
-        } else {
-            throw new TransformerException(String
-                    .format("The resolved transformation artifact %s is not within the configured repository %s", resolved, this.baseUri));
         }
+        throw new TransformerException(String.format("The resolved transformation artifact %s is not within the configured repository %s",
+                resolved, this.baseUri));
     }
 
     /**
@@ -96,10 +94,9 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
     public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
         if (isUnderBaseUri(absoluteURI, this.baseUri)) {
             return new StandardUnparsedTextResolver().resolve(absoluteURI, encoding, config);
-        } else {
-            throw new XPathException(String.format("The resolved transformation artifact %s is not within the configured repository %s",
-                    absoluteURI, this.baseUri));
         }
+        throw new XPathException(String.format("The resolved transformation artifact %s is not within the configured repository %s",
+                absoluteURI, this.baseUri));
     }
 
 }

@@ -6,7 +6,7 @@
 
     <groupId>org.kosit</groupId>
     <artifactId>validator</artifactId>
-    <version>1.5.3-SNAPSHOT</version>
+    <version>1.6.1-SNAPSHOT</version>
 
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
@@ -15,13 +15,13 @@
             <id>fabian.buettner</id>
             <name>Fabian Büttner</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.xoev.de</organizationUrl>
+            <organizationUrl>https://xoev.de/</organizationUrl>
         </developer>
         <developer>
             <id>renzo.kottmann</id>
             <name>Renzo Kottmann</name>
             <organization>KoSIT</organization>
-            <organizationUrl>http://www.xeinkauf.de</organizationUrl>
+            <organizationUrl>https://xeinkauf.de</organizationUrl>
             <roles>
                 <role>Product Owner</role>
             </roles>
@@ -42,13 +42,15 @@
         <version.commons-io>2.20.0</version.commons-io>
         <version.commons-lang>3.18.0</version.commons-lang>
         <version.jacoco>0.8.13</version.jacoco>
-        <version.jaxb>2.3.9</version.jaxb>
-        <version.lombok>1.18.38</version.lombok>
+        <version.jaxb-api>4.0.2</version.jaxb-api>
+        <version.jaxb-impl>4.0.5</version.jaxb-impl>
+        <version.lombok>1.18.42</version.lombok>
         <version.mockito>4.11.0</version.mockito>
         <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
         <version.rest-assured>5.5.5</version.rest-assured>
         <version.saxon-he>12.8</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
+        <version.jaxb-maven-plugin>4.0.11</version.jaxb-maven-plugin>
     </properties>
 
     <repositories>
@@ -116,8 +118,13 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>${version.jaxb}</version>
+            <version>${version.jaxb-impl}</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${version.jaxb-api}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -154,7 +161,6 @@
             <version>1.0.2</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -235,6 +241,16 @@
                                 <requireMavenVersion>
                                     <version>[3.3.9,)</version>
                                 </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <!-- Required for "-proc:full" required for Lombok: 
+                                      Any Java 11 (LTS) >= 11.0.23
+                                      No Java 12 to 16
+                                      Any Java 17 (LTS) >= 17.0.11
+                                      No Java 18 to 20
+                                      Any Java 21 or higher
+                                    -->
+                                    <version>[11.0.23,12),[17.0.11,18),[21,)</version>
+                                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
@@ -245,9 +261,13 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>11</release>
                     <encoding>UTF-8</encoding>
+                    <!-- This is required for Lombok only since JDK 23
+                         Was backported to 17.0.11 and 11.0.23.
+                         See: https://inside.java/2024/06/18/quality-heads-up/ 
+                    -->
+                    <proc>full</proc>
                 </configuration>
             </plugin>
 
@@ -265,44 +285,6 @@
                         <configuration>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>standalone</shadedClassifierName>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>de.kosit.validationtool.cmd.CommandLineApplication</mainClass>
-                                </transformer>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>**/module-info.class</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>jdk8</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>java8-standalone</shadedClassifierName>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
-                                    <exclude>com.sun.istack:istack-commons-runtime</exclude>
-                                    <exclude>com.sun.xml.fastinfoset:FastInfoset</exclude>
-                                    <exclude>jakarta.activation:jakarta.activation-api</exclude>
-                                    <exclude>jakarta.xml.bind:jakarta.xml.bind-api</exclude>
-                                    <exclude>org.jvnet.staxex:stax-ex</exclude>
-                                    <exclude>org.glassfish.jaxb:txw2</exclude>
-                                </excludes>
-                            </artifactSet>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>de.kosit.validationtool.cmd.CommandLineApplication</mainClass>
@@ -350,9 +332,9 @@
 
             <!-- Generate model classes -->
             <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.15.3</version>
+                <groupId>org.jvnet.jaxb</groupId>
+                <artifactId>jaxb-maven-plugin</artifactId>
+                <version>${version.jaxb-maven-plugin}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -370,20 +352,12 @@
                     </args>
                     <plugins>
                         <plugin>
-                            <groupId>org.jvnet.jaxb2_commons</groupId>
-                            <artifactId>jaxb2-basics</artifactId>
-                            <version>0.13.1</version>
+                            <groupId>org.jvnet.jaxb</groupId>
+                            <artifactId>jaxb-plugins</artifactId>
+                            <version>${version.jaxb-maven-plugin}</version>
                         </plugin>
                     </plugins>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                        <version>${version.jaxb}</version>
-                        <optional>true</optional>
-                    </dependency>
-                </dependencies>
             </plugin>
 
             <!-- Integrate code coverage -->
@@ -484,7 +458,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.6.2</version>
                 <executions>
                     <execution>
                         <id>run</id>
@@ -495,10 +469,15 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <inheritIo>true</inheritIo>
+                    <!-- have to catch exit codes, cause daemon throws 1 if shutdown is not proper-->
+                    <successCodes>0,1</successCodes>
                     <executable>java</executable>
                     <longClasspath>false</longClasspath>
                     <async>true</async>
                     <asyncDestroyOnShutdown>true</asyncDestroyOnShutdown>
+
+                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
                     <arguments>
                         <!--suppress MavenModelInspection -->
                         <argument>${jacocoFailsafe}</argument>
@@ -526,7 +505,7 @@
                     <target>
                         <!-- schlafen um den Start des Daemon abzuwarten -->
                         <sleep seconds="10" />
-                        <echo>${jacoco.tcp.port}</echo>
+                        <echo>jacoco.tcp.port=${jacoco.tcp.port}</echo>
                     </target>
                 </configuration>
                 <executions>
@@ -563,7 +542,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.11.2</version>
                 <configuration>
-                    <source>8</source>
+                    <source>11</source>
                     <doclint>none</doclint>
                 </configuration>
                 <executions>
@@ -707,7 +686,7 @@
     <scm>
         <connection>scm:git:https://github.com/itplr-kosit/validator.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>release/1.5.x</tag>
+        <tag>release/1.6.x</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
 

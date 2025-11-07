@@ -28,7 +28,6 @@ import org.junit.Test;
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.model.Result;
-
 import net.sf.saxon.s9api.XPathExecutable;
 
 /**
@@ -40,7 +39,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testSimpleString() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = RandomStringUtils.secure().nextAlphanumeric(5);
         final XPathBuilder b = new XPathBuilder(name);
         b.setXpath("//*");
         final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
@@ -54,7 +53,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testStringWithNamespace() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = RandomStringUtils.secure().nextAlphanumeric(5);
         final XPathBuilder b = new XPathBuilder(name);
         final Map<String, String> ns = new HashMap<>();
         ns.put("p", "http://somens");
@@ -69,7 +68,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testStringWithUnknownNamespace() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = RandomStringUtils.secure().nextAlphanumeric(5);
         final XPathBuilder b = new XPathBuilder(name);
         final Map<String, String> ns = new HashMap<>();
         ns.put("p", "http://somens");
@@ -82,7 +81,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testExecutable() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = RandomStringUtils.secure().nextAlphanumeric(5);
         final ContentRepository repository = Simple.createContentRepository();
         final XPathExecutable xpath = repository.createXPath("//*", Collections.emptyMap());
         final XPathBuilder b = new XPathBuilder(name);
@@ -96,7 +95,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testExecutableWithNamespace() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = RandomStringUtils.secure().nextAlphanumeric(5);
         final ContentRepository repository = Simple.createContentRepository();
         final Map<String, String> ns = new HashMap<>();
         ns.put("p", "http://somens");
@@ -123,7 +122,7 @@ public class XPathBuilderTest {
 
     @Test
     public void testNoConfig() {
-        final String name = RandomStringUtils.randomAlphanumeric(5);
+        final String name = RandomStringUtils.secure().nextAlphanumeric(5);
         final XPathBuilder b = new XPathBuilder(name);
         final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
         assertThat(result).isNotNull();

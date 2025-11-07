@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import Upload from "../components/Upload";
 import PageLayout from "../components/PageLayout";
 

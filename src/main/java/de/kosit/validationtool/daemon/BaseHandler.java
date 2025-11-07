@@ -44,18 +44,18 @@ abstract class BaseHandler implements HttpHandler {
             throws IOException {
         exchange.getResponseHeaders().add("Content-Type", contentType);
         exchange.sendResponseHeaders(statusCode, 0);
-        final OutputStream os = exchange.getResponseBody();
-        write.write(os);
-        os.close();
+        try ( final OutputStream os = exchange.getResponseBody() ) {
+            write.write(os);
+        }
     }
 
     protected static void error(final HttpExchange exchange, final int statusCode, final String message) throws IOException {
         final byte[] bytes = message.getBytes();
         exchange.getResponseHeaders().add("Content-Type", "text/plain");
         exchange.sendResponseHeaders(statusCode, bytes.length);
-        final OutputStream os = exchange.getResponseBody();
-        os.write(bytes);
-        os.close();
+        try ( final OutputStream os = exchange.getResponseBody() ) {
+            os.write(bytes);
+        }
     }
 
     @FunctionalInterface

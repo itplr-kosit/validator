@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type { ButtonHTMLAttributes, DetailedHTMLProps, ReactNode } from "react";
+import type { ButtonHTMLAttributes, DetailedHTMLProps, JSX, ReactNode } from "react";
 import React from "react";
 import type { ExtendProps } from "../util/types";
 import styles from "./Button.module.css";

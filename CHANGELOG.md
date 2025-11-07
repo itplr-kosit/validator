@@ -5,13 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## Unreleased
+
+
+## 1.6.0 - 2025-11-07
+
+### Added
+
+- (CORE) [GitHub #127](https://github.com/itplr-kosit/validator/issues/127) New API method `Result.getCustomFailedAsserts()` to access failed asserts with custom error levels
+
+### Fixed
+
+- (DOC) [GitHub PR#166](https://github.com/itplr-kosit/validator/pull/166) Fixed broken links in `docs/api.md` 
+
+### Changed
+
+- (CORE) Migration from javax to jakarta xml bind
+- (DOC) [GitHub PR#132](https://github.com/itplr-kosit/validator/pull/132) Updated the link to the example Validator scenario configuration
+- (BUILD) Support for *building and compilation* is restricted to the following Java versions:
+    - Java 11: any version &ge; 11.0.23
+    - Java 12 to 16 will not work
+    - Java 17: any version &ge; 17.0.11
+    - Java 18 to 20 will not work
+    - Any version from Java 21 onwards will work
+    - The reason for this is the usage of the `-proc:full` compiler parameter which in turn is needed for Lombok usage in JDK 23+.
+
+### Removed
+
+- (CORE) java 8 support. new default jdk 11
+
 ## 1.5.2 - 2025-09-01
 
 ### Fixed
 
-- (BUILD) [#148](https://projekte.kosit.org/kosit/validator/-/issues/148): Regression that due to renaming from `validationtool` to `validator` the distribution zip did not contain all jars anymore
+- (BUILD) [#148](https://projekte.kosit.org/kosit/validator/-/issues/148) Regression that due to renaming from `validationtool` to `validator` the distribution zip did not contain all jars anymore
 
-# 1.5.1 - 2025-09-01
+## 1.5.1 - 2025-09-01
 
 ### Fixed
 
@@ -70,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#80](https://github.com/itplr-kosit/validator/issues/80) using classloader to initialize jaxb context (to support
   usage in OSGi
   environments)
-- [#75] (<https://github.com/itplr-kosit/validator/issues/75>) Improve logging on invalid documents
+- [#75](https://github.com/itplr-kosit/validator/issues/75) Improve logging on invalid documents
 
 ## 1.4.1
 
@@ -112,7 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `getFailedAsserts()` and `isSchematronValid()`
-  in [DefaultResult.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/impl/DefaultResult.java)
+  in [DefaultResult.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/impl/DefaultResult.java)
   do not reflect actual schematron validation result
 - processing aborts on schematron execution errors (e.g. errors within schematron logic). The validator now generates a
   report in such cases.
@@ -160,7 +190,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Provide access to schematron result
-  through [Result.java](https://github.com/itplr-kosit/validator/blob/master/src/main/java/de/kosit/validationtool/api/Result.java)
+  through [Result.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Result.java)
   - *Result#getFailedAsserts()* returns a list of failed asserts found by schematron
   - *Result#isSchematronValid()* convinience access to evaluate whether schematron was processed without any *
     FailedAsserts*

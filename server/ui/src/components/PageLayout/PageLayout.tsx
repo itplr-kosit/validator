@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 import React from "react";
 import Layout from "@theme/Layout";
 import styles from "./PageLayout.module.css";

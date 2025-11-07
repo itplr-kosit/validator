@@ -35,7 +35,6 @@ import javax.xml.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.xml.sax.SAXException;
 
 import de.kosit.validationtool.api.Input;
@@ -55,8 +54,6 @@ import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
  * @author Andreas Penski
  */
 public class SchemaValidatorActionTest {
-
-    public ExpectedException expectedException = ExpectedException.none();
 
     private SchemaValidationAction service;
 

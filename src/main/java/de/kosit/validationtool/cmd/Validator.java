@@ -321,10 +321,8 @@ public class Validator {
     private static URI determineRepository(final Path d) {
         if (Files.isDirectory(d)) {
             return d.toUri();
-        } else {
-            throw new IllegalArgumentException(
-                    String.format("Not a valid path for repository definition specified: '%s'", d.toAbsolutePath()));
         }
+        throw new IllegalArgumentException(String.format("Not a valid path for repository definition specified: '%s'", d.toAbsolutePath()));
 
     }
 

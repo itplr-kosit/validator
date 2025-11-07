@@ -45,7 +45,7 @@ public interface Input {
     /**
      * The digest algorithm used for computing the {@link #getHashCode()}
      * 
-     * @return the name of the digest algorith
+     * @return the name of the digest algorithm
      */
     String getDigestAlgorithm();
 

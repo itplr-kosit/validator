@@ -22,11 +22,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.model.scenarios.Scenarios;
 
 /**
@@ -44,16 +41,10 @@ public class VersioningTest {
 
     private static final URL NEW_VERSION = VersioningTest.class.getResource("/examples/versioning/scenarios-newversion.xml");
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     private ConversionService service;
-
-    private ContentRepository repository;
 
     @Before
     public void setup() {
-        this.repository = Simple.createContentRepository();
         this.service = new ConversionService();
     }
 
@@ -69,15 +60,13 @@ public class VersioningTest {
         assertThat(result).isNotNull();
     }
 
-    @Test
+    @Test(expected = ConversionService.ConversionExeption.class)
     public void testNewFeature() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
         this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
     }
 
-    @Test
+    @Test(expected = ConversionService.ConversionExeption.class)
     public void testNewVersion() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
         this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
     }
 }

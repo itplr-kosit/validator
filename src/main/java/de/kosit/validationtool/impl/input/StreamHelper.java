@@ -20,13 +20,14 @@ import java.io.BufferedInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.io.input.CountingInputStream;
+import org.apache.commons.io.input.BoundedInputStream;
 
 import de.kosit.validationtool.api.Input;
 
@@ -39,7 +40,7 @@ public class StreamHelper {
 
     /**
      * Helper class, which generates the hashcode while reading the stream e.g. for parsing the document. This allows
-     * generating the hashcode without an aditional reading step.
+     * generating the hashcode without an additional reading step.
      */
     @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
     private static class DigestingInputStream extends FilterInputStream {
@@ -96,15 +97,15 @@ public class StreamHelper {
 
         private final LazyReadInput reference;
 
-        public CountInputStream(final LazyReadInput input, final InputStream stream) {
-            super(new org.apache.commons.io.input.CountingInputStream(stream));
+        public CountInputStream(final LazyReadInput input, final InputStream stream) throws IOException {
+            super(BoundedInputStream.builder().setInputStream(stream).get());
             this.reference = input;
         }
 
         @Override
         public void close() throws IOException {
             super.close();
-            this.reference.setLength(((CountingInputStream) this.in).getByteCount());
+            this.reference.setLength(((BoundedInputStream) this.in).getCount());
         }
     }
 
@@ -130,19 +131,24 @@ public class StreamHelper {
     /**
      * Wraps the {@link InputStream} with a counting length implementation.
      * 
-     * @param input the {@link LazyReadInput input}
+     * @param input the lazy read input
      * @param stream the stream
      * @return a wrapped stream
      */
     public static InputStream wrapCount(final LazyReadInput input, final InputStream stream) {
-        return new CountInputStream(input, stream);
+        try {
+            return new CountInputStream(input, stream);
+        } catch (final IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
     }
 
     /**
      * Wraps the {@link InputStream} with an implementation the generates a hash sum over the stream data.
      *
-     * @param input the {@link LazyReadInput input}
+     * @param input the lazy read input
      * @param stream the stream
+     * @param digestAlgorithm the message digest algorithm to use
      * @return a wrapped stream
      */
     public static InputStream wrapDigesting(final LazyReadInput input, final InputStream stream, final String digestAlgorithm) {
@@ -175,7 +181,7 @@ public class StreamHelper {
      * @param input the input
      * @throws IOException on I/O errors
      */
-    @SuppressWarnings("squid:S1854")
+    @SuppressWarnings({ "squid:S1854", "unused" })
     public static void drain(final InputStream input) throws IOException {
         final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 

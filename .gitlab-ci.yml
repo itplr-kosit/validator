@@ -11,7 +11,7 @@ before_script:
 
 cache:
 # Change the cache key if major dependencies change  
-  key: constant151
+  key: constant160
   paths:
     - .m2/repository
 
@@ -37,18 +37,9 @@ cache:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
 
-# Note: image "maven:3-eclipse-temurin-8-alpine" does not work!
-java-8:
-  extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8
-
-java-8-openj9:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-8-openj9
-
 java-11:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
+  image: maven:3-eclipse-temurin-11-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
@@ -65,37 +56,40 @@ java-11:
 
 java-11-openj9:
   extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
+  image: maven:3-jdk-11-openj9
 
 java-17:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
+  image: maven:3-eclipse-temurin-17-alpine
 
 java-21:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-21-alpine
+  image: maven:3-eclipse-temurin-21-alpine
 
 java-24:
   extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-24-alpine
+  image: maven:3-eclipse-temurin-24-alpine
 
+java-25:
+  extends: .java
+  image: maven:3-eclipse-temurin-25-alpine
+  
 deploy:
   stage: deploy
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
+  image: maven:3-eclipse-temurin-11-alpine
   needs:
     - job: java-11
   script:
     - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}.jar -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-javadoc.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="javadoc" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-java8-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="java8-standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validationtool-${PROJECT_VERSION}-sources.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="sources" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.jar -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-javadoc.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="javadoc" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-sources.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="sources" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
   when: manual
 
 deploy-snapshot:
-  extends: java-8
+  extends: java-11
   script:
     - mvn $MAVEN_CLI_OPTS_CENTRAL -P release-snapshot deploy
 
@@ -116,7 +110,7 @@ create-build-image:
 
 owasp-check:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
+  image: maven:3-eclipse-temurin-11-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check

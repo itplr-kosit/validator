@@ -17,11 +17,9 @@
 package de.kosit.validationtool.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.StringJoiner;
 
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -30,11 +28,11 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import lombok.Getter;
-
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
-
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventHandler;
+import lombok.Getter;
 import net.sf.saxon.s9api.MessageListener2;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;
@@ -51,7 +49,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static final int stopProcessCount = DEFAULT_ABORT_COUNT;
 
-    private final Collection<XMLSyntaxError> errors = new ArrayList<>();
+    private final List<XMLSyntaxError> errors = new ArrayList<>();
 
     private static XMLSyntaxError createError(final XMLSyntaxErrorSeverity severity, final String message) {
         final XMLSyntaxError e = new XMLSyntaxError();

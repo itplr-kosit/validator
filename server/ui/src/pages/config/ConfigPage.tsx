@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import PageLayout from "@site/src/components/PageLayout";
 import XmlView from "@site/src/components/XmlView";
 
