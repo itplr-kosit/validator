@@ -46,7 +46,7 @@
         <version.jaxb-impl>4.0.5</version.jaxb-impl>
         <version.lombok>1.18.42</version.lombok>
         <version.mockito>4.11.0</version.mockito>
-        <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
+        <version.owasp-dependency-check>12.1.8</version.owasp-dependency-check>
         <version.rest-assured>5.5.5</version.rest-assured>
         <version.saxon-he>12.8</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
@@ -239,7 +239,8 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.3.9,)</version>
+                                    <!-- minimum for OWASP check-->
+                                    <version>[3.6.3,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <!-- Required for "-proc:full" required for Lombok: 
@@ -617,6 +618,10 @@
                         <artifactId>dependency-check-maven</artifactId>
                         <version>${version.owasp-dependency-check}</version>
                         <configuration>
+                        <!-- Specifies if the build should be failed if a CVSS score 
+                        above a specified level is identified. 
+                        The default is 11 which means since the CVSS scores are 0-10, 
+                        by default the build will never fail.-->
                             <failBuildOnCVSS>0</failBuildOnCVSS>
                             <suppressionFiles>
                                 <suppressionFile>${project.basedir}/owasp-suppressions.xml</suppressionFile>
