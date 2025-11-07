@@ -74,12 +74,12 @@ The [CLI documentation](./docs/cli.md) shows further configuration options.
 The Validator can also be used in own Java Applications via the API. An example use of the API as follows:
 
 ```java
-Path scenarios = Paths.get("scenarios.xml");
-Configuration config = Configuration.load(scenarios.toUri());
-Input document = InputFactory.read(testDocument);
-
+URL scenarios = this.getClass().getClassLoader().getResource("scenarios.xml");
+Configuration config = Configuration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
 Check validator = new DefaultCheck(config);
-Result validationResult = validator.checkInput(document);
+
+Input document = InputFactory.read(testDocument);
+Result report = validator.checkInput(document);
 
 // examine the result here
 ```
@@ -139,8 +139,8 @@ To use the standalone version with Maven coordinates, add the respective classif
 
 This section describes the next steps planned in the Validator development.
 
-* Release version 1.6.0 based on Java 11 and using Jakarta 4.x. - Autumn 2025
-    * Drop support of version 1.5.x when version 1.6 is released
+* Version 1.5.x is frozen - no maintainance, no support
+* Version 1.6.x - no feature development, but maintainance and best-effort support
 * Develop version 2.0.0 which will include major API incompatibilities - Winter 2025 
     * Rework scenarios.xml
     * Rework report output engine
