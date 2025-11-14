@@ -110,7 +110,7 @@ create-build-image:
 
 owasp-check:
   extends: .java
-  image: maven:3-eclipse-temurin-11-alpine
+  image: maven:3-eclipse-temurin-21-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check
