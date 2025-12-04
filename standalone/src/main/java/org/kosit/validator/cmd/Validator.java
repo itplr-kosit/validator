@@ -16,27 +16,9 @@
 
 package org.kosit.validator.cmd;
 
-import static org.apache.commons.lang3.ObjectUtils.getIfNull;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.s9api.Processor;
 import org.fusesource.jansi.AnsiRenderer.Code;
-
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.InputFactory;
@@ -44,16 +26,25 @@ import org.kosit.validator.api.Result;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
-import org.kosit.validator.cmd.assertions.Assertions;
 import org.kosit.validator.cmd.report.Line;
-import org.kosit.validator.daemon.Daemon;
-import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Printer;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.xml.ProcessorProvider;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.Processor;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Actual evaluation and processing of CommandLineOptions argumtens.
@@ -77,10 +68,7 @@ public class Validator {
         greeting();
         final ReturnValue returnValue;
         try {
-            if (cmd.isDaemonModeEnabled()) {
-                startDaemonMode(cmd);
-                returnValue = ReturnValue.DAEMON_MODE;
-            } else if (cmd.isCliModeEnabled() || isPiped()) {
+            if (cmd.isCliModeEnabled() || isPiped()) {
                 returnValue = processActions(cmd);
             } else {
                 Printer.writeErr("No test target found");
@@ -111,19 +99,6 @@ public class Validator {
         return threads;
     }
 
-    private static void startDaemonMode(final CommandLineOptions cmd) {
-        if (cmd.isCliModeEnabled()) {
-            Printer.writeErr("Mixed mode configuration detected. Use either daemon mode or cli mode commandline options. They are mutual "
-                    + "exclusive. Will ignore cli mode options");
-        }
-        final List<Configuration> configuration = getConfiguration(cmd);
-        final CommandLineOptions.DaemonOptions daemonOptions = cmd.getDaemonOptions();
-        final Daemon validDaemon = new Daemon(daemonOptions.getHost(), daemonOptions.getPort(), determineThreads(daemonOptions));
-        validDaemon.setGuiEnabled(!daemonOptions.isDisableGUI());
-        Printer.writeOut("\nStarting daemon mode ...");
-        validDaemon.startServer(ProcessorProvider.getProcessor(), configuration.toArray(new Configuration[configuration.size()]));
-    }
-
     private static ReturnValue processActions(final CommandLineOptions cmd) throws IOException {
         long start = System.currentTimeMillis();
         final Processor processor = ProcessorProvider.getProcessor();
@@ -140,10 +115,6 @@ public class Validator {
             check.getCheckSteps().add(new PrintReportAction(processor));
         }
 
-        if (cliOptions.getAssertions() != null) {
-            final Assertions assertions = loadAssertions(cliOptions.getAssertions());
-            check.getCheckSteps().add(new CheckAssertionAction(assertions, processor, check.getConversionService()));
-        }
         if (cliOptions.isPrintMemoryStats()) {
             check.getCheckSteps().add(new PrintMemoryStats());
         }
@@ -248,22 +219,12 @@ public class Validator {
         return namingStrategy;
     }
 
-    private static Assertions loadAssertions(final Path p) {
-        Assertions a = null;
-        if (Files.exists(p)) {
-            final ConversionService c = new ConversionService();
-            c.initialize(org.kosit.validator.cmd.assertions.ObjectFactory.class.getPackage());
-            a = c.readXml(p.toUri(), Assertions.class);
-        }
-        return a;
-    }
-
     private static Path determineOutputDirectory(final CommandLineOptions.CliOptions cmd) {
         final Path dir;
         if (cmd.getOutputPath() != null) {
             dir = cmd.getOutputPath();
             if ((!Files.exists(dir) && !dir.toFile().mkdirs()) || !Files.isDirectory(dir)) {
-                throw new IllegalStateException(String.format("Invalid target directory %s specified", dir.toString()));
+                throw new IllegalStateException(String.format("Invalid target directory %s specified", dir));
             }
         } else {
             dir = Paths.get(""/* cwd */);

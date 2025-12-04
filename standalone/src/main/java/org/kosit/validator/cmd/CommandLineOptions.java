@@ -16,19 +16,19 @@
 
 package org.kosit.validator.cmd;
 
-import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import org.kosit.validator.cmd.CommandLineApplication.Level;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.kosit.validator.cmd.CommandLineApplication.Level;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Visibility;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Commandline Interface definition.
@@ -88,10 +88,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
                 defaultValue = "false")
         private boolean serializeInput;
 
-        @Option(names = { "-c", "--check-assertions" }, paramLabel = "assertions-file",
-                description = "Check the result using defined assertions")
-        private Path assertions;
-
         @Option(names = { "--report-postfix" }, description = "Postfix of the generated report name")
         private String reportPostfix;
 
@@ -141,9 +137,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         // just for type safety
     }
 
-    @ArgGroup(exclusive = false, heading = "Daemon options\n")
-    private DaemonOptions daemonOptions;
-
     @ArgGroup(exclusive = false, heading = "CLI usage options\n")
     private CliOptions cliOptions;
 
@@ -179,10 +172,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         } else {
             System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
         }
-    }
-
-    public boolean isDaemonModeEnabled() {
-        return getDaemonOptions() != null;
     }
 
     public boolean isCliModeEnabled() {

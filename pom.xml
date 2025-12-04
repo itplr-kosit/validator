@@ -326,27 +326,6 @@
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.5.3</version>
-                <executions>
-                    <execution>
-                        <id>test-it</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <!--suppress MavenModelInspection -->
-                            <argLine>-Dfile.encoding=UTF-8 -Ddaemon.port=${validator.server.port}</argLine>
-                        </configuration>
-
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
