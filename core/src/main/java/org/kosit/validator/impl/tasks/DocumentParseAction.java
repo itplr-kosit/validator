@@ -1,0 +1,121 @@
+/*
+ * Copyright 2017-2022  Koordinierungsstelle für IT-Standards (KoSIT)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kosit.validator.impl.tasks;
+
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemantal;
+import static org.kosit.validator.model.xvrl.XVRLDetection.Severity.ERROR;
+import static org.kosit.validator.model.xvrl.XVRLDetection.Severity.INFO;
+
+import java.io.IOException;
+import java.util.Collections;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.kosit.validator.api.Input;
+import org.kosit.validator.impl.input.XdmNodeInput;
+import org.kosit.validator.impl.model.ProcessStepResult;
+import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
+import org.kosit.validator.impl.xvrl.XVRLReportBuilder.DetectionBuilder;
+import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XMLSyntaxErrorSeverity;
+import org.kosit.validator.model.xvrl.XVRLReport;
+
+import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmNode;
+
+/**
+ * Setzt Parsing-Funktionalitäten um. Prüft auf well-formedness
+ * 
+ * @author Andreas Penski
+ */
+@Slf4j
+@RequiredArgsConstructor
+public class DocumentParseAction implements CheckAction {
+
+    public static final Process.Key<XdmNode, XMLSyntaxError> KEY = new Process.Key<>(XdmNode.class, XMLSyntaxError.class);
+
+    private final Processor processor;
+
+    private static XVRLReport generateXVRLReport(final Result<XdmNode, XMLSyntaxError> parserResult) {
+        final XVRLReportBuilder builder = XVRLReportBuilder.builder("Document wellformedness Validator");
+        if (parserResult.isValid()) {
+            final DetectionBuilder detection = detection().severity(INFO).add(supplemantal().addContent(parserResult.getObject()));
+            builder.add(detection);
+        } else {
+            final DetectionBuilder detection = detection().severity(ERROR);
+            parserResult.getErrors().forEach(detection::addError);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Parsed und überprüft ein übergebenes Dokument darauf ob es well-formed ist. Dies stellt den ersten
+     * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem
+     * Schema.
+     *
+     * @param content ein Dokument
+     * @return Ergebnis des Parsings inklusive etwaiger Fehler
+     */
+    public Result<XdmNode, XMLSyntaxError> parseDocument(final Input content) {
+        if (content == null) {
+            throw new IllegalArgumentException("Input may not be null");
+        }
+        Result<XdmNode, XMLSyntaxError> result;
+
+        try {
+            if (content instanceof XdmNodeInput && hasCompatibleConfiguration((XdmNodeInput) content)) {
+                // parsing not neccessary
+                result = new Result<>(((XdmNodeInput) content).getNode());
+            } else {
+                final DocumentBuilder builder = this.processor.newDocumentBuilder();
+                builder.setLineNumbering(true);
+                final XdmNode doc = builder.build(content.getSource());
+                result = new Result<>(doc);
+            }
+        } catch (final SaxonApiException | IOException e) {
+            log.debug("Exception while parsing {}", content.getName(), e);
+            final XMLSyntaxError error = new XMLSyntaxError();
+            error.setSeverityCode(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
+            error.setMessage(String.format("IOException while reading resource %s: %s", content.getName(), e.getMessage()));
+            result = new Result<>(Collections.singleton(error));
+        }
+
+        return result;
+    }
+
+    private boolean hasCompatibleConfiguration(final XdmNodeInput content) {
+        return content.getNode().getProcessor().getUnderlyingConfiguration().isCompatible(this.processor.getUnderlyingConfiguration());
+    }
+
+    @Override
+    public ProcessStepResult<XdmNode, XMLSyntaxError> check(final Process process) {
+        final ProcessStepResult<XdmNode, XMLSyntaxError> result = new ProcessStepResult<>(KEY);
+        final Result<XdmNode, XMLSyntaxError> parserResult = parseDocument(process.getInput());
+        result.setResult(parserResult);
+
+        if (parserResult.isInvalid()) {
+            process.setStopped(true);
+        }
+        result.setReport(generateXVRLReport(parserResult));
+        return result;
+    }
+}

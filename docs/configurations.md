@@ -2,7 +2,7 @@
 
 ## Scenarios
 
-The core of each validation configuration is the scenarios.xml file. The scenarios.xml itself must be valid according to the [Scenarios XML Schema](/src/main/model/xsd/scenarios.xsd) with the following namespace `http://www.xoev.de/de/validator/framework/1/scenarios`.
+The core of each validation configuration is the scenarios.xml file. The scenarios.xml itself must be valid according to the [Scenarios XML Schema](//xsd/scenarios.xsd) with the following namespace `http://www.xoev.de/de/validator/framework/1/scenarios`.
 
 Several validation scenarios (`<scenario>` XML Elements) can be described for each configuration.
 
@@ -16,7 +16,7 @@ If no scenario matches you can also define a XSLT transformation in `<noScenario
 
 ## Validators Report
 
-The Validator's report is defined in [xvrl.xsd](/src/main/model/xsd/xvrl.xsd) and contains all errors from all validation steps and some additional information on time of validation, engine used, the scenario which applied and a document identification.
+The Validator's report is defined in [xvrl.xsd](//xsd/xvrl.xsd) and contains all errors from all validation steps and some additional information on time of validation, engine used, the scenario which applied and a document identification.
 
 In general all errors will be classified in the following levels:
 
