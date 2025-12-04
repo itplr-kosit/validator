@@ -18,7 +18,7 @@ cache:
 .java:
   stage: build
   needs:
-    - job: java-11
+    - job: java-17
       artifacts: false
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
@@ -37,14 +37,14 @@ cache:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
 
-java-11:
+java-17:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
   artifacts:
-    name: java-11
+    name: java-17
     when: always
     paths:
       - target/*.jar
@@ -53,29 +53,6 @@ java-11:
       junit:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
-java-11-jakarta:
-  extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11
-  needs: [ ]
-  script:
-    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP -Pjakarta install
-  artifacts:
-    name: java-11-jakarta
-    when: always
-    paths:
-      - target/*jakarta.jar
-    reports:
-      junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
-
-java-11-openj9:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-jdk-11-openj9
-
-java-17:
-  extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
 
 java-21:
   extends: .java
@@ -89,7 +66,7 @@ deploy:
   stage: deploy
   image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
   needs:
-    - job: java-11
+    - job: java-17
   script:
     - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
@@ -102,7 +79,7 @@ deploy:
   when: manual
 
 deploy-snapshot:
-  extends: java-11
+  extends: java-17
   script:
     - mvn $MAVEN_CLI_OPTS_CENTRAL -P release-snapshot deploy
 
@@ -123,7 +100,7 @@ create-build-image:
 
 owasp-check:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
+  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check

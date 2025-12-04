@@ -1,6 +1,0 @@
-component: CORE
-kind: Added
-body: Support for Jakarta EE environments (such as Sprint Boot 3 or Quarkus 3)
-time: 2023-06-22T16:20:03.9272078+02:00
-custom:
-  Issue: "107"

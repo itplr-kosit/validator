@@ -1,6 +1,0 @@
-component: CORE
-kind: Removed
-body: Remove deprecated 'DefaultCheckConfiguration'
-time: 2022-11-10T17:02:33.6728982+01:00
-custom:
-  Issue: "103"
