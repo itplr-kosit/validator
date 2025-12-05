@@ -9,7 +9,7 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>validator-standalone</artifactId>
+    <artifactId>validator-cli</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
