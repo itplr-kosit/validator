@@ -1,7 +1,6 @@
 package org.kosit.validator.server.impl;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import org.kosit.validator.api.Configuration;
@@ -17,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @ApplicationScoped
@@ -27,16 +25,16 @@ public class ValidationService {
 
     private final List<Configuration> configuration;
 
-    @Inject
+    private final DefaultCheck check;
+
     public ValidationService(final ValidationConfig cfg) {
         this.configuration = getConfiguration(cfg, processor);
+        check = new DefaultCheck(processor, configuration.toArray(new Configuration[0]));
     }
 
     /** Haupteinstieg für REST & CLI */
     public Result validate(final Input input) {
         long t0 = System.currentTimeMillis();
-
-        final DefaultCheck check = new DefaultCheck(processor, configuration.toArray(new Configuration[0]));
 
         // Steps zusammenstecken (war früher in processActions)
         final Result result = check.checkInput(input);
@@ -52,7 +50,7 @@ public class ValidationService {
             final URI repositoryLocation = findRepository(scenarioLocation, scenarioBundle.repositoryOpt());
 
             return Configuration.load(scenarioLocation, repositoryLocation).build(processor);
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private static URI findRepository(final URI scenarioLocation, final Optional<Path> repositoryOpt) {

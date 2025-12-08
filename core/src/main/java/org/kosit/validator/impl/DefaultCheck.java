@@ -16,34 +16,13 @@
 
 package org.kosit.validator.impl;
 
-import static org.kosit.validator.impl.DateFactory.createTimestamp;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
-import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.Check;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.Result;
-import org.kosit.validator.api.XmlError;
+import net.sf.saxon.s9api.Processor;
+import org.kosit.validator.api.*;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.tasks.CheckAction;
+import org.kosit.validator.impl.tasks.*;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
-import org.kosit.validator.impl.tasks.ComputeAcceptanceAction;
-import org.kosit.validator.impl.tasks.CreateDocumentIdentificationAction;
-import org.kosit.validator.impl.tasks.CreateReportsAction;
-import org.kosit.validator.impl.tasks.DocumentParseAction;
-import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
-import org.kosit.validator.impl.tasks.SchemaValidationAction;
-import org.kosit.validator.impl.tasks.SchematronValidationAction;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
@@ -51,11 +30,14 @@ import org.kosit.validator.model.xvrl.Timestamp;
 import org.kosit.validator.model.xvrl.Validator;
 import org.kosit.validator.model.xvrl.XVRLMetadata;
 
-import net.sf.saxon.s9api.Processor;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.kosit.validator.impl.DateFactory.createTimestamp;
 
 /**
  * The reference implementation for the validation process. After initialisation, instances are threadsafe and should be
- * reused since initializing saxon runtime objects is an rather heavyweight process.
+ * reused since initializing saxon runtime objects is a rather heavyweight process.
  *
  * @author Andreas Penski
  */
