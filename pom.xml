@@ -6,7 +6,7 @@
     <name>KoSIT XML Validator</name>
     <modules>
         <module>core</module>
-        <module>standalone</module>
+        <module>cli</module>
         <module>server</module>
     </modules>
 
@@ -389,6 +389,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- TODO remove -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>

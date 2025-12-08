@@ -73,4 +73,22 @@ public class ValidationService {
                     String.format("Not a valid path for %s definition specified: '%s'", type, f.toAbsolutePath()));
         }
     }
+
+    /**
+     * Is used for Readiness Healthcheck.
+     * 
+     * @return if at least 1 configuration available and loaded
+     */
+    public boolean isReady() {
+        return configuration != null && !configuration.isEmpty();
+    }
+
+    /**
+     * Is used for Readiness Healthcheck.
+     * 
+     * @return amount of configurations available and loaded
+     */
+    public int getConfigurationCount() {
+        return configuration != null ? configuration.size() : 0;
+    }
 }

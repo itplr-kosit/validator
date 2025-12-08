@@ -22,6 +22,11 @@ public interface ValidationConfig {
 
     List<ScenarioBundle> scenarios();
 
+    /**
+     * Das ScenarioBundle stellt ein Configurationstupel aus Pfadangaben für die
+     * {@link org.kosit.validator.impl.Scenario} Xml-Datei sowie das dazugehörige
+     * {@link org.kosit.validator.impl.ContentRepository}
+     */
     interface ScenarioBundle {
 
         @WithName("scenarioPath")
