@@ -16,19 +16,19 @@
 
 package org.kosit.validator.cmd;
 
-import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import org.kosit.validator.cmd.CommandLineApplication.Level;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.kosit.validator.cmd.CommandLineApplication.Level;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Visibility;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Commandline Interface definition.
@@ -47,34 +47,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
      */
     @Getter
     @NoArgsConstructor
-    static class DaemonOptions {
-
-        @Option(names = { "-D", "--daemon" }, description = "Starts a daemon listing for validation requests", defaultValue = "false",
-                required = true)
-        private boolean daemonMode;
-
-        @Option(names = { "-H", "--host" }, description = "The hostname / IP address to bind the daemon.", defaultValue = "localhost",
-                showDefaultValue = Visibility.ALWAYS)
-        private String host;
-
-        @Option(names = { "-P", "--port" }, description = "The port to bind the daemon.", defaultValue = "8080",
-                showDefaultValue = Visibility.ALWAYS)
-        private int port;
-
-        @Option(names = { "-T", "--threads" },
-                description = "Number of threads processing validation requests. Default depends on processor count", defaultValue = "-1",
-                showDefaultValue = Visibility.NEVER)
-        private int workerCount;
-
-        @Option(names = { "-G", "--disable-gui" }, description = "Disables the GUI of the daemon mode")
-        private boolean disableGUI;
-    }
-
-    /**
-     * @author Andreas Penski
-     */
-    @Getter
-    @NoArgsConstructor
     static class CliOptions {
 
         @Option(names = { "-o", "--output-directory" }, description = "Defines the out directory for results.", defaultValue = ".",
@@ -87,10 +59,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         @Option(names = { "--serialize-report-input" }, description = "Serializes the report input to the cwd // deprecated",
                 defaultValue = "false")
         private boolean serializeInput;
-
-        @Option(names = { "-c", "--check-assertions" }, paramLabel = "assertions-file",
-                description = "Check the result using defined assertions")
-        private Path assertions;
 
         @Option(names = { "--report-postfix" }, description = "Postfix of the generated report name")
         private String reportPostfix;
@@ -141,9 +109,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         // just for type safety
     }
 
-    @ArgGroup(exclusive = false, heading = "Daemon options\n")
-    private DaemonOptions daemonOptions;
-
     @ArgGroup(exclusive = false, heading = "CLI usage options\n")
     private CliOptions cliOptions;
 
@@ -179,10 +144,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         } else {
             System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
         }
-    }
-
-    public boolean isDaemonModeEnabled() {
-        return getDaemonOptions() != null;
     }
 
     public boolean isCliModeEnabled() {

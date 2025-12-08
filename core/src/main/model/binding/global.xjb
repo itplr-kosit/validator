@@ -62,11 +62,6 @@
         </jaxb:bindings>
     </jaxb:bindings>
 
-    <jaxb:bindings schemaLocation="../xsd/daemon.xsd">
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.kosit.validator.model.daemon"/>
-        </jaxb:schemaBindings>
-    </jaxb:bindings>
     <jaxb:bindings schemaLocation="../xsd/xvrl.xsd">
 
         <jaxb:schemaBindings>
