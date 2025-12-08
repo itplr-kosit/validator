@@ -91,14 +91,6 @@ public class Validator {
         Printer.writeOut("{0} version {1}", EngineInformation.getName(), EngineInformation.getVersion());
     }
 
-    private static int determineThreads(final CommandLineOptions.DaemonOptions cmd) {
-        int threads = Runtime.getRuntime().availableProcessors();
-        if (cmd.getWorkerCount() > 0) {
-            threads = cmd.getWorkerCount();
-        }
-        return threads;
-    }
-
     private static ReturnValue processActions(final CommandLineOptions cmd) throws IOException {
         long start = System.currentTimeMillis();
         final Processor processor = ProcessorProvider.getProcessor();

@@ -47,34 +47,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
      */
     @Getter
     @NoArgsConstructor
-    static class DaemonOptions {
-
-        @Option(names = { "-D", "--daemon" }, description = "Starts a daemon listing for validation requests", defaultValue = "false",
-                required = true)
-        private boolean daemonMode;
-
-        @Option(names = { "-H", "--host" }, description = "The hostname / IP address to bind the daemon.", defaultValue = "localhost",
-                showDefaultValue = Visibility.ALWAYS)
-        private String host;
-
-        @Option(names = { "-P", "--port" }, description = "The port to bind the daemon.", defaultValue = "8080",
-                showDefaultValue = Visibility.ALWAYS)
-        private int port;
-
-        @Option(names = { "-T", "--threads" },
-                description = "Number of threads processing validation requests. Default depends on processor count", defaultValue = "-1",
-                showDefaultValue = Visibility.NEVER)
-        private int workerCount;
-
-        @Option(names = { "-G", "--disable-gui" }, description = "Disables the GUI of the daemon mode")
-        private boolean disableGUI;
-    }
-
-    /**
-     * @author Andreas Penski
-     */
-    @Getter
-    @NoArgsConstructor
     static class CliOptions {
 
         @Option(names = { "-o", "--output-directory" }, description = "Defines the out directory for results.", defaultValue = ".",

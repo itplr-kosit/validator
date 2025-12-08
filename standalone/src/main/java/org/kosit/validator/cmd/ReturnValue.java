@@ -35,8 +35,6 @@ public class ReturnValue {
 
     public static final ReturnValue CONFIGURATION_ERROR = new ReturnValue(-2);
 
-    public static final ReturnValue DAEMON_MODE = new ReturnValue(-100);
-
     public static final ReturnValue PARSING_ERROR = new ReturnValue(-1);
 
     private final int code;
@@ -46,6 +44,6 @@ public class ReturnValue {
     }
 
     public boolean isError() {
-        return this.code < 0 && this.code != DAEMON_MODE.code;
+        return this.code < 0;
     }
 }

@@ -262,14 +262,6 @@ public class CommandlineApplicationTest {
     }
 
     @Test
-    public void testUnexpectedDaemonFlag() {
-        final String[] args = { "-D", "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
-                Paths.get(Simple.SIMPLE_VALID).toString() };
-        CommandLineApplication.mainProgram(args);
-        assertThat(CommandLine.getErrorOutput()).contains("Will ignore cli mode options");
-    }
-
-    @Test
     public void testParsingError() {
         final String[] args = { "-s", "-r", Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
