@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Modularisierung. Bereistellung des Servers als Quarkus App
+- (DAEMON) remove Daemon mode
+
 
 ## 1.6.0
 

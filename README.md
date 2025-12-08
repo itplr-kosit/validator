@@ -45,7 +45,6 @@ The Validator can be used in three different ways:
 
 * as standalone application running from the CLI
 * as library embedded within a custom application
-* as a daemon providing an http interface
 
 ### Standalone Command Line Interface (CLI)
 
@@ -88,17 +87,6 @@ The  [API documentation](./docs/api.md) shows further configuration options.
 
 **Note:** With Java 11+, you need to include a dependency to `org.glassfish.jaxb:jaxb-runtime` in your project explicitly,
 as that dependency is marked `optional` in this project and will thus not be resolved transitively.
-
-### Daemon-Mode
-
-You can also start the validator as a HTTP-Server. Just start it in _Daemon-Mode_ with the `-D` option.
-
-```shell
-java -jar  validator-<version>-standalone.jar  -s <scenario-config-file> -D
-```
-
-
-The [daemon documentation](./docs/daemon.md) shows more usage details and further configuration options.
 
 ## Packages
 

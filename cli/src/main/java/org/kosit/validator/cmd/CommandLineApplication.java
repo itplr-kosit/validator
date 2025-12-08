@@ -51,14 +51,10 @@ public class CommandLineApplication {
     public static void main(final String[] args) {
         AnsiConsole.systemInstall();
         final ReturnValue resultStatus = mainProgram(args);
-        if (!resultStatus.equals(ReturnValue.DAEMON_MODE)) {
-            if (!resultStatus.equals(ReturnValue.HELP_REQUEST) && resultStatus.getCode() >= 0) {
-                sayGoodby(resultStatus);
-            }
-            System.exit(resultStatus.getCode());
-        } else {
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> Printer.writeOut("Shutting down daemon ...")));
+        if (!resultStatus.equals(ReturnValue.HELP_REQUEST) && resultStatus.getCode() >= 0) {
+            sayGoodby(resultStatus);
         }
+        System.exit(resultStatus.getCode());
     }
 
     private static void sayGoodby(final ReturnValue resultStatus) {
