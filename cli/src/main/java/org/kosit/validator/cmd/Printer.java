@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.impl;
+package org.kosit.validator.cmd;
 
 import java.io.PrintWriter;
 import java.text.MessageFormat;

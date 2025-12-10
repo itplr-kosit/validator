@@ -122,7 +122,7 @@ public class CommandLineApplication {
 
     enum Level {
 
-        INFO, WARN, DEBUG, TRACE, ERROR, OFF;
+        INFO, WARN, DEBUG, TRACE, ERROR, OFF
 
     }
 
