@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8"/>
+    <title>KoSIT Validator</title>
+    <style>
+        /* Reset für konsistente Darstellung */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f7f9;
+            color: #333;
+            /* Seiten-Content leicht zentrieren und “zusammenschieben” */
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        header img {
+            height: 60px; /* Logo-Größe anpassbar */
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .github-link a {
+            text-decoration: none;
+            color: #0366d6;
+            font-weight: 600;
+        }
+
+        .github-link a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            background: #fff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 30px;
+            /* leichte Schattenoptik */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display:flex; align-items:center;">
+        <!-- Logo: jetzt lokale Datei -->
+        <img src="res/it-planungsrat-logo.svg" alt="KoSIT Logo" height="60"/>
+
+        <h1>KoSIT Validator</h1>
+    </div>
+
+    <!-- GitHub-Verweis -->
+    <div class="github-link">
+        <a href="https://github.com/itplr-kosit/validator" target="_blank" rel="noopener">
+            GitHub: itplr-kosit/validator
+        </a>
+    </div>
+</header>
+
+<main>
+    <p>
+        Willkommen auf der Informationsseite des <strong>KoSIT Validators</strong>.
+    </p>
+    <p>
+        Die folgenden Szenarien sind geladen:
+    <ul>
+        {#for item in cdi:validationService.scenarios}
+            <li>{item.name}</li>
+        {/for}
+    </ul>
+    </p>
+
+</main>
+
+</body>
+</html>

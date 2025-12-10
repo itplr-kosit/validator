@@ -16,17 +16,15 @@
 
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.impl.Printer.writeErr;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiRenderer.Code;
-
 import org.kosit.validator.cmd.report.Line;
-import org.kosit.validator.impl.Printer;
 import picocli.CommandLine;
 import picocli.CommandLine.ParseResult;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.kosit.validator.cmd.Printer.writeErr;
 
 /**
  * Commandline interface of the validator. It parses the commandline args and hands over actual execution to
@@ -99,7 +97,7 @@ public class CommandLineApplication {
 
     enum Level {
 
-        INFO, WARN, DEBUG, TRACE, ERROR, OFF;
+        INFO, WARN, DEBUG, TRACE, ERROR, OFF
 
     }
 

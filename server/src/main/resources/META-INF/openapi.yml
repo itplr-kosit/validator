@@ -1,0 +1,60 @@
+openapi: 3.1.0
+info:
+  title: validator-server API
+  version: 2.0.0-SNAPSHOT
+
+paths:
+  /api/validate:
+    description: "Main Validation endpoint"
+
+    post:
+      summary: Validate XML-Input
+      operationId: validate
+      tags:
+        - Validation
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/InputDocument"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ResultDocument"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+
+components:
+  responses:
+    BadRequest:
+      description: Request enthält Fehler
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    Error:
+      type: object
+      description: Error Information
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required: [ code, message ]
+
+    InputDocument:
+      type: string
+      format: binary
+      description: Arbitrary XML-Document
+
+    ResultDocument:
+      type: string
+      format: binary
+      description: Plain KoSIT Validator response in xml based XVRL-Format

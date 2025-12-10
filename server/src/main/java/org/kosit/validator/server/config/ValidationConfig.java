@@ -11,14 +11,20 @@ import java.util.Optional;
 @ConfigMapping(prefix = "validator")
 public interface ValidationConfig {
 
-    @WithName("debugOutput")
-    boolean debugOutput();
+    Logging logging();
 
-    @WithName("debugLog")
-    boolean debugLog();
+    interface Logging {
 
-    @WithName("logLevel")
-    Level logLevel();
+        /**
+         * Soll das Konsolen-Logging JSON ausgeben?
+         */
+        @WithDefault("false")
+        boolean json();
+
+        @WithName("debug")
+        @WithDefault("false")
+        boolean debugLog();
+    }
 
     List<ScenarioBundle> scenarios();
 

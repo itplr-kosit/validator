@@ -1,15 +1,19 @@
+validator:
+  logging:
+    json: false
+  scenarios:
+    - scenarioPath: src/test/resources/examples/simple/scenarios.xml
+      repositoryPath: src/test/resources/examples/simple/repository
+
 quarkus:
   smallrye-openapi:
     store-schema-directory: target/openapi
   swagger-ui:
     path: /docs
     always-include: true
+  log:
+    console:
+      json:
+        enabled: ${validator.logging.json}
 
-validator:
-  debugOutput: false
-  debugLog: false
-  # muss als String definiert werden, da sonst off als false interpretiert wird und zu IllegalArgumentException SRCFG00039 führt
-  logLevel: "OFF"
-  scenarios:
-    - scenarioPath: src/test/resources/examples/simple/scenarios.xml
-      repositoryPath: src/test/resources/examples/simple/repository
+

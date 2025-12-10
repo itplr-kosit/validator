@@ -28,7 +28,6 @@ import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
 import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.EngineInformation;
-import org.kosit.validator.impl.Printer;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 
