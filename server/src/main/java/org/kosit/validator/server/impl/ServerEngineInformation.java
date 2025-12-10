@@ -3,6 +3,7 @@ package org.kosit.validator.server.impl;
 import io.quarkus.info.BuildInfo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kosit.validator.impl.EngineInformation;
 
 @ApplicationScoped
@@ -11,6 +12,9 @@ public class ServerEngineInformation implements EngineInformation {
     @Inject
     BuildInfo buildInfo;
 
+    @ConfigProperty(name = "validator.framework-version")
+    String frameworkVersion;
+
     @Override
     public String getName() {
         return buildInfo.artifact();
@@ -18,7 +22,7 @@ public class ServerEngineInformation implements EngineInformation {
 
     @Override
     public String getFrameworkVersion() {
-        return "";
+        return frameworkVersion;
     }
 
     @Override
