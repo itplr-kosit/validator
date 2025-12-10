@@ -56,16 +56,20 @@ public class DefaultCheck implements Check {
     @Getter
     private final Processor processor;
 
-    public DefaultCheck(final Configuration... configuration) {
-        this(ProcessorProvider.getProcessor(), configuration);
+    private final EngineInformation engineInformation;
+
+    public DefaultCheck(final EngineInformation engineInformation, final Configuration... configuration) {
+        this(engineInformation, ProcessorProvider.getProcessor(), configuration);
     }
 
     /**
      * Creates a new instance for the {@link Configuration}.
      *
+     * @param engineInformation
      * @param configuration the Configuration
      */
-    public DefaultCheck(final Processor processor, final Configuration... configuration) {
+    public DefaultCheck(EngineInformation engineInformation, final Processor processor, final Configuration... configuration) {
+        this.engineInformation = engineInformation;
         this.configuration = Arrays.asList(configuration);
         this.processor = processor;
         this.conversionService = new ConversionService();
@@ -80,7 +84,7 @@ public class DefaultCheck implements Check {
         this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
-    protected static XVRLMetadata createXVRLMetadata() {
+    protected XVRLMetadata createXVRLMetadata() {
         final XVRLMetadata metadata = new XVRLMetadata();
 
         final Timestamp timestamp = new Timestamp();
@@ -88,8 +92,8 @@ public class DefaultCheck implements Check {
         metadata.getTimestamps().add(timestamp);
 
         final Validator validator = new Validator();
-        validator.setName(EngineInformation.getName());
-        validator.setVersion(EngineInformation.getVersion());
+        validator.setName(this.engineInformation.getName());
+        validator.setVersion(this.engineInformation.getVersion());
         metadata.getValidators().add(validator);
 
         return metadata;

@@ -25,6 +25,7 @@ import org.kosit.validator.cmd.report.Grid.ColumnDefinition;
 import org.kosit.validator.cmd.report.Justify;
 import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.DefaultCheck;
+import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.tasks.CheckAction;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
@@ -54,8 +55,8 @@ class InternalCheck extends DefaultCheck {
      *
      * @param configuration die Konfiguration
      */
-    InternalCheck(final Processor processor, final Configuration... configuration) {
-        super(processor, configuration);
+    InternalCheck(final EngineInformation engineInformation, final Processor processor, final Configuration... configuration) {
+        super(engineInformation, processor, configuration);
     }
 
     private static String createStatusLine(final Map<String, Result> results) {

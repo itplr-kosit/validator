@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import org.kosit.validator.api.Check;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.impl.DefaultCheck;
+import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 
 /**
@@ -25,7 +26,7 @@ public class MyValidator {
                         .validate(schematron("my rules").source("myRules.xsl")).with(report("my report").source("report.xsl")))
                 .with(fallback().name("default-report").source("fallback.xsl")).useRepository(Paths.get("/opt/myrepository"))
                 .build(ProcessorProvider.getProcessor());
-        final Check validator = new DefaultCheck(config);
+        final Check validator = new DefaultCheck(new TestEngineInformation(), config);
         // .. run your checks
     }
 }

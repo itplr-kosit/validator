@@ -62,10 +62,6 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-swagger-ui</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-health</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

@@ -41,7 +41,7 @@ public class SimpleScenarioCheckTest {
     @Before
     public void setup() {
         final Configuration d = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        this.implementation = new DefaultCheck(d);
+        this.implementation = new DefaultCheck(new TestEngineInformation(), d);
     }
 
     @Test
