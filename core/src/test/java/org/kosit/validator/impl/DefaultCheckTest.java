@@ -67,21 +67,23 @@ public class DefaultCheckTest {
 
     private DefaultCheck jarScenarioCheck;
 
+    final private EngineInformation engineInformation = new TestEngineInformation();
+
     @Before
     public void setup() throws URISyntaxException {
         final Configuration validConfig = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        this.validCheck = new DefaultCheck(validConfig);
+        this.validCheck = new DefaultCheck(this.engineInformation, validConfig);
 
         final Configuration errorConfig = Configuration.load(Simple.ERROR_SCENARIOS, Simple.REPOSITORY_URI)
                 .build(Helper.getTestProcessor());
-        this.errorCheck = new DefaultCheck(errorConfig);
+        this.errorCheck = new DefaultCheck(this.engineInformation, errorConfig);
 
         final Configuration jarConfig = Configuration
                 .load(requireNonNull(DefaultCheckTest.class.getClassLoader().getResource("simple/packaged/scenarios.xml")).toURI(),
                         requireNonNull(DefaultCheckTest.class.getClassLoader().getResource("simple/packaged/repository/")).toURI())
                 .build(Helper.getTestProcessor());
 
-        this.jarScenarioCheck = new DefaultCheck(jarConfig);
+        this.jarScenarioCheck = new DefaultCheck(this.engineInformation, jarConfig);
     }
 
     @Test

@@ -27,6 +27,7 @@ import org.kosit.validator.api.Result;
 import org.kosit.validator.impl.DefaultCheck;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestEngineInformation;
 
 /**
  * @author Andreas Penski
@@ -38,7 +39,7 @@ public class SimpleConfigTest {
         //@formatter:off
         final Configuration config = createSimpleConfiguration().build(Helper.getTestProcessor());
         //@formatter:on
-        final DefaultCheck check = new DefaultCheck(config);
+        final DefaultCheck check = new DefaultCheck(new TestEngineInformation(), config);
         final Result result = check.checkInput(InputFactory.read(Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
     }

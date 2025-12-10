@@ -64,7 +64,7 @@ public class Validator {
      * @param cmd parsed commandline.
      */
     static ReturnValue mainProgram(final CommandLineOptions cmd) {
-        greeting();
+        greeting(cmd.getEngineInformation());
         final ReturnValue returnValue;
         try {
             if (cmd.isCliModeEnabled() || isPiped()) {
@@ -86,15 +86,15 @@ public class Validator {
         return returnValue;
     }
 
-    private static void greeting() {
-        Printer.writeOut("{0} version {1}", EngineInformation.getName(), EngineInformation.getVersion());
+    private static void greeting(final EngineInformation engineInformation) {
+        Printer.writeOut("{0} version {1}", engineInformation.getName(), engineInformation.getVersion());
     }
 
     private static ReturnValue processActions(final CommandLineOptions cmd) throws IOException {
         long start = System.currentTimeMillis();
         final Processor processor = ProcessorProvider.getProcessor();
         final List<Configuration> config = getConfiguration(cmd);
-        final InternalCheck check = new InternalCheck(processor, config.toArray(new Configuration[0]));
+        final InternalCheck check = new InternalCheck(cmd.getEngineInformation(), processor, config.toArray(new Configuration[0]));
         final CommandLineOptions.CliOptions cliOptions = getIfNull(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
         if (cliOptions.isExtractReport()) {
@@ -114,17 +114,17 @@ public class Validator {
         final Collection<Input> targets = determineTestTargets(cliOptions);
         start = System.currentTimeMillis();
         final Map<String, Result> results = new HashMap<>();
-        Printer.writeOut("\nProcessing of {0} objects started", targets.size());
+        Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
         long tick = System.currentTimeMillis();
         for (final Input input : targets) {
             results.put(input.getName(), check.checkInput(input));
             if (((System.currentTimeMillis() - tick) / 1000) > 5) {
                 tick = System.currentTimeMillis();
-                Printer.writeOut("{0}/{1} objects processed", results.size(), targets.size());
+                Printer.writeOut("{0}/{1} object(s) processed", results.size(), targets.size());
             }
         }
         final long processingTime = System.currentTimeMillis() - start;
-        Printer.writeOut("Processing of {0} objects completed in {1}ms", targets.size(), processingTime);
+        Printer.writeOut("Processing of {0} object(s) completed in {1}ms", targets.size(), processingTime);
 
         check.printResults(results);
         log.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);

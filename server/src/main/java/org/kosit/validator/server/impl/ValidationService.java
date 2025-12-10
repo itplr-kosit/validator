@@ -10,6 +10,7 @@ import org.kosit.validator.api.Input;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.impl.DefaultCheck;
 import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.server.config.ValidationConfig;
 
@@ -33,9 +34,9 @@ public class ValidationService {
 
     private final DefaultCheck check;
 
-    public ValidationService(final ValidationConfig cfg) {
+    public ValidationService(final ValidationConfig cfg, final EngineInformation engineInformation) {
         this.configuration = getConfiguration(cfg, processor);
-        check = new DefaultCheck(processor, configuration.toArray(new Configuration[0]));
+        check = new DefaultCheck(engineInformation, processor, configuration.toArray(new Configuration[0]));
         log.info("Validator started");
     }
 

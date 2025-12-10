@@ -25,42 +25,21 @@ import java.util.Properties;
  * 
  * @author Andreas Penski
  */
-public class EngineInformation {
-
-    private static final Properties PROPERTIES;
-
-    static {
-        PROPERTIES = new Properties();
-        try ( final InputStream input = EngineInformation.class.getClassLoader().getResourceAsStream("app-info.properties") ) {
-            if (input != null) {
-                PROPERTIES.load(input);
-            }
-        } catch (final IOException e) {
-            throw new IllegalStateException("Can not engine information", e);
-        }
-    }
-
-    private EngineInformation() {
-        // hide
-    }
+public interface EngineInformation {
 
     /**
      * Gibt die Versions-Nummer des Validators zurück.
      * 
      * @return die Version
      */
-    public static String getVersion() {
-        return PROPERTIES.getProperty("project_version");
-    }
+    String getVersion();
 
     /**
      * Gibt den Namen der Engine zurück.
      * 
      * @return der Name
      */
-    public static String getName() {
-        return PROPERTIES.getProperty("engine_name");
-    }
+    String getName();
 
     /**
      * Gibt die Versions-Nummer des verwendeten Frameworks zurück. Diese ist relevant um Scenario-Konfiguration und
@@ -68,29 +47,8 @@ public class EngineInformation {
      *
      * @return die Framework-Version
      */
-    public static String getFrameworkVersion() {
-        return PROPERTIES.getProperty("framework_version");
-    }
+    String getFrameworkVersion();
 
-    /**
-     * Gibt die Major-Versions-Nummer des eingesetzten Frameworks zurück.
-     * 
-     * @return die Major-Versions-Nummer
-     */
-    public static String getFrameworkMajorVersion() {
-        return getFrameworkVersion().substring(0, 1);
-    }
+    String getBuild();
 
-    public static String getBuild() {
-        return PROPERTIES.getProperty("build_number");
-    }
-
-    /**
-     * Gibt den Namespace des eingesetzten Frameworks zurück.
-     * 
-     * @return die Major-Versions-Nummer
-     */
-    public static String getFrameworkNamespace() {
-        return "http://www.xoev.de/de/validator/framework/" + getFrameworkMajorVersion() + "/xvrl";
-    }
 }

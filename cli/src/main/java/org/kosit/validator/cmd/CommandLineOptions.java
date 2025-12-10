@@ -16,10 +16,14 @@
 
 package org.kosit.validator.cmd;
 
+import io.quarkus.picocli.runtime.annotations.TopCommand;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.kosit.validator.cmd.CommandLineApplication.Level;
+import org.kosit.validator.impl.EngineInformation;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Visibility;
@@ -108,6 +112,9 @@ public class CommandLineOptions implements Callable<ReturnValue> {
     public static class ScenarioDefinition extends Definition {
         // just for type safety
     }
+
+    @Inject
+    EngineInformation engineInformation;
 
     @ArgGroup(exclusive = false, heading = "CLI usage options\n")
     private CliOptions cliOptions;

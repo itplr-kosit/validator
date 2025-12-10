@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.kosit.validator.impl.TestEngineInformation;
 import org.w3c.dom.Document;
 
 import org.kosit.validator.api.Check;
@@ -26,7 +27,7 @@ public class StandardExample {
         // Load the rest of the specific Validator configuration from classpath
         final Configuration config = Configuration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
         // Use the default validation procedure
-        final Check validator = new DefaultCheck(config);
+        final Check validator = new DefaultCheck(new TestEngineInformation(), config);
         // Validate a single document
         final Input document = InputFactory.read(testDocument);
         // Get Result including information about the whole validation

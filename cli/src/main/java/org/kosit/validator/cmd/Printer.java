@@ -16,6 +16,7 @@
 
 package org.kosit.validator.cmd;
 
+import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -27,8 +28,28 @@ import java.util.Locale;
 @SuppressWarnings("squid:S106")
 public class Printer {
 
+    private static PrintWriter OUT = new PrintWriter(System.out, true);
+
+    private static PrintWriter ERR = new PrintWriter(System.err, true);
+
     private Printer() {
         // hide
+    }
+
+    /**
+     * Overrides output writers e.g. for tests
+     */
+    public static void configure(PrintWriter out, PrintWriter err) {
+        OUT = out;
+        ERR = err;
+    }
+
+    /**
+     * System.out/System.err (for runtime)
+     */
+    public static void reset() {
+        OUT = new PrintWriter(System.out, true);
+        ERR = new PrintWriter(System.err, true);
     }
 
     /**
@@ -39,9 +60,9 @@ public class Printer {
      */
     public static void writeOut(final String message, final Object... params) {
         try {
-            System.out.println(new MessageFormat(message, Locale.ENGLISH).format(params));
+            OUT.println(new MessageFormat(message, Locale.ENGLISH).format(params));
         } catch (final RuntimeException ex) {
-            System.err.println("[Format error!] <" + message + "> with params <" + params + ">");
+            ERR.println("[Format error!] <" + message + "> with params <" + params + ">");
         }
     }
 
@@ -53,9 +74,9 @@ public class Printer {
      */
     public static void writeErr(final String message, final Object... params) {
         try {
-            System.err.println(new MessageFormat(message, Locale.ENGLISH).format(params));
+            ERR.println(new MessageFormat(message, Locale.ENGLISH).format(params));
         } catch (final RuntimeException ex) {
-            System.err.println("[Format error!] <" + message + "> with params <" + params + ">");
+            ERR.println("[Format error!] <" + message + "> with params <" + params + ">");
         }
     }
 
