@@ -66,6 +66,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-health</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-logging-json</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -98,6 +102,45 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <!-- RELEASE_VERSION -->
+                <version>7.17.0</version>
+                <configuration>
+<!--                <templateDirectory>${project.basedir}/src/main/templates</templateDirectory>-->
+                <apiNameSuffix>Resource</apiNameSuffix>
+                <modelNamePrefix>Api</modelNamePrefix>
+                <generatorName>jaxrs-spec</generatorName>
+                <openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
+                    <configOptions>
+                        <useTags>true</useTags>
+                        <library>quarkus</library>
+                        <sourceFolder>src/gen/java/main</sourceFolder>
+                        <interfaceOnly>true</interfaceOnly>
+                        <useBeanValidation>false</useBeanValidation>
+                        <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                        <returnResponse>true</returnResponse>
+                        <generateBuilders>true</generateBuilders>
+                        <dateLibrary>java8</dateLibrary>
+                        <openApiNullable>false</openApiNullable>
+                        <useJakartaEe>true</useJakartaEe>
+                    </configOptions>
+                </configuration>
+                <executions>
+                <execution>
+                    <id>intern-administration</id>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                    <configuration>
+                        <inputSpec>${project.basedir}/src/main/resources/META-INF/openapi.yml</inputSpec>
+                        <apiPackage>org.kosit.validator.api</apiPackage>
+                        <modelPackage>org.kosit.validator.api.model</modelPackage>
+                    </configuration>
+                </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
