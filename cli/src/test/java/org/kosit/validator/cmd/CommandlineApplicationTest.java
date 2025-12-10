@@ -41,7 +41,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper.Simple;
-import org.kosit.validator.impl.Printer;
 
 /**
  * Testet die Parameter des Kommandozeilen-Tools.
@@ -65,9 +64,6 @@ public class CommandlineApplicationTest {
     @Inject
     @TopCommand
     CommandLineOptions options;
-
-    @Inject
-    CommandLineApplication.CliRunner cliRunner;
 
     private static void checkForHelp(final List<String> outputLines) {
         assertThat(outputLines.size()).isPositive();

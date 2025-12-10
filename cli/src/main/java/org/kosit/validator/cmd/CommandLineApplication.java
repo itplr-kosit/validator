@@ -16,7 +16,7 @@
 
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.impl.Printer.writeErr;
+import static org.kosit.validator.cmd.Printer.writeErr;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import io.quarkus.picocli.runtime.annotations.TopCommand;
@@ -31,7 +31,7 @@ import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
 import org.kosit.validator.cmd.report.Line;
-import org.kosit.validator.impl.Printer;
+import org.kosit.validator.cmd.Printer;
 import picocli.CommandLine;
 import picocli.CommandLine.ParseResult;
 
