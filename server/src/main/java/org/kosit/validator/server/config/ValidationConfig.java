@@ -11,6 +11,9 @@ import java.util.Optional;
 @ConfigMapping(prefix = "validator")
 public interface ValidationConfig {
 
+    @WithName("framework-version")
+    String frameworkVersion();
+
     Logging logging();
 
     interface Logging {
