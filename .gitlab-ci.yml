@@ -20,6 +20,9 @@ cache:
   needs:
     - job: java-17
       artifacts: false
+  variables:
+    QUARKUS_CONTAINER_IMAGE_BUILD: "false"
+    QUARKUS_CONTAINER_IMAGE_PUSH: "false"
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
   artifacts:
@@ -41,9 +44,6 @@ java-17:
   extends: .java
   image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
   needs: [ ]
-  variables:
-    QUARKUS_CONTAINER_IMAGE_BUILD: "false"
-    QUARKUS_CONTAINER_IMAGE_PUSH: "false"
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
   artifacts:
