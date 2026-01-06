@@ -171,6 +171,7 @@ public class TestProcessBuilder {
         final ProcessStepResult<Scenario, String> stepResult = new ProcessStepResult<>(ScenarioSelectionAction.KEY);
         stepResult.setResult(new Result<>(scenario));
         stepResult.setReport(new XVRLReport());
+        process.getProcessStepResults().removeIf(r -> r.getKey().equals(ScenarioSelectionAction.KEY));
         this.process.addStepResult(stepResult);
         return this;
     }

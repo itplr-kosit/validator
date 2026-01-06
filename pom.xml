@@ -316,7 +316,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.11.2</version>
                 <configuration>
-                    <source>11</source>
+                    <source>17</source>
                     <doclint>none</doclint>
                 </configuration>
                 <executions>

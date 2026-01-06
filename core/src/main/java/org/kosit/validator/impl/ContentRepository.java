@@ -21,10 +21,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.xml.transform.Source;
@@ -34,7 +32,9 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import net.sf.saxon.s9api.*;
 import org.apache.commons.lang3.StringUtils;
+import org.kosit.validator.api.SchematronCompiler;
 import org.xml.sax.SAXException;
 
 import lombok.Getter;
@@ -54,12 +54,6 @@ import net.sf.saxon.lib.ResourceRequest;
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.ResourceResolverWrappingURIResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XPathExecutable;
-import net.sf.saxon.s9api.XsltCompiler;
-import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Repository für verschiedene XML Artefakte zur Vearbeitung der Prüfszenarien.
@@ -69,6 +63,9 @@ import net.sf.saxon.s9api.XsltExecutable;
 @RequiredArgsConstructor
 @Slf4j
 public class ContentRepository {
+
+    private record CacheKey(String compilerId, URI uri) {
+    }
 
     @Getter
     private final Processor processor;
@@ -84,6 +81,10 @@ public class ContentRepository {
     @Getter
     private final ResolvingConfigurationStrategy resolvingConfigurationStrategy;
 
+    private final Map<CacheKey, Source> schematronXsltCache = new ConcurrentHashMap<>();
+
+    private final SchematronCompilerRegistry compilerRegistry;
+
     /**
      * Creates a new {@link ContentRepository} based on configured security and resolving strategy and the specified
      * repository location.
@@ -98,6 +99,12 @@ public class ContentRepository {
         this.resolver = getResolver(strategy, repository);
         this.unparsedTextURIResolver = this.resolvingConfigurationStrategy.createUnparsedTextURIResolver(repository);
         this.schemaFactory = this.resolvingConfigurationStrategy.createSchemaFactory();
+        this.compilerRegistry = defaultSchematronCompilerRegistry(processor);
+    }
+
+    private static SchematronCompilerRegistry defaultSchematronCompilerRegistry(Processor processor) {
+        return new SchematronCompilerRegistry(List.of(new SchXsltCompiler(processor)) // erstmal nur SchXslt
+        );
     }
 
     @SuppressWarnings("squid:S2095")
@@ -156,6 +163,22 @@ public class ContentRepository {
                 log.warn("Received warnings or errors while loading a xslt script {}", uri);
                 listener.getErrors().forEach(e -> e.log(log));
             }
+        }
+    }
+
+    public XsltExecutable loadSchematronXslt(final URI schUri, final String compilerId) {
+        log.info("Loading or compiling Schematron {} using compiler {}", schUri, compilerId);
+
+        SchematronCompiler compiler = compilerRegistry.get(compilerId);
+
+        CacheKey key = new CacheKey(compilerId, schUri);
+        Source xsltSource = schematronXsltCache.computeIfAbsent(key, k -> compiler.compileToXslt(schUri, this::resolveInRepository));
+
+        final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
+        try {
+            return xsltCompiler.compile(xsltSource);
+        } catch (final SaxonApiException e) {
+            throw new IllegalStateException("Can not compile xslt executable for uri " + schUri, e);
         }
     }
 
@@ -285,6 +308,18 @@ public class ContentRepository {
 
     public Transformation createSchematronTransformation(final ValidateWithSchematron validateWithSchematron) {
         log.info("Create Schematron Transformation:");
+
+        final ResourceType resource = validateWithSchematron.getResource();
+        final URI uri = URI.create(resource.getLocation());
+        final String path = uri.getPath();
+
+        final String compilerId = StringUtils.defaultIfBlank(validateWithSchematron.getCompiler(), SchXsltCompiler.COMPILER_ID);
+
+        if (path != null && path.endsWith(".sch")) {
+            final XsltExecutable executable = loadSchematronXslt(uri, compilerId);
+            return new Transformation(executable, resource);
+        }
+
         return createTransformation(validateWithSchematron.getResource());
     }
 

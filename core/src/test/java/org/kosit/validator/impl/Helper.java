@@ -65,6 +65,8 @@ public class Helper {
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
+        public static final URI SCENARIOS_WITH_SCH = ROOT.resolve("scenarios-with-sch.xml");
+
         public static final URI SCENARIOS_WITH_RELATIVE_PATHS = ROOT.resolve("scenarios-with-relative-paths.xml");
 
         public static final URI OTHER_SCENARIOS = ROOT.resolve("otherScenarios.xml");

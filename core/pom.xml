@@ -22,6 +22,11 @@
             <artifactId>slf4j-simple</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>name.dmaus.schxslt</groupId>
+            <artifactId>schxslt</artifactId>
+            <version>1.8.5</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -35,8 +40,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
                     <encoding>UTF-8</encoding>
                     <annotationProcessorPaths>
                         <path>

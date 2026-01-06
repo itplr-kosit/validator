@@ -44,47 +44,6 @@
         <validateWithSchematron>
             <resource>
                 <name>Sample Schematron</name>
-                <location>simple.xsl</location>
-            </resource>
-        </validateWithSchematron>
-        <createReport>
-            <id>Report für eRechnung</id>
-            <resource>
-                <name>Report für eRechnung</name>
-                <location>report.xsl</location>
-            </resource>
-        </createReport>
-        <createReport>
-            <id>Report für eRechnung2</id>
-            <resource>
-                <name>Report für eRechnung</name>
-                <location>report.xsl</location>
-            </resource>
-        </createReport>
-        <acceptMatch>count(//test:rejected) = 0</acceptMatch>
-    </scenario>
-
-    <scenario>
-        <name>Simple sch compile</name>
-        <description>
-            <p>Schematron mit .sch compile</p>
-        </description>
-        <namespace prefix="xvrl">http://www.xproc.org/ns/xvrl
-        </namespace>
-        <namespace prefix="test">
-            http://validator.kosit.de/test-sample</namespace>
-        <namespace prefix="rpt">http://validator.kosit.de/test-report</namespace>
-        <match>/test:simplesch</match>
-
-        <validateWithXmlSchema>
-            <resource>
-                <name>Sample Schema</name>
-                <location>simple.xsd</location>
-            </resource>
-        </validateWithXmlSchema>
-        <validateWithSchematron>
-            <resource>
-                <name>Sample Schematron</name>
                 <location>simple.sch</location>
             </resource>
         </validateWithSchematron>
@@ -122,7 +81,7 @@
         <validateWithSchematron>
             <resource>
                 <name>Sample Schematron</name>
-                <location>simple.xsl</location>
+                <location>simple.sch</location>
             </resource>
         </validateWithSchematron>
         <createReport>

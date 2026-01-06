@@ -22,14 +22,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.config.ConfigurationLoader;
+import org.kosit.validator.config.TestConfigurationFactory;
 import org.kosit.validator.impl.ConversionService;
+import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
@@ -73,5 +78,27 @@ public class SchematronValidationActionTest {
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
         assertThat(result.getObject()).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
+    }
+
+    @Test
+    public void testXsltValid() throws MalformedURLException {
+        final Configuration c = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL()))
+                .setScenario(c.getScenarios().get(0)).build();
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getErrors()).isEmpty();
+    }
+
+    @Test
+    public void testSchCompiledValid() throws MalformedURLException {
+        final Configuration c = Configuration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL()))
+                .setScenario(c.getScenarios().get(0)).build();
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getErrors()).isEmpty();
     }
 }
