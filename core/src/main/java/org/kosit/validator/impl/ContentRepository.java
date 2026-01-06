@@ -32,6 +32,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import lombok.Data;
 import net.sf.saxon.s9api.*;
 import org.apache.commons.lang3.StringUtils;
 import org.kosit.validator.api.SchematronCompiler;
@@ -64,7 +65,12 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
 @Slf4j
 public class ContentRepository {
 
-    private record CacheKey(String compilerId, URI uri) {
+    @Data
+    private static final class CacheKey {
+
+        private final String compilerId;
+
+        private final URI uri;
     }
 
     @Getter
