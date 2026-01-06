@@ -24,8 +24,8 @@
         </dependency>
         <dependency>
             <groupId>name.dmaus.schxslt</groupId>
-            <artifactId>schxslt</artifactId>
-            <version>1.8.5</version>
+            <artifactId>java</artifactId>
+            <version>4.0.2</version>
         </dependency>
     </dependencies>
     <build>

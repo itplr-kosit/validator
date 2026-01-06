@@ -1,15 +1,18 @@
 package org.kosit.validator.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import name.dmaus.schxslt.Compiler;
+import name.dmaus.schxslt.SchematronException;
+import name.dmaus.schxslt.adapter.SchXslt;
 import net.sf.saxon.s9api.*;
 import org.kosit.validator.api.SchematronCompiler;
+import org.w3c.dom.Document;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
+import java.util.Map;
 import java.util.function.Function;
 
 @Slf4j
@@ -17,10 +20,10 @@ public class SchXsltCompiler implements SchematronCompiler {
 
     public static final String COMPILER_ID = "schxslt";
 
-    private final Processor processor;
+    private final Compiler compiler;
 
-    public SchXsltCompiler(Processor processor) {
-        this.processor = processor;
+    public SchXsltCompiler() {
+        this.compiler = new Compiler(new SchXslt());
     }
 
     @Override
@@ -30,47 +33,24 @@ public class SchXsltCompiler implements SchematronCompiler {
 
     @Override
     public Source compileToXslt(URI schematronUri, Function<URI, Source> rawResolver) {
-        log.info("Trying to compile Schematron file {}", schematronUri);
+        log.info("Trying to compile Schematron file {} using schxslt-java", schematronUri);
         try {
-            final XsltCompiler xsltCompiler = processor.newXsltCompiler();
+            Source schSource = rawResolver.apply(schematronUri);
+            if (schSource == null) {
+                throw new IllegalStateException("No Schematron found for " + schematronUri);
+            }
 
-            final Source schSource = rawResolver.apply(schematronUri);
-            final DocumentBuilder db = processor.newDocumentBuilder();
-            final XdmNode schDoc = db.build(schSource);
+            if (schSource.getSystemId() == null && schSource instanceof StreamSource) {
+                schSource.setSystemId(schematronUri.toString());
+            }
 
-            final XdmNode expanded = transform(xsltCompiler, "xslt/2.0/expand.xsl", schDoc);
+            Document stylesheetDoc = compiler.compile(schSource, Map.of()); // oder null, falls du keine Optionen
+                                                                            // brauchst
 
-            final XdmNode xsltDoc = transform(xsltCompiler, "xslt/2.0/compile-for-svrl.xsl", expanded);
+            return new DOMSource(stylesheetDoc, stylesheetDoc.getDocumentURI());
 
-            return xsltDoc.asSource();
-        } catch (SaxonApiException e) {
+        } catch (SchematronException e) {
             throw new IllegalStateException("Error compiling " + schematronUri, e);
-        }
-    }
-
-    private XdmNode transform(final XsltCompiler compiler, final String xsltPath, final XdmNode input) throws SaxonApiException {
-        final Source xslt = classpathXslt(xsltPath);
-        final XsltExecutable exec = compiler.compile(xslt);
-        final XsltTransformer t = exec.load();
-        t.setInitialContextNode(input);
-        final XdmDestination dest = new XdmDestination();
-        t.setDestination(dest);
-        t.transform();
-        return dest.getXdmNode();
-    }
-
-    private Source classpathXslt(String path) {
-        final URL url = SchXsltCompiler.class.getResource("/" + path);
-        if (url == null) {
-            throw new IllegalStateException("Cannot find SchXslt stylesheet: " + path);
-        }
-        try {
-            final InputStream in = url.openStream();
-            final StreamSource src = new StreamSource(in);
-            src.setSystemId(url.toExternalForm());
-            return src;
-        } catch (IOException e) {
-            throw new IllegalStateException("Cannot open " + url, e);
         }
     }
 }
