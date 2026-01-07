@@ -20,6 +20,9 @@ cache:
   needs:
     - job: java-17
       artifacts: false
+  variables:
+    QUARKUS_CONTAINER_IMAGE_BUILD: "false"
+    QUARKUS_CONTAINER_IMAGE_PUSH: "false"
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP verify
   artifacts:
@@ -110,3 +113,28 @@ owasp-check:
       changes:
         - pom.xml
         - owasp-suppressions.xml
+
+server-image:
+  stage: deploy
+  image: docker:latest
+  services:
+    - name: docker:dind
+      alias: docker
+  needs:
+    - job: java-17
+  variables:
+    # dind im Docker-Executor korrekt konfigurieren
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+
+    # Quarkus Container-Image-Konfiguration
+    QUARKUS_CONTAINER_IMAGE_USERNAME: "$CI_REGISTRY_USER"
+    QUARKUS_CONTAINER_IMAGE_PASSWORD: "$CI_REGISTRY_PASSWORD"
+    QUARKUS_CONTAINER_IMAGE_IMAGE: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG/validator-server"
+    QUARKUS_CONTAINER_IMAGE_ADDITIONAL_TAGS: "latest,${CI_COMMIT_SHORT_SHA},${CI_PIPELINE_ID}"
+    QUARKUS_CONTAINER_IMAGE_BUILD: "true"
+    QUARKUS_CONTAINER_IMAGE_PUSH: "true"
+  script:
+    - apk add --no-cache openjdk17-jdk maven
+    - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP -pl server -am package

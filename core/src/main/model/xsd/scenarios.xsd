@@ -116,6 +116,7 @@
             <xs:element ref="s:resource" />
         </xs:sequence>
         <xs:attribute name="psvi" type="xs:boolean" default="false" use="optional" />
+        <xs:attribute name="compiler" type="xs:string" />
     </xs:complexType>
 
 

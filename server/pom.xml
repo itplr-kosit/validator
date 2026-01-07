@@ -12,6 +12,7 @@
     <artifactId>validator-server</artifactId>
 
     <properties>
+        <quarkus.container-image.build>false</quarkus.container-image.build>
     </properties>
 
     <dependencies>

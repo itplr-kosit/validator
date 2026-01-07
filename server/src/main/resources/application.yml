@@ -16,5 +16,11 @@ quarkus:
     console:
       json:
         enabled: ${validator.logging.json}
-
-
+    level: INFO
+  package:
+    jar:
+      type: uber-jar
+  container-image:
+    tag: ${quarkus.application.version}
+    build: true
+    push: false

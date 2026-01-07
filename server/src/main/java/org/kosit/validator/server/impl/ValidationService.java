@@ -44,7 +44,7 @@ public class ValidationService {
         return configuration != null ? configuration.stream().flatMap(c -> c.getScenarios().stream()).toList() : Collections.emptyList();
     }
 
-    /** Haupteinstieg für REST & CLI */
+    /** Haupteinstieg für REST &amp; CLI */
     public Result validate(final Input input) {
         long t0 = System.currentTimeMillis();
 

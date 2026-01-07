@@ -10,7 +10,6 @@ import org.kosit.validator.impl.ConversionService;
 
 import java.io.File;
 
-@Path("/api/validate")
 public class ValidationController implements ValidationResource {
 
     private final ValidationService service;
