@@ -15,6 +15,22 @@ import java.net.URI;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * {@link SchematronCompiler} implementation backed by the original SchXslt XSLT-based Schematron processor (library
+ * {@code name.dmaus.schxslt:schxslt}, version 1.10.1).
+ *
+ * <p>
+ * This compiler delegates the actual transformation from Schematron schema ({@code .sch}) to XSLT stylesheet to the
+ * {@link name.dmaus.schxslt.Compiler} class from the {@code schxslt-java} module, using the {@link SchXslt} adapter.
+ * The resulting XSLT is returned as a {@link DOMSource} so that callers can compile it into an {@link XsltExecutable}
+ * with Saxon.
+ * </p>
+ *
+ * <p>
+ * The class is effectively thread-safe: it holds a single, immutable {@link Compiler} instance, which in turn is
+ * designed to be used safely from multiple threads.
+ * </p>
+ */
 @Slf4j
 public class SchXsltCompiler implements SchematronCompiler {
 

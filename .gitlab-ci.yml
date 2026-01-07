@@ -122,6 +122,8 @@ server-image:
       alias: docker
   needs:
     - job: java-17
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
   variables:
     # dind im Docker-Executor korrekt konfigurieren
     DOCKER_HOST: tcp://docker:2375
