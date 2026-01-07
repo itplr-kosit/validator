@@ -27,32 +27,37 @@
             <artifactId>java</artifactId>
             <version>4.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>name.dmaus.schxslt</groupId>
+            <artifactId>schxslt</artifactId>
+            <version>1.10.1</version>
+        </dependency>
     </dependencies>
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/model</directory>
-            </resource>
-        </resources>
-        <plugins>
+          <build>
+              <resources>
+                  <resource>
+                      <directory>src/main/model</directory>
+                  </resource>
+              </resources>
+              <plugins>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <encoding>UTF-8</encoding>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.36</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <!-- Generate model classes -->
+                  <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-compiler-plugin</artifactId>
+                      <configuration>
+                          <source>17</source>
+                          <target>17</target>
+                          <encoding>UTF-8</encoding>
+                          <annotationProcessorPaths>
+                              <path>
+                                  <groupId>org.projectlombok</groupId>
+                                  <artifactId>lombok</artifactId>
+                                  <version>1.18.36</version>
+                              </path>
+                          </annotationProcessorPaths>
+                      </configuration>
+                  </plugin>
+                  <!-- Generate model classes -->
             <plugin>
                 <groupId>org.jvnet.jaxb</groupId>
                 <artifactId>jaxb-maven-plugin</artifactId>
