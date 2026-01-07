@@ -57,7 +57,7 @@
         <version.mockito>4.11.0</version.mockito>
         <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
         <version.rest-assured>5.5.5</version.rest-assured>
-        <version.saxon-he>12.8</version.saxon-he>
+        <version.saxon-he>12.9</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
         <version.jaxb-maven-plugin>4.0.9</version.jaxb-maven-plugin>
     </properties>
@@ -117,6 +117,17 @@
             <artifactId>Saxon-HE</artifactId>
             <version>${version.saxon-he}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.xmlresolver</groupId>
+                    <artifactId>xmlresolver</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.xmlresolver</groupId>
+            <artifactId>xmlresolver</artifactId>
+            <version>6.0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
