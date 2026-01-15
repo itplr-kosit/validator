@@ -109,8 +109,7 @@ public class ContentRepository {
     }
 
     private static SchematronCompilerRegistry defaultSchematronCompilerRegistry() {
-        return new SchematronCompilerRegistry(List.of(new SchXsltCompiler()) // erstmal nur SchXslt
-        );
+        return new SchematronCompilerRegistry(List.of(new SchXsltCompiler(), new SchXslt2Compiler()));
     }
 
     @SuppressWarnings("squid:S2095")

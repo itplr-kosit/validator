@@ -2,18 +2,12 @@ package org.kosit.validator.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import name.dmaus.schxslt.Compiler;
-import name.dmaus.schxslt.SchematronException;
 import name.dmaus.schxslt.adapter.SchXslt;
-import net.sf.saxon.s9api.*;
+import name.dmaus.schxslt.adapter.SchXslt2;
+import net.sf.saxon.s9api.XsltExecutable;
 import org.kosit.validator.api.SchematronCompiler;
-import org.w3c.dom.Document;
 
-import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-import java.net.URI;
-import java.util.Map;
-import java.util.function.Function;
 
 /**
  * {@link SchematronCompiler} implementation backed by the original SchXslt XSLT-based Schematron processor (library
@@ -21,9 +15,8 @@ import java.util.function.Function;
  *
  * <p>
  * This compiler delegates the actual transformation from Schematron schema ({@code .sch}) to XSLT stylesheet to the
- * {@link name.dmaus.schxslt.Compiler} class from the {@code schxslt-java} module, using the {@link SchXslt} adapter.
- * The resulting XSLT is returned as a {@link DOMSource} so that callers can compile it into an {@link XsltExecutable}
- * with Saxon.
+ * {@link Compiler} class from the {@code schxslt-java} module, using the {@link SchXslt} adapter. The resulting XSLT is
+ * returned as a {@link DOMSource} so that callers can compile it into an {@link XsltExecutable} with Saxon.
  * </p>
  *
  * <p>
@@ -32,17 +25,17 @@ import java.util.function.Function;
  * </p>
  */
 @Slf4j
-public class SchXsltCompiler extends AbstractSchXsltCompiler {
+public class SchXslt2Compiler extends AbstractSchXsltCompiler {
 
-    public static final String COMPILER_ID = "schxslt";
+    public static final String COMPILER_ID = "schxslt2";
 
-    public SchXsltCompiler() {
-        super(new Compiler(new SchXslt()));
+    public SchXslt2Compiler() {
+        super(new Compiler(new SchXslt2()));
     }
 
     @Override
     public String getId() {
-        return SchXsltCompiler.COMPILER_ID;
+        return SchXslt2Compiler.COMPILER_ID;
     }
 
 }

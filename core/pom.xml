@@ -32,6 +32,11 @@
             <artifactId>schxslt</artifactId>
             <version>1.10.1</version>
         </dependency>
+        <dependency>
+            <groupId>name.dmaus.schxslt</groupId>
+            <artifactId>schxslt2</artifactId>
+            <version>1.7.2</version>
+        </dependency>
     </dependencies>
           <build>
               <resources>
