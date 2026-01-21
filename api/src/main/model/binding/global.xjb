@@ -62,7 +62,7 @@
         </jaxb:bindings>
     </jaxb:bindings>
 
-    <jaxb:bindings schemaLocation="../xsd/xvrl.xsd">
+    <jaxb:bindings schemaLocation="../xsd/xvrl-1.0.xsd">
 
         <jaxb:schemaBindings>
             <jaxb:package name="org.kosit.validator.model.xvrl"/>
@@ -81,7 +81,7 @@
 
         <jaxb:bindings node="//xs:element[@name='detection']">
             <jaxb:class name="XVRLDetection"/>
-            <inheritance:implements>org.kosit.validator.impl.xvrl.BaseDetection</inheritance:implements>
+            <inheritance:implements>org.kosit.validator.api.xvrl.BaseDetection</inheritance:implements>
 
             <jaxb:bindings node=".//xs:complexType/xs:choice">
                  <simplify:as-element-property/>
@@ -102,7 +102,7 @@
 
         <jaxb:bindings node="//xs:element[@name='message']">
             <jaxb:class name="XVRLMessage"/>
-            <inheritance:implements>org.kosit.validator.impl.xvrl.BaseMessage</inheritance:implements>
+            <inheritance:implements>org.kosit.validator.api.xvrl.BaseMessage</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings node="//xs:attribute[@name='severity']/xs:simpleType">

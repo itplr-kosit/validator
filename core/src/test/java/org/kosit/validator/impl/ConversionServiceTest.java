@@ -19,14 +19,18 @@ package org.kosit.validator.impl;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import org.kosit.validator.api.xsd.ValidatorSchemas;
 import org.kosit.validator.impl.Helper.Invalid;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.model.scenarios.Scenarios;
@@ -38,7 +42,7 @@ import org.kosit.validator.model.scenarios.Scenarios;
  */
 public class ConversionServiceTest {
 
-    private static final URL SCHEMA = ConversionServiceTest.class.getResource("/xsd/scenarios.xsd");
+    private static final URI SCHEMA = URI.create(ValidatorSchemas.class.getResource(ValidatorSchemas.SCENARIOS_XSD_PATH).toExternalForm());
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -74,22 +78,24 @@ public class ConversionServiceTest {
     }
 
     @Test
-    public void testUnmarshalWithSchema() {
-        final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA));
+    public void testUnmarshalWithSchema() throws MalformedURLException {
+        // since repository.createSchema(URI) forcibly resolves uri in repository path only, conversion to url is
+        // neccesary
+        final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA.toURL()));
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
 
     @Test
-    public void testUnmarshalInvalidXml() {
+    public void testUnmarshalInvalidXml() throws MalformedURLException {
         this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Invalid.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA));
+        this.service.readXml(Invalid.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA.toURL()));
     }
 
     @Test
-    public void testUnmarshalIllFormed() {
+    public void testUnmarshalIllFormed() throws MalformedURLException {
         this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, this.repository.createSchema(SCHEMA));
+        this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, this.repository.createSchema(SCHEMA.toURL()));
     }
 
     @Test

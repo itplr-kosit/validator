@@ -19,16 +19,23 @@ package org.kosit.validator.impl.xvrl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.kosit.validator.model.xvrl.XVRLReport;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.kosit.validator.api.xvrl.BaseDetection;
+import org.kosit.validator.model.xvrl.XVRLDetection;
+import org.kosit.validator.model.xvrl.XVRLDigest;
 
-public interface BaseReportSummary {
+public abstract class BaseReport {
 
-    List<XVRLReport> getReports();
+    public abstract List<XVRLDetection> getDetection();
 
-    List<XVRLReportSummary> getReportSummaries();
-
-    default List<String> getAllErrors() {
-        return getReports().stream().flatMap(xvrlReport -> xvrlReport.getAllErrors().stream()).collect(Collectors.toList());
+    public List<String> getAllErrors() {
+        return getDetection().stream().filter(BaseDetection::hasErrors).flatMap(xvrlDetection -> xvrlDetection.getAllMessages().stream())
+                .collect(Collectors.toList());
     }
+
+    @Override
+    public String toString() {
+        return String.format("id=%s, errors=%s, valid=%s", getDigest().getId(), getDigest().getErrorCount(), getDigest().getValid());
+    }
+
+    protected abstract XVRLDigest getDigest();
 }

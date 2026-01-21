@@ -26,14 +26,14 @@ public interface XmlError {
     /**
      * Gibt die Fehlermeldung zurück.
      * 
-     * @return die Fehlermeldung
+     * @return The message itself
      */
     String getMessage();
 
     /**
      * Zeigt den Schweregrad der Fehlermeldung an
      * 
-     * @return der Schweregrad
+     * @return The severity of the error.
      * @see Severity
      */
     Severity getSeverity();
@@ -41,14 +41,14 @@ public interface XmlError {
     /**
      * Gibt optional eine Zeilennummer an, aus der der Fehler resultiert.
      * 
-     * @return die Zeitelnnummer
+     * @return The row number or <code>null</code>.
      */
     Integer getRowNumber();
 
     /**
      * Gibt optional eine Spaltennummer an, aus der der Fehler resultiert.
      * 
-     * @return die Spaltennummer
+     * @return The column number or <code>null</code>.
      */
     Integer getColumnNumber();
 

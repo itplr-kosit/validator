@@ -22,6 +22,7 @@ import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.api.xsd.ValidatorSchemas;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseAction;
@@ -120,9 +121,8 @@ public class Helper {
         public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
     }
 
-    public static final URI MODEL_ROOT = Paths.get("src/main/model").toUri();
-
-    public static final URI ASSERTION_SCHEMA = MODEL_ROOT.resolve("xsd/assertions.xsd");
+    public static final URI ASSERTION_SCHEMA = URI
+            .create(ValidatorSchemas.class.getResource(ValidatorSchemas.ASSERTIONS_XSD_PATH).toExternalForm());
 
     public static final URI TEST_ROOT = Paths.get("src/test/resources").toAbsolutePath().toUri();
 

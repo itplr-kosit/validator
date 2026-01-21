@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.kosit.validator.model.xvrl.XVRLReport;
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.kosit.validator.api.xvrl.BaseReportSummary;
 
 /**
  * Base class for XVRLReportSummary to overcome the issue that simplifying and pluralizing the choice elements of

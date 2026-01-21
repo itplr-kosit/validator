@@ -5,6 +5,7 @@
 
     <name>KoSIT XML Validator</name>
     <modules>
+        <module>api</module>
         <module>core</module>
         <module>cli</module>
         <module>server</module>
