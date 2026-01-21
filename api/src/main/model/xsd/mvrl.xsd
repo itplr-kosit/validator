@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:mvrl="http://www.xoev.de/de/validator/framework/2/mvrl"
+           targetNamespace="http://www.xoev.de/de/validator/framework/2/mvrl"
+           elementFormDefault="qualified">
+
+    <xs:element name="compactreport">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- Eine Sequenz von 'result'-Elementen -->
+                <xs:element name="result" type="mvrl:ResultType" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+            <!-- Summary Attribute direkt auf dem Root-Element -->
+            <xs:attribute name="acceptable" type="xs:integer" use="required" />
+            <xs:attribute name="rejected" type="xs:integer" use="required" />
+            <xs:attribute name="processingerrors" type="xs:integer" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Definition des 'result'-Elements mit allen Attributen und optionaler Fehlermeldung -->
+    <xs:complexType name="ResultType">
+        <xs:sequence>
+            <!-- Nur ein optionales Kindelement für die Fehlermeldung -->
+            <xs:element name="errordescription" type="xs:string" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="file" type="xs:string" use="required" />
+        <xs:attribute name="schema" type="xs:boolean" use="required" />
+        <xs:attribute name="schematron" type="xs:boolean" use="required" />
+        <xs:attribute name="acceptance" type="mvrl:AcceptanceStatusType" use="required" />
+    </xs:complexType>
+
+    <!-- Definition des Acceptance Status als streng typisierte Enumeration -->
+    <xs:simpleType name="AcceptanceStatusType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ACCEPTABLE" />
+            <xs:enumeration value="REJECT" />
+            <xs:enumeration value="UNDEFINED" />
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

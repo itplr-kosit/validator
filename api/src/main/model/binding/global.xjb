@@ -110,4 +110,13 @@
         </jaxb:bindings>
     </jaxb:bindings>
 
+    <jaxb:bindings schemaLocation="../xsd/mvrl.xsd">
+        <jaxb:schemaBindings>
+            <jaxb:package name="org.kosit.validator.model.mvrl"/>
+        </jaxb:schemaBindings>
+        <jaxb:bindings node="//xs:element[@name='compactreport']">
+            <jaxb:class name="MVRLCompactReport"/>
+        </jaxb:bindings>
+    </jaxb:bindings>
+
 </jaxb:bindings>

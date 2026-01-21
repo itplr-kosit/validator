@@ -82,9 +82,7 @@ public class ConversionService {
     // context setup
     private JAXBContext jaxbContext;
 
-    public JAXBContext
-
-            getJaxbContext() {
+    public JAXBContext getJaxbContext() {
         if (this.jaxbContext == null) {
             initialize();
         }
@@ -115,6 +113,7 @@ public class ConversionService {
         p.add(org.kosit.validator.model.ObjectFactory.class.getPackage());
         p.add(org.kosit.validator.model.xvrl.ObjectFactory.class.getPackage());
         p.add(org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
+        p.add(org.kosit.validator.model.mvrl.ObjectFactory.class.getPackage());
         initialize(p);
     }
 
