@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.impl.xvrl;
+package org.kosit.validator.api.xvrl;
 
 import org.kosit.validator.model.xvrl.Location;
 import org.kosit.validator.model.xvrl.XVRLDetection;

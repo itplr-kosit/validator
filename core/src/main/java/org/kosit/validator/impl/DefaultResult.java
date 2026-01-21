@@ -19,7 +19,6 @@ package org.kosit.validator.impl;
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.XmlError;
-import org.kosit.validator.impl.tasks.CreateReportsAction;
 import org.kosit.validator.impl.tasks.ReaderWrapper;
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
 import jakarta.xml.bind.JAXBException;

@@ -14,27 +14,16 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.impl.xvrl;
+package org.kosit.validator.api.xvrl;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.kosit.validator.model.xvrl.XVRLDetection;
-import org.kosit.validator.model.xvrl.XVRLDigest;
+public interface BaseMessage {
 
-public abstract class BaseReport {
+    List<Object> getContent();
 
-    public abstract List<XVRLDetection> getDetection();
-
-    public List<String> getAllErrors() {
-        return getDetection().stream().filter(BaseDetection::hasErrors).flatMap(xvrlDetection -> xvrlDetection.getAllMessages().stream())
-                .collect(Collectors.toList());
+    default List<String> getMessageStrings() {
+        return getContent().stream().map(Object::toString).collect(Collectors.toList());
     }
-
-    @Override
-    public String toString() {
-        return String.format("id=%s, errors=%s, valid=%s", getDigest().getId(), getDigest().getErrorCount(), getDigest().getValid());
-    }
-
-    protected abstract XVRLDigest getDigest();
 }

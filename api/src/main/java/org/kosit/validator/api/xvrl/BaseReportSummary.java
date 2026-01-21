@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.impl.xvrl;
+package org.kosit.validator.api.xvrl;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface BaseMessage {
+import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.validator.model.xvrl.XVRLReportSummary;
 
-    List<Object> getContent();
+public interface BaseReportSummary {
 
-    default List<String> getMessageStrings() {
-        return getContent().stream().map(Object::toString).collect(Collectors.toList());
+    List<XVRLReport> getReports();
+
+    List<XVRLReportSummary> getReportSummaries();
+
+    default List<String> getAllErrors() {
+        return getReports().stream().flatMap(xvrlReport -> xvrlReport.getAllErrors().stream()).collect(Collectors.toList());
     }
 }
