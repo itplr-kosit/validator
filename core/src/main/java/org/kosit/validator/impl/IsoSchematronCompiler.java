@@ -3,8 +3,11 @@ package org.kosit.validator.impl;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.*;
 import org.kosit.validator.api.SchematronCompiler;
+import org.kosit.validator.impl.xml.ClassPathResourceResolver;
+import org.kosit.validator.impl.xml.LsResourceResolverUriResolver;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.net.URI;
