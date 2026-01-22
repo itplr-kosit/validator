@@ -105,11 +105,11 @@ public class ContentRepository {
         this.resolver = getResolver(strategy, repository);
         this.unparsedTextURIResolver = this.resolvingConfigurationStrategy.createUnparsedTextURIResolver(repository);
         this.schemaFactory = this.resolvingConfigurationStrategy.createSchemaFactory();
-        this.compilerRegistry = defaultSchematronCompilerRegistry();
+        this.compilerRegistry = defaultSchematronCompilerRegistry(processor);
     }
 
-    private static SchematronCompilerRegistry defaultSchematronCompilerRegistry() {
-        return new SchematronCompilerRegistry(List.of(new SchXsltCompiler(), new SchXslt2Compiler()));
+    private static SchematronCompilerRegistry defaultSchematronCompilerRegistry(Processor processor) {
+        return new SchematronCompilerRegistry(List.of(new SchXsltCompiler(), new SchXslt2Compiler(), new IsoSchematronCompiler(processor)));
     }
 
     @SuppressWarnings("squid:S2095")
