@@ -36,6 +36,7 @@ src/generated
 .factorypath
 .idea/
 .settings/
+.externalToolBuilders/
 .vscode
 *.code-workspace
 *.xpr
@@ -46,3 +47,8 @@ xrechnung
 .DS_Store
 andre*-simple.xml
 somePrefix*.xml
+
+# 2.0 stuff
+api/
+cli/
+core/
