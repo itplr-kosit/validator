@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.6.1 - work in progress
+
+### Changed
+
+- (BUILD) [#176] The Maven Central deployed pom.xml properly includes runtime dependencies
 
 ## 1.6.0 - 2025-11-07
 
