@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- (BUILD) [#176] The Maven Central deployed pom.xml properly includes runtime dependencies
+- (BUILD) [#176] The Maven Central deployed `pom.xml` properly includes runtime dependencies
+- (BUILD) [#175] The `.zip` file created from `maven-assembly-plugin` no longer contains the standalone validator, which reduces its size to 50%
 
 ## 1.6.0 - 2025-11-07
 

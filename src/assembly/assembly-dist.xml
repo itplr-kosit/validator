@@ -20,6 +20,10 @@
             <includes>
                 <include>validator-*.jar</include>
             </includes>
+            <!-- excludes always win over includes if both patterns match -->
+            <excludes>
+                <exclude>*standalone.jar</exclude>
+            </excludes>
         </fileSet>
 
     </fileSets>
