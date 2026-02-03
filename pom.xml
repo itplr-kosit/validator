@@ -625,7 +625,8 @@
                             <suppressionFiles>
                                 <suppressionFile>${project.basedir}/owasp-suppressions.xml</suppressionFile>
                             </suppressionFiles>
-
+                            <!-- ref to CI CD variable -->
+                            <nvdApiKey>${NVD_API_KEY}</nvdApiKey>
                         </configuration>
                         <executions>
                             <execution>
