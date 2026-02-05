@@ -113,11 +113,7 @@ create-build-image:
 
 # Run OWASP checks - expensive so only on main branch
 owasp-check:
-<<<<<<< Upstream, based on origin/main
-  extends: .java
-=======
   stage: test
->>>>>>> bad4cab Fix/owasp oom
   image: maven:3-eclipse-temurin-21-alpine
   needs: [ ]
   # set job timeout to 1 hour - it's required when new rules are downloaded
