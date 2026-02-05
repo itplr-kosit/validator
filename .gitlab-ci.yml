@@ -1,8 +1,8 @@
 image: maven:latest
-
+  
 variables:
   BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID -Dfile.encoding=UTF-8  -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
-  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Xmx6g"
   MAVEN_CLI_OPTS: " --batch-mode  --update-snapshots --errors --fail-at-end --show-version -s .mvn/settings.xml"
   MAVEN_CLI_OPTS_CENTRAL: " --batch-mode --show-version -s .mvn/settings-maven-central.xml"
 
@@ -15,6 +15,7 @@ cache:
   paths:
     - .m2/repository
 
+# Basic Java build steps
 .java:
   stage: build
   needs:
@@ -31,11 +32,6 @@ cache:
       junit:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
-
-.java_extended:
-  extends: .java
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
 
 java-11:
   extends: .java
@@ -54,10 +50,6 @@ java-11:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-java-11-openj9:
-  extends: .java_extended
-  image: maven:3-jdk-11-openj9
-
 java-17:
   extends: .java
   image: maven:3-eclipse-temurin-17-alpine
@@ -66,14 +58,29 @@ java-21:
   extends: .java
   image: maven:3-eclipse-temurin-21-alpine
 
-java-24:
-  extends: .java_extended
-  image: maven:3-eclipse-temurin-24-alpine
-
 java-25:
   extends: .java
   image: maven:3-eclipse-temurin-25-alpine
-  
+
+# Rare Java stuff
+.java_extended:
+  extends: .java
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
+# Note: the openj9 images don't exist for Java 17, 21 or 25
+# Removed because the latest public image is 11.0.11 which is not comaptible to the Lombok requirement of 11.0.23 
+#java-11-openj9:
+#  extends: .java_extended
+#  image: maven:3-jdk-11-openj9
+
+# Deploy Java 11 build on Maven Central
+deploy-java-11-snapshot:
+  extends: java-11
+  script:
+    - mvn $MAVEN_CLI_OPTS_CENTRAL -P release-snapshot deploy
+
+# Deploy Java 11 build to KoSIT repository (manually)
 deploy:
   stage: deploy
   image: maven:3-eclipse-temurin-11-alpine
@@ -81,18 +88,14 @@ deploy:
     - job: java-11
   script:
     - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.jar -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-javadoc.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="javadoc" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-sources.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="sources" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip            -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="distribution" -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.jar            -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION}                             -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-javadoc.jar    -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="javadoc"      -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-standalone.jar -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="standalone"   -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-sources.jar    -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="sources"      -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
   when: manual
 
-deploy-snapshot:
-  extends: java-11
-  script:
-    - mvn $MAVEN_CLI_OPTS_CENTRAL -P release-snapshot deploy
-
+# Build Docker images and upload to KoSIT registry
 create-build-image:
   stage: deploy
   image: docker:latest
@@ -108,12 +111,22 @@ create-build-image:
       changes:
         - .mvn/createBuildImages.sh
 
+# Run OWASP checks - expensive so only on main branch
 owasp-check:
-  extends: .java
+  stage: test
   image: maven:3-eclipse-temurin-21-alpine
   needs: [ ]
+  # set job timeout to 1 hour - it's required when new rules are downloaded
+  timeout: 1h                           
+  variables:
+    RUNNER_SCRIPT_TIMEOUT: 1h        
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check
+  artifacts:
+    name: artifacts
+    reports:
+      codequality:
+        - target/dependency-check-report.html
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: $CI_COMMIT_REF_NAME == "main"

@@ -23,9 +23,6 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.Scenario;
@@ -33,7 +30,8 @@ import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron.Results;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmDestination;
@@ -70,6 +68,11 @@ public class SchematronValidationAction implements CheckAction {
             transformer.setDestination(result);
             transformer.setInitialContextNode(document);
             transformer.transform();
+
+            // If we reach this line, it means no Exception was thrown :-)
+            if (e.hasErrors()) {
+                log.error("XSLT errors found: " + e.getErrorDescription());
+            }
 
             final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
             r.setSchematronOutput(this.conversionService.readDocument(

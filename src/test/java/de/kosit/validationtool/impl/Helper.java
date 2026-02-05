@@ -49,21 +49,27 @@ public class Helper {
 
         public static final URI ROOT = EXAMPLES_DIR.resolve("simple/");
 
-        public static final URI EXAMPLES = ROOT.resolve("input/");
+        public static final URI INPUT = ROOT.resolve("input/");
 
         public static final URI SIMPLE_VALID = ROOT.resolve("input/simple.xml");
 
+        public static final URI SIMPLE_XSLT_RUNTIME_ERROR = EXAMPLES_DIR
+                .resolve("invalid/xslt-runtime-error/input/simple-xslt-runtime-error.xml");
+
         public static final URI FOO = ROOT.resolve("input/foo.xml");
 
-        public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");
+        public static final URI FOO_SCHEMATRON_INVALID = INPUT.resolve("foo-schematron-invalid.xml");
 
-        public static final URI FOO_CUSTOM_LEVEL_ERROR = EXAMPLES.resolve("foo-custom-level-error.xml");
+        public static final URI FOO_CUSTOM_LEVEL_ERROR = INPUT.resolve("foo-custom-level-error.xml");
 
         public static final URI REJECTED = ROOT.resolve("input/withManualReject.xml");
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
         public static final URI SCENARIOS_WITH_RELATIVE_PATHS = ROOT.resolve("scenarios-with-relative-paths.xml");
+
+        public static final URI SCENARIOS_XSLT_RUNTIME_ERROR = EXAMPLES_DIR
+                .resolve("invalid/xslt-runtime-error/scenarios-with-xslt-runtime-error.xml");
 
         public static final URI OTHER_SCENARIOS = ROOT.resolve("otherScenarios.xml");
 
@@ -101,6 +107,7 @@ public class Helper {
 
     public static class Invalid {
 
+        // Is the typo in the name on purpose???
         public static final URI ROOT = EXAMPLES_DIR.resolve("invaid/");
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");

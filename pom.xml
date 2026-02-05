@@ -6,7 +6,7 @@
 
     <groupId>org.kosit</groupId>
     <artifactId>validator</artifactId>
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.6.2-SNAPSHOT</version>
 
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
@@ -81,15 +81,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>Saxon-HE</artifactId>
-            <version>${version.saxon-he}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${version.slf4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>${version.saxon-he}</version>
         </dependency>
         <dependency>
             <groupId>info.picocli</groupId>
@@ -180,7 +179,7 @@
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.8.0</version>
+                    <version>0.10.0</version>
                     <extensions>true</extensions>
                     <configuration>
                         <publishingServerId>central</publishingServerId>
@@ -275,15 +274,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
-                        <id>jdk11+</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>standalone</shadedClassifierName>
                             <transformers>
@@ -626,7 +625,8 @@
                             <suppressionFiles>
                                 <suppressionFile>${project.basedir}/owasp-suppressions.xml</suppressionFile>
                             </suppressionFiles>
-
+                            <!-- ref to CI CD variable -->
+                            <nvdApiKey>${NVD_API_KEY}</nvdApiKey>
                         </configuration>
                         <executions>
                             <execution>

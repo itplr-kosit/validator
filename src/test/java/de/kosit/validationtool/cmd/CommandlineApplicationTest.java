@@ -140,6 +140,15 @@ public class CommandlineApplicationTest {
     }
 
     @Test
+    public void testValidMinimalConfigurationXSLTRuntimeError() {
+        final String[] args = { "-s", Paths.get(Simple.SCENARIOS_XSLT_RUNTIME_ERROR).toString(), "-h", "-o",
+                this.output.toAbsolutePath().toString(), "--serialize-report-input",
+                Paths.get(Simple.SIMPLE_XSLT_RUNTIME_ERROR).toString() };
+        CommandLineApplication.mainProgram(args);
+        assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
+    }
+
+    @Test
     public void testValidNamingConfiguration() {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "somePrefix", "--report-postfix", "somePostfix" };
@@ -159,7 +168,7 @@ public class CommandlineApplicationTest {
     @Test
     public void testValidDirectoryInput() {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
-                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.EXAMPLES).toString() };
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.INPUT).toString() };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).contains("Processing 9 object(s) completed");
     }

@@ -6,8 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## Unreleased
+## 1.6.1 - 2026-02-05
 
+### Changed
+
+- (CORE)  [#106](https://projekte.kosit.org/kosit/validator/-/issues/106) The `match` element in `scenarios.xml` is required to have at least one character (per XSD change)
+- (BUILD) [#176](https://projekte.kosit.org/kosit/validator/-/issues/176) The Maven Central deployed `pom.xml` properly includes runtime dependencies
+- (BUILD) [#175](https://projekte.kosit.org/kosit/validator/-/issues/175) The `.zip` file created from `maven-assembly-plugin` no longer contains the standalone validator, which reduces its size to 50%
 
 ## 1.6.0 - 2025-11-07
 

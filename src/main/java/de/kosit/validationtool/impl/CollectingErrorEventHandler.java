@@ -47,7 +47,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static final int DEFAULT_ABORT_COUNT = 50;
 
-    private static final int stopProcessCount = DEFAULT_ABORT_COUNT;
+    private final int stopProcessCount = DEFAULT_ABORT_COUNT;
 
     private final List<XMLSyntaxError> errors = new ArrayList<>();
 
