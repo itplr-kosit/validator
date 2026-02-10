@@ -38,17 +38,18 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.assertj>3.27.3</version.assertj>
-        <version.commons-io>2.20.0</version.commons-io>
-        <version.commons-lang>3.18.0</version.commons-lang>
+        <version.assertj>3.27.7</version.assertj>
+        <version.commons-io>2.21.0</version.commons-io>
+        <version.commons-lang>3.20.0</version.commons-lang>
         <version.jacoco>0.8.13</version.jacoco>
-        <version.jaxb-api>4.0.2</version.jaxb-api>
-        <version.jaxb-impl>4.0.5</version.jaxb-impl>
+        <version.jaxb-api>4.0.4</version.jaxb-api>
+        <version.jaxb-impl>4.0.6</version.jaxb-impl>
         <version.lombok>1.18.42</version.lombok>
-        <version.mockito>4.11.0</version.mockito>
+        <version.mockito>5.21.0</version.mockito>
         <version.owasp-dependency-check>12.1.8</version.owasp-dependency-check>
-        <version.rest-assured>5.5.5</version.rest-assured>
-        <version.saxon-he>12.8</version.saxon-he>
+        <!-- 6.0.0 requires Java 17+ -->
+        <version.rest-assured>5.5.7</version.rest-assured>
+        <version.saxon-he>12.9</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
         <version.jaxb-maven-plugin>4.0.11</version.jaxb-maven-plugin>
     </properties>
