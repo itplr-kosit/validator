@@ -3,11 +3,8 @@ package org.kosit.validator.impl;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.*;
 import org.kosit.validator.api.SchematronCompiler;
-import org.kosit.validator.impl.xml.ClassPathResourceResolver;
-import org.kosit.validator.impl.xml.LsResourceResolverUriResolver;
 
 import javax.xml.transform.Source;
-import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.net.URI;
@@ -23,8 +20,6 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
 
     private final Processor processor;
 
-    private final URIResolver classpathOnlyResolver;
-
     private final XsltExecutable dsdlInclude;
 
     private final XsltExecutable abstractExpand;
@@ -37,11 +32,9 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
 
     public IsoSchematronCompiler(final Processor processor) {
         this.processor = Objects.requireNonNull(processor, "processor");
-        this.classpathOnlyResolver = new LsResourceResolverUriResolver(new ClassPathResourceResolver(CP_BASE));
 
         try {
             final XsltCompiler c = this.processor.newXsltCompiler();
-            c.setURIResolver(classpathOnlyResolver);
 
             this.dsdlInclude = c.compile(classpathXsl(CP_BASE + "iso_dsdl_include.xsl"));
             this.abstractExpand = c.compile(classpathXsl(CP_BASE + "iso_abstract_expand.xsl"));
@@ -88,7 +81,6 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
 
     private XdmNode transformToNode(final XsltExecutable exec, final XdmNode input) throws SaxonApiException {
         final XsltTransformer t = exec.load();
-        t.setURIResolver(classpathOnlyResolver);
         t.setInitialContextNode(input);
 
         final XdmDestination dest = new XdmDestination();

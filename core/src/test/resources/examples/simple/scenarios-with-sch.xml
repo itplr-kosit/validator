@@ -65,6 +65,47 @@
     </scenario>
 
     <scenario>
+        <name>Simple iso schematron</name>
+        <description>
+            <p>Nur Schemaprüfung. mit iso schematron compiler</p>
+        </description>
+        <namespace prefix="xvrl">http://www.xproc.org/ns/xvrl
+        </namespace>
+        <namespace prefix="test">
+            http://validator.kosit.de/test-sample</namespace>
+        <namespace prefix="rpt">http://validator.kosit.de/test-report</namespace>
+        <match>/test:simpleiso</match>
+
+        <validateWithXmlSchema>
+            <resource>
+                <name>Sample Schema</name>
+                <location>simple.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+        <validateWithSchematron compiler="isosch">
+            <resource>
+                <name>Sample Schematron</name>
+                <location>simple.sch</location>
+            </resource>
+        </validateWithSchematron>
+        <createReport>
+            <id>Report für eRechnung</id>
+            <resource>
+                <name>Report für eRechnung</name>
+                <location>report.xsl</location>
+            </resource>
+        </createReport>
+        <createReport>
+            <id>Report für eRechnung2</id>
+            <resource>
+                <name>Report für eRechnung</name>
+                <location>report.xsl</location>
+            </resource>
+        </createReport>
+        <acceptMatch>count(//test:rejected) = 0</acceptMatch>
+    </scenario>
+
+    <scenario>
         <name>NoAcceptMatch</name>
         <description>
             <p>Nur Schemaprüfung. Keine AcceptMatch deklaration</p>
