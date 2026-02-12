@@ -82,7 +82,7 @@
                 <location>simple.xsd</location>
             </resource>
         </validateWithXmlSchema>
-        <validateWithSchematron compiler="isosch">
+        <validateWithSchematron compiler="iso-schematron">
             <resource>
                 <name>Sample Schematron</name>
                 <location>simple.sch</location>

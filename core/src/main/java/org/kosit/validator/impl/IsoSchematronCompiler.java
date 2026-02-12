@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Slf4j
 public final class IsoSchematronCompiler implements SchematronCompiler {
 
-    public static final String COMPILER_ID = "isosch";
+    public static final String COMPILER_ID = "iso-schematron";
 
     private static final String CP_BASE = "/schematron/iso-schematron-xslt2/";
 
