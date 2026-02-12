@@ -58,6 +58,8 @@ public class Helper {
 
         public static final URI SIMPLE_VALID = ROOT.resolve("input/simple.xml");
 
+        public static final URI SIMPLE_ISO_VALID = ROOT.resolve("input/simple-iso.xml");
+
         public static final URI FOO = ROOT.resolve("input/foo.xml");
 
         public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");

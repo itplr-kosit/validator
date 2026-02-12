@@ -101,4 +101,15 @@ public class SchematronValidationActionTest {
         assertThat(result.isValid()).isTrue();
         assertThat(result.getErrors()).isEmpty();
     }
+
+    @Test
+    public void testIsoSchCompiledValid() throws MalformedURLException {
+        final Configuration c = Configuration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_ISO_VALID.toURL()))
+                .setScenario(c.getScenarios().get(0)).build();
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getErrors()).isEmpty();
+    }
 }

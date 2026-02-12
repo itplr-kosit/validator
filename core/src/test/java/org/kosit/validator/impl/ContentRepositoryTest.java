@@ -32,6 +32,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import org.junit.runner.RunWith;
 import org.kosit.validator.impl.Helper.Simple;
 
 import net.sf.saxon.s9api.XPathExecutable;
@@ -113,4 +114,18 @@ public class ContentRepositoryTest {
         assertThat(schema).isNotNull();
     }
 
+    @Test
+    public void loadSchematronXsltSchXslt() {
+        assertThat(repository.loadSchematronXslt(URI.create("simple.sch"), SchXsltCompiler.COMPILER_ID)).isNotNull();
+    }
+
+    @Test
+    public void loadSchematronXsltSchXslt2() {
+        assertThat(repository.loadSchematronXslt(URI.create("simple-xslt3.sch"), SchXslt2Compiler.COMPILER_ID)).isNotNull();
+    }
+
+    @Test
+    public void loadSchematronXsltIsoSch() {
+        assertThat(repository.loadSchematronXslt(URI.create("simple.sch"), IsoSchematronCompiler.COMPILER_ID)).isNotNull();
+    }
 }
