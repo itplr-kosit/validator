@@ -65,10 +65,6 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-health</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-logging-json</artifactId>
         </dependency>
 
@@ -127,11 +123,10 @@
                 <!-- RELEASE_VERSION -->
                 <version>7.17.0</version>
                 <configuration>
-<!--                <templateDirectory>${project.basedir}/src/main/templates</templateDirectory>-->
-                <apiNameSuffix>Resource</apiNameSuffix>
-                <modelNamePrefix>Api</modelNamePrefix>
-                <generatorName>jaxrs-spec</generatorName>
-                <openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
+                    <apiNameSuffix>Resource</apiNameSuffix>
+                    <modelNamePrefix>Api</modelNamePrefix>
+                    <generatorName>jaxrs-spec</generatorName>
+                    <openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
                     <configOptions>
                         <useTags>true</useTags>
                         <library>quarkus</library>
@@ -160,6 +155,30 @@
                 </execution>
                 </executions>
             </plugin>
+            <!-- export openapi spec-->
+            <!--plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-openapi-spec</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.basedir}/src/main/resources/META-INF/openapi.yml</file>
+                                    <type>yml</type>
+                                    <classifier>openapi</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin-->
         </plugins>
     </build>
 </project>

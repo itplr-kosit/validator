@@ -9,6 +9,7 @@
         <module>core</module>
         <module>cli</module>
         <module>server</module>
+        <module>client</module>
     </modules>
 
     <groupId>org.kosit</groupId>
@@ -537,7 +538,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.4.1</version>
+                        <version>3.6.0</version>
                         <executions>
                             <execution>
                                 <id>jdk11+</id>
