@@ -34,7 +34,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-rest-client-jackson</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jaxb</artifactId>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>

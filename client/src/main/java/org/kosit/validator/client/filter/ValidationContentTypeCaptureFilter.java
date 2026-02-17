@@ -1,13 +1,15 @@
 package org.kosit.validator.client.filter;
 
+import io.quarkus.arc.Unremovable;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientResponseContext;
 import jakarta.ws.rs.client.ClientResponseFilter;
 import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.ext.Provider;
 
-@Provider
+@Dependent
+@Unremovable
 public class ValidationContentTypeCaptureFilter implements ClientResponseFilter {
 
     @Inject

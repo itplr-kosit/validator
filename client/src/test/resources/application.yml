@@ -9,6 +9,3 @@ quarkus:
     validator-server:
       group-id: org.kosit
       artifact-id: validator-server
-  rest-client:
-    openapi_yml:
-      url: http://localhost:8081
