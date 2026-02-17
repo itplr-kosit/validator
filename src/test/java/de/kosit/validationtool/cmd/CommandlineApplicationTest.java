@@ -150,8 +150,9 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testValidNamingConfiguration() {
-        final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
-                Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "somePrefix", "--report-postfix", "somePostfix" };
+        final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "somePrefix",
+                "--report-postfix", "somePostfix" };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(CommandLine.getErrorOutput()).contains("somePrefix-simple-somePostfix");
@@ -249,8 +250,8 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testAndre() {
-        final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
-                Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "andre1" };
+        final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "andre1" };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).contains(RESULT_OUTPUT);
     }
