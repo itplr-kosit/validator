@@ -110,7 +110,12 @@ public class SourceInput extends AbstractInput {
                 return (ss.getInputStream() != null && ss.getInputStream().available() == 0)
                         || (ss.getReader() != null && !ss.getReader().ready());
             } catch (final IOException e) {
-                log.error("Error checking consumed state", e);
+                // Stream/reader closed is an expected outcome when consumed; avoid ERROR log
+                if (e.getMessage() == null || !e.getMessage().toLowerCase().contains("closed")) {
+                    log.error("Error checking consumed state", e);
+                } else {
+                    log.debug("Stream/reader closed when checking consumed state", e);
+                }
                 return true;
             }
         }
