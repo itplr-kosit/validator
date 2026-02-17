@@ -1,5 +1,23 @@
 KoSIT XML Validator
-Copyright 2017-2025 Koordinierungsstelle für IT-Standards (KoSIT)
+Copyright 2017-2026 Koordinierungsstelle für IT-Standards (KoSIT)
 
 This product includes software developed by
 Koordinierungsstelle für IT-Standards (<https://xeinkauf.de/>).
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+This product includes software developed at
+Fusesource (http://fusesource.github.io/jansi/).
+
+This product includes software developed at
+Remko Popma (https://picocli.info/).
+
+This product includes software developed at
+Saxonica (https://github.com/Saxonica/Saxon-HE).
+
+This product includes software developed at
+Eclipse Foundation (https://github.com/eclipse-ee4j/jaxb-ri).
+
+This product includes software developed at
+QOS.ch (https://www.slf4j.org/).
