@@ -22,18 +22,12 @@ public class StringTrimAdapter extends XmlAdapter<String, String> {
 
     @Override
     public String unmarshal(final String v) {
-        if (v == null) {
-            return null;
-        }
-        return v.trim();
+        return trim(v);
     }
 
     @Override
     public String marshal(final String v) {
-        if (v == null) {
-            return null;
-        }
-        return v.trim();
+        return trim(v);
     }
 
     public static String trim(final String v) {

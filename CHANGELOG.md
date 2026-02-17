@@ -6,11 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## 1.6.2 - UNRELEASED
+## 1.6.2 - 2026-02-17
 
 ### Changed
 
+- (BUILD) [GitHub #173]( https://github.com/itplr-kosit/validator/issues/173) The JAR files now contain details on the used third-party component licenses. Thanks to @cech12
 - (BUILD) [GitHub #169](https://github.com/itplr-kosit/validator/issues/169) The `.zip` file created from `maven-assembly-plugin` now contains the correct xml-resolver dependencies. Thanks to @landrix for pointing that out
+- (BUILD) [#179](https://projekte.kosit.org/kosit/validator/-/issues/179) Updated all dependencies to the latest suitable versions
 
 ## 1.6.1 - 2026-02-05
 

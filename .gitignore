@@ -47,6 +47,7 @@ xrechnung
 .DS_Store
 andre*-simple.xml
 somePrefix*.xml
+zz
 
 # 2.0 stuff
 api/
