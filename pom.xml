@@ -41,7 +41,8 @@
         <version.assertj>3.27.7</version.assertj>
         <version.commons-io>2.21.0</version.commons-io>
         <version.commons-lang>3.20.0</version.commons-lang>
-        <version.jacoco>0.8.13</version.jacoco>
+        <!-- JaCoCo 0.8.14+ required for Java 25 (class file major version 69) -->
+        <version.jacoco>0.8.14</version.jacoco>
         <version.jaxb-api>4.0.4</version.jaxb-api>
         <version.jaxb-impl>4.0.6</version.jaxb-impl>
         <version.lombok>1.18.42</version.lombok>
@@ -52,6 +53,8 @@
         <version.saxon-he>12.9</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
         <version.jaxb-maven-plugin>4.0.11</version.jaxb-maven-plugin>
+        <!-- Set to true to skip formatter:validate (e.g. -DskipFormatterValidation=true) when formatting is not yet applied or in CI -->
+        <skipFormatterValidation>false</skipFormatterValidation>
     </properties>
 
     <repositories>
@@ -110,6 +113,7 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- 3.18.0+ fixes CVE-2025-48924 (uncontrolled recursion in ClassUtils.getClass on long inputs); 3.10 had no remediation in older scanners -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -138,6 +142,7 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+        <!-- 2.17.0+ fixes CVE-2024-47554 (XML DoS in XmlStreamReader) and directory traversal in FileNameUtils.normalize; 2.6 was vulnerable -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -296,6 +301,14 @@
                          See: https://inside.java/2024/06/18/quality-heads-up/ 
                     -->
                     <proc>full</proc>
+                    <!-- Explicit processor path ensures Lombok runs on JDK 25; without it the compiler may not invoke the processor and getters/setters/log are missing -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${version.lombok}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -383,7 +396,7 @@
                 </executions>
             </plugin>
 
-            <!-- Generate model classes -->
+            <!-- Generate model classes from XSD. Plugin default pulls JAXB 2.3.0 which uses sun.misc.Unsafe.defineClass, removed in Java 21+; overrides below fix generate goal on modern JDKs -->
             <plugin>
                 <groupId>org.jvnet.jaxb</groupId>
                 <artifactId>jaxb-maven-plugin</artifactId>
@@ -413,7 +426,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Integrate code coverage -->
+            <!-- Code coverage. Version must be 0.8.14+ on Java 25 (see version.jacoco property comment). -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -618,6 +631,10 @@
                         <goals>
                             <goal>validate</goal>
                         </goals>
+                        <configuration>
+                            <!-- Skip when skipFormatterValidation=true (see property); avoids build failure if sources are not yet formatted -->
+                            <skip>${skipFormatterValidation}</skip>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
