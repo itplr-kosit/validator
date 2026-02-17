@@ -6,7 +6,7 @@
 
     <groupId>org.kosit</groupId>
     <artifactId>validator</artifactId>
-    <version>1.6.2-SNAPSHOT</version>
+    <version>1.6.3-SNAPSHOT</version>
 
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
@@ -38,17 +38,18 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.assertj>3.27.3</version.assertj>
-        <version.commons-io>2.20.0</version.commons-io>
-        <version.commons-lang>3.18.0</version.commons-lang>
+        <version.assertj>3.27.7</version.assertj>
+        <version.commons-io>2.21.0</version.commons-io>
+        <version.commons-lang>3.20.0</version.commons-lang>
         <version.jacoco>0.8.13</version.jacoco>
-        <version.jaxb-api>4.0.2</version.jaxb-api>
-        <version.jaxb-impl>4.0.5</version.jaxb-impl>
+        <version.jaxb-api>4.0.4</version.jaxb-api>
+        <version.jaxb-impl>4.0.6</version.jaxb-impl>
         <version.lombok>1.18.42</version.lombok>
-        <version.mockito>4.11.0</version.mockito>
+        <version.mockito>5.21.0</version.mockito>
         <version.owasp-dependency-check>12.1.8</version.owasp-dependency-check>
-        <version.rest-assured>5.5.5</version.rest-assured>
-        <version.saxon-he>12.8</version.saxon-he>
+        <!-- 6.0.0 requires Java 17+ -->
+        <version.rest-assured>5.5.7</version.rest-assured>
+        <version.saxon-he>12.9</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
         <version.jaxb-maven-plugin>4.0.11</version.jaxb-maven-plugin>
     </properties>
@@ -205,6 +206,33 @@
                 </configuration>
             </plugin>
 
+
+            <plugin>
+              <artifactId>maven-resources-plugin</artifactId>
+              <version>3.4.0</version>
+              <executions>
+                <execution>
+                  <id>copy-license-notice</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                    <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
+                    <resources>
+                      <resource>
+                        <directory>${project.basedir}</directory>
+                        <includes>
+                          <include>NOTICE</include>
+                        </includes>
+                      </resource>
+                    </resources>
+                    <overwrite>true</overwrite>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -289,14 +317,39 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>de.kosit.validationtool.cmd.CommandLineApplication</mainClass>
                                 </transformer>
+                                
+                                <!--
+                                  Some open source producers (including the Apache Software Foundation) include a copy of their 
+                                  license in the META-INF directory. These are conventionally named either LICENSE,LICENSE.txt 
+                                  or LICENSE.md. When merging these dependencies, adding these resources may cause confusion.
+                                  The ApacheLicenseResourceTransformer ensures that duplicate licenses (named according to this
+                                  convention) are not merged.
+                                  Technically it simply avoids adding them into the final JAR.
+                                  We don't need the detailed licensed in the shaded JAR.
+                                -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                                
+                                <!--
+                                  Some licenses (including the Apache License, Version 2) require that notices are preserved by 
+                                  downstream distributors. ApacheNoticeResourceTransformer automates the assembly of an
+                                  appropriate NOTICE.
+                                  Technically it merges all NOTICE files together
+                                -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                                    <addHeader>false</addHeader>
+                                </transformer>
                             </transformers>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
+                                        <!-- E.g. MANIFEST.MF -->
+                                        <exclude>META-INF/*.MF</exclude>
+                                        <!-- Required for JAR signing artefacts -->
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
+                                        <!-- We're breaking the Java module system -->
                                         <exclude>**/module-info.class</exclude>
                                     </excludes>
                                 </filter>

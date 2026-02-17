@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2017-2022  Koordinierungsstelle für IT-Standards (KoSIT)
+  ~ Copyright 2017-2026  Koordinierungsstelle für IT-Standards (KoSIT)
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
     <xsl:template match="element()">
         <xsl:copy>
@@ -24,5 +24,4 @@
     <xsl:template match="attribute()|text()|comment()|processing-instruction()">
         <xsl:copy/>
     </xsl:template>
-
 </xsl:stylesheet>
