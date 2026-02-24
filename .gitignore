@@ -37,6 +37,7 @@ src/generated
 .idea/
 .settings/
 .vscode
+.externalToolBuilders/
 *.code-workspace
 *.xpr
 # Testing stuff
@@ -46,3 +47,6 @@ xrechnung
 .DS_Store
 andre*-simple.xml
 somePrefix*.xml
+
+# Created stuff
+server/ui/
