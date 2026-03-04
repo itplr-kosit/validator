@@ -6,10 +6,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.model.mvrl.AcceptanceStatusType;
-import org.kosit.validator.model.mvrl.MVRLCompactReport;
+import org.kosit.validator.api.AcceptRecommendation;
+import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
-import org.kosit.validator.server.api.MVRLCompactReportDto;
+import org.kosit.validator.server.api.CompactValidationResultsDto;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,11 +60,11 @@ class ValidationClientIT {
     void shouldValidateMinimalXml() {
         File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
 
-        MVRLCompactReport result = validationClient.validateMinimal(input);
+        CompactXVRLReportSummary result = validationClient.validateMinimal(input);
 
-        assertThat(result.getResult()).isNotNull();
-        assertThat(result.getResult().isEmpty()).isFalse();
-        assertThat(result.getResult().get(0).getAcceptance()).isEqualTo(AcceptanceStatusType.ACCEPTABLE);
+        assertThat(result.getReports()).isNotNull();
+        assertThat(result.getReports().isEmpty()).isFalse();
+        assertThat(result.getReports().get(0).getAcceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
         assertThat(result.getAcceptable() > 0).isTrue();
     }
 
@@ -89,10 +89,10 @@ class ValidationClientIT {
         assertThat(report).isNotNull();
         assertThat(report.length() > 0).isTrue();
 
-        MVRLCompactReportDto dto = new ObjectMapper().readValue(report, MVRLCompactReportDto.class);
+        CompactValidationResultsDto dto = new ObjectMapper().readValue(report, CompactValidationResultsDto.class);
 
         assertThat(dto.results()).isNotEmpty();
-        assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptanceStatusType.ACCEPTABLE.value());
+        assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE.name());
         assertThat(dto.acceptable()).isEqualTo(1);
     }
 
@@ -124,12 +124,12 @@ class ValidationClientIT {
     void shouldValidateMinimalXmlWithMetadata() {
         File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
 
-        ValidationResponse<MVRLCompactReport> result = validationClient.validateMinimalWithMetadata(input);
-        MVRLCompactReport report = result.getBody();
+        ValidationResponse<CompactXVRLReportSummary> result = validationClient.validateMinimalWithMetadata(input);
+        CompactXVRLReportSummary report = result.getBody();
 
-        assertThat(report.getResult()).isNotNull();
-        assertThat(report.getResult().isEmpty()).isFalse();
-        assertThat(report.getResult().get(0).getAcceptance()).isEqualTo(AcceptanceStatusType.ACCEPTABLE);
+        assertThat(report.getReports()).isNotNull();
+        assertThat(report.getReports().isEmpty()).isFalse();
+        assertThat(report.getReports().get(0).getAcceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
         assertThat(report.getAcceptable() > 0).isTrue();
         assertThat(result.getStatusCode()).isEqualTo(RestResponse.StatusCode.OK);
         assertThat(result.getContentType()).isEqualTo(MediaType.APPLICATION_XML_TYPE);
@@ -144,10 +144,10 @@ class ValidationClientIT {
         assertThat(result).isNotNull();
         assertThat(result.length() > 0).isTrue();
 
-        MVRLCompactReportDto dto = new ObjectMapper().readValue(result, MVRLCompactReportDto.class);
+        CompactValidationResultsDto dto = new ObjectMapper().readValue(result, CompactValidationResultsDto.class);
 
         assertThat(dto.results()).isNotEmpty();
-        assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptanceStatusType.ACCEPTABLE.value());
+        assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE.name());
         assertThat(dto.acceptable()).isEqualTo(1);
     }
 

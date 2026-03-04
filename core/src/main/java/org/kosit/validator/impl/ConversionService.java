@@ -36,11 +36,9 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 
 /**
  * JAXB Conversion Utility.
