@@ -8,9 +8,9 @@ import org.kosit.validator.api.Input;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.ValidationResource;
+import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.impl.ConversionService;
-import org.kosit.validator.model.mvrl.MVRLCompactReport;
-import org.kosit.validator.server.api.MVRLCompactReportDto;
+import org.kosit.validator.server.api.CompactValidationResultsDto;
 
 import java.io.File;
 
@@ -41,21 +41,21 @@ public class ValidationController implements ValidationResource {
         final Input input = InputFactory.read(xmlFile);
         final Result result = service.validate(input);
 
-        final MVRLCompactReport compactReport = service.convertMinimal(input, result);
+        final CompactXVRLReportSummary compactReport = service.convertMinimalXvrl(input, result);
 
         MediaType best = headers.getAcceptableMediaTypes().stream()
                 .filter(mt -> mt.isCompatible(APPLICATION_JSON_TYPE) || mt.isCompatible(APPLICATION_XML_TYPE)).findFirst()
                 .orElse(APPLICATION_XML_TYPE); // Default: XML
 
         if (best.isCompatible(APPLICATION_JSON_TYPE)) {
-            final MVRLCompactReportDto compactJson = MVRLCompactReportMapper.toDto(compactReport);
+            final CompactValidationResultsDto compactJson = CompactXVRLReportSummaryMapper.toDto(compactReport);
             return addHeaders(result, Response.ok(compactJson).type(MediaType.APPLICATION_JSON).header("Content-Disposition",
                     "attachment; filename=compact-validation-result.json")).build();
         }
 
         final ConversionService conversionService = new ConversionService();
-        conversionService.initialize(org.kosit.validator.model.mvrl.ObjectFactory.class.getPackage());
-        final byte[] resultBytes = conversionService.writeXml(compactReport).getBytes();
+        conversionService.initialize(org.kosit.validator.model.xvrl.ObjectFactory.class.getPackage());
+        final byte[] resultBytes = conversionService.writeXml(compactReport.getOriginal()).getBytes();
         return addHeaders(result, Response.ok(resultBytes).type(MediaType.APPLICATION_XML).header("Content-Disposition",
                 "attachment; filename=compact-validation-result.xml")).build();
     }

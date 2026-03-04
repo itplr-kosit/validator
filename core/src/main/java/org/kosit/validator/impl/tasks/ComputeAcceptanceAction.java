@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.kosit.validator.api.AcceptRecommendation;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
@@ -66,9 +66,9 @@ public class ComputeAcceptanceAction implements CheckAction {
 
     private static Result<AcceptRecommendation, XMLSyntaxError> evaluateSchemaAndSchematron(final Process results) {
         if (results.getResult(SchemaValidationAction.KEY).isValid() && isSchematronValid(results)) {
-            return new Result<>(AcceptRecommendation.ACCEPTABLE);
+            return new Result<>(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
         }
-        return new Result<>(AcceptRecommendation.REJECT);
+        return new Result<>(org.kosit.validator.api.AcceptRecommendation.REJECT);
 
     }
 
@@ -94,14 +94,15 @@ public class ComputeAcceptanceAction implements CheckAction {
                 selector.setContextItem(report.getContent());
                 result = result && selector.effectiveBooleanValue();
             }
-            final AcceptRecommendation effectiveBooleanValue = result ? AcceptRecommendation.ACCEPTABLE : AcceptRecommendation.REJECT;
+            final AcceptRecommendation effectiveBooleanValue = result ? org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE
+                    : org.kosit.validator.api.AcceptRecommendation.REJECT;
             return new Result<>(effectiveBooleanValue);
         } catch (final SaxonApiException e) {
             final String msg = String.format("Error evaluating accept recommendation: %s", selector.getUnderlyingXPathContext().toString());
             log.error(msg, e);
             final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
             xmlSyntaxError.setMessage(msg);
-            return new Result<>(AcceptRecommendation.REJECT, Collections.singletonList(xmlSyntaxError));
+            return new Result<>(org.kosit.validator.api.AcceptRecommendation.REJECT, Collections.singletonList(xmlSyntaxError));
         }
     }
 
@@ -113,7 +114,7 @@ public class ComputeAcceptanceAction implements CheckAction {
     @Override
     public ProcessStepResult<AcceptRecommendation, XMLSyntaxError> check(final Process process) {
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = new ProcessStepResult<>(KEY);
-        Result<AcceptRecommendation, XMLSyntaxError> result = new Result<>(AcceptRecommendation.UNDEFINED);
+        Result<AcceptRecommendation, XMLSyntaxError> result = new Result<>(org.kosit.validator.api.AcceptRecommendation.UNDEFINED);
         if (!process.isStopped() && process.getResult(DocumentParseAction.KEY).isValid()) {
             if (preCondtionsMatch(process)) {
                 final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionAction.KEY);
@@ -126,7 +127,7 @@ public class ComputeAcceptanceAction implements CheckAction {
             } else {
                 final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
                 xmlSyntaxError.setMessage("Pre-Conditions not Matched");
-                result = new Result<>(AcceptRecommendation.REJECT, Collections.singleton(xmlSyntaxError));
+                result = new Result<>(org.kosit.validator.api.AcceptRecommendation.REJECT, Collections.singleton(xmlSyntaxError));
             }
         }
         stepResult.setResult(result);
