@@ -25,8 +25,8 @@ class ValidationControllerTest {
         given().contentType(ContentType.XML).body(xmlFile).when().post("/api/validate").then().statusCode(200).contentType(ContentType.XML)
                 .header("Content-Disposition", allOf(containsString("attachment"), containsString("validation-result.xml")))
                 .header("X-VALIDATOR-Acceptance", "ACCEPTABLE").header("X-VALIDATOR-Schema-Valid", "true")
-                .header("X-VALIDATOR-Schematron-Valid", "true").body(startsWith("<ns5:reports"))
-                .body(containsString("<ns5:validator name=\"Schematron Validator\""));
+                .header("X-VALIDATOR-Schematron-Valid", "true").body(startsWith("<reports"))
+                .body(containsString("<validator name=\"Schematron Validator\""));
     }
 
     @Test
@@ -35,8 +35,8 @@ class ValidationControllerTest {
 
         given().contentType(ContentType.XML).body(xmlFile).accept(MediaType.APPLICATION_JSON).when().post("/api/validate/minimal").then()
                 .statusCode(200).contentType(ContentType.JSON).body("acceptable", is(1)).body("rejected", is(0))
-                .body("processingErrors", is(0)).body("results", hasSize(1)).body("results[0].schema", is(true))
-                .body("results[0].schematron", is(true)).body("results[0].acceptance", is("ACCEPTABLE"))
+                .body("processing-errors", is(0)).body("results", hasSize(1)).body("results[0].layers[0].valid", is(true))
+                .body("results[0].layers[1].valid", is(true)).body("results[0].acceptance", is("ACCEPTABLE"))
                 .header("Content-Disposition", allOf(containsString("attachment"), containsString("compact-validation-result.json")))
                 .header("X-VALIDATOR-Acceptance", "ACCEPTABLE").header("X-VALIDATOR-Schema-Valid", "true")
                 .header("X-VALIDATOR-Schematron-Valid", "true");
@@ -49,9 +49,9 @@ class ValidationControllerTest {
         given().contentType(ContentType.XML).body(xmlFile).accept(MediaType.APPLICATION_XML).when().post("/api/validate/minimal").then()
                 .statusCode(200).contentType(ContentType.XML)
                 .body(containsString("http://www.xoev.de/de/validator/framework/2/compact-format")).body(containsString("acceptable=\"1\""))
-                .body(containsString("rejected=\"0\"")).body(containsString("processingerrors=\"0\""))
+                .body(containsString("rejected=\"0\"")).body(containsString("processing-errors=\"0\""))
                 .header("Content-Disposition", allOf(containsString("attachment"), containsString("validation-result.xml")))
                 .header("X-VALIDATOR-Acceptance", "ACCEPTABLE").header("X-VALIDATOR-Schema-Valid", "true")
-                .header("X-VALIDATOR-Schematron-Valid", "true").body(startsWith("<compactreport")).body(containsString("<result"));
+                .header("X-VALIDATOR-Schematron-Valid", "true").body(startsWith("<reports")).body(containsString("<report"));
     }
 }

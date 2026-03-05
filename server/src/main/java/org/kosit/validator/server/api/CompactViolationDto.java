@@ -5,5 +5,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record CompactViolationDto(@JsonProperty("message") String message, @JsonProperty("severity") String severity,
-        @JsonProperty("detail") String detail) {
+        @JsonProperty("id") Long id, @JsonProperty("line") Long line, @JsonProperty("col") String col) {
 }
