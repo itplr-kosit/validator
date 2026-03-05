@@ -75,19 +75,19 @@ public class ValidationService {
             report.setAcceptance(result.getAcceptRecommendation());
             report.setErrorSummary(joinErrors(result));
 
-            report.addSchemaReference("xsd", "XSD");
-            if (!result.isSchemaValid()) {
-                result.getSchemaViolations().forEach(report::addSchemaViolation);
-            }
+            report.addSchemaValidationResult(result.getSchemaViolations());
+            /*
+             * report.addSchemaReference("xsd", "XSD"); if (!result.isSchemaValid()) {
+             * result.getSchemaViolations().forEach(report::addSchemaViolation); }
+             */
 
             // Schematron-Ausgaben und deren Titel als Schema-Referenzen
-            if (result.getSchematronResult() != null) {
-                result.getSchematronResult().forEach(so -> {
-                    String title = so.getTitle() != null ? so.getTitle() : "Schematron";
-                    report.addSchemaReference(title, "Schematron");
-                    so.getFailedAsserts().forEach(fa -> report.addSchematronViolation(fa, title));
-                });
-            }
+            report.addSchematronValidationResults(result.getSchematronResult());
+            /*
+             * if (result.getSchematronResult() != null) { result.getSchematronResult().forEach(so -> { String title =
+             * so.getTitle() != null ? so.getTitle() : "Schematron"; report.addSchemaReference(title, "Schematron");
+             * so.getFailedAsserts().forEach(fa -> report.addSchematronViolation(fa, title)); }); }
+             */
 
             report.setChecksum(HexFormat.of().formatHex(input.getHashCode()));
             summary.addReport(report);
