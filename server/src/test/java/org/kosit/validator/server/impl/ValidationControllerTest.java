@@ -47,9 +47,9 @@ class ValidationControllerTest {
         File xmlFile = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
 
         given().contentType(ContentType.XML).body(xmlFile).accept(MediaType.APPLICATION_XML).when().post("/api/validate/minimal").then()
-                .statusCode(200).contentType(ContentType.XML).body(containsString("http://www.xoev.de/de/validator/framework/2/mvrl"))
-                .body(containsString("acceptable=\"1\"")).body(containsString("rejected=\"0\""))
-                .body(containsString("processingerrors=\"0\""))
+                .statusCode(200).contentType(ContentType.XML)
+                .body(containsString("http://www.xoev.de/de/validator/framework/2/compact-format")).body(containsString("acceptable=\"1\""))
+                .body(containsString("rejected=\"0\"")).body(containsString("processingerrors=\"0\""))
                 .header("Content-Disposition", allOf(containsString("attachment"), containsString("validation-result.xml")))
                 .header("X-VALIDATOR-Acceptance", "ACCEPTABLE").header("X-VALIDATOR-Schema-Valid", "true")
                 .header("X-VALIDATOR-Schematron-Valid", "true").body(startsWith("<compactreport")).body(containsString("<result"));
