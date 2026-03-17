@@ -48,19 +48,19 @@ The Validator can be used in three different ways:
 
 ### Standalone Command Line Interface (CLI)
 
-**Important hint**: since v1.5.1 the filename has been changed from `validationtool-*` to `validator-*`
+**Important hint**: since v2.0.0 the filename has been changed from `validator-*` to `validator-cli-*`
 
 The general way using the CLI is:
 
 ```shell
-java -jar validator-<version>-standalone.jar -s <scenario-config-file> [-r <repository-path>]
+java -jar validator-cli-<version>-runner.jar -s <scenario-config-file> [-r <repository-path>]
 [OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
 The help option displays further CLI options to customize the process:
 
 ```shell
-java -jar validator-<version>-standalone.jar --help
+java -jar validator-cli-<version>-runner.jar --help
 ```
 
 A concrete example with a specific Validator configuration can be found on 
@@ -92,8 +92,8 @@ as that dependency is marked `optional` in this project and will thus not be res
 
 The Validator distribution contains the following artifacts:
 
-1. **validator-`<version>`.jar**: Java library for embedded use within an application
-1. **validator-`<version>`-standalone.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file comes with JAXB *embedded* and can be used with Java >= 11)
+1. **validator-core-`<version>`.jar**: Java library for embedded use within an application
+1. **validator-cli-`<version>`-runner.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file is now Quarkus-based and can be used with Java >= 17)
 1. **libs/**: directory containing all (incl. optional) dependencies of the validator
 
 ## Installation
@@ -107,19 +107,19 @@ Download from the following sources is possible:
 ```xml
 <dependency>
     <groupId>org.kosit</groupId>
-    <artifactId>validator</artifactId>
+    <artifactId>validator-core</artifactId>
     <version>x.y.z</version>
 </dependency>
 ```
 
-To use the standalone version with Maven coordinates, add the respective classifier:
+To use the standalone version with Maven coordinates:
 
 ```xml
 <dependency>
     <groupId>org.kosit</groupId>
-    <artifactId>validator</artifactId>
+    <artifactId>validator-cli</artifactId>
     <version>x.y.z</version>
-    <classifier>standalone</classifier>
+    <classifier>runner</classifier>
 </dependency>
 ```
 
