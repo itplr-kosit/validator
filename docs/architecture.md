@@ -6,6 +6,28 @@ see [configuration documentation](configurations.md)).
 The validator takes a scenario.xml and the configured directory with all artifacts necessary for validation (scenario repository). Then it
 performs the validation and generates a report in XML format. This report is then the input to an XSLT provided by the configuration.
 
+## System Overview
+
+The validator system is designed with a modular structure, where the core validation logic is decoupled from the access interfaces.
+
+```mermaid
+graph TD
+    User([User / Application]) -->|HTTP REST| Server[Validator Server]
+    User -->|CLI Call| CLI[Validator CLI]
+    User -->|Java API| App[Embedding Java Application]
+
+    Server -->|uses| Core[Validator Core Engine]
+    CLI -->|uses| Core
+    App -->|uses| Core
+
+    subgraph "Validator Core (`validator-core`)"
+        Core -->|selects| Scenario[Szenario Definition]
+        Core -->|executes| XSD[XSD Validation]
+        Core -->|executes| Schematron[Schematron Validation]
+        Core -->|creates| XVRL[XVRL Report]
+    end
+```
+
 ## Separation of concerns
 
 * The purpose of the validator is to only report if an XML instance is valid or not
@@ -14,9 +36,9 @@ performs the validation and generates a report in XML format. This report is the
 
 The validator reports valid/invalid, a configuration reports acceptance/rejection!
 
-## General default process
+## Core Validation Process
 
-The general process is like this (the default is defined in `DefaultCheck`):
+The internal validation process within the Core Engine (the default is defined in `DefaultCheck`) follows these steps:
 
 ```mermaid
 
