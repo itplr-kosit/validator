@@ -2,7 +2,7 @@ image: maven:latest
 
 variables:
   BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID -Dfile.encoding=UTF-8  -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
-  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Xmx6g"
   MAVEN_CLI_OPTS: " --batch-mode  --update-snapshots --errors --fail-at-end --show-version -s .mvn/settings.xml"
   MAVEN_CLI_OPTS_CENTRAL: " --batch-mode --show-version -s .mvn/settings-maven-central.xml"
 
@@ -18,7 +18,7 @@ cache:
 .java:
   stage: build
   needs:
-    - job: java-17
+    - job: java-25
       artifacts: false
   variables:
     QUARKUS_CONTAINER_IMAGE_BUILD: "false"
@@ -35,19 +35,14 @@ cache:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-.java_extended:
+java-25:
   extends: .java
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-
-java-17:
-  extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
+  image: maven:3-eclipse-temurin-25-alpine
   needs: [ ]
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP install
   artifacts:
-    name: java-17
+    name: java-25
     when: always
     paths:
       - target/*.jar
@@ -57,35 +52,33 @@ java-17:
         - target/surefire-reports/*.xml
         - target/failsafe-reports/*.xml
 
-java-21:
+# Rare Java stuff
+.java_extended:
   extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-21-alpine
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
 
-java-24:
-  extends: .java_extended
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-24-alpine
-
-deploy:
-  stage: deploy
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-11-alpine
-  needs:
-    - job: java-17
-  script:
-    - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dclassifier="distribution" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.jar -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-javadoc.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="javadoc" -Dversion=${PROJECT_VERSION} -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-standalone.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="standalone" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS  deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-sources.jar -DgroupId=kosit -DartifactId=validator -Dclassifier="sources" -Dversion=${PROJECT_VERSION} -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-#    - mvn $MAVEN_CLI_OPTS clean deploy -DskipTests -DaltDeploymentRepository=gitlab-maven::default::https://projekte.kosit.org/api/v4/projects/7/packages/maven
-#    - mvn $MAVEN_CLI_OPTS clean deploy -DskipTests -Pjakarta -DaltDeploymentRepository=gitlab-maven::default::https://projekte.kosit.org/api/v4/projects/7/packages/maven
-  when: manual
-
-deploy-snapshot:
-  extends: java-17
+# Deploy Java 25 build on Maven Central
+deploy-java-25-snapshot:
+  extends: java-25
   script:
     - mvn $MAVEN_CLI_OPTS_CENTRAL -P release-snapshot deploy
 
+deploy:
+  stage: deploy
+  image: maven:3-eclipse-temurin-25-alpine
+  needs:
+    - job: java-25
+  script:
+    - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip            -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="distribution" -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.jar            -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION}                             -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-javadoc.jar    -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="javadoc"      -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-standalone.jar -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="standalone"   -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-sources.jar    -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="sources"      -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+  when: manual
+
+# Build Docker images and upload to KoSIT registry
 create-build-image:
   stage: deploy
   image: docker:latest
@@ -101,12 +94,22 @@ create-build-image:
       changes:
         - .mvn/createBuildImages.sh
 
+# Run OWASP checks - expensive so only on main branch
 owasp-check:
-  extends: .java
-  image: $CI_REGISTRY_IMAGE/maven:3-eclipse-temurin-17-alpine
+  stage: test
+  image: maven:3-eclipse-temurin-25-alpine
   needs: [ ]
+  # set job timeout to 1 hour - it's required when new rules are downloaded
+  timeout: 1h                           
+  variables:
+    RUNNER_SCRIPT_TIMEOUT: 1h        
   script:
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP validate -Powasp-check
+  artifacts:
+    name: artifacts
+    reports:
+      codequality:
+        - target/dependency-check-report.html
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: $CI_COMMIT_REF_NAME == "main"
@@ -121,7 +124,7 @@ server-image:
     - name: docker:dind
       alias: docker
   needs:
-    - job: java-17
+    - job: java-25
   variables:
     # dind im Docker-Executor korrekt konfigurieren
     DOCKER_HOST: tcp://docker:2375
