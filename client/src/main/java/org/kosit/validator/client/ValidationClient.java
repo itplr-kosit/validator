@@ -2,7 +2,6 @@ package org.kosit.validator.client;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.MediaType;
-<<<<<<< HEAD
 import jakarta.xml.bind.JAXBException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.kosit.validator.api.compact.CompactXVRLReportSummary;
@@ -10,8 +9,6 @@ import org.kosit.validator.client.api.ValidationApi;
 import org.kosit.validator.client.filter.ValidationRequestConfig;
 import org.kosit.validator.client.filter.ValidationResponseMetadata;
 import jakarta.xml.bind.JAXBContext;
-=======
->>>>>>> 4371147 (adapt refactoring to CompactXVRLReportSummary)
 import jakarta.xml.bind.JAXBException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.kosit.validator.api.compact.CompactXVRLReportSummary;
@@ -60,35 +57,6 @@ public class ValidationClient {
 
     public CompactXVRLReportSummary validateMinimal(File input) {
         return new CompactXVRLReportSummary(unmarshal(api.validateMinimal(input), XVRLReportSummary.class));
-    }
-
-    public ValidationResponse<File> validateRawWithMetadata(File input) {
-        File result = api.validate(input);
-        return toResponse(result);
-    }
-
-    public ValidationResponse<File> validateMinimalRawWithMetadata(File input) {
-        File result = api.validate(input);
-        return toResponse(result);
-    }
-
-    public ValidationResponse<File> validateMinimalRawAsJsonWithMetadata(File input) {
-        requestConfig.setAcceptType(MediaType.APPLICATION_JSON_TYPE);
-        return toResponse(api.validateMinimal(input));
-    }
-
-    public ValidationResponse<XVRLReportSummary> validateWithMetadata(File input) {
-        File result = api.validate(input);
-        return toResponse(unmarshal(result, XVRLReportSummary.class));
-    }
-
-    public ValidationResponse<CompactXVRLReportSummary> validateMinimalWithMetadata(File input) {
-        File result = api.validateMinimal(input);
-        return toResponse(new CompactXVRLReportSummary(unmarshal(api.validateMinimal(input), XVRLReportSummary.class)));
-    }
-
-    private <T> ValidationResponse<T> toResponse(T body) {
-        return new ValidationResponse<>(body, metadata.getStatusCode(), metadata.getContentType());
     }
 
     public ValidationResponse<File> validateRawWithMetadata(File input) {
