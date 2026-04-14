@@ -36,9 +36,11 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 
 /**
  * JAXB Conversion Utility.
@@ -107,7 +109,6 @@ public class ConversionService {
         p.add(org.kosit.validator.model.ObjectFactory.class.getPackage());
         p.add(org.kosit.validator.model.xvrl.ObjectFactory.class.getPackage());
         p.add(org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
-        p.add(org.kosit.validator.model.mvrl.ObjectFactory.class.getPackage());
         initialize(p);
     }
 
