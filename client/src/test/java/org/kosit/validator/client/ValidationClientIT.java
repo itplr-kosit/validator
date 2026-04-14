@@ -62,15 +62,9 @@ class ValidationClientIT {
 
         CompactXVRLReportSummary result = validationClient.validateMinimal(input);
 
-<<<<<<< HEAD
         assertThat(result.getReports()).isNotNull();
         assertThat(result.getReports().isEmpty()).isFalse();
         assertThat(result.getReports().get(0).getAcceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
-=======
-        assertThat(result.getResult()).isNotNull();
-        assertThat(result.getResult().isEmpty()).isFalse();
-        assertThat(result.getResult().get(0).getAcceptance()).isEqualTo(AcceptanceStatusType.ACCEPTABLE);
->>>>>>> 0c78197 (extend methods)
         assertThat(result.getAcceptable() > 0).isTrue();
     }
 
@@ -95,17 +89,10 @@ class ValidationClientIT {
         assertThat(report).isNotNull();
         assertThat(report.length() > 0).isTrue();
 
-<<<<<<< HEAD
         CompactValidationResultsDto dto = new ObjectMapper().readValue(report, CompactValidationResultsDto.class);
 
         assertThat(dto.results()).isNotEmpty();
         assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE.name());
-=======
-        MVRLCompactReportDto dto = new ObjectMapper().readValue(report, MVRLCompactReportDto.class);
-
-        assertThat(dto.results()).isNotEmpty();
-        assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptanceStatusType.ACCEPTABLE.value());
->>>>>>> 0c78197 (extend methods)
         assertThat(dto.acceptable()).isEqualTo(1);
     }
 

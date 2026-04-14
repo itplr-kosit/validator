@@ -2,6 +2,7 @@ package org.kosit.validator.client;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.MediaType;
+<<<<<<< HEAD
 import jakarta.xml.bind.JAXBException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.kosit.validator.api.compact.CompactXVRLReportSummary;
@@ -9,13 +10,14 @@ import org.kosit.validator.client.api.ValidationApi;
 import org.kosit.validator.client.filter.ValidationRequestConfig;
 import org.kosit.validator.client.filter.ValidationResponseMetadata;
 import jakarta.xml.bind.JAXBContext;
+=======
+>>>>>>> 4371147 (adapt refactoring to CompactXVRLReportSummary)
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.client.api.ValidationApi;
 import org.kosit.validator.client.filter.ValidationRequestConfig;
 import org.kosit.validator.client.filter.ValidationResponseMetadata;
-import org.kosit.validator.model.mvrl.MVRLCompactReport;
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
 
 import java.io.File;
@@ -109,12 +111,10 @@ public class ValidationClient {
         return toResponse(unmarshal(result, XVRLReportSummary.class));
     }
 
-    public ValidationResponse<MVRLCompactReport> validateMinimalWithMetadata(File input) {
+    public ValidationResponse<CompactXVRLReportSummary> validateMinimalWithMetadata(File input) {
         File result = api.validateMinimal(input);
-        return toResponse(unmarshal(result, MVRLCompactReport.class));
+        return toResponse(new CompactXVRLReportSummary(unmarshal(api.validateMinimal(input), XVRLReportSummary.class)));
     }
-
-    // --- Intern ---
 
     private <T> ValidationResponse<T> toResponse(T body) {
         return new ValidationResponse<>(body, metadata.getStatusCode(), metadata.getContentType());
