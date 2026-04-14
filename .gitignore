@@ -50,4 +50,6 @@ somePrefix*.xml
 
 # Created stuff
 server/ui/
-/client/classes/openapi.yml
+client/classes/openapi.yml
+
+.claude/
