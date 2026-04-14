@@ -1,6 +1,7 @@
 package org.kosit.validator.client;
 
 import jakarta.enterprise.context.ApplicationScoped;
+<<<<<<< HEAD
 import jakarta.ws.rs.core.MediaType;
 import jakarta.xml.bind.JAXBException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -8,6 +9,14 @@ import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.client.api.ValidationApi;
 import org.kosit.validator.client.filter.ValidationRequestConfig;
 import org.kosit.validator.client.filter.ValidationResponseMetadata;
+=======
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.kosit.validator.client.api.ValidationApi;
+import org.kosit.validator.model.mvrl.MVRLCompactReport;
+>>>>>>> 547e5cf (initial checkin)
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
 
 import java.io.File;
