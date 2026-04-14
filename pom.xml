@@ -137,6 +137,21 @@
                 <artifactId>Saxon-HE</artifactId>
                 <version>${version.saxon-he}</version>
             </dependency>
+            <dependency>
+                <groupId>name.dmaus.schxslt</groupId>
+                <artifactId>java</artifactId>
+                <version>4.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>name.dmaus.schxslt</groupId>
+                <artifactId>schxslt</artifactId>
+                <version>1.10.1</version>
+            </dependency>
+            <dependency>
+                <groupId>name.dmaus.schxslt</groupId>
+                <artifactId>schxslt2</artifactId>
+                <version>1.10.2</version>
+            </dependency>
             
             <dependency>
                 <groupId>org.assertj</groupId>
@@ -147,6 +162,11 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.13.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>3.0</version>
             </dependency>
             <dependency>
                 <groupId>io.rest-assured</groupId>
@@ -163,6 +183,12 @@
                 <artifactId>packaged-test-scenarios</artifactId>
                 <version>1.0.3</version>
             </dependency>
+            
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -173,6 +199,8 @@
             <version>${version.lombok}</version>
             <scope>provided</scope>
         </dependency>
+        
+        <!--
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
@@ -182,22 +210,25 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <optional>true</optional>
         </dependency>
+        -->
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -215,6 +246,7 @@
             <artifactId>packaged-test-scenarios</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
     </dependencies>
 
     <build>
@@ -244,8 +276,8 @@
                     <version>3.15.0</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
+                        <release>${java.version}</release>
+                        <proc>full</proc>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -287,6 +319,22 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.4.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.5.5</version>
+                    <configuration>
+                        <!--suppress MavenModelInspection -->
+                        <!--argLine>-Dfile.encoding=UTF-8 ${jacocoSurefire}</argLine-->
+                        <argLine>-Dfile.encoding=UTF-8</argLine>
+                        <systemProperties>
+                            <property>
+                                <name>java.net.useSystemProxies</name>
+                                <value>true</value>
+                            </property>
+                        </systemProperties>
+                    </configuration>
                 </plugin>
 
                 <plugin>
