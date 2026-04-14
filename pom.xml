@@ -45,23 +45,26 @@
         </developer>
     </developers>
     <properties>
-        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.30.6</quarkus.platform.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.assertj>3.27.3</version.assertj>
-        <version.commons-io>2.20.0</version.commons-io>
-        <version.commons-lang>3.18.0</version.commons-lang>
-        <version.jacoco>0.8.13</version.jacoco>
+
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
+        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+        <quarkus.platform.version>3.34.3</quarkus.platform.version>
+
+        <version.assertj>3.27.7</version.assertj>
+        <version.commons-io>2.21.0</version.commons-io>
+        <version.commons-lang>3.20.0</version.commons-lang>
+        <version.jacoco>0.8.14</version.jacoco>
         <version.jaxb-api>4.0.2</version.jaxb-api>
-        <version.jaxb-impl>4.0.5</version.jaxb-impl>
-        <version.lombok>1.18.38</version.lombok>
-        <version.mockito>4.11.0</version.mockito>
-        <version.owasp-dependency-check>10.0.4</version.owasp-dependency-check>
-        <version.rest-assured>5.5.5</version.rest-assured>
+        <!-- 4.0.7 has a regression -->
+        <version.jaxb-impl>4.0.6</version.jaxb-impl>
+        <version.lombok>1.18.42</version.lombok>
+        <version.mockito>5.21.0</version.mockito>
+        <version.owasp-dependency-check>12.1.8</version.owasp-dependency-check>
+        <version.rest-assured>5.5.7</version.rest-assured>
         <version.saxon-he>12.9</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
-        <version.jaxb-maven-plugin>4.0.9</version.jaxb-maven-plugin>
+        <version.jaxb-maven-plugin>4.0.11</version.jaxb-maven-plugin>
     </properties>
 
     <repositories>
@@ -208,7 +211,7 @@
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.8.0</version>
+                    <version>0.10.0</version>
                     <extensions>true</extensions>
                     <configuration>
                         <publishingServerId>central</publishingServerId>
@@ -267,8 +270,19 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.3.9,)</version>
+                                    <!-- minimum for OWASP check-->
+                                    <version>[3.6.3,)</version>
                                 </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <!-- Required for "-proc:full" required for Lombok: 
+                                      Any Java 11 (LTS) >= 11.0.23
+                                      No Java 12 to 16
+                                      Any Java 17 (LTS) >= 17.0.11
+                                      No Java 18 to 20
+                                      Any Java 21 or higher
+                                    -->
+                                    <version>[11.0.23,12),[17.0.11,18),[21,)</version>
+                                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
@@ -470,11 +484,16 @@
                         <artifactId>dependency-check-maven</artifactId>
                         <version>${version.owasp-dependency-check}</version>
                         <configuration>
+                        <!-- Specifies if the build should be failed if a CVSS score 
+                        above a specified level is identified. 
+                        The default is 11 which means since the CVSS scores are 0-10, 
+                        by default the build will never fail.-->
                             <failBuildOnCVSS>0</failBuildOnCVSS>
                             <suppressionFiles>
                                 <suppressionFile>${project.basedir}/owasp-suppressions.xml</suppressionFile>
                             </suppressionFiles>
-
+                            <!-- ref to CI CD variable -->
+                            <nvdApiKey>${NVD_API_KEY}</nvdApiKey>
                         </configuration>
                         <executions>
                             <execution>
@@ -583,7 +602,7 @@
     <scm>
         <connection>scm:git:https://github.com/itplr-kosit/validator.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>release/1.6.x</tag>
+        <tag>2.x</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
 
