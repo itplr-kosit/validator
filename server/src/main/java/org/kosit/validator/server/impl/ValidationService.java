@@ -14,17 +14,20 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
 import org.kosit.validator.impl.xml.ProcessorProvider;
-import org.kosit.validator.api.compact.CompactXVRLReport;
-import org.kosit.validator.api.compact.CompactXVRLReportSummary;
-import org.kosit.validator.api.compact.ValidatorEngineInformation;
-import org.kosit.validator.model.xvrl.*;
+import org.kosit.validator.model.mvrl.AcceptanceStatusType;
+import org.kosit.validator.model.mvrl.MVRLCompactReport;
+import org.kosit.validator.model.mvrl.ObjectFactory;
+import org.kosit.validator.model.mvrl.ResultType;
 import org.kosit.validator.server.config.ValidationConfig;
 
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -61,50 +64,27 @@ public class ValidationService {
         return result;
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final Input input, final Result defaultResult) {
-        return convertMinimalXvrl(Map.of(input, defaultResult));
+    public MVRLCompactReport convertMinimal(final Input input, final Result defaultResult) {
+        return convertMinimal(Map.of(input.getName(), defaultResult));
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final Map<Input, Result> defaultResults) {
-        final CompactXVRLReportSummary summary = CompactXVRLReportSummary.create();
-        defaultResults.forEach((input, result) -> {
-            final CompactXVRLReport report = CompactXVRLReport.create();
-            report.setFilename(input.getName());
-            report.setCreator("compact-report");
-            report.setScenario(detectSelectedScenario(result));
-            report.setAcceptance(result.getAcceptRecommendation());
-            report.setErrorSummary(joinErrors(result));
-
-            report.addSchemaValidationResult(result.getSchemaViolations());
-            /*
-             * report.addSchemaReference("xsd", "XSD"); if (!result.isSchemaValid()) {
-             * result.getSchemaViolations().forEach(report::addSchemaViolation); }
-             */
-
-            // Schematron-Ausgaben und deren Titel als Schema-Referenzen
-            report.addSchematronValidationResults(result.getSchematronResult());
-            /*
-             * if (result.getSchematronResult() != null) { result.getSchematronResult().forEach(so -> { String title =
-             * so.getTitle() != null ? so.getTitle() : "Schematron"; report.addSchemaReference(title, "Schematron");
-             * so.getFailedAsserts().forEach(fa -> report.addSchematronViolation(fa, title)); }); }
-             */
-
-            report.setChecksum(HexFormat.of().formatHex(input.getHashCode()));
-            summary.addReport(report);
+    public MVRLCompactReport convertMinimal(final Map<String, Result> defaultResults) {
+        final ObjectFactory mvrlObjectFactory = new ObjectFactory();
+        MVRLCompactReport compactReport = mvrlObjectFactory.createMVRLCompactReport();
+        defaultResults.entrySet().stream().forEach(entry -> {
+            final ResultType result = mvrlObjectFactory.createResultType();
+            result.setFile(entry.getKey());
+            final Result defaultResult = entry.getValue();
+            result.setSchema(defaultResult.isSchemaValid());
+            result.setSchematron(defaultResult.isSchematronValid());
+            result.setAcceptance(AcceptanceStatusType.valueOf(defaultResult.getAcceptRecommendation().name()));
+            result.setErrordescription(joinErrors(defaultResult));
+            compactReport.getResult().add(result);
         });
-        summary.setAcceptable(defaultResults.values().stream().filter(Result::isAcceptable).count());
-        summary.setRejected(defaultResults.values().stream().filter(r -> !r.isAcceptable()).count());
-        summary.setProcessingErrors(defaultResults.values().stream().filter(r -> !r.isProcessingSuccessful()).count());
-        summary.setValidatorInformation(new ValidatorEngineInformation(engineInformation.getName(), engineInformation.getVersion()));
-        return summary;
-    }
-
-    private String detectSelectedScenario(Result defaultResult) {
-        return defaultResult.getReportSummary().getReports().stream()
-                .filter(rep -> rep.getId().equals(ScenarioSelectionAction.METADATA.getId())).findFirst()
-                .map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario")).findFirst()
-                        .map(XVRLDetection::getCode).orElse("null"))
-                .orElse("null");
+        compactReport.setAcceptable(defaultResults.entrySet().stream().filter(e -> e.getValue().isAcceptable()).count());
+        compactReport.setRejected(defaultResults.entrySet().stream().filter(e -> !e.getValue().isAcceptable()).count());
+        compactReport.setProcessingerrors(defaultResults.entrySet().stream().filter(e -> !e.getValue().isProcessingSuccessful()).count());
+        return compactReport;
     }
 
     private static String joinErrors(final Result value) {
