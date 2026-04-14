@@ -59,7 +59,7 @@ public class ComputeAcceptanceActionTest {
         assertThat(result).isNull();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ComputeAcceptanceActionTest {
         final Process process = TestProcessBuilder.create().schemaInvalid().setDummyReport().build();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class ComputeAcceptanceActionTest {
         final Process process = TestProcessBuilder.create().schemaValid().schematronInvalid().setDummyReport().build();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class ComputeAcceptanceActionTest {
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ComputeAcceptanceActionTest {
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath("count(//doesnotExist) = 1"));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ComputeAcceptanceActionTest {
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class ComputeAcceptanceActionTest {
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class ComputeAcceptanceActionTest {
         final Process process = TestProcessBuilder.create().schematronValid().setDummyReport().build();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class ComputeAcceptanceActionTest {
         process.getProcessStepResults().remove(processStepResult);
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -145,6 +145,6 @@ public class ComputeAcceptanceActionTest {
         final Process process = TestProcessBuilder.create().schemaInvalid().schematronValid().build();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
-        assertThat(checkResult.getObject()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 }

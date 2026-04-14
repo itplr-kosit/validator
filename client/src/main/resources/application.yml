@@ -1,0 +1,12 @@
+quarkus:
+  openapi-generator:
+    codegen:
+      input-base-dir: target/classes
+      include: openapi.yml
+      spec:
+        openapi_yml:
+          base-package: org.kosit.validator.client
+          config-key: validator
+  rest-client:
+    validator:
+      providers: org.kosit.validator.client.filter.ValidationRequestFilter, org.kosit.validator.client.filter.ValidationContentTypeCaptureFilter

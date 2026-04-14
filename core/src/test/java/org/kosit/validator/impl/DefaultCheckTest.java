@@ -37,13 +37,9 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kosit.validator.api.*;
 import org.w3c.dom.Document;
 
-import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.api.Result;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
 import org.kosit.validator.impl.xml.ProcessorProvider;
@@ -115,7 +111,7 @@ public class DefaultCheckTest {
         assertThat(doc.isAcceptable()).isTrue();
         assertThat(doc.isSchematronValid()).isTrue();
         assertThat(doc.isSchemaValid()).isTrue();
-        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -124,7 +120,7 @@ public class DefaultCheckTest {
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
-        assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -175,7 +171,7 @@ public class DefaultCheckTest {
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
         assertThat(result.isSchemaValid()).isFalse();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
         assertThat(result.isAcceptable()).isFalse();
     }
 
@@ -199,7 +195,7 @@ public class DefaultCheckTest {
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
@@ -216,7 +212,7 @@ public class DefaultCheckTest {
         assertThat(result.getSchematronResult().get(0).findFailedAssert("content-1")).isPresent();
         assertThat(result.isProcessingSuccessful()).isTrue();
         // acceptMatch overules schematron!!!
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
         assertThat(result.isAcceptable()).isTrue();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
@@ -233,7 +229,7 @@ public class DefaultCheckTest {
         assertThat(result.isSchematronValid()).isFalse();
         assertThat(result.getFailedAsserts()).isNotEmpty();
         assertThat(result.isProcessingSuccessful()).isTrue();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
@@ -246,7 +242,7 @@ public class DefaultCheckTest {
         assertThat(result.isProcessingSuccessful()).isFalse();
         assertThat(result.isSchematronValid()).isFalse();
         assertThat(result.isSchemaValid()).isTrue();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.UNDEFINED);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.UNDEFINED);
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getProcessingErrors()).hasSize(1);

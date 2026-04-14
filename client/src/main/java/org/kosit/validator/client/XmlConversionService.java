@@ -1,0 +1,152 @@
+/*
+ * Copyright 2017-2022  Koordinierungsstelle für IT-Standards (KoSIT)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kosit.validator.client;
+
+import jakarta.xml.bind.*;
+import jakarta.xml.bind.annotation.XmlRegistry;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.*;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.StringJoiner;
+
+/**
+ * JAXB Conversion Utility.
+ */
+@Slf4j
+public class XmlConversionService {
+
+    /**
+     * Exception while serializing/deserializing with jaxb.
+     */
+    public static class ConversionExeption extends RuntimeException {
+
+        /**
+         * Constructor.
+         *
+         * @param message the message.
+         * @param cause the cause
+         */
+        public ConversionExeption(final String message, final Exception cause) {
+            super(message, cause);
+        }
+
+        /**
+         * Constructor.
+         *
+         * @param message the message.
+         */
+        public ConversionExeption(final String message) {
+            super(message);
+        }
+    }
+
+    private static final int MAX_LOG_CONTENT = 50;
+
+    // context setup
+    private JAXBContext jaxbContext;
+
+    public JAXBContext getJaxbContext() {
+        if (this.jaxbContext == null) {
+            initialize();
+        }
+        return this.jaxbContext;
+    }
+
+    private static <T> QName createQName(final T model) {
+        return new QName(model.getClass().getSimpleName().toLowerCase());
+    }
+
+    private void checkInputEmpty(final File xml) {
+        if (xml == null) {
+            throw new ConversionExeption("Can not unmarshal from empty input file");
+        }
+    }
+
+    private <T> void checkTypeEmpty(final Class<T> type) {
+        if (type == null) {
+            throw new ConversionExeption("Can not unmarshal without type information. Need to specify a target type");
+        }
+    }
+
+    /**
+     * Initialisiert den default context; Alle Packages mit {@link XmlRegistry XmlRegistries}.
+     */
+    public void initialize() {
+        final Collection<Package> p = new ArrayList<>();
+        p.add(org.kosit.validator.model.ObjectFactory.class.getPackage());
+        p.add(org.kosit.validator.model.xvrl.ObjectFactory.class.getPackage());
+        p.add(org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
+        initialize(p);
+    }
+
+    public void initialize(final Package... context) {
+        initialize(Arrays.asList(context));
+    }
+
+    /**
+     * Initialisiert den conversion service mit den angegegebenen Packages.
+     *
+     * @param context packages für den JAXB Kontext
+     */
+    public void initialize(final Collection<Package> context) {
+        final String[] packages = context != null ? context.stream().map(Package::getName).toArray(String[]::new) : new String[0];
+        final StringJoiner joiner = new StringJoiner(":");
+        Arrays.stream(packages).forEach(joiner::add);
+        initialize(joiner.toString());
+    }
+
+    /**
+     * Initialsiert den conversion service mit dem angegebenen Kontextpfad
+     *
+     * @param contextPath der Kontextpfad
+     */
+    private void initialize(final String contextPath) {
+        try {
+            this.jaxbContext = JAXBContext.newInstance(contextPath, XmlConversionService.class.getClassLoader());
+        } catch (final JAXBException e) {
+            throw new IllegalStateException(String.format("Can not create JAXB context for given context: %s", contextPath), e);
+        }
+    }
+
+    public <T> T readXml(final File xml, final Class<T> type) {
+        checkInputEmpty(xml);
+        checkTypeEmpty(type);
+        try ( final InputStream is = new FileInputStream(xml) ) {
+            final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+            inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+            inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
+            inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+            final XMLStreamReader xsr = inputFactory.createXMLStreamReader(is);
+            final Unmarshaller u = getJaxbContext().createUnmarshaller();
+
+            return u.unmarshal(xsr, type).getValue();
+        } catch (final JAXBException | XMLStreamException | IOException e) {
+            throw new ConversionExeption(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml), e);
+        }
+    }
+
+}

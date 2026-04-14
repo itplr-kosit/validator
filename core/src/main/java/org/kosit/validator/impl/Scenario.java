@@ -30,10 +30,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.model.scenarios.ResourceType;
-import org.kosit.validator.model.scenarios.ScenarioType;
-
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.XPathExecutable;

@@ -138,7 +138,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
             e.setColumnNumber(locator.getColumnNumber());
             e.setRowNumber(locator.getLineNumber());
         }
-        e.setMessage("Error procesing" + content.getStringValue());
+        e.setMessage("Error processing " + content.getStringValue());
         e.setSeverityCode(terminate ? XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR : XMLSyntaxErrorSeverity.SEVERITY_WARNING);
         this.errors.add(e);
     }

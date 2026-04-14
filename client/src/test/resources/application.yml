@@ -1,0 +1,11 @@
+validator:
+  framework-version: 1.0.2
+  scenarios:
+    - scenarioPath: src/test/resources/examples/simple/scenarios.xml
+      repositoryPath: src/test/resources/examples/simple/repository
+
+quarkus:
+  index-dependency:
+    validator-server:
+      group-id: org.kosit
+      artifact-id: validator-server

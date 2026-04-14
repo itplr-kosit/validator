@@ -28,6 +28,32 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
 
+  /api/validate/minimal:
+    description: "Validation endpoint with minimized result format"
+
+    post:
+      summary: Validate XML-Input (minimal result)
+      operationId: validateMinimal
+      tags:
+        - Validation
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/InputDocument"
+        required: true
+      responses:
+        "200":
+          description: OK (minimized validation result)
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/MinimalResultDocument"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MinimalResultDocumentJson"
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
 components:
   responses:
@@ -58,3 +84,17 @@ components:
       type: string
       format: binary
       description: Plain KoSIT Validator response in xml based XVRL-Format
+
+    MinimalResultDocument:
+      type: string
+      format: binary
+      description: >
+        Minimized KoSIT Validator response in xml based XVRL-Format.
+        Contains only a reduced subset of result information.
+
+    MinimalResultDocumentJson:
+      type: object
+      description: >
+        Minimized KoSIT Validator response as JSON. Contains e.g. overall
+        validity and condensed list of issues, but omits detailed metadata.
+      additionalProperties: true
