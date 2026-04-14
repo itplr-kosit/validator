@@ -44,8 +44,10 @@
             </roles>
         </developer>
     </developers>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>25</java.version>
 
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
@@ -55,16 +57,16 @@
         <version.commons-io>2.21.0</version.commons-io>
         <version.commons-lang>3.20.0</version.commons-lang>
         <version.jacoco>0.8.14</version.jacoco>
-        <version.jaxb-api>4.0.2</version.jaxb-api>
+        <version.jaxb-api>4.0.5</version.jaxb-api>
         <!-- 4.0.7 has a regression -->
         <version.jaxb-impl>4.0.6</version.jaxb-impl>
-        <version.lombok>1.18.42</version.lombok>
+        <version.lombok>1.18.44</version.lombok>
         <version.mockito>5.21.0</version.mockito>
         <version.owasp-dependency-check>12.1.8</version.owasp-dependency-check>
         <version.rest-assured>5.5.7</version.rest-assured>
         <version.saxon-he>12.9</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
-        <version.jaxb-maven-plugin>4.0.11</version.jaxb-maven-plugin>
+        <version.jaxb-maven-plugin>4.0.12</version.jaxb-maven-plugin>
     </properties>
 
     <repositories>
@@ -96,6 +98,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -105,7 +108,60 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>${version.slf4j}</version>
-                <optional>true</optional>
+            </dependency>
+            
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${version.jaxb-api}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${version.jaxb-impl}</version>
+            </dependency>            
+            
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${version.commons-io}</version>
+            </dependency>
+             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${version.commons-lang}</version>
+            </dependency>
+           
+            <dependency>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>Saxon-HE</artifactId>
+                <version>${version.saxon-he}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${version.assertj}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+            </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>${version.rest-assured}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${version.mockito}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.kosit.validationtool</groupId>
+                <artifactId>packaged-test-scenarios</artifactId>
+                <version>1.0.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -120,69 +176,43 @@
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <version>${version.saxon-he}</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.xmlresolver</groupId>
-                    <artifactId>xmlresolver</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.xmlresolver</groupId>
-            <artifactId>xmlresolver</artifactId>
-            <version>6.0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${version.commons-lang}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>${version.jaxb-impl}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>${version.jaxb-api}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${version.assertj}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.2</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${version.commons-io}</version>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>${version.rest-assured}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.kosit.validationtool</groupId>
             <artifactId>packaged-test-scenarios</artifactId>
-            <version>1.0.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -204,10 +234,61 @@
                     <version>${quarkus.platform.version}</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.6.1</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.14.0</version>
+                    <version>3.15.0</version>
+                    <configuration>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.8.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.6.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.2.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.12.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.6.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
@@ -219,9 +300,9 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>3.2.8</version>
+                    <groupId>net.revelc.code.formatter</groupId>
+                    <artifactId>formatter-maven-plugin</artifactId>
+                    <version>2.13.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -231,7 +312,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
                 <configuration>
                     <propertiesEncoding>ISO-8859-1</propertiesEncoding>
                 </configuration>
@@ -240,7 +320,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>reserve-network-port</id>
@@ -260,7 +339,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -273,27 +351,15 @@
                                     <!-- minimum for OWASP check-->
                                     <version>[3.6.3,)</version>
                                 </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <!-- Required for "-proc:full" required for Lombok: 
-                                      Any Java 11 (LTS) >= 11.0.23
-                                      No Java 12 to 16
-                                      Any Java 17 (LTS) >= 17.0.11
-                                      No Java 18 to 20
-                                      Any Java 21 or higher
-                                    -->
-                                    <version>[11.0.23,12),[17.0.11,18),[21,)</version>
-                                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.7.1</version>
                 <executions>
                     <execution>
                         <id>full_dist</id>
@@ -314,12 +380,9 @@
                 </executions>
             </plugin>
 
-
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -333,17 +396,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>3.1.1</version>
                 <configuration>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.11.2</version>
                 <configuration>
-                    <source>17</source>
+                    <source>${java.version}</source>
                     <doclint>none</doclint>
                 </configuration>
                 <executions>
@@ -355,10 +417,10 @@
                     </execution>
                 </executions>
             </plugin>
+            
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
-                <version>2.13.0</version>
                 <executions>
                     <execution>
                         <id>validate</id>
@@ -373,8 +435,6 @@
                     <lineEnding>LF</lineEnding>
                 </configuration>
             </plugin>
-
-
         </plugins>
     </build>
 
@@ -389,9 +449,8 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.4.1</version>
                         <configuration>
-                            <source>17</source>
+                            <source>${java.version}</source>
                             <doclint>none</doclint>
                         </configuration>
                         <executions>
@@ -406,7 +465,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -420,7 +478,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>3.4.2</version>
                         <executions>
                             <execution>
                                 <id>full_dist</id>
@@ -457,7 +514,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.8</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -484,10 +540,10 @@
                         <artifactId>dependency-check-maven</artifactId>
                         <version>${version.owasp-dependency-check}</version>
                         <configuration>
-                        <!-- Specifies if the build should be failed if a CVSS score 
-                        above a specified level is identified. 
-                        The default is 11 which means since the CVSS scores are 0-10, 
-                        by default the build will never fail.-->
+                            <!-- Specifies if the build should be failed if a CVSS score 
+                            above a specified level is identified. 
+                            The default is 11 which means since the CVSS scores are 0-10, 
+                            by default the build will never fail.-->
                             <failBuildOnCVSS>0</failBuildOnCVSS>
                             <suppressionFiles>
                                 <suppressionFile>${project.basedir}/owasp-suppressions.xml</suppressionFile>
@@ -519,7 +575,6 @@
                     <plugin>
                         <groupId>net.revelc.code.formatter</groupId>
                         <artifactId>formatter-maven-plugin</artifactId>
-                        <version>2.13.0</version>
                         <executions>
                             <execution>
                                 <id>maven-formatting</id>
@@ -557,10 +612,9 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.6.0</version>
                         <executions>
                             <execution>
-                                <id>jdk11+</id>
+                                <id>shade</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
