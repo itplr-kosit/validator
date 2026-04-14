@@ -67,6 +67,7 @@
         <version.saxon-he>12.9</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
         <version.jaxb-maven-plugin>4.0.12</version.jaxb-maven-plugin>
+        <version.xmlresolver>6.0.4</version.xmlresolver>
     </properties>
 
     <repositories>
@@ -138,6 +139,17 @@
                 <version>${version.saxon-he}</version>
             </dependency>
             <dependency>
+                <groupId>org.xmlresolver</groupId>
+                <artifactId>xmlresolver</artifactId>
+                <version>${version.xmlresolver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xmlresolver</groupId>
+                <artifactId>xmlresolver</artifactId>
+                <version>${version.xmlresolver}</version>
+                <classifier>data</classifier>
+            </dependency>
+            <dependency>
                 <groupId>name.dmaus.schxslt</groupId>
                 <artifactId>java</artifactId>
                 <version>4.0.2</version>
@@ -187,6 +199,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
@@ -351,6 +368,11 @@
                     <groupId>net.revelc.code.formatter</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
                     <version>2.13.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${version.jacoco}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

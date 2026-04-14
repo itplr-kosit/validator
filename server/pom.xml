@@ -19,7 +19,6 @@
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-core</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -84,6 +83,11 @@
             <artifactId>quarkus-junit5-component</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -100,22 +104,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <encoding>UTF-8</encoding>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.36</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
@@ -142,17 +130,17 @@
                     </configOptions>
                 </configuration>
                 <executions>
-                <execution>
-                    <id>intern-administration</id>
-                    <goals>
-                        <goal>generate</goal>
-                    </goals>
-                    <configuration>
-                        <inputSpec>${project.basedir}/src/main/resources/META-INF/openapi.yml</inputSpec>
-                        <apiPackage>org.kosit.validator.api</apiPackage>
-                        <modelPackage>org.kosit.validator.api.model</modelPackage>
-                    </configuration>
-                </execution>
+                    <execution>
+                        <id>intern-administration</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/META-INF/openapi.yml</inputSpec>
+                            <apiPackage>org.kosit.validator.api</apiPackage>
+                            <modelPackage>org.kosit.validator.api.model</modelPackage>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <!-- export openapi spec-->

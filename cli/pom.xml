@@ -16,7 +16,6 @@
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-core</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -37,23 +36,22 @@
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
-            <version>2.4.2</version>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- Tests -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -73,27 +71,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <encoding>UTF-8</encoding>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.36</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
             <!-- Integrate code coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${version.jacoco}</version>
                 <configuration>
                     <excludes>
                         <exclude>**/validator/model/**</exclude>
@@ -123,10 +104,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
                 <executions>
                     <execution>
-                        <id>jdk11+</id>
+                        <id>shade+</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -153,7 +133,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>
