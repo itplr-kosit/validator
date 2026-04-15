@@ -139,5 +139,5 @@ server-image:
     QUARKUS_CONTAINER_IMAGE_BUILD: "true"
     QUARKUS_CONTAINER_IMAGE_PUSH: "true"
   script:
-    - apk add --no-cache openjdk17-jdk maven
+    - apk add --no-cache openjdk25-jdk maven
     - mvn $MAVEN_CLI_OPTS $BUILD_PROPS $CI_JOB_TIMESTAMP -pl server -am package
