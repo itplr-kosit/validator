@@ -10,37 +10,27 @@
     </parent>
 
     <packaging>jar</packaging>
-
     <artifactId>validator-api</artifactId>
+    
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
     </dependencies>
+    
     <build>
         <resources>
             <resource>
                 <directory>src/main/model</directory>
             </resource>
         </resources>
+        
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <encoding>UTF-8</encoding>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.36</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
             <!-- Generate model classes -->
             <plugin>
                 <groupId>org.jvnet.jaxb</groupId>
@@ -56,8 +46,8 @@
                 </executions>
                 <configuration>
                     <extension>true</extension>
-                    <schemaDirectory>${project.basedir}/src/main/model/xsd</schemaDirectory>
-                    <bindingDirectory>${project.basedir}/src/main/model/binding</bindingDirectory>
+                    <schemaDirectory>src/main/model/xsd</schemaDirectory>
+                    <bindingDirectory>src/main/model/binding</bindingDirectory>
                     <!--generateDirectory>${project.build.directory}/generated-sources/xjc</generateDirectory-->
                     <packageLevelAnnotations>false</packageLevelAnnotations>
                     <args>
@@ -73,19 +63,10 @@
                         </plugin>
                     </plugins>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                        <version>${version.jaxb-impl}</version>
-                        <optional>true</optional>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
