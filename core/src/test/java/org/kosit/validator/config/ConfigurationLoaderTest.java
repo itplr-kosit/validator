@@ -18,8 +18,7 @@ package org.kosit.validator.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.ResolvingMode;

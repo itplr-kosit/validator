@@ -19,11 +19,11 @@ package org.kosit.validator.config;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Data;
-
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
+
+import lombok.Data;
 
 /**
  * @author Andreas Penski

@@ -11,6 +11,7 @@ import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.xml.ProcessorProvider;
+
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 

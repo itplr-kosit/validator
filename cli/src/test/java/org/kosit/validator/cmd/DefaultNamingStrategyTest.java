@@ -17,8 +17,9 @@
 package org.kosit.validator.cmd;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link DefaultNamingStrategy}
@@ -75,8 +76,8 @@ public class DefaultNamingStrategyTest {
         assertThat(strategy.createName("test.ext")).isEqualTo("test.ext-postfix.xml");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEmptyInput() {
-        new DefaultNamingStrategy().createName(null);
+        assertThrows(IllegalArgumentException.class, () -> new DefaultNamingStrategy().createName(null));
     }
 }

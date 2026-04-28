@@ -17,6 +17,7 @@
 package org.kosit.validator.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,10 +27,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
 
 /**
@@ -49,9 +47,6 @@ public class RelativeUriResolverTest {
         }
     }
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     private URIResolver resolver = new RelativeUriResolver(BASE);
 
     @Test
@@ -61,15 +56,13 @@ public class RelativeUriResolverTest {
     }
 
     @Test
-    public void testNotExisting() throws TransformerException {
-        this.exception.expect(TransformerException.class);
-        this.resolver.resolve("ubl-0001", BASE.toASCIIString());
+    public void testNotExisting() {
+        assertThrows(TransformerException.class, () -> this.resolver.resolve("ubl-0001", BASE.toASCIIString()));
     }
 
     @Test
-    public void testOutOfPath() throws TransformerException {
-        this.exception.expect(TransformerException.class);
-        this.resolver.resolve("../results/report.xml", BASE.toASCIIString());
+    public void testOutOfPath() {
+        assertThrows(TransformerException.class, () -> this.resolver.resolve("../results/report.xml", BASE.toASCIIString()));
     }
 
     @Test

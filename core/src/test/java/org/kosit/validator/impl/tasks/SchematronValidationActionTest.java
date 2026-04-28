@@ -26,13 +26,10 @@ import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.config.ConfigurationLoader;
-import org.kosit.validator.config.TestConfigurationFactory;
 import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
@@ -56,7 +53,7 @@ public class SchematronValidationActionTest {
 
     private SchematronValidationAction action;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.action = new SchematronValidationAction(new ConversionService());
     }

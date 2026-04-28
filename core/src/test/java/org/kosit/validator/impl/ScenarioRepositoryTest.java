@@ -16,19 +16,17 @@
 
 package org.kosit.validator.impl;
 
-import static org.kosit.validator.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.kosit.validator.api.InputFactory.read;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.config.TestConfiguration;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.model.Result;
@@ -45,14 +43,11 @@ import net.sf.saxon.s9api.XdmNode;
 
 public class ScenarioRepositoryTest {
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
     private ScenarioRepository repository;
 
     private TestConfiguration configInstance;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.configInstance = new TestConfiguration();
         this.configInstance
@@ -109,8 +104,7 @@ public class ScenarioRepositoryTest {
 
     @Test
     public void testNoConfiguration() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        this.repository = new ScenarioRepository();
+        assertThrows(IllegalArgumentException.class, () -> this.repository = new ScenarioRepository());
     }
 
     @Test

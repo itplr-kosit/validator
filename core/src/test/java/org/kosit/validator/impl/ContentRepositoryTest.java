@@ -17,22 +17,18 @@
 package org.kosit.validator.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.validation.Schema;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper.Simple;
 
 import net.sf.saxon.s9api.XPathExecutable;
@@ -47,10 +43,7 @@ public class ContentRepositoryTest {
 
     private ContentRepository repository;
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
-    @Before
+    @BeforeEach
     public void setup() {
         this.repository = Simple.createContentRepository();
     }
@@ -63,8 +56,7 @@ public class ContentRepositoryTest {
 
     @Test
     public void testCreateSchemaNotExisting() throws Exception {
-        this.exception.expect(IllegalStateException.class);
-        this.repository.createSchema(Simple.NOT_EXISTING.toURL());
+        assertThrows(IllegalStateException.class, () -> this.repository.createSchema(Simple.NOT_EXISTING.toURL()));
     }
 
     @Test
@@ -75,8 +67,7 @@ public class ContentRepositoryTest {
 
     @Test
     public void testLoadXSLTNotExisting() {
-        this.exception.expect(IllegalStateException.class);
-        this.repository.loadXsltScript(Simple.NOT_EXISTING);
+        assertThrows(IllegalStateException.class, () -> this.repository.loadXsltScript(Simple.NOT_EXISTING));
     }
 
     @Test
@@ -93,14 +84,12 @@ public class ContentRepositoryTest {
 
     @Test
     public void testXpathCreationWithoutNamespace() {
-        this.exception.expect(IllegalStateException.class);
-        this.repository.createXPath("//html:html", null);
+        assertThrows(IllegalStateException.class, () -> this.repository.createXPath("//html:html", null));
     }
 
     @Test
     public void testIllegalXpath() {
-        this.exception.expect(IllegalStateException.class);
-        this.repository.createXPath("kein Xpath Ausdruck", null);
+        assertThrows(IllegalStateException.class, () -> this.repository.createXPath("kein Xpath Ausdruck", null));
     }
 
     @Test

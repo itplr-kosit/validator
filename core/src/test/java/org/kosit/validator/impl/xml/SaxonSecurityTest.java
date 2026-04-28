@@ -17,7 +17,7 @@
 package org.kosit.validator.impl.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,10 +27,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-
-import lombok.extern.slf4j.Slf4j;
-
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
@@ -38,6 +35,7 @@ import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.XMLSyntaxError;
 
+import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmDestination;

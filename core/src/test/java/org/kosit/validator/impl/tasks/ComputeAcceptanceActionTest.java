@@ -21,8 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper;
@@ -130,7 +129,6 @@ public class ComputeAcceptanceActionTest {
     public void testNoSchematronCheck() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
         // remove schematron results
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = process
                 .getActionResult(SchematronValidationAction.KEY).get();
 

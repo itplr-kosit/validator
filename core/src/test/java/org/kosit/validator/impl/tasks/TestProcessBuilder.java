@@ -19,9 +19,6 @@ package org.kosit.validator.impl.tasks;
 import java.util.Collections;
 import java.util.List;
 
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
-
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.impl.Helper;
@@ -34,6 +31,8 @@ import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLMetadata;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
 
 import net.sf.saxon.s9api.XdmNode;
 
@@ -75,17 +74,6 @@ public class TestProcessBuilder {
     public static List<BusinessReport> createReport() {
         final XdmNode someXml = Helper.parseDocument(InputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
         return createReport("report", someXml);
-    }
-
-    private static List<ValidationResultsSchematron> createSchematronError() {
-        final ValidationResultsSchematron v = new ValidationResultsSchematron();
-        final SchematronOutput out = new SchematronOutput();
-        final FailedAssert f = new FailedAssert();
-        out.getActivePatternAndFiredRuleAndFailedAssert().add(f);
-        final Results r = new Results();
-        r.setSchematronOutput(out);
-        v.setResults(r);
-        return Collections.singletonList(v);
     }
 
     private static ProcessStepResult<XdmNode, XMLSyntaxError> parseInput(final Input input) {

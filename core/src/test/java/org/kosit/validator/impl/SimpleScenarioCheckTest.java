@@ -20,9 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.MalformedURLException;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
@@ -38,7 +37,7 @@ public class SimpleScenarioCheckTest {
 
     private DefaultCheck implementation;
 
-    @Before
+    @BeforeEach
     public void setup() {
         final Configuration d = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
         this.implementation = new DefaultCheck(new TestEngineInformation(), d);

@@ -147,10 +147,11 @@ public class DefaultCheck implements Check {
         for (final CheckAction action : this.checkSteps) {
             final long start = System.currentTimeMillis();
             if (!action.isSkipped(checkProcess)) {
-                final ProcessStepResult result = action.check(checkProcess);
+                final ProcessStepResult<?,?> result = action.check(checkProcess);
                 checkProcess.addStepResult(result);
             }
-            log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
+            if (log.isDebugEnabled ())
+                log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
         }
         checkProcess.setFinished(true);
         log.info("Finished check of {} in {}ms\n", checkProcess.getInput().getName(), System.currentTimeMillis() - started);

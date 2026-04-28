@@ -16,6 +16,8 @@
 
 package org.kosit.validator.impl;
 
+import static java.util.Objects.requireNonNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.api.InputFactory.read;
 import static org.kosit.validator.impl.Helper.Simple.FOO_SCHEMATRON_INVALID;
 import static org.kosit.validator.impl.Helper.Simple.GARBAGE;
@@ -24,26 +26,27 @@ import static org.kosit.validator.impl.Helper.Simple.REJECTED;
 import static org.kosit.validator.impl.Helper.Simple.SCHEMATRON_INVALID;
 import static org.kosit.validator.impl.Helper.Simple.SIMPLE_VALID;
 import static org.kosit.validator.impl.Helper.Simple.UNKNOWN;
-import static java.util.Objects.requireNonNull;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import jakarta.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kosit.validator.api.*;
-import org.w3c.dom.Document;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kosit.validator.api.AcceptRecommendation;
+import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.Input;
+import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.Result;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
 import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.w3c.dom.Document;
 
+import jakarta.xml.bind.JAXBException;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
@@ -65,7 +68,7 @@ public class DefaultCheckTest {
 
     final private EngineInformation engineInformation = new TestEngineInformation();
 
-    @Before
+    @BeforeEach
     public void setup() throws URISyntaxException {
         final Configuration validConfig = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
         this.validCheck = new DefaultCheck(this.engineInformation, validConfig);
@@ -131,6 +134,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testMultipleCase() {
+        @SuppressWarnings ("unused")
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
         final List<Result> docs = this.validCheck.checkInput(input);
         assertThat(docs).hasSize(MULTI_COUNT);
@@ -138,6 +142,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testMultipleCaseDocument() {
+      @SuppressWarnings ("unused")
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
         final List<Document> docs = this.validCheck.check(input);
         assertThat(docs).hasSize(MULTI_COUNT);
