@@ -134,7 +134,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testMultipleCase() {
-        @SuppressWarnings ("unused")
+        @SuppressWarnings("unused")
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
         final List<Result> docs = this.validCheck.checkInput(input);
         assertThat(docs).hasSize(MULTI_COUNT);
@@ -142,7 +142,7 @@ public class DefaultCheckTest {
 
     @Test
     public void testMultipleCaseDocument() {
-      @SuppressWarnings ("unused")
+        @SuppressWarnings("unused")
         final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
         final List<Document> docs = this.validCheck.check(input);
         assertThat(docs).hasSize(MULTI_COUNT);
