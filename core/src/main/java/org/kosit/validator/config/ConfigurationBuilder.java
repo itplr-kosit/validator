@@ -17,13 +17,20 @@
 package org.kosit.validator.config;
 
 import static org.kosit.validator.impl.DateFactory.createTimestamp;
+
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
 import javax.xml.validation.Schema;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.kosit.validator.api.Configuration;
@@ -35,6 +42,9 @@ import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.DescriptionType;
 import org.kosit.validator.model.scenarios.ObjectFactory;
 import org.kosit.validator.model.scenarios.Scenarios;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.Processor;
 
 /**
@@ -44,7 +54,7 @@ import net.sf.saxon.s9api.Processor;
  */
 public class ConfigurationBuilder {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfigurationBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigurationBuilder.class);
 
     private final List<ScenarioBuilder> scenarios = new ArrayList<>();
 

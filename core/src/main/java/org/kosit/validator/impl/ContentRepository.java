@@ -21,20 +21,23 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import net.sf.saxon.s9api.*;
+
 import org.apache.commons.lang3.StringUtils;
-import org.kosit.validator.api.SchematronCompiler;
-import org.xml.sax.SAXException;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.api.SchematronCompiler;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.impl.xml.StringTrimAdapter;
@@ -42,10 +45,20 @@ import org.kosit.validator.model.scenarios.NamespaceType;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ScenarioType;
 import org.kosit.validator.model.scenarios.ValidateWithSchematron;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
 import net.sf.saxon.lib.ResourceRequest;
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.ResourceResolverWrappingURIResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XPathCompiler;
+import net.sf.saxon.s9api.XPathExecutable;
+import net.sf.saxon.s9api.XsltCompiler;
+import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Repository für verschiedene XML Artefakte zur Vearbeitung der Prüfszenarien.
@@ -54,7 +67,7 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
  */
 public class ContentRepository {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ContentRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentRepository.class);
 
     private static final class CacheKey {
 
@@ -75,7 +88,7 @@ public class ContentRepository {
             return this.uri;
         }
 
-        @java.lang.Override
+        @Override
         public boolean equals(final java.lang.Object o) {
             if (o == this)
                 return true;
@@ -93,7 +106,7 @@ public class ContentRepository {
             return true;
         }
 
-        @java.lang.Override
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -104,7 +117,7 @@ public class ContentRepository {
             return result;
         }
 
-        @java.lang.Override
+        @Override
         public java.lang.String toString() {
             return "ContentRepository.CacheKey(compilerId=" + this.getCompilerId() + ", uri=" + this.getUri() + ")";
         }

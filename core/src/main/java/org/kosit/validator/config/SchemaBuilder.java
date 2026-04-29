@@ -17,16 +17,21 @@
 package org.kosit.validator.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collections;
+
 import javax.xml.validation.Schema;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ValidateWithXmlSchema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Builder for Schema validation configuration.
@@ -35,7 +40,7 @@ import org.kosit.validator.model.scenarios.ValidateWithXmlSchema;
  */
 public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema>> {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchemaBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(SchemaBuilder.class);
 
     private static final String DEFAULT_NAME = "manually configured";
 

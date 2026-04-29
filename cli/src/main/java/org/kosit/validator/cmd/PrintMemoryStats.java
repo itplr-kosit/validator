@@ -17,9 +17,12 @@
 package org.kosit.validator.cmd;
 
 import java.text.NumberFormat;
+
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Prints some memory usage information for debugging purposes.
@@ -28,7 +31,7 @@ import org.kosit.validator.model.xvrl.XVRLReport;
  */
 class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckAction {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PrintMemoryStats.class);
+    private static final Logger log = LoggerFactory.getLogger(PrintMemoryStats.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 

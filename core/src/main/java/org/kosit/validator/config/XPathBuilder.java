@@ -17,15 +17,20 @@
 package org.kosit.validator.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.StreamSupport;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.model.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.XPathExecutable;
 
 /**
@@ -35,7 +40,7 @@ import net.sf.saxon.s9api.XPathExecutable;
  */
 class XPathBuilder implements Builder<XPathExecutable> {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(XPathBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(XPathBuilder.class);
 
     private static final String[] IGNORED_PREFIXES = new String[] { "xsd", "saxon", "xsl", "xs", "xml" };
 

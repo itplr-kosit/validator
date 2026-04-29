@@ -1,10 +1,10 @@
 package org.kosit.validator.impl;
 
-import org.kosit.validator.api.SchematronCompiler;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.kosit.validator.api.SchematronCompiler;
 
 public final class SchematronCompilerRegistry {
 

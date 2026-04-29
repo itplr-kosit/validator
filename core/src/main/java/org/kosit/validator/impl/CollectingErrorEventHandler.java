@@ -19,16 +19,19 @@ package org.kosit.validator.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringJoiner;
-import jakarta.xml.bind.ValidationEvent;
-import jakarta.xml.bind.ValidationEventHandler;
+
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+
+import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XMLSyntaxErrorSeverity;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.XMLSyntaxErrorSeverity;
+
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventHandler;
 import net.sf.saxon.s9api.MessageListener2;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;

@@ -17,6 +17,7 @@
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,11 +27,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.stream.Collectors;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
+
 import org.apache.commons.io.FileUtils;
-import org.xml.sax.SAXException;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
@@ -42,6 +44,10 @@ import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
@@ -62,7 +68,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class SchemaValidationAction implements CheckAction {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchemaValidationAction.class);
+    private static final Logger log = LoggerFactory.getLogger(SchemaValidationAction.class);
 
     public static final Key<Boolean, XMLSyntaxError> KEY = new Key<>(Boolean.class, XMLSyntaxError.class);
 

@@ -16,6 +16,13 @@
  */
 package org.kosit.validator.cmd;
 
+import java.io.PrintWriter;
+import java.text.MessageFormat;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import org.fusesource.jansi.AnsiRenderer.Code;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.Result;
@@ -27,13 +34,10 @@ import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.DefaultCheck;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.tasks.CheckAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.Processor;
-import org.fusesource.jansi.AnsiRenderer.Code;
-import java.io.PrintWriter;
-import java.text.MessageFormat;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszuwerten und auszugeben.
@@ -43,7 +47,7 @@ import java.util.stream.Collectors;
  */
 class InternalCheck extends DefaultCheck {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(InternalCheck.class);
+    private static final Logger log = LoggerFactory.getLogger(InternalCheck.class);
 
     private int checkAssertions = 0;
 

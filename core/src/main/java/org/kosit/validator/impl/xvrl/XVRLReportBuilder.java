@@ -16,8 +16,8 @@
 
 package org.kosit.validator.impl.xvrl;
 
-import static org.kosit.validator.api.XmlError.Severity.SEVERITY_FATAL_ERROR;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.kosit.validator.api.XmlError.Severity.SEVERITY_FATAL_ERROR;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,11 +25,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.oclc.purl.dsdl.svrl.ActivePattern;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.FiredRule;
-import org.w3c.dom.Element;
-
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.model.XMLSyntaxError;
@@ -45,6 +40,10 @@ import org.kosit.validator.model.xvrl.XVRLDigest;
 import org.kosit.validator.model.xvrl.XVRLMessage;
 import org.kosit.validator.model.xvrl.XVRLMetadata;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.oclc.purl.dsdl.svrl.ActivePattern;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.FiredRule;
+import org.w3c.dom.Element;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.XdmNode;

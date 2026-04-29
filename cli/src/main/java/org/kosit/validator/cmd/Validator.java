@@ -16,7 +16,25 @@
  */
 package org.kosit.validator.cmd;
 
-import net.sf.saxon.s9api.Processor;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.Input;
@@ -29,18 +47,10 @@ import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.xml.ProcessorProvider;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import static org.apache.commons.lang3.ObjectUtils.getIfNull;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sf.saxon.s9api.Processor;
 
 /**
  * Actual evaluation and processing of CommandLineOptions argumtens.
@@ -50,7 +60,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @SuppressWarnings("squid:S3725")
 public class Validator {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Validator.class);
+    private static final Logger log = LoggerFactory.getLogger(Validator.class);
 
     private Validator() {
         // hide

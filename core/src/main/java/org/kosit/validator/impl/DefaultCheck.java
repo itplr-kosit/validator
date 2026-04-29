@@ -16,20 +16,41 @@
  */
 package org.kosit.validator.impl;
 
-import net.sf.saxon.s9api.Processor;
-import org.kosit.validator.api.*;
+import static org.kosit.validator.impl.DateFactory.createTimestamp;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.kosit.validator.api.AcceptRecommendation;
+import org.kosit.validator.api.Check;
+import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.Input;
+import org.kosit.validator.api.Result;
+import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.tasks.*;
+import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
+import org.kosit.validator.impl.tasks.ComputeAcceptanceAction;
+import org.kosit.validator.impl.tasks.CreateDocumentIdentificationAction;
+import org.kosit.validator.impl.tasks.CreateReportsAction;
+import org.kosit.validator.impl.tasks.DocumentParseAction;
+import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
+import org.kosit.validator.impl.tasks.SchemaValidationAction;
+import org.kosit.validator.impl.tasks.SchematronValidationAction;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.Timestamp;
 import org.kosit.validator.model.xvrl.Validator;
 import org.kosit.validator.model.xvrl.XVRLMetadata;
-import java.util.*;
-import java.util.stream.Collectors;
-import static org.kosit.validator.impl.DateFactory.createTimestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sf.saxon.s9api.Processor;
 
 /**
  * The reference implementation for the validation process. After initialisation, instances are threadsafe and should be
@@ -39,7 +60,7 @@ import static org.kosit.validator.impl.DateFactory.createTimestamp;
  */
 public class DefaultCheck implements Check {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultCheck.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultCheck.class);
 
     private final ConversionService conversionService;
 

@@ -100,7 +100,7 @@ public class TestConfiguration implements Configuration {
         this.additionalParameters = additionalParameters;
     }
 
-    @java.lang.Override
+    @Override
     public boolean equals(final java.lang.Object o) {
         if (o == this)
             return true;
@@ -145,7 +145,7 @@ public class TestConfiguration implements Configuration {
         return other instanceof TestConfiguration;
     }
 
-    @java.lang.Override
+    @Override
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -166,7 +166,7 @@ public class TestConfiguration implements Configuration {
         return result;
     }
 
-    @java.lang.Override
+    @Override
     public java.lang.String toString() {
         return "TestConfiguration(scenarios=" + this.getScenarios() + ", fallbackScenario=" + this.getFallbackScenario() + ", author="
                 + this.getAuthor() + ", name=" + this.getName() + ", date=" + this.getDate() + ", contentRepository="

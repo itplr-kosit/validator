@@ -17,13 +17,19 @@
 package org.kosit.validator.impl.input;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
-import jakarta.xml.bind.util.JAXBSource;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.io.input.ReaderInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.xml.bind.util.JAXBSource;
 import net.sf.saxon.om.TreeInfo;
 
 /**
@@ -46,7 +52,7 @@ import net.sf.saxon.om.TreeInfo;
  */
 public class SourceInput extends AbstractInput {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SourceInput.class);
+    private static final Logger log = LoggerFactory.getLogger(SourceInput.class);
 
     private final Source source;
 

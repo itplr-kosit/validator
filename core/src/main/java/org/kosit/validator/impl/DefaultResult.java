@@ -16,11 +16,19 @@
  */
 package org.kosit.validator.impl;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.tasks.ReaderWrapper;
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.w3c.dom.Document;
+
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.util.JAXBSource;
@@ -28,12 +36,6 @@ import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
-import org.w3c.dom.Document;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DefaultResult implements Result {
 

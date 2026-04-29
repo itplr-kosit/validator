@@ -18,9 +18,11 @@ package org.kosit.validator.cmd;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
 import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
@@ -29,6 +31,8 @@ import org.kosit.validator.impl.tasks.CreateReportsAction;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.xvrl.XVRLDetection;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Schreibt das Prüfergebnis als XML-Dokument an eine definierte Stelle.
@@ -37,7 +41,7 @@ import org.kosit.validator.model.xvrl.XVRLReport;
  */
 class SerializeReportAction implements CheckAction {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SerializeReportAction.class);
+    private static final Logger log = LoggerFactory.getLogger(SerializeReportAction.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 

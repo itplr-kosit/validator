@@ -17,6 +17,7 @@
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -26,6 +27,9 @@ import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLDetection;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -36,7 +40,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class ScenarioSelectionAction implements CheckAction {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ScenarioSelectionAction.class);
+    private static final Logger log = LoggerFactory.getLogger(ScenarioSelectionAction.class);
 
     public static final Process.Key<Scenario, String> KEY = new Process.Key<>(Scenario.class, String.class);
 

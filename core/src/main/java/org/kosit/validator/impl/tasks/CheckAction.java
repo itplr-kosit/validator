@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.apache.commons.io.FilenameUtils;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.model.ProcessStepResult;

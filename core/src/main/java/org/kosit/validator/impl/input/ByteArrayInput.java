@@ -18,6 +18,7 @@ package org.kosit.validator.impl.input;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 

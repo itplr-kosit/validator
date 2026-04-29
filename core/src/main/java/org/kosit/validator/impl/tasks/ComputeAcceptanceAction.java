@@ -18,18 +18,23 @@ package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.kosit.validator.api.AcceptRecommendation;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathSelector;
 
@@ -41,7 +46,7 @@ import net.sf.saxon.s9api.XPathSelector;
  */
 public class ComputeAcceptanceAction implements CheckAction {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ComputeAcceptanceAction.class);
+    private static final Logger log = LoggerFactory.getLogger(ComputeAcceptanceAction.class);
 
     public static final Process.Key<AcceptRecommendation, XMLSyntaxError> KEY = new Process.Key<>(AcceptRecommendation.class,
             XMLSyntaxError.class);

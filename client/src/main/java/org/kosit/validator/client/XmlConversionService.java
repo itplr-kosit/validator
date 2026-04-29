@@ -30,6 +30,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -40,7 +43,7 @@ import jakarta.xml.bind.annotation.XmlRegistry;
  */
 public class XmlConversionService {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(XmlConversionService.class);
+    private static final Logger log = LoggerFactory.getLogger(XmlConversionService.class);
 
     /**
      * Exception while serializing/deserializing with jaxb.

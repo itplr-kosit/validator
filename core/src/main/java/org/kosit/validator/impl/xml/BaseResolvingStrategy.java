@@ -17,18 +17,22 @@
 package org.kosit.validator.impl.xml;
 
 import static java.lang.String.format;
+
 import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import org.xml.sax.SAXException;
+
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /**
  * @author Andreas Penski
  */
 public abstract class BaseResolvingStrategy implements ResolvingConfigurationStrategy {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BaseResolvingStrategy.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseResolvingStrategy.class);
 
     private static final String ORACLE_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
 

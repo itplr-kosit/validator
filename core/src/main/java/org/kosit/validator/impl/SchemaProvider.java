@@ -26,10 +26,9 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.kosit.validator.api.xsd.ValidatorSchemas;
+import org.kosit.validator.impl.xml.ClassPathResourceResolver;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
-
-import org.kosit.validator.impl.xml.ClassPathResourceResolver;
 
 /**
  * @author Andreas Penski

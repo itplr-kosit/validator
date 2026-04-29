@@ -20,8 +20,10 @@ import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemantal;
 import static org.kosit.validator.model.xvrl.XVRLDetection.Severity.ERROR;
 import static org.kosit.validator.model.xvrl.XVRLDetection.Severity.INFO;
+
 import java.io.IOException;
 import java.util.Collections;
+
 import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.input.XdmNodeInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -31,6 +33,9 @@ import org.kosit.validator.impl.xvrl.XVRLReportBuilder.DetectionBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.XMLSyntaxErrorSeverity;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -43,7 +48,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class DocumentParseAction implements CheckAction {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DocumentParseAction.class);
+    private static final Logger log = LoggerFactory.getLogger(DocumentParseAction.class);
 
     public static final Process.Key<XdmNode, XMLSyntaxError> KEY = new Process.Key<>(XdmNode.class, XMLSyntaxError.class);
 

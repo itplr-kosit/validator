@@ -19,6 +19,7 @@ package org.kosit.validator.impl.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.model.xvrl.XVRLReport;
 

@@ -19,10 +19,13 @@ package org.kosit.validator.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.xml.validation.Schema;
+
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ScenarioType;
+
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.XPathExecutable;

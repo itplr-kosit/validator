@@ -19,10 +19,12 @@ package org.kosit.validator.impl.xml;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
+
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.ResourceRequest;
 import net.sf.saxon.lib.ResourceResolver;

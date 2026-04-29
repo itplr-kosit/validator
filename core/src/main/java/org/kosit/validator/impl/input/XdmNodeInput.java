@@ -17,7 +17,9 @@
 package org.kosit.validator.impl.input;
 
 import javax.xml.transform.Source;
+
 import org.kosit.validator.api.Input;
+
 import net.sf.saxon.s9api.XdmNode;
 
 /**

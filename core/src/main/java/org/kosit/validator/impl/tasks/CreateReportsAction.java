@@ -19,9 +19,10 @@ package org.kosit.validator.impl.tasks;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemantal;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import jakarta.xml.bind.JAXBException;
+
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ConversionService;
@@ -32,6 +33,10 @@ import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.xml.bind.JAXBException;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -47,7 +52,7 @@ import net.sf.saxon.s9api.XsltTransformer;
  */
 public class CreateReportsAction implements CheckAction {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CreateReportsAction.class);
+    private static final Logger log = LoggerFactory.getLogger(CreateReportsAction.class);
 
     public static final Process.Key<List<BusinessReport>, XMLSyntaxError> KEY = new Process.Key<>(null, XMLSyntaxError.class);
 

@@ -17,17 +17,15 @@
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.xml.transform.dom.DOMSource;
-import org.oclc.purl.dsdl.svrl.ActivePattern;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.FiredRule;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
-import org.oclc.purl.dsdl.svrl.Text;
+
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.Scenario;
@@ -39,6 +37,14 @@ import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.oclc.purl.dsdl.svrl.ActivePattern;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.FiredRule;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmDestination;
@@ -52,7 +58,7 @@ import net.sf.saxon.s9api.XsltTransformer;
  */
 public class SchematronValidationAction implements CheckAction {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchematronValidationAction.class);
+    private static final Logger log = LoggerFactory.getLogger(SchematronValidationAction.class);
 
     public static final Process.Key<List<ValidationResultsSchematron>, String> KEY = new Process.Key<>(null, String.class);
 

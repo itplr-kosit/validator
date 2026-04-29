@@ -1,8 +1,9 @@
 package org.kosit.validator.api;
 
-import javax.xml.transform.Source;
 import java.net.URI;
 import java.util.function.Function;
+
+import javax.xml.transform.Source;
 
 /**
  * Strategy interface for compiling Schematron schemas into executable XSLT stylesheets.

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.kosit.validator.api.Check;
 import org.kosit.validator.api.Configuration;
@@ -43,6 +42,8 @@ import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.scenarios.ScenarioType;
 import org.kosit.validator.model.scenarios.Scenarios;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
@@ -57,7 +58,7 @@ import net.sf.saxon.s9api.XdmNodeKind;
  */
 public class ConfigurationLoader {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfigurationLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
     private static final String SUPPORTED_MAJOR_VERSION = "2";
 

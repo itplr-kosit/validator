@@ -17,6 +17,7 @@
 package org.kosit.validator.api;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,14 +27,17 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.UUID;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.kosit.validator.impl.input.ByteArrayInput;
 import org.kosit.validator.impl.input.ResourceInput;
 import org.kosit.validator.impl.input.SourceInput;
 import org.kosit.validator.impl.input.StreamHelper;
 import org.kosit.validator.impl.input.XdmNodeInput;
+
 import net.sf.saxon.s9api.XdmNode;
 
 /**

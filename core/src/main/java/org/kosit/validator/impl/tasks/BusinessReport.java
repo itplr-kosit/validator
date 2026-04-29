@@ -17,6 +17,7 @@
 package org.kosit.validator.impl.tasks;
 
 import org.kosit.validator.model.xvrl.XVRLReport;
+
 import net.sf.saxon.s9api.XdmNode;
 
 /**

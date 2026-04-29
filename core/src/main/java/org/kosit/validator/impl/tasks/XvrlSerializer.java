@@ -16,11 +16,12 @@
  */
 package org.kosit.validator.impl.tasks;
 
+import org.kosit.validator.impl.ConversionService;
+import org.kosit.validator.model.xvrl.XVRLReportSummary;
+
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.util.JAXBSource;
-import org.kosit.validator.impl.ConversionService;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;

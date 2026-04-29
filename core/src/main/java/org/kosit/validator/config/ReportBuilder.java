@@ -16,18 +16,23 @@
  */
 package org.kosit.validator.config;
 
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.Collections;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.CreateReportType;
 import org.kosit.validator.model.scenarios.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.XsltExecutable;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import java.net.URI;
-import java.nio.file.Path;
-import java.util.Collections;
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 /**
  * Builder style configuration for the report transformation.
@@ -36,7 +41,7 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
  */
 public class ReportBuilder implements Builder<Pair<CreateReportType, Transformation>> {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReportBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(ReportBuilder.class);
 
     private static final String DEFAULT_NAME = "manually created report";
 

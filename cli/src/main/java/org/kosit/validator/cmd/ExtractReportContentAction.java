@@ -18,8 +18,10 @@ package org.kosit.validator.cmd;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+
 import java.nio.file.Path;
 import java.util.List;
+
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.BusinessReport;
@@ -28,6 +30,9 @@ import org.kosit.validator.impl.tasks.CreateReportsAction;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
@@ -41,7 +46,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 class ExtractReportContentAction implements CheckAction {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ExtractReportContentAction.class);
+    private static final Logger log = LoggerFactory.getLogger(ExtractReportContentAction.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 

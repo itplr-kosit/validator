@@ -36,6 +36,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper.Simple;
+import org.slf4j.LoggerFactory;
 
 import io.quarkus.picocli.runtime.annotations.TopCommand;
 import io.quarkus.test.junit.QuarkusTest;
@@ -49,9 +50,9 @@ import jakarta.inject.Inject;
 @QuarkusTest
 public class CommandlineApplicationTest {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CommandlineApplicationTest.class);
-
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(InternalCheck.class);
 
     private final Path output = Paths.get("target/test-output");
 

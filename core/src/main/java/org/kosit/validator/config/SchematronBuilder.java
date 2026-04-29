@@ -17,9 +17,11 @@
 package org.kosit.validator.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collections;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kosit.validator.impl.ContentRepository;
@@ -27,6 +29,9 @@ import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ValidateWithSchematron;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.XsltExecutable;
 
 /**
@@ -36,7 +41,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  */
 public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, Transformation>> {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchematronBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(SchematronBuilder.class);
 
     private static final String DEFAULT_NAME = "manually configured";
 

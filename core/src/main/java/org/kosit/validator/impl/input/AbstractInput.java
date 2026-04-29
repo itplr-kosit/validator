@@ -17,9 +17,13 @@
 package org.kosit.validator.impl.input;
 
 import static org.kosit.validator.impl.input.StreamHelper.drain;
+
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.kosit.validator.api.Input;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all {@link Input Inputs}.
@@ -28,7 +32,7 @@ import org.kosit.validator.api.Input;
  */
 public abstract class AbstractInput implements Input, LazyReadInput {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AbstractInput.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractInput.class);
 
     private byte[] hashCode;
 

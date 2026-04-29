@@ -21,7 +21,10 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
+
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
@@ -32,7 +35,7 @@ import org.w3c.dom.ls.LSResourceResolver;
  */
 public class ClassPathResourceResolver implements LSResourceResolver {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ClassPathResourceResolver.class);
+    private static final Logger log = LoggerFactory.getLogger(ClassPathResourceResolver.class);
 
     /**
      * Simple {@link LSInput}-Implementierung, die einen Stream liefern kann
