@@ -27,7 +27,9 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
 public class XvrlSerializer {
+
     private final ConversionService conversionService;
+
     private final Processor processor;
 
     public XdmNode serialize(final XVRLReportSummary summary) throws JAXBException, SaxonApiException {

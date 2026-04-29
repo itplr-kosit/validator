@@ -37,6 +37,7 @@ import org.kosit.validator.model.xvrl.XVRLReportSummary;
  */
 @FunctionalInterface
 public interface CheckAction {
+
     /**
      * Ausfürhung des Prüfschrittes und Erweiterung der gesammelten Informationen.
      *
@@ -56,15 +57,19 @@ public interface CheckAction {
         return false;
     }
 
-
     /**
      * Transport-Klasse für Eingabe und Ausgabe-Objekte für die einzelnen Prüfschritte.
      */
     class Process {
+
         private XVRLMetadata metadata;
+
         private List<ProcessStepResult<?, ?>> processStepResults = new ArrayList<>();
+
         private boolean finished;
+
         private boolean stopped;
+
         /**
          * Das zu prüfende Dokument
          */
@@ -86,7 +91,8 @@ public interface CheckAction {
         public XVRLReportSummary getXvrlReportSummary() {
             final XVRLReportSummary summary = new XVRLReportSummary();
             summary.setMetadata(this.metadata);
-            summary.getReports().addAll(this.processStepResults.stream().flatMap(processStepResult -> processStepResult.getReport().stream()).collect(Collectors.toList()));
+            summary.getReports().addAll(this.processStepResults.stream()
+                    .flatMap(processStepResult -> processStepResult.getReport().stream()).collect(Collectors.toList()));
             return summary;
         }
 
@@ -95,7 +101,8 @@ public interface CheckAction {
         }
 
         public <T, E> Optional<ProcessStepResult<T, E>> getActionResult(final Key<T, E> key) {
-            final ProcessStepResult<T, E> result = (ProcessStepResult<T, E>) this.processStepResults.stream().filter(b -> b.getKey() == key).findFirst().orElse(null);
+            final ProcessStepResult<T, E> result = (ProcessStepResult<T, E>) this.processStepResults.stream().filter(b -> b.getKey() == key)
+                    .findFirst().orElse(null);
             return Optional.ofNullable(result);
         }
 
@@ -113,9 +120,10 @@ public interface CheckAction {
             return FilenameUtils.getBaseName(fileName);
         }
 
-
         public static class Key<T, E> {
+
             private final Class<T> type;
+
             private final Class<E> other;
 
             public Class<T> getType() {

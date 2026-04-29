@@ -45,9 +45,13 @@ import net.sf.saxon.om.TreeInfo;
  * @author Andreas Penski
  */
 public class SourceInput extends AbstractInput {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SourceInput.class);
+
     private final Source source;
+
     private final String name;
+
     private final String digestAlgorithm;
 
     public SourceInput(final StreamSource source, final String name, final String digestAlgorithm) {
@@ -95,7 +99,8 @@ public class SourceInput extends AbstractInput {
         if (isStreamSource()) {
             final StreamSource ss = (StreamSource) this.source;
             try {
-                return (ss.getInputStream() != null && ss.getInputStream().available() == 0) || (ss.getReader() != null && !ss.getReader().ready());
+                return (ss.getInputStream() != null && ss.getInputStream().available() == 0)
+                        || (ss.getReader() != null && !ss.getReader().ready());
             } catch (final IOException e) {
                 log.error("Error checking consumed state", e);
                 return true;

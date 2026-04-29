@@ -34,8 +34,11 @@ import org.kosit.validator.api.Input;
  * @author Andreas Penski
  */
 public class ResourceInput extends AbstractInput {
+
     private final URL url;
+
     private final String name;
+
     private final String digestAlgorithm;
 
     @Override

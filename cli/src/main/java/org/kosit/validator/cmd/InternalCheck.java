@@ -42,8 +42,11 @@ import java.util.stream.Collectors;
  * @author Andreas Penski
  */
 class InternalCheck extends DefaultCheck {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(InternalCheck.class);
+
     private int checkAssertions = 0;
+
     private int failedAssertions = 0;
 
     /**
@@ -123,11 +126,13 @@ class InternalCheck extends DefaultCheck {
     private String createAssertionStatus() {
         final Line line = new Line();
         if (this.failedAssertions > 0) {
-            log.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions, this.failedAssertions);
+            log.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
+                    this.failedAssertions);
             line.add(MessageFormat.format("Assertions run: {0}, Assertions failed: ", this.checkAssertions));
             line.add(this.failedAssertions, Code.RED);
         } else if (this.checkAssertions > 0) {
-            log.info("Assertion check successful.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions, this.failedAssertions);
+            log.info("Assertion check successful.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
+                    this.failedAssertions);
             line.add(MessageFormat.format("Assertions run: {0}, Assertions failed: {1}", this.checkAssertions, this.failedAssertions));
         }
         return line.render(true, false);

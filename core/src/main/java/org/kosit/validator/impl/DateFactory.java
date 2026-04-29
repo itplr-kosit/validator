@@ -27,6 +27,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author Andreas Penski
  */
 public class DateFactory {
+
     private DateFactory() {
         // hide
     }

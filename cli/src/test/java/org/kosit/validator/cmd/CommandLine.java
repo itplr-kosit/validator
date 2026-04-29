@@ -34,7 +34,9 @@ import org.apache.commons.io.output.TeeOutputStream;
  * @author Andreas Penski
  */
 public class CommandLine {
+
     private static final ReplaceableOutputStream<ByteArrayOutputStream> out = new ReplaceableOutputStream<>();
+
     private static final ReplaceableOutputStream<ByteArrayOutputStream> error = new ReplaceableOutputStream<>();
 
     static {
@@ -51,6 +53,7 @@ public class CommandLine {
 
     public static InputStream nullInputStream() {
         return new InputStream() {
+
             @Override
             public int read() throws IOException {
                 return 0;
@@ -75,9 +78,8 @@ public class CommandLine {
     }
 
     private static List<String> readLines(final byte[] bytes) {
-        try (
-            ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-            Reader r = new InputStreamReader(in)) {
+        try ( ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+              Reader r = new InputStreamReader(in) ) {
             return IOUtils.readLines(r);
         } catch (final IOException e) {
             throw new IllegalStateException("Can not read input");
@@ -100,13 +102,13 @@ public class CommandLine {
         activate();
     }
 
-
     /**
      * Simpler Proxy für {@link OutputStream}, dessen target ausgetauscht werden kann.
      *
      * @param <O> Typ des eigentlichen {@link OutputStream}
      */
     private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
+
         private O out;
 
         @Override

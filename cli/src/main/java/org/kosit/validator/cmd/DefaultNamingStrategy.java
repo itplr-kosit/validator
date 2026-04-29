@@ -28,7 +28,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author Andreas Penski
  */
 public class DefaultNamingStrategy implements NamingStrategy {
+
     private String prefix;
+
     private String postfix;
 
     @Override

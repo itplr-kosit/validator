@@ -38,11 +38,17 @@ import static org.kosit.validator.impl.DateFactory.createTimestamp;
  * @author Andreas Penski
  */
 public class DefaultCheck implements Check {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultCheck.class);
+
     private final ConversionService conversionService;
+
     private final List<Configuration> configuration;
+
     private final List<CheckAction> checkSteps;
+
     private final Processor processor;
+
     private final EngineInformation engineInformation;
 
     public DefaultCheck(final EngineInformation engineInformation, final Configuration... configuration) {
@@ -89,17 +95,21 @@ public class DefaultCheck implements Check {
     }
 
     private static Result createResult(final Process process) {
-        final org.kosit.validator.impl.model.Result<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process.getResult(ComputeAcceptanceAction.KEY);
+        final org.kosit.validator.impl.model.Result<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
+                .getResult(ComputeAcceptanceAction.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
         defaultResult.setWellformed(process.getResult(DocumentParseAction.KEY).isValid());
         defaultResult.setReportSummary(process.getXvrlReportSummary());
-        final org.kosit.validator.impl.model.Result<Boolean, XMLSyntaxError> schemaValidationResult = process.getResult(SchemaValidationAction.KEY);
+        final org.kosit.validator.impl.model.Result<Boolean, XMLSyntaxError> schemaValidationResult = process
+                .getResult(SchemaValidationAction.KEY);
         if (schemaValidationResult != null) {
             defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
         }
-        final org.kosit.validator.impl.model.Result<List<ValidationResultsSchematron>, String> schematronValidationResult = process.getResult(SchematronValidationAction.KEY);
+        final org.kosit.validator.impl.model.Result<List<ValidationResultsSchematron>, String> schematronValidationResult = process
+                .getResult(SchematronValidationAction.KEY);
         if (schematronValidationResult != null) {
-            defaultResult.setSchematronResult(schematronValidationResult.getObject().stream().map(schematronResult -> schematronResult.getResults().getSchematronOutput()).collect(Collectors.toList()));
+            defaultResult.setSchematronResult(schematronValidationResult.getObject().stream()
+                    .map(schematronResult -> schematronResult.getResults().getSchematronOutput()).collect(Collectors.toList()));
         }
         defaultResult.setProcessingSuccessful(!process.isStopped() && process.isFinished());
         return defaultResult;
@@ -124,7 +134,8 @@ public class DefaultCheck implements Check {
                 final ProcessStepResult<?, ?> result = action.check(checkProcess);
                 checkProcess.addStepResult(result);
             }
-            if (log.isDebugEnabled()) log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
+            if (log.isDebugEnabled())
+                log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
         }
         checkProcess.setFinished(true);
         log.info("Finished check of {} in {}ms\n", checkProcess.getInput().getName(), System.currentTimeMillis() - started);

@@ -5,7 +5,9 @@ package org.kosit.validator.api.compact;
  * Enthält Informationen über den verwendeten Validator (Name und Version).
  */
 public class ValidatorEngineInformation {
+
     private String name;
+
     private String version;
 
     public String getName() {

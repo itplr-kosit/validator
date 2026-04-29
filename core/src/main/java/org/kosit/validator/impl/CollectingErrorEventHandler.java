@@ -39,8 +39,11 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class CollectingErrorEventHandler implements ValidationEventHandler, ErrorHandler, MessageListener2, ErrorListener {
+
     private static final int DEFAULT_ABORT_COUNT = 50;
+
     private static final int STOP_PROCESS_COUNT = DEFAULT_ABORT_COUNT;
+
     private final Collection<XMLSyntaxError> errors = new ArrayList<>();
 
     private static XMLSyntaxError createError(final XMLSyntaxErrorSeverity severity, final String message) {
@@ -68,14 +71,14 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static XMLSyntaxErrorSeverity translateSeverity(final int severity) {
         switch (severity) {
-        case ValidationEvent.WARNING: 
-            return XMLSyntaxErrorSeverity.SEVERITY_WARNING;
-        case ValidationEvent.ERROR: 
-            return XMLSyntaxErrorSeverity.SEVERITY_ERROR;
-        case ValidationEvent.FATAL_ERROR: 
-            return XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR;
-        default: 
-            throw new IllegalArgumentException("Unknown severity level " + severity);
+            case ValidationEvent.WARNING:
+                return XMLSyntaxErrorSeverity.SEVERITY_WARNING;
+            case ValidationEvent.ERROR:
+                return XMLSyntaxErrorSeverity.SEVERITY_ERROR;
+            case ValidationEvent.FATAL_ERROR:
+                return XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR;
+            default:
+                throw new IllegalArgumentException("Unknown severity level " + severity);
         }
     }
 
@@ -150,7 +153,8 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     public String getErrorDescription() {
         final StringJoiner joiner = new StringJoiner("\n");
-        this.errors.forEach(e -> joiner.add(e.getSeverityCode().value() + " " + e.getMessage() + " At row " + e.getRowNumber() + " at pos " + e.getColumnNumber()));
+        this.errors.forEach(e -> joiner.add(
+                e.getSeverityCode().value() + " " + e.getMessage() + " At row " + e.getRowNumber() + " at pos " + e.getColumnNumber()));
         return joiner.toString();
     }
 

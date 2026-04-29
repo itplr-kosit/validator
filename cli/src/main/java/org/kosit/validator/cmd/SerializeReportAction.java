@@ -36,16 +36,23 @@ import org.kosit.validator.model.xvrl.XVRLReport;
  * @author Andreas Penski
  */
 class SerializeReportAction implements CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SerializeReportAction.class);
+
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+
     private static final String REPORT_NAME = "Serialize Report";
+
     private final Path outputDirectory;
+
     private final ConversionService conversionService;
+
     private final NamingStrategy namingStrategy;
 
     private static XVRLReport generateXVRLReport(final Result<Boolean, String> result) {
         if (result.isValid()) {
-            return builder(REPORT_NAME).add(detection().addMessage("Serialization successful").severity(XVRLDetection.Severity.INFO)).build();
+            return builder(REPORT_NAME).add(detection().addMessage("Serialization successful").severity(XVRLDetection.Severity.INFO))
+                    .build();
         }
         return XVRLReportBuilder.builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> detection().addError(e))).build();
     }
@@ -76,7 +83,8 @@ class SerializeReportAction implements CheckAction {
         return false;
     }
 
-    public SerializeReportAction(final Path outputDirectory, final ConversionService conversionService, final NamingStrategy namingStrategy) {
+    public SerializeReportAction(final Path outputDirectory, final ConversionService conversionService,
+            final NamingStrategy namingStrategy) {
         this.outputDirectory = outputDirectory;
         this.conversionService = conversionService;
         this.namingStrategy = namingStrategy;

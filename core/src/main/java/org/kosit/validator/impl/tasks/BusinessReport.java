@@ -25,8 +25,11 @@ import net.sf.saxon.s9api.XdmNode;
  * @author apenski
  */
 public class BusinessReport {
+
     private String name;
+
     private XdmNode content;
+
     private XVRLReport report;
 
     public String getName() {

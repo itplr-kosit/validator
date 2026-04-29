@@ -51,10 +51,15 @@ import net.sf.saxon.s9api.XsltTransformer;
  * @author Andreas Penski
  */
 public class SchematronValidationAction implements CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchematronValidationAction.class);
+
     public static final Process.Key<List<ValidationResultsSchematron>, String> KEY = new Process.Key<>(null, String.class);
+
     private static final String REPORT_NAME = "Schematron Validator";
+
     private final ConversionService conversionService;
+
     private final List<String> errorMessages = new ArrayList<>();
 
     private static Results createErrorResult(final String msg) {
@@ -87,9 +92,12 @@ public class SchematronValidationAction implements CheckAction {
             final XVRLReportBuilder builder = XVRLReportBuilder.builder(REPORT_NAME);
             builder.addSchema(e.getResource());
             final SchematronOutput schematronOutput = e.getResults().getSchematronOutput();
-            filter(schematronOutput.getActivePatternAndFiredRuleAndFailedAssert(), FailedAssert.class).map(f -> detection().add(f)).forEach(builder::add);
-            filter(schematronOutput.getActivePatternAndFiredRuleAndFailedAssert(), ActivePattern.class).map(f -> detection().add(f)).forEach(builder::add);
-            filter(schematronOutput.getActivePatternAndFiredRuleAndFailedAssert(), FiredRule.class).map(f -> detection().add(f)).forEach(builder::add);
+            filter(schematronOutput.getActivePatternAndFiredRuleAndFailedAssert(), FailedAssert.class).map(f -> detection().add(f))
+                    .forEach(builder::add);
+            filter(schematronOutput.getActivePatternAndFiredRuleAndFailedAssert(), ActivePattern.class).map(f -> detection().add(f))
+                    .forEach(builder::add);
+            filter(schematronOutput.getActivePatternAndFiredRuleAndFailedAssert(), FiredRule.class).map(f -> detection().add(f))
+                    .forEach(builder::add);
             return builder.build();
         }).collect(Collectors.toList());
     }
@@ -98,7 +106,8 @@ public class SchematronValidationAction implements CheckAction {
         return scenario.getSchematronValidations().stream().map(v -> validate(scenario, results, document, v)).collect(Collectors.toList());
     }
 
-    private ValidationResultsSchematron validate(final Scenario scenario, final Process process, final XdmNode document, final Transformation validation) {
+    private ValidationResultsSchematron validate(final Scenario scenario, final Process process, final XdmNode document,
+            final Transformation validation) {
         final ValidationResultsSchematron validationResultsSchematron = new ValidationResultsSchematron();
         validationResultsSchematron.setResource(validation.getResourceType());
         try {
@@ -112,10 +121,13 @@ public class SchematronValidationAction implements CheckAction {
             transformer.setInitialContextNode(document);
             transformer.transform();
             final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
-            r.setSchematronOutput(this.conversionService.readDocument(new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument()), SchematronOutput.class));
+            r.setSchematronOutput(this.conversionService.readDocument(
+                    new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
+                    SchematronOutput.class));
             validationResultsSchematron.setResults(r);
         } catch (final SaxonApiException e) {
-            final String msg = String.format("Error processing schematron validation \'%s\'. Error is \'%s\'", validation.getResourceType().getName(), e.getMessage());
+            final String msg = String.format("Error processing schematron validation \'%s\'. Error is \'%s\'",
+                    validation.getResourceType().getName(), e.getMessage());
             log.error(msg, e);
             this.errorMessages.add(msg);
             process.setStopped(true);

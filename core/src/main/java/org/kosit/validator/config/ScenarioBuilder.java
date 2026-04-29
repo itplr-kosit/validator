@@ -45,16 +45,27 @@ import net.sf.saxon.s9api.XPathExecutable;
  * @author Andreas Penski
  */
 public class ScenarioBuilder implements Builder<Scenario> {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ScenarioBuilder.class);
+
     private static int nameCount = 0;
+
     private static final String DEFAULT_DESCRIPTION = "Dieses Scenario wurde per API erstellt";
+
     private final Map<String, String> namespaces = new HashMap<>();
+
     private final XPathBuilder matchConfig = new XPathBuilder("match");
+
     private final XPathBuilder acceptConfig = new XPathBuilder("accept");
+
     private String name;
+
     private SchemaBuilder schemaBuilder;
+
     private final List<SchematronBuilder> schematronBuilders = new ArrayList<>();
+
     private ReportBuilder reportBuilder;
+
     private String description;
 
     @Override
@@ -264,7 +275,8 @@ public class ScenarioBuilder implements Builder<Scenario> {
         final ScenarioType type = new ScenarioType();
         type.setName(isNotEmpty(this.name) ? this.name : generateName());
         final DescriptionType desc = new DescriptionType();
-        desc.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, DEFAULT_DESCRIPTION)));
+        desc.getPOrOlOrUl()
+                .add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, DEFAULT_DESCRIPTION)));
         type.setDescription(desc);
         return type;
     }

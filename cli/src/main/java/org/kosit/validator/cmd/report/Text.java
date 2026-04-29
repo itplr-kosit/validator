@@ -26,7 +26,9 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  * @author Andreas Penski
  */
 public class Text {
+
     private final String value;
+
     private Format format;
 
     public Text(final Object value) {
@@ -55,7 +57,8 @@ public class Text {
     }
 
     public String render(final String text, final Format baseformat) {
-        return AnsiRenderer.render(text, Arrays.stream(this.format.mergeCodes(baseformat.getCodes())).map(Code::name).toArray(String[]::new));
+        return AnsiRenderer.render(text,
+                Arrays.stream(this.format.mergeCodes(baseformat.getCodes())).map(Code::name).toArray(String[]::new));
     }
 
     public int getLength() {

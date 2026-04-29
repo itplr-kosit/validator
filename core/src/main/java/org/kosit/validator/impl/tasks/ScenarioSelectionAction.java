@@ -35,17 +35,24 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class ScenarioSelectionAction implements CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ScenarioSelectionAction.class);
+
     public static final Process.Key<Scenario, String> KEY = new Process.Key<>(Scenario.class, String.class);
+
     public static final ActionMetadata METADATA = new ActionMetadata("Scenario Selection", "scenario_selection");
+
     private final ScenarioRepository repository;
 
     private static XVRLReport generateXVRLReport(final Result<Scenario, String> scenarioTypeResult, final String name) {
         final XVRLReportBuilder builder = XVRLReportBuilder.builder(METADATA);
         if (scenarioTypeResult.getObject().isFallback()) {
-            builder.add(detection().addError(String.format("No valid scenario configuration found for \'%s\'", name)).code("fallback-match"));
+            builder.add(
+                    detection().addError(String.format("No valid scenario configuration found for \'%s\'", name)).code("fallback-match"));
         } else {
-            builder.add(detection().addMessage(String.format("Scenario \'%s\' identified for \'%s\'", scenarioTypeResult.getObject().getName(), name)).severity(XVRLDetection.Severity.INFO).code("scenario-matched"));
+            builder.add(detection()
+                    .addMessage(String.format("Scenario \'%s\' identified for \'%s\'", scenarioTypeResult.getObject().getName(), name))
+                    .severity(XVRLDetection.Severity.INFO).code("scenario-matched"));
             builder.add(detection().id("scenario").code(scenarioTypeResult.getObject().getName()));
         }
         return builder.build();

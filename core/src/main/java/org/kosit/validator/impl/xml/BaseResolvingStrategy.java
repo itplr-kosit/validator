@@ -27,7 +27,9 @@ import org.kosit.validator.api.ResolvingConfigurationStrategy;
  * @author Andreas Penski
  */
 public abstract class BaseResolvingStrategy implements ResolvingConfigurationStrategy {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BaseResolvingStrategy.class);
+
     private static final String ORACLE_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
 
     public static void forceOpenJdkXmlImplementation() {
@@ -70,12 +72,14 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
 
     protected void allowExternalSchema(final Validator validator, final boolean lenient, final String... schemes) {
         final String schemeString = String.join(",", schemes);
-        setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient, format("Can set  external schema  access to schemes (%s). Maybe an unsupported JAXP implementation is used.", schemeString));
+        setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient, format(
+                "Can set  external schema  access to schemes (%s). Maybe an unsupported JAXP implementation is used.", schemeString));
     }
 
     protected void allowExternalSchema(final SchemaFactory schemaFactory, final boolean lenient, final String... schemes) {
         final String schemeString = String.join(",", schemes);
-        setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient, format("Can set  external schema  access to schemes (%s). Maybe an unsupported JAXP implementation is used.", schemeString));
+        setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient, format(
+                "Can set  external schema  access to schemes (%s). Maybe an unsupported JAXP implementation is used.", schemeString));
     }
 
     protected void disableExternalEntities(final Validator validator) {
@@ -88,17 +92,19 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
 
     protected void disableExternalEntities(final Validator validator, final boolean lenient) {
         log.debug("Try to disable extern DTD access");
-        setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient, "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
+        setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
+                "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
     }
 
     protected void disableExternalEntities(final SchemaFactory schemaFactory, final boolean lenient) {
         log.debug("Try to disable extern DTD access");
-        setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient, "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
+        setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
+                "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
     }
-
 
     @FunctionalInterface
     private interface PropertySetter {
+
         void apply() throws SAXException;
     }
 }

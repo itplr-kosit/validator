@@ -26,12 +26,19 @@ import org.kosit.validator.impl.Scenario;
  * @author Andreas Penski
  */
 public class TestConfiguration implements Configuration {
+
     private List<Scenario> scenarios;
+
     private Scenario fallbackScenario;
+
     private String author;
+
     private String name;
+
     private String date;
+
     private ContentRepository contentRepository;
+
     private Map<String, Object> additionalParameters;
 
     public TestConfiguration() {
@@ -95,31 +102,42 @@ public class TestConfiguration implements Configuration {
 
     @java.lang.Override
     public boolean equals(final java.lang.Object o) {
-        if (o == this) return true;
-        if (!(o instanceof TestConfiguration)) return false;
+        if (o == this)
+            return true;
+        if (!(o instanceof TestConfiguration))
+            return false;
         final TestConfiguration other = (TestConfiguration) o;
-        if (!other.canEqual((java.lang.Object) this)) return false;
+        if (!other.canEqual((java.lang.Object) this))
+            return false;
         final java.lang.Object this$scenarios = this.getScenarios();
         final java.lang.Object other$scenarios = other.getScenarios();
-        if (this$scenarios == null ? other$scenarios != null : !this$scenarios.equals(other$scenarios)) return false;
+        if (this$scenarios == null ? other$scenarios != null : !this$scenarios.equals(other$scenarios))
+            return false;
         final java.lang.Object this$fallbackScenario = this.getFallbackScenario();
         final java.lang.Object other$fallbackScenario = other.getFallbackScenario();
-        if (this$fallbackScenario == null ? other$fallbackScenario != null : !this$fallbackScenario.equals(other$fallbackScenario)) return false;
+        if (this$fallbackScenario == null ? other$fallbackScenario != null : !this$fallbackScenario.equals(other$fallbackScenario))
+            return false;
         final java.lang.Object this$author = this.getAuthor();
         final java.lang.Object other$author = other.getAuthor();
-        if (this$author == null ? other$author != null : !this$author.equals(other$author)) return false;
+        if (this$author == null ? other$author != null : !this$author.equals(other$author))
+            return false;
         final java.lang.Object this$name = this.getName();
         final java.lang.Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (this$name == null ? other$name != null : !this$name.equals(other$name))
+            return false;
         final java.lang.Object this$date = this.getDate();
         final java.lang.Object other$date = other.getDate();
-        if (this$date == null ? other$date != null : !this$date.equals(other$date)) return false;
+        if (this$date == null ? other$date != null : !this$date.equals(other$date))
+            return false;
         final java.lang.Object this$contentRepository = this.getContentRepository();
         final java.lang.Object other$contentRepository = other.getContentRepository();
-        if (this$contentRepository == null ? other$contentRepository != null : !this$contentRepository.equals(other$contentRepository)) return false;
+        if (this$contentRepository == null ? other$contentRepository != null : !this$contentRepository.equals(other$contentRepository))
+            return false;
         final java.lang.Object this$additionalParameters = this.getAdditionalParameters();
         final java.lang.Object other$additionalParameters = other.getAdditionalParameters();
-        if (this$additionalParameters == null ? other$additionalParameters != null : !this$additionalParameters.equals(other$additionalParameters)) return false;
+        if (this$additionalParameters == null ? other$additionalParameters != null
+                : !this$additionalParameters.equals(other$additionalParameters))
+            return false;
         return true;
     }
 
@@ -150,6 +168,8 @@ public class TestConfiguration implements Configuration {
 
     @java.lang.Override
     public java.lang.String toString() {
-        return "TestConfiguration(scenarios=" + this.getScenarios() + ", fallbackScenario=" + this.getFallbackScenario() + ", author=" + this.getAuthor() + ", name=" + this.getName() + ", date=" + this.getDate() + ", contentRepository=" + this.getContentRepository() + ", additionalParameters=" + this.getAdditionalParameters() + ")";
+        return "TestConfiguration(scenarios=" + this.getScenarios() + ", fallbackScenario=" + this.getFallbackScenario() + ", author="
+                + this.getAuthor() + ", name=" + this.getName() + ", date=" + this.getDate() + ", contentRepository="
+                + this.getContentRepository() + ", additionalParameters=" + this.getAdditionalParameters() + ")";
     }
 }

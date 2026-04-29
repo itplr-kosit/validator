@@ -22,7 +22,9 @@ package org.kosit.validator.impl;
  * @author apenski
  */
 public class ActionMetadata {
+
     private String name;
+
     private String id;
 
     public String getName() {

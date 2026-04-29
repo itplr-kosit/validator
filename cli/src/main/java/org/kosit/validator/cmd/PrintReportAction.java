@@ -36,8 +36,11 @@ import java.util.List;
  * @author Andreas Penski
  */
 class PrintReportAction implements CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PrintReportAction.class);
+
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+
     private final Processor processor;
 
     private static XVRLReport createReport() {

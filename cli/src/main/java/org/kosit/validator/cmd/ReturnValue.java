@@ -23,10 +23,15 @@ package org.kosit.validator.cmd;
  * @author Andreas Penski
  */
 public class ReturnValue {
+
     public static final ReturnValue SUCCESS = new ReturnValue(0);
+
     public static final ReturnValue HELP_REQUEST = new ReturnValue(0);
+
     public static final ReturnValue CONFIGURATION_ERROR = new ReturnValue(-2);
+
     public static final ReturnValue PARSING_ERROR = new ReturnValue(-1);
+
     private final int code;
 
     public static ReturnValue createFailed(final int count) {

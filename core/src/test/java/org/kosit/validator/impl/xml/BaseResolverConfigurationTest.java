@@ -46,6 +46,7 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class BaseResolverConfigurationTest {
+
     public static final String NOT_EXISTING_SCHEME = "not-existing-scheme";
 
     public static void main(final String[] args) throws JAXBException, SaxonApiException {
@@ -91,8 +92,8 @@ public class BaseResolverConfigurationTest {
         verify(sf, times(2)).setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, BaseResolverConfigurationTest.NOT_EXISTING_SCHEME);
     }
 
-
     private class TestResolvingStrategy extends StrictRelativeResolvingStrategy {
+
         void setInternalProperty(final SchemaFactory factory, final boolean lenient) {
             allowExternalSchema(factory, lenient, NOT_EXISTING_SCHEME);
         }

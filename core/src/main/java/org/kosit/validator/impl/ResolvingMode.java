@@ -27,9 +27,11 @@ import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
  * @author Andreas Penski
  */
 public enum ResolvingMode {
+
     STRICT_RELATIVE(new StrictRelativeResolvingStrategy()) {
     },
     STRICT_LOCAL(new StrictLocalResolvingStrategy()), ALLOW_REMOTE(new RemoteResolvingStrategy()), CUSTOM(null);
+
     private final ResolvingConfigurationStrategy strategy;
 
     private ResolvingMode(final ResolvingConfigurationStrategy strategy) {

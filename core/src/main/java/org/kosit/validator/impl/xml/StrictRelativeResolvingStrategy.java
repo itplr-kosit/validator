@@ -28,6 +28,7 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
  * @author Andreas Penski
  */
 public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
+
     @Override
     public SchemaFactory createSchemaFactory() {
         forceOpenJdkXmlImplementation();

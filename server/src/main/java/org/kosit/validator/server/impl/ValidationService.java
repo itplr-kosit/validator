@@ -30,10 +30,15 @@ import java.util.stream.Collectors;
 @Startup
 @Named("validationService")
 public class ValidationService {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ValidationService.class);
+
     private final Processor processor = ProcessorProvider.getProcessor();
+
     private final List<Configuration> configuration;
+
     private final EngineInformation engineInformation;
+
     private final DefaultCheck check;
 
     public ValidationService(final ValidationConfig cfg, final EngineInformation engineInformation) {
@@ -90,7 +95,11 @@ public class ValidationService {
     }
 
     private String detectSelectedScenario(Result defaultResult) {
-        return defaultResult.getReportSummary().getReports().stream().filter(rep -> rep.getId().equals(ScenarioSelectionAction.METADATA.getId())).findFirst().map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario")).findFirst().map(XVRLDetection::getCode).orElse("null")).orElse("null");
+        return defaultResult.getReportSummary().getReports().stream()
+                .filter(rep -> rep.getId().equals(ScenarioSelectionAction.METADATA.getId())).findFirst()
+                .map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario")).findFirst()
+                        .map(XVRLDetection::getCode).orElse("null"))
+                .orElse("null");
     }
 
     private static String joinErrors(final Result value) {
@@ -125,13 +134,15 @@ public class ValidationService {
         if (Files.isDirectory(d)) {
             return d.toUri();
         } else {
-            throw new IllegalArgumentException(String.format("Not a valid path for repository definition specified: \'%s\'", d.toAbsolutePath()));
+            throw new IllegalArgumentException(
+                    String.format("Not a valid path for repository definition specified: \'%s\'", d.toAbsolutePath()));
         }
     }
 
     private static void assertFileExistance(final Path f, final String type) {
         if (!Files.isRegularFile(f)) {
-            throw new IllegalArgumentException(String.format("Not a valid path for %s definition specified: \'%s\'", type, f.toAbsolutePath()));
+            throw new IllegalArgumentException(
+                    String.format("Not a valid path for %s definition specified: \'%s\'", type, f.toAbsolutePath()));
         }
     }
 

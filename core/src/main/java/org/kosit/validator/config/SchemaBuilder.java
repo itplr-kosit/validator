@@ -34,10 +34,15 @@ import org.kosit.validator.model.scenarios.ValidateWithXmlSchema;
  * @author Andreas Penski
  */
 public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema>> {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchemaBuilder.class);
+
     private static final String DEFAULT_NAME = "manually configured";
+
     private Schema schema;
+
     private URI schemaLocation;
+
     private String name;
 
     private static Result<Pair<ValidateWithXmlSchema, Schema>, String> createError(final String msg) {

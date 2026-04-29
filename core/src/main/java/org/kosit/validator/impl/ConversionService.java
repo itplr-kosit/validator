@@ -40,10 +40,12 @@ import org.apache.commons.lang3.StringUtils;
  * JAXB Conversion Utility.
  */
 public class ConversionService {
+
     /**
      * Exception while serializing/deserializing with jaxb.
      */
     public static class ConversionExeption extends RuntimeException {
+
         /**
          * Constructor.
          *
@@ -65,6 +67,7 @@ public class ConversionService {
     }
 
     private static final int MAX_LOG_CONTENT = 50;
+
     // context setup
     private JAXBContext jaxbContext;
 
@@ -167,7 +170,8 @@ public class ConversionService {
             u.setEventHandler(handler2Use);
             final T value = u.unmarshal(xsr, type).getValue();
             if (defaultHandler != null && defaultHandler.hasErrors()) {
-                throw new ConversionExeption(String.format("Schema errors while reading content from %s: %s", xml, defaultHandler.getErrorDescription()));
+                throw new ConversionExeption(
+                        String.format("Schema errors while reading content from %s: %s", xml, defaultHandler.getErrorDescription()));
             }
             return value;
         } catch (final JAXBException | XMLStreamException e) {
@@ -190,7 +194,7 @@ public class ConversionService {
         if (model == null) {
             throw new ConversionExeption("Can not serialize null");
         }
-        try (StringWriter w = new StringWriter()) {
+        try ( StringWriter w = new StringWriter() ) {
             final JAXBIntrospector introspector = getJaxbContext().createJAXBIntrospector();
             final Marshaller marshaller = getJaxbContext().createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -206,7 +210,8 @@ public class ConversionService {
                 marshaller.marshal(jaxbElement, xmlStreamWriter);
             } else {
                 if (qname.getNamespaceURI() != null) {
-                    marshaller.setProperty("org.glassfish.jaxb.namespacePrefixMapper", new DynamicNamespacePrefixMapper(qname.getNamespaceURI()));
+                    marshaller.setProperty("org.glassfish.jaxb.namespacePrefixMapper",
+                            new DynamicNamespacePrefixMapper(qname.getNamespaceURI()));
                 }
                 marshaller.marshal(model, xmlStreamWriter);
             }
@@ -222,7 +227,8 @@ public class ConversionService {
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
             return u.unmarshal(source, type).getValue();
         } catch (final JAXBException e) {
-            throw new ConversionExeption(String.format("Can not unmarshal to type %s: %s", type.getSimpleName(), StringUtils.abbreviate(source.getSystemId(), MAX_LOG_CONTENT)), e);
+            throw new ConversionExeption(String.format("Can not unmarshal to type %s: %s", type.getSimpleName(),
+                    StringUtils.abbreviate(source.getSystemId(), MAX_LOG_CONTENT)), e);
         }
     }
 }

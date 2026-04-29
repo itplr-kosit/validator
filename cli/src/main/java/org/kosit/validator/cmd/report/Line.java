@@ -26,7 +26,9 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  * Helper for printing a colored lines (with newline at the end) to the console.
  */
 public class Line {
+
     private final List<Text> texts = new ArrayList<>();
+
     private Format baseFormat = new Format();
 
     /**

@@ -32,9 +32,13 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class ScenarioRepository {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ScenarioRepository.class);
+
     public static final String DEFAULT = "default";
+
     public static final String DEFAULT_ID = DEFAULT + "_1";
+
     private final List<Configuration> configuration;
 
     public ScenarioRepository(final Configuration... configuration) {
@@ -75,7 +79,8 @@ public class ScenarioRepository {
         if (collect.size() == 1) {
             result = new Result<>(collect.get(0));
         } else if (collect.isEmpty()) {
-            result = new Result<>(getFallbackScenario(), Collections.singleton("None of the loaded scenarios matches the specified document"));
+            result = new Result<>(getFallbackScenario(),
+                    Collections.singleton("None of the loaded scenarios matches the specified document"));
         } else {
             result = new Result<>(getFallbackScenario(), Collections.singleton("More than one scenario matches the specified document"));
         }

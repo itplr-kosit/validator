@@ -43,12 +43,16 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class InputFactory {
+
     static final String DEFAULT_ALGORITH = "SHA-256";
+
     /**
      * Pseudo hashcode algorithm name, which indicates, thate the hashcode of the {@link Input} is actually the name.
      */
     static final String PSEUDO_NAME_ALGORITHM = "NAME";
+
     private static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
+
     private final String algorithm;
 
     InputFactory() {

@@ -28,8 +28,11 @@ import javax.xml.transform.stream.StreamSource;
  * @author Andreas Penski
  */
 public class ByteArrayInput extends AbstractInput {
+
     private final byte[] content;
+
     private final String name;
+
     private final String digestAlgorithm;
 
     @Override

@@ -56,26 +56,37 @@ import net.sf.saxon.s9api.XdmNodeKind;
  * @author Andreas Penski
  */
 public class ConfigurationLoader {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfigurationLoader.class);
+
     private static final String SUPPORTED_MAJOR_VERSION = "2";
+
     private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = "http://www.xoev.de/de/validator/framework/2/scenarios";
+
     protected final Map<String, Object> parameters = new HashMap<>();
+
     /**
      * URL, die auf die scenerio.xml Datei zeigt.
      */
     private final URI scenarioDefinition;
+
     /**
      * Root-Ordner mit den von den einzelnen Szenarien benötigten Dateien
      */
     private final URI scenarioRepository;
+
     protected ResolvingMode resolvingMode = ResolvingMode.STRICT_RELATIVE;
+
     protected ResolvingConfigurationStrategy resolvingConfigurationStrategy;
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
-            final Result<XdmNode, XMLSyntaxError> result = new DocumentParseAction(processor).parseDocument(InputFactory.read(scenarioDefinition.toURL()));
+            final Result<XdmNode, XMLSyntaxError> result = new DocumentParseAction(processor)
+                    .parseDocument(InputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
-                throw new IllegalStateException(String.format("Specified scenario configuration %s is not supported.%nThis version only supports definitions of \'%s\'", scenarioDefinition, SUPPORTED_MAJOR_VERSION_SCHEMA));
+                throw new IllegalStateException(String.format(
+                        "Specified scenario configuration %s is not supported.%nThis version only supports definitions of \'%s\'",
+                        scenarioDefinition, SUPPORTED_MAJOR_VERSION_SCHEMA));
             }
         } catch (final MalformedURLException e) {
             throw new IllegalStateException("Error reading definition file");
@@ -94,7 +105,8 @@ public class ConfigurationLoader {
     private static boolean isSupportedDocument(final XdmNode doc) {
         final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
-        return Strings.CS.startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION) && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
+        return Strings.CS.startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
+                && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
     }
 
     private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {
@@ -164,7 +176,8 @@ public class ConfigurationLoader {
         if (!handler.hasErrors()) {
             log.info("Loading scenario content from {}", this.getScenarioRepository());
         } else {
-            throw new IllegalStateException(String.format("Can not load scenarios from %s due to %s", getScenarioDefinition(), handler.getErrorDescription()));
+            throw new IllegalStateException(
+                    String.format("Can not load scenarios from %s due to %s", getScenarioDefinition(), handler.getErrorDescription()));
         }
         return scenarios;
     }

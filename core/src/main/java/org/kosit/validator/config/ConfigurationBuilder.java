@@ -43,17 +43,29 @@ import net.sf.saxon.s9api.Processor;
  * @author Andreas Penski
  */
 public class ConfigurationBuilder {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfigurationBuilder.class);
+
     private final List<ScenarioBuilder> scenarios = new ArrayList<>();
+
     private final Map<String, Object> parameters = new HashMap<>();
+
     private FallbackBuilder fallbackBuilder;
+
     private ResolvingConfigurationStrategy resolvingConfigurationStrategy;
+
     private ResolvingMode resolvingMode = ResolvingMode.STRICT_RELATIVE;
+
     private ContentRepository contentRepository;
+
     private String author = "API";
+
     private String date = LocalDate.now().toString();
+
     private String name = "Custom";
+
     private URI repository;
+
     private String description;
 
     /**

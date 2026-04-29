@@ -40,9 +40,13 @@ import net.sf.saxon.trans.XPathException;
  * @author Andreas Penski
  */
 public class ProcessorProvider {
+
     protected static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+
     protected static final String LOAD_EXTERNAL_DTD_FEATURE = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+
     protected static final String FEATURE_SECURE_PROCESSING = "http://javax.xml.XMLConstants/feature/secure-processing";
+
     private static Processor processor;
 
     private ProcessorProvider() {
@@ -79,8 +83,8 @@ public class ProcessorProvider {
         return processor;
     }
 
-
     private static class SecureUriResolver implements CollectionFinder, OutputURIResolver, UnparsedTextURIResolver {
+
         public static final String MESSAGE = "Configuration error. Resolving ist not allowed";
 
         @Override

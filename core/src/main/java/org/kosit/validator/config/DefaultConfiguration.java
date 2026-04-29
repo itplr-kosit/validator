@@ -29,12 +29,19 @@ import org.kosit.validator.impl.Scenario;
  * @author Andreas Penski
  */
 public class DefaultConfiguration implements Configuration {
+
     private final List<Scenario> scenarios;
+
     private final Scenario fallbackScenario;
+
     private ContentRepository contentRepository;
+
     private String name;
+
     private String author;
+
     private String date;
+
     private Map<String, Object> additionalParameters;
 
     public DefaultConfiguration(final List<Scenario> scenarios, final Scenario fallbackScenario) {

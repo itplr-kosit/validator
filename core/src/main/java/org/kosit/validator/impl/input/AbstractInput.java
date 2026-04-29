@@ -27,8 +27,11 @@ import org.kosit.validator.api.Input;
  * @author Andreas Penski
  */
 public abstract class AbstractInput implements Input, LazyReadInput {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AbstractInput.class);
+
     private byte[] hashCode;
+
     private long length;
 
     @Override

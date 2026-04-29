@@ -34,29 +34,40 @@ import picocli.CommandLine.Parameters;
  * 
  * @author Andreas Penski
  */
-@Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false, separator = " ", synopsisHeading = CommandLineOptions.SYNOSIS_HEADING)
+@Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false,
+         separator = " ", synopsisHeading = CommandLineOptions.SYNOSIS_HEADING)
 public class CommandLineOptions implements Callable<ReturnValue> {
-    static final String SYNOSIS_HEADING = "Usage: ";
 
+    static final String SYNOSIS_HEADING = "Usage: ";
 
     /**
      * @author Andreas Penski
      */
     static class CliOptions {
-        @Option(names = {"-o", "--output-directory"}, description = "Defines the out directory for results.", defaultValue = ".", required = true)
+
+        @Option(names = { "-o", "--output-directory" }, description = "Defines the out directory for results.", defaultValue = ".",
+                required = true)
         private Path outputPath;
-        @Option(names = {"-e", "--extract-reports"}, description = "Extract and save defined reports within result as separate files")
+
+        @Option(names = { "-e", "--extract-reports" }, description = "Extract and save defined reports within result as separate files")
         private boolean extractReport;
-        @Option(names = {"--serialize-report-input"}, description = "Serializes the report input to the cwd // deprecated", defaultValue = "false")
+
+        @Option(names = { "--serialize-report-input" }, description = "Serializes the report input to the cwd // deprecated",
+                defaultValue = "false")
         private boolean serializeInput;
-        @Option(names = {"--report-postfix"}, description = "Postfix of the generated report name")
+
+        @Option(names = { "--report-postfix" }, description = "Postfix of the generated report name")
         private String reportPostfix;
-        @Option(names = {"--report-prefix"}, description = "Prefix of the generated report name")
+
+        @Option(names = { "--report-prefix" }, description = "Prefix of the generated report name")
         private String reportPrefix;
-        @Option(names = {"-m", "--memory-stats"}, description = "Prints some memory stats")
+
+        @Option(names = { "-m", "--memory-stats" }, description = "Prints some memory stats")
         private boolean printMemoryStats;
-        @Option(names = {"-p", "--print"}, description = "Prints the check result to stdout")
+
+        @Option(names = { "-p", "--print" }, description = "Prints the check result to stdout")
         private boolean printReport;
+
         @Parameters(arity = "1..*", description = "Files to validate")
         private List<Path> files;
 
@@ -96,14 +107,15 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         }
     }
 
-
     /**
      * Definition of logical name and a path for a configuration artifact.
      *
      * @author Andreas Penski
      */
     public static abstract class Definition {
+
         String name;
+
         Path path;
 
         public String getName() {
@@ -123,7 +135,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         }
     }
 
-
     /**
      * Definition of logical name and a path for a repository.
      *
@@ -132,7 +143,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
     public static class RepositoryDefinition extends Definition {
         // just for type safety
     }
-
 
     /**
      * Definition of logical name and a path for a scenario configuration file.
@@ -145,19 +155,28 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     @Inject
     EngineInformation engineInformation;
+
     @ArgGroup(exclusive = false, heading = "CLI usage options\n")
     private CliOptions cliOptions;
-    @Option(names = {"-d", "--debug"}, description = "Prints some more debug information")
+
+    @Option(names = { "-d", "--debug" }, description = "Prints some more debug information")
     private boolean debugOutput;
-    @Option(names = {"-?", "--help"}, usageHelp = true, description = "display this help message")
+
+    @Option(names = { "-?", "--help" }, usageHelp = true, description = "display this help message")
     boolean usageHelpRequested;
-    @Option(names = {"-X", "--debug-logging"}, description = "Enables full debug log. Alias for -l debug")
+
+    @Option(names = { "-X", "--debug-logging" }, description = "Enables full debug log. Alias for -l debug")
     private boolean debugLog;
-    @Option(names = {"-l", "--log-level"}, description = "Enables a certain log level for debugging purposes", defaultValue = "OFF")
+
+    @Option(names = { "-l", "--log-level" }, description = "Enables a certain log level for debugging purposes", defaultValue = "OFF")
     private Level logLevel;
-    @Option(names = {"-r", "--repository"}, paramLabel = "repository-path", description = "Directory containing scenario content", converter = TypeConverter.RepositoryConverter.class)
+
+    @Option(names = { "-r", "--repository" }, paramLabel = "repository-path", description = "Directory containing scenario content",
+            converter = TypeConverter.RepositoryConverter.class)
     private List<RepositoryDefinition> repositories;
-    @Option(names = {"-s", "--scenarios"}, description = "Location of scenarios.xml", paramLabel = "scenario.xml", required = true, converter = TypeConverter.ScenarioConverter.class)
+
+    @Option(names = { "-s", "--scenarios" }, description = "Location of scenarios.xml", paramLabel = "scenario.xml", required = true,
+            converter = TypeConverter.ScenarioConverter.class)
     private List<ScenarioDefinition> scenarios;
 
     @Override

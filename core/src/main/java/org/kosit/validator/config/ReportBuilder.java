@@ -35,11 +35,17 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
  * @author Andreas Penski
  */
 public class ReportBuilder implements Builder<Pair<CreateReportType, Transformation>> {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReportBuilder.class);
+
     private static final String DEFAULT_NAME = "manually created report";
+
     private XsltExecutable executable;
+
     private URI source;
+
     private String name;
+
     private String id;
 
     private static Result<Pair<CreateReportType, Transformation>, String> createError(final String msg) {
@@ -60,7 +66,8 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
             result = new Result<>(new ImmutablePair<>(object, new Transformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
             log.error(e.getMessage(), e);
-            result = createError(String.format(" Can not create report configuration based on %s. Exception is %s", this.source, e.getMessage()));
+            result = createError(
+                    String.format(" Can not create report configuration based on %s. Exception is %s", this.source, e.getMessage()));
         }
         return result;
     }

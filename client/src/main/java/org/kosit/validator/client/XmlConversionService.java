@@ -39,13 +39,14 @@ import jakarta.xml.bind.annotation.XmlRegistry;
  * JAXB Conversion Utility.
  */
 public class XmlConversionService {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(XmlConversionService.class);
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(XmlConversionService.class);
 
     /**
      * Exception while serializing/deserializing with jaxb.
      */
     public static class ConversionExeption extends RuntimeException {
+
         /**
          * Constructor.
          *
@@ -67,6 +68,7 @@ public class XmlConversionService {
     }
 
     private static final int MAX_LOG_CONTENT = 50;
+
     // context setup
     private JAXBContext jaxbContext;
 
@@ -136,7 +138,7 @@ public class XmlConversionService {
     public <T> T readXml(final File xml, final Class<T> type) {
         checkInputEmpty(xml);
         checkTypeEmpty(type);
-        try (InputStream is = new FileInputStream(xml)) {
+        try ( InputStream is = new FileInputStream(xml) ) {
             final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
             inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);

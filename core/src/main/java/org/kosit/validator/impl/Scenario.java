@@ -38,7 +38,9 @@ public class Scenario {
      * Runtime objects for a transformation e.g. schematron or report.
      */
     public static class Transformation {
+
         private XsltExecutable executable;
+
         private ResourceType resourceType;
 
         public XsltExecutable getExecutable() {
@@ -64,14 +66,23 @@ public class Scenario {
     }
 
     private final ScenarioType configuration;
+
     private Schema schema;
+
     private boolean fallback;
+
     private XPathExecutable matchExecutable;
+
     private XPathExecutable acceptExecutable;
+
     private ResolvingConfigurationStrategy factory;
+
     private ResourceResolver uriResolver;
+
     private UnparsedTextURIResolver unparsedTextURIResolver;
+
     private List<Transformation> schematronValidations;
+
     private List<Transformation> reportTransformations;
 
     public List<Transformation> getReportTransformations() {

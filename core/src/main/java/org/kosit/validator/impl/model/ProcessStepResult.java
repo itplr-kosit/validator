@@ -23,8 +23,11 @@ import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.model.xvrl.XVRLReport;
 
 public class ProcessStepResult<T, E> {
+
     private final CheckAction.Process.Key<T, E> key;
+
     private Result<T, E> result;
+
     private List<XVRLReport> report;
 
     public void setReport(final XVRLReport singleReport) {

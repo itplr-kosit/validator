@@ -42,8 +42,11 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class DocumentParseAction implements CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DocumentParseAction.class);
+
     public static final Process.Key<XdmNode, XMLSyntaxError> KEY = new Process.Key<>(XdmNode.class, XMLSyntaxError.class);
+
     private final Processor processor;
 
     private static XVRLReport generateXVRLReport(final Result<XdmNode, XMLSyntaxError> parserResult) {

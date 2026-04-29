@@ -27,8 +27,11 @@ import org.kosit.validator.model.xvrl.XVRLReport;
  * @author Andreas Penski
  */
 class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PrintMemoryStats.class);
+
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+
     private static final int BYTES_PER_K = 1024;
 
     private static XVRLReport createReport() {

@@ -36,17 +36,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DefaultResult implements Result {
+
     /**
      * Die vom Validator erstelle interne Berichts-'Vorstufe'
      */
     private XVRLReportSummary reportSummary;
+
     /**
      * Das evaluierte Ergebnis.
      */
     private final AcceptRecommendation acceptRecommendation;
+
     private List<XmlError> schemaViolations;
+
     private List<SchematronOutput> schematronResult;
+
     private boolean processingSuccessful;
+
     private boolean wellformed;
 
     public DefaultResult(final AcceptRecommendation recommendation) {
@@ -105,11 +111,15 @@ public class DefaultResult implements Result {
      */
     @Override
     public List<FailedAssert> getFailedAsserts() {
-        return getSchematronResult() != null ? getSchematronResult().stream().flatMap(e -> e.getActivePatternAndFiredRuleAndFailedAssert().stream()).filter(FailedAssert.class::isInstance).map(FailedAssert.class::cast).collect(Collectors.toList()) : Collections.emptyList();
+        return getSchematronResult() != null
+                ? getSchematronResult().stream().flatMap(e -> e.getActivePatternAndFiredRuleAndFailedAssert().stream())
+                        .filter(FailedAssert.class::isInstance).map(FailedAssert.class::cast).collect(Collectors.toList())
+                : Collections.emptyList();
     }
 
     private boolean isSchematronEvaluated() {
-        return getSchematronResult() != null && getSchematronResult().stream().noneMatch(e -> e.getActivePatternAndFiredRuleAndFailedAssert().isEmpty());
+        return getSchematronResult() != null
+                && getSchematronResult().stream().noneMatch(e -> e.getActivePatternAndFiredRuleAndFailedAssert().isEmpty());
     }
 
     @Override

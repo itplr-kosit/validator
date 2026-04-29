@@ -45,6 +45,7 @@ import net.sf.saxon.s9api.XsltTransformer;
  * @author Andreas Penski
  */
 public class SaxonSecurityTest {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SaxonSecurityTest.class);
 
     @Test
@@ -82,6 +83,7 @@ public class SaxonSecurityTest {
         final Result<XdmNode, XMLSyntaxError> result = Helper.parseDocument(InputFactory.read(resource));
         assertThat(result.isValid()).isFalse();
         assertThat(result.getObject()).isNull();
-        assertThat(result.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining())).contains("http://apache.org/xml/features/disallow-doctype-dec");
+        assertThat(result.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining()))
+                .contains("http://apache.org/xml/features/disallow-doctype-dec");
     }
 }

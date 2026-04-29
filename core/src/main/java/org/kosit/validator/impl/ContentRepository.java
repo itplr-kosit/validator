@@ -53,11 +53,13 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
  * @author Andreas Penski
  */
 public class ContentRepository {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ContentRepository.class);
 
-
     private static final class CacheKey {
+
         private final String compilerId;
+
         private final URI uri;
 
         public CacheKey(final String compilerId, final URI uri) {
@@ -75,15 +77,19 @@ public class ContentRepository {
 
         @java.lang.Override
         public boolean equals(final java.lang.Object o) {
-            if (o == this) return true;
-            if (!(o instanceof ContentRepository.CacheKey)) return false;
+            if (o == this)
+                return true;
+            if (!(o instanceof ContentRepository.CacheKey))
+                return false;
             final ContentRepository.CacheKey other = (ContentRepository.CacheKey) o;
             final java.lang.Object this$compilerId = this.getCompilerId();
             final java.lang.Object other$compilerId = other.getCompilerId();
-            if (this$compilerId == null ? other$compilerId != null : !this$compilerId.equals(other$compilerId)) return false;
+            if (this$compilerId == null ? other$compilerId != null : !this$compilerId.equals(other$compilerId))
+                return false;
             final java.lang.Object this$uri = this.getUri();
             final java.lang.Object other$uri = other.getUri();
-            if (this$uri == null ? other$uri != null : !this$uri.equals(other$uri)) return false;
+            if (this$uri == null ? other$uri != null : !this$uri.equals(other$uri))
+                return false;
             return true;
         }
 
@@ -105,12 +111,19 @@ public class ContentRepository {
     }
 
     private final Processor processor;
+
     private final URI repository;
+
     private final ResourceResolver resolver;
+
     private final UnparsedTextURIResolver unparsedTextURIResolver;
+
     private final SchemaFactory schemaFactory;
+
     private final ResolvingConfigurationStrategy resolvingConfigurationStrategy;
+
     private final Map<CacheKey, Source> schematronXsltCache = new ConcurrentHashMap<>();
+
     private final SchematronCompilerRegistry compilerRegistry;
 
     /**
@@ -212,11 +225,11 @@ public class ContentRepository {
      * @return das erzeugte Schema
      */
     public Schema createSchema(final URL url) {
-        return createSchema(new Source[] {resolve(url)});
+        return createSchema(new Source[] { resolve(url) });
     }
 
     public Schema createSchema(final URI uri) {
-        return createSchema(new Source[] {resolveInRepository(uri)});
+        return createSchema(new Source[] { resolveInRepository(uri) });
     }
 
     /**
@@ -237,7 +250,8 @@ public class ContentRepository {
     public Schema createSchema(final ScenarioType s) {
         Schema schema = null;
         if (s.getValidateWithXmlSchema() != null) {
-            final List<String> schemaResources = s.getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation).collect(Collectors.toList());
+            final List<String> schemaResources = s.getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation)
+                    .collect(Collectors.toList());
             schema = createSchema(schemaResources);
         }
         return schema;
@@ -277,7 +291,8 @@ public class ContentRepository {
             }
             return compiler.compile(expression);
         } catch (final SaxonApiException e) {
-            throw new IllegalStateException(String.format("Can not compile xpath match expression \'%s\'", StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION"), e);
+            throw new IllegalStateException(String.format("Can not compile xpath match expression \'%s\'",
+                    StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION"), e);
         }
     }
 
@@ -301,7 +316,8 @@ public class ContentRepository {
      */
     public List<Transformation> createReportTransformations(final ScenarioType t) {
         log.info("Create Report Transformations:");
-        return t.getCreateReport().stream().map(createReportType -> createTransformation(createReportType.getResource())).collect(Collectors.toList());
+        return t.getCreateReport().stream().map(createReportType -> createTransformation(createReportType.getResource()))
+                .collect(Collectors.toList());
     }
 
     public Transformation createTransformation(final ResourceType resource) {
@@ -310,17 +326,20 @@ public class ContentRepository {
     }
 
     public XPathExecutable createMatchExecutable(final ScenarioType s) {
-        final Map<String, String> namespaces = s.getNamespace().stream().collect(Collectors.toMap(NamespaceType::getPrefix, ns -> StringTrimAdapter.trim(ns.getValue())));
+        final Map<String, String> namespaces = s.getNamespace().stream()
+                .collect(Collectors.toMap(NamespaceType::getPrefix, ns -> StringTrimAdapter.trim(ns.getValue())));
         return createXPath(s.getMatch(), namespaces);
     }
 
     public XPathExecutable createAccepptExecutable(final ScenarioType s) {
-        final Map<String, String> namespaces = s.getNamespace().stream().collect(Collectors.toMap(NamespaceType::getPrefix, ns -> StringTrimAdapter.trim(ns.getValue())));
+        final Map<String, String> namespaces = s.getNamespace().stream()
+                .collect(Collectors.toMap(NamespaceType::getPrefix, ns -> StringTrimAdapter.trim(ns.getValue())));
         return createXPath(s.getAcceptMatch(), namespaces);
     }
 
     public List<Transformation> createSchematronTransformations(final ScenarioType s) {
-        return s.getValidateWithSchematron().isEmpty() ? Collections.emptyList() : s.getValidateWithSchematron().stream().map(this::createSchematronTransformation).collect(Collectors.toList());
+        return s.getValidateWithSchematron().isEmpty() ? Collections.emptyList()
+                : s.getValidateWithSchematron().stream().map(this::createSchematronTransformation).collect(Collectors.toList());
     }
 
     public Transformation createSchematronTransformation(final ValidateWithSchematron validateWithSchematron) {
@@ -338,7 +357,7 @@ public class ContentRepository {
 
     public Transformation createIdentityTransformation() {
         final URL url = ContentRepository.class.getClassLoader().getResource("transform/identity.xsl");
-        try (InputStream input = url.openStream()) {
+        try ( InputStream input = url.openStream() ) {
             final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
             final XsltExecutable executable = xsltCompiler.compile(new StreamSource(input));
             final ResourceType resource = new ResourceType();
@@ -350,7 +369,9 @@ public class ContentRepository {
         }
     }
 
-    public ContentRepository(final Processor processor, final URI repository, final ResourceResolver resolver, final UnparsedTextURIResolver unparsedTextURIResolver, final SchemaFactory schemaFactory, final ResolvingConfigurationStrategy resolvingConfigurationStrategy, final SchematronCompilerRegistry compilerRegistry) {
+    public ContentRepository(final Processor processor, final URI repository, final ResourceResolver resolver,
+            final UnparsedTextURIResolver unparsedTextURIResolver, final SchemaFactory schemaFactory,
+            final ResolvingConfigurationStrategy resolvingConfigurationStrategy, final SchematronCompilerRegistry compilerRegistry) {
         this.processor = processor;
         this.repository = repository;
         this.resolver = resolver;

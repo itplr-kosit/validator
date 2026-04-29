@@ -34,11 +34,17 @@ import net.sf.saxon.s9api.XPathExecutable;
  * @author Andreas Penski
  */
 class XPathBuilder implements Builder<XPathExecutable> {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(XPathBuilder.class);
-    private static final String[] IGNORED_PREFIXES = new String[] {"xsd", "saxon", "xsl", "xs", "xml"};
+
+    private static final String[] IGNORED_PREFIXES = new String[] { "xsd", "saxon", "xsl", "xs", "xml" };
+
     private final String name;
+
     private String xpath;
+
     private XPathExecutable executable;
+
     private Map<String, String> namespaces;
 
     private static Result<XPathExecutable, String> createError(final String msg) {
@@ -58,7 +64,8 @@ class XPathBuilder implements Builder<XPathExecutable> {
      * @return xpath expression
      */
     public String getXPath() {
-        return this.xpath == null && this.executable != null ? this.executable.getUnderlyingExpression().getInternalExpression().toString() : this.xpath;
+        return this.xpath == null && this.executable != null ? this.executable.getUnderlyingExpression().getInternalExpression().toString()
+                : this.xpath;
     }
 
     public boolean isAvailable() {
@@ -87,9 +94,12 @@ class XPathBuilder implements Builder<XPathExecutable> {
 
     private void extractNamespaces() {
         final Map<String, String> ns = new HashMap<>();
-        final Iterator<String> iterator = this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext().iteratePrefixes();
+        final Iterator<String> iterator = this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext()
+                .iteratePrefixes();
         final Iterable<String> iterable = () -> iterator;
-        StreamSupport.stream(iterable.spliterator(), false).filter(e -> !ArrayUtils.contains(IGNORED_PREFIXES, e)).filter(StringUtils::isNotBlank).forEach(e -> ns.put(e, this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext().getURIForPrefix(e, false).toString()));
+        StreamSupport.stream(iterable.spliterator(), false).filter(e -> !ArrayUtils.contains(IGNORED_PREFIXES, e))
+                .filter(StringUtils::isNotBlank).forEach(e -> ns.put(e, this.executable.getUnderlyingExpression().getInternalExpression()
+                        .getRetainedStaticContext().getURIForPrefix(e, false).toString()));
         getNamespaces().putAll(ns);
     }
 

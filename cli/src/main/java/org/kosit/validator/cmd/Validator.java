@@ -49,6 +49,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  */
 @SuppressWarnings("squid:S3725")
 public class Validator {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Validator.class);
 
     private Validator() {
@@ -97,7 +98,8 @@ public class Validator {
         if (cliOptions.isExtractReport()) {
             check.getCheckSteps().add(new ExtractReportContentAction(processor, outputDirectory));
         }
-        check.getCheckSteps().add(new SerializeReportAction(outputDirectory, check.getConversionService(), determineNamingStrategy(cliOptions)));
+        check.getCheckSteps()
+                .add(new SerializeReportAction(outputDirectory, check.getConversionService(), determineNamingStrategy(cliOptions)));
         if (cliOptions.isPrintReport()) {
             check.getCheckSteps().add(new PrintReportAction(processor));
         }
@@ -132,23 +134,27 @@ public class Validator {
     private static List<Configuration> getConfiguration(final CommandLineOptions cmd) {
         final List<ScenarioDefinition> scenarios = getIfNull(cmd.getScenarios(), Collections.emptyList());
         // Map from scenario name to scenario path
-        final Map<String, Path> mappedScenarios = scenarios.stream().collect(Collectors.toMap(ScenarioDefinition::getName, ScenarioDefinition::getPath));
+        final Map<String, Path> mappedScenarios = scenarios.stream()
+                .collect(Collectors.toMap(ScenarioDefinition::getName, ScenarioDefinition::getPath));
         final List<RepositoryDefinition> repos = getIfNull(cmd.getRepositories(), Collections.emptyList());
-        final Map<String, Path> mappedRepos = repos.stream().collect(Collectors.toMap(RepositoryDefinition::getName, RepositoryDefinition::getPath));
+        final Map<String, Path> mappedRepos = repos.stream()
+                .collect(Collectors.toMap(RepositoryDefinition::getName, RepositoryDefinition::getPath));
         checkUnused(mappedScenarios, mappedRepos);
         return mappedScenarios.entrySet().stream().map(e -> {
             assertFileExistance(e.getValue(), "scenario");
             final URI scenarioLocation = e.getValue().toUri();
             final URI repositoryLocation = findRepository(scenarioLocation, e.getKey(), mappedRepos);
             reportLoading(scenarioLocation, repositoryLocation);
-            final Configuration configuration = Configuration.load(scenarioLocation, repositoryLocation).build(ProcessorProvider.getProcessor());
+            final Configuration configuration = Configuration.load(scenarioLocation, repositoryLocation)
+                    .build(ProcessorProvider.getProcessor());
             reportConfiguration(configuration);
             return configuration;
         }).collect(Collectors.toList());
     }
 
     private static void checkUnused(final Map<String, Path> scenarios, final Map<String, Path> repositories) {
-        final List<Entry<String, Path>> unused = repositories.entrySet().stream().filter(e -> scenarios.get(e.getKey()) == null).collect(Collectors.toList());
+        final List<Entry<String, Path>> unused = repositories.entrySet().stream().filter(e -> scenarios.get(e.getKey()) == null)
+                .collect(Collectors.toList());
         unused.removeIf(e -> e.getKey().equals(ScenarioRepository.DEFAULT_ID));
         unused.forEach(e -> Printer.writeErr("Warning: repository definition \"{0}\" is not used", e.getKey()));
     }
@@ -244,8 +250,9 @@ public class Validator {
     }
 
     private static Collection<Input> listDirectoryTargets(final Path d) {
-        try (Stream<Path> stream = Files.list(d)) {
-            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(InputFactory::read).collect(Collectors.toList());
+        try ( Stream<Path> stream = Files.list(d) ) {
+            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(InputFactory::read)
+                    .collect(Collectors.toList());
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }
@@ -255,13 +262,15 @@ public class Validator {
         if (Files.isDirectory(d)) {
             return d.toUri();
         } else {
-            throw new IllegalArgumentException(String.format("Not a valid path for repository definition specified: \'%s\'", d.toAbsolutePath()));
+            throw new IllegalArgumentException(
+                    String.format("Not a valid path for repository definition specified: \'%s\'", d.toAbsolutePath()));
         }
     }
 
     private static void assertFileExistance(final Path f, final String type) {
         if (!Files.isRegularFile(f)) {
-            throw new IllegalArgumentException(String.format("Not a valid path for %s definition specified: \'%s\'", type, f.toAbsolutePath()));
+            throw new IllegalArgumentException(
+                    String.format("Not a valid path for %s definition specified: \'%s\'", type, f.toAbsolutePath()));
         }
     }
 }

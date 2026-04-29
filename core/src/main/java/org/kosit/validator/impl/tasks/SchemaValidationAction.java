@@ -61,11 +61,17 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class SchemaValidationAction implements CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchemaValidationAction.class);
+
     public static final Key<Boolean, XMLSyntaxError> KEY = new Key<>(Boolean.class, XMLSyntaxError.class);
+
     private static final Long BA_LIMIT = 10L;
+
     private static final String LIMIT_PARAMETER = "schema.validation.inmem.limit";
+
     private final Processor processor;
+
     private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
 
     private static XVRLReport generateXVRLReport(final ValidationResultsXmlSchema result) {
@@ -82,7 +88,7 @@ public class SchemaValidationAction implements CheckAction {
     private Result<Boolean, XMLSyntaxError> validate(final Process process, final Scenario scenario) {
         log.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
-        try (SourceProvider validateInput = resolveSource(process)) {
+        try ( SourceProvider validateInput = resolveSource(process) ) {
             final Validator validator = scenario.getFactory().createValidator(scenario.getSchema());
             validator.setErrorHandler(errorHandler);
             validator.validate(validateInput.getSource());
@@ -141,8 +147,8 @@ public class SchemaValidationAction implements CheckAction {
         return hasNoSchema(results);
     }
 
-
     private interface SourceProvider extends AutoCloseable {
+
         Source getSource() throws IOException;
 
         @Override
@@ -151,8 +157,8 @@ public class SchemaValidationAction implements CheckAction {
         }
     }
 
-
     private interface SerializedDocument extends AutoCloseable, SourceProvider {
+
         void serialize(XdmNode node) throws SaxonApiException, IOException;
 
         InputStream openStream() throws IOException;
@@ -163,14 +169,15 @@ public class SchemaValidationAction implements CheckAction {
         }
     }
 
-
     private static class ByteArraySerializedDocument implements SerializedDocument {
+
         private final Processor processor;
+
         private byte[] bytes;
 
         @Override
         public void serialize(final XdmNode node) throws SaxonApiException, IOException {
-            try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            try ( ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
                 final Serializer serializer = this.processor.newSerializer();
                 serializer.setOutputStream(out);
                 serializer.serializeNode(node);
@@ -194,9 +201,10 @@ public class SchemaValidationAction implements CheckAction {
         }
     }
 
-
     private static class FileSerializedDocument implements SerializedDocument {
+
         private final Path file;
+
         private final Processor processor;
 
         FileSerializedDocument(final Processor processor) throws IOException {
@@ -206,7 +214,7 @@ public class SchemaValidationAction implements CheckAction {
 
         @Override
         public void serialize(final XdmNode node) throws SaxonApiException, IOException {
-            try (OutputStream out = Files.newOutputStream(this.file)) {
+            try ( OutputStream out = Files.newOutputStream(this.file) ) {
                 final Serializer serializer = this.processor.newSerializer();
                 serializer.setOutputStream(out);
                 serializer.serializeNode(node);

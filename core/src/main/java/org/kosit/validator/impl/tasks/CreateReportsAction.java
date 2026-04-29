@@ -46,9 +46,13 @@ import net.sf.saxon.s9api.XsltTransformer;
  * @author Andreas Penski
  */
 public class CreateReportsAction implements CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CreateReportsAction.class);
+
     public static final Process.Key<List<BusinessReport>, XMLSyntaxError> KEY = new Process.Key<>(null, XMLSyntaxError.class);
+
     public static final ActionMetadata METADATA = new ActionMetadata("Create report", "create_report");
+
     private final XvrlSerializer xvrlSerializer;
 
     public CreateReportsAction(final Processor processor, final ConversionService conversionService) {
@@ -61,7 +65,8 @@ public class CreateReportsAction implements CheckAction {
     }
 
     private static XVRLReport generateXVRLReport(final ResourceType resourceType, final XdmNode node) {
-        return XVRLReportBuilder.builder(METADATA).add(detection().id(resourceType.getName()).add(supplemantal().addContent(node).id(resourceType.getName()))).build();
+        return XVRLReportBuilder.builder(METADATA)
+                .add(detection().id(resourceType.getName()).add(supplemantal().addContent(node).id(resourceType.getName()))).build();
     }
 
     private static XVRLReport createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {
@@ -74,13 +79,15 @@ public class CreateReportsAction implements CheckAction {
         final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionAction.KEY);
         final Scenario scenario = scenarioSelection.getObject();
         final XdmNode parsedDocument = process.getResult(DocumentParseAction.KEY).getObject();
-        final List<BusinessReport> reports = getTransformations(process).stream().map(t -> createReport(t, process, scenario, parsedDocument)).collect(Collectors.toList());
+        final List<BusinessReport> reports = getTransformations(process).stream()
+                .map(t -> createReport(t, process, scenario, parsedDocument)).collect(Collectors.toList());
         processStepResult.setResult(new Result<>(reports, null));
         processStepResult.addReports(reports.stream().map(BusinessReport::getReport).collect(Collectors.toList()));
         return processStepResult;
     }
 
-    private BusinessReport createReport(final Scenario.Transformation transformation, final Process process, final Scenario scenario, final XdmNode parsedDocument) {
+    private BusinessReport createReport(final Scenario.Transformation transformation, final Process process, final Scenario scenario,
+            final XdmNode parsedDocument) {
         final BusinessReport r = new BusinessReport();
         r.setName(transformation.getResourceType().getName());
         try {

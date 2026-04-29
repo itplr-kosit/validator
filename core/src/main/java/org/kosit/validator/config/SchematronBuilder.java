@@ -35,10 +35,15 @@ import net.sf.saxon.s9api.XsltExecutable;
  * @author Andreas Penski
  */
 public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, Transformation>> {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchematronBuilder.class);
+
     private static final String DEFAULT_NAME = "manually configured";
+
     private XsltExecutable executable;
+
     private URI source;
+
     private String name;
 
     private static Result<Pair<ValidateWithSchematron, Transformation>, String> createError(final String msg) {
@@ -59,7 +64,8 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
             result = new Result<>(new ImmutablePair<>(object, new Transformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
             log.error(e.getMessage(), e);
-            result = createError(String.format("Can not create schematron configuration based  on %s. Exception is %s", this.source, e.getMessage()));
+            result = createError(
+                    String.format("Can not create schematron configuration based  on %s. Exception is %s", this.source, e.getMessage()));
         }
         return result;
     }

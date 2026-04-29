@@ -31,20 +31,28 @@ import org.w3c.dom.ls.LSResourceResolver;
  * @author Andreas Penski
  */
 public class ClassPathResourceResolver implements LSResourceResolver {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ClassPathResourceResolver.class);
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ClassPathResourceResolver.class);
 
     /**
      * Simple {@link LSInput}-Implementierung, die einen Stream liefern kann
      */
     private static class LSInputImpl implements LSInput {
+
         private Reader characterStream;
+
         private InputStream byteStream;
+
         private String systemId;
+
         private String publicId;
+
         private String baseURI;
+
         private String encoding;
+
         private boolean certifiedText;
+
         private String stringData;
 
         /**
@@ -148,11 +156,13 @@ public class ClassPathResourceResolver implements LSResourceResolver {
     }
 
     @Override
-    public LSInput resolveResource(final String type, final String namespaceURI, final String publicId, final String systemId, final String baseURI) {
+    public LSInput resolveResource(final String type, final String namespaceURI, final String publicId, final String systemId,
+            final String baseURI) {
         final URI resolved = RelativeUriResolver.resolve(URI.create(systemId), this.base);
         if (resolved != null) {
             try {
-                final URL resource = resolved.isAbsolute() ? resolved.toURL() : ClassPathResourceResolver.class.getResource(resolved.toASCIIString());
+                final URL resource = resolved.isAbsolute() ? resolved.toURL()
+                        : ClassPathResourceResolver.class.getResource(resolved.toASCIIString());
                 final LSInputImpl input = new LSInputImpl(publicId, systemId, resolved.toASCIIString());
                 // intentionally not closed, since xml stack wants it open upon return
                 final InputStream in = resource.openStream();

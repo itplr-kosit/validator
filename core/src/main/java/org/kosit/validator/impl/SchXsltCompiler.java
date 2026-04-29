@@ -26,6 +26,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  * </p>
  */
 public class SchXsltCompiler extends AbstractSchXsltCompiler {
+
     public static final String COMPILER_ID = "schxslt";
 
     public SchXsltCompiler() {

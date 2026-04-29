@@ -40,15 +40,20 @@ import net.sf.saxon.s9api.XPathSelector;
  * @author Andreas Penski
  */
 public class ComputeAcceptanceAction implements CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ComputeAcceptanceAction.class);
-    public static final Process.Key<AcceptRecommendation, XMLSyntaxError> KEY = new Process.Key<>(AcceptRecommendation.class, XMLSyntaxError.class);
+
+    public static final Process.Key<AcceptRecommendation, XMLSyntaxError> KEY = new Process.Key<>(AcceptRecommendation.class,
+            XMLSyntaxError.class);
+
     private static final String REPORT_NAME = "Compute Acceptance Validator";
 
     private static XVRLReport generateXVRLReport(final Result<AcceptRecommendation, XMLSyntaxError> currentResult) {
         if (currentResult.isValid()) {
             return builder(REPORT_NAME).add(detection().addMessage(currentResult.getObject().name())).build();
         }
-        return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).collect(Collectors.toList())).build();
+        return builder(REPORT_NAME)
+                .addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).collect(Collectors.toList())).build();
     }
 
     private static Result<AcceptRecommendation, XMLSyntaxError> evaluateSchemaAndSchematron(final Process results) {
@@ -65,12 +70,14 @@ public class ComputeAcceptanceAction implements CheckAction {
     private static boolean hasSchematronErrors(final Process process) {
         final Result<List<ValidationResultsSchematron>, String> result = process.getResult(SchematronValidationAction.KEY);
         if (result != null && result.isValid()) {
-            return result.getObject().stream().map(v -> v.getResults().getSchematronOutput()).flatMap(s -> s.getActivePatternAndFiredRuleAndFailedAssert().stream()).anyMatch(FailedAssert.class::isInstance);
+            return result.getObject().stream().map(v -> v.getResults().getSchematronOutput())
+                    .flatMap(s -> s.getActivePatternAndFiredRuleAndFailedAssert().stream()).anyMatch(FailedAssert.class::isInstance);
         }
         return false;
     }
 
-    private static Result<AcceptRecommendation, XMLSyntaxError> evaluateAcceptanceMatch(final Process results, final XPathSelector selector) {
+    private static Result<AcceptRecommendation, XMLSyntaxError> evaluateAcceptanceMatch(final Process results,
+            final XPathSelector selector) {
         try {
             final Result<List<BusinessReport>, XMLSyntaxError> reportResult = results.getResult(CreateReportsAction.KEY);
             boolean result = true;
@@ -78,7 +85,8 @@ public class ComputeAcceptanceAction implements CheckAction {
                 selector.setContextItem(report.getContent());
                 result = result && selector.effectiveBooleanValue();
             }
-            final AcceptRecommendation effectiveBooleanValue = result ? org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE : org.kosit.validator.api.AcceptRecommendation.REJECT;
+            final AcceptRecommendation effectiveBooleanValue = result ? org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE
+                    : org.kosit.validator.api.AcceptRecommendation.REJECT;
             return new Result<>(effectiveBooleanValue);
         } catch (final SaxonApiException e) {
             final String msg = String.format("Error evaluating accept recommendation: %s", selector.getUnderlyingXPathContext().toString());

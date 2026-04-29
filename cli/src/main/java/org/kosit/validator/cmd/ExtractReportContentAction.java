@@ -40,10 +40,15 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 class ExtractReportContentAction implements CheckAction {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ExtractReportContentAction.class);
+
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+
     private static final String REPORT_NAME = "Extract Create Report Content";
+
     private final Path outputDirectory;
+
     private Processor processor;
 
     public ExtractReportContentAction(final Processor processor, final Path outputDirectory) {

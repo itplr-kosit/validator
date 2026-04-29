@@ -26,7 +26,9 @@ import java.util.Collections;
  * @param <E> der Typ des Fehler-Objekts
  */
 public class Result<T, E> {
+
     private T object;
+
     private Collection<E> errors;
 
     /**

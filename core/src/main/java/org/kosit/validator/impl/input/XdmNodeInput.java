@@ -26,9 +26,13 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class XdmNodeInput implements Input {
+
     private final XdmNode node;
+
     private final String name;
+
     private final String digestAlgorithm;
+
     private final byte[] hashCode;
 
     @Override

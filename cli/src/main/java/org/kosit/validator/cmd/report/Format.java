@@ -33,8 +33,11 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  * @author Andreas Penski
  */
 public class Format {
+
     private Code textColor;
+
     private Code background;
+
     private final Set<Code> codes = new HashSet<>();
 
     public Code[] mergeCodes(final Collection<Code> newCodes) {
@@ -42,10 +45,12 @@ public class Format {
     }
 
     public Code[] mergeCodes(final Code... newCodes) {
-        final Code[] allCodes = ArrayUtils.addAll(ArrayUtils.addAll(this.codes.toArray(new Code[0]), newCodes), this.textColor, this.background);
+        final Code[] allCodes = ArrayUtils.addAll(ArrayUtils.addAll(this.codes.toArray(new Code[0]), newCodes), this.textColor,
+                this.background);
         final Optional<Code> color = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isColor).findFirst();
         final Optional<Code> bg = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isBackground).findFirst();
-        final List<Code> attributes = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isBackground).filter(Code::isColor).collect(Collectors.toList());
+        final List<Code> attributes = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isBackground).filter(Code::isColor)
+                .collect(Collectors.toList());
         attributes.add(color.orElse(this.textColor));
         attributes.add(bg.orElse(this.background));
         return attributes.stream().filter(Objects::nonNull).toArray(Code[]::new);

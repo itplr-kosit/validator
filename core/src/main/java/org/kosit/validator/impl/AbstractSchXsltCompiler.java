@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 public abstract class AbstractSchXsltCompiler implements SchematronCompiler {
+
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AbstractSchXsltCompiler.class);
+
     protected final Compiler compiler;
 
     protected AbstractSchXsltCompiler(Compiler compiler) {

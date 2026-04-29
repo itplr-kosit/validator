@@ -38,12 +38,19 @@ public class Grid {
      * A definition / configuration for a column with a result table.
      */
     public static class ColumnDefinition {
+
         private static final int MAX_LENGTH = 80;
+
         private final String name;
+
         private int length = 0;
+
         private final int maxLength;
+
         private final int minLength;
+
         private final int maxLines;
+
         private Justify justify = Justify.LEFT;
 
         /**
@@ -144,9 +151,10 @@ public class Grid {
         }
     }
 
-
     private static class Cell {
+
         private final Format format = DEFAULT_FORMAT;
+
         private final List<Text> text;
 
         public Cell(final Text txt) {
@@ -192,7 +200,8 @@ public class Grid {
             final List<Line> test = getFormattedLines(def);
             final Line line = test.size() > row ? test.get(row) : null;
             if (line != null) {
-                return def.getJustify().apply(line.render(false, row == def.getMaxLines() - 1 && test.size() > def.getMaxLines()), def.getLength() + (line.getLength() - line.getVisibleLength()));
+                return def.getJustify().apply(line.render(false, row == def.getMaxLines() - 1 && test.size() > def.getMaxLines()),
+                        def.getLength() + (line.getLength() - line.getVisibleLength()));
             }
             return def.getJustify().apply("", def.getLength());
         }
@@ -216,10 +225,12 @@ public class Grid {
     }
 
     private static final Format DEFAULT_FORMAT = new Format();
+
     /**
      * A grid / table for printing results.
      */
     private final List<ColumnDefinition> definitions = new ArrayList<>();
+
     private final List<Cell> values = new ArrayList<>();
 
     /**
@@ -240,7 +251,8 @@ public class Grid {
     }
 
     private String generateHeader() {
-        return "|" + this.definitions.stream().map(d -> StringUtils.rightPad(d.getName(), d.getLength())).collect(Collectors.joining("|")) + "|\n";
+        return "|" + this.definitions.stream().map(d -> StringUtils.rightPad(d.getName(), d.getLength())).collect(Collectors.joining("|"))
+                + "|\n";
     }
 
     /**
@@ -264,7 +276,8 @@ public class Grid {
     }
 
     public List<Cell> getColumn(final int index) {
-        return IntStream.range(0, this.values.size()).filter(n -> n % this.definitions.size() == index).mapToObj(this.values::get).collect(Collectors.toList());
+        return IntStream.range(0, this.values.size()).filter(n -> n % this.definitions.size() == index).mapToObj(this.values::get)
+                .collect(Collectors.toList());
     }
 
     public Grid addCell(final Cell cell) {

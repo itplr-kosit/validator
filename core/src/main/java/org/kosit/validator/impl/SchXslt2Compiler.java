@@ -24,6 +24,7 @@ import javax.xml.transform.dom.DOMSource;
  * </p>
  */
 public class SchXslt2Compiler extends AbstractSchXsltCompiler {
+
     public static final String COMPILER_ID = "schxslt2";
 
     public SchXslt2Compiler() {
