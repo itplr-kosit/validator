@@ -30,8 +30,6 @@ import net.sf.saxon.lib.ResourceResolver;
  * @author Andreas Penski
  */
 public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrategy {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(StrictLocalResolvingStrategy.class);
 
     /**

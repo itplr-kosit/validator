@@ -120,8 +120,6 @@ public class DefaultResult implements Result {
     /**
      * Die vom Validator erstelle interne Berichts-'Vorstufe'
      */
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XVRLReportSummary getReportSummary() {
         return this.reportSummary;
     }
@@ -129,8 +127,6 @@ public class DefaultResult implements Result {
     /**
      * Die vom Validator erstelle interne Berichts-'Vorstufe'
      */
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     void setReportSummary(final XVRLReportSummary reportSummary) {
         this.reportSummary = reportSummary;
     }
@@ -138,56 +134,38 @@ public class DefaultResult implements Result {
     /**
      * Das evaluierte Ergebnis.
      */
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public AcceptRecommendation getAcceptRecommendation() {
         return this.acceptRecommendation;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     void setSchemaViolations(final List<XmlError> schemaViolations) {
         this.schemaViolations = schemaViolations;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public List<XmlError> getSchemaViolations() {
         return this.schemaViolations;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public List<SchematronOutput> getSchematronResult() {
         return this.schematronResult;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     void setSchematronResult(final List<SchematronOutput> schematronResult) {
         this.schematronResult = schematronResult;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public boolean isProcessingSuccessful() {
         return this.processingSuccessful;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setProcessingSuccessful(final boolean processingSuccessful) {
         this.processingSuccessful = processingSuccessful;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public boolean isWellformed() {
         return this.wellformed;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setWellformed(final boolean wellformed) {
         this.wellformed = wellformed;
     }

@@ -24,9 +24,6 @@ import javax.xml.transform.dom.DOMSource;
  * </p>
  */
 public class SchXslt2Compiler extends AbstractSchXsltCompiler {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchXslt2Compiler.class);
     public static final String COMPILER_ID = "schxslt2";
 
     public SchXslt2Compiler() {

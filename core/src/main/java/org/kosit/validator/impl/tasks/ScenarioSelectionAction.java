@@ -35,8 +35,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class ScenarioSelectionAction implements CheckAction {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ScenarioSelectionAction.class);
     public static final Process.Key<Scenario, String> KEY = new Process.Key<>(Scenario.class, String.class);
     public static final ActionMetadata METADATA = new ActionMetadata("Scenario Selection", "scenario_selection");
@@ -81,8 +79,6 @@ public class ScenarioSelectionAction implements CheckAction {
         return result;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ScenarioSelectionAction(final ScenarioRepository repository) {
         this.repository = repository;
     }

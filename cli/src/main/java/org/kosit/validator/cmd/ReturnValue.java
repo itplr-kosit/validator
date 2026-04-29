@@ -37,14 +37,10 @@ public class ReturnValue {
         return this.code < 0;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ReturnValue(final int code) {
         this.code = code;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public int getCode() {
         return this.code;
     }

@@ -51,14 +51,10 @@ public class DefaultNamingStrategy implements NamingStrategy {
         return result.toString();
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setPrefix(final String prefix) {
         this.prefix = prefix;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setPostfix(final String postfix) {
         this.postfix = postfix;
     }

@@ -35,8 +35,6 @@ import net.sf.saxon.s9api.XsltExecutable;
  * @author Andreas Penski
  */
 public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, Transformation>> {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchematronBuilder.class);
     private static final String DEFAULT_NAME = "manually configured";
     private XsltExecutable executable;
@@ -131,26 +129,18 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
         return this;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     XsltExecutable getExecutable() {
         return this.executable;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     URI getSource() {
         return this.source;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     SchematronBuilder() {
     }
 }

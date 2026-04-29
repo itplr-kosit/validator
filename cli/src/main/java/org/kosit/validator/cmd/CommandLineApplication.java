@@ -16,8 +16,13 @@
 
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.cmd.Printer.writeErr;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.kosit.validator.cmd.Printer.writeErr;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.fusesource.jansi.AnsiConsole;
+import org.fusesource.jansi.AnsiRenderer.Code;
+import org.kosit.validator.cmd.report.Line;
 
 import io.quarkus.picocli.runtime.annotations.TopCommand;
 import io.quarkus.runtime.Quarkus;
@@ -25,20 +30,8 @@ import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.commons.io.output.TeeOutputStream;
-import org.apache.commons.lang3.ObjectUtils;
-import org.fusesource.jansi.AnsiConsole;
-import org.fusesource.jansi.AnsiRenderer.Code;
-
-import org.kosit.validator.cmd.report.Line;
-import org.kosit.validator.cmd.Printer;
 import picocli.CommandLine;
 import picocli.CommandLine.ParseResult;
-
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Commandline interface of the validator. It parses the commandline args and hands over actual execution to

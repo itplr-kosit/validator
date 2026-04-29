@@ -27,8 +27,6 @@ import org.kosit.validator.api.Input;
  * @author Andreas Penski
  */
 public abstract class AbstractInput implements Input, LazyReadInput {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AbstractInput.class);
     private byte[] hashCode;
     private long length;
@@ -75,14 +73,10 @@ public abstract class AbstractInput implements Input, LazyReadInput {
         return true;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public long getLength() {
         return this.length;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setLength(final long length) {
         this.length = length;
     }

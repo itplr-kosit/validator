@@ -144,14 +144,10 @@ public class CommandLine {
             }
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public O getOut() {
             return this.out;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setOut(final O out) {
             this.out = out;
         }

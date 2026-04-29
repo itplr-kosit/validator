@@ -43,8 +43,6 @@ import net.sf.saxon.s9api.Processor;
  * @author Andreas Penski
  */
 public class ConfigurationBuilder {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfigurationBuilder.class);
     private final List<ScenarioBuilder> scenarios = new ArrayList<>();
     private final Map<String, Object> parameters = new HashMap<>();
@@ -382,62 +380,42 @@ public class ConfigurationBuilder {
         return useRepository(repository.toUri());
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     List<ScenarioBuilder> getScenarios() {
         return this.scenarios;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     Map<String, Object> getParameters() {
         return this.parameters;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     FallbackBuilder getFallbackBuilder() {
         return this.fallbackBuilder;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     ResolvingMode getResolvingMode() {
         return this.resolvingMode;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     ContentRepository getContentRepository() {
         return this.contentRepository;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     String getAuthor() {
         return this.author;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     String getDate() {
         return this.date;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     URI getRepository() {
         return this.repository;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     String getDescription() {
         return this.description;
     }

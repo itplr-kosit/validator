@@ -51,8 +51,6 @@ import net.sf.saxon.s9api.XsltTransformer;
  * @author Andreas Penski
  */
 public class SchematronValidationAction implements CheckAction {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchematronValidationAction.class);
     public static final Process.Key<List<ValidationResultsSchematron>, String> KEY = new Process.Key<>(null, String.class);
     private static final String REPORT_NAME = "Schematron Validator";
@@ -143,8 +141,6 @@ public class SchematronValidationAction implements CheckAction {
         return hasNoSchematrons(result.getObject()) || isSchemaInvalid(results);
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public SchematronValidationAction(final ConversionService conversionService) {
         this.conversionService = conversionService;
     }

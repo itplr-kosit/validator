@@ -118,46 +118,32 @@ public interface CheckAction {
             private final Class<T> type;
             private final Class<E> other;
 
-            @java.lang.SuppressWarnings("all")
-            @lombok.Generated
             public Class<T> getType() {
                 return this.type;
             }
 
-            @java.lang.SuppressWarnings("all")
-            @lombok.Generated
             public Class<E> getOther() {
                 return this.other;
             }
 
-            @java.lang.SuppressWarnings("all")
-            @lombok.Generated
             public Key(final Class<T> type, final Class<E> other) {
                 this.type = type;
                 this.other = other;
             }
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public XVRLMetadata getMetadata() {
             return this.metadata;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public List<ProcessStepResult<?, ?>> getProcessStepResults() {
             return this.processStepResults;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public boolean isFinished() {
             return this.finished;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public boolean isStopped() {
             return this.stopped;
         }
@@ -165,32 +151,22 @@ public interface CheckAction {
         /**
          * Das zu prüfende Dokument
          */
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public Input getInput() {
             return this.input;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setMetadata(final XVRLMetadata metadata) {
             this.metadata = metadata;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setProcessStepResults(final List<ProcessStepResult<?, ?>> processStepResults) {
             this.processStepResults = processStepResults;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setFinished(final boolean finished) {
             this.finished = finished;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setStopped(final boolean stopped) {
             this.stopped = stopped;
         }
@@ -198,8 +174,6 @@ public interface CheckAction {
         /**
          * Das zu prüfende Dokument
          */
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setInput(final Input input) {
             this.input = input;
         }

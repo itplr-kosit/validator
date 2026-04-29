@@ -16,19 +16,18 @@
  */
 package org.kosit.validator.cmd;
 
-import io.quarkus.picocli.runtime.annotations.TopCommand;
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
-import org.kosit.validator.cmd.CommandLineApplication.Level;
-import org.kosit.validator.impl.EngineInformation;
-import picocli.CommandLine.ArgGroup;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Help.Visibility;
-import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import org.kosit.validator.cmd.CommandLineApplication.Level;
+import org.kosit.validator.impl.EngineInformation;
+
+import jakarta.inject.Inject;
+import picocli.CommandLine.ArgGroup;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 /**
  * Commandline Interface definition.
@@ -61,56 +60,38 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         @Parameters(arity = "1..*", description = "Files to validate")
         private List<Path> files;
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public Path getOutputPath() {
             return this.outputPath;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public boolean isExtractReport() {
             return this.extractReport;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public boolean isSerializeInput() {
             return this.serializeInput;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getReportPostfix() {
             return this.reportPostfix;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getReportPrefix() {
             return this.reportPrefix;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public boolean isPrintMemoryStats() {
             return this.printMemoryStats;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public boolean isPrintReport() {
             return this.printReport;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public List<Path> getFiles() {
             return this.files;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public CliOptions() {
         }
     }
@@ -125,26 +106,18 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         String name;
         Path path;
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getName() {
             return this.name;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public Path getPath() {
             return this.path;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setName(final String name) {
             this.name = name;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setPath(final Path path) {
             this.path = path;
         }
@@ -205,50 +178,34 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         return getCliOptions() != null;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public EngineInformation getEngineInformation() {
         return this.engineInformation;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public CliOptions getCliOptions() {
         return this.cliOptions;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public boolean isDebugOutput() {
         return this.debugOutput;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public boolean isUsageHelpRequested() {
         return this.usageHelpRequested;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public boolean isDebugLog() {
         return this.debugLog;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Level getLogLevel() {
         return this.logLevel;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public List<RepositoryDefinition> getRepositories() {
         return this.repositories;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public List<ScenarioDefinition> getScenarios() {
         return this.scenarios;
     }

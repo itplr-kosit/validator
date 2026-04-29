@@ -154,8 +154,6 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         return joiner.toString();
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Collection<XMLSyntaxError> getErrors() {
         return this.errors;
     }

@@ -42,8 +42,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class DocumentParseAction implements CheckAction {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DocumentParseAction.class);
     public static final Process.Key<XdmNode, XMLSyntaxError> KEY = new Process.Key<>(XdmNode.class, XMLSyntaxError.class);
     private final Processor processor;
@@ -109,8 +107,6 @@ public class DocumentParseAction implements CheckAction {
         return result;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public DocumentParseAction(final Processor processor) {
         this.processor = processor;
     }

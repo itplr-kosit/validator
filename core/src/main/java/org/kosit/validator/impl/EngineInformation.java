@@ -16,10 +16,6 @@
 
 package org.kosit.validator.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 /**
  * Hält statische Informatione über diesen Validator.
  * 

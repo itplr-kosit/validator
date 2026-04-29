@@ -16,25 +16,34 @@
  */
 package org.kosit.validator.config;
 
-import static org.apache.commons.lang3.StringUtils.startsWith;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import javax.xml.validation.Schema;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.kosit.validator.api.Check;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.impl.*;
+import org.kosit.validator.impl.CollectingErrorEventHandler;
+import org.kosit.validator.impl.ContentRepository;
+import org.kosit.validator.impl.ConversionService;
+import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.DocumentParseAction;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.scenarios.ScenarioType;
 import org.kosit.validator.model.scenarios.Scenarios;
+
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;
@@ -47,8 +56,6 @@ import net.sf.saxon.s9api.XdmNodeKind;
  * @author Andreas Penski
  */
 public class ConfigurationLoader {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfigurationLoader.class);
     private static final String SUPPORTED_MAJOR_VERSION = "2";
     private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = "http://www.xoev.de/de/validator/framework/2/scenarios";
@@ -87,7 +94,7 @@ public class ConfigurationLoader {
     private static boolean isSupportedDocument(final XdmNode doc) {
         final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
-        return startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION) && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
+        return Strings.CS.startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION) && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
     }
 
     private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {
@@ -199,8 +206,6 @@ public class ConfigurationLoader {
      * @param scenarioDefinition URL, die auf die scenerio.xml Datei zeigt.
      * @param scenarioRepository Root-Ordner mit den von den einzelnen Szenarien benötigten Dateien
      */
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ConfigurationLoader(final URI scenarioDefinition, final URI scenarioRepository) {
         this.scenarioDefinition = scenarioDefinition;
         this.scenarioRepository = scenarioRepository;
@@ -209,8 +214,6 @@ public class ConfigurationLoader {
     /**
      * URL, die auf die scenerio.xml Datei zeigt.
      */
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     URI getScenarioDefinition() {
         return this.scenarioDefinition;
     }

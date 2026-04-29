@@ -61,8 +61,6 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
         return validator;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public StrictRelativeResolvingStrategy() {
     }
 }

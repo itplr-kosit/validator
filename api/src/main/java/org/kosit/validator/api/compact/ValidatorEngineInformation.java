@@ -8,37 +8,25 @@ public class ValidatorEngineInformation {
     private String name;
     private String version;
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getVersion() {
         return this.version;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setName(final String name) {
         this.name = name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setVersion(final String version) {
         this.version = version;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ValidatorEngineInformation() {
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ValidatorEngineInformation(final String name, final String version) {
         this.name = name;
         this.version = version;

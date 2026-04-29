@@ -34,98 +34,66 @@ public class TestConfiguration implements Configuration {
     private ContentRepository contentRepository;
     private Map<String, Object> additionalParameters;
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public TestConfiguration() {
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public List<Scenario> getScenarios() {
         return this.scenarios;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Scenario getFallbackScenario() {
         return this.fallbackScenario;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getAuthor() {
         return this.author;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getDate() {
         return this.date;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ContentRepository getContentRepository() {
         return this.contentRepository;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Map<String, Object> getAdditionalParameters() {
         return this.additionalParameters;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setScenarios(final List<Scenario> scenarios) {
         this.scenarios = scenarios;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setFallbackScenario(final Scenario fallbackScenario) {
         this.fallbackScenario = fallbackScenario;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setAuthor(final String author) {
         this.author = author;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setName(final String name) {
         this.name = name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setDate(final String date) {
         this.date = date;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setContentRepository(final ContentRepository contentRepository) {
         this.contentRepository = contentRepository;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setAdditionalParameters(final Map<String, Object> additionalParameters) {
         this.additionalParameters = additionalParameters;
     }
 
     @java.lang.Override
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public boolean equals(final java.lang.Object o) {
         if (o == this) return true;
         if (!(o instanceof TestConfiguration)) return false;
@@ -155,15 +123,11 @@ public class TestConfiguration implements Configuration {
         return true;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     protected boolean canEqual(final java.lang.Object other) {
         return other instanceof TestConfiguration;
     }
 
     @java.lang.Override
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -185,8 +149,6 @@ public class TestConfiguration implements Configuration {
     }
 
     @java.lang.Override
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public java.lang.String toString() {
         return "TestConfiguration(scenarios=" + this.getScenarios() + ", fallbackScenario=" + this.getFallbackScenario() + ", author=" + this.getAuthor() + ", name=" + this.getName() + ", date=" + this.getDate() + ", contentRepository=" + this.getContentRepository() + ", additionalParameters=" + this.getAdditionalParameters() + ")";
     }

@@ -20,9 +20,11 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.Result;
 import javax.xml.transform.TransformerException;
+
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.CollectionFinder;
@@ -47,11 +49,7 @@ public class ProcessorProvider {
     }
 
     private static String encode(final String input) {
-        try {
-            return URLEncoder.encode(input, StandardCharsets.UTF_8.name());
-        } catch (final java.lang.Throwable $ex) {
-            throw lombok.Lombok.sneakyThrow($ex);
-        }
+        return URLEncoder.encode(input, StandardCharsets.UTF_8);
     }
 
     public static Processor getProcessor() {

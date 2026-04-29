@@ -38,8 +38,6 @@ import static org.kosit.validator.impl.DateFactory.createTimestamp;
  * @author Andreas Penski
  */
 public class DefaultCheck implements Check {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultCheck.class);
     private final ConversionService conversionService;
     private final List<Configuration> configuration;
@@ -133,26 +131,18 @@ public class DefaultCheck implements Check {
         return createResult(checkProcess);
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ConversionService getConversionService() {
         return this.conversionService;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public List<Configuration> getConfiguration() {
         return this.configuration;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public List<CheckAction> getCheckSteps() {
         return this.checkSteps;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Processor getProcessor() {
         return this.processor;
     }

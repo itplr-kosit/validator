@@ -32,8 +32,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class ScenarioRepository {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ScenarioRepository.class);
     public static final String DEFAULT = "default";
     public static final String DEFAULT_ID = DEFAULT + "_1";

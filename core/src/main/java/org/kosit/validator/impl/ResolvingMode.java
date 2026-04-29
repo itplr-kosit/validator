@@ -32,14 +32,10 @@ public enum ResolvingMode {
     STRICT_LOCAL(new StrictLocalResolvingStrategy()), ALLOW_REMOTE(new RemoteResolvingStrategy()), CUSTOM(null);
     private final ResolvingConfigurationStrategy strategy;
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private ResolvingMode(final ResolvingConfigurationStrategy strategy) {
         this.strategy = strategy;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ResolvingConfigurationStrategy getStrategy() {
         return this.strategy;
     }

@@ -69,21 +69,15 @@ public class Result<T, E> {
         return !isValid();
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public T getObject() {
         return this.object;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Result(final T object, final Collection<E> errors) {
         this.object = object;
         this.errors = errors;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Result() {
     }
 }

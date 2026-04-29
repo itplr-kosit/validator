@@ -25,20 +25,14 @@ public class ActionMetadata {
     private String name;
     private String id;
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getId() {
         return this.id;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ActionMetadata(final String name, final String id) {
         this.name = name;
         this.id = id;

@@ -27,8 +27,6 @@ import org.kosit.validator.api.ResolvingConfigurationStrategy;
  * @author Andreas Penski
  */
 public abstract class BaseResolvingStrategy implements ResolvingConfigurationStrategy {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BaseResolvingStrategy.class);
     private static final String ORACLE_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
 

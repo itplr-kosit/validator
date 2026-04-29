@@ -45,8 +45,6 @@ import net.sf.saxon.om.TreeInfo;
  * @author Andreas Penski
  */
 public class SourceInput extends AbstractInput {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SourceInput.class);
     private final Source source;
     private final String name;
@@ -140,8 +138,6 @@ public class SourceInput extends AbstractInput {
         return isDomSource() || isTreeInfo();
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getDigestAlgorithm() {
         return this.digestAlgorithm;
     }

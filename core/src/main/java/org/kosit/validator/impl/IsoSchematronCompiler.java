@@ -11,8 +11,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public final class IsoSchematronCompiler implements SchematronCompiler {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(IsoSchematronCompiler.class);
     public static final String COMPILER_ID = "iso-schematron";
     private static final String CP_BASE = "/schematron/iso-schematron-xslt2/";

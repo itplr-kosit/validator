@@ -123,32 +123,22 @@ public class Grid {
             return this;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getName() {
             return this.name;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public int getMaxLength() {
             return this.maxLength;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public int getMinLength() {
             return this.minLength;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public int getMaxLines() {
             return this.maxLines;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public Justify getJustify() {
             return this.justify;
         }
@@ -212,20 +202,14 @@ public class Grid {
             return this;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public Cell(final List<Text> text) {
             this.text = text;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public Format getFormat() {
             return this.format;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public List<Text> getText() {
             return this.text;
         }

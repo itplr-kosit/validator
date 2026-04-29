@@ -70,14 +70,10 @@ public class Text {
         return this.value.length();
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getValue() {
         return this.value;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Format getFormat() {
         return this.format;
     }

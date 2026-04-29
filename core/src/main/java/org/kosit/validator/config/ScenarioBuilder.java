@@ -45,8 +45,6 @@ import net.sf.saxon.s9api.XPathExecutable;
  * @author Andreas Penski
  */
 public class ScenarioBuilder implements Builder<Scenario> {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ScenarioBuilder.class);
     private static int nameCount = 0;
     private static final String DEFAULT_DESCRIPTION = "Dieses Scenario wurde per API erstellt";
@@ -276,55 +274,37 @@ public class ScenarioBuilder implements Builder<Scenario> {
         return this;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ScenarioBuilder() {
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     Map<String, String> getNamespaces() {
         return this.namespaces;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     XPathBuilder getMatchConfig() {
         return this.matchConfig;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     XPathBuilder getAcceptConfig() {
         return this.acceptConfig;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     SchemaBuilder getSchemaBuilder() {
         return this.schemaBuilder;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     List<SchematronBuilder> getSchematronBuilders() {
         return this.schematronBuilders;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     ReportBuilder getReportBuilder() {
         return this.reportBuilder;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     String getDescription() {
         return this.description;
     }

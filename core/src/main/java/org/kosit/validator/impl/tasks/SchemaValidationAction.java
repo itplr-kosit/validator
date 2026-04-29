@@ -61,8 +61,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class SchemaValidationAction implements CheckAction {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchemaValidationAction.class);
     public static final Key<Boolean, XMLSyntaxError> KEY = new Key<>(Boolean.class, XMLSyntaxError.class);
     private static final Long BA_LIMIT = 10L;
@@ -191,8 +189,6 @@ public class SchemaValidationAction implements CheckAction {
             return new ByteArrayInputStream(this.bytes);
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public ByteArraySerializedDocument(final Processor processor) {
             this.processor = processor;
         }
@@ -229,20 +225,14 @@ public class SchemaValidationAction implements CheckAction {
         }
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public SchemaValidationAction(final Processor processor) {
         this.processor = processor;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     void setInMemoryLimit(final long inMemoryLimit) {
         this.inMemoryLimit = inMemoryLimit;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public long getInMemoryLimit() {
         return this.inMemoryLimit;
     }

@@ -87,20 +87,14 @@ public class Format {
         return this;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Code getTextColor() {
         return this.textColor;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Code getBackground() {
         return this.background;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Set<Code> getCodes() {
         return this.codes;
     }

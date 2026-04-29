@@ -43,9 +43,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 public class InputFactory {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(InputFactory.class);
     static final String DEFAULT_ALGORITH = "SHA-256";
     /**
      * Pseudo hashcode algorithm name, which indicates, thate the hashcode of the {@link Input} is actually the name.
@@ -301,8 +298,6 @@ public class InputFactory {
         return new XdmNodeInput(node, name, PSEUDO_NAME_ALGORITHM, name.getBytes());
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getAlgorithm() {
         return this.algorithm;
     }

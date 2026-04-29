@@ -53,8 +53,6 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
  * @author Andreas Penski
  */
 public class ContentRepository {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ContentRepository.class);
 
 
@@ -62,28 +60,20 @@ public class ContentRepository {
         private final String compilerId;
         private final URI uri;
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public CacheKey(final String compilerId, final URI uri) {
             this.compilerId = compilerId;
             this.uri = uri;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getCompilerId() {
             return this.compilerId;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public URI getUri() {
             return this.uri;
         }
 
         @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public boolean equals(final java.lang.Object o) {
             if (o == this) return true;
             if (!(o instanceof ContentRepository.CacheKey)) return false;
@@ -98,8 +88,6 @@ public class ContentRepository {
         }
 
         @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -111,8 +99,6 @@ public class ContentRepository {
         }
 
         @java.lang.Override
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public java.lang.String toString() {
             return "ContentRepository.CacheKey(compilerId=" + this.getCompilerId() + ", uri=" + this.getUri() + ")";
         }
@@ -364,8 +350,6 @@ public class ContentRepository {
         }
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ContentRepository(final Processor processor, final URI repository, final ResourceResolver resolver, final UnparsedTextURIResolver unparsedTextURIResolver, final SchemaFactory schemaFactory, final ResolvingConfigurationStrategy resolvingConfigurationStrategy, final SchematronCompilerRegistry compilerRegistry) {
         this.processor = processor;
         this.repository = repository;
@@ -376,14 +360,10 @@ public class ContentRepository {
         this.compilerRegistry = compilerRegistry;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Processor getProcessor() {
         return this.processor;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
         return this.resolvingConfigurationStrategy;
     }

@@ -34,8 +34,6 @@ import net.sf.saxon.s9api.XPathExecutable;
  * @author Andreas Penski
  */
 class XPathBuilder implements Builder<XPathExecutable> {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(XPathBuilder.class);
     private static final String[] IGNORED_PREFIXES = new String[] {"xsd", "saxon", "xsl", "xs", "xml"};
     private final String name;
@@ -99,38 +97,26 @@ class XPathBuilder implements Builder<XPathExecutable> {
         return this.executable.getUnderlyingExpression().getInternalExpression().toString();
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XPathBuilder(final String name) {
         this.name = name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XPathExecutable getExecutable() {
         return this.executable;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setXpath(final String xpath) {
         this.xpath = xpath;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setExecutable(final XPathExecutable executable) {
         this.executable = executable;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     void setNamespaces(final Map<String, String> namespaces) {
         this.namespaces = namespaces;
     }

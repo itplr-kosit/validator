@@ -46,8 +46,6 @@ import net.sf.saxon.s9api.XsltTransformer;
  * @author Andreas Penski
  */
 public class CreateReportsAction implements CheckAction {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CreateReportsAction.class);
     public static final Process.Key<List<BusinessReport>, XMLSyntaxError> KEY = new Process.Key<>(null, XMLSyntaxError.class);
     public static final ActionMetadata METADATA = new ActionMetadata("Create report", "create_report");

@@ -29,38 +29,26 @@ public class BusinessReport {
     private XdmNode content;
     private XVRLReport report;
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XdmNode getContent() {
         return this.content;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XVRLReport getReport() {
         return this.report;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setName(final String name) {
         this.name = name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setContent(final XdmNode content) {
         this.content = content;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setReport(final XVRLReport report) {
         this.report = report;
     }

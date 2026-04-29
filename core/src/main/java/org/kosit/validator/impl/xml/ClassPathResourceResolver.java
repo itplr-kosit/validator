@@ -31,8 +31,6 @@ import org.w3c.dom.ls.LSResourceResolver;
  * @author Andreas Penski
  */
 public class ClassPathResourceResolver implements LSResourceResolver {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ClassPathResourceResolver.class);
 
 
@@ -67,98 +65,66 @@ public class ClassPathResourceResolver implements LSResourceResolver {
             return this.certifiedText;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public Reader getCharacterStream() {
             return this.characterStream;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public InputStream getByteStream() {
             return this.byteStream;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getSystemId() {
             return this.systemId;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getPublicId() {
             return this.publicId;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getBaseURI() {
             return this.baseURI;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getEncoding() {
             return this.encoding;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public String getStringData() {
             return this.stringData;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setCharacterStream(final Reader characterStream) {
             this.characterStream = characterStream;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setByteStream(final InputStream byteStream) {
             this.byteStream = byteStream;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setSystemId(final String systemId) {
             this.systemId = systemId;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setPublicId(final String publicId) {
             this.publicId = publicId;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setBaseURI(final String baseURI) {
             this.baseURI = baseURI;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setEncoding(final String encoding) {
             this.encoding = encoding;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setCertifiedText(final boolean certifiedText) {
             this.certifiedText = certifiedText;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setStringData(final String stringData) {
             this.stringData = stringData;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public LSInputImpl() {
         }
     }

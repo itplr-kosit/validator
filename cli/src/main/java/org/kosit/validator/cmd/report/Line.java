@@ -113,8 +113,6 @@ public class Line {
         return this.texts.stream().mapToInt(Text::getVisibleLength).sum();
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Line() {
     }
 }

@@ -35,8 +35,6 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
  * @author Andreas Penski
  */
 public class ReportBuilder implements Builder<Pair<CreateReportType, Transformation>> {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReportBuilder.class);
     private static final String DEFAULT_NAME = "manually created report";
     private XsltExecutable executable;

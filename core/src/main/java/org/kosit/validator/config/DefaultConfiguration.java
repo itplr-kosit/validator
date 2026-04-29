@@ -29,9 +29,6 @@ import org.kosit.validator.impl.Scenario;
  * @author Andreas Penski
  */
 public class DefaultConfiguration implements Configuration {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultConfiguration.class);
     private final List<Scenario> scenarios;
     private final Scenario fallbackScenario;
     private ContentRepository contentRepository;
@@ -40,81 +37,55 @@ public class DefaultConfiguration implements Configuration {
     private String date;
     private Map<String, Object> additionalParameters;
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public DefaultConfiguration(final List<Scenario> scenarios, final Scenario fallbackScenario) {
         this.scenarios = scenarios;
         this.fallbackScenario = fallbackScenario;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public List<Scenario> getScenarios() {
         return this.scenarios;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Scenario getFallbackScenario() {
         return this.fallbackScenario;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ContentRepository getContentRepository() {
         return this.contentRepository;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getAuthor() {
         return this.author;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getDate() {
         return this.date;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Map<String, Object> getAdditionalParameters() {
         return this.additionalParameters;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setContentRepository(final ContentRepository contentRepository) {
         this.contentRepository = contentRepository;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setName(final String name) {
         this.name = name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setAuthor(final String author) {
         this.author = author;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setDate(final String date) {
         this.date = date;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setAdditionalParameters(final Map<String, Object> additionalParameters) {
         this.additionalParameters = additionalParameters;
     }

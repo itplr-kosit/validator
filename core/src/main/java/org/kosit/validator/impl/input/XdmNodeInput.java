@@ -37,8 +37,6 @@ public class XdmNodeInput implements Input {
         return this.node.getUnderlyingNode();
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XdmNodeInput(final XdmNode node, final String name, final String digestAlgorithm, final byte[] hashCode) {
         this.node = node;
         this.name = name;
@@ -46,26 +44,18 @@ public class XdmNodeInput implements Input {
         this.hashCode = hashCode;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XdmNode getNode() {
         return this.node;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getDigestAlgorithm() {
         return this.digestAlgorithm;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public byte[] getHashCode() {
         return this.hashCode;
     }

@@ -16,8 +16,9 @@
  */
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.impl.Helper.ASSERTIONS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kosit.validator.impl.Helper.ASSERTIONS;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -26,11 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
-import io.quarkus.picocli.runtime.annotations.TopCommand;
-import io.quarkus.test.junit.QuarkusTest;
+
 import org.apache.commons.io.FileUtils;
-import jakarta.inject.Inject;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.assertj.core.api.Condition;
 import org.jboss.logmanager.Logger;
@@ -39,6 +37,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper.Simple;
 
+import io.quarkus.picocli.runtime.annotations.TopCommand;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+
 /**
  * Testet die Parameter des Kommandozeilen-Tools.
  * 
@@ -46,8 +48,6 @@ import org.kosit.validator.impl.Helper.Simple;
  */
 @QuarkusTest
 public class CommandlineApplicationTest {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CommandlineApplicationTest.class);
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
     private final Path output = Paths.get("target/test-output");

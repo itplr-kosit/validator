@@ -34,8 +34,6 @@ import org.kosit.validator.model.scenarios.ValidateWithXmlSchema;
  * @author Andreas Penski
  */
 public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema>> {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SchemaBuilder.class);
     private static final String DEFAULT_NAME = "manually configured";
     private Schema schema;
@@ -130,26 +128,18 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
         return this;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     Schema getSchema() {
         return this.schema;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     URI getSchemaLocation() {
         return this.schemaLocation;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     SchemaBuilder() {
     }
 }

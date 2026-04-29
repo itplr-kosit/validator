@@ -40,8 +40,6 @@ import net.sf.saxon.s9api.XPathSelector;
  * @author Andreas Penski
  */
 public class ComputeAcceptanceAction implements CheckAction {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ComputeAcceptanceAction.class);
     public static final Process.Key<AcceptRecommendation, XMLSyntaxError> KEY = new Process.Key<>(AcceptRecommendation.class, XMLSyntaxError.class);
     private static final String REPORT_NAME = "Compute Acceptance Validator";
@@ -120,8 +118,6 @@ public class ComputeAcceptanceAction implements CheckAction {
         return stepResult;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ComputeAcceptanceAction() {
     }
 }

@@ -41,32 +41,22 @@ public class Scenario {
         private XsltExecutable executable;
         private ResourceType resourceType;
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public XsltExecutable getExecutable() {
             return this.executable;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public ResourceType getResourceType() {
             return this.resourceType;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setExecutable(final XsltExecutable executable) {
             this.executable = executable;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public void setResourceType(final ResourceType resourceType) {
             this.resourceType = resourceType;
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public Transformation(final XsltExecutable executable, final ResourceType resourceType) {
             this.executable = executable;
             this.resourceType = resourceType;
@@ -119,110 +109,74 @@ public class Scenario {
         return Optional.ofNullable(selector);
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Scenario(final ScenarioType configuration) {
         this.configuration = configuration;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setSchema(final Schema schema) {
         this.schema = schema;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setFallback(final boolean fallback) {
         this.fallback = fallback;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setMatchExecutable(final XPathExecutable matchExecutable) {
         this.matchExecutable = matchExecutable;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setAcceptExecutable(final XPathExecutable acceptExecutable) {
         this.acceptExecutable = acceptExecutable;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setFactory(final ResolvingConfigurationStrategy factory) {
         this.factory = factory;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setUriResolver(final ResourceResolver uriResolver) {
         this.uriResolver = uriResolver;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setUnparsedTextURIResolver(final UnparsedTextURIResolver unparsedTextURIResolver) {
         this.unparsedTextURIResolver = unparsedTextURIResolver;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setReportTransformations(final List<Transformation> reportTransformations) {
         this.reportTransformations = reportTransformations;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ScenarioType getConfiguration() {
         return this.configuration;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Schema getSchema() {
         return this.schema;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public boolean isFallback() {
         return this.fallback;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XPathExecutable getMatchExecutable() {
         return this.matchExecutable;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XPathExecutable getAcceptExecutable() {
         return this.acceptExecutable;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ResolvingConfigurationStrategy getFactory() {
         return this.factory;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ResourceResolver getUriResolver() {
         return this.uriResolver;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public UnparsedTextURIResolver getUnparsedTextURIResolver() {
         return this.unparsedTextURIResolver;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setSchematronValidations(final List<Transformation> schematronValidations) {
         this.schematronValidations = schematronValidations;
     }

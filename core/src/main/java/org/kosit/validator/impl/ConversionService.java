@@ -40,11 +40,6 @@ import org.apache.commons.lang3.StringUtils;
  * JAXB Conversion Utility.
  */
 public class ConversionService {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConversionService.class);
-
-
     /**
      * Exception while serializing/deserializing with jaxb.
      */

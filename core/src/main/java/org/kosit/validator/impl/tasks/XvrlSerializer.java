@@ -39,8 +39,6 @@ public class XvrlSerializer {
         return documentBuilder.build(source);
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public XvrlSerializer(final ConversionService conversionService, final Processor processor) {
         this.conversionService = conversionService;
         this.processor = processor;

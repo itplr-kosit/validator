@@ -97,8 +97,6 @@ public class BaseResolverConfigurationTest {
             allowExternalSchema(factory, lenient, NOT_EXISTING_SCHEME);
         }
 
-        @java.lang.SuppressWarnings("all")
-        @lombok.Generated
         public TestResolvingStrategy() {
         }
     }

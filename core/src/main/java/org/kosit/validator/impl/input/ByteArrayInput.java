@@ -43,26 +43,18 @@ public class ByteArrayInput extends AbstractInput {
         return new StreamSource(stream, getName());
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public byte[] getContent() {
         return this.content;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getDigestAlgorithm() {
         return this.digestAlgorithm;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ByteArrayInput(final byte[] content, final String name, final String digestAlgorithm) {
         this.content = content;
         this.name = name;

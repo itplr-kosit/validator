@@ -36,8 +36,6 @@ import java.util.List;
  * @author Andreas Penski
  */
 class PrintReportAction implements CheckAction {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PrintReportAction.class);
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
     private final Processor processor;
@@ -62,8 +60,6 @@ class PrintReportAction implements CheckAction {
         return Util.createResult(KEY, true, createReport());
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public PrintReportAction(final Processor processor) {
         this.processor = processor;
     }

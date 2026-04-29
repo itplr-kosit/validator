@@ -16,27 +16,29 @@
  */
 package org.kosit.validator.client;
 
-import jakarta.xml.bind.*;
-import jakarta.xml.bind.annotation.XmlRegistry;
-import javax.xml.namespace.QName;
-import javax.xml.stream.*;
-import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.StringJoiner;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRegistry;
+
 /**
  * JAXB Conversion Utility.
  */
 public class XmlConversionService {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(XmlConversionService.class);
 
 

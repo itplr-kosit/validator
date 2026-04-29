@@ -40,8 +40,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 class ExtractReportContentAction implements CheckAction {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ExtractReportContentAction.class);
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
     private static final String REPORT_NAME = "Extract Create Report Content";
@@ -96,8 +94,6 @@ class ExtractReportContentAction implements CheckAction {
         return false;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ExtractReportContentAction(final Path outputDirectory) {
         this.outputDirectory = outputDirectory;
     }

@@ -36,8 +36,6 @@ import org.kosit.validator.model.xvrl.XVRLReport;
  * @author Andreas Penski
  */
 class SerializeReportAction implements CheckAction {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SerializeReportAction.class);
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
     private static final String REPORT_NAME = "Serialize Report";
@@ -78,8 +76,6 @@ class SerializeReportAction implements CheckAction {
         return false;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public SerializeReportAction(final Path outputDirectory, final ConversionService conversionService, final NamingStrategy namingStrategy) {
         this.outputDirectory = outputDirectory;
         this.conversionService = conversionService;

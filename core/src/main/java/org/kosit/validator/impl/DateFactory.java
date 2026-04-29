@@ -18,6 +18,8 @@ package org.kosit.validator.impl;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -34,8 +36,8 @@ public class DateFactory {
             final GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(new Date());
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-        } catch (final java.lang.Throwable $ex) {
-            throw lombok.Lombok.sneakyThrow($ex);
+        } catch (final DatatypeConfigurationException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 }

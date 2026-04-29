@@ -47,26 +47,18 @@ public class ResourceInput extends AbstractInput {
         return new StreamSource(stream, this.name);
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public URL getUrl() {
         return this.url;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getName() {
         return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public String getDigestAlgorithm() {
         return this.digestAlgorithm;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ResourceInput(final URL url, final String name, final String digestAlgorithm) {
         this.url = url;
         this.name = name;

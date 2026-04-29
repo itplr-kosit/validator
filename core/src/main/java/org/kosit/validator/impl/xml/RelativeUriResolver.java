@@ -111,8 +111,6 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
      *
      * @param baseUri the base uri
      */
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public RelativeUriResolver(final URI baseUri) {
         this.baseUri = baseUri;
     }

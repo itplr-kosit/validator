@@ -30,8 +30,6 @@ import java.util.stream.Collectors;
 @Startup
 @Named("validationService")
 public class ValidationService {
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ValidationService.class);
     private final Processor processor = ProcessorProvider.getProcessor();
     private final List<Configuration> configuration;

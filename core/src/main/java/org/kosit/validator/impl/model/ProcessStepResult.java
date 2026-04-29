@@ -40,32 +40,22 @@ public class ProcessStepResult<T, E> {
         }
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public CheckAction.Process.Key<T, E> getKey() {
         return this.key;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public Result<T, E> getResult() {
         return this.result;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public List<XVRLReport> getReport() {
         return this.report;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public void setResult(final Result<T, E> result) {
         this.result = result;
     }
 
-    @java.lang.SuppressWarnings("all")
-    @lombok.Generated
     public ProcessStepResult(final CheckAction.Process.Key<T, E> key) {
         this.key = key;
     }
