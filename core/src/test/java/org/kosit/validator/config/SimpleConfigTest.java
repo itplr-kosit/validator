@@ -16,11 +16,10 @@
 
 package org.kosit.validator.config;
 
-import static org.kosit.validator.config.TestConfigurationFactory.createSimpleConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kosit.validator.config.TestConfigurationFactory.createSimpleConfiguration;
 
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.Result;

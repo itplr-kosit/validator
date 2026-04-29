@@ -5,22 +5,22 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.kosit.validator.impl.TestEngineInformation;
-import org.w3c.dom.Document;
-
 import org.kosit.validator.api.Check;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.impl.DefaultCheck;
+import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.w3c.dom.Document;
 
 /**
  * Example code that is used in the docs/api.md file
  */
 public class StandardExample {
 
+    @SuppressWarnings("unused")
     public void run(final Path testDocument) throws URISyntaxException {
         // Load scenarios.xml from classpath
         final URL scenarios = this.getClass().getClassLoader().getResource("examples/simple/scenarios-with-relative-paths.xml");

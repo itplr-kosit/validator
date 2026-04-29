@@ -16,14 +16,12 @@
 
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.api.InputFactory.read;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.kosit.validator.api.InputFactory.read;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.model.Result;
@@ -38,12 +36,9 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class DocumentParseActionTest {
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     private DocumentParseAction action;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.action = new DocumentParseAction(Helper.createProcessor());
     }
@@ -68,8 +63,7 @@ public class DocumentParseActionTest {
 
     @Test
     public void testNullInput() {
-        this.exception.expect(IllegalArgumentException.class);
-        this.action.parseDocument(null);
+        assertThrows(IllegalArgumentException.class, () -> this.action.parseDocument(null));
 
     }
 

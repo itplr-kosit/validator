@@ -33,6 +33,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.apache.commons.io.FileUtils;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.assertj.core.api.Condition;
 import lombok.extern.slf4j.Slf4j;
 
@@ -238,7 +239,7 @@ public class CommandlineApplicationTest {
         commandLine.execute(args);
         assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
         assertThat(testWriter.getOutputLines()).haveAtLeastOne(new Condition<>(
-                s -> StringUtils.contains(s, "<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
+                s -> Strings.CS.contains(s, "<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
     }
 
     @Test

@@ -17,19 +17,14 @@
 package org.kosit.validator.impl;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.xsd.ValidatorSchemas;
 import org.kosit.validator.impl.Helper.Invalid;
 import org.kosit.validator.impl.Helper.Simple;
@@ -44,14 +39,11 @@ public class ConversionServiceTest {
 
     private static final URI SCHEMA = URI.create(ValidatorSchemas.class.getResource(ValidatorSchemas.SCENARIOS_XSD_PATH).toExternalForm());
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     private ConversionService service;
 
     private ContentRepository repository;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.service = new ConversionService();
         this.repository = Simple.createContentRepository();
@@ -59,15 +51,13 @@ public class ConversionServiceTest {
 
     @Test
     public void testMarshalNull() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.writeXml(null);
+        assertThrows(ConversionService.ConversionExeption.class, () -> this.service.writeXml(null));
     }
 
     @Test
     public void testMarshalUnknown() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.writeXml(new Serializable() {
-        });
+        assertThrows(ConversionService.ConversionExeption.class, () -> this.service.writeXml(new Serializable() {
+        }));
     }
 
     @Test
@@ -87,33 +77,30 @@ public class ConversionServiceTest {
     }
 
     @Test
-    public void testUnmarshalInvalidXml() throws MalformedURLException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Invalid.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA.toURL()));
+    public void testUnmarshalInvalidXml() {
+        assertThrows(ConversionService.ConversionExeption.class,
+                () -> this.service.readXml(Invalid.SCENARIOS, Scenarios.class, this.repository.createSchema(SCHEMA.toURL())));
     }
 
     @Test
-    public void testUnmarshalIllFormed() throws MalformedURLException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, this.repository.createSchema(SCHEMA.toURL()));
+    public void testUnmarshalIllFormed() {
+        assertThrows(ConversionService.ConversionExeption.class,
+                () -> this.service.readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class, this.repository.createSchema(SCHEMA.toURL())));
     }
 
     @Test
     public void testUnmarshalEmpty() {
-        this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(null, Scenarios.class);
+        assertThrows(ConversionService.ConversionExeption.class, () -> this.service.readXml(null, Scenarios.class));
     }
 
     @Test
-    public void testUnmarshalUnknownType() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Simple.SCENARIOS, ConversionService.class);
+    public void testUnmarshalUnknownType() {
+        assertThrows(ConversionService.ConversionExeption.class, () -> this.service.readXml(Simple.SCENARIOS, ConversionService.class));
     }
 
     @Test
-    public void testUnmarshalWithoutType() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(Simple.SCENARIOS, null);
+    public void testUnmarshalWithoutType() {
+        assertThrows(ConversionService.ConversionExeption.class, () -> this.service.readXml(Simple.SCENARIOS, null));
     }
 
 }

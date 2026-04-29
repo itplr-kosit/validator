@@ -25,9 +25,8 @@ import java.util.List;
 
 import javax.xml.transform.Source;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ConversionService;
@@ -51,7 +50,7 @@ public class CreateReportsActionTest {
 
     private ContentRepository repository;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.repository = Simple.createContentRepository();
         this.action = new CreateReportsAction(this.repository.getProcessor(), new ConversionService());

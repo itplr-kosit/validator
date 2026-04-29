@@ -32,11 +32,8 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.xml.sax.SAXException;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.XmlError.Severity;
@@ -49,6 +46,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
 import org.kosit.validator.model.XMLSyntaxError;
+import org.xml.sax.SAXException;
 
 /**
  * Tests die {@link SchemaValidationAction}.
@@ -57,11 +55,9 @@ import org.kosit.validator.model.XMLSyntaxError;
  */
 public class SchemaValidatorActionTest {
 
-    public ExpectedException expectedException = ExpectedException.none();
-
     private SchemaValidationAction service;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.service = new SchemaValidationAction(TestObjectFactory.createProcessor());
     }

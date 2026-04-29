@@ -24,9 +24,9 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.impl.Helper;
@@ -46,13 +46,13 @@ public class ExtractReportContentActionTest {
 
     private Path tmpDirectory;
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
         this.action = new ExtractReportContentAction(TestObjectFactory.createProcessor(), this.tmpDirectory);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws IOException {
         FileUtils.deleteDirectory(this.tmpDirectory.toFile());
     }

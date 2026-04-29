@@ -18,9 +18,9 @@ package org.kosit.validator.cmd;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.impl.Helper;
@@ -36,13 +36,13 @@ public class PrintReportActionTest {
 
     private PrintReportAction action;
 
-    @Before
+    @BeforeEach
     public void setup() {
         CommandLine.activate();
         this.action = new PrintReportAction(TestObjectFactory.createProcessor());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         CommandLine.deactivate();
     }

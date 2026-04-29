@@ -16,24 +16,22 @@
 
 package org.kosit.validator.config;
 
-import static org.kosit.validator.config.TestConfigurationFactory.createScenario;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kosit.validator.config.TestConfigurationFactory.createScenario;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.NamespaceType;
 import org.kosit.validator.model.scenarios.ScenarioType;
+
 import net.sf.saxon.s9api.XPathExecutable;
 
 /**
@@ -42,9 +40,6 @@ import net.sf.saxon.s9api.XPathExecutable;
  * @author Andreas Penski
  */
 public class ScenarioBuilderTest {
-
-    @Rule
-    public ExpectedException exceptions = ExpectedException.none();
 
     @Test
     public void simpleValid() {
@@ -161,7 +156,7 @@ public class ScenarioBuilderTest {
     @Test
     public void testBasicAttributes() {
         final ContentRepository repository = Simple.createContentRepository();
-        final String random = RandomStringUtils.random(5);
+        final String random = RandomStringUtils.secure().next(5);
         final ScenarioBuilder builder = createScenario();
         builder.name(random).description(random);
         final Result<Scenario, String> result = builder.build(repository);

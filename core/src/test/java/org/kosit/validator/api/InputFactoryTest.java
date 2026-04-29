@@ -16,35 +16,32 @@
 
 package org.kosit.validator.api;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kosit.validator.impl.Helper.Simple.SIMPLE_VALID;
 import static org.kosit.validator.impl.input.StreamHelper.drain;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.input.SourceInput;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.XMLSyntaxError;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.BuildingContentHandler;
@@ -60,9 +57,6 @@ import net.sf.saxon.s9api.XdmNode;
 public class InputFactoryTest {
 
     public static final String SOME_VALUE = "some value";
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testDefaultDigestAlgorithm() {
@@ -82,14 +76,12 @@ public class InputFactoryTest {
 
     @Test
     public void testWrongAlgorithm() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        new InputFactory("unknown");
+        assertThrows(IllegalArgumentException.class, () -> new InputFactory("unknown"));
     }
 
     @Test
     public void testNullInputURL() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        InputFactory.read((URL) null);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read((URL) null));
     }
 
     @Test
@@ -106,39 +98,37 @@ public class InputFactoryTest {
 
     @Test
     public void testNullStream() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        final Input input = InputFactory.read((InputStream) null, SOME_VALUE);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read((InputStream) null, SOME_VALUE));
     }
 
     @Test
-    public void testInputFile() throws URISyntaxException {
+    public void testInputFile() {
         final Input input = InputFactory.read(new File(Simple.SIMPLE_VALID));
         assertThat(input).isNotNull();
     }
 
     @Test
-    public void testInputPath() throws URISyntaxException {
+    public void testInputPath() {
         final Input input = InputFactory.read(Paths.get(Simple.SIMPLE_VALID));
         assertThat(input).isNotNull();
     }
 
     @Test
     public void testNullInput() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        InputFactory.read((byte[]) null, SOME_VALUE);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read((byte[]) null, SOME_VALUE));
     }
 
     @Test
     public void testNullInputName() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        InputFactory.read(SOME_VALUE.getBytes(), null);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read(SOME_VALUE.getBytes(), null));
     }
 
     @Test
-    public void testEmptyInputName() throws IOException {
-        this.expectedException.expect(IllegalArgumentException.class);
-        final Input input = InputFactory.read(SOME_VALUE.getBytes(), "");
-        drain(input);
+    public void testEmptyInputName() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            final Input input = InputFactory.read(SOME_VALUE.getBytes(), "");
+            drain(input);
+        });
     }
 
     @Test
@@ -149,8 +139,7 @@ public class InputFactoryTest {
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
             assertThat(input.getLength()).isPositive();
-            this.expectedException.expect(IllegalStateException.class);
-            input.getSource();
+            assertThrows(IllegalStateException.class, () -> input.getSource());
         }
     }
 
@@ -163,15 +152,13 @@ public class InputFactoryTest {
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
             assertThat(input.getLength()).isPositive();
-            this.expectedException.expect(IllegalStateException.class);
-            input.getSource();
+            assertThrows(IllegalStateException.class, () -> input.getSource());
         }
     }
 
     @Test
     public void testUnexistingInput() {
-        this.expectedException.expect(IllegalArgumentException.class);
-        InputFactory.read(Simple.NOT_EXISTING);
+        assertThrows(IllegalArgumentException.class, () -> InputFactory.read(Simple.NOT_EXISTING));
     }
 
     @Test

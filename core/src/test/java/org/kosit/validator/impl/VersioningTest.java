@@ -17,16 +17,13 @@
 package org.kosit.validator.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import org.kosit.validator.impl.Helper.Simple;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.model.scenarios.Scenarios;
 
 /**
@@ -44,16 +41,10 @@ public class VersioningTest {
 
     private static final URL NEW_VERSION = VersioningTest.class.getResource("/examples/versioning/scenarios-newversion.xml");
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     private ConversionService service;
 
-    private ContentRepository repository;
-
-    @Before
+    @BeforeEach
     public void setup() {
-        this.repository = Simple.createContentRepository();
         this.service = new ConversionService();
     }
 
@@ -70,14 +61,14 @@ public class VersioningTest {
     }
 
     @Test
-    public void testNewFeature() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
+    public void testNewFeature() {
+        assertThrows(ConversionService.ConversionExeption.class,
+                () -> this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
     }
 
     @Test
-    public void testNewVersion() throws URISyntaxException {
-        this.exception.expect(ConversionService.ConversionExeption.class);
-        this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
+    public void testNewVersion() {
+        assertThrows(ConversionService.ConversionExeption.class,
+                () -> this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
     }
 }

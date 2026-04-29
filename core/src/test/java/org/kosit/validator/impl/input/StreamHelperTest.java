@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Andreas Penski
@@ -38,8 +38,8 @@ public class StreamHelperTest {
      */
     private static class MyLazyStream extends FilterInputStream {
 
-        protected MyLazyStream(final InputStream in) {
-            super(in);
+        protected MyLazyStream(final InputStream is) {
+            super(is);
         }
 
         @Override

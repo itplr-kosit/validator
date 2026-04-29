@@ -16,16 +16,15 @@
 
 package org.kosit.validator.config;
 
-import static org.kosit.validator.config.ConfigurationBuilder.schema;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kosit.validator.config.ConfigurationBuilder.schema;
 
 import java.nio.file.Paths;
 
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.model.Result;
