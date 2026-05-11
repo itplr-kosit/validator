@@ -43,8 +43,8 @@ import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Helferlein für Test-Artefakte
- * 
+ * Helper for test artifacts.
+ *
  * @author Andreas Penski
  */
 
@@ -145,21 +145,21 @@ public class Helper {
         try {
             return load(url.toURL());
         } catch (final MalformedURLException e) {
-            throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
+            throw new IllegalStateException("Error loading the XML file", e);
         }
     }
 
     /**
-     * Lädt ein XML-Dokument von der gegebenen URL
+     * Loads an XML document from the given URL.
      *
-     * @param url die url die geladen werden soll
-     * @return ein result objekt mit Dokument
+     * @param url the url to load
+     * @return a result object containing the document
      */
     public static XdmNode load(final URL url) {
         try ( final InputStream input = url.openStream() ) {
             return TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
         } catch (final SaxonApiException | IOException e) {
-            throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
+            throw new IllegalStateException("Error loading the XML file", e);
 
         }
 

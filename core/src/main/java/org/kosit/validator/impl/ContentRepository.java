@@ -60,8 +60,8 @@ import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 
 /**
- * Repository für verschiedene XML Artefakte zur Vearbeitung der Prüfszenarien.
- * 
+ * Repository for various XML artifacts used to process the validation scenarios.
+ *
  * @author Andreas Penski
  */
 public class ContentRepository {
@@ -190,10 +190,10 @@ public class ContentRepository {
     }
 
     /**
-     * Lädt ein XSL von der angegebenen URI
+     * Loads an XSL from the given URI.
      *
-     * @param uri die URI der XSL Definition
-     * @return ein XSLT Executable
+     * @param uri the URI of the XSL definition
+     * @return an XSLT executable
      */
     public XsltExecutable loadXsltScript(final URI uri) {
         log.info("  Loading XSLT script from  {}", uri);
@@ -231,10 +231,10 @@ public class ContentRepository {
     }
 
     /**
-     * Erzeugt ein Schema-Objekt auf Basis der übergebenen URL.
+     * Creates a schema object based on the given URL.
      *
-     * @param url die url
-     * @return das erzeugte Schema
+     * @param url the url
+     * @return the created schema
      */
     public Schema createSchema(final URL url) {
         return createSchema(new Source[] { resolve(url) });
@@ -245,19 +245,19 @@ public class ContentRepository {
     }
 
     /**
-     * Erzeugt ein Schema auf Basis der übegebenen URIs
-     * 
-     * @param uris die uris in String-Repräsentation
-     * @return das Schema
+     * Creates a schema based on the given URIs.
+     *
+     * @param uris the uris in string representation
+     * @return the schema
      */
     public Schema createSchema(final Collection<String> uris) {
         return createSchema(uris.stream().map(s -> resolveInRepository(URI.create(s))).toArray(Source[]::new));
     }
 
     /**
-     * Liefert das Schema zu diesem Szenario.
+     * Returns the schema for this scenario.
      *
-     * @return das passende Schema
+     * @return the matching schema
      */
     public Schema createSchema(final ScenarioType s) {
         Schema schema = null;
@@ -272,7 +272,7 @@ public class ContentRepository {
     private Source resolveInRepository(final URI source) {
         try {
             if (this.resolver == null) {
-                // TODO wie wird ohne resolver das richtige Artefakt gefunden?
+                // TODO how is the correct artifact found without a resolver?
                 // assume local
                 final URI resolved = RelativeUriResolver.resolve(source, this.repository);
                 return new StreamSource(resolved.toASCIIString());
@@ -289,11 +289,11 @@ public class ContentRepository {
     }
 
     /**
-     * Erzeugt einen [@link XPathExecutable} auf Basis der angegebenen Informationen.
-     * 
-     * @param expression der XPATH-Ausdruck
-     * @param namespaces optionale Namespace-Mappings
-     * @return ein kompiliertes Executable
+     * Creates an {@link XPathExecutable} based on the given information.
+     *
+     * @param expression the XPATH expression
+     * @param namespaces optional namespace mappings
+     * @return a compiled executable
      */
     public XPathExecutable createXPath(final String expression, final Map<String, String> namespaces) {
         try {
@@ -322,9 +322,9 @@ public class ContentRepository {
     }
 
     /**
-     * Gibt eine Transformation zurück.
+     * Returns a transformation.
      *
-     * @return initialisierte Transformation
+     * @return initialized transformation
      */
     public List<Transformation> createReportTransformations(final ScenarioType t) {
         log.info("Create Report Transformations:");

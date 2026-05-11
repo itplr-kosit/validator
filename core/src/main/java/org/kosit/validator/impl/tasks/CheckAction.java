@@ -29,36 +29,35 @@ import org.kosit.validator.model.xvrl.XVRLReport;
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
 
 /**
- * Interface, welches von allen Prüfschritten implementiert wird. Der Parameter vom Typ {@link Process} dient dabei
- * sowohl als Quellce für Eingabe Parameter als auch für die Aufnahme von Ergebnisse, die an weitere Schritte
- * weitergeleitet werden sollen.
- * 
+ * Interface that is implemented by all check steps. The parameter of type {@link Process} serves both as a source for
+ * input parameters and as a container for results to be forwarded to further steps.
+ *
  * @author Andreas Penski
  */
 @FunctionalInterface
 public interface CheckAction {
 
     /**
-     * Ausfürhung des Prüfschrittes und Erweiterung der gesammelten Informationen.
+     * Executes the check step and extends the collected information.
      *
-     * @param results die Informationssammlung
+     * @param results the information collection
      */
     ProcessStepResult<?, ?> check(Process results);
 
     /**
-     * Ermittlung, ob ein Schritt u.U. ausgelassen werden kann. Die Funktion wird vor der eigentlichen Prüfaktion
-     * aufgerufen und kann somit eine Ausführung des Prüfschrittes verhindern. Entwickler können diese Funktion
-     * überschreiben, um den Prüfschritt bedingt auszuführen.
+     * Determines whether a step may be skipped. This function is called before the actual check action and can
+     * therefore prevent the execution of the check step. Developers can override this function to conditionally execute
+     * the check step.
      *
-     * @param results die bisher gesammelten Information
-     * @return <code>true</code> wenn der Schritt ausgelassen werden soll
+     * @param results the previously collected information
+     * @return <code>true</code> if the step should be skipped
      */
     default boolean isSkipped(final Process results) {
         return false;
     }
 
     /**
-     * Transport-Klasse für Eingabe und Ausgabe-Objekte für die einzelnen Prüfschritte.
+     * Transport class for input and output objects for the individual check steps.
      */
     class Process {
 
@@ -70,9 +69,7 @@ public interface CheckAction {
 
         private boolean stopped;
 
-        /**
-         * Das zu prüfende Dokument
-         */
+        /** The document to be checked */
         private Input input;
 
         public Process(final Input input) {
@@ -111,9 +108,9 @@ public interface CheckAction {
         }
 
         /**
-         * Gibt den Namen des Prüflings zurück, dabei werden etwaige Pfadinformationen abgeschnitten.
+         * Returns the name of the test document, with any path information stripped.
          *
-         * @return der Name des Prüflings
+         * @return the name of the test document
          */
         public String getName() {
             final String fileName = getInput().getName().replaceAll(".*/|.*\\\\", "");

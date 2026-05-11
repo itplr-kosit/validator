@@ -38,14 +38,10 @@ import net.sf.saxon.s9api.XdmNode;
 
 public class DefaultResult implements Result {
 
-    /**
-     * Die vom Validator erstelle interne Berichts-'Vorstufe'
-     */
+    /** The internal report 'preliminary stage' produced by the validator */
     private XVRLReportSummary reportSummary;
 
-    /**
-     * Das evaluierte Ergebnis.
-     */
+    /** The evaluated result. */
     private final AcceptRecommendation acceptRecommendation;
 
     private List<XmlError> schemaViolations;
@@ -81,9 +77,9 @@ public class DefaultResult implements Result {
     }
 
     /**
-     * Gibt den Report als W3C-{@link Document} zurück.
+     * Returns the report as a W3C {@link Document}.
      *
-     * @return der Report
+     * @return the report
      */
     @Override
     public Document getReportDocument() {
@@ -91,9 +87,9 @@ public class DefaultResult implements Result {
     }
 
     /**
-     * Schnellzugriff auf die Empfehlung zur Weiterverarbeitung des Dokuments.
+     * Quick access to the recommendation for further processing of the document.
      *
-     * @return true wenn {@link AcceptRecommendation#ACCEPTABLE}
+     * @return true if {@link AcceptRecommendation#ACCEPTABLE}
      */
     @Override
     public boolean isAcceptable() {
@@ -106,9 +102,9 @@ public class DefaultResult implements Result {
     }
 
     /**
-     * Gibt alle Schematron-Ergebnisse vom Typ {@link FailedAssert} zurück.
+     * Returns all Schematron results of type {@link FailedAssert}.
      *
-     * @return die {@link FailedAssert}
+     * @return the {@link FailedAssert}
      */
     @Override
     public List<FailedAssert> getFailedAsserts() {

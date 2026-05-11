@@ -40,17 +40,17 @@ import org.kosit.validator.impl.input.XdmNodeInput;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Service zum Einlesen des Test-Objekts in den Speicher. Beim Einlesen wird gleichzeitig eine Prüfsumme ermittelt und
- * mit dem Ergebnis mitgeführt.
- * 
+ * Service for reading the test object into memory. While reading a checksum is computed and carried along with the
+ * result.
+ *
  * @author Andreas Penski
  */
 public class InputFactory {
 
-    static final String DEFAULT_ALGORITH = "SHA-256";
+    static final String DEFAULT_ALGORITHM = "SHA-256";
 
     /**
-     * Pseudo hashcode algorithm name, which indicates, thate the hashcode of the {@link Input} is actually the name.
+     * Pseudo hashcode algorithm name, which indicates, that the hashcode of the {@link Input} is actually the name.
      */
     static final String PSEUDO_NAME_ALGORITHM = "NAME";
 
@@ -63,29 +63,27 @@ public class InputFactory {
     }
 
     InputFactory(final String specifiedAlgorithm) {
-        this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITH;
+        this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITHM;
         // check validity
         StreamHelper.createDigest(this.algorithm);
     }
 
     /**
-     * Liest einen Prüfling von dem übergebenen Pfad. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der
-     * Prüfsumme genutzt.
+     * Reads a test document from the given path. The default checksum algorithm is used to compute the checksum.
      *
-     * @param path der Prüflings
-     * @return ein Prüf-Eingabe-Objekt
+     * @param path the test document
+     * @return a test input object
      */
     public static Input read(final Path path) {
-        return read(path, DEFAULT_ALGORITH);
+        return read(path, DEFAULT_ALGORITHM);
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmis zur Ermittlung der Prüfsumme
-     * genutzt.
+     * Reads a test document from the given URL. A defined algorithm is used to compute the checksum.
      *
-     * @param path der Prüflings
-     * @param digestAlgorithm der Prüfsummenalgorithmus
-     * @return ein Prüf-Eingabe-Objekt
+     * @param path the test document
+     * @param digestAlgorithm the checksum algorithm
+     * @return a test input object
      */
     public static Input read(final Path path, final String digestAlgorithm) {
         checkNull(path);
@@ -93,34 +91,31 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen Datei. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der
-     * Prüfsumme genutzt.
+     * Reads a test document from the given file. The default checksum algorithm is used to compute the checksum.
      *
-     * @param file der Prüflings
-     * @return ein Prüf-Eingabe-Objekt
+     * @param file the test document
+     * @return a test input object
      */
     public static Input read(final File file) {
-        return read(file, DEFAULT_ALGORITH);
+        return read(file, DEFAULT_ALGORITHM);
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URI. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der
-     * Prüfsumme genutzt.
+     * Reads a test document from the given URI. The default checksum algorithm is used to compute the checksum.
      *
-     * @param uri URI des Prüflings
-     * @return ein Prüf-Eingabe-Objekt
+     * @param uri URI of the test document
+     * @return a test input object
      */
     public static Input read(final URI uri) {
-        return read(uri, DEFAULT_ALGORITH);
+        return read(uri, DEFAULT_ALGORITHM);
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmis zur Ermittlung der Prüfsumme
-     * genutzt.
+     * Reads a test document from the given URL. A defined algorithm is used to compute the checksum.
      *
-     * @param uri URI des Prüflings
-     * @param digestAlgorithm der Prüfsummenalgorithmus
-     * @return ein Prüf-Eingabe-Objekt
+     * @param uri URI of the test document
+     * @param digestAlgorithm the checksum algorithm
+     * @return a test input object
      */
     public static Input read(final URI uri, final String digestAlgorithm) {
         try {
@@ -131,23 +126,21 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird der Default-Prüfsummenalgorithmus zur Ermittlung der
-     * Prüfsumme genutzt.
+     * Reads a test document from the given URL. The default checksum algorithm is used to compute the checksum.
      *
-     * @param url URL des Prüflings
-     * @return ein Prüf-Eingabe-Objekt
+     * @param url URL of the test document
+     * @return a test input object
      */
     public static Input read(final URL url) {
-        return read(url, DEFAULT_ALGORITH);
+        return read(url, DEFAULT_ALGORITHM);
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmus zur Ermittlung der Prüfsumme
-     * genutzt.
-     * 
-     * @param url URL des Prüflings
-     * @param digestAlgorithm der Prüfsummenalgorithmus
-     * @return ein Prüf-Eingabe-Objekt
+     * Reads a test document from the given URL. A defined algorithm is used to compute the checksum.
+     *
+     * @param url URL of the test document
+     * @param digestAlgorithm the checksum algorithm
+     * @return a test input object
      */
     public static Input read(final URL url, final String digestAlgorithm) {
         checkNull(url);
@@ -163,7 +156,7 @@ public class InputFactory {
 
     /**
      * Reads a test document from a {@link Source}. Note: computing the hashcode is only supported for
-     * {@link StreamSource}. You can not directly use other {@link Source Soures}. You need to supply the hashcode for
+     * {@link StreamSource}. You can not directly use other {@link Source Sources}. You need to supply the hashcode for
      * identification then.
      * 
      * @param source source
@@ -171,7 +164,7 @@ public class InputFactory {
      */
     public static Input read(final Source source) {
         if (source instanceof StreamSource) {
-            return read(source, source.getSystemId(), DEFAULT_ALGORITH);
+            return read(source, source.getSystemId(), DEFAULT_ALGORITHM);
         }
         final String name = UUID.randomUUID().toString();
         return read(source, name, PSEUDO_NAME_ALGORITHM, name.getBytes());
@@ -181,7 +174,7 @@ public class InputFactory {
      * Reads a test document from a {@link Source} using a specified digest algorithm.
      * 
      * Note: computing the hashcode is only supported for {@link StreamSource}. You can not directly use other
-     * {@link Source Soures}. You need to supply the hashcode for identification then.
+     * {@link Source Sources}. You need to supply the hashcode for identification then.
      *
      * @param source source
      * @param name the digest algorithm
@@ -214,12 +207,11 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen URL. Es wird ein definierter Algorithmis zur Ermittlung der Prüfsumme
-     * genutzt.
+     * Reads a test document from the given URL. A defined algorithm is used to compute the checksum.
      *
-     * @param file der Prüflings
-     * @param digestAlgorithm der Prüfsummenalgorithmus
-     * @return ein Prüf-Eingabe-Objekt
+     * @param file the test document
+     * @param digestAlgorithm the checksum algorithm
+     * @return a test input object
      */
     public static Input read(final File file, final String digestAlgorithm) {
         checkNull(file);
@@ -231,24 +223,22 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen byte-Sequenz. Es wird ein definierter Algorithmis zur Ermittlung der
-     * Prüfsumme genutzt.
+     * Reads a test document from the given byte sequence. A defined algorithm is used to compute the checksum.
      *
-     * @param input URL des Prüflings
-     * @return ein Prüf-Eingabe-Objekt
+     * @param input URL of the test document
+     * @return a test input object
      */
     public static Input read(final byte[] input, final String name) {
         checkNull(input);
-        return read(input, name, DEFAULT_ALGORITH);
+        return read(input, name, DEFAULT_ALGORITHM);
     }
 
     /**
-     * Liest einen Prüfling von der übergebenen byte-Sequenz. Es wird ein definierter Algorithmis zur Ermittlung der
-     * Prüfsumme genutzt.
+     * Reads a test document from the given byte sequence. A defined algorithm is used to compute the checksum.
      *
-     * @param input URL des Prüflings
-     * @param digestAlgorithm der Prüfsummenalgorithmus
-     * @return ein Prüf-Eingabe-Objekt
+     * @param input URL of the test document
+     * @param digestAlgorithm the checksum algorithm
+     * @return a test input object
      */
     public static Input read(final byte[] input, final String name, final String digestAlgorithm) {
         checkNull(input);
@@ -269,23 +259,23 @@ public class InputFactory {
     }
 
     /**
-     * Liest einen Prüfling vom übergebenen {@link InputStream}.
-     * 
-     * @param inputStream der {@link InputStream}
-     * @param name der Name/Bezeichner des Prüflings
-     * @return einen Prüfling in eingelesener Form
+     * Reads a test document from the given {@link InputStream}.
+     *
+     * @param inputStream the {@link InputStream}
+     * @param name the name/identifier of the test document
+     * @return a test document in the read form
      */
     public static Input read(final InputStream inputStream, final String name) {
-        return read(inputStream, name, DEFAULT_ALGORITH);
+        return read(inputStream, name, DEFAULT_ALGORITHM);
     }
 
     /**
-     * Liest einen Prüfling vom übergebenen {@link InputStream}.
+     * Reads a test document from the given {@link InputStream}.
      *
-     * @param inputStream der {@link InputStream}
-     * @param name der Name/Bezeichner des Prüflings
-     * @param digestAlgorithm der Prüfsummenalgorithmus
-     * @return einen Prüfling in eingelesener Form
+     * @param inputStream the {@link InputStream}
+     * @param name the name/identifier of the test document
+     * @param digestAlgorithm the checksum algorithm
+     * @return a test document in the read form
      */
     public static Input read(final InputStream inputStream, final String name, final String digestAlgorithm) {
         checkNull(inputStream);

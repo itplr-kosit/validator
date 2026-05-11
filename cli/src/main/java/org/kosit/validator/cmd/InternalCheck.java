@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 import net.sf.saxon.s9api.Processor;
 
 /**
- * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszuwerten und auszugeben.
- * Diese Klasse stellt keine fachliche Erweiterung des eigentlichen Prüfvorganges dar!
- * 
+ * Simple extension of the {@link DefaultCheck} class to evaluate and output the result of the assertion check. This
+ * class does not represent a functional extension of the actual validation process!
+ *
  * @author Andreas Penski
  */
 class InternalCheck extends DefaultCheck {
@@ -53,9 +53,9 @@ class InternalCheck extends DefaultCheck {
     private int failedAssertions = 0;
 
     /**
-     * Erzeugt eine neue Instanz mit der angegebenen Konfiguration.
+     * Creates a new instance with the given configuration.
      *
-     * @param configuration die Konfiguration
+     * @param configuration the configuration
      */
     InternalCheck(final EngineInformation engineInformation, final Processor processor, final Configuration... configuration) {
         super(engineInformation, processor, configuration);
@@ -106,10 +106,10 @@ class InternalCheck extends DefaultCheck {
     }
 
     /**
-     * Prüft die Prüflinge und gibt Informationen über etwaige Assertions aus.
+     * Validates the test documents and outputs information about any assertions.
      *
-     * @param input die Prüflinge
-     * @return false wenn es Assertion-Fehler gibt, sonst true
+     * @param input the test documents
+     * @return false if there are assertion errors, otherwise true
      */
     @Override
     public Result checkInput(final Input input) {

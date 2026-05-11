@@ -19,10 +19,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Ein Ergebnisobjekt, dass das eigentliche Ergebnis hält und optional auch verschiedene Fehlerobjekte.
- * 
- * @param <T> der Typ des Ergebnis-Objekts
- * @param <E> der Typ des Fehler-Objekts
+ * A result object that holds the actual result and optionally various error objects.
+ *
+ * @param <T> the type of the result object
+ * @param <E> the type of the error object
  */
 public class Result<T, E> {
 
@@ -31,17 +31,17 @@ public class Result<T, E> {
     private Collection<E> errors;
 
     /**
-     * Erzeugt ein neues Ergebnis mit Fehler
-     * 
-     * @param errors die Fehler
+     * Creates a new result with errors.
+     *
+     * @param errors the errors
      */
     public Result(final Collection<E> errors) {
         this(null, errors);
     }
 
     /**
-     * Erzeugt ein neues Ergebnis mit einem Ergebnisobjekt
-     * 
+     * Creates a new result with a result object.
+     *
      * @param o
      */
     public Result(final T o) {
@@ -49,9 +49,9 @@ public class Result<T, E> {
     }
 
     /**
-     * Zeigt an, ob das Ergebnis valide, also ohne Fehler ist.
-     * 
-     * @return true wenn erfolgreich
+     * Indicates whether the result is valid, i.e. without errors.
+     *
+     * @return true if successful
      */
     public boolean isValid() {
         return this.object != null && getErrors().isEmpty();
@@ -62,9 +62,9 @@ public class Result<T, E> {
     }
 
     /**
-     * Zeigt an, ob das Ergebnis nicht valide ist, als entsprechend Fehler gesammelt wurden.
-     * 
-     * @return true wenn erfolgreich wenn Fehler vorhanden sind.
+     * Indicates whether the result is not valid, i.e. errors have been collected.
+     *
+     * @return true if errors are present.
      */
     public boolean isInvalid() {
         return !isValid();

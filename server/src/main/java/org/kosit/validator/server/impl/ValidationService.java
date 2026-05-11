@@ -84,7 +84,8 @@ public class ValidationService {
              * report.addSchemaReference("xsd", "XSD"); if (!result.isSchemaValid()) {
              * result.getSchemaViolations().forEach(report::addSchemaViolation); }
              */
-            // Schematron-Ausgaben und deren Titel als Schema-Referenzen
+
+            // Schematron outputs and their titles as schema references
             report.addSchematronValidationResults(result.getSchematronResult());
             /*
              * if (result.getSchematronResult() != null) { result.getSchematronResult().forEach(so -> { String title =

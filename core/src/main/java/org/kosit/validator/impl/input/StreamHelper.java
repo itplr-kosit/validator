@@ -38,7 +38,7 @@ public class StreamHelper {
 
     /**
      * Helper class, which generates the hashcode while reading the stream e.g. for parsing the document. This allows
-     * generating the hashcode without an aditional reading step.
+     * generating the hashcode without an additional reading step.
      */
     @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
     private static class DigestingInputStream extends FilterInputStream {

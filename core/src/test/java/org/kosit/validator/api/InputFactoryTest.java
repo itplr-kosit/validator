@@ -50,8 +50,8 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Testet den Hashcode-Service.
- * 
+ * Tests the hashcode service.
+ *
  * @author Andreas Penski
  */
 public class InputFactoryTest {
@@ -60,8 +60,8 @@ public class InputFactoryTest {
 
     @Test
     public void testDefaultDigestAlgorithm() {
-        assertThat(new InputFactory().getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITH);
-        assertThat(new InputFactory("").getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITH);
+        assertThat(new InputFactory().getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITHM);
+        assertThat(new InputFactory("").getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITHM);
     }
 
     @Test

@@ -80,9 +80,9 @@ public class Format {
     }
 
     /**
-     * Fügt weitere Formatierungscodes hinzu.
+     * Adds additional formatting codes.
      *
-     * @param codes die Codes
+     * @param codes the codes
      *
      * @return this {@link Format}
      */

@@ -271,7 +271,7 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Builds the actual {@link Configuration} by validating all builder inputs and constructing neccessary objects.
+     * Builds the actual {@link Configuration} by validating all builder inputs and constructing necessary objects.
      *
      * @return a valid configuration
      * @throws IllegalStateException when the configuration is not valid/complete

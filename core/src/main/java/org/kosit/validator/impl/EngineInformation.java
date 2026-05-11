@@ -17,31 +17,31 @@
 package org.kosit.validator.impl;
 
 /**
- * Hält statische Informatione über diesen Validator.
- * 
+ * Holds static information about this validator.
+ *
  * @author Andreas Penski
  */
 public interface EngineInformation {
 
     /**
-     * Gibt die Versions-Nummer des Validators zurück.
-     * 
-     * @return die Version
+     * Returns the version number of the validator.
+     *
+     * @return the version
      */
     String getVersion();
 
     /**
-     * Gibt den Namen der Engine zurück.
-     * 
-     * @return der Name
+     * Returns the name of the engine.
+     *
+     * @return the name
      */
     String getName();
 
     /**
-     * Gibt die Versions-Nummer des verwendeten Frameworks zurück. Diese ist relevant um Scenario-Konfiguration und
-     * Validator-Versionen aufeinander abzustimmen.
+     * Returns the version number of the framework used. This is relevant to align scenario configuration and validator
+     * versions with each other.
      *
-     * @return die Framework-Version
+     * @return the framework version
      */
     String getFrameworkVersion();
 

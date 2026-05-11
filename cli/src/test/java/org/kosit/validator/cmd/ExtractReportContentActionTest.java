@@ -36,8 +36,8 @@ import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.impl.tasks.TestProcessBuilder;
 
 /**
- * Testet die HTML-Extrkation des Kommondazeilenprogramms.
- * 
+ * Tests the HTML extraction of the command line tool.
+ *
  * @author Andreas Penski
  */
 public class ExtractReportContentActionTest {

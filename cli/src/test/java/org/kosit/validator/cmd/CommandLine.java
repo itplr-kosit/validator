@@ -28,8 +28,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 
 /**
- * Helferlein um Ausgaben auf der Kommandozeile zu testen.
- * 
+ * Helper for testing command line output.
+ *
  * @author Andreas Penski
  */
 public class CommandLine {
@@ -39,8 +39,8 @@ public class CommandLine {
     private static final ReplaceableOutputStream<ByteArrayOutputStream> error = new ReplaceableOutputStream<>();
 
     static {
-        // Initialisierung muss vor SL4J's SimpleLogger erfolgen, sonst sind logs nicht erfasst.
-        // deshalb darf diese Klasse kein Log haben
+        // initialization must happen before SLF4J's SimpleLogger, otherwise logs are not captured.
+        // therefore this class must not have a log
         System.setOut(new PrintStream(new TeeOutputStream(System.out, out)));
         System.setErr(new PrintStream(new TeeOutputStream(System.err, error)));
         setStandardInput(nullInputStream());
@@ -102,9 +102,9 @@ public class CommandLine {
     }
 
     /**
-     * Simpler Proxy für {@link OutputStream}, dessen target ausgetauscht werden kann.
+     * Simple proxy for {@link OutputStream} whose target can be swapped.
      *
-     * @param <O> Typ des eigentlichen {@link OutputStream}
+     * @param <O> type of the underlying {@link OutputStream}
      */
     private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
 

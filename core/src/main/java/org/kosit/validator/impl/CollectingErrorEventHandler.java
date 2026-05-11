@@ -36,7 +36,7 @@ import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Sammelt Fehler-Ereignisinformation beim Schema-Validieren und weiteren XML-basierten Aktionen
+ * Collects error event information during schema validation and other XML-based actions.
  *
  * @author Andreas Penski
  */
@@ -94,18 +94,18 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     /**
-     * Zeigt an, ob Validierungsfehler vorhanden sind.
-     * 
-     * @return true wenn mindestens ein Fehler vorhanden ist.
+     * Indicates whether validation errors are present.
+     *
+     * @return true if at least one error is present.
      */
     public boolean hasErrors() {
         return hasEvents() && this.errors.stream().anyMatch(e -> e.getSeverityCode() != XMLSyntaxErrorSeverity.SEVERITY_WARNING);
     }
 
     /**
-     * Zeigt an, ob es Validierungs-Ereignisse gab.
-     * 
-     * @return true wenn mindestens ein Validierungsereignis aufgetreten ist
+     * Indicates whether validation events occurred.
+     *
+     * @return true if at least one validation event has occurred
      */
     public boolean hasEvents() {
         return !this.errors.isEmpty();

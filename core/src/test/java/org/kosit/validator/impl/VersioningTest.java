@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.model.scenarios.Scenarios;
 
 /**
- * Testet die Versionierung von Scenario-Dateien aka Konfigurationsdaten.
+ * Tests the versioning of scenario files aka configuration data.
  *
  * @author Andreas Penski
  */

@@ -49,8 +49,8 @@ import org.kosit.validator.model.XMLSyntaxError;
 import org.xml.sax.SAXException;
 
 /**
- * Tests die {@link SchemaValidationAction}.
- * 
+ * Tests the {@link SchemaValidationAction}.
+ *
  * @author Andreas Penski
  */
 public class SchemaValidatorActionTest {

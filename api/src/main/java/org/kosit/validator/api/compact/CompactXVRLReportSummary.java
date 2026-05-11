@@ -11,8 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Kompakte Zusammenfassung der Validierungsergebnisse unter Verwendung des bestehenden XVRL. Bietet Convenience-Zugriff
- * auf additive Attribute über den CVRL-Namespace.
+ * Compact summary of the validation results using the existing XVRL. Provides convenience access to additive attributes
+ * via the CVRL namespace.
  */
 public class CompactXVRLReportSummary {
 
@@ -33,45 +33,45 @@ public class CompactXVRLReportSummary {
     }
 
     /**
-     * Erstellt eine neue Instanz mit einem leeren zugrunde liegenden XVRLReportSummary.
+     * Creates a new instance with an empty underlying XVRLReportSummary.
      *
-     * @return neue Instanz von {@link CompactXVRLReportSummary}
+     * @return new instance of {@link CompactXVRLReportSummary}
      */
     public static CompactXVRLReportSummary create() {
         return new CompactXVRLReportSummary(new ObjectFactory().createXVRLReportSummary());
     }
 
     /**
-     * Gibt die Liste der kompakten Reports zurück.
+     * Returns the list of compact reports.
      *
-     * @return Liste von {@link CompactXVRLReport}
+     * @return list of {@link CompactXVRLReport}
      */
     public List<CompactXVRLReport> getReports() {
         return original.getReports().stream().map(CompactXVRLReport::new).collect(Collectors.toList());
     }
 
     /**
-     * Fügt einen kompakten Report hinzu.
+     * Adds a compact report.
      *
-     * @param report der kompakte Report
+     * @param report the compact report
      */
     public void addReport(CompactXVRLReport report) {
         original.getReports().add(report.getOriginal());
     }
 
     /**
-     * Setzt den Wert des 'acceptable' Attributs im CVRL-Namespace.
+     * Sets the value of the 'acceptable' attribute in the CVRL namespace.
      *
-     * @param count Anzahl akzeptabler Ergebnisse
+     * @param count number of acceptable results
      */
     public void setAcceptable(long count) {
         original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_ACCEPTABLE, CVRL_PREFIX), String.valueOf(count));
     }
 
     /**
-     * Gibt den Wert des 'acceptable' Attributs aus dem CVRL-Namespace zurück.
+     * Returns the value of the 'acceptable' attribute from the CVRL namespace.
      *
-     * @return Anzahl akzeptabler Ergebnisse oder null
+     * @return number of acceptable results or null
      */
     public Long getAcceptable() {
         String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_ACCEPTABLE));
@@ -79,18 +79,18 @@ public class CompactXVRLReportSummary {
     }
 
     /**
-     * Setzt den Wert des 'rejected' Attributs im CVRL-Namespace.
+     * Sets the value of the 'rejected' attribute in the CVRL namespace.
      *
-     * @param count Anzahl abgelehnter Ergebnisse
+     * @param count number of rejected results
      */
     public void setRejected(long count) {
         original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_REJECTED, CVRL_PREFIX), String.valueOf(count));
     }
 
     /**
-     * Gibt den Wert des 'rejected' Attributs aus dem CVRL-Namespace zurück.
+     * Returns the value of the 'rejected' attribute from the CVRL namespace.
      *
-     * @return Anzahl abgelehnter Ergebnisse oder null
+     * @return number of rejected results or null
      */
     public Long getRejected() {
         String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_REJECTED));
@@ -98,18 +98,18 @@ public class CompactXVRLReportSummary {
     }
 
     /**
-     * Setzt den Wert des 'processing-errors' Attributs im CVRL-Namespace.
+     * Sets the value of the 'processing-errors' attribute in the CVRL namespace.
      *
-     * @param count Anzahl der Verarbeitungsfehler
+     * @param count number of processing errors
      */
     public void setProcessingErrors(long count) {
         original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_PROCESSING_ERRORS, CVRL_PREFIX), String.valueOf(count));
     }
 
     /**
-     * Gibt den Wert des 'processing-errors' Attributs aus dem CVRL-Namespace zurück.
+     * Returns the value of the 'processing-errors' attribute from the CVRL namespace.
      *
-     * @return Anzahl der Verarbeitungsfehler oder null
+     * @return number of processing errors or null
      */
     public Long getProcessingErrors() {
         String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_PROCESSING_ERRORS));
@@ -117,7 +117,7 @@ public class CompactXVRLReportSummary {
     }
 
     /**
-     * Setzt die Informationen über den verwendeten Validator.
+     * Sets the information about the validator used.
      *
      * @param info {@link ValidatorEngineInformation}
      */
@@ -133,9 +133,9 @@ public class CompactXVRLReportSummary {
     }
 
     /**
-     * Gibt die Informationen über den verwendeten Validator zurück.
+     * Returns the information about the validator used.
      *
-     * @return {@link ValidatorEngineInformation} oder null
+     * @return {@link ValidatorEngineInformation} or null
      */
     public ValidatorEngineInformation getValidatorInformation() {
         return Optional.ofNullable(original.getMetadata()).map(XVRLMetadata::getValidators).stream().flatMap(Collection::stream).findFirst()

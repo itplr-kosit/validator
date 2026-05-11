@@ -1,7 +1,7 @@
 package org.kosit.validator.api.compact;
 
 /**
- * Enthält Informationen über den verwendeten Validator (Name und Version).
+ * Contains information about the validator used (name and version).
  */
 public class ValidatorEngineInformation {
 

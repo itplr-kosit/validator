@@ -14,7 +14,7 @@ import static org.kosit.validator.api.compact.CompactXVRLReportSummary.CVRL_NS;
 import static org.kosit.validator.api.compact.CompactXVRLReportSummary.CVRL_PREFIX;
 
 /**
- * Kompakter XVRL-Report mit Komfort-Zugriff auf additive Attribute.
+ * Compact XVRL report with convenience access to additive attributes.
  */
 public class CompactXVRLReport {
 
@@ -56,18 +56,18 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Erstellt eine neue Instanz mit einem leeren zugrunde liegenden XVRLReport.
+     * Creates a new instance with an empty underlying XVRLReport.
      *
-     * @return neue Instanz von {@link CompactXVRLReport}
+     * @return new instance of {@link CompactXVRLReport}
      */
     public static CompactXVRLReport create() {
         return new CompactXVRLReport(new ObjectFactory().createXVRLReport());
     }
 
     /**
-     * Setzt den Dateinamen/Pfad im Report.
+     * Sets the file name/path in the report.
      *
-     * @param href der Dateiname oder Pfad
+     * @param href the file name or path
      */
     public void setFilename(String href) {
         if (original.getMetadata() == null) {
@@ -85,9 +85,9 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Setzt den Ersteller des Reports.
+     * Sets the creator of the report.
      *
-     * @param name Name des Erstellers
+     * @param name name of the creator
      */
     public void setCreator(String name) {
         if (original.getMetadata() == null) {
@@ -100,9 +100,9 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Setzt das ausgewählte Szenario.
+     * Sets the selected scenario.
      *
-     * @param scenario Name des Szenarios
+     * @param scenario name of the scenario
      */
     public void setScenario(String scenario) {
         XVRLDetection d = new ObjectFactory().createXVRLDetection();
@@ -113,10 +113,10 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Gibt das ausgewählte Szenario zurück. Laut Ziel-XML wird dies über eine Detection mit der xml:id 'scenario' und
-     * dem Attribut 'code' abgebildet.
+     * Returns the selected scenario. According to the target XML this is represented via a detection with the xml:id
+     * 'scenario' and the attribute 'code'.
      *
-     * @return Name des Szenarios oder null
+     * @return name of the scenario or null
      */
     public String getScenario() {
         return original.getDetection().stream().filter(d -> ID_SCENARIO.equals(d.getId())).map(XVRLDetection::getCode).findFirst()
@@ -124,18 +124,18 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Setzt den Akzeptanzstatus im CVRL-Namespace.
+     * Sets the acceptance status in the CVRL namespace.
      *
-     * @param recommendation Akzeptanzempfehlung
+     * @param recommendation acceptance recommendation
      */
     public void setAcceptance(AcceptRecommendation recommendation) {
         original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_ACCEPTANCE, CVRL_PREFIX), recommendation.name());
     }
 
     /**
-     * Gibt den Akzeptanzstatus aus dem CVRL-Namespace zurück. Dieser befindet sich direkt am Report-Element.
+     * Returns the acceptance status from the CVRL namespace. It is located directly on the report element.
      *
-     * @return Akzeptanzempfehlung oder null
+     * @return acceptance recommendation or null
      */
     public AcceptRecommendation getAcceptance() {
         String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_ACCEPTANCE));
@@ -150,40 +150,40 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Setzt die Fehlerszusammenfassung im CVRL-Namespace.
+     * Sets the error summary in the CVRL namespace.
      *
-     * @param summary Fehlerszusammenfassung
+     * @param summary error summary
      */
     public void setErrorSummary(String summary) {
         original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_ERROR_SUMMARY, CVRL_PREFIX), summary);
     }
 
     /**
-     * Gibt die Fehlerszusammenfassung aus dem CVRL-Namespace zurück.
+     * Returns the error summary from the CVRL namespace.
      *
-     * @return Fehlerszusammenfassung oder null
+     * @return error summary or null
      */
     public String getErrorSummary() {
         return original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_ERROR_SUMMARY));
     }
 
     /**
-     * Setzt die Checksumme im CVRL-Namespace am Dokument-Element.
+     * Sets the checksum in the CVRL namespace on the document element.
      *
-     * @param checksum Checksumme
+     * @param checksum checksum
      */
     public void setChecksum(String checksum) {
         if (original.getMetadata() == null || original.getMetadata().getDocuments().isEmpty()) {
-            setFilename(VAL_UNKNOWN); // Sicherstellen, dass ein Dokument existiert
+            setFilename(VAL_UNKNOWN); // Ensure that a document exists
         }
         original.getMetadata().getDocuments().get(0).getOtherAttributes().put(new QName(CVRL_NS, ATTR_CHECKSUM, CVRL_PREFIX), checksum);
     }
 
     /**
-     * Gibt die Checksumme aus dem CVRL-Namespace zurück. Diese befindet sich im Ziel-XML am document-Element innerhalb
-     * der Metadata.
+     * Returns the checksum from the CVRL namespace. In the target XML this is located on the document element within
+     * the metadata.
      *
-     * @return Checksumme oder null
+     * @return checksum or null
      */
     public String getChecksum() {
         return Optional.ofNullable(original.getMetadata()).map(m -> m.getDocuments()).stream().flatMap(Collection::stream)
@@ -191,9 +191,9 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Fügt eine Schema-Violation hinzu.
+     * Adds a schema violation.
      *
-     * @param error das Schema-Fehlerobjekt
+     * @param error the schema error object
      */
     public void addSchemaViolation(XmlError error) {
         ObjectFactory of = new ObjectFactory();
@@ -201,7 +201,7 @@ public class CompactXVRLReport {
         d.setCode(CODE_XSD_VIOLATION);
         d.setSeverity(mapSeverity(error.getSeverity()));
 
-        // Nachricht
+        // Message
         XVRLMessage msg = of.createXVRLMessage();
         msg.getContent().add(error.getMessage());
         d.getMessages().add(msg);
@@ -228,16 +228,16 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Fügt eine Schematron-Violation hinzu.
+     * Adds a Schematron violation.
      *
-     * @param failedAssert die Schematron-Fehlermeldung
-     * @param schemaHref die Referenz auf das verwendete Schema (z.B. href oder Titel)
+     * @param failedAssert the Schematron failure message
+     * @param schemaHref the reference to the schema used (e.g. href or title)
      */
     public void addSchematronViolation(FailedAssert failedAssert, String schemaHref) {
         ObjectFactory of = new ObjectFactory();
         XVRLDetection d = of.createXVRLDetection();
         d.setCode(CODE_SCHEMATRON_VIOLATION);
-        // Im Ziel-XML ist severity oft info, wir nehmen hier aber den Role-Wert falls vorhanden
+        // In the target XML severity is often info, but we take the role value if present
         if (failedAssert.getRole() != null) {
             try {
                 d.setSeverity(XVRLDetection.Severity.fromValue(failedAssert.getRole().toLowerCase()));
@@ -248,14 +248,14 @@ public class CompactXVRLReport {
             d.setSeverity(XVRLDetection.Severity.INFO);
         }
 
-        // Nachricht
+        // Message
         XVRLMessage msg = of.createXVRLMessage();
         if (failedAssert.getText() != null) {
             msg.getContent().addAll(failedAssert.getText().getContent());
         }
         d.getMessages().add(msg);
 
-        // Schema-Referenz via Provenance/Location
+        // Schema reference via provenance/location
         if (schemaHref != null) {
             Location loc = of.createLocation();
             loc.setHref(schemaHref);
@@ -315,10 +315,10 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Fügt eine Schema-Referenz zu den Metadaten hinzu.
+     * Adds a schema reference to the metadata.
      *
-     * @param href die URL oder der Pfad zum Schema
-     * @param language die Sprache des Schemas (z.B. "XSD" oder "Schematron")
+     * @param href the URL or path to the schema
+     * @param language the language of the schema (e.g. "XSD" or "Schematron")
      */
     public void addSchemaReference(String href, String language) {
         if (original.getMetadata() == null) {
@@ -351,18 +351,18 @@ public class CompactXVRLReport {
     }
 
     /**
-     * Prüft, ob der Report Schema-Verletzungen enthält.
+     * Checks whether the report contains schema violations.
      *
-     * @return true, wenn keine Schema-Verletzungen vorliegen
+     * @return true if no schema violations are present
      */
     public boolean isSchemaValid() {
         return original.getDetection().stream().noneMatch(d -> CODE_XSD_VIOLATION.equals(d.getCode()));
     }
 
     /**
-     * Prüft, ob der Report Schematron-Verletzungen enthält.
+     * Checks whether the report contains Schematron violations.
      *
-     * @return true, wenn keine Schematron-Verletzungen vorliegen
+     * @return true if no Schematron violations are present
      */
     public boolean isSchematronValid() {
         return original.getDetection().stream().noneMatch(d -> CODE_SCHEMATRON_VIOLATION.equals(d.getCode()));

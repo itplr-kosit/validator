@@ -45,8 +45,8 @@ import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 
 /**
- * Testet verschiedene Saxon Security Einstellungen.
- * 
+ * Tests various Saxon security settings.
+ *
  * @author Andreas Penski
  */
 public class SaxonSecurityTest {
@@ -71,8 +71,8 @@ public class SaxonSecurityTest {
                 final XdmDestination result = new XdmDestination();
                 transformer.setDestination(result);
                 transformer.transform();
-                // wenn der Punkt erreicht wird, sollte wenigstens, das Element evil nicht mit 'bösen' Inhalten gefüllt
-                // sein!
+
+                // if this point is reached, the 'evil' element should at least not be filled with 'evil' content!
                 if (StringUtils.isNotBlank(result.getXdmNode().getStringValue())) {
                     fail(String.format("Saxon configuration should prevent expansion within %s", resource));
                 }

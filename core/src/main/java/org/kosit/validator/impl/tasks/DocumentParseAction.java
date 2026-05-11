@@ -16,7 +16,7 @@
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemantal;
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemental;
 import static org.kosit.validator.model.xvrl.XVRLDetection.Severity.ERROR;
 import static org.kosit.validator.model.xvrl.XVRLDetection.Severity.INFO;
 
@@ -41,8 +41,8 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Setzt Parsing-Funktionalitäten um. Prüft auf well-formedness
- * 
+ * Implements parsing functionality. Checks for well-formedness.
+ *
  * @author Andreas Penski
  */
 public class DocumentParseAction implements CheckAction {
@@ -56,7 +56,7 @@ public class DocumentParseAction implements CheckAction {
     private static XVRLReport generateXVRLReport(final Result<XdmNode, XMLSyntaxError> parserResult) {
         final XVRLReportBuilder builder = XVRLReportBuilder.builder("Document wellformedness Validator");
         if (parserResult.isValid()) {
-            final DetectionBuilder detection = detection().severity(INFO).add(supplemantal().addContent(parserResult.getObject()));
+            final DetectionBuilder detection = detection().severity(INFO).add(supplemental().addContent(parserResult.getObject()));
             builder.add(detection);
         } else {
             final DetectionBuilder detection = detection().severity(ERROR);
@@ -66,12 +66,11 @@ public class DocumentParseAction implements CheckAction {
     }
 
     /**
-     * Parsed und überprüft ein übergebenes Dokument darauf ob es well-formed ist. Dies stellt den ersten
-     * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem
-     * Schema.
+     * Parses and checks the supplied document for well-formedness. This is the first processing step of the validation
+     * tool. This function explicitly skips validation against a schema.
      *
-     * @param content ein Dokument
-     * @return Ergebnis des Parsings inklusive etwaiger Fehler
+     * @param content a document
+     * @return result of the parsing including any errors
      */
     public Result<XdmNode, XMLSyntaxError> parseDocument(final Input content) {
         if (content == null) {
@@ -80,7 +79,7 @@ public class DocumentParseAction implements CheckAction {
         Result<XdmNode, XMLSyntaxError> result;
         try {
             if (content instanceof XdmNodeInput && hasCompatibleConfiguration((XdmNodeInput) content)) {
-                // parsing not neccessary
+                // parsing not necessary
                 result = new Result<>(((XdmNodeInput) content).getNode());
             } else {
                 final DocumentBuilder builder = this.processor.newDocumentBuilder();

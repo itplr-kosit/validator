@@ -54,7 +54,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     private static int nameCount = 0;
 
-    private static final String DEFAULT_DESCRIPTION = "Dieses Scenario wurde per API erstellt";
+    private static final String DEFAULT_DESCRIPTION = "This scenario was created via API";
 
     private final Map<String, String> namespaces = new HashMap<>();
 
