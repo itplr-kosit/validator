@@ -52,10 +52,10 @@ public class CommandLineApplication {
     /**
      * Main.
      *
-     * @param args die Eingabe-Argumente
+     * @param args the input arguments
      */
     public static void main(final String[] args) {
-        Quarkus.run(CliRunner.class, args); // args sind die vom java -jar Aufruf
+        Quarkus.run(CliRunner.class, args); // args are those from the java -jar invocation
     }
 
     @ApplicationScoped
@@ -92,7 +92,7 @@ public class CommandLineApplication {
                 resultStatus = ReturnValue.PARSING_ERROR;
             }
 
-            return resultStatus.getCode(); // Exit-Code des Prozesses
+            return resultStatus.getCode(); // process exit code
         }
 
         private void sayGoodby(final ReturnValue resultStatus) {
@@ -106,7 +106,7 @@ public class CommandLineApplication {
         }
 
         private static int logExecutionException(final Exception ex, final CommandLine cli, final ParseResult parseResult) {
-            final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "Es ist eine Fehler aufgetreten";
+            final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "An error occurred";
             Printer.writeErr(ex, message);
             return 1;
         }

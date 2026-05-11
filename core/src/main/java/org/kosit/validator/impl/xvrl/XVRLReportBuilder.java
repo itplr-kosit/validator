@@ -81,7 +81,7 @@ public class XVRLReportBuilder {
         return new DetectionBuilder();
     }
 
-    public static SupplementalBuilder supplemantal() {
+    public static SupplementalBuilder supplemental() {
         return new SupplementalBuilder();
     }
 

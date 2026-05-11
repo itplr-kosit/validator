@@ -39,8 +39,8 @@ import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Extrahiert Erstellten Dokumentne aus dem Report und persistiert diese im konfigurierten Ausgabe-Verzeichnis.
- * 
+ * Extracts generated documents from the report and persists them in the configured output directory.
+ *
  * @author Andreas Penski
  */
 class ExtractReportContentAction implements CheckAction {
@@ -97,7 +97,7 @@ class ExtractReportContentAction implements CheckAction {
     public boolean isSkipped(final Process results) {
         final Result<List<BusinessReport>, XMLSyntaxError> createReportResult = results.getResult(CreateReportsAction.KEY);
         if (createReportResult == null || createReportResult.getObject() == null) {
-            log.warn("Can not extract create-report  content. No report document found");
+            log.warn("Can not extract create-report content. No report document found");
             return true;
         }
         return false;

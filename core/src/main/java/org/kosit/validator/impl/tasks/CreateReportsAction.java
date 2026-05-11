@@ -17,7 +17,7 @@ package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemantal;
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemental;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,9 +44,9 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
 
 /**
- * Erzeugt die Reports auf Basis der gesammelten Informationen über den Prüfling. Sollte kein Szenario identifiziert
- * worden sein, so wird ein das Fallback-Szenario verwend und ein default report erzeugt.
- * 
+ * Generates the reports based on the collected information about the test document. If no scenario was identified, the
+ * fallback scenario is used and a default report is generated.
+ *
  * @author Andreas Penski
  */
 public class CreateReportsAction implements CheckAction {
@@ -70,7 +70,7 @@ public class CreateReportsAction implements CheckAction {
 
     private static XVRLReport generateXVRLReport(final ResourceType resourceType, final XdmNode node) {
         return XVRLReportBuilder.builder(METADATA)
-                .add(detection().id(resourceType.getName()).add(supplemantal().addContent(node).id(resourceType.getName()))).build();
+                .add(detection().id(resourceType.getName()).add(supplemental().addContent(node).id(resourceType.getName()))).build();
     }
 
     private static XVRLReport createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {

@@ -30,8 +30,8 @@ import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Repository for die aktiven Szenario einer Prüfinstanz.
- * 
+ * Repository for the active scenarios of a validation instance.
+ *
  * @author Andreas Penski
  */
 public class ScenarioRepository {
@@ -74,7 +74,7 @@ public class ScenarioRepository {
      * Determine the matching Scenario for the provided input document
      *
      * @param document input document
-     * @return ein Ergebnis-Objekt zur weiteren Verarbeitung
+     * @return a result object for further processing
      */
     public Result<Scenario, String> selectScenario(final XdmNode document) {
         final Result<Scenario, String> result;

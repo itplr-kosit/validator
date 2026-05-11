@@ -34,7 +34,7 @@ import net.sf.saxon.om.TreeInfo;
 /**
  * A validator {@link org.kosit.validator.api.Input} based on a {@link Source}.
  * <p>
- * Note: The various implementations of {@link Source} varies wether the can be read twice or no. This implementation
+ * Note: The various implementations of {@link Source} vary whether they can be read twice or not. This implementation
  * tries to handle this with respect document identification (hashcode).
  * 
  * This class is known to work with:

@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 import net.sf.saxon.s9api.Processor;
 
 /**
- * Actual evaluation and processing of CommandLineOptions argumtens.
+ * Actual evaluation and processing of CommandLineOptions arguments.
  * 
  * @author Andreas Penski
  */
@@ -66,7 +66,7 @@ public class Validator {
     }
 
     /**
-     * Hauptprogramm für die Kommandozeilen-Applikation.
+     * Main program for the command line application.
      *
      * @param cmd parsed commandline.
      */

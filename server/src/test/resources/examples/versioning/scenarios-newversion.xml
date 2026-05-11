@@ -48,7 +48,7 @@
         </validateWithSchematron>
         <createReport>
             <resource>
-                <name>Report für eRechnung</name>
+                <name>Report for eInvoice</name>
                 <location>resources/eRechnung/report.xsl</location>
             </resource>
         </createReport>

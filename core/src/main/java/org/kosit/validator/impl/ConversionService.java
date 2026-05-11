@@ -103,7 +103,7 @@ public class ConversionService {
     }
 
     /**
-     * Initialisiert den default context; Alle Packages mit {@link XmlRegistry XmlRegistries}.
+     * Initializes the default context; all packages with {@link XmlRegistry XmlRegistries}.
      */
     public void initialize() {
         final Collection<Package> p = new ArrayList<>();
@@ -118,9 +118,9 @@ public class ConversionService {
     }
 
     /**
-     * Initialisiert den conversion service mit den angegegebenen Packages.
+     * Initializes the conversion service with the given packages.
      *
-     * @param context packages für den JAXB Kontext
+     * @param context packages for the JAXB context
      */
     public void initialize(final Collection<Package> context) {
         final String[] packages = context != null ? context.stream().map(Package::getName).toArray(String[]::new) : new String[0];
@@ -130,9 +130,9 @@ public class ConversionService {
     }
 
     /**
-     * Initialsiert den conversion service mit dem angegebenen Kontextpfad
+     * Initializes the conversion service with the given context path.
      *
-     * @param contextPath der Kontextpfad
+     * @param contextPath the context path
      */
     private void initialize(final String contextPath) {
         try {

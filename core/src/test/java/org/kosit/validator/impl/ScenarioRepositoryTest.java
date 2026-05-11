@@ -36,8 +36,8 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Testet das {@link ScenarioRepository}.
- * 
+ * Tests the {@link ScenarioRepository}.
+ *
  * @author Andreas Penski
  */
 

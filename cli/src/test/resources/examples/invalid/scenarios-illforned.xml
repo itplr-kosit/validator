@@ -40,7 +40,7 @@
         </validateWithXmlSchema>
         <createReport>
             <resource>
-                <name>Report für eRechnung</name>
+                <name>Report for eInvoice</name>
                 <location>report.xsl</location>
             </resource>
         </createReport>

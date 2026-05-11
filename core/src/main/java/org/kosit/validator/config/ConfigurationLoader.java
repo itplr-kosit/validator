@@ -66,12 +66,12 @@ public class ConfigurationLoader {
     protected final Map<String, Object> parameters = new HashMap<>();
 
     /**
-     * URL, die auf die scenerio.xml Datei zeigt.
+     * URL pointing to the scenario.xml file.
      */
     private final URI scenarioDefinition;
 
     /**
-     * Root-Ordner mit den von den einzelnen Szenarien benötigten Dateien
+     * Root folder containing the files required by the individual scenarios.
      */
     private final URI scenarioRepository;
 
@@ -99,7 +99,7 @@ public class ConfigurationLoader {
                 return node;
             }
         }
-        throw new IllegalArgumentException("Kein root element gefunden");
+        throw new IllegalArgumentException("No root element found");
     }
 
     private static boolean isSupportedDocument(final XdmNode doc) {

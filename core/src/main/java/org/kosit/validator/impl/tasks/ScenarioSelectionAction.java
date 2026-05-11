@@ -32,9 +32,9 @@ import org.slf4j.LoggerFactory;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Identifiziert das der Eingabe entsprechende Szenario, sofern eines konfiguriert ist. Setzt das Fallback-Szenario,
- * wenn keines identifiziert werden konnte.
- * 
+ * Identifies the scenario matching the input, if one is configured. Sets the fallback scenario if none could be
+ * identified.
+ *
  * @author Andreas Penski
  */
 public class ScenarioSelectionAction implements CheckAction {

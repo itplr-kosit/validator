@@ -42,8 +42,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 
 /**
- * Testet die Parameter des Kommandozeilen-Tools.
- * 
+ * Tests the parameters of the command line tool.
+ *
  * @author Andreas Penski
  */
 @QuarkusTest
@@ -73,7 +73,7 @@ public class CommandlineApplicationTest {
     @BeforeEach
     public void setup() throws IOException {
         testWriter = new TestWriter();
-        // Picocli Ausgabe
+        // Picocli output
         commandLine = new picocli.CommandLine(options);
         commandLine.setOut(new PrintWriter(testWriter.getOutWriter()));
         commandLine.setErr(new PrintWriter(testWriter.getErrWriter()));
@@ -84,7 +84,7 @@ public class CommandlineApplicationTest {
                 return 0;
             }
         });
-        // Printer Ausgabe
+        // Printer output
         Printer.configure(new PrintWriter(testWriter.getOutWriter(), true), new PrintWriter(testWriter.getErrWriter(), true));
         // Log capture
         Logger root = Logger.getLogger("");
@@ -127,7 +127,7 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testRequiredScenarioFile() {
-        final String[] args = { "arguments", "egal welche", "argumente drin sind" };
+        final String[] args = { "arguments", "no matter which", "arguments are in there" };
         commandLine.execute(args);
         assertThat(testWriter.getErrorOutput()).isNotEmpty();
         assertThat(testWriter.getErrorOutput()).contains("Missing required option: \'--scenarios");
@@ -237,7 +237,7 @@ public class CommandlineApplicationTest {
     }
 
     @Test
-    public void testExtraktion() throws IOException {
+    public void testExtraction() throws IOException {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-e", "-o",
                 this.output.toAbsolutePath().toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };
@@ -247,7 +247,7 @@ public class CommandlineApplicationTest {
     }
 
     @Test
-    public void testMultipleExtraktion() throws IOException {
+    public void testMultipleExtraction() throws IOException {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS_WITH_MANY_CONFIGS).toString(), "-e", "-o",
                 this.output.toAbsolutePath().toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };

@@ -51,8 +51,8 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
 
 /**
- * Ausführung von konfigurierten Schematron Validierungen eines Szenarios.
- * 
+ * Executes the configured Schematron validations of a scenario.
+ *
  * @author Andreas Penski
  */
 public class SchematronValidationAction implements CheckAction {
@@ -117,7 +117,7 @@ public class SchematronValidationAction implements CheckAction {
         validationResultsSchematron.setResource(validation.getResourceType());
         try {
             final XsltTransformer transformer = validation.getExecutable().load();
-            // resolving nur relative zum Repository
+            // resolving only relative to the repository
             transformer.setResourceResolver(scenario.getUriResolver());
             final CollectingErrorEventHandler collectingErrorEventHandler = new CollectingErrorEventHandler();
             transformer.setMessageListener(collectingErrorEventHandler);

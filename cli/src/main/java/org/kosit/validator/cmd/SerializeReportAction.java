@@ -34,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Schreibt das Prüfergebnis als XML-Dokument an eine definierte Stelle.
- * 
+ * Writes the validation result as an XML document to a defined location.
+ *
  * @author Andreas Penski
  */
 class SerializeReportAction implements CheckAction {

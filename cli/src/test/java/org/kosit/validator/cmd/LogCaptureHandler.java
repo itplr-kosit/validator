@@ -9,9 +9,9 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
- * In Quarkus werden CLI-Logausgaben nicht mehr über {@code System.err} ausgegeben, sondern ausschließlich über den
- * JBoss LogManager. Damit Picocli- und Validator-Meldungen weiterhin testbar bleiben, fängt ein eigener Log-Handler
- * alle LogRecord-Objekte ab und stellt die vollständig formatierte Ausgabe für Assertions bereit.
+ * In Quarkus, CLI log output is no longer emitted via {@code System.err}, but exclusively via the JBoss LogManager. To
+ * keep Picocli and Validator messages testable, a custom log handler captures all LogRecord objects and provides the
+ * fully formatted output for assertions.
  */
 public class LogCaptureHandler extends ExtHandler {
 

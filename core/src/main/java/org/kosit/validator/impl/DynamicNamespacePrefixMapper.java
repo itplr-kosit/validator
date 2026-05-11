@@ -19,8 +19,8 @@ package org.kosit.validator.impl;
 import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 
 /**
- * Ein generischer Namespace-Mapper, der den Root-Namespace als Default-Namespace setzt und für alle weiteren Namespaces
- * Präfixe dynamisch aus dem letzten Teil der URI generiert.
+ * A generic namespace mapper that sets the root namespace as the default namespace and dynamically generates prefixes
+ * for all other namespaces from the last part of the URI.
  */
 public class DynamicNamespacePrefixMapper extends NamespacePrefixMapper {
 
@@ -29,10 +29,10 @@ public class DynamicNamespacePrefixMapper extends NamespacePrefixMapper {
     private final String[] preDeclaredNamespaces;
 
     /**
-     * Erstellt einen neuen Mapper.
+     * Creates a new mapper.
      *
-     * @param rootNamespace der Namespace, der ohne Präfix (als Default) deklariert werden soll.
-     * @param preDeclaredNamespaces die Liste der Namespaces, die am Root-Element deklariert werden sollen.
+     * @param rootNamespace the namespace that should be declared without prefix (as default).
+     * @param preDeclaredNamespaces the list of namespaces to be declared on the root element.
      */
     public DynamicNamespacePrefixMapper(final String rootNamespace, final String[] preDeclaredNamespaces) {
         this.rootNamespace = rootNamespace;
@@ -40,9 +40,9 @@ public class DynamicNamespacePrefixMapper extends NamespacePrefixMapper {
     }
 
     /**
-     * Erstellt einen neuen Mapper.
+     * Creates a new mapper.
      *
-     * @param rootNamespace der Namespace, der ohne Präfix (als Default) deklariert werden soll.
+     * @param rootNamespace the namespace that should be declared without prefix (as default).
      */
     public DynamicNamespacePrefixMapper(final String rootNamespace) {
         this(rootNamespace, null);

@@ -51,8 +51,8 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Test das Check-Interface
- * 
+ * Tests the check interface.
+ *
  * @author Andreas Penski
  */
 public class DefaultCheckTest {
@@ -155,9 +155,9 @@ public class DefaultCheckTest {
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
         // TODO MM add this
-        // assertThat(doc.extractAsString("Report für eRechnung")).isNotEmpty();
-        // assertThat(doc.extractAsElement("Report für eRechnung")).isNotNull();
-        // assertThat(doc.extract("Report für eRechnung")).isNotEmpty();
+        // assertThat(doc.extractAsString("Report for eInvoice")).isNotEmpty();
+        // assertThat(doc.extractAsElement("Report for eInvoice")).isNotNull();
+        // assertThat(doc.extract("Report for eInvoice")).isNotEmpty();
     }
 
     @Test

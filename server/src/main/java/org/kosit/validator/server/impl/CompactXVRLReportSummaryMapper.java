@@ -39,17 +39,17 @@ public final class CompactXVRLReportSummaryMapper {
                 .filter(d -> "xsd-violation".equals(d.getCode())).map(CompactXVRLReportSummaryMapper::toViolationDto).toList();
         layers.add(new CompactResultLayerDto("schema", r.isSchemaValid(), "XSD", schemaViolations));
 
-        // Schematron-Layer gruppieren nach Schema (via Provenance/Location)
+        // group Schematron layers by schema (via Provenance/Location)
         List<CompactXVRLReport.ValidationResult> schematronValidations = r.getSchematronValidationResult();
         schematronValidations.forEach(res -> {
             List<CompactViolationDto> violations = res.violations().stream().map(CompactXVRLReportSummaryMapper::toViolationDto).toList();
             layers.add(new CompactResultLayerDto(res.type(), violations.isEmpty(), res.name(), violations));
         });
 
-        return new CompactResultDto(ref, normalizeBlankToNull(r.getChecksum()), null, // processingError wird im
-                                                                                      // kompakten Format oft
-                                                                                      // weggelassen oder in
-                                                                                      // errorSummary integriert
+        return new CompactResultDto(ref, normalizeBlankToNull(r.getChecksum()), null, // processingError is often
+                                                                                      // omitted in the compact
+                                                                                      // format or integrated into
+                                                                                      // errorSummary
                 normalizeBlankToNull(r.getScenario()), r.getAcceptance() != null ? r.getAcceptance().name() : null,
                 normalizeBlankToNull(r.getErrorSummary()), layers);
     }
@@ -59,7 +59,7 @@ public final class CompactXVRLReportSummaryMapper {
 
         String severity = d.getSeverity() != null ? d.getSeverity().value() : null;
 
-        // Detail extrahieren (Zeile/Spalte oder ID)
+        // extract detail (line/column or ID)
         AtomicReference<Long> line = new AtomicReference<>();
         AtomicReference<Long> col = new AtomicReference<>();
         d.getProvenances().stream().flatMap(p -> p.getLocation().stream()).map(l -> {

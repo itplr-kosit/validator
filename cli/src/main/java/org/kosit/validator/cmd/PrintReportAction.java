@@ -34,8 +34,8 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 
 /**
- * Gibt das Ergebnis-Document auf std-out aus.
- * 
+ * Prints the result document to stdout.
+ *
  * @author Andreas Penski
  */
 class PrintReportAction implements CheckAction {

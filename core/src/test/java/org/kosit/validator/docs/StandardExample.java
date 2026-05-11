@@ -32,7 +32,7 @@ public class StandardExample {
         final Input document = InputFactory.read(testDocument);
         // Get Result including information about the whole validation
         final Result report = validator.checkInput(document);
-        System.out.println("Is processing succesful=" + report.isProcessingSuccessful());
+        System.out.println("Is processing successful=" + report.isProcessingSuccessful());
         // Get report document if processing was successful
         Document result = null;
         if (report.isProcessingSuccessful()) {

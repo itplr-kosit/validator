@@ -48,16 +48,16 @@
             </resource>
         </validateWithSchematron>
         <createReport>
-            <id>Report für eRechnung</id>
+            <id>Report for eInvoice</id>
             <resource>
-                <name>Report für eRechnung</name>
+                <name>Report for eInvoice</name>
                 <location>report.xsl</location>
             </resource>
         </createReport>
         <createReport>
-            <id>Report für eRechnung 2</id>
+            <id>Report for eInvoice 2</id>
             <resource>
-                <name>Report für eRechnung 2</name>
+                <name>Report for eInvoice 2</name>
                 <location>report2.xsl</location>
             </resource>
         </createReport>
@@ -85,9 +85,9 @@
             </resource>
         </validateWithSchematron>
         <createReport>
-            <id>Report für eRechnung</id>
+            <id>Report for eInvoice</id>
             <resource>
-                <name>Report für eRechnung</name>
+                <name>Report for eInvoice</name>
                 <location>report.xsl</location>
             </resource>
         </createReport>

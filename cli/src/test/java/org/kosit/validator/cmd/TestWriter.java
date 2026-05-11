@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Mit dem Umschwenken auf QuarkusApp für CDI integration stellt das generelle 'Umbiegen' der Outputs ein Problem dar.
- * Daher wird in den Tests nur die Commandline.execute getestst, in welcher mit dieser Klasse der Output ableiten lässt,
- * ohne die Quarkus-Writing-Mechanismen zu beeinflussen.
+ * After switching to QuarkusApp for CDI integration, generally redirecting the outputs has become a problem. Therefore
+ * the tests only test Commandline.execute, in which this class allows the output to be diverted without affecting the
+ * Quarkus writing mechanisms.
  */
 public class TestWriter {
 

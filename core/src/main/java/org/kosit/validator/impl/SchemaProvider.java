@@ -42,10 +42,9 @@ public class SchemaProvider {
     }
 
     /**
-     * Liefert das definierte Schema für die Validierung des [@link
-     * {@link org.kosit.validator.model.xvrl.XVRLReportSummary}}
+     * Returns the defined schema for validating the {@link org.kosit.validator.model.xvrl.XVRLReportSummary}.
      *
-     * @return ReportInput-Schema
+     * @return ReportInput schema
      */
     public static Schema getXVRLSchema() {
         if (xvrlSchema == null) {
@@ -80,9 +79,9 @@ public class SchemaProvider {
     }
 
     /**
-     * Liefert das definiert Schema für die Szenario-Konfiguration
+     * Returns the defined schema for the scenario configuration.
      *
-     * @return Scenario-Schema
+     * @return scenario schema
      */
     public static Schema getScenarioSchema() {
         final SchemaFactory sf = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();

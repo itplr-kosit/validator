@@ -28,8 +28,8 @@ import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
 /**
- * {@link LSResourceResolver} der objekte relativ zu einem Basis-Pfad aus dem Classpath der Anwendung laden kann.
- * 
+ * {@link LSResourceResolver} that can load objects relative to a base path from the application's classpath.
+ *
  * @author Andreas Penski
  */
 public class ClassPathResourceResolver implements LSResourceResolver {
@@ -37,7 +37,7 @@ public class ClassPathResourceResolver implements LSResourceResolver {
     private static final Logger log = LoggerFactory.getLogger(ClassPathResourceResolver.class);
 
     /**
-     * Simple {@link LSInput}-Implementierung, die einen Stream liefern kann
+     * Simple {@link LSInput} implementation that can provide a stream.
      */
     private static class LSInputImpl implements LSInput {
 
@@ -58,11 +58,11 @@ public class ClassPathResourceResolver implements LSResourceResolver {
         private String stringData;
 
         /**
-         * Instantiierung einer neue Instanz.
-         * 
-         * @param publicId die publicId
-         * @param systemId die systemId
-         * @param baseURI die baseURI
+         * Instantiates a new instance.
+         *
+         * @param publicId the publicId
+         * @param systemId the systemId
+         * @param baseURI the baseURI
          */
         public LSInputImpl(final String publicId, final String systemId, final String baseURI) {
             this.publicId = publicId;
@@ -142,9 +142,9 @@ public class ClassPathResourceResolver implements LSResourceResolver {
     private final URI base;
 
     /**
-     * Instantiiert einen neuen resolver mit angegebenen Basispfad
+     * Instantiates a new resolver with the given base path.
      *
-     * @param basePath der Basispfad
+     * @param basePath the base path
      */
     public ClassPathResourceResolver(final String basePath) {
         if (!StringUtils.startsWith(basePath, "/")) {
