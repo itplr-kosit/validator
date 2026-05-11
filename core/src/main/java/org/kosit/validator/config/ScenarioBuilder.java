@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -26,15 +25,8 @@ import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
@@ -46,6 +38,8 @@ import org.kosit.validator.model.scenarios.ObjectFactory;
 import org.kosit.validator.model.scenarios.ScenarioType;
 import org.kosit.validator.model.scenarios.ValidateWithSchematron;
 import org.kosit.validator.model.scenarios.ValidateWithXmlSchema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.XPathExecutable;
 
@@ -54,10 +48,9 @@ import net.sf.saxon.s9api.XPathExecutable;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
-@Getter(AccessLevel.PACKAGE)
 public class ScenarioBuilder implements Builder<Scenario> {
+
+    private static final Logger log = LoggerFactory.getLogger(ScenarioBuilder.class);
 
     private static int nameCount = 0;
 
@@ -295,5 +288,40 @@ public class ScenarioBuilder implements Builder<Scenario> {
     public ScenarioBuilder name(final String name) {
         this.name = name;
         return this;
+    }
+
+    public ScenarioBuilder() {
+    }
+
+    Map<String, String> getNamespaces() {
+        return this.namespaces;
+    }
+
+    XPathBuilder getMatchConfig() {
+        return this.matchConfig;
+    }
+
+    XPathBuilder getAcceptConfig() {
+        return this.acceptConfig;
+    }
+
+    String getName() {
+        return this.name;
+    }
+
+    SchemaBuilder getSchemaBuilder() {
+        return this.schemaBuilder;
+    }
+
+    List<SchematronBuilder> getSchematronBuilders() {
+        return this.schematronBuilders;
+    }
+
+    ReportBuilder getReportBuilder() {
+        return this.reportBuilder;
+    }
+
+    String getDescription() {
+        return this.description;
     }
 }

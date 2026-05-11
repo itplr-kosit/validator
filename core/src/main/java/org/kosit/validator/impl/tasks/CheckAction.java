@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.tasks;
 
 import java.util.ArrayList;
@@ -22,11 +21,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
 import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
@@ -66,8 +60,6 @@ public interface CheckAction {
     /**
      * Transport-Klasse für Eingabe und Ausgabe-Objekte für die einzelnen Prüfschritte.
      */
-    @Getter
-    @Setter
     class Process {
 
         private XVRLMetadata metadata;
@@ -78,7 +70,9 @@ public interface CheckAction {
 
         private boolean stopped;
 
-        /** Das zu prüfende Dokument */
+        /**
+         * Das zu prüfende Dokument
+         */
         private Input input;
 
         public Process(final Input input) {
@@ -126,14 +120,70 @@ public interface CheckAction {
             return FilenameUtils.getBaseName(fileName);
         }
 
-        @Getter
-        @AllArgsConstructor
         public static class Key<T, E> {
 
             private final Class<T> type;
 
             private final Class<E> other;
+
+            public Class<T> getType() {
+                return this.type;
+            }
+
+            public Class<E> getOther() {
+                return this.other;
+            }
+
+            public Key(final Class<T> type, final Class<E> other) {
+                this.type = type;
+                this.other = other;
+            }
+        }
+
+        public XVRLMetadata getMetadata() {
+            return this.metadata;
+        }
+
+        public List<ProcessStepResult<?, ?>> getProcessStepResults() {
+            return this.processStepResults;
+        }
+
+        public boolean isFinished() {
+            return this.finished;
+        }
+
+        public boolean isStopped() {
+            return this.stopped;
+        }
+
+        /**
+         * Das zu prüfende Dokument
+         */
+        public Input getInput() {
+            return this.input;
+        }
+
+        public void setMetadata(final XVRLMetadata metadata) {
+            this.metadata = metadata;
+        }
+
+        public void setProcessStepResults(final List<ProcessStepResult<?, ?>> processStepResults) {
+            this.processStepResults = processStepResults;
+        }
+
+        public void setFinished(final boolean finished) {
+            this.finished = finished;
+        }
+
+        public void setStopped(final boolean stopped) {
+            this.stopped = stopped;
+        }
+
+        /**
+         * Das zu prüfende Dokument
+         */
+        public void setInput(final Input input) {
+            this.input = input;
         }
     }
-
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.config;
 
 import static org.kosit.validator.impl.DateFactory.createTimestamp;
@@ -22,18 +21,17 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.ContentRepository;
@@ -43,6 +41,8 @@ import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.DescriptionType;
 import org.kosit.validator.model.scenarios.ObjectFactory;
 import org.kosit.validator.model.scenarios.Scenarios;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -51,9 +51,9 @@ import net.sf.saxon.s9api.Processor;
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@Getter(AccessLevel.PACKAGE)
 public class ConfigurationBuilder {
+
+    private static final Logger log = LoggerFactory.getLogger(ConfigurationBuilder.class);
 
     private final List<ScenarioBuilder> scenarios = new ArrayList<>();
 
@@ -298,7 +298,6 @@ public class ConfigurationBuilder {
             log.warn("Ignore definition of resolve strategy since a custom ContentRepository is supplied");
         }
         return this.contentRepository;
-
     }
 
     private Scenarios createDefinition(final DefaultConfiguration configuration) {
@@ -400,5 +399,45 @@ public class ConfigurationBuilder {
      */
     public ConfigurationBuilder useRepository(final Path repository) {
         return useRepository(repository.toUri());
+    }
+
+    List<ScenarioBuilder> getScenarios() {
+        return this.scenarios;
+    }
+
+    Map<String, Object> getParameters() {
+        return this.parameters;
+    }
+
+    FallbackBuilder getFallbackBuilder() {
+        return this.fallbackBuilder;
+    }
+
+    ResolvingMode getResolvingMode() {
+        return this.resolvingMode;
+    }
+
+    ContentRepository getContentRepository() {
+        return this.contentRepository;
+    }
+
+    String getAuthor() {
+        return this.author;
+    }
+
+    String getDate() {
+        return this.date;
+    }
+
+    String getName() {
+        return this.name;
+    }
+
+    URI getRepository() {
+        return this.repository;
+    }
+
+    String getDescription() {
+        return this.description;
     }
 }

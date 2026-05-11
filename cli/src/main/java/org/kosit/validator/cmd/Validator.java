@@ -13,11 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd;
 
-import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.Processor;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.Input;
@@ -30,29 +46,20 @@ import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.apache.commons.lang3.ObjectUtils.getIfNull;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import net.sf.saxon.s9api.Processor;
 
 /**
  * Actual evaluation and processing of CommandLineOptions argumtens.
  * 
  * @author Andreas Penski
  */
-@Slf4j
 @SuppressWarnings("squid:S3725")
 public class Validator {
+
+    private static final Logger log = LoggerFactory.getLogger(Validator.class);
 
     private Validator() {
         // hide
@@ -105,12 +112,10 @@ public class Validator {
         if (cliOptions.isPrintReport()) {
             check.getCheckSteps().add(new PrintReportAction(processor));
         }
-
         if (cliOptions.isPrintMemoryStats()) {
             check.getCheckSteps().add(new PrintMemoryStats());
         }
         log.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
-
         final Collection<Input> targets = determineTestTargets(cliOptions);
         start = System.currentTimeMillis();
         final Map<String, Result> results = new HashMap<>();
@@ -125,7 +130,6 @@ public class Validator {
         }
         final long processingTime = System.currentTimeMillis() - start;
         Printer.writeOut("Processing of {0} object(s) completed in {1}ms", targets.size(), processingTime);
-
         check.printResults(results);
         log.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
         return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
@@ -145,19 +149,16 @@ public class Validator {
         final Map<String, Path> mappedRepos = repos.stream()
                 .collect(Collectors.toMap(RepositoryDefinition::getName, RepositoryDefinition::getPath));
         checkUnused(mappedScenarios, mappedRepos);
-
         return mappedScenarios.entrySet().stream().map(e -> {
             assertFileExistance(e.getValue(), "scenario");
             final URI scenarioLocation = e.getValue().toUri();
             final URI repositoryLocation = findRepository(scenarioLocation, e.getKey(), mappedRepos);
-
             reportLoading(scenarioLocation, repositoryLocation);
             final Configuration configuration = Configuration.load(scenarioLocation, repositoryLocation)
                     .build(ProcessorProvider.getProcessor());
             reportConfiguration(configuration);
             return configuration;
         }).collect(Collectors.toList());
-
     }
 
     private static void checkUnused(final Map<String, Path> scenarios, final Map<String, Path> repositories) {
@@ -175,7 +176,7 @@ public class Validator {
                 // Assume directory of scenario location instead
                 return Paths.get(scenarioLocation).getParent().toUri();
             }
-            throw new IllegalArgumentException(String.format("No repository location for scenario definition '%s' specified", key));
+            throw new IllegalArgumentException(String.format("No repository location for scenario definition \'%s\' specified", key));
         }
         return determineRepository(path);
     }
@@ -193,10 +194,8 @@ public class Validator {
             final Line line = new Line(Code.GREEN);
             line.add("  * " + e.getName());
             Printer.writeOut(line.render(false, false));
-
         });
         Printer.writeOut(EMPTY);
-
     }
 
     private static NamingStrategy determineNamingStrategy(final CommandLineOptions.CliOptions cmd) {
@@ -237,12 +236,14 @@ public class Validator {
         return targets;
     }
 
-    @SuppressWarnings("java:S4829") // sanitation is delegated to xml stack
+    // sanitation is delegated to xml stack
+    @SuppressWarnings("java:S4829")
     private static boolean isPiped() throws IOException {
         return System.in.available() > 0;
     }
 
-    @SuppressWarnings("java:S4829") // sanitation is delegated to xml stack
+    // sanitation is delegated to xml stack
+    @SuppressWarnings("java:S4829")
     private static Input readFromPipe() {
         return InputFactory.read(System.in, "stdin");
     }
@@ -255,17 +256,15 @@ public class Validator {
         }
         log.warn("The specified test target {} does not exist. Will be ignored", d);
         return Collections.emptyList();
-
     }
 
     private static Collection<Input> listDirectoryTargets(final Path d) {
-        try ( final Stream<Path> stream = Files.list(d) ) {
+        try ( Stream<Path> stream = Files.list(d) ) {
             return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(InputFactory::read)
                     .collect(Collectors.toList());
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }
-
     }
 
     private static URI determineRepository(final Path d) {
@@ -273,16 +272,14 @@ public class Validator {
             return d.toUri();
         } else {
             throw new IllegalArgumentException(
-                    String.format("Not a valid path for repository definition specified: '%s'", d.toAbsolutePath()));
+                    String.format("Not a valid path for repository definition specified: \'%s\'", d.toAbsolutePath()));
         }
-
     }
 
     private static void assertFileExistance(final Path f, final String type) {
         if (!Files.isRegularFile(f)) {
             throw new IllegalArgumentException(
-                    String.format("Not a valid path for %s definition specified: '%s'", type, f.toAbsolutePath()));
+                    String.format("Not a valid path for %s definition specified: \'%s\'", type, f.toAbsolutePath()));
         }
     }
-
 }

@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.tasks;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.kosit.validator.model.xvrl.XVRLReport;
 
@@ -28,8 +24,6 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author apenski
  */
-@Getter
-@Setter
 public class BusinessReport {
 
     private String name;
@@ -37,4 +31,28 @@ public class BusinessReport {
     private XdmNode content;
 
     private XVRLReport report;
+
+    public String getName() {
+        return this.name;
+    }
+
+    public XdmNode getContent() {
+        return this.content;
+    }
+
+    public XVRLReport getReport() {
+        return this.report;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setContent(final XdmNode content) {
+        this.content = content;
+    }
+
+    public void setReport(final XVRLReport report) {
+        this.report = report;
+    }
 }

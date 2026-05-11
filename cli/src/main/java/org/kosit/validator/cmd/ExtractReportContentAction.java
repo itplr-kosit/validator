@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
@@ -21,9 +20,6 @@ import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 
 import java.nio.file.Path;
 import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
@@ -33,6 +29,8 @@ import org.kosit.validator.impl.tasks.CreateReportsAction;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -45,9 +43,9 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 class ExtractReportContentAction implements CheckAction {
+
+    private static final Logger log = LoggerFactory.getLogger(ExtractReportContentAction.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 
@@ -66,19 +64,15 @@ class ExtractReportContentAction implements CheckAction {
         if (result.isValid()) {
             return builder(REPORT_NAME).add(XVRLReportBuilder.detection().addMessage("Extraction successful")).build();
         }
-
         return builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> detection().addError(e))).build();
     }
 
     @Override
     public ProcessStepResult<Boolean, String> check(final Process results) {
-
         final Result<List<BusinessReport>, XMLSyntaxError> reportReposts = results.getResult(CreateReportsAction.KEY);
-
         reportReposts.getObject().forEach(entry -> {
             print(entry.getName(), entry.getContent());
         });
-
         final ProcessStepResult<Boolean, String> processStepResult = new ProcessStepResult<>(KEY);
         final Result<Boolean, String> stepResult = new Result<>(true);
         processStepResult.setResult(stepResult);
@@ -92,7 +86,7 @@ class ExtractReportContentAction implements CheckAction {
         final Path file = this.outputDirectory.resolve(name + ".xml");
         final Serializer serializer = this.processor.newSerializer(file.toFile());
         try {
-            log.info("Writing create-report result '{}' to {}", name, file.toAbsolutePath());
+            log.info("Writing create-report result \'{}\' to {}", name, file.toAbsolutePath());
             serializer.serializeNode(node);
         } catch (final SaxonApiException e) {
             log.error("Error extracting create-report content to {}", file.toAbsolutePath(), e);
@@ -107,5 +101,9 @@ class ExtractReportContentAction implements CheckAction {
             return true;
         }
         return false;
+    }
+
+    public ExtractReportContentAction(final Path outputDirectory) {
+        this.outputDirectory = outputDirectory;
     }
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -26,26 +25,21 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ValidateWithXmlSchema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Builder for Schema validation configuration.
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@Getter(AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema>> {
+
+    private static final Logger log = LoggerFactory.getLogger(SchemaBuilder.class);
 
     private static final String DEFAULT_NAME = "manually configured";
 
@@ -66,7 +60,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
     @Override
     public Result<Pair<ValidateWithXmlSchema, Schema>, String> build(final ContentRepository repository) {
         if (this.schema == null && this.schemaLocation == null) {
-            return createError(String.format("Must supply source location and/or executable for schema '%s'", this.name));
+            return createError(String.format("Must supply source location and/or executable for schema \'%s\'", this.name));
         }
         Result<Pair<ValidateWithXmlSchema, Schema>, String> result;
         try {
@@ -78,7 +72,6 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
             log.error(e.getMessage(), e);
             result = createError(String.format("Can not create schema based %s. Exception is %s", this.schemaLocation, e.getMessage()));
         }
-
         return result;
     }
 
@@ -142,5 +135,20 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
     public SchemaBuilder name(final String name) {
         this.name = name;
         return this;
+    }
+
+    Schema getSchema() {
+        return this.schema;
+    }
+
+    URI getSchemaLocation() {
+        return this.schemaLocation;
+    }
+
+    String getName() {
+        return this.name;
+    }
+
+    SchemaBuilder() {
     }
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.input;
 
 import java.io.ByteArrayInputStream;
@@ -22,17 +21,12 @@ import java.io.InputStream;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
  * Classical in-memory {@link org.kosit.validator.api.Input}. It is not memory efficient to read the whole file into
  * memory prio validating. Consider using the {@link ResourceInput}.
  * 
  * @author Andreas Penski
  */
-@Getter
-@AllArgsConstructor
 public class ByteArrayInput extends AbstractInput {
 
     private final byte[] content;
@@ -52,4 +46,21 @@ public class ByteArrayInput extends AbstractInput {
         return new StreamSource(stream, getName());
     }
 
+    public byte[] getContent() {
+        return this.content;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDigestAlgorithm() {
+        return this.digestAlgorithm;
+    }
+
+    public ByteArrayInput(final byte[] content, final String name, final String digestAlgorithm) {
+        this.content = content;
+        this.name = name;
+        this.digestAlgorithm = digestAlgorithm;
+    }
 }

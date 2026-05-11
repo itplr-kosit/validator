@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.input;
 
 import static org.kosit.validator.impl.input.StreamHelper.drain;
@@ -21,24 +20,21 @@ import static org.kosit.validator.impl.input.StreamHelper.drain;
 import java.io.IOException;
 import java.io.InputStream;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.api.Input;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all {@link Input Inputs}.
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public abstract class AbstractInput implements Input, LazyReadInput {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractInput.class);
 
     private byte[] hashCode;
 
-    @Getter
-    @Setter
     private long length;
 
     @Override
@@ -81,5 +77,13 @@ public abstract class AbstractInput implements Input, LazyReadInput {
 
     public boolean supportsMultipleReads() {
         return true;
+    }
+
+    public long getLength() {
+        return this.length;
+    }
+
+    public void setLength(final long length) {
+        this.length = length;
     }
 }

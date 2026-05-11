@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.xml;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,10 +21,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
 import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
-
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.Helper;
@@ -36,16 +33,13 @@ import org.kosit.validator.model.xvrl.XVRLReport;
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
-
 import jakarta.xml.bind.JAXBException;
-import lombok.RequiredArgsConstructor;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * 
  * Tests the internal functions used to create a secure resolver
  * 
  * @author Andreas Penski
@@ -65,9 +59,7 @@ public class BaseResolverConfigurationTest {
         d.getSupplementals().add(s);
         r.getDetection().add(d);
         report.getReports().add(r);
-
         final XvrlSerializer ser = new XvrlSerializer(new ConversionService(), ProcessorProvider.getProcessor());
-
         final XdmNode result = ser.serialize(report);
         final Serializer serialize = ProcessorProvider.getProcessor().newSerializer();
         final String string = serialize.serializeNodeToString(result);
@@ -99,12 +91,13 @@ public class BaseResolverConfigurationTest {
         verify(sf, times(2)).setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, BaseResolverConfigurationTest.NOT_EXISTING_SCHEME);
     }
 
-    @RequiredArgsConstructor
     private class TestResolvingStrategy extends StrictRelativeResolvingStrategy {
 
         void setInternalProperty(final SchemaFactory factory, final boolean lenient) {
             allowExternalSchema(factory, lenient, NOT_EXISTING_SCHEME);
         }
-    }
 
+        public TestResolvingStrategy() {
+        }
+    }
 }

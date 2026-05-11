@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringJoiner;
 
-import jakarta.xml.bind.ValidationEvent;
-import jakarta.xml.bind.ValidationEventHandler;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XMLSyntaxErrorSeverity;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import lombok.Getter;
-
-import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.XMLSyntaxErrorSeverity;
-
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventHandler;
 import net.sf.saxon.s9api.MessageListener2;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;
@@ -44,7 +40,6 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
-@Getter
 public class CollectingErrorEventHandler implements ValidationEventHandler, ErrorHandler, MessageListener2, ErrorListener {
 
     private static final int DEFAULT_ABORT_COUNT = 50;
@@ -163,5 +158,9 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         this.errors.forEach(e -> joiner.add(
                 e.getSeverityCode().value() + " " + e.getMessage() + " At row " + e.getRowNumber() + " at pos " + e.getColumnNumber()));
         return joiner.toString();
+    }
+
+    public Collection<XMLSyntaxError> getErrors() {
+        return this.errors;
     }
 }

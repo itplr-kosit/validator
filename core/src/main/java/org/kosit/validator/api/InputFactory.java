@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.api;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -32,10 +31,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.impl.input.ByteArrayInput;
 import org.kosit.validator.impl.input.ResourceInput;
 import org.kosit.validator.impl.input.SourceInput;
@@ -50,7 +45,6 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public class InputFactory {
 
     static final String DEFAULT_ALGORITH = "SHA-256";
@@ -62,7 +56,6 @@ public class InputFactory {
 
     private static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
 
-    @Getter
     private final String algorithm;
 
     InputFactory() {
@@ -166,7 +159,6 @@ public class InputFactory {
             throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + url, e);
         }
         return new ResourceInput(url, url.getFile(), digestAlgorithm);
-
     }
 
     /**
@@ -236,7 +228,6 @@ public class InputFactory {
         } catch (final IOException e) {
             throw new IllegalArgumentException(MESSAGE_OPEN_STREAM_ERROR + file, e);
         }
-
     }
 
     /**
@@ -314,4 +305,7 @@ public class InputFactory {
         return new XdmNodeInput(node, name, PSEUDO_NAME_ALGORITHM, name.getBytes());
     }
 
+    public String getAlgorithm() {
+        return this.algorithm;
+    }
 }

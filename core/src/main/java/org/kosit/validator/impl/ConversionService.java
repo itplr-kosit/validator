@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl;
 
 import java.io.IOException;
@@ -24,8 +23,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.StringJoiner;
 
-import jakarta.xml.bind.*;
-import jakarta.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -38,12 +35,18 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBIntrospector;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.ValidationEventHandler;
+import jakarta.xml.bind.annotation.XmlRegistry;
 
 /**
  * JAXB Conversion Utility.
  */
-@Slf4j
 public class ConversionService {
 
     /**
@@ -172,14 +175,12 @@ public class ConversionService {
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(new StreamSource(xml.toASCIIString()));
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
             u.setSchema(schema);
-
             u.setEventHandler(handler2Use);
             final T value = u.unmarshal(xsr, type).getValue();
             if (defaultHandler != null && defaultHandler.hasErrors()) {
                 throw new ConversionExeption(
                         String.format("Schema errors while reading content from %s: %s", xml, defaultHandler.getErrorDescription()));
             }
-
             return value;
         } catch (final JAXBException | XMLStreamException e) {
             throw new ConversionExeption(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml), e);
@@ -201,7 +202,7 @@ public class ConversionService {
         if (model == null) {
             throw new ConversionExeption("Can not serialize null");
         }
-        try ( final StringWriter w = new StringWriter() ) {
+        try ( StringWriter w = new StringWriter() ) {
             final JAXBIntrospector introspector = getJaxbContext().createJAXBIntrospector();
             final Marshaller marshaller = getJaxbContext().createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -232,9 +233,7 @@ public class ConversionService {
     public <T> T readDocument(final Source source, final Class<T> type) {
         try {
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
-
             return u.unmarshal(source, type).getValue();
-
         } catch (final JAXBException e) {
             throw new ConversionExeption(String.format("Can not unmarshal to type %s: %s", type.getSimpleName(),
                     StringUtils.abbreviate(source.getSystemId(), MAX_LOG_CONTENT)), e);

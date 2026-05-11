@@ -13,27 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.Processor;
-import org.kosit.validator.api.*;
+import static org.kosit.validator.impl.DateFactory.createTimestamp;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.kosit.validator.api.AcceptRecommendation;
+import org.kosit.validator.api.Check;
+import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.Input;
+import org.kosit.validator.api.Result;
+import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.tasks.*;
+import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
+import org.kosit.validator.impl.tasks.ComputeAcceptanceAction;
+import org.kosit.validator.impl.tasks.CreateDocumentIdentificationAction;
+import org.kosit.validator.impl.tasks.CreateReportsAction;
+import org.kosit.validator.impl.tasks.DocumentParseAction;
+import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
+import org.kosit.validator.impl.tasks.SchemaValidationAction;
+import org.kosit.validator.impl.tasks.SchematronValidationAction;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.Timestamp;
 import org.kosit.validator.model.xvrl.Validator;
 import org.kosit.validator.model.xvrl.XVRLMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.kosit.validator.impl.DateFactory.createTimestamp;
+import net.sf.saxon.s9api.Processor;
 
 /**
  * The reference implementation for the validation process. After initialisation, instances are threadsafe and should be
@@ -41,19 +57,16 @@ import static org.kosit.validator.impl.DateFactory.createTimestamp;
  *
  * @author Andreas Penski
  */
-@Slf4j
 public class DefaultCheck implements Check {
 
-    @Getter
+    private static final Logger log = LoggerFactory.getLogger(DefaultCheck.class);
+
     private final ConversionService conversionService;
 
-    @Getter
     private final List<Configuration> configuration;
 
-    @Getter
     private final List<CheckAction> checkSteps;
 
-    @Getter
     private final Processor processor;
 
     private final EngineInformation engineInformation;
@@ -74,7 +87,6 @@ public class DefaultCheck implements Check {
         this.configuration = Arrays.asList(configuration);
         this.processor = processor;
         this.conversionService = new ConversionService();
-
         this.checkSteps = new ArrayList<>();
         this.checkSteps.add(new DocumentParseAction(processor));
         this.checkSteps.add(new CreateDocumentIdentificationAction());
@@ -87,16 +99,13 @@ public class DefaultCheck implements Check {
 
     protected XVRLMetadata createXVRLMetadata() {
         final XVRLMetadata metadata = new XVRLMetadata();
-
         final Timestamp timestamp = new Timestamp();
         timestamp.setValue(createTimestamp());
         metadata.getTimestamps().add(timestamp);
-
         final Validator validator = new Validator();
         validator.setName(this.engineInformation.getName());
         validator.setVersion(this.engineInformation.getVersion());
         metadata.getValidators().add(validator);
-
         return metadata;
     }
 
@@ -106,21 +115,16 @@ public class DefaultCheck implements Check {
     }
 
     private static Result createResult(final Process process) {
-
         final org.kosit.validator.impl.model.Result<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
                 .getResult(ComputeAcceptanceAction.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
-
         defaultResult.setWellformed(process.getResult(DocumentParseAction.KEY).isValid());
-
         defaultResult.setReportSummary(process.getXvrlReportSummary());
-
         final org.kosit.validator.impl.model.Result<Boolean, XMLSyntaxError> schemaValidationResult = process
                 .getResult(SchemaValidationAction.KEY);
         if (schemaValidationResult != null) {
             defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
         }
-
         final org.kosit.validator.impl.model.Result<List<ValidationResultsSchematron>, String> schematronValidationResult = process
                 .getResult(SchematronValidationAction.KEY);
         if (schematronValidationResult != null) {
@@ -128,7 +132,6 @@ public class DefaultCheck implements Check {
                     .map(schematronResult -> schematronResult.getResults().getSchematronOutput()).collect(Collectors.toList()));
         }
         defaultResult.setProcessingSuccessful(!process.isStopped() && process.isFinished());
-
         return defaultResult;
     }
 
@@ -157,5 +160,21 @@ public class DefaultCheck implements Check {
         checkProcess.setFinished(true);
         log.info("Finished check of {} in {}ms\n", checkProcess.getInput().getName(), System.currentTimeMillis() - started);
         return createResult(checkProcess);
+    }
+
+    public ConversionService getConversionService() {
+        return this.conversionService;
+    }
+
+    public List<Configuration> getConfiguration() {
+        return this.configuration;
+    }
+
+    public List<CheckAction> getCheckSteps() {
+        return this.checkSteps;
+    }
+
+    public Processor getProcessor() {
+        return this.processor;
     }
 }

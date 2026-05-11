@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd;
-
-import io.quarkus.picocli.runtime.annotations.TopCommand;
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.kosit.validator.cmd.CommandLineApplication.Level;
-import org.kosit.validator.impl.EngineInformation;
-import picocli.CommandLine.ArgGroup;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Help.Visibility;
-import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import org.kosit.validator.cmd.CommandLineApplication.Level;
+import org.kosit.validator.impl.EngineInformation;
+
+import jakarta.inject.Inject;
+import picocli.CommandLine.ArgGroup;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 /**
  * Commandline Interface definition.
@@ -41,7 +35,6 @@ import java.util.concurrent.Callable;
  */
 @Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false,
          separator = " ", synopsisHeading = CommandLineOptions.SYNOSIS_HEADING)
-@Getter
 public class CommandLineOptions implements Callable<ReturnValue> {
 
     static final String SYNOSIS_HEADING = "Usage: ";
@@ -49,8 +42,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
     /**
      * @author Andreas Penski
      */
-    @Getter
-    @NoArgsConstructor
     static class CliOptions {
 
         @Option(names = { "-o", "--output-directory" }, description = "Defines the out directory for results.", defaultValue = ".",
@@ -79,6 +70,40 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         @Parameters(arity = "1..*", description = "Files to validate")
         private List<Path> files;
 
+        public Path getOutputPath() {
+            return this.outputPath;
+        }
+
+        public boolean isExtractReport() {
+            return this.extractReport;
+        }
+
+        public boolean isSerializeInput() {
+            return this.serializeInput;
+        }
+
+        public String getReportPostfix() {
+            return this.reportPostfix;
+        }
+
+        public String getReportPrefix() {
+            return this.reportPrefix;
+        }
+
+        public boolean isPrintMemoryStats() {
+            return this.printMemoryStats;
+        }
+
+        public boolean isPrintReport() {
+            return this.printReport;
+        }
+
+        public List<Path> getFiles() {
+            return this.files;
+        }
+
+        public CliOptions() {
+        }
     }
 
     /**
@@ -86,13 +111,27 @@ public class CommandLineOptions implements Callable<ReturnValue> {
      *
      * @author Andreas Penski
      */
-    @Getter
-    @Setter
-    public abstract static class Definition {
+    public static abstract class Definition {
 
         String name;
 
         Path path;
+
+        public String getName() {
+            return this.name;
+        }
+
+        public Path getPath() {
+            return this.path;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        public void setPath(final Path path) {
+            this.path = path;
+        }
     }
 
     /**
@@ -155,5 +194,37 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     public boolean isCliModeEnabled() {
         return getCliOptions() != null;
+    }
+
+    public EngineInformation getEngineInformation() {
+        return this.engineInformation;
+    }
+
+    public CliOptions getCliOptions() {
+        return this.cliOptions;
+    }
+
+    public boolean isDebugOutput() {
+        return this.debugOutput;
+    }
+
+    public boolean isUsageHelpRequested() {
+        return this.usageHelpRequested;
+    }
+
+    public boolean isDebugLog() {
+        return this.debugLog;
+    }
+
+    public Level getLogLevel() {
+        return this.logLevel;
+    }
+
+    public List<RepositoryDefinition> getRepositories() {
+        return this.repositories;
+    }
+
+    public List<ScenarioDefinition> getScenarios() {
+        return this.scenarios;
     }
 }

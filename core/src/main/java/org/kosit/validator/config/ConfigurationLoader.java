@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.config;
-
-import static org.apache.commons.lang3.StringUtils.startsWith;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -27,22 +24,25 @@ import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.lang3.Strings;
 import org.kosit.validator.api.Check;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.impl.*;
+import org.kosit.validator.impl.CollectingErrorEventHandler;
+import org.kosit.validator.impl.ContentRepository;
+import org.kosit.validator.impl.ConversionService;
+import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.DocumentParseAction;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.scenarios.ScenarioType;
 import org.kosit.validator.model.scenarios.Scenarios;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
@@ -55,9 +55,9 @@ import net.sf.saxon.s9api.XdmNodeKind;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 public class ConfigurationLoader {
+
+    private static final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
 
     private static final String SUPPORTED_MAJOR_VERSION = "2";
 
@@ -68,7 +68,6 @@ public class ConfigurationLoader {
     /**
      * URL, die auf die scenerio.xml Datei zeigt.
      */
-    @Getter(AccessLevel.PACKAGE)
     private final URI scenarioDefinition;
 
     /**
@@ -86,9 +85,8 @@ public class ConfigurationLoader {
                     .parseDocument(InputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException(String.format(
-                        "Specified scenario configuration %s is not supported.%nThis version only supports definitions of '%s'",
+                        "Specified scenario configuration %s is not supported.%nThis version only supports definitions of \'%s\'",
                         scenarioDefinition, SUPPORTED_MAJOR_VERSION_SCHEMA));
-
             }
         } catch (final MalformedURLException e) {
             throw new IllegalStateException("Error reading definition file");
@@ -107,7 +105,7 @@ public class ConfigurationLoader {
     private static boolean isSupportedDocument(final XdmNode doc) {
         final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
-        return startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
+        return Strings.CS.startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
                 && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
     }
 
@@ -146,7 +144,6 @@ public class ConfigurationLoader {
     public Configuration build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
-
         final Scenarios def = loadScenarios(SchemaProvider.getScenarioSchema(), processor);
         final List<Scenario> scenarios = initializeScenarios(def, contentRepository);
         final Scenario fallbackScenario = createFallback(def, contentRepository);
@@ -183,7 +180,6 @@ public class ConfigurationLoader {
                     String.format("Can not load scenarios from %s due to %s", getScenarioDefinition(), handler.getErrorDescription()));
         }
         return scenarios;
-
     }
 
     /**
@@ -215,5 +211,23 @@ public class ConfigurationLoader {
     public ConfigurationLoader addParameter(final String name, final Object value) {
         this.parameters.put(name, value);
         return this;
+    }
+
+    /**
+     * Creates a new {@code ConfigurationLoader} instance.
+     *
+     * @param scenarioDefinition URL, die auf die scenerio.xml Datei zeigt.
+     * @param scenarioRepository Root-Ordner mit den von den einzelnen Szenarien benötigten Dateien
+     */
+    public ConfigurationLoader(final URI scenarioDefinition, final URI scenarioRepository) {
+        this.scenarioDefinition = scenarioDefinition;
+        this.scenarioRepository = scenarioRepository;
+    }
+
+    /**
+     * URL, die auf die scenerio.xml Datei zeigt.
+     */
+    URI getScenarioDefinition() {
+        return this.scenarioDefinition;
     }
 }

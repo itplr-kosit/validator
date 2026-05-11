@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.xml.RemoteResolvingStrategy;
@@ -29,23 +25,19 @@ import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
 public enum ResolvingMode {
 
-    /**
-     * Resolving using only the configured content repository.
-     */
     STRICT_RELATIVE(new StrictRelativeResolvingStrategy()) {
-
     },
+    STRICT_LOCAL(new StrictLocalResolvingStrategy()), ALLOW_REMOTE(new RemoteResolvingStrategy()), CUSTOM(null);
 
-    STRICT_LOCAL(new StrictLocalResolvingStrategy()),
-
-    ALLOW_REMOTE(new RemoteResolvingStrategy()),
-
-    CUSTOM(null);
-
-    @Getter
     private final ResolvingConfigurationStrategy strategy;
 
+    private ResolvingMode(final ResolvingConfigurationStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public ResolvingConfigurationStrategy getStrategy() {
+        return this.strategy;
+    }
 }

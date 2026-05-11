@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
@@ -23,9 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
@@ -34,15 +30,17 @@ import org.kosit.validator.impl.tasks.CreateReportsAction;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.xvrl.XVRLDetection;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Schreibt das Prüfergebnis als XML-Dokument an eine definierte Stelle.
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@RequiredArgsConstructor
 class SerializeReportAction implements CheckAction {
+
+    private static final Logger log = LoggerFactory.getLogger(SerializeReportAction.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 
@@ -86,5 +84,12 @@ class SerializeReportAction implements CheckAction {
             return true;
         }
         return false;
+    }
+
+    public SerializeReportAction(final Path outputDirectory, final ConversionService conversionService,
+            final NamingStrategy namingStrategy) {
+        this.outputDirectory = outputDirectory;
+        this.conversionService = conversionService;
+        this.namingStrategy = namingStrategy;
     }
 }

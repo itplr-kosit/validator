@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl;
 
 import java.util.Arrays;
@@ -23,7 +22,9 @@ import java.util.stream.Collectors;
 
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.impl.model.Result;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
@@ -33,9 +34,9 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-@Slf4j
-
 public class ScenarioRepository {
+
+    private static final Logger log = LoggerFactory.getLogger(ScenarioRepository.class);
 
     public static final String DEFAULT = "default";
 
@@ -87,7 +88,6 @@ public class ScenarioRepository {
             result = new Result<>(getFallbackScenario(), Collections.singleton("More than one scenario matches the specified document"));
         }
         return result;
-
     }
 
     private static boolean match(final XdmNode document, final Scenario scenario) {
@@ -100,5 +100,4 @@ public class ScenarioRepository {
         }
         return false;
     }
-
 }

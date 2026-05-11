@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd.report;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiRenderer.Code;
-
-import lombok.NoArgsConstructor;
 
 /**
  * Helper for printing a colored lines (with newline at the end) to the console.
  */
-@NoArgsConstructor
 public class Line {
 
     private final List<Text> texts = new ArrayList<>();
@@ -98,7 +93,6 @@ public class Line {
             } else {
                 joins.add(t.render(this.baseFormat));
             }
-
         }
         Collections.reverse(joins);
         return String.join(" ", joins) + (dotted ? "..." : "") + (newLine ? "\n" : "");
@@ -118,5 +112,8 @@ public class Line {
 
     public int getVisibleLength() {
         return this.texts.stream().mapToInt(Text::getVisibleLength).sum();
+    }
+
+    public Line() {
     }
 }

@@ -27,7 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.CountingInputStream;
-
 import org.kosit.validator.api.Input;
 
 /**

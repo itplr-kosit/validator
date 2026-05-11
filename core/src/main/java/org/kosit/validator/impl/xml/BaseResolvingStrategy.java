@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.xml;
 
 import static java.lang.String.format;
@@ -22,17 +21,17 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.xml.sax.SAXException;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /**
  * @author Andreas Penski
  */
-@Slf4j
 public abstract class BaseResolvingStrategy implements ResolvingConfigurationStrategy {
+
+    private static final Logger log = LoggerFactory.getLogger(BaseResolvingStrategy.class);
 
     private static final String ORACLE_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
 
@@ -57,7 +56,6 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
         try {
             setter.apply();
         } catch (final SAXException e) {
-
             if (lenient) {
                 log.warn(errorMessage);
                 log.debug(e.getMessage(), e);
@@ -99,14 +97,12 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
         log.debug("Try to disable extern DTD access");
         setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
                 "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
-
     }
 
     protected void disableExternalEntities(final SchemaFactory schemaFactory, final boolean lenient) {
         log.debug("Try to disable extern DTD access");
         setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
                 "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
-
     }
 
     @FunctionalInterface

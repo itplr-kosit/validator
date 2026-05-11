@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.input;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
@@ -21,16 +20,15 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import jakarta.xml.bind.util.JAXBSource;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.ReaderInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
+import jakarta.xml.bind.util.JAXBSource;
 import net.sf.saxon.om.TreeInfo;
 
 /**
@@ -51,9 +49,9 @@ import net.sf.saxon.om.TreeInfo;
  * 
  * @author Andreas Penski
  */
-@Getter
-@Slf4j
 public class SourceInput extends AbstractInput {
+
+    private static final Logger log = LoggerFactory.getLogger(SourceInput.class);
 
     private final Source source;
 
@@ -104,7 +102,6 @@ public class SourceInput extends AbstractInput {
 
     private boolean isConsumed() throws IOException {
         if (isStreamSource()) {
-
             final StreamSource ss = (StreamSource) this.source;
             try {
                 return (ss.getInputStream() != null && ss.getInputStream().available() == 0)
@@ -151,4 +148,7 @@ public class SourceInput extends AbstractInput {
         return isDomSource() || isTreeInfo();
     }
 
+    public String getDigestAlgorithm() {
+        return this.digestAlgorithm;
+    }
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd;
 
 import java.io.ByteArrayInputStream;
@@ -25,12 +24,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.List;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Helferlein um Ausgaben auf der Kommandozeile zu testen.
@@ -82,9 +77,8 @@ public class CommandLine {
     }
 
     private static List<String> readLines(final byte[] bytes) {
-        try ( final ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-              final Reader r = new InputStreamReader(in) ) {
-
+        try ( ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+              Reader r = new InputStreamReader(in) ) {
             return IOUtils.readLines(r);
         } catch (final IOException e) {
             throw new IllegalStateException("Can not read input");
@@ -94,7 +88,6 @@ public class CommandLine {
     public static void activate() {
         out.setOut(new ByteArrayOutputStream());
         error.setOut(new ByteArrayOutputStream());
-
     }
 
     public static void deactivate() {
@@ -115,8 +108,6 @@ public class CommandLine {
      */
     private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
 
-        @Getter
-        @Setter
         private O out;
 
         @Override
@@ -142,7 +133,6 @@ public class CommandLine {
 
         @Override
         public void flush() throws IOException {
-
             if (this.out != null) {
                 this.out.flush();
             }
@@ -154,6 +144,13 @@ public class CommandLine {
                 this.out.close();
             }
         }
-    }
 
+        public O getOut() {
+            return this.out;
+        }
+
+        public void setOut(final O out) {
+            this.out = out;
+        }
+    }
 }

@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.model;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * Ein Ergebnisobjekt, dass das eigentliche Ergebnis hält und optional auch verschiedene Fehlerobjekte.
@@ -29,9 +24,6 @@ import lombok.NoArgsConstructor;
  * @param <T> der Typ des Ergebnis-Objekts
  * @param <E> der Typ des Fehler-Objekts
  */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Result<T, E> {
 
     private T object;
@@ -76,5 +68,17 @@ public class Result<T, E> {
      */
     public boolean isInvalid() {
         return !isValid();
+    }
+
+    public T getObject() {
+        return this.object;
+    }
+
+    public Result(final T object, final Collection<E> errors) {
+        this.object = object;
+        this.errors = errors;
+    }
+
+    public Result() {
     }
 }

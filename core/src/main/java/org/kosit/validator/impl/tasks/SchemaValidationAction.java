@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
@@ -33,14 +32,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.io.FileUtils;
-import org.xml.sax.SAXException;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
@@ -52,6 +43,9 @@ import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -71,9 +65,9 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@RequiredArgsConstructor
 public class SchemaValidationAction implements CheckAction {
+
+    private static final Logger log = LoggerFactory.getLogger(SchemaValidationAction.class);
 
     public static final Key<Boolean, XMLSyntaxError> KEY = new Key<>(Boolean.class, XMLSyntaxError.class);
 
@@ -83,8 +77,6 @@ public class SchemaValidationAction implements CheckAction {
 
     private final Processor processor;
 
-    @Setter(AccessLevel.PACKAGE)
-    @Getter
     private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
 
     private static XVRLReport generateXVRLReport(final ValidationResultsXmlSchema result) {
@@ -101,8 +93,7 @@ public class SchemaValidationAction implements CheckAction {
     private Result<Boolean, XMLSyntaxError> validate(final Process process, final Scenario scenario) {
         log.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
-        try ( final SourceProvider validateInput = resolveSource(process) ) {
-
+        try ( SourceProvider validateInput = resolveSource(process) ) {
             final Validator validator = scenario.getFactory().createValidator(scenario.getSchema());
             validator.setErrorHandler(errorHandler);
             validator.validate(validateInput.getSource());
@@ -141,14 +132,13 @@ public class SchemaValidationAction implements CheckAction {
             source = serialize(results.getInput(), parseResult.getObject());
         }
         return source;
-
     }
 
-    @SuppressWarnings("squid:S2095") // intentionally return open stream/autoclosable here
+    // intentionally return open stream/autoclosable here
+    @SuppressWarnings("squid:S2095")
     private SerializedDocument serialize(final Input input, final XdmNode object) throws IOException, SaxonApiException {
         final SerializedDocument doc;
         if (input instanceof AbstractInput && ((AbstractInput) input).getLength() < getInMemoryLimit()) {
-
             doc = new ByteArraySerializedDocument(this.processor);
         } else {
             doc = new FileSerializedDocument(this.processor);
@@ -182,10 +172,8 @@ public class SchemaValidationAction implements CheckAction {
         default Source getSource() throws IOException {
             return new StreamSource(openStream());
         }
-
     }
 
-    @RequiredArgsConstructor
     private static class ByteArraySerializedDocument implements SerializedDocument {
 
         private final Processor processor;
@@ -194,7 +182,7 @@ public class SchemaValidationAction implements CheckAction {
 
         @Override
         public void serialize(final XdmNode node) throws SaxonApiException, IOException {
-            try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
+            try ( ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
                 final Serializer serializer = this.processor.newSerializer();
                 serializer.setOutputStream(out);
                 serializer.serializeNode(node);
@@ -212,6 +200,10 @@ public class SchemaValidationAction implements CheckAction {
         public InputStream openStream() {
             return new ByteArrayInputStream(this.bytes);
         }
+
+        public ByteArraySerializedDocument(final Processor processor) {
+            this.processor = processor;
+        }
     }
 
     private static class FileSerializedDocument implements SerializedDocument {
@@ -227,7 +219,7 @@ public class SchemaValidationAction implements CheckAction {
 
         @Override
         public void serialize(final XdmNode node) throws SaxonApiException, IOException {
-            try ( final OutputStream out = Files.newOutputStream(this.file) ) {
+            try ( OutputStream out = Files.newOutputStream(this.file) ) {
                 final Serializer serializer = this.processor.newSerializer();
                 serializer.setOutputStream(out);
                 serializer.serializeNode(node);
@@ -246,4 +238,15 @@ public class SchemaValidationAction implements CheckAction {
         }
     }
 
+    public SchemaValidationAction(final Processor processor) {
+        this.processor = processor;
+    }
+
+    void setInMemoryLimit(final long inMemoryLimit) {
+        this.inMemoryLimit = inMemoryLimit;
+    }
+
+    public long getInMemoryLimit() {
+        return this.inMemoryLimit;
+    }
 }

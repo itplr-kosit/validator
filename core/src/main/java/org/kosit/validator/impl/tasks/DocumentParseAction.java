@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
@@ -24,9 +23,6 @@ import static org.kosit.validator.model.xvrl.XVRLDetection.Severity.INFO;
 import java.io.IOException;
 import java.util.Collections;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.input.XdmNodeInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -36,6 +32,8 @@ import org.kosit.validator.impl.xvrl.XVRLReportBuilder.DetectionBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.XMLSyntaxErrorSeverity;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
@@ -47,9 +45,9 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@RequiredArgsConstructor
 public class DocumentParseAction implements CheckAction {
+
+    private static final Logger log = LoggerFactory.getLogger(DocumentParseAction.class);
 
     public static final Process.Key<XdmNode, XMLSyntaxError> KEY = new Process.Key<>(XdmNode.class, XMLSyntaxError.class);
 
@@ -80,7 +78,6 @@ public class DocumentParseAction implements CheckAction {
             throw new IllegalArgumentException("Input may not be null");
         }
         Result<XdmNode, XMLSyntaxError> result;
-
         try {
             if (content instanceof XdmNodeInput && hasCompatibleConfiguration((XdmNodeInput) content)) {
                 // parsing not neccessary
@@ -98,7 +95,6 @@ public class DocumentParseAction implements CheckAction {
             error.setMessage(String.format("IOException while reading resource %s: %s", content.getName(), e.getMessage()));
             result = new Result<>(Collections.singleton(error));
         }
-
         return result;
     }
 
@@ -111,11 +107,14 @@ public class DocumentParseAction implements CheckAction {
         final ProcessStepResult<XdmNode, XMLSyntaxError> result = new ProcessStepResult<>(KEY);
         final Result<XdmNode, XMLSyntaxError> parserResult = parseDocument(process.getInput());
         result.setResult(parserResult);
-
         if (parserResult.isInvalid()) {
             process.setStopped(true);
         }
         result.setReport(generateXVRLReport(parserResult));
         return result;
+    }
+
+    public DocumentParseAction(final Processor processor) {
+        this.processor = processor;
     }
 }

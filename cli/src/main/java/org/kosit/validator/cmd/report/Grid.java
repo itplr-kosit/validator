@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd.report;
 
 import java.util.ArrayList;
@@ -24,12 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiRenderer.Code;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * An text based grid for cli based programs.
@@ -41,7 +36,6 @@ public class Grid {
     /**
      * A definition / configuration for a column with a result table.
      */
-    @Getter
     public static class ColumnDefinition {
 
         private static final int MAX_LENGTH = 80;
@@ -134,10 +128,28 @@ public class Grid {
             this.justify = justify;
             return this;
         }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public int getMaxLength() {
+            return this.maxLength;
+        }
+
+        public int getMinLength() {
+            return this.minLength;
+        }
+
+        public int getMaxLines() {
+            return this.maxLines;
+        }
+
+        public Justify getJustify() {
+            return this.justify;
+        }
     }
 
-    @RequiredArgsConstructor
-    @Getter
     private static class Cell {
 
         private final Format format = DEFAULT_FORMAT;
@@ -191,7 +203,6 @@ public class Grid {
                         def.getLength() + (line.getLength() - line.getVisibleLength()));
             }
             return def.getJustify().apply("", def.getLength());
-
         }
 
         public Cell add(final Object object, final Code... codes) {
@@ -199,6 +210,17 @@ public class Grid {
             return this;
         }
 
+        public Cell(final List<Text> text) {
+            this.text = text;
+        }
+
+        public Format getFormat() {
+            return this.format;
+        }
+
+        public List<Text> getText() {
+            return this.text;
+        }
     }
 
     private static final Format DEFAULT_FORMAT = new Format();
@@ -206,7 +228,6 @@ public class Grid {
     /**
      * A grid / table for printing results.
      */
-
     private final List<ColumnDefinition> definitions = new ArrayList<>();
 
     private final List<Cell> values = new ArrayList<>();
@@ -250,12 +271,10 @@ public class Grid {
             final List<Cell> column = getColumn(i);
             final int maxLength = column.stream().mapToInt(cell -> cell.getText().stream().mapToInt(Text::getLength).sum()).max().orElse(0);
             def.setLength(Math.max(maxLength, def.getName().length()));
-
         });
     }
 
     public List<Cell> getColumn(final int index) {
-
         return IntStream.range(0, this.values.size()).filter(n -> n % this.definitions.size() == index).mapToObj(this.values::get)
                 .collect(Collectors.toList());
     }
@@ -292,7 +311,6 @@ public class Grid {
         b.append(generateGridStart());
         b.append(generateHeader());
         prepareLines().forEach(line -> b.append(printLine(line)));
-
         b.append(generateGridEnd());
         return b.toString();
     }
@@ -317,7 +335,6 @@ public class Grid {
             b.append("\n");
         }
         return b.toString();
-
     }
 
     private static boolean isEmpty(final StringBuilder current) {

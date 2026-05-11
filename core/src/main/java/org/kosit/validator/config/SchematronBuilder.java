@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -24,17 +23,13 @@ import java.util.Collections;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ValidateWithSchematron;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.XsltExecutable;
 
@@ -43,10 +38,9 @@ import net.sf.saxon.s9api.XsltExecutable;
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@Getter(AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, Transformation>> {
+
+    private static final Logger log = LoggerFactory.getLogger(SchematronBuilder.class);
 
     private static final String DEFAULT_NAME = "manually configured";
 
@@ -63,11 +57,10 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     @Override
     public Result<Pair<ValidateWithSchematron, Transformation>, String> build(final ContentRepository repository) {
         if (this.executable == null && this.source == null) {
-            return createError(String.format("Must supply source location and/or executable for schematron '%s'", this.name));
+            return createError(String.format("Must supply source location and/or executable for schematron \'%s\'", this.name));
         }
         final ValidateWithSchematron object = createObject();
         Result<Pair<ValidateWithSchematron, Transformation>, String> result;
-
         try {
             if (this.executable == null) {
                 this.executable = repository.createSchematronTransformation(object).getExecutable();
@@ -144,5 +137,20 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     public SchematronBuilder executable(final XsltExecutable executable) {
         this.executable = executable;
         return this;
+    }
+
+    XsltExecutable getExecutable() {
+        return this.executable;
+    }
+
+    URI getSource() {
+        return this.source;
+    }
+
+    String getName() {
+        return this.name;
+    }
+
+    SchematronBuilder() {
     }
 }

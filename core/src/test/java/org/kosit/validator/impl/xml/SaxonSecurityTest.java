@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,8 +33,9 @@ import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.XMLSyntaxError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmDestination;
@@ -49,8 +49,9 @@ import net.sf.saxon.s9api.XsltTransformer;
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public class SaxonSecurityTest {
+
+    private static final Logger log = LoggerFactory.getLogger(SaxonSecurityTest.class);
 
     @Test
     public void testEvilStylesheets() throws IOException {
@@ -70,13 +71,11 @@ public class SaxonSecurityTest {
                 final XdmDestination result = new XdmDestination();
                 transformer.setDestination(result);
                 transformer.transform();
-
                 // wenn der Punkt erreicht wird, sollte wenigstens, das Element evil nicht mit 'bösen' Inhalten gefüllt
                 // sein!
                 if (StringUtils.isNotBlank(result.getXdmNode().getStringValue())) {
                     fail(String.format("Saxon configuration should prevent expansion within %s", resource));
                 }
-
             } catch (final SaxonApiException | RuntimeException e) {
                 log.info("Expected exception detected {}", e.getMessage(), e);
             }

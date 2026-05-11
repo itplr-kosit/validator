@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.xml;
 
 import java.io.Reader;
@@ -24,8 +23,6 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.XMLConstants;
 import javax.xml.transform.Result;
 import javax.xml.transform.TransformerException;
-
-import lombok.SneakyThrows;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.XPathContext;
@@ -54,9 +51,8 @@ public class ProcessorProvider {
     private ProcessorProvider() {
     }
 
-    @SneakyThrows
     private static String encode(final String input) {
-        return URLEncoder.encode(input, StandardCharsets.UTF_8.name());
+        return URLEncoder.encode(input, StandardCharsets.UTF_8);
     }
 
     public static Processor getProcessor() {
@@ -73,13 +69,11 @@ public class ProcessorProvider {
         processor.getUnderlyingConfiguration().setCollectionFinder(resolver);
         processor.getUnderlyingConfiguration().setOutputURIResolver(resolver);// NOSONAR
         processor.getUnderlyingConfiguration().setUnparsedTextURIResolver(resolver);
-
         // grundsätzlich Feature-konfiguration:
         processor.setConfigurationProperty(Feature.DTD_VALIDATION, false);
         processor.setConfigurationProperty(Feature.ENTITY_RESOLVER_CLASS, "");
         processor.setConfigurationProperty(Feature.XINCLUDE, false);
         processor.setConfigurationProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, false);
-
         // Konfiguration des zu verwendenden Parsers, wenn Saxon selbst einen erzeugen muss, bspw. beim XSL parsen
         processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(FEATURE_SECURE_PROCESSING), true); // NOSONAR
         processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(DISALLOW_DOCTYPE_DECL_FEATURE), true);// NOSONAR

@@ -18,8 +18,6 @@ package org.kosit.validator.impl.tasks;
 
 import java.io.IOException;
 
-import jakarta.xml.bind.util.JAXBSource;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
@@ -29,6 +27,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
+
+import jakarta.xml.bind.util.JAXBSource;
 
 /**
  * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect on

@@ -1,19 +1,12 @@
 package org.kosit.validator.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import name.dmaus.schxslt.Compiler;
-import name.dmaus.schxslt.SchematronException;
-import name.dmaus.schxslt.adapter.SchXslt;
-import net.sf.saxon.s9api.*;
-import org.kosit.validator.api.SchematronCompiler;
-import org.w3c.dom.Document;
-
-import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-import java.net.URI;
-import java.util.Map;
-import java.util.function.Function;
+
+import org.kosit.validator.api.SchematronCompiler;
+
+import name.dmaus.schxslt.Compiler;
+import name.dmaus.schxslt.adapter.SchXslt;
+import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * {@link SchematronCompiler} implementation backed by the original SchXslt XSLT-based Schematron processor (library
@@ -31,7 +24,6 @@ import java.util.function.Function;
  * designed to be used safely from multiple threads.
  * </p>
  */
-@Slf4j
 public class SchXsltCompiler extends AbstractSchXsltCompiler {
 
     public static final String COMPILER_ID = "schxslt";
@@ -44,5 +36,4 @@ public class SchXsltCompiler extends AbstractSchXsltCompiler {
     public String getId() {
         return SchXsltCompiler.COMPILER_ID;
     }
-
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
@@ -22,10 +21,6 @@ import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemantal;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import jakarta.xml.bind.JAXBException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
@@ -37,7 +32,10 @@ import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import jakarta.xml.bind.JAXBException;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -51,8 +49,9 @@ import net.sf.saxon.s9api.XsltTransformer;
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public class CreateReportsAction implements CheckAction {
+
+    private static final Logger log = LoggerFactory.getLogger(CreateReportsAction.class);
 
     public static final Process.Key<List<BusinessReport>, XMLSyntaxError> KEY = new Process.Key<>(null, XMLSyntaxError.class);
 
@@ -81,7 +80,6 @@ public class CreateReportsAction implements CheckAction {
     @Override
     public ProcessStepResult<List<BusinessReport>, XMLSyntaxError> check(final Process process) {
         final ProcessStepResult<List<BusinessReport>, XMLSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
-
         final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionAction.KEY);
         final Scenario scenario = scenarioSelection.getObject();
         final XdmNode parsedDocument = process.getResult(DocumentParseAction.KEY).getObject();
@@ -89,9 +87,7 @@ public class CreateReportsAction implements CheckAction {
                 .map(t -> createReport(t, process, scenario, parsedDocument)).collect(Collectors.toList());
         processStepResult.setResult(new Result<>(reports, null));
         processStepResult.addReports(reports.stream().map(BusinessReport::getReport).collect(Collectors.toList()));
-
         return processStepResult;
-
     }
 
     private BusinessReport createReport(final Scenario.Transformation transformation, final Process process, final Scenario scenario,
@@ -102,11 +98,9 @@ public class CreateReportsAction implements CheckAction {
             final XdmNode root = this.xvrlSerializer.serialize(process.getXvrlReportSummary());
             final XsltTransformer transformer = transformation.getExecutable().load();
             transformer.setInitialContextNode(root);
-
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
             transformer.setMessageListener(e);
             transformer.setResourceResolver(scenario.getUriResolver());
-
             if (scenario.getUnparsedTextURIResolver() != null) {
                 transformer.getUnderlyingController().setUnparsedTextURIResolver(scenario.getUnparsedTextURIResolver());
             }
@@ -123,11 +117,9 @@ public class CreateReportsAction implements CheckAction {
             process.setStopped(true);
             final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
             xmlSyntaxError.setMessage("Can not create final report: " + e.getMessage());
-
             r.setReport(createErrorInformation(transformation.getResourceType(), xmlSyntaxError));
         }
         return r;
-
     }
 
     @Override

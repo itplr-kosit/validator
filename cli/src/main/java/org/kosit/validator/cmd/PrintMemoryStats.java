@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd;
 
 import java.text.NumberFormat;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
  * Prints some memory usage information for debugging purposes.
  * 
  * @author Andreas Penski
  */
-@Slf4j
 class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckAction {
+
+    private static final Logger log = LoggerFactory.getLogger(PrintMemoryStats.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 
@@ -47,7 +46,6 @@ class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckAction {
         final long maxMemory = runtime.maxMemory();
         final long allocatedMemory = runtime.totalMemory();
         final long freeMemory = runtime.freeMemory();
-
         final NumberFormat format = NumberFormat.getInstance();
         final String freeStr = format.format(freeMemory / BYTES_PER_K);
         final String allocStr = format.format(allocatedMemory / BYTES_PER_K);

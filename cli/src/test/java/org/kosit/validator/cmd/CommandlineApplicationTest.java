@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.impl.Helper.ASSERTIONS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kosit.validator.impl.Helper.ASSERTIONS;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,20 +27,19 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 
-import io.quarkus.picocli.runtime.annotations.TopCommand;
-import io.quarkus.test.junit.QuarkusTest;
 import org.apache.commons.io.FileUtils;
-import jakarta.inject.Inject;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.assertj.core.api.Condition;
-import lombok.extern.slf4j.Slf4j;
-
 import org.jboss.logmanager.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper.Simple;
+import org.slf4j.LoggerFactory;
+
+import io.quarkus.picocli.runtime.annotations.TopCommand;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 
 /**
  * Testet die Parameter des Kommandozeilen-Tools.
@@ -49,10 +47,11 @@ import org.kosit.validator.impl.Helper.Simple;
  * @author Andreas Penski
  */
 @QuarkusTest
-@Slf4j
 public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(InternalCheck.class);
 
     private final Path output = Paths.get("target/test-output");
 
@@ -87,12 +86,10 @@ public class CommandlineApplicationTest {
         });
         // Printer Ausgabe
         Printer.configure(new PrintWriter(testWriter.getOutWriter(), true), new PrintWriter(testWriter.getErrWriter(), true));
-
         // Log capture
         Logger root = Logger.getLogger("");
         logCapture = new LogCaptureHandler(Level.ALL);
         root.addHandler(logCapture);
-
         if (Files.exists(this.output)) {
             FileUtils.cleanDirectory(this.output.toFile());
         }
@@ -116,7 +113,6 @@ public class CommandlineApplicationTest {
     public void testHelp() {
         final String[] args = { "-?" };
         commandLine.execute(args);
-
         assertThat(testWriter.getErrorOutput()).isEmpty();
         checkForHelp(testWriter.getOutputLines());
     }
@@ -134,7 +130,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "arguments", "egal welche", "argumente drin sind" };
         commandLine.execute(args);
         assertThat(testWriter.getErrorOutput()).isNotEmpty();
-        assertThat(testWriter.getErrorOutput()).contains("Missing required option: '--scenarios");
+        assertThat(testWriter.getErrorOutput()).contains("Missing required option: \'--scenarios");
     }
 
     @Test
@@ -214,7 +210,6 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testValidOutputConfiguration() throws IOException {
-
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
@@ -225,7 +220,7 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testNoInput() {
-        final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(), };
+        final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString() };
         commandLine.execute(args);
         assertThat((ReturnValue) commandLine.getExecutionResult()).isEqualTo(ReturnValue.CONFIGURATION_ERROR);
         assertThat(testWriter.getErrorOutput()).contains("No test target found");
@@ -233,7 +228,6 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testPrint() {
-
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-p", "-r", Paths.get(Simple.REPOSITORY_URI).toString(), "-o",
                 this.output.toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
@@ -318,7 +312,7 @@ public class CommandlineApplicationTest {
                 "s2=" + Paths.get(Simple.OTHER_SCENARIOS).toString(), "-r", "s1=" + Paths.get(Simple.REPOSITORY_URI).toString(), "-r",
                 "typo=" + Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains("No repository location for scenario definition 's2' specified");
+        assertThat(logCapture.getLogs()).contains("No repository location for scenario definition \'s2\' specified");
     }
 
     @Test

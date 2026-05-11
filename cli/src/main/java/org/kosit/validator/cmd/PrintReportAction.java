@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
+import java.io.StringWriter;
+import java.util.List;
+
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.BusinessReport;
@@ -29,18 +26,21 @@ import org.kosit.validator.impl.tasks.CreateReportsAction;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.StringWriter;
-import java.util.List;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
 
 /**
  * Gibt das Ergebnis-Document auf std-out aus.
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@RequiredArgsConstructor
 class PrintReportAction implements CheckAction {
+
+    private static final Logger log = LoggerFactory.getLogger(PrintReportAction.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 
@@ -63,7 +63,10 @@ class PrintReportAction implements CheckAction {
         } catch (final SaxonApiException e) {
             log.error("Error while printing result to stdout", e);
         }
-
         return Util.createResult(KEY, true, createReport());
+    }
+
+    public PrintReportAction(final Processor processor) {
+        this.processor = processor;
     }
 }

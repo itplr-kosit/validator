@@ -13,32 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.config;
 
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Scenario.Transformation;
-import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.model.scenarios.CreateReportType;
-import org.kosit.validator.model.scenarios.ResourceType;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.XsltExecutable;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collections;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.kosit.validator.impl.ContentRepository;
+import org.kosit.validator.impl.Scenario.Transformation;
+import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.model.scenarios.CreateReportType;
+import org.kosit.validator.model.scenarios.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * Builder style configuration for the report transformation.
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public class ReportBuilder implements Builder<Pair<CreateReportType, Transformation>> {
+
+    private static final Logger log = LoggerFactory.getLogger(ReportBuilder.class);
 
     private static final String DEFAULT_NAME = "manually created report";
 
@@ -57,11 +59,10 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
     @Override
     public Result<Pair<CreateReportType, Transformation>, String> build(final ContentRepository repository) {
         if (this.executable == null && this.source == null) {
-            return createError(String.format("Must supply source location and/or executable for report '%s'", this.name));
+            return createError(String.format("Must supply source location and/or executable for report \'%s\'", this.name));
         }
         final CreateReportType object = createObject();
         Result<Pair<CreateReportType, Transformation>, String> result;
-
         try {
             if (this.executable == null) {
                 this.executable = repository.createTransformation(object.getResource()).getExecutable();

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.xml;
 
 import java.io.IOException;
@@ -24,8 +23,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
-
-import lombok.RequiredArgsConstructor;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.ResourceRequest;
@@ -40,10 +37,11 @@ import net.sf.saxon.trans.XPathException;
  *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor()
 public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver, ResourceResolver {
 
-    /** the base uri */
+    /**
+     * the base uri
+     */
     private final URI baseUri;
 
     /**
@@ -80,7 +78,6 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
             try {
                 return new StreamSource(resolved.toURL().openStream(), resolved.toASCIIString());
             } catch (final IOException e) {
-
                 throw new TransformerException(String.format("Can not resolve required  %s", href), e);
             }
         } else {
@@ -111,5 +108,14 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         } catch (final TransformerException e) {
             throw new XPathException(e);
         }
+    }
+
+    /**
+     * Creates a new {@code RelativeUriResolver} instance.
+     *
+     * @param baseUri the base uri
+     */
+    public RelativeUriResolver(final URI baseUri) {
+        this.baseUri = baseUri;
     }
 }

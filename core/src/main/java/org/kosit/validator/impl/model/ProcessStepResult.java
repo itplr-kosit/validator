@@ -13,31 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.model.xvrl.XVRLReport;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class ProcessStepResult<T, E> {
 
     private final CheckAction.Process.Key<T, E> key;
 
     private Result<T, E> result;
 
-    @Setter(AccessLevel.NONE)
     private List<XVRLReport> report;
 
     public void setReport(final XVRLReport singleReport) {
@@ -51,5 +41,25 @@ public class ProcessStepResult<T, E> {
             }
             this.report.addAll(collect);
         }
+    }
+
+    public CheckAction.Process.Key<T, E> getKey() {
+        return this.key;
+    }
+
+    public Result<T, E> getResult() {
+        return this.result;
+    }
+
+    public List<XVRLReport> getReport() {
+        return this.report;
+    }
+
+    public void setResult(final Result<T, E> result) {
+        this.result = result;
+    }
+
+    public ProcessStepResult(final CheckAction.Process.Key<T, E> key) {
+        this.key = key;
     }
 }

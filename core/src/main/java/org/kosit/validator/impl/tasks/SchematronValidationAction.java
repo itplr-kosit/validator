@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
@@ -26,15 +25,6 @@ import java.util.stream.Stream;
 
 import javax.xml.transform.dom.DOMSource;
 
-import org.oclc.purl.dsdl.svrl.ActivePattern;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.FiredRule;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
-import org.oclc.purl.dsdl.svrl.Text;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.Scenario;
@@ -46,6 +36,13 @@ import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.xvrl.XVRLReport;
+import org.oclc.purl.dsdl.svrl.ActivePattern;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.FiredRule;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -58,9 +55,9 @@ import net.sf.saxon.s9api.XsltTransformer;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 public class SchematronValidationAction implements CheckAction {
+
+    private static final Logger log = LoggerFactory.getLogger(SchematronValidationAction.class);
 
     public static final Process.Key<List<ValidationResultsSchematron>, String> KEY = new Process.Key<>(null, String.class);
 
@@ -108,7 +105,6 @@ public class SchematronValidationAction implements CheckAction {
                     .forEach(builder::add);
             return builder.build();
         }).collect(Collectors.toList());
-
     }
 
     private List<ValidationResultsSchematron> validate(final Process results, final XdmNode document, final Scenario scenario) {
@@ -125,20 +121,17 @@ public class SchematronValidationAction implements CheckAction {
             transformer.setResourceResolver(scenario.getUriResolver());
             final CollectingErrorEventHandler collectingErrorEventHandler = new CollectingErrorEventHandler();
             transformer.setMessageListener(collectingErrorEventHandler);
-
             final XdmDestination result = new XdmDestination();
             transformer.setDestination(result);
             transformer.setInitialContextNode(document);
             transformer.transform();
-
             final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
             r.setSchematronOutput(this.conversionService.readDocument(
                     new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
                     SchematronOutput.class));
             validationResultsSchematron.setResults(r);
-
         } catch (final SaxonApiException e) {
-            final String msg = String.format("Error processing schematron validation '%s'. Error is '%s'",
+            final String msg = String.format("Error processing schematron validation \'%s\'. Error is \'%s\'",
                     validation.getResourceType().getName(), e.getMessage());
             log.error(msg, e);
             this.errorMessages.add(msg);
@@ -153,7 +146,6 @@ public class SchematronValidationAction implements CheckAction {
         final Result<XdmNode, XMLSyntaxError> parseResult = process.getResult(DocumentParseAction.KEY);
         final Result<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionAction.KEY);
         final List<ValidationResultsSchematron> validationResult = validate(process, parseResult.getObject(), scenarioResult.getObject());
-
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = new ProcessStepResult<>(KEY);
         processStepResult.setResult(new Result<>(validationResult, this.errorMessages));
         processStepResult.addReports(generateXVRLReport(validationResult));
@@ -164,5 +156,9 @@ public class SchematronValidationAction implements CheckAction {
     public boolean isSkipped(final Process results) {
         final Result<Scenario, String> result = results.getResult(ScenarioSelectionAction.KEY);
         return hasNoSchematrons(result.getObject()) || isSchemaInvalid(results);
+    }
+
+    public SchematronValidationAction(final ConversionService conversionService) {
+        this.conversionService = conversionService;
     }
 }

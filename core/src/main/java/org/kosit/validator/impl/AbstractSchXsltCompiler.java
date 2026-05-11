@@ -1,20 +1,24 @@
 package org.kosit.validator.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import name.dmaus.schxslt.Compiler;
-import name.dmaus.schxslt.SchematronException;
-import org.kosit.validator.api.SchematronCompiler;
-import org.w3c.dom.Document;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import java.net.URI;
 import java.util.Map;
 import java.util.function.Function;
 
-@Slf4j
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+
+import org.kosit.validator.api.SchematronCompiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+
+import name.dmaus.schxslt.Compiler;
+import name.dmaus.schxslt.SchematronException;
+
 public abstract class AbstractSchXsltCompiler implements SchematronCompiler {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractSchXsltCompiler.class);
 
     protected final Compiler compiler;
 
@@ -24,22 +28,18 @@ public abstract class AbstractSchXsltCompiler implements SchematronCompiler {
 
     @Override
     public Source compileToXslt(URI schematronUri, Function<URI, Source> rawResolver) {
-        AbstractSchXsltCompiler.log.info("Trying to compile Schematron file {} using schxslt-java", schematronUri);
+        log.info("Trying to compile Schematron file {} using schxslt-java", schematronUri);
         try {
             Source schSource = rawResolver.apply(schematronUri);
             if (schSource == null) {
                 throw new IllegalStateException("No Schematron found for " + schematronUri);
             }
-
             if (schSource.getSystemId() == null && schSource instanceof StreamSource) {
                 schSource.setSystemId(schematronUri.toString());
             }
-
             Document stylesheetDoc = compiler.compile(schSource, Map.of()); // oder null, falls du keine Optionen
             // brauchst
-
             return new DOMSource(stylesheetDoc, stylesheetDoc.getDocumentURI());
-
         } catch (SchematronException e) {
             throw new IllegalStateException("Error compiling " + schematronUri, e);
         }

@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * Some metadata for the action. Mainly used for creating the XVRL report.
  * 
  * @author apenski
  */
-@Getter
-@AllArgsConstructor
 public class ActionMetadata {
 
     private String name;
 
     private String id;
 
+    public String getName() {
+        return this.name;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public ActionMetadata(final String name, final String id) {
+        this.name = name;
+        this.id = id;
+    }
 }

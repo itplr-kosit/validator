@@ -13,31 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.client;
 
-import jakarta.xml.bind.*;
-import jakarta.xml.bind.annotation.XmlRegistry;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.*;
-import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.StringJoiner;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRegistry;
+
 /**
  * JAXB Conversion Utility.
  */
-@Slf4j
 public class XmlConversionService {
+
+    private static final Logger log = LoggerFactory.getLogger(XmlConversionService.class);
 
     /**
      * Exception while serializing/deserializing with jaxb.
@@ -135,18 +140,16 @@ public class XmlConversionService {
     public <T> T readXml(final File xml, final Class<T> type) {
         checkInputEmpty(xml);
         checkTypeEmpty(type);
-        try ( final InputStream is = new FileInputStream(xml) ) {
+        try ( InputStream is = new FileInputStream(xml) ) {
             final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
             inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
             inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(is);
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
-
             return u.unmarshal(xsr, type).getValue();
         } catch (final JAXBException | XMLStreamException | IOException e) {
             throw new ConversionExeption(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml), e);
         }
     }
-
 }

@@ -13,56 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.tasks.ReaderWrapper;
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.w3c.dom.Document;
+
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.util.JAXBSource;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
-import org.w3c.dom.Document;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DefaultResult implements Result {
 
-    /** Die vom Validator erstelle interne Berichts-'Vorstufe' */
-    @Getter
-    @Setter(AccessLevel.PACKAGE)
+    /**
+     * Die vom Validator erstelle interne Berichts-'Vorstufe'
+     */
     private XVRLReportSummary reportSummary;
 
-    /** Das evaluierte Ergebnis. */
-    @Getter
+    /**
+     * Das evaluierte Ergebnis.
+     */
     private final AcceptRecommendation acceptRecommendation;
 
-    @Setter(AccessLevel.PACKAGE)
-    @Getter
     private List<XmlError> schemaViolations;
 
-    @Getter
-    @Setter(AccessLevel.PACKAGE)
     private List<SchematronOutput> schematronResult;
 
-    @Getter
-    @Setter
     private boolean processingSuccessful;
 
-    @Getter
-    @Setter
     private boolean wellformed;
 
     public DefaultResult(final AcceptRecommendation recommendation) {
@@ -71,14 +62,12 @@ public class DefaultResult implements Result {
 
     @Override
     public XdmNode getReport() {
-
         final Marshaller marshaller;
         try {
             marshaller = new ConversionService().getJaxbContext().createMarshaller();
             final JAXBSource source = new JAXBSource(marshaller, getReportSummary());
             // wrap to circumvent inconsistency between sax and saxon
             source.setXMLReader(new ReaderWrapper(source.getXMLReader()));
-
             return new Processor(false).newDocumentBuilder().build(source);
         } catch (JAXBException | SaxonApiException e) {
             e.printStackTrace();
@@ -137,5 +126,58 @@ public class DefaultResult implements Result {
     @Override
     public boolean isSchematronValid() {
         return isSchematronEvaluated() && getFailedAsserts().isEmpty();
+    }
+
+    /**
+     * Die vom Validator erstelle interne Berichts-'Vorstufe'
+     */
+    public XVRLReportSummary getReportSummary() {
+        return this.reportSummary;
+    }
+
+    /**
+     * Die vom Validator erstelle interne Berichts-'Vorstufe'
+     */
+    void setReportSummary(final XVRLReportSummary reportSummary) {
+        this.reportSummary = reportSummary;
+    }
+
+    /**
+     * Das evaluierte Ergebnis.
+     */
+    public AcceptRecommendation getAcceptRecommendation() {
+        return this.acceptRecommendation;
+    }
+
+    void setSchemaViolations(final List<XmlError> schemaViolations) {
+        this.schemaViolations = schemaViolations;
+    }
+
+    public List<XmlError> getSchemaViolations() {
+        return this.schemaViolations;
+    }
+
+    public List<SchematronOutput> getSchematronResult() {
+        return this.schematronResult;
+    }
+
+    void setSchematronResult(final List<SchematronOutput> schematronResult) {
+        this.schematronResult = schematronResult;
+    }
+
+    public boolean isProcessingSuccessful() {
+        return this.processingSuccessful;
+    }
+
+    public void setProcessingSuccessful(final boolean processingSuccessful) {
+        this.processingSuccessful = processingSuccessful;
+    }
+
+    public boolean isWellformed() {
+        return this.wellformed;
+    }
+
+    public void setWellformed(final boolean wellformed) {
+        this.wellformed = wellformed;
     }
 }

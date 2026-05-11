@@ -13,9 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.cmd;
 
+import java.io.PrintWriter;
+import java.text.MessageFormat;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import org.fusesource.jansi.AnsiRenderer.Code;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.Result;
@@ -27,15 +33,10 @@ import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.DefaultCheck;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.tasks.CheckAction;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.s9api.Processor;
-import org.fusesource.jansi.AnsiRenderer.Code;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.PrintWriter;
-import java.text.MessageFormat;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import net.sf.saxon.s9api.Processor;
 
 /**
  * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszuwerten und auszugeben.
@@ -43,8 +44,9 @@ import java.util.stream.Collectors;
  * 
  * @author Andreas Penski
  */
-@Slf4j
 class InternalCheck extends DefaultCheck {
+
+    private static final Logger log = LoggerFactory.getLogger(InternalCheck.class);
 
     private int checkAssertions = 0;
 
@@ -75,16 +77,10 @@ class InternalCheck extends DefaultCheck {
     private static Grid createResultGrid(final Map<String, Result> results) {
         final Grid grid = new Grid(
         //@formatter:off
-                new ColumnDefinition("File", 60, 10, 1),
-                new ColumnDefinition("Schema", 7).justify(Justify.CENTER),
-                new ColumnDefinition("Schematron", 10).justify(Justify.CENTER),
-                new ColumnDefinition("Acceptance", 10, 5).justify(Justify.CENTER),
-                new ColumnDefinition("Error/Description", 60,20,3)
-        );
+        new ColumnDefinition("File", 60, 10, 1), new ColumnDefinition("Schema", 7).justify(Justify.CENTER), new ColumnDefinition("Schematron", 10).justify(Justify.CENTER), new ColumnDefinition("Acceptance", 10, 5).justify(Justify.CENTER), new ColumnDefinition("Error/Description", 60, 20, 3));
         //@formatter:on
         results.entrySet().stream().sorted(Entry.comparingByKey()).forEach(e -> {
             final Result value = e.getValue();
-
             final Code textcolor = value.isAcceptable() ? Code.GREEN : Code.RED;
             grid.addCell(e.getKey(), textcolor);
             grid.addCell(value.isSchemaValid() ? "Y" : "N", textcolor);
@@ -156,5 +152,4 @@ class InternalCheck extends DefaultCheck {
     public int getNotAcceptableCount(final Map<String, Result> results) {
         return (int) (this.failedAssertions + results.values().stream().filter(e -> !e.isAcceptable()).count());
     }
-
 }

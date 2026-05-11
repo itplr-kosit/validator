@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kosit.validator.impl.tasks;
-
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.util.JAXBSource;
-
-import lombok.RequiredArgsConstructor;
 
 import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.model.xvrl.XVRLReportSummary;
 
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.util.JAXBSource;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
-@RequiredArgsConstructor
 public class XvrlSerializer {
 
     private final ConversionService conversionService;
@@ -46,4 +41,8 @@ public class XvrlSerializer {
         return documentBuilder.build(source);
     }
 
+    public XvrlSerializer(final ConversionService conversionService, final Processor processor) {
+        this.conversionService = conversionService;
+        this.processor = processor;
+    }
 }
