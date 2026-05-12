@@ -50,11 +50,9 @@ public class ScenarioSelectionAction implements CheckAction {
     private static XVRLReport generateXVRLReport(final Result<Scenario, String> scenarioTypeResult, final String name) {
         final XVRLReportBuilder builder = XVRLReportBuilder.builder(METADATA);
         if (scenarioTypeResult.getObject().isFallback()) {
-            builder.add(
-                    detection().addError(String.format("No valid scenario configuration found for \'%s\'", name)).code("fallback-match"));
+            builder.add(detection().addError("No valid scenario configuration found for '" + name + "'").code("fallback-match"));
         } else {
-            builder.add(detection()
-                    .addMessage(String.format("Scenario \'%s\' identified for \'%s\'", scenarioTypeResult.getObject().getName(), name))
+            builder.add(detection().addMessage("Scenario '" + scenarioTypeResult.getObject().getName() + "' identified for '" + name + "'")
                     .severity(XVRLDetection.Severity.INFO).code("scenario-matched"));
             builder.add(detection().id("scenario").code(scenarioTypeResult.getObject().getName()));
         }

@@ -93,7 +93,7 @@ public class ComputeAcceptanceAction implements CheckAction {
                     : org.kosit.validator.api.AcceptRecommendation.REJECT;
             return new Result<>(effectiveBooleanValue);
         } catch (final SaxonApiException e) {
-            final String msg = String.format("Error evaluating accept recommendation: %s", selector.getUnderlyingXPathContext().toString());
+            final String msg = "Error evaluating accept recommendation: " + selector.getUnderlyingXPathContext().toString();
             log.error(msg, e);
             final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
             xmlSyntaxError.setMessage(msg);

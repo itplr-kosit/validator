@@ -57,7 +57,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     @Override
     public Result<Pair<ValidateWithSchematron, Transformation>, String> build(final ContentRepository repository) {
         if (this.executable == null && this.source == null) {
-            return createError(String.format("Must supply source location and/or executable for schematron \'%s\'", this.name));
+            return createError("Must supply source location and/or executable for schematron '" + this.name + "'");
         }
         final ValidateWithSchematron object = createObject();
         Result<Pair<ValidateWithSchematron, Transformation>, String> result;
@@ -68,8 +68,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
             result = new Result<>(new ImmutablePair<>(object, new Transformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
             log.error(e.getMessage(), e);
-            result = createError(
-                    String.format("Can not create schematron configuration based  on %s. Exception is %s", this.source, e.getMessage()));
+            result = createError("Can not create schematron configuration based  on " + this.source + ". Exception is " + e.getMessage());
         }
         return result;
     }

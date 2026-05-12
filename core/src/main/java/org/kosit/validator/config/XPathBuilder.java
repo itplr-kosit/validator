@@ -79,7 +79,7 @@ class XPathBuilder implements Builder<XPathExecutable> {
     @Override
     public Result<XPathExecutable, String> build(final ContentRepository repository) {
         if (!isAvailable()) {
-            return createError(String.format("No configuration for %s xpath  expression found", this.name));
+            return createError("No configuration for " + this.name + " xpath  expression found");
         }
         try {
             if (this.executable == null) {
@@ -89,7 +89,7 @@ class XPathBuilder implements Builder<XPathExecutable> {
                 extractNamespaces();
             }
         } catch (final IllegalStateException e) {
-            final String msg = String.format("Error creating %s xpath: %s", this.name, e.getMessage());
+            final String msg = "Error creating " + this.name + " xpath: " + e.getMessage();
             log.error(msg, e);
             return new Result<>(Collections.singletonList(msg));
         }

@@ -131,8 +131,8 @@ public class SchematronValidationAction implements CheckAction {
                     SchematronOutput.class));
             validationResultsSchematron.setResults(r);
         } catch (final SaxonApiException e) {
-            final String msg = String.format("Error processing schematron validation \'%s\'. Error is \'%s\'",
-                    validation.getResourceType().getName(), e.getMessage());
+            final String msg = "Error processing schematron validation '" + validation.getResourceType().getName() + "'. Error is '"
+                    + e.getMessage() + "'";
             log.error(msg, e);
             this.errorMessages.add(msg);
             process.setStopped(true);

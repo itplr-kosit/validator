@@ -99,7 +99,7 @@ public class SchemaValidationAction implements CheckAction {
             validator.validate(validateInput.getSource());
             return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
         } catch (final SAXException | SaxonApiException | IOException e) {
-            final String msg = String.format("Error processing schema validation for scenario %s", scenario.getConfiguration().getName());
+            final String msg = "Error processing schema validation for scenario " + scenario.getConfiguration().getName();
             log.error(msg, e);
             process.setStopped(true);
             final XMLSyntaxError error = new XMLSyntaxError();

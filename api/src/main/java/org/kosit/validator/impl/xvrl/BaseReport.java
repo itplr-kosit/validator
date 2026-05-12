@@ -34,7 +34,7 @@ public abstract class BaseReport {
 
     @Override
     public String toString() {
-        return String.format("id=%s, errors=%s, valid=%s", getDigest().getId(), getDigest().getErrorCount(), getDigest().getValid());
+        return "id=" + getDigest().getId() + ", errors=" + getDigest().getErrorCount() + ", valid=" + getDigest().getValid();
     }
 
     protected abstract XVRLDigest getDigest();

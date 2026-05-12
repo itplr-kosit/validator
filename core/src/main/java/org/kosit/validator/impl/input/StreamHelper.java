@@ -122,7 +122,7 @@ public class StreamHelper {
             return digest;
         } catch (final NoSuchAlgorithmException e) {
             // should not happen
-            throw new IllegalArgumentException(String.format("Specified method %s is not available", algorithm), e);
+            throw new IllegalArgumentException("Specified method " + algorithm + " is not available", e);
         }
     }
 

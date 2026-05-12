@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (DAEMON) remove Daemon mode
 - (BUILD) [#169](https://projekte.kosit.org/kosit/validator/-/work_items/169) Removed the usage of Lombok
 - (BUILD) [#185](https://projekte.kosit.org/kosit/validator/-/work_items/185) The minimum Java version is now 25
+- (CORE) [#198](https://projekte.kosit.org/kosit/validator/-/work_items/198) Replaced all `String.format` calls with native inline String concatenation
 
 ## 1.6.0
 

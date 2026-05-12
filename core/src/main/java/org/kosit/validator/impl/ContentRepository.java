@@ -284,7 +284,7 @@ public class ContentRepository {
             return this.resolver.resolve(r);
         } catch (final TransformerException e) {
             log.error("Error resolving source {}", source, e);
-            throw new IllegalStateException(String.format("Can not resolve %s in repository %s", source, this.repository), e);
+            throw new IllegalStateException("Can not resolve " + source + " in repository " + this.repository, e);
         }
     }
 
@@ -303,8 +303,8 @@ public class ContentRepository {
             }
             return compiler.compile(expression);
         } catch (final SaxonApiException e) {
-            throw new IllegalStateException(String.format("Can not compile xpath match expression \'%s\'",
-                    StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION"), e);
+            throw new IllegalStateException("Can not compile xpath match expression '"
+                    + (StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION") + "'", e);
         }
     }
 

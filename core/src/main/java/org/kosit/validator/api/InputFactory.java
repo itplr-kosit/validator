@@ -121,7 +121,7 @@ public class InputFactory {
         try {
             return read(uri.toURL(), digestAlgorithm);
         } catch (final MalformedURLException e) {
-            throw new IllegalArgumentException(String.format("URL invalid or protocol not supported: %s", uri), e);
+            throw new IllegalArgumentException("URL invalid or protocol not supported: " + uri, e);
         }
     }
 

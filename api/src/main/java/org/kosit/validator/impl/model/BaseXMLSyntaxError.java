@@ -46,7 +46,7 @@ public abstract class BaseXMLSyntaxError implements XmlError {
 
     @Override
     public String toString() {
-        return String.format("%s At row %s at pos %s", getMessage(), getRowNumber(), getColumnNumber());
+        return getMessage() + " At row " + getRowNumber() + " at pos " + getColumnNumber();
     }
 
     /**

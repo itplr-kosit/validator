@@ -78,11 +78,11 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
             try {
                 return new StreamSource(resolved.toURL().openStream(), resolved.toASCIIString());
             } catch (final IOException e) {
-                throw new TransformerException(String.format("Can not resolve required  %s", href), e);
+                throw new TransformerException("Can not resolve required  " + href, e);
             }
         } else {
-            throw new TransformerException(String
-                    .format("The resolved transformation artifact %s is not within the configured repository %s", resolved, this.baseUri));
+            throw new TransformerException(
+                    "The resolved transformation artifact " + resolved + " is not within the configured repository " + this.baseUri);
         }
     }
 
@@ -96,8 +96,8 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         if (isUnderBaseUri(absoluteURI, this.baseUri)) {
             return new StandardUnparsedTextResolver().resolve(absoluteURI, encoding, config);
         } else {
-            throw new XPathException(String.format("The resolved transformation artifact %s is not within the configured repository %s",
-                    absoluteURI, this.baseUri));
+            throw new XPathException(
+                    "The resolved transformation artifact " + absoluteURI + " is not within the configured repository " + this.baseUri);
         }
     }
 

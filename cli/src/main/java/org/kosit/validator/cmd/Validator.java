@@ -176,7 +176,7 @@ public class Validator {
                 // Assume directory of scenario location instead
                 return Paths.get(scenarioLocation).getParent().toUri();
             }
-            throw new IllegalArgumentException(String.format("No repository location for scenario definition \'%s\' specified", key));
+            throw new IllegalArgumentException("No repository location for scenario definition '" + key + "' specified");
         }
         return determineRepository(path);
     }
@@ -214,7 +214,7 @@ public class Validator {
         if (cmd.getOutputPath() != null) {
             dir = cmd.getOutputPath();
             if ((!Files.exists(dir) && !dir.toFile().mkdirs()) || !Files.isDirectory(dir)) {
-                throw new IllegalStateException(String.format("Invalid target directory %s specified", dir));
+                throw new IllegalStateException("Invalid target directory " + dir + " specified");
             }
         } else {
             dir = Paths.get(""/* cwd */);
@@ -271,15 +271,13 @@ public class Validator {
         if (Files.isDirectory(d)) {
             return d.toUri();
         } else {
-            throw new IllegalArgumentException(
-                    String.format("Not a valid path for repository definition specified: \'%s\'", d.toAbsolutePath()));
+            throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
         }
     }
 
     private static void assertFileExistance(final Path f, final String type) {
         if (!Files.isRegularFile(f)) {
-            throw new IllegalArgumentException(
-                    String.format("Not a valid path for %s definition specified: \'%s\'", type, f.toAbsolutePath()));
+            throw new IllegalArgumentException("Not a valid path for " + type + " definition specified: '" + f.toAbsolutePath() + "'");
         }
     }
 }
