@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * After switching to QuarkusApp for CDI integration, generally redirecting the outputs has become a problem. Therefore
- * the tests only test Commandline.execute, in which this class allows the output to be diverted without affecting the
- * Quarkus writing mechanisms.
+ * Helper that captures picocli/Printer output into in-memory writers for assertions.
  */
 public class TestWriter {
 

@@ -24,12 +24,6 @@ import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.kosit.validator.cmd.report.Line;
 
-import io.quarkus.picocli.runtime.annotations.TopCommand;
-import io.quarkus.runtime.Quarkus;
-import io.quarkus.runtime.QuarkusApplication;
-import io.quarkus.runtime.annotations.QuarkusMain;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import picocli.CommandLine;
 import picocli.CommandLine.ParseResult;
 
@@ -42,7 +36,6 @@ import picocli.CommandLine.ParseResult;
  * @author Andreas Penski
  */
 // performance is not a problem here
-@QuarkusMain
 public class CommandLineApplication {
 
     private CommandLineApplication() {
@@ -55,62 +48,60 @@ public class CommandLineApplication {
      * @param args the input arguments
      */
     public static void main(final String[] args) {
-        Quarkus.run(CliRunner.class, args); // args are those from the java -jar invocation
+        System.exit(run(args));
     }
 
-    @ApplicationScoped
-    public static class CliRunner implements QuarkusApplication {
+    /**
+     * Runs the CLI and returns the process exit code.
+     *
+     * @param args the input arguments
+     * @return exit code
+     */
+    public static int run(final String... args) {
+        AnsiConsole.systemInstall();
 
-        @Inject
-        @TopCommand
-        CommandLineOptions options;
+        final CommandLineOptions options = new CommandLineOptions();
+        options.setEngineInformation(new CliEngineInformation());
+        final CommandLine commandLine = new CommandLine(options);
+        ReturnValue resultStatus;
+        try {
+            commandLine.setExecutionExceptionHandler(CommandLineApplication::logExecutionException);
 
-        @Override
-        public int run(String... args) {
-            AnsiConsole.systemInstall();
-
-            ReturnValue resultStatus;
-            CommandLine commandLine = new CommandLine(options);
-            try {
-                commandLine.setExecutionExceptionHandler(CliRunner::logExecutionException);
-
-                final int cmdlineRetVal = commandLine.execute(args);
-                if (commandLine.isUsageHelpRequested() || cmdlineRetVal == CommandLine.ExitCode.USAGE) {
-                    resultStatus = ReturnValue.HELP_REQUEST;
-                } else {
-                    resultStatus = ObjectUtils.getIfNull(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
-                    if (resultStatus.isError()) {
-                        commandLine.usage(System.out);
-                    }
-                }
-
-                if (!resultStatus.equals(ReturnValue.HELP_REQUEST) && resultStatus.getCode() >= 0) {
-                    sayGoodby(resultStatus);
-                }
-            } catch (final Exception e) {
-                writeErr("Error processing command line arguments: {0}", e.getMessage(), e);
-                resultStatus = ReturnValue.PARSING_ERROR;
-            }
-
-            return resultStatus.getCode(); // process exit code
-        }
-
-        private void sayGoodby(final ReturnValue resultStatus) {
-            Printer.writeOut("\n##############################");
-            if (resultStatus.equals(ReturnValue.SUCCESS)) {
-                Printer.writeOut("#   " + new Line(Code.GREEN).add("Validation successful!").render(false, false) + "   #");
+            final int cmdlineRetVal = commandLine.execute(args);
+            if (commandLine.isUsageHelpRequested() || cmdlineRetVal == CommandLine.ExitCode.USAGE) {
+                resultStatus = ReturnValue.HELP_REQUEST;
             } else {
-                Printer.writeOut("#     " + new Line(Code.RED).add("Validation failed!").render(false, false) + "     #");
+                resultStatus = ObjectUtils.getIfNull(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
+                if (resultStatus.isError()) {
+                    commandLine.usage(System.out);
+                }
             }
-            Printer.writeOut("##############################");
+
+            if (!resultStatus.equals(ReturnValue.HELP_REQUEST) && resultStatus.getCode() >= 0) {
+                sayGoodby(resultStatus);
+            }
+        } catch (final Exception e) {
+            writeErr("Error processing command line arguments: {0}", e.getMessage(), e);
+            resultStatus = ReturnValue.PARSING_ERROR;
         }
 
-        private static int logExecutionException(final Exception ex, final CommandLine cli, final ParseResult parseResult) {
-            final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "An error occurred";
-            Printer.writeErr(ex, message);
-            return 1;
-        }
+        return resultStatus.getCode();
+    }
 
+    private static void sayGoodby(final ReturnValue resultStatus) {
+        Printer.writeOut("\n##############################");
+        if (resultStatus.equals(ReturnValue.SUCCESS)) {
+            Printer.writeOut("#   " + new Line(Code.GREEN).add("Validation successful!").render(false, false) + "   #");
+        } else {
+            Printer.writeOut("#     " + new Line(Code.RED).add("Validation failed!").render(false, false) + "     #");
+        }
+        Printer.writeOut("##############################");
+    }
+
+    private static int logExecutionException(final Exception ex, final CommandLine cli, final ParseResult parseResult) {
+        final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "An error occurred";
+        Printer.writeErr(ex, message);
+        return 1;
     }
 
     enum Level {

@@ -25,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Strings;
@@ -37,16 +36,11 @@ import org.kosit.validator.impl.Helper.Simple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.picocli.runtime.annotations.TopCommand;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-
 /**
  * Tests the parameters of the command line tool.
  *
  * @author Andreas Penski
  */
-@QuarkusTest
 public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
@@ -61,8 +55,6 @@ public class CommandlineApplicationTest {
 
     LogCaptureHandler logCapture;
 
-    @Inject
-    @TopCommand
     CommandLineOptions options;
 
     private static void checkForHelp(final List<String> outputLines) {
@@ -73,6 +65,8 @@ public class CommandlineApplicationTest {
     @BeforeEach
     public void setup() throws IOException {
         testWriter = new TestWriter();
+        options = new CommandLineOptions();
+        options.setEngineInformation(new CliEngineInformation());
         // Picocli output
         commandLine = new picocli.CommandLine(options);
         commandLine.setOut(new PrintWriter(testWriter.getOutWriter()));
@@ -86,10 +80,9 @@ public class CommandlineApplicationTest {
         });
         // Printer output
         Printer.configure(new PrintWriter(testWriter.getOutWriter(), true), new PrintWriter(testWriter.getErrWriter(), true));
-        // Log capture
-        org.jboss.logmanager.Logger root = org.jboss.logmanager.Logger.getLogger("");
-        logCapture = new LogCaptureHandler(Level.ALL);
-        root.addHandler(logCapture);
+        // Log capture (tails slf4j-simple log file configured via surefire)
+        final String logFile = System.getProperty("org.slf4j.simpleLogger.logFile", "target/cli-test.log");
+        logCapture = new LogCaptureHandler(Paths.get(logFile));
         if (Files.exists(this.output)) {
             FileUtils.cleanDirectory(this.output.toFile());
         }
@@ -106,7 +99,6 @@ public class CommandlineApplicationTest {
             }
         });
         Printer.reset();
-        org.jboss.logmanager.Logger.getLogger("").removeHandler(logCapture);
     }
 
     @Test

@@ -22,7 +22,6 @@ import java.util.concurrent.Callable;
 import org.kosit.validator.cmd.CommandLineApplication.Level;
 import org.kosit.validator.impl.EngineInformation;
 
-import jakarta.inject.Inject;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -152,8 +151,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         // just for type safety
     }
 
-    @Inject
-    EngineInformation engineInformation;
+    private EngineInformation engineInformation;
 
     @ArgGroup(exclusive = false, heading = "CLI usage options\n")
     private CliOptions cliOptions;
@@ -198,6 +196,10 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     public EngineInformation getEngineInformation() {
         return this.engineInformation;
+    }
+
+    public void setEngineInformation(final EngineInformation engineInformation) {
+        this.engineInformation = engineInformation;
     }
 
     public CliOptions getCliOptions() {
