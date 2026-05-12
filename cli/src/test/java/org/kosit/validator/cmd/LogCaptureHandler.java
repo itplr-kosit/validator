@@ -1,47 +1,45 @@
 package org.kosit.validator.cmd;
 
-import org.jboss.logmanager.ExtHandler;
-import org.jboss.logmanager.formatters.PatternFormatter;
-
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
- * In Quarkus, CLI log output is no longer emitted via {@code System.err}, but exclusively via the JBoss LogManager. To
- * keep Picocli and Validator messages testable, a custom log handler captures all LogRecord objects and provides the
- * fully formatted output for assertions.
+ * Captures slf4j-simple log output by tailing the configured log file. Surefire is configured to set
+ * {@code org.slf4j.simpleLogger.logFile} to a file path, into which slf4j-simple writes all log output. Tests record
+ * the file size on construction and return only the content appended thereafter.
  */
-public class LogCaptureHandler extends ExtHandler {
+public class LogCaptureHandler {
 
-    private final PatternFormatter formatter = new PatternFormatter("%d{HH:mm:ss} %-5p [%c] %s%e%n");
+    private final Path logFile;
 
-    private final StringWriter buffer = new StringWriter();
+    private final long startPos;
 
-    private final PrintWriter writer = new PrintWriter(buffer, true);
-
-    public LogCaptureHandler(Level level) {
-        setLevel(level);
+    public LogCaptureHandler(final Path logFile) {
+        this.logFile = logFile;
+        this.startPos = currentSize(logFile);
     }
 
-    @Override
-    public void publish(LogRecord record) {
-        writer.println(formatter.format(record));
-    }
-
-    @Override
-    public void flush() {
-        writer.flush();
-    }
-
-    @Override
-    public void close() {
-        writer.flush();
+    private static long currentSize(final Path p) {
+        try {
+            return Files.exists(p) ? Files.size(p) : 0L;
+        } catch (final IOException e) {
+            return 0L;
+        }
     }
 
     public String getLogs() {
-        writer.flush();
-        return buffer.toString();
+        try {
+            if (!Files.exists(logFile)) {
+                return "";
+            }
+            final byte[] all = Files.readAllBytes(logFile);
+            if (all.length <= startPos) {
+                return "";
+            }
+            return new String(all, (int) startPos, (int) (all.length - startPos));
+        } catch (final IOException e) {
+            return "";
+        }
     }
 }

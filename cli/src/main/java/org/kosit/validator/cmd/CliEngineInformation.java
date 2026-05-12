@@ -1,23 +1,41 @@
 package org.kosit.validator.cmd;
 
-import io.quarkus.info.BuildInfo;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.kosit.validator.impl.EngineInformation;
 
-@ApplicationScoped
+/**
+ * Static implementation of {@link EngineInformation} reading build metadata from a Maven-filtered properties file.
+ */
 public class CliEngineInformation implements EngineInformation {
 
-    @Inject
-    BuildInfo buildInfo;
+    private static final String RESOURCE = "/cli-info.properties";
 
-    @ConfigProperty(name = "validator.framework-version")
-    String frameworkVersion;
+    private final String name;
+
+    private final String version;
+
+    private final String frameworkVersion;
+
+    public CliEngineInformation() {
+        final Properties props = new Properties();
+        try ( InputStream is = CliEngineInformation.class.getResourceAsStream(RESOURCE) ) {
+            if (is != null) {
+                props.load(is);
+            }
+        } catch (final IOException e) {
+            // fall through to defaults
+        }
+        this.name = props.getProperty("validator.name", "validator-cli");
+        this.version = props.getProperty("validator.version", "unknown");
+        this.frameworkVersion = props.getProperty("validator.framework-version", "unknown");
+    }
 
     @Override
     public String getName() {
-        return buildInfo.artifact();
+        return name;
     }
 
     @Override
@@ -27,11 +45,11 @@ public class CliEngineInformation implements EngineInformation {
 
     @Override
     public String getVersion() {
-        return buildInfo.version();
+        return version;
     }
 
     @Override
     public String getBuild() {
-        return buildInfo.version();
+        return version;
     }
 }

@@ -88,6 +88,10 @@ public class CommandLine {
     public static void activate() {
         out.setOut(new ByteArrayOutputStream());
         error.setOut(new ByteArrayOutputStream());
+        // Re-bind Printer's cached writers to the current (tee'd) System.out/System.err so output from
+        // Printer.writeOut/writeErr is captured. Without this, Printer may still hold a PrintWriter wrapping the
+        // original System.out from a previous test class (no longer isolated by Quarkus' classloader).
+        Printer.reset();
     }
 
     public static void deactivate() {
