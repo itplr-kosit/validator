@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Modularisierung. Bereistellung des Servers als Quarkus App
 - (DAEMON) remove Daemon mode
+- (BUILD) [#169](https://projekte.kosit.org/kosit/validator/-/work_items/169) Removed the usage of Lombok
 - (BUILD) [#185](https://projekte.kosit.org/kosit/validator/-/work_items/185) The minimum Java version is now 25
 
 ## 1.6.0
