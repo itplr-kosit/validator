@@ -142,15 +142,13 @@ public class ValidationService {
         if (Files.isDirectory(d)) {
             return d.toUri();
         } else {
-            throw new IllegalArgumentException(
-                    String.format("Not a valid path for repository definition specified: \'%s\'", d.toAbsolutePath()));
+            throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
         }
     }
 
     private static void assertFileExistance(final Path f, final String type) {
         if (!Files.isRegularFile(f)) {
-            throw new IllegalArgumentException(
-                    String.format("Not a valid path for %s definition specified: \'%s\'", type, f.toAbsolutePath()));
+            throw new IllegalArgumentException("Not a valid path for " + type + " definition specified: '" + f.toAbsolutePath() + "'");
         }
     }
 

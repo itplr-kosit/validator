@@ -15,8 +15,6 @@
  */
 package org.kosit.validator.impl.xml;
 
-import static java.lang.String.format;
-
 import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -75,14 +73,14 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
 
     protected void allowExternalSchema(final Validator validator, final boolean lenient, final String... schemes) {
         final String schemeString = String.join(",", schemes);
-        setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient, format(
-                "Can set  external schema  access to schemes (%s). Maybe an unsupported JAXP implementation is used.", schemeString));
+        setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient,
+                "Can set  external schema  access to schemes (" + schemeString + "). Maybe an unsupported JAXP implementation is used.");
     }
 
     protected void allowExternalSchema(final SchemaFactory schemaFactory, final boolean lenient, final String... schemes) {
         final String schemeString = String.join(",", schemes);
-        setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient, format(
-                "Can set  external schema  access to schemes (%s). Maybe an unsupported JAXP implementation is used.", schemeString));
+        setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient,
+                "Can set  external schema  access to schemes (" + schemeString + "). Maybe an unsupported JAXP implementation is used.");
     }
 
     protected void disableExternalEntities(final Validator validator) {

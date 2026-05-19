@@ -58,7 +58,7 @@ public class SaxonSecurityTest {
         final Processor p = TestObjectFactory.createProcessor();
         for (int i = 1; i <= 5; i++) {
             try {
-                final URL resource = SaxonSecurityTest.class.getResource(String.format("/evil/evil%s.xsl", i));
+                final URL resource = SaxonSecurityTest.class.getResource("/evil/evil" + i + ".xsl");
                 final XsltCompiler compiler = p.newXsltCompiler();
                 final RelativeUriResolver resolver = new RelativeUriResolver(Simple.REPOSITORY_URI);
                 compiler.setURIResolver(resolver);
@@ -74,7 +74,7 @@ public class SaxonSecurityTest {
 
                 // if this point is reached, the 'evil' element should at least not be filled with 'evil' content!
                 if (StringUtils.isNotBlank(result.getXdmNode().getStringValue())) {
-                    fail(String.format("Saxon configuration should prevent expansion within %s", resource));
+                    fail("Saxon configuration should prevent expansion within " + resource);
                 }
             } catch (final SaxonApiException | RuntimeException e) {
                 log.info("Expected exception detected {}", e.getMessage(), e);

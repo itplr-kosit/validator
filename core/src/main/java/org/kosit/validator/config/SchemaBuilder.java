@@ -60,7 +60,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
     @Override
     public Result<Pair<ValidateWithXmlSchema, Schema>, String> build(final ContentRepository repository) {
         if (this.schema == null && this.schemaLocation == null) {
-            return createError(String.format("Must supply source location and/or executable for schema \'%s\'", this.name));
+            return createError("Must supply source location and/or executable for schema '" + this.name + "'");
         }
         Result<Pair<ValidateWithXmlSchema, Schema>, String> result;
         try {
@@ -70,7 +70,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
             result = new Result<>(new ImmutablePair<>(createObject(), this.schema));
         } catch (final IllegalStateException e) {
             log.error(e.getMessage(), e);
-            result = createError(String.format("Can not create schema based %s. Exception is %s", this.schemaLocation, e.getMessage()));
+            result = createError("Can not create schema based " + this.schemaLocation + ". Exception is " + e.getMessage());
         }
         return result;
     }

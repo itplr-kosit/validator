@@ -331,7 +331,7 @@ public class ConfigurationBuilder {
             final Result<Scenario, String> result = s.build(contentRepository);
             if (result.isInvalid()) {
                 final String msg = String.join(",", result.getErrors());
-                throw new IllegalStateException(String.format("Invalid configuration for scenario %s found: %s", s.getName(), msg));
+                throw new IllegalStateException("Invalid configuration for scenario " + s.getName() + " found: " + msg);
             }
             return result.getObject();
         }).collect(Collectors.toList());

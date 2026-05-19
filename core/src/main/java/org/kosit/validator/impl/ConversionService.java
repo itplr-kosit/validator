@@ -138,7 +138,7 @@ public class ConversionService {
         try {
             this.jaxbContext = JAXBContext.newInstance(contextPath, ConversionService.class.getClassLoader());
         } catch (final JAXBException e) {
-            throw new IllegalStateException(String.format("Can not create JAXB context for given context: %s", contextPath), e);
+            throw new IllegalStateException("Can not create JAXB context for given context: " + contextPath, e);
         }
     }
 
@@ -179,11 +179,11 @@ public class ConversionService {
             final T value = u.unmarshal(xsr, type).getValue();
             if (defaultHandler != null && defaultHandler.hasErrors()) {
                 throw new ConversionExeption(
-                        String.format("Schema errors while reading content from %s: %s", xml, defaultHandler.getErrorDescription()));
+                        "Schema errors while reading content from " + xml + ": " + defaultHandler.getErrorDescription());
             }
             return value;
         } catch (final JAXBException | XMLStreamException e) {
-            throw new ConversionExeption(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml), e);
+            throw new ConversionExeption("Can not unmarshal to type " + type.getSimpleName() + " from " + xml, e);
         }
     }
 
@@ -226,7 +226,7 @@ public class ConversionService {
             xmlStreamWriter.flush();
             return w.toString();
         } catch (final JAXBException | IOException | XMLStreamException e) {
-            throw new ConversionExeption(String.format("Error serializing Object %s", model.getClass().getName()), e);
+            throw new ConversionExeption("Error serializing Object " + model.getClass().getName(), e);
         }
     }
 
@@ -235,8 +235,8 @@ public class ConversionService {
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
             return u.unmarshal(source, type).getValue();
         } catch (final JAXBException e) {
-            throw new ConversionExeption(String.format("Can not unmarshal to type %s: %s", type.getSimpleName(),
-                    StringUtils.abbreviate(source.getSystemId(), MAX_LOG_CONTENT)), e);
+            throw new ConversionExeption("Can not unmarshal to type " + type.getSimpleName() + ": "
+                    + StringUtils.abbreviate(source.getSystemId(), MAX_LOG_CONTENT), e);
         }
     }
 }

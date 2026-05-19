@@ -133,7 +133,7 @@ public class XmlConversionService {
         try {
             this.jaxbContext = JAXBContext.newInstance(contextPath, XmlConversionService.class.getClassLoader());
         } catch (final JAXBException e) {
-            throw new IllegalStateException(String.format("Can not create JAXB context for given context: %s", contextPath), e);
+            throw new IllegalStateException("Can not create JAXB context for given context: " + contextPath, e);
         }
     }
 
@@ -149,7 +149,7 @@ public class XmlConversionService {
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
             return u.unmarshal(xsr, type).getValue();
         } catch (final JAXBException | XMLStreamException | IOException e) {
-            throw new ConversionExeption(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml), e);
+            throw new ConversionExeption("Can not unmarshal to type " + type.getSimpleName() + " from " + xml, e);
         }
     }
 }

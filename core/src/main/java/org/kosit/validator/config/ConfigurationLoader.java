@@ -84,9 +84,8 @@ public class ConfigurationLoader {
             final Result<XdmNode, XMLSyntaxError> result = new DocumentParseAction(processor)
                     .parseDocument(InputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
-                throw new IllegalStateException(String.format(
-                        "Specified scenario configuration %s is not supported.%nThis version only supports definitions of \'%s\'",
-                        scenarioDefinition, SUPPORTED_MAJOR_VERSION_SCHEMA));
+                throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition
+                        + " is not supported.\nThis version only supports definitions of '" + SUPPORTED_MAJOR_VERSION_SCHEMA + "'");
             }
         } catch (final MalformedURLException e) {
             throw new IllegalStateException("Error reading definition file");
@@ -177,7 +176,7 @@ public class ConfigurationLoader {
             log.info("Loading scenario content from {}", this.getScenarioRepository());
         } else {
             throw new IllegalStateException(
-                    String.format("Can not load scenarios from %s due to %s", getScenarioDefinition(), handler.getErrorDescription()));
+                    "Can not load scenarios from " + getScenarioDefinition() + " due to " + handler.getErrorDescription());
         }
         return scenarios;
     }
