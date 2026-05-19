@@ -68,6 +68,8 @@
         <version.slf4j>2.0.17</version.slf4j>
         <version.jaxb-maven-plugin>4.0.12</version.jaxb-maven-plugin>
         <version.xmlresolver>6.0.4</version.xmlresolver>
+        <version.picocli>4.7.7</version.picocli>
+        <version.jansi>2.4.1</version.jansi>
     </properties>
 
     <repositories>
@@ -193,6 +195,17 @@
                 <version>1.0.3</version>
             </dependency>
             
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli</artifactId>
+                <version>${version.picocli}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.fusesource.jansi</groupId>
+                <artifactId>jansi</artifactId>
+                <version>${version.jansi}</version>
+            </dependency>
+
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-api</artifactId>
