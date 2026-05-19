@@ -22,15 +22,24 @@ public class CliEngineInformation implements EngineInformation {
     public CliEngineInformation() {
         final Properties props = new Properties();
         try ( InputStream is = CliEngineInformation.class.getResourceAsStream(RESOURCE) ) {
-            if (is != null) {
-                props.load(is);
+            if (is == null) {
+                throw new IllegalStateException("Required classpath resource " + RESOURCE + " is missing");
             }
+            props.load(is);
         } catch (final IOException e) {
-            // fall through to defaults
+            throw new IllegalStateException("Unable to load " + RESOURCE, e);
         }
-        this.name = props.getProperty("validator.name", "validator-cli");
-        this.version = props.getProperty("validator.version", "unknown");
-        this.frameworkVersion = props.getProperty("validator.framework-version", "unknown");
+        this.name = required(props, "validator.name");
+        this.version = required(props, "validator.version");
+        this.frameworkVersion = required(props, "validator.framework-version");
+    }
+
+    private static String required(final Properties props, final String key) {
+        final String value = props.getProperty(key);
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException("Required property '" + key + "' is missing in " + RESOURCE);
+        }
+        return value;
     }
 
     @Override

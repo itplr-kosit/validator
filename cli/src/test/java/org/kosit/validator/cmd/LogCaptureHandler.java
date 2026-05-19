@@ -1,8 +1,12 @@
 package org.kosit.validator.cmd;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Captures slf4j-simple log output by tailing the configured log file. Surefire is configured to set
@@ -10,6 +14,8 @@ import java.nio.file.Path;
  * the file size on construction and return only the content appended thereafter.
  */
 public class LogCaptureHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(LogCaptureHandler.class);
 
     private final Path logFile;
 
@@ -24,6 +30,7 @@ public class LogCaptureHandler {
         try {
             return Files.exists(p) ? Files.size(p) : 0L;
         } catch (final IOException e) {
+            log.warn("Unable to determine size of log file {}", p, e);
             return 0L;
         }
     }
@@ -37,8 +44,9 @@ public class LogCaptureHandler {
             if (all.length <= startPos) {
                 return "";
             }
-            return new String(all, (int) startPos, (int) (all.length - startPos));
+            return new String(all, (int) startPos, (int) (all.length - startPos), StandardCharsets.UTF_8);
         } catch (final IOException e) {
+            log.warn("Unable to read log file {}", logFile, e);
             return "";
         }
     }
