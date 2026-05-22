@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.model.Result;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Repository for die aktiven Szenario einer Prüfinstanz.
- * 
+ * Repository for the active scenarios of a check instance.
+ *
  * @author Andreas Penski
  */
-@Slf4j
-
 public class ScenarioRepository {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioRepository.class);
 
     public static final String DEFAULT = "default";
 
@@ -47,13 +48,13 @@ public class ScenarioRepository {
             throw new IllegalArgumentException("Must provide at least one configuration");
         }
         this.configuration = Arrays.asList(configuration);
-        this.configuration.forEach(v -> log.info("Loaded scenarios for {} by {} from {}.", v.getName(), v.getAuthor(), v.getDate()));
-        log.info("The following scenarios are available:\n{}", summarizeScenarios());
+        this.configuration.forEach(v -> LOGGER.info("Loaded scenarios for {} by {} from {}.", v.getName(), v.getAuthor(), v.getDate()));
+        LOGGER.info("The following scenarios are available:\n{}", summarizeScenarios());
     }
 
     public Scenario getFallbackScenario() {
         if (this.configuration.size() > 1) {
-            log.warn("Multiple configurations found. Using fallback scenario from first configuration");
+            LOGGER.warn("Multiple configurations found. Using fallback scenario from first configuration");
         }
         return this.configuration.get(0).getFallbackScenario();
     }
@@ -72,7 +73,7 @@ public class ScenarioRepository {
      * Determine the matching Scenario for the provided input document
      *
      * @param document input document
-     * @return ein Ergebnis-Objekt zur weiteren Verarbeitung
+     * @return a result object for further processing
      */
     public Result<Scenario, String> selectScenario(final XdmNode document) {
         final Result<Scenario, String> result;
@@ -85,7 +86,6 @@ public class ScenarioRepository {
             result = new Result<>(getFallbackScenario(), Arrays.asList("More than one scenario matches the specified document"));
         }
         return result;
-
     }
 
     private static boolean match(final XdmNode document, final Scenario scenario) {
@@ -94,9 +94,8 @@ public class ScenarioRepository {
             selector.setContextItem(document);
             return selector.effectiveBooleanValue();
         } catch (final SaxonApiException e) {
-            log.error("Error evaluating xpath expression", e);
+            LOGGER.error("Error evaluating xpath expression", e);
         }
         return false;
     }
-
 }

@@ -23,7 +23,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 /**
- * Simple base implemenation for http handlers. Doing I/O stuff.
+ * Simple base implementation for http handlers. Doing I/O stuff.
  * 
  * @author Andreas Penski
  */

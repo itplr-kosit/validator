@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -24,15 +23,14 @@ import java.util.Collections;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
-
 import net.sf.saxon.s9api.XsltExecutable;
 
 /**
@@ -40,8 +38,9 @@ import net.sf.saxon.s9api.XsltExecutable;
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, Transformation>> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchematronBuilder.class);
 
     private static final String DEFAULT_NAME = "manually configured";
 
@@ -54,20 +53,18 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
     @Override
     public Result<Pair<ValidateWithSchematron, Transformation>, String> build(final ContentRepository repository) {
         if (this.executable == null && this.source == null) {
-            return createError(String.format("Must supply source location and/or executable for schematron '%s'", this.name));
+            return createError("Must supply source location and/or executable for schematron \'" + this.name + "\'");
         }
         final ValidateWithSchematron object = createObject();
         Result<Pair<ValidateWithSchematron, Transformation>, String> result;
-
         try {
             if (this.executable == null) {
                 this.executable = repository.createSchematronTransformation(object).getExecutable();
             }
             result = new Result<>(new ImmutablePair<>(object, new Transformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
-            log.error(e.getMessage(), e);
-            result = createError(
-                    String.format("Can not create schematron configuration based  on %s. Exception is %s", this.source, e.getMessage()));
+            LOGGER.error(e.getMessage(), e);
+            result = createError("Can not create schematron configuration based  on " + this.source + ". Exception is " + e.getMessage());
         }
         return result;
     }

@@ -13,42 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.api;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.xml.ProcessorProvider;
 
 /**
- * Zentrale Konfigration einer Prüf-Instanz.
- * 
+ * Central configuration of a validation instance.
+ *
  * @author Andreas Penski
  * @deprecated since 1.3.0 use {@link Configuration} instead. Will be removed in 2.0
  */
-@Getter
-@Setter
-@Slf4j
-@RequiredArgsConstructor
 @Deprecated
 public class CheckConfiguration implements Configuration {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckConfiguration.class);
+
     /**
-     * URL, die auf die scenerio.xml Datei zeigt.
+     * URL pointing to the scenario.xml file.
      */
     private final URI scenarioDefinition;
 
     /**
-     * Root-Ordner mit den von den einzelnen Szenarien benötigten Dateien
+     * Root folder containing the files required by the individual scenarios.
      */
     private URI scenarioRepository;
 
@@ -94,5 +89,39 @@ public class CheckConfiguration implements Configuration {
     @Override
     public ContentRepository getContentRepository() {
         return getDelegate().getContentRepository();
+    }
+
+    /**
+     * URL pointing to the scenario.xml file.
+     */
+    public URI getScenarioDefinition() {
+        return this.scenarioDefinition;
+    }
+
+    /**
+     * Root folder containing the files required by the individual scenarios.
+     */
+    public URI getScenarioRepository() {
+        return this.scenarioRepository;
+    }
+
+    /**
+     * Root folder containing the files required by the individual scenarios.
+     */
+    public void setScenarioRepository(final URI scenarioRepository) {
+        this.scenarioRepository = scenarioRepository;
+    }
+
+    public void setDelegate(final Configuration delegate) {
+        this.delegate = delegate;
+    }
+
+    /**
+     * Creates a new {@code CheckConfiguration} instance.
+     *
+     * @param scenarioDefinition URL pointing to the scenario.xml file.
+     */
+    public CheckConfiguration(final URI scenarioDefinition) {
+        this.scenarioDefinition = scenarioDefinition;
     }
 }

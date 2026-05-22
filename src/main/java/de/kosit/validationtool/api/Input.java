@@ -25,7 +25,6 @@ import javax.xml.transform.Source;
  *
  * @author apenski
  */
-
 public interface Input {
 
     /**

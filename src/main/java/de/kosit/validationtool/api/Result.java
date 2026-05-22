@@ -33,23 +33,23 @@ import net.sf.saxon.s9api.XdmNode;
 public interface Result {
 
     /**
-     * Zeigt an, ob die Verarbeitung durch den Validator erfolgreich durchlaufen wurde. Diese Funktion macht
-     * ausdrücklich keine Aussage über die zur Akzeptanz.
+     * Indicates whether processing by the validator completed successfully. This function explicitly makes no statement
+     * about acceptance.
      *
-     * @return true, wenn die Verarbeitung komplett und erfolgreich durchlaufen wurde
+     * @return true if processing completed in full and successfully
      * @see #getAcceptRecommendation()
      */
     boolean isProcessingSuccessful();
 
     /**
-     * Gibt eine Liste mit Verarbeitungsfehlermeldungen zurück.
+     * Returns a list of processing error messages.
      *
-     * @return Liste mit Fehlermeldungen
+     * @return list of error messages
      */
     List<String> getProcessingErrors();
 
     /**
-     * Der generierte Report.
+     * The generated report.
      */
     XdmNode getReport();
 
@@ -61,29 +61,28 @@ public interface Result {
     AcceptRecommendation getAcceptRecommendation();
 
     /**
-     * Gibt den Report als W3C-{@link Document} zurück.
+     * Returns the report as a W3C {@link Document}.
      *
-     * @return der Report
+     * @return the report
      */
     Document getReportDocument();
 
     /**
-     * Schnellzugriff auf die Empfehlung zur Weiterverarbeitung des Dokuments.
+     * Shortcut to the recommendation for further processing of the document.
      *
-     * @return <code>true</code> wenn {@link AcceptRecommendation#ACCEPTABLE}
+     * @return <code>true</code> if {@link AcceptRecommendation#ACCEPTABLE}
      */
     boolean isAcceptable();
 
     /**
-     * Gibt eine Liste mit gefundenen Schema-Validation-Fehler zurück. Diese Liste ist leer, wenn keine Fehler gefunden
-     * wurden.
-     * 
+     * Returns a list of schema validation errors that were found. This list is empty if no errors were found.
+     *
      * @return List of schema validation errors.
      */
     List<XmlError> getSchemaViolations();
 
     /**
-     * Liefert die Ergebnisse der Schematron-Prüfungen, in der Reihenfolge der Szenario-Konfiguration.
+     * Returns the results of the Schematron checks, in the order of the scenario configuration.
      *
      * @return List with Schematron results
      */
@@ -103,14 +102,14 @@ public interface Result {
     List<FailedAssert> getFailedAsserts();
 
     /**
-     * Liefert ein true, wenn keine Schema-Violations vorhanden sind.
+     * Returns true if no schema violations are present.
      *
      * @return <code>true</code> if XML Schema compliant
      */
     boolean isSchemaValid();
 
     /**
-     * Liefert ein true, wenn der Prüfling eine well-formed XML-Datei ist.
+     * Returns true if the test object is a well-formed XML file.
      *
      * @return <code>true</code> if wellformed
      */

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.input;
 
 import static de.kosit.validationtool.impl.input.StreamHelper.drain;
@@ -21,9 +20,8 @@ import static de.kosit.validationtool.impl.input.StreamHelper.drain;
 import java.io.IOException;
 import java.io.InputStream;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.api.Input;
 
@@ -32,19 +30,18 @@ import de.kosit.validationtool.api.Input;
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public abstract class AbstractInput implements Input, LazyReadInput {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractInput.class);
 
     private byte[] hashCode;
 
-    @Getter
-    @Setter
     private long length;
 
     @Override
     public byte[] getHashCode() {
         if (this.hashCode == null) {
-            log.warn("Extra calculating hashcode. This is in-efficient in most cases");
+            LOGGER.warn("Extra calculating hashcode. This is in-efficient in most cases");
             computeHashcode();
         }
         return this.hashCode;
@@ -54,7 +51,7 @@ public abstract class AbstractInput implements Input, LazyReadInput {
         try {
             drain(this);
         } catch (final IOException e) {
-            log.error("Error extra computing hashcode", e);
+            LOGGER.error("Error extra computing hashcode", e);
         }
     }
 
@@ -81,5 +78,13 @@ public abstract class AbstractInput implements Input, LazyReadInput {
 
     public boolean supportsMultipleReads() {
         return true;
+    }
+
+    public long getLength() {
+        return this.length;
+    }
+
+    public void setLength(final long length) {
+        this.length = length;
     }
 }

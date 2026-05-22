@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import java.nio.file.Path;
@@ -21,9 +20,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import de.kosit.validationtool.cmd.CommandLineApplication.Level;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Visibility;
@@ -37,7 +33,6 @@ import picocli.CommandLine.Parameters;
  */
 @Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false,
          separator = " ", synopsisHeading = CommandLineOptions.SYNOSIS_HEADING)
-@Getter
 public class CommandLineOptions implements Callable<ReturnValue> {
 
     static final String SYNOSIS_HEADING = "Usage: ";
@@ -45,8 +40,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
     /**
      * @author Andreas Penski
      */
-    @Getter
-    @NoArgsConstructor
     static class DaemonOptions {
 
         @Option(names = { "-D", "--daemon" }, description = "Starts a daemon listing for validation requests", defaultValue = "false",
@@ -68,13 +61,34 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
         @Option(names = { "-G", "--disable-gui" }, description = "Disables the GUI of the daemon mode")
         private boolean disableGUI;
+
+        public boolean isDaemonMode() {
+            return this.daemonMode;
+        }
+
+        public String getHost() {
+            return this.host;
+        }
+
+        public int getPort() {
+            return this.port;
+        }
+
+        public int getWorkerCount() {
+            return this.workerCount;
+        }
+
+        public boolean isDisableGUI() {
+            return this.disableGUI;
+        }
+
+        public DaemonOptions() {
+        }
     }
 
     /**
      * @author Andreas Penski
      */
-    @Getter
-    @NoArgsConstructor
     static class CliOptions {
 
         @Option(names = { "-o", "--output-directory" }, description = "Defines the out directory for results.", defaultValue = ".",
@@ -107,6 +121,44 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         @Parameters(arity = "1..*", description = "Files to validate")
         private List<Path> files;
 
+        public Path getOutputPath() {
+            return this.outputPath;
+        }
+
+        public boolean isExtractHtml() {
+            return this.extractHtml;
+        }
+
+        public boolean isSerializeInput() {
+            return this.serializeInput;
+        }
+
+        public Path getAssertions() {
+            return this.assertions;
+        }
+
+        public String getReportPostfix() {
+            return this.reportPostfix;
+        }
+
+        public String getReportPrefix() {
+            return this.reportPrefix;
+        }
+
+        public boolean isPrintMemoryStats() {
+            return this.printMemoryStats;
+        }
+
+        public boolean isPrintReport() {
+            return this.printReport;
+        }
+
+        public List<Path> getFiles() {
+            return this.files;
+        }
+
+        public CliOptions() {
+        }
     }
 
     /**
@@ -114,13 +166,27 @@ public class CommandLineOptions implements Callable<ReturnValue> {
      * 
      * @author Andreas Penski
      */
-    @Getter
-    @Setter
-    public abstract static class Definition {
+    public static abstract class Definition {
 
         String name;
 
         Path path;
+
+        public String getName() {
+            return this.name;
+        }
+
+        public Path getPath() {
+            return this.path;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        public void setPath(final Path path) {
+            this.path = path;
+        }
     }
 
     /**
@@ -187,5 +253,37 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     public boolean isCliModeEnabled() {
         return getCliOptions() != null;
+    }
+
+    public DaemonOptions getDaemonOptions() {
+        return this.daemonOptions;
+    }
+
+    public CliOptions getCliOptions() {
+        return this.cliOptions;
+    }
+
+    public boolean isDebugOutput() {
+        return this.debugOutput;
+    }
+
+    public boolean isUsageHelpRequested() {
+        return this.usageHelpRequested;
+    }
+
+    public boolean isDebugLog() {
+        return this.debugLog;
+    }
+
+    public Level getLogLevel() {
+        return this.logLevel;
+    }
+
+    public List<RepositoryDefinition> getRepositories() {
+        return this.repositories;
+    }
+
+    public List<ScenarioDefinition> getScenarios() {
+        return this.scenarios;
     }
 }

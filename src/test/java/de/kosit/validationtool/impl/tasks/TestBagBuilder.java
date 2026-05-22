@@ -44,7 +44,6 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
-
 import net.sf.saxon.s9api.XdmNode;
 
 /**

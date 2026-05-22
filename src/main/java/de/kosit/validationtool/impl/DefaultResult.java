@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl;
 
 import java.util.Collections;
@@ -30,40 +29,35 @@ import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.api.XmlError;
 import de.kosit.validationtool.impl.model.CustomFailedAssert;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Das Default-{@link Result} für die Rückgabe in der API
- * 
+ * The default {@link Result} for returning in the API
+ *
  * @author Andreas Penski
  */
 public class DefaultResult implements Result {
 
-    /** Der generierte Report. */
-    @Getter
+    /**
+     * The generated report.
+     */
     private final XdmNode report;
 
-    /** Die vom Validator erstelle interne Berichts-'Vorstufe' */
-    @Getter
-    @Setter(AccessLevel.PACKAGE)
+    /**
+     * The internal report 'preliminary stage' created by the validator.
+     */
     private CreateReportInput reportInput;
 
-    /** Das evaluierte Ergebnis. */
-    @Getter
+    /**
+     * The evaluated result.
+     */
     private final AcceptRecommendation acceptRecommendation;
 
     private final HtmlExtractor htmlExtraction;
 
-    @Setter(AccessLevel.PACKAGE)
-    @Getter
     private List<XmlError> schemaViolations;
 
-    @Getter
-    @Setter(AccessLevel.PACKAGE)
     private List<SchematronOutput> schematronResult;
 
     /**
@@ -71,12 +65,8 @@ public class DefaultResult implements Result {
      */
     private List<CustomFailedAssert> customFailedAsserts;
 
-    @Getter
-    @Setter
     private boolean processingSuccessful;
 
-    @Getter
-    @Setter
     private boolean wellformed;
 
     public DefaultResult(final XdmNode report, final AcceptRecommendation recommendation, final HtmlExtractor htmlExtractor) {
@@ -91,9 +81,9 @@ public class DefaultResult implements Result {
     }
 
     /**
-     * Gibt den Report als W3C-{@link Document} zurück.
+     * Returns the report as a W3C {@link Document}.
      *
-     * @return der Report
+     * @return the report
      */
     @Override
     public Document getReportDocument() {
@@ -101,9 +91,9 @@ public class DefaultResult implements Result {
     }
 
     /**
-     * Schnellzugriff auf die Empfehlung zur Weiterverarbeitung des Dokuments.
+     * Quick access to the recommendation for further processing of the document.
      *
-     * @return true wenn {@link AcceptRecommendation#ACCEPTABLE}
+     * @return true if {@link AcceptRecommendation#ACCEPTABLE}
      */
     @Override
     public boolean isAcceptable() {
@@ -116,36 +106,36 @@ public class DefaultResult implements Result {
     }
 
     /**
-     * Extrahiert evtl. im Report vorhandene HTML-Fragmente als String.
-     * 
-     * @return Liste mit HTML Strings.
+     * Extracts any HTML fragments present in the report as String.
+     *
+     * @return list of HTML strings.
      */
     public List<String> extractHtmlAsString() {
         return this.htmlExtraction.extractAsString(getReport());
     }
 
     /**
-     * Extrahiert evtl. im Report vorhandene HTML-Fragmente.
+     * Extracts any HTML fragments present in the report.
      *
-     * @return Liste mit HTML Nodes.
+     * @return list of HTML nodes.
      */
     public List<XdmNode> extractHtml() {
         return this.htmlExtraction.extract(getReport());
     }
 
     /**
-     * Extrahiert evtl. im Report vorhandene HTML-Fragmente als {@link Element}.
+     * Extracts any HTML fragments present in the report as {@link Element}.
      *
-     * @return Liste mit HTML Elementen.
+     * @return list of HTML elements.
      */
     public List<Element> extractHtmlAsElement() {
         return this.htmlExtraction.extractAsElement(getReport());
     }
 
     /**
-     * Gibt alle Schematron-Ergebnisse vom Typ {@link FailedAssert} zurück.
-     * 
-     * @return die {@link FailedAssert}
+     * Returns all Schematron results of type {@link FailedAssert}.
+     *
+     * @return the {@link FailedAssert}
      */
     @Override
     public List<FailedAssert> getFailedAsserts() {
@@ -176,5 +166,65 @@ public class DefaultResult implements Result {
 
     public void setCustomFailedAsserts(List<CustomFailedAssert> customFailedAsserts) {
         this.customFailedAsserts = customFailedAsserts;
+    }
+
+    /**
+     * The generated report.
+     */
+    public XdmNode getReport() {
+        return this.report;
+    }
+
+    /**
+     * The internal report 'preliminary stage' created by the validator.
+     */
+    public CreateReportInput getReportInput() {
+        return this.reportInput;
+    }
+
+    /**
+     * The internal report 'preliminary stage' created by the validator.
+     */
+    void setReportInput(final CreateReportInput reportInput) {
+        this.reportInput = reportInput;
+    }
+
+    /**
+     * The evaluated result.
+     */
+    public AcceptRecommendation getAcceptRecommendation() {
+        return this.acceptRecommendation;
+    }
+
+    void setSchemaViolations(final List<XmlError> schemaViolations) {
+        this.schemaViolations = schemaViolations;
+    }
+
+    public List<XmlError> getSchemaViolations() {
+        return this.schemaViolations;
+    }
+
+    public List<SchematronOutput> getSchematronResult() {
+        return this.schematronResult;
+    }
+
+    void setSchematronResult(final List<SchematronOutput> schematronResult) {
+        this.schematronResult = schematronResult;
+    }
+
+    public boolean isProcessingSuccessful() {
+        return this.processingSuccessful;
+    }
+
+    public void setProcessingSuccessful(final boolean processingSuccessful) {
+        this.processingSuccessful = processingSuccessful;
+    }
+
+    public boolean isWellformed() {
+        return this.wellformed;
+    }
+
+    public void setWellformed(final boolean wellformed) {
+        this.wellformed = wellformed;
     }
 }

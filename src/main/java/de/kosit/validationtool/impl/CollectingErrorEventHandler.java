@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl;
 
 import java.util.ArrayList;
@@ -32,17 +31,15 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
 import jakarta.xml.bind.ValidationEvent;
 import jakarta.xml.bind.ValidationEventHandler;
-import lombok.Getter;
 import net.sf.saxon.s9api.MessageListener2;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Sammelt Fehler-Ereignisinformation beim Schema-Validieren und weiteren XML-basierten Aktionen
+ * Collects error event information during schema validation and other XML-based actions
  *
  * @author Andreas Penski
  */
-@Getter
 public class CollectingErrorEventHandler implements ValidationEventHandler, ErrorHandler, MessageListener2, ErrorListener {
 
     private static final int DEFAULT_ABORT_COUNT = 50;
@@ -97,18 +94,18 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     /**
-     * Zeigt an, ob Validierungsfehler vorhanden sind.
-     * 
-     * @return true wenn mindestens ein Fehler vorhanden ist.
+     * Indicates whether validation errors are present.
+     *
+     * @return true if at least one error is present.
      */
     public boolean hasErrors() {
         return hasEvents() && this.errors.stream().anyMatch(e -> e.getSeverityCode() != XMLSyntaxErrorSeverity.SEVERITY_WARNING);
     }
 
     /**
-     * Zeigt an, ob es Validierungs-Ereignisse gab.
-     * 
-     * @return true wenn mindestens ein Validierungsereignis aufgetreten ist
+     * Indicates whether there were validation events.
+     *
+     * @return true if at least one validation event occurred
      */
     public boolean hasEvents() {
         return !this.errors.isEmpty();
@@ -160,5 +157,13 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         this.errors.forEach(e -> joiner.add(
                 e.getSeverityCode().value() + " " + e.getMessage() + " At row " + e.getRowNumber() + " at pos " + e.getColumnNumber()));
         return joiner.toString();
+    }
+
+    public int getStopProcessCount() {
+        return this.stopProcessCount;
+    }
+
+    public List<XMLSyntaxError> getErrors() {
+        return this.errors;
     }
 }

@@ -49,8 +49,8 @@ import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
 
 /**
- * Tests die {@link SchemaValidationAction}.
- * 
+ * Tests the {@link SchemaValidationAction}.
+ *
  * @author Andreas Penski
  */
 public class SchemaValidatorActionTest {

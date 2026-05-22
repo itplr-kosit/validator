@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.config;
 
 import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
@@ -33,10 +32,8 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
@@ -48,7 +45,6 @@ import de.kosit.validationtool.model.scenarios.DescriptionType;
 import de.kosit.validationtool.model.scenarios.NoScenarioReportType;
 import de.kosit.validationtool.model.scenarios.ObjectFactory;
 import de.kosit.validationtool.model.scenarios.Scenarios;
-
 import net.sf.saxon.s9api.Processor;
 
 /**
@@ -56,9 +52,9 @@ import net.sf.saxon.s9api.Processor;
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@Getter(AccessLevel.PACKAGE)
 public class ConfigurationBuilder {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationBuilder.class);
 
     private final List<ScenarioBuilder> scenarios = new ArrayList<>();
 
@@ -146,7 +142,7 @@ public class ConfigurationBuilder {
      */
     public ConfigurationBuilder with(final FallbackBuilder builder) {
         if (this.fallbackBuilder != null) {
-            log.warn("Overriding previously created fallback scenario");
+            LOGGER.warn("Overriding previously created fallback scenario");
         }
         this.fallbackBuilder = builder;
         return this;
@@ -270,7 +266,6 @@ public class ConfigurationBuilder {
     public Configuration build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, this.repository);
-
         final List<Scenario> list = initializeScenarios(contentRepository);
         final Scenario fallbackScenario = initializeFallback(contentRepository);
         final DefaultConfiguration configuration = new DefaultConfiguration(list, fallbackScenario);
@@ -321,7 +316,7 @@ public class ConfigurationBuilder {
             final Result<Scenario, String> result = s.build(contentRepository);
             if (result.isInvalid()) {
                 final String msg = String.join(",", result.getErrors());
-                throw new IllegalStateException(String.format("Invalid configuration for scenario %s found: %s", s.getName(), msg));
+                throw new IllegalStateException("Invalid configuration for scenario " + s.getName() + " found: " + msg);
             }
             return result.getObject();
         }).collect(Collectors.toList());
@@ -329,10 +324,10 @@ public class ConfigurationBuilder {
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
         if (this.resolvingConfigurationStrategy != null) {
-            log.info("Custom resolving strategy supplied. Please take care of xml security!");
+            LOGGER.info("Custom resolving strategy supplied. Please take care of xml security!");
             return this.resolvingConfigurationStrategy;
         }
-        log.info("Using resolving strategy {}", this.resolvingMode);
+        LOGGER.info("Using resolving strategy {}", this.resolvingMode);
         return this.resolvingMode.getStrategy();
     }
 
@@ -378,5 +373,41 @@ public class ConfigurationBuilder {
      */
     public ConfigurationBuilder useRepository(final Path repository) {
         return useRepository(repository.toUri());
+    }
+
+    List<ScenarioBuilder> getScenarios() {
+        return this.scenarios;
+    }
+
+    FallbackBuilder getFallbackBuilder() {
+        return this.fallbackBuilder;
+    }
+
+    ResolvingMode getResolvingMode() {
+        return this.resolvingMode;
+    }
+
+    String getAuthor() {
+        return this.author;
+    }
+
+    String getDate() {
+        return this.date;
+    }
+
+    String getName() {
+        return this.name;
+    }
+
+    Map<String, Object> getParameters() {
+        return this.parameters;
+    }
+
+    URI getRepository() {
+        return this.repository;
+    }
+
+    String getDescription() {
+        return this.description;
     }
 }

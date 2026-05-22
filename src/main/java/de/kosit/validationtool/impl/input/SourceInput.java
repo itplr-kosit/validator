@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.input;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
@@ -27,10 +26,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.ReaderInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.xml.bind.util.JAXBSource;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.om.TreeInfo;
 
 /**
@@ -51,9 +50,9 @@ import net.sf.saxon.om.TreeInfo;
  * 
  * @author Andreas Penski
  */
-@Getter
-@Slf4j
 public class SourceInput extends AbstractInput {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SourceInput.class);
 
     private final Source source;
 
@@ -83,10 +82,10 @@ public class SourceInput extends AbstractInput {
             throw new IllegalStateException("Unsupported source. Only StreamSource supported yet");
         }
         if (!isHashcodeComputed() && ((StreamSource) this.source).getInputStream() == null) {
-            log.warn("No hashcode supplied, will wrap the reader using system default charset");
+            LOGGER.warn("No hashcode supplied, will wrap the reader using system default charset");
         }
         if (!(isTreeInfo() || isDomSource() || isStreamSource() || isJaxbSource())) {
-            log.warn("No known to be working Source implementation provided.");
+            LOGGER.warn("No known to be working Source implementation provided.");
         }
     }
 
@@ -104,13 +103,12 @@ public class SourceInput extends AbstractInput {
 
     private boolean isConsumed() {
         if (isStreamSource()) {
-
             final StreamSource ss = (StreamSource) this.source;
             try {
                 return (ss.getInputStream() != null && ss.getInputStream().available() == 0)
                         || (ss.getReader() != null && !ss.getReader().ready());
             } catch (final IOException e) {
-                log.error("Error checking consumed state", e);
+                LOGGER.error("Error checking consumed state", e);
                 return true;
             }
         }
@@ -157,4 +155,7 @@ public class SourceInput extends AbstractInput {
         return isDomSource() || isTreeInfo();
     }
 
+    public String getDigestAlgorithm() {
+        return this.digestAlgorithm;
+    }
 }

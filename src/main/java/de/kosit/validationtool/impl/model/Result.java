@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 /**
- * Ein Ergebnisobjekt, dass das eigentliche Ergebnis hält und optional auch verschiedene Fehlerobjekte.
- * 
- * @param <T> der Typ des Ergebnis-Objekts
- * @param <E> der Typ des Fehler-Objekts
+ * A result object that holds the actual result and optionally various error objects.
+ *
+ * @param <T> the type of the result object
+ * @param <E> the type of the error object
  */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Result<T, E> {
 
     private T object;
@@ -40,17 +32,17 @@ public class Result<T, E> {
     private List<E> errors = new ArrayList<>();
 
     /**
-     * Erzeugt ein neues Ergebnis mit Fehler
-     * 
-     * @param errors die Fehler
+     * Creates a new result with errors
+     *
+     * @param errors the errors
      */
     public Result(final List<E> errors) {
         this(null, errors);
     }
 
     /**
-     * Erzeugt ein neues Ergebnis mit einem Ergebnisobjekt
-     * 
+     * Creates a new result with a result object
+     *
      * @param o
      */
     public Result(final T o) {
@@ -58,20 +50,36 @@ public class Result<T, E> {
     }
 
     /**
-     * Zeigt an, ob das Ergebnis valide, also ohne Fehler ist.
-     * 
-     * @return true wenn erfolgreich
+     * Indicates whether the result is valid, i.e. without errors.
+     *
+     * @return true if successful
      */
     public boolean isValid() {
         return object != null && errors.isEmpty();
     }
 
     /**
-     * Zeigt an, ob das Ergebnis nicht valide ist, als entsprechend Fehler gesammelt wurden.
-     * 
-     * @return true wenn erfolgreich wenn Fehler vorhanden sind.
+     * Indicates whether the result is not valid, i.e. errors have been collected.
+     *
+     * @return true if errors are present.
      */
     public boolean isInvalid() {
         return !isValid();
+    }
+
+    public T getObject() {
+        return this.object;
+    }
+
+    public List<E> getErrors() {
+        return this.errors;
+    }
+
+    public Result(final T object, final List<E> errors) {
+        this.object = object;
+        this.errors = errors;
+    }
+
+    public Result() {
     }
 }

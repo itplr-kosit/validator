@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.tasks;
 
 import java.util.List;
@@ -22,6 +21,8 @@ import java.util.stream.Collectors;
 import javax.xml.transform.dom.DOMSource;
 
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ConversionService;
@@ -30,8 +31,6 @@ import de.kosit.validationtool.impl.Scenario.Transformation;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron;
 import de.kosit.validationtool.model.reportInput.ValidationResultsSchematron.Results;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmDestination;
@@ -39,13 +38,13 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
 
 /**
- * Ausführung von konfigurierten Schematron Validierungen eines Szenarios.
- * 
+ * Executes the configured Schematron validations of a scenario.
+ *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 public class SchematronValidationAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchematronValidationAction.class);
 
     private final ConversionService conversionService;
 
@@ -59,31 +58,27 @@ public class SchematronValidationAction implements CheckAction {
         s.setResource(validation.getResourceType());
         try {
             final XsltTransformer transformer = validation.getExecutable().load();
-            // resolving nur relative zum Repository
+            // resolving only relative to the repository
             transformer.setURIResolver(scenario.getUriResolver());
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
             transformer.setMessageListener(e);
-
             final XdmDestination result = new XdmDestination();
             transformer.setDestination(result);
             transformer.setInitialContextNode(document);
             transformer.transform();
-
             // If we reach this line, it means no Exception was thrown :-)
             if (e.hasErrors()) {
-                log.error("XSLT errors found: " + e.getErrorDescription());
+                LOGGER.error("XSLT errors found: " + e.getErrorDescription());
             }
-
             final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
             r.setSchematronOutput(this.conversionService.readDocument(
                     new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
                     SchematronOutput.class));
             s.setResults(r);
-
         } catch (final SaxonApiException e) {
-            final String msg = String.format("Error processing schematron validation %s. Error is %s",
-                    validation.getResourceType().getName(), e.getMessage());
-            log.error(msg, e);
+            final String msg = "Error processing schematron validation " + validation.getResourceType().getName() + ". Error is "
+                    + e.getMessage();
+            LOGGER.error(msg, e);
             results.addProcessingError(msg);
             s.setResults(createErrorResult());
         }
@@ -115,5 +110,9 @@ public class SchematronValidationAction implements CheckAction {
 
     private static boolean hasNoSchematrons(final Scenario object) {
         return object.getSchematronValidations().isEmpty();
+    }
+
+    public SchematronValidationAction(final ConversionService conversionService) {
+        this.conversionService = conversionService;
     }
 }

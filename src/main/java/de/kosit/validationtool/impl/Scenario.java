@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl;
 
 import java.util.ArrayList;
@@ -26,10 +25,6 @@ import javax.xml.validation.Schema;
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
@@ -38,22 +33,37 @@ import net.sf.saxon.s9api.XsltExecutable;
 /**
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Setter
-@Getter
 public class Scenario {
 
     /**
      * Runtime objects for a transformation e.g. schematron or report.
      */
-    @Getter
-    @Setter
-    @AllArgsConstructor
     public static class Transformation {
 
         private XsltExecutable executable;
 
         private ResourceType resourceType;
+
+        public XsltExecutable getExecutable() {
+            return this.executable;
+        }
+
+        public ResourceType getResourceType() {
+            return this.resourceType;
+        }
+
+        public void setExecutable(final XsltExecutable executable) {
+            this.executable = executable;
+        }
+
+        public void setResourceType(final ResourceType resourceType) {
+            this.resourceType = resourceType;
+        }
+
+        public Transformation(final XsltExecutable executable, final ResourceType resourceType) {
+            this.executable = executable;
+            this.resourceType = resourceType;
+        }
     }
 
     private final ScenarioType configuration;
@@ -72,7 +82,6 @@ public class Scenario {
 
     private UnparsedTextURIResolver unparsedTextURIResolver;
 
-    @Setter
     private List<Transformation> schematronValidations;
 
     private Transformation reportTransformation;
@@ -106,4 +115,79 @@ public class Scenario {
         return Optional.ofNullable(selector);
     }
 
+    public Scenario(final ScenarioType configuration) {
+        this.configuration = configuration;
+    }
+
+    public void setSchema(final Schema schema) {
+        this.schema = schema;
+    }
+
+    public void setFallback(final boolean fallback) {
+        this.fallback = fallback;
+    }
+
+    public void setMatchExecutable(final XPathExecutable matchExecutable) {
+        this.matchExecutable = matchExecutable;
+    }
+
+    public void setAcceptExecutable(final XPathExecutable acceptExecutable) {
+        this.acceptExecutable = acceptExecutable;
+    }
+
+    public void setFactory(final ResolvingConfigurationStrategy factory) {
+        this.factory = factory;
+    }
+
+    public void setUriResolver(final URIResolver uriResolver) {
+        this.uriResolver = uriResolver;
+    }
+
+    public void setUnparsedTextURIResolver(final UnparsedTextURIResolver unparsedTextURIResolver) {
+        this.unparsedTextURIResolver = unparsedTextURIResolver;
+    }
+
+    public void setReportTransformation(final Transformation reportTransformation) {
+        this.reportTransformation = reportTransformation;
+    }
+
+    public ScenarioType getConfiguration() {
+        return this.configuration;
+    }
+
+    public Schema getSchema() {
+        return this.schema;
+    }
+
+    public boolean isFallback() {
+        return this.fallback;
+    }
+
+    public XPathExecutable getMatchExecutable() {
+        return this.matchExecutable;
+    }
+
+    public XPathExecutable getAcceptExecutable() {
+        return this.acceptExecutable;
+    }
+
+    public ResolvingConfigurationStrategy getFactory() {
+        return this.factory;
+    }
+
+    public URIResolver getUriResolver() {
+        return this.uriResolver;
+    }
+
+    public UnparsedTextURIResolver getUnparsedTextURIResolver() {
+        return this.unparsedTextURIResolver;
+    }
+
+    public Transformation getReportTransformation() {
+        return this.reportTransformation;
+    }
+
+    public void setSchematronValidations(final List<Transformation> schematronValidations) {
+        this.schematronValidations = schematronValidations;
+    }
 }

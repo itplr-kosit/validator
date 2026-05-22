@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -26,8 +25,8 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.model.Result;
@@ -39,8 +38,9 @@ import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema>> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaBuilder.class);
 
     private static final String DEFAULT_NAME = "manually configured";
 
@@ -53,7 +53,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
     @Override
     public Result<Pair<ValidateWithXmlSchema, Schema>, String> build(final ContentRepository repository) {
         if (this.schema == null && this.schemaLocation == null) {
-            return createError(String.format("Must supply source location and/or executable for schema '%s'", this.name));
+            return createError("Must supply source location and/or executable for schema \'" + this.name + "\'");
         }
         Result<Pair<ValidateWithXmlSchema, Schema>, String> result;
         try {
@@ -62,10 +62,9 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
             }
             result = new Result<>(new ImmutablePair<>(createObject(), this.schema));
         } catch (final IllegalStateException e) {
-            log.error(e.getMessage(), e);
-            result = createError(String.format("Can not create schema based %s. Exception is %s", this.schemaLocation, e.getMessage()));
+            LOGGER.error(e.getMessage(), e);
+            result = createError("Can not create schema based " + this.schemaLocation + ". Exception is " + e.getMessage());
         }
-
         return result;
     }
 

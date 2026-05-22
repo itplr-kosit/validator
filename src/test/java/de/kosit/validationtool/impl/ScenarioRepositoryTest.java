@@ -35,11 +35,10 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Testet das {@link ScenarioRepository}.
- * 
+ * Tests the {@link ScenarioRepository}.
+ *
  * @author Andreas Penski
  */
-
 public class ScenarioRepositoryTest {
 
     private ScenarioRepository repository;
@@ -110,7 +109,8 @@ public class ScenarioRepositoryTest {
     public void testFallbackOnMultipleConfigurations() {
         final TestConfiguration first = this.configInstance;
         first.setFallbackScenario(createFallback());
-        setup();// create new one;
+        // create new one;
+        setup();
         final TestConfiguration second = this.configInstance;
         second.setFallbackScenario(createFallback());
         this.repository = new ScenarioRepository(first, second);

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.xml;
 
 import java.net.URI;
@@ -23,7 +22,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a slightly more open implementation that allows resolving artifacts from local filesystems. Your are not
@@ -32,8 +32,9 @@ import lombok.extern.slf4j.Slf4j;
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrategy {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StrictLocalResolvingStrategy.class);
 
     /**
      * Allow loading schema files from any local location.
@@ -65,5 +66,4 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
         allowExternalSchema(validator, "file");
         return validator;
     }
-
 }

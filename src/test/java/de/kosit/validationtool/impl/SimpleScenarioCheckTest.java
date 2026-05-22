@@ -30,8 +30,8 @@ import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.Helper.Simple;
 
 /**
- * Prüft die Funktionen des Validator auf Basis eines reduzierten Szenarios.
- * 
+ * Tests the functions of the validator based on a reduced scenario.
+ *
  * @author Andreas Penski
  */
 public class SimpleScenarioCheckTest {

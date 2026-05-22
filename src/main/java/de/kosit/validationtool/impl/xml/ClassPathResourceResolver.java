@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.xml;
 
 import java.io.IOException;
@@ -23,28 +22,23 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.lang3.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 /**
- * {@link LSResourceResolver} der objekte relativ zu einem Basis-Pfad aus dem Classpath der Anwendung laden kann.
- * 
+ * {@link LSResourceResolver} that can load objects relative to a base path from the application's classpath.
+ *
  * @author Andreas Penski
  */
-@Slf4j
 public class ClassPathResourceResolver implements LSResourceResolver {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassPathResourceResolver.class);
+
     /**
-     * Simple {@link LSInput}-Implementierung, die einen Stream liefern kann
+     * Simple {@link LSInput} implementation that can supply a stream
      */
-    @Getter
-    @Setter
-    @RequiredArgsConstructor
     private static class LSInputImpl implements LSInput {
 
         private Reader characterStream;
@@ -64,11 +58,11 @@ public class ClassPathResourceResolver implements LSResourceResolver {
         private String stringData;
 
         /**
-         * Instantiierung einer neue Instanz.
-         * 
-         * @param publicId die publicId
-         * @param systemId die systemId
-         * @param baseURI die baseURI
+         * Instantiates a new instance.
+         *
+         * @param publicId the publicId
+         * @param systemId the systemId
+         * @param baseURI the baseURI
          */
         public LSInputImpl(final String publicId, final String systemId, final String baseURI) {
             this.publicId = publicId;
@@ -80,14 +74,77 @@ public class ClassPathResourceResolver implements LSResourceResolver {
         public boolean getCertifiedText() {
             return this.certifiedText;
         }
+
+        public Reader getCharacterStream() {
+            return this.characterStream;
+        }
+
+        public InputStream getByteStream() {
+            return this.byteStream;
+        }
+
+        public String getSystemId() {
+            return this.systemId;
+        }
+
+        public String getPublicId() {
+            return this.publicId;
+        }
+
+        public String getBaseURI() {
+            return this.baseURI;
+        }
+
+        public String getEncoding() {
+            return this.encoding;
+        }
+
+        public String getStringData() {
+            return this.stringData;
+        }
+
+        public void setCharacterStream(final Reader characterStream) {
+            this.characterStream = characterStream;
+        }
+
+        public void setByteStream(final InputStream byteStream) {
+            this.byteStream = byteStream;
+        }
+
+        public void setSystemId(final String systemId) {
+            this.systemId = systemId;
+        }
+
+        public void setPublicId(final String publicId) {
+            this.publicId = publicId;
+        }
+
+        public void setBaseURI(final String baseURI) {
+            this.baseURI = baseURI;
+        }
+
+        public void setEncoding(final String encoding) {
+            this.encoding = encoding;
+        }
+
+        public void setCertifiedText(final boolean certifiedText) {
+            this.certifiedText = certifiedText;
+        }
+
+        public void setStringData(final String stringData) {
+            this.stringData = stringData;
+        }
+
+        public LSInputImpl() {
+        }
     }
 
     private final URI base;
 
     /**
-     * Instantiiert einen neuen resolver mit angegebenen Basispfad
+     * Instantiates a new resolver with the given base path
      *
-     * @param basePath der Basispfad
+     * @param basePath the base path
      */
     public ClassPathResourceResolver(final String basePath) {
         if (!Strings.CS.startsWith(basePath, "/")) {
@@ -103,7 +160,6 @@ public class ClassPathResourceResolver implements LSResourceResolver {
     @Override
     public LSInput resolveResource(final String type, final String namespaceURI, final String publicId, final String systemId,
             final String baseURI) {
-
         final URI resolved = RelativeUriResolver.resolve(URI.create(systemId), this.base);
         if (resolved != null) {
             try {
@@ -114,13 +170,11 @@ public class ClassPathResourceResolver implements LSResourceResolver {
                 final InputStream in = resource.openStream();
                 input.setByteStream(in);
                 return input;
-
             } catch (final IOException e) {
-                log.error("Error loading schema resource from {}", resolved, e);
+                LOGGER.error("Error loading schema resource from {}", resolved, e);
             }
         }
         // not found
         return null;
     }
-
 }
