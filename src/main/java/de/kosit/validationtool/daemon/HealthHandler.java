@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.daemon;
 
 import java.io.IOException;
 import java.util.List;
 
-import com.sun.net.httpserver.HttpExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.sun.net.httpserver.HttpExchange;
 
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.ConversionService;
@@ -36,9 +35,9 @@ import de.kosit.validationtool.model.daemon.MemoryType;
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@RequiredArgsConstructor
 class HealthHandler extends BaseHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HealthHandler.class);
 
     private final List<Configuration> scenarios;
 
@@ -49,7 +48,6 @@ class HealthHandler extends BaseHandler {
         final HealthType health = createHealth();
         final String xml = this.conversionService.writeXml(health);
         write(httpExchange, xml.getBytes(), APPLICATION_XML);
-
     }
 
     private HealthType createHealth() {
@@ -75,5 +73,10 @@ class HealthHandler extends BaseHandler {
         a.setName(EngineInformation.getName());
         a.setVersion(EngineInformation.getVersion());
         return a;
+    }
+
+    public HealthHandler(final List<Configuration> scenarios, final ConversionService conversionService) {
+        this.scenarios = scenarios;
+        this.conversionService = conversionService;
     }
 }

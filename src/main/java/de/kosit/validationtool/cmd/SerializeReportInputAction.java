@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.tasks.CheckAction;
@@ -31,9 +30,9 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
  *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 public class SerializeReportInputAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerializeReportInputAction.class);
 
     private final Path outputDirectory;
 
@@ -43,20 +42,25 @@ public class SerializeReportInputAction implements CheckAction {
     public void check(final Bag results) {
         final Path file = this.outputDirectory.resolve(results.getName() + "-reportInput.xml");
         try {
-            log.info("Serializing result to {}", file.toAbsolutePath());
+            LOGGER.info("Serializing result to {}", file.toAbsolutePath());
             final String xml = this.conversionService.writeXml(results.getReportInput());
             Files.write(file, xml.getBytes());
         } catch (final IOException e) {
-            log.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
+            LOGGER.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
         }
     }
 
     @Override
     public boolean isSkipped(final Bag results) {
         if (results.getReportInput() == null) {
-            log.warn("Can not serialize  report input. No object found");
+            LOGGER.warn("Can not serialize  report input. No object found");
             return true;
         }
         return false;
+    }
+
+    public SerializeReportInputAction(final Path outputDirectory, final ConversionService conversionService) {
+        this.outputDirectory = outputDirectory;
+        this.conversionService = conversionService;
     }
 }

@@ -29,7 +29,6 @@ import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.ResolvingMode;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
-
 import net.sf.saxon.s9api.XPathExecutable;
 
 /**

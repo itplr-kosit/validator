@@ -27,7 +27,7 @@ import org.junit.Test;
 import de.kosit.validationtool.model.scenarios.Scenarios;
 
 /**
- * Testet die Versionierung von Scenario-Dateien aka Konfigurationsdaten.
+ * Tests the versioning of scenario files aka configuration data.
  *
  * @author Andreas Penski
  */

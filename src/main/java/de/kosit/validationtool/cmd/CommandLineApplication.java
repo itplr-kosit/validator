@@ -46,7 +46,7 @@ public class CommandLineApplication {
     /**
      * Main.
      *
-     * @param args die Eingabe-Argumente
+     * @param args the input arguments
      */
     public static void main(final String[] args) {
         AnsiConsole.systemInstall();
@@ -98,7 +98,7 @@ public class CommandLineApplication {
     // The signature is required, because the method is used a lambda
     @SuppressWarnings("unused")
     private static int logExecutionException(final Exception ex, final CommandLine cli, final ParseResult parseResult) {
-        final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "Es ist eine Fehler aufgetreten";
+        final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "An error occurred";
         Printer.writeErr(ex, message);
         return 1;
     }

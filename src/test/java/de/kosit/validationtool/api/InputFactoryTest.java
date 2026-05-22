@@ -49,8 +49,8 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Testet den Hashcode-Service.
- * 
+ * Tests the hashcode service.
+ *
  * @author Andreas Penski
  */
 public class InputFactoryTest {

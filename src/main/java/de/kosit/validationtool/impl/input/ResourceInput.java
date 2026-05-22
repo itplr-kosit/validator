@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.input;
 
 import java.io.File;
@@ -23,9 +22,6 @@ import java.net.URL;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import de.kosit.validationtool.api.Input;
 
@@ -38,8 +34,6 @@ import de.kosit.validationtool.api.Input;
  * 
  * @author Andreas Penski
  */
-@Getter
-@RequiredArgsConstructor
 public class ResourceInput extends AbstractInput {
 
     private final URL url;
@@ -55,5 +49,23 @@ public class ResourceInput extends AbstractInput {
             stream = StreamHelper.wrapDigesting(this, stream, getDigestAlgorithm());
         }
         return new StreamSource(stream, this.name);
+    }
+
+    public URL getUrl() {
+        return this.url;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDigestAlgorithm() {
+        return this.digestAlgorithm;
+    }
+
+    public ResourceInput(final URL url, final String name, final String digestAlgorithm) {
+        this.url = url;
+        this.name = name;
+        this.digestAlgorithm = digestAlgorithm;
     }
 }

@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * CLI return codes. Codes &gt; 0 indicate a processing error. Codes &lt; 0 indicates a configuration error. Code 0
@@ -25,8 +21,6 @@ import lombok.RequiredArgsConstructor;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Getter
 public class ReturnValue {
 
     public static final ReturnValue SUCCESS = new ReturnValue(0);
@@ -47,5 +41,13 @@ public class ReturnValue {
 
     public boolean isError() {
         return this.code < 0 && this.code != DAEMON_MODE.code;
+    }
+
+    public ReturnValue(final int code) {
+        this.code = code;
+    }
+
+    public int getCode() {
+        return this.code;
     }
 }

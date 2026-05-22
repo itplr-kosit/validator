@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.tasks;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.util.JAXBSource;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
@@ -34,15 +31,14 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.util.JAXBSource;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
@@ -55,14 +51,14 @@ import net.sf.saxon.sapling.SaplingDocument;
 import net.sf.saxon.sapling.Saplings;
 
 /**
- * Erzeugt den Report auf Basis der gesammelten Informationen über den Prüfling. Sollte kein Szenario identifiziert
- * worden sein, so wird ein das Fallback-Szenario verwend und ein default report} erzeugt.
- * 
+ * Creates the report based on the gathered information about the test object. If no scenario was identified, the
+ * fallback scenario is used and a default report is created.
+ *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 public class CreateReportAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateReportAction.class);
 
     private static final String ERROR_MESSAGE_ELEMENT = "error-message";
 
@@ -82,15 +78,12 @@ public class CreateReportAction implements CheckAction {
     public void check(final Bag results) {
         final DocumentBuilder documentBuilder = this.processor.newDocumentBuilder();
         try {
-
             final XdmNode parsedDocument = results.getParserResult().isValid() ? results.getParserResult().getObject()
                     : createErrorInformation(results.getParserResult().getErrors());
-
             final Marshaller marshaller = this.conversionService.getJaxbContext().createMarshaller();
             final JAXBSource source = new JAXBSource(marshaller, results.getReportInput());
             // wrap to circumvent inconsistency between sax and saxon
             source.setXMLReader(new ReaderWrapper(source.getXMLReader()));
-
             final XdmNode root = documentBuilder.build(source);
             final XsltTransformer transformer = getTransformation(results).load();
             transformer.setInitialContextNode(root);
@@ -98,7 +91,6 @@ public class CreateReportAction implements CheckAction {
             transformer.setMessageListener(e);
             final Scenario scenario = results.getScenarioSelectionResult().getObject();
             transformer.setURIResolver(scenario.getUriResolver());
-
             if (scenario.getUnparsedTextURIResolver() != null) {
                 transformer.getUnderlyingController().setUnparsedTextURIResolver(scenario.getUnparsedTextURIResolver());
             }
@@ -109,9 +101,8 @@ public class CreateReportAction implements CheckAction {
             transformer.setDestination(destination);
             transformer.transform();
             results.setReport(destination.getXdmNode());
-
         } catch (final SaxonApiException | JAXBException e) {
-            log.error("Error creating final report", e);
+            LOGGER.error("Error creating final report", e);
             results.stopProcessing("Can not create final report: " + e.getMessage());
         }
     }
@@ -222,4 +213,8 @@ public class CreateReportAction implements CheckAction {
         }
     }
 
+    public CreateReportAction(final Processor processor, final ConversionService conversionService) {
+        this.processor = processor;
+        this.conversionService = conversionService;
+    }
 }

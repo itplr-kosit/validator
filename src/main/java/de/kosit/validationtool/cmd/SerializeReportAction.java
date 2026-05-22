@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import java.nio.file.Path;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 
 /**
- * Schreibt das Prüfergebnis als XML-Dokument an eine definierte Stelle.
+ * Writes the validation result as an XML document to a defined location.
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@RequiredArgsConstructor
 class SerializeReportAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerializeReportAction.class);
 
     private final Path outputDirectory;
 
@@ -46,20 +44,26 @@ class SerializeReportAction implements CheckAction {
     public void check(final Bag results) {
         final Path file = this.outputDirectory.resolve(this.namingStrategy.createName(results.getName()));
         try {
-            log.info("Serializing result to {}", file.toAbsolutePath());
+            LOGGER.info("Serializing result to {}", file.toAbsolutePath());
             final Serializer serializer = this.processor.newSerializer(file.toFile());
             serializer.serializeNode(results.getReport());
         } catch (final SaxonApiException e) {
-            log.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
+            LOGGER.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
         }
     }
 
     @Override
     public boolean isSkipped(final Bag results) {
         if (results.getReport() == null) {
-            log.warn("Can not serialize result report. No document found");
+            LOGGER.warn("Can not serialize result report. No document found");
             return true;
         }
         return false;
+    }
+
+    public SerializeReportAction(final Path outputDirectory, final Processor processor, final NamingStrategy namingStrategy) {
+        this.outputDirectory = outputDirectory;
+        this.processor = processor;
+        this.namingStrategy = namingStrategy;
     }
 }

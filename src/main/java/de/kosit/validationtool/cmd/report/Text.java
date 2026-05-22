@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd.report;
 
 import java.util.Arrays;
@@ -21,14 +20,11 @@ import java.util.Arrays;
 import org.fusesource.jansi.AnsiRenderer;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
-import lombok.Getter;
-
 /**
  * Ansi formatted text for outputting to the console.
  * 
  * @author Andreas Penski
  */
-@Getter
 public class Text {
 
     private final String value;
@@ -75,5 +71,13 @@ public class Text {
 
     public int getVisibleLength() {
         return this.value.length();
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public Format getFormat() {
+        return this.format;
     }
 }

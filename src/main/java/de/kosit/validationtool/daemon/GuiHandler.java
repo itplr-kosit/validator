@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.daemon;
 
 import java.io.IOException;
@@ -24,9 +23,6 @@ import java.util.Arrays;
 import org.apache.commons.io.IOUtils;
 
 import com.sun.net.httpserver.HttpExchange;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 public class GuiHandler extends BaseHandler {
 
@@ -55,8 +51,6 @@ public class GuiHandler extends BaseHandler {
         }
     }
 
-    @RequiredArgsConstructor
-    @Getter
     protected enum Mediatype {
 
         JS("application/javascript"), MD("text/markdown"), CSS("text/css"), SVG("image/svg+xml"), HTML("text/html"), PNG("image/png");
@@ -65,6 +59,14 @@ public class GuiHandler extends BaseHandler {
 
         static Mediatype resolveBySuffix(final String path) {
             return Arrays.stream(values()).filter(e -> path.toUpperCase().endsWith("." + e.name())).findFirst().orElse(Mediatype.MD);
+        }
+
+        private Mediatype(final String mimeType) {
+            this.mimeType = mimeType;
+        }
+
+        public String getMimeType() {
+            return this.mimeType;
         }
     }
 }

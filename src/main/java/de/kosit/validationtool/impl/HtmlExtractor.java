@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl;
 
 import java.io.StringWriter;
@@ -24,8 +23,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
-
-import lombok.RequiredArgsConstructor;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.Processor;
@@ -38,11 +35,10 @@ import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Funktion zum Extrahieren von HTML-Artefakten / Knoten aus einem XML-Dokument.
+ * Function to extract HTML artifacts / nodes from an XML document.
  *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
 public class HtmlExtractor {
 
     private final Processor processor;
@@ -54,7 +50,6 @@ public class HtmlExtractor {
             final XPathSelector selector = getSelector();
             selector.setContextItem(xdmSource);
             return selector.stream().map(HtmlExtractor::castToNode).collect(Collectors.toList());
-
         } catch (final SaxonApiException e) {
             throw new IllegalStateException("Can not extract html content", e);
         }
@@ -81,8 +76,8 @@ public class HtmlExtractor {
             }
             return compiler.compile(expression);
         } catch (final SaxonApiException e) {
-            throw new IllegalStateException(String.format("Can not compile xpath match expression '%s'",
-                    StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION"), e);
+            throw new IllegalStateException("Can not compile xpath match expression \'"
+                    + (StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION") + "\'", e);
         }
     }
 
@@ -98,10 +93,10 @@ public class HtmlExtractor {
     }
 
     /**
-     * Extrahiert evtl. vorhandene HTML-Knoten als String.
-     * 
-     * @param node der root knoten
-     * @return HTML-Fragment als String
+     * Extracts any present HTML nodes as String.
+     *
+     * @param node the root node
+     * @return HTML fragment as String
      */
     public List<String> extractAsString(final XdmNode node) {
         return extract(node).stream().map(this::convertToString).collect(Collectors.toList());
@@ -113,5 +108,9 @@ public class HtmlExtractor {
 
     private static Element convertToElement(final XdmNode xdmItem) {
         return (Element) NodeOverNodeInfo.wrap(xdmItem.getUnderlyingNode());
+    }
+
+    public HtmlExtractor(final Processor processor) {
+        this.processor = processor;
     }
 }

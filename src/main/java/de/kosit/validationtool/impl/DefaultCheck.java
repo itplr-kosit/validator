@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl;
 
 import static de.kosit.validationtool.impl.DateFactory.createTimestamp;
@@ -28,6 +27,8 @@ import java.util.stream.Collectors;
 
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.Configuration;
@@ -51,8 +52,6 @@ import de.kosit.validationtool.model.reportInput.EngineType;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.scenarios.ErrorLevelType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 
 /**
@@ -61,19 +60,16 @@ import net.sf.saxon.s9api.Processor;
  *
  * @author Andreas Penski
  */
-@Slf4j
 public class DefaultCheck implements Check {
 
-    @Getter
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCheck.class);
+
     private final ConversionService conversionService;
 
-    @Getter
     private final List<Configuration> configuration;
 
-    @Getter
     private final List<CheckAction> checkSteps;
 
-    @Getter
     private final Processor processor;
 
     public DefaultCheck(final Configuration... configuration) {
@@ -89,7 +85,6 @@ public class DefaultCheck implements Check {
         this.configuration = Arrays.asList(configuration);
         this.processor = processor;
         this.conversionService = new ConversionService();
-
         this.checkSteps = new ArrayList<>();
         this.checkSteps.add(new DocumentParseAction(processor));
         this.checkSteps.add(new CreateDocumentIdentificationAction());
@@ -123,16 +118,17 @@ public class DefaultCheck implements Check {
 
     protected Result runCheckInternal(final CheckAction.Bag t) {
         final long started = System.currentTimeMillis();
-        log.info("Checking content of {}", t.getInput().getName());
+        LOGGER.info("Checking content of {}", t.getInput().getName());
         for (final CheckAction action : this.checkSteps) {
             final long start = System.currentTimeMillis();
             if (!action.isSkipped(t)) {
                 action.check(t);
             }
-            log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
         }
         t.setFinished(true);
-        log.info("Finished check of {} in {}ms\n", t.getInput().getName(), System.currentTimeMillis() - started);
+        LOGGER.info("Finished check of {} in {}ms\n", t.getInput().getName(), System.currentTimeMillis() - started);
         return createResult(t);
     }
 
@@ -146,9 +142,7 @@ public class DefaultCheck implements Check {
         result.setProcessingSuccessful(!t.isStopped() && t.isFinished());
         result.setSchematronResult(t.getReportInput().getValidationResultsSchematron().stream().filter(e -> e.getResults() != null)
                 .map(e -> e.getResults().getSchematronOutput()).collect(Collectors.toList()));
-
         result.setCustomFailedAsserts(buildCustomFailedAssertsList(t, result.getSchematronResult()));
-
         return result;
     }
 
@@ -161,7 +155,6 @@ public class DefaultCheck implements Check {
                         .flatMap(customLevel -> customLevel.getValue().stream().map(id -> Map.entry(id, customLevel.getLevel())))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
                 .orElse(Collections.emptyMap());
-
         // Now check all failed assertions of all schematron validations if they contain a failed assertion with one of
         // the changed IDs
         return schematronResult.stream().flatMap(x -> x.getActivePatternAndFiredRuleAndFailedAssert().stream())
@@ -175,4 +168,19 @@ public class DefaultCheck implements Check {
         return (List<XmlError>) (List<?>) errors;
     }
 
+    public ConversionService getConversionService() {
+        return this.conversionService;
+    }
+
+    public List<Configuration> getConfiguration() {
+        return this.configuration;
+    }
+
+    public List<CheckAction> getCheckSteps() {
+        return this.checkSteps;
+    }
+
+    public Processor getProcessor() {
+        return this.processor;
+    }
 }

@@ -17,38 +17,38 @@
 package de.kosit.validationtool.api;
 
 /**
- * Fehlerobjekt für die Bereitstellung von Fehlern aus der internen Verarbeitung, bspw. Schema-Validation-Fehler.
- * 
+ * Error object for providing errors from internal processing, e.g. schema validation errors.
+ *
  * @author Andreas Penski
  */
 public interface XmlError {
 
     /**
-     * Gibt die Fehlermeldung zurück.
-     * 
-     * @return die Fehlermeldung
+     * Returns the error message.
+     *
+     * @return the error message
      */
     String getMessage();
 
     /**
-     * Zeigt den Schweregrad der Fehlermeldung an
-     * 
-     * @return der Schweregrad
+     * Indicates the severity of the error message.
+     *
+     * @return the severity
      * @see Severity
      */
     Severity getSeverity();
 
     /**
-     * Gibt optional eine Zeilennummer an, aus der der Fehler resultiert.
-     * 
-     * @return die Zeitelnnummer
+     * Optionally returns a line number from which the error originates.
+     *
+     * @return the line number
      */
     Integer getRowNumber();
 
     /**
-     * Gibt optional eine Spaltennummer an, aus der der Fehler resultiert.
-     * 
-     * @return die Spaltennummer
+     * Optionally returns a column number from which the error originates.
+     *
+     * @return the column number
      */
     Integer getColumnNumber();
 

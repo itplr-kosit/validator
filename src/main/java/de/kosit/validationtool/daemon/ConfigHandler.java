@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.daemon;
 
 import java.io.IOException;
@@ -25,11 +24,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.net.httpserver.HttpExchange;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.config.Keys;
@@ -41,9 +39,9 @@ import de.kosit.validationtool.model.scenarios.Scenarios;
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@RequiredArgsConstructor
 class ConfigHandler extends BaseHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHandler.class);
 
     private final List<Configuration> configuration;
 
@@ -59,20 +57,19 @@ class ConfigHandler extends BaseHandler {
                 error(exchange, 404, "No configuration found");
             }
         } catch (final Exception e) {
-            log.error("Error grabbing configuration", e);
+            LOGGER.error("Error grabbing configuration", e);
             error(exchange, 500, "Error grabbing configuration: " + e.getMessage());
         }
     }
 
     private Optional<String> getSource() {
-
         final URI fileUri = (URI) this.configuration.get(0).getAdditionalParameters().get(Keys.SCENARIOS_FILE);
         return fileUri != null ? loadFile(fileUri) : loadFromConfig();
     }
 
     private static Optional<String> loadFile(final URI fileUri) {
-        try ( final Reader in = new InputStreamReader(fileUri.toURL().openStream());
-              final StringWriter out = new StringWriter() ) {
+        try ( Reader in = new InputStreamReader(fileUri.toURL().openStream());
+              StringWriter out = new StringWriter() ) {
             IOUtils.copy(in, out);
             return Optional.of(out.toString());
         } catch (final IOException e) {
@@ -92,4 +89,8 @@ class ConfigHandler extends BaseHandler {
         return result;
     }
 
+    public ConfigHandler(final List<Configuration> configuration, final ConversionService conversionService) {
+        this.configuration = configuration;
+        this.conversionService = conversionService;
+    }
 }

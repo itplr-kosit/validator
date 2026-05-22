@@ -22,17 +22,17 @@ import de.kosit.validationtool.api.XmlError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
 
 /**
- * Basis-Klasse für Syntax-Error. Wird über die JAXB-generierte Klasse
- * {@link de.kosit.validationtool.model.reportInput.XMLSyntaxError} erweitert.
- * 
+ * Base class for syntax errors. Extended via the JAXB-generated class
+ * {@link de.kosit.validationtool.model.reportInput.XMLSyntaxError}.
+ *
  * @author Andreas Penski
  */
 public abstract class BaseXMLSyntaxError implements XmlError {
 
     /**
-     * Logged den Syntax-Fehler über einen definierten Logger.
-     * 
-     * @param logger der Logger
+     * Logs the syntax error via a given logger.
+     *
+     * @param logger the logger
      */
     public void log(final Logger logger) {
         final String msgTemplate = "{} At row {} at pos {}";
@@ -47,20 +47,20 @@ public abstract class BaseXMLSyntaxError implements XmlError {
 
     @Override
     public String toString() {
-        return String.format("%s At row %s at pos %s", getMessage(), getRowNumber(), getColumnNumber());
+        return getMessage() + " At row " + getRowNumber() + " at pos " + getColumnNumber();
     }
 
     /**
-     * Getter aus dem schema
+     * Getter from the schema
      *
      * @return severity
      */
     public abstract XMLSyntaxErrorSeverity getSeverityCode();
 
     /**
-     * Dies ist der API-Zugriff. Es gibt zwei Methoden, weil es für die API einen abweichenden Typ gibt.
-     * 
-     * @return der Schweregrad
+     * This is the API access. There are two methods because the API has a different type.
+     *
+     * @return the severity
      */
     @Override
     public Severity getSeverity() {

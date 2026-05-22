@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.daemon;
 
 import static de.kosit.validationtool.impl.Printer.writeOut;
@@ -24,29 +23,26 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.impl.ConversionService;
 import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.model.daemon.HealthType;
-
 import net.sf.saxon.s9api.Processor;
 
 /**
- * HTTP-Daemon für die Bereitstellung der Prüf-Funktionalität via http.
+ * HTTP daemon for providing the validation functionality via http.
  *
  * @author Roula Antoun
  */
-@RequiredArgsConstructor
-@Setter
-@Slf4j
 public class Daemon {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Daemon.class);
 
     private static final String DEFAULT_HOST = "localhost";
 
@@ -74,8 +70,8 @@ public class Daemon {
     }
 
     /**
-     * Methode zum Starten des Servers
-     * 
+     * Method to start the server.
+     *
      * @param config the configuration to use
      */
     public void startServer(final Processor processor, final Configuration... config) {
@@ -85,17 +81,16 @@ public class Daemon {
             healthConverter.initialize(HealthType.class.getPackage());
             final ConversionService converter = new ConversionService();
             final DefaultCheck check = new DefaultCheck(processor, config);
-
             server = HttpServer.create(getSocket(), 0);
             server.createContext("/", createRootHandler(check, processor));
             server.createContext("/server/health", new HealthHandler(check.getConfiguration(), healthConverter));
             server.createContext("/server/config", new ConfigHandler(check.getConfiguration(), converter));
             server.setExecutor(createExecutor());
             server.start();
-            log.info("Server {} started", server.getAddress());
+            LOGGER.info("Server {} started", server.getAddress());
             writeOut("Daemon started. Visit http://{0}", this.bindAddress + ":" + this.port);
         } catch (final IOException e) {
-            log.error("Error starting HttpServer for Valdidator: {}", e.getMessage(), e);
+            LOGGER.error("Error starting HttpServer for Valdidator: {}", e.getMessage(), e);
         }
     }
 
@@ -119,4 +114,22 @@ public class Daemon {
         return new InetSocketAddress(defaultIfBlank(this.bindAddress, DEFAULT_HOST), this.port > 0 ? this.port : DEFAULT_PORT);
     }
 
+    public Daemon() {
+    }
+
+    public void setBindAddress(final String bindAddress) {
+        this.bindAddress = bindAddress;
+    }
+
+    public void setPort(final int port) {
+        this.port = port;
+    }
+
+    public void setThreadCount(final int threadCount) {
+        this.threadCount = threadCount;
+    }
+
+    public void setGuiEnabled(final boolean guiEnabled) {
+        this.guiEnabled = guiEnabled;
+    }
 }

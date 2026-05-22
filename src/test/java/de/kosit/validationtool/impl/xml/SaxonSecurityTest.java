@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,8 +27,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.impl.Helper;
@@ -37,7 +36,6 @@ import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmDestination;
@@ -47,19 +45,20 @@ import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 
 /**
- * Testet verschiedene Saxon Security Einstellungen.
- * 
+ * Tests various Saxon security settings.
+ *
  * @author Andreas Penski
  */
-@Slf4j
 public class SaxonSecurityTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaxonSecurityTest.class);
 
     @Test
     public void testEvilStylesheets() throws IOException {
         final Processor p = TestObjectFactory.createProcessor();
         for (int i = 1; i <= 5; i++) {
             try {
-                final URL resource = SaxonSecurityTest.class.getResource(String.format("/evil/evil%s.xsl", i));
+                final URL resource = SaxonSecurityTest.class.getResource("/evil/evil" + i + ".xsl");
                 final XsltCompiler compiler = p.newXsltCompiler();
                 final RelativeUriResolver resolver = new RelativeUriResolver(Simple.REPOSITORY_URI);
                 compiler.setURIResolver(resolver);
@@ -72,15 +71,13 @@ public class SaxonSecurityTest {
                 final XdmDestination result = new XdmDestination();
                 transformer.setDestination(result);
                 transformer.transform();
-
-                // wenn der Punkt erreicht wird, sollte wenigstens, das Element evil nicht mit 'bösen' Inhalten gefüllt
-                // sein!
+                // if this point is reached, at least the element 'evil' should not be filled with 'evil'
+                // content!
                 if (StringUtils.isNotBlank(result.getXdmNode().getStringValue())) {
-                    fail(String.format("Saxon configuration should prevent expansion within %s", resource));
+                    fail("Saxon configuration should prevent expansion within " + resource);
                 }
-
             } catch (final SaxonApiException | RuntimeException e) {
-                log.info("Expected exception detected {}", e.getMessage(), e);
+                LOGGER.info("Expected exception detected {}", e.getMessage(), e);
             }
         }
     }

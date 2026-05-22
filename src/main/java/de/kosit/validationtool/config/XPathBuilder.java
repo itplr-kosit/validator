@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -26,16 +25,11 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.model.Result;
-
 import net.sf.saxon.s9api.XPathExecutable;
 
 /**
@@ -43,11 +37,9 @@ import net.sf.saxon.s9api.XPathExecutable;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Getter
-@Setter
-@Slf4j
 class XPathBuilder implements Builder<XPathExecutable> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(XPathBuilder.class);
 
     private static final String[] IGNORED_PREFIXES = new String[] { "xsd", "saxon", "xsl", "xs", "xml" };
 
@@ -57,7 +49,6 @@ class XPathBuilder implements Builder<XPathExecutable> {
 
     private XPathExecutable executable;
 
-    @Setter(AccessLevel.PACKAGE)
     private Map<String, String> namespaces;
 
     private static Result<XPathExecutable, String> createError(final String msg) {
@@ -88,7 +79,7 @@ class XPathBuilder implements Builder<XPathExecutable> {
     @Override
     public Result<XPathExecutable, String> build(final ContentRepository repository) {
         if (!isAvailable()) {
-            return createError(String.format("No configuration for %s xpath  expression found", this.name));
+            return createError("No configuration for " + this.name + " xpath  expression found");
         }
         try {
             if (this.executable == null) {
@@ -98,16 +89,14 @@ class XPathBuilder implements Builder<XPathExecutable> {
                 extractNamespaces();
             }
         } catch (final IllegalStateException e) {
-            final String msg = String.format("Error creating %s xpath: %s", this.name, e.getMessage());
-            log.error(msg, e);
+            final String msg = "Error creating " + this.name + " xpath: " + e.getMessage();
+            LOGGER.error(msg, e);
             return new Result<>(Collections.singletonList(msg));
-
         }
         return new Result<>(this.executable);
     }
 
     private void extractNamespaces() {
-
         final Map<String, String> ns = new HashMap<>();
         final Iterator<String> iterator = this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext()
                 .iteratePrefixes();
@@ -116,10 +105,33 @@ class XPathBuilder implements Builder<XPathExecutable> {
                 .filter(StringUtils::isNotBlank).forEach(e -> ns.put(e, this.executable.getUnderlyingExpression().getInternalExpression()
                         .getRetainedStaticContext().getURIForPrefix(e, false).toString()));
         getNamespaces().putAll(ns);
-
     }
 
     private String extractExpression() {
         return this.executable.getUnderlyingExpression().getInternalExpression().toString();
+    }
+
+    public XPathBuilder(final String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public XPathExecutable getExecutable() {
+        return this.executable;
+    }
+
+    public void setXpath(final String xpath) {
+        this.xpath = xpath;
+    }
+
+    public void setExecutable(final XPathExecutable executable) {
+        this.executable = executable;
+    }
+
+    void setNamespaces(final Map<String, String> namespaces) {
+        this.namespaces = namespaces;
     }
 }

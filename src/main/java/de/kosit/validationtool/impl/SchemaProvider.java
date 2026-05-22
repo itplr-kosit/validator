@@ -38,9 +38,9 @@ public class SchemaProvider {
     private static Schema reportInputSchema;
 
     /**
-     * Liefert das definierte Schema für die Validierung des [@link CreateReportInput}
+     * Returns the defined schema for validating the [@link CreateReportInput}
      *
-     * @return ReportInput-Schema
+     * @return ReportInput schema
      */
     public static Schema getReportInputSchema() {
         if (reportInputSchema == null) {
@@ -64,7 +64,8 @@ public class SchemaProvider {
         return createSchema(sf, schemaSources, null);
     }
 
-    @SuppressWarnings("java:S2095") // xml stack requires not closing the resource here
+    // xml stack requires not closing the resource here
+    @SuppressWarnings("java:S2095")
     private static Source resolve(final URL resource) {
         try {
             final String rawPath = resource.toURI().getRawPath();
@@ -75,9 +76,9 @@ public class SchemaProvider {
     }
 
     /**
-     * Liefert das definiert Schema für die Szenario-Konfiguration
+     * Returns the defined schema for the scenario configuration
      *
-     * @return Scenario-Schema
+     * @return scenario schema
      */
     public static Schema getScenarioSchema() {
         final SchemaFactory sf = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();

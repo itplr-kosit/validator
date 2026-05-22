@@ -39,7 +39,6 @@ import de.kosit.validationtool.impl.Scenario;
  *
  * @author Andreas Penski
  */
-
 public interface Configuration {
 
     /**

@@ -1,20 +1,12 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Java template
-# Compiled class file
-*.class
-
 # Log file
 *.log
 #*.iml
-
-# Package Files #
-*.jar
-!libs/**/*.jar
 
 **/generated
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
 ### Maven template
 target/
 pom.xml.tag
@@ -25,10 +17,6 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-src/generated
-
-# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
-!/.mvn/wrapper/maven-wrapper.jar
 
 # IDE stuff
 .project
@@ -40,6 +28,7 @@ src/generated
 .vscode
 *.code-workspace
 *.xpr
+
 # Testing stuff
 xrechnung
 
@@ -49,7 +38,5 @@ andre*-simple.xml
 somePrefix*.xml
 zz
 
-# 2.0 stuff
-api/
-cli/
-core/
+# AI stuff
+.claude/
