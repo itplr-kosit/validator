@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import static org.apache.commons.io.FilenameUtils.isExtension;
@@ -23,14 +22,11 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.Setter;
-
 /**
  * A default {@link NamingStrategy} supporting prefix and postfix configurations for generating report names
  * 
  * @author Andreas Penski
  */
-@Setter
 public class DefaultNamingStrategy implements NamingStrategy {
 
     private String prefix;
@@ -55,5 +51,13 @@ public class DefaultNamingStrategy implements NamingStrategy {
         }
         result.append(".xml");
         return result.toString();
+    }
+
+    public void setPrefix(final String prefix) {
+        this.prefix = prefix;
+    }
+
+    public void setPostfix(final String postfix) {
+        this.postfix = postfix;
     }
 }

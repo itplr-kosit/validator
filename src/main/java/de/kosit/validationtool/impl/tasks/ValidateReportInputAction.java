@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.tasks;
 
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.CollectingErrorEventHandler;
 import de.kosit.validationtool.impl.ConversionService;
@@ -29,13 +27,13 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 
 /**
- * Validiert die gesammelten Informationen über den Prüfling. Zusätzlich Check.
- * 
+ * Validates the gathered information about the test object. Additional check.
+ *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 public class ValidateReportInputAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidateReportInputAction.class);
 
     private final ConversionService conversionService;
 
@@ -45,21 +43,26 @@ public class ValidateReportInputAction implements CheckAction {
     public void check(final Bag bag) {
         final Result<Boolean, XMLSyntaxError> results = validate(bag.getReportInput());
         if (!results.isValid()) {
-            log.error("Report input has errors {}", results.getErrors());
-            bag.stopProcessing(String.format("Report input has errors %s", results.getErrors()));
+            LOGGER.error("Report input has errors {}", results.getErrors());
+            bag.stopProcessing("Report input has errors " + results.getErrors());
         }
     }
 
     /**
-     * Validatiert das gegebene JAXB-Objekt gegen das konfigurierte Schema
+     * Validates the given JAXB object against the configured schema
      *
-     * @param object das JAXB-Objekt
-     * @param <T> der Typ des Objekts
-     * @return ein Validierungsergebnis
+     * @param object the JAXB object
+     * @param <T> the type of the object
+     * @return a validation result
      */
     private <T> Result<Boolean, XMLSyntaxError> validate(final T object) {
         final CollectingErrorEventHandler h = new CollectingErrorEventHandler();
         final String result = this.conversionService.writeXml(object, this.schema, h);
         return new Result<>(StringUtils.isNotBlank(result), h.getErrors());
+    }
+
+    public ValidateReportInputAction(final ConversionService conversionService, final Schema schema) {
+        this.conversionService = conversionService;
+        this.schema = schema;
     }
 }

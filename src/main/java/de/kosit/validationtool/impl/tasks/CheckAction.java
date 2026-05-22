@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.tasks;
 
 import java.util.Collection;
@@ -28,34 +27,29 @@ import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 import de.kosit.validationtool.model.reportInput.ProcessingError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Interface, welches von allen Prüfschritten implementiert wird. Der Parameter vom Typ {@link Bag} dient dabei sowohl
- * als Quellce für Eingabe Parameter als auch für die Aufnahme von Ergebnisse, die an weitere Schritte weitergeleitet
- * werden sollen.
- * 
+ * Interface implemented by all check steps. The parameter of type {@link Bag} serves both as a source for input
+ * parameters and for collecting results that should be forwarded to further steps.
+ *
  * @author Andreas Penski
  */
 @FunctionalInterface
 public interface CheckAction {
 
     /**
-     * Transport-Klasse für Eingabe und Ausgabe-Objekte für die einzelnen Prüfschritte.
+     * Transport class for input and output objects for the individual check steps.
      */
-    @Getter
-    @Setter
     class Bag {
 
         private Result<Scenario, String> scenarioSelectionResult;
 
-        @Setter(AccessLevel.NONE)
         private final CreateReportInput reportInput;
 
-        /** The final result */
+        /**
+         * The final result
+         */
         private XdmNode report;
 
         private boolean finished;
@@ -64,7 +58,9 @@ public interface CheckAction {
 
         private AcceptRecommendation acceptStatus = AcceptRecommendation.UNDEFINED;
 
-        /** The document to validate */
+        /**
+         * The document to validate
+         */
         private Input input;
 
         private Result<XdmNode, XMLSyntaxError> parserResult;
@@ -104,33 +100,120 @@ public interface CheckAction {
         }
 
         /**
-         * Gibt den Namen des Prüflings zurück, dabei werden etwaige Pfadinformationen abgeschnitten.
+         * Returns the name of the test object; any path information is stripped off.
          *
-         * @return der Name des Prüflings
+         * @return the name of the test object
          */
         public String getName() {
             final String fileName = getInput().getName().replaceAll(".*/|.*\\\\", "");
             return FilenameUtils.getBaseName(fileName);
         }
+
+        public Result<Scenario, String> getScenarioSelectionResult() {
+            return this.scenarioSelectionResult;
+        }
+
+        public CreateReportInput getReportInput() {
+            return this.reportInput;
+        }
+
+        /**
+         * The final result
+         */
+        public XdmNode getReport() {
+            return this.report;
+        }
+
+        public boolean isFinished() {
+            return this.finished;
+        }
+
+        public boolean isStopped() {
+            return this.stopped;
+        }
+
+        public AcceptRecommendation getAcceptStatus() {
+            return this.acceptStatus;
+        }
+
+        /**
+         * The document to validate
+         */
+        public Input getInput() {
+            return this.input;
+        }
+
+        public Result<XdmNode, XMLSyntaxError> getParserResult() {
+            return this.parserResult;
+        }
+
+        public Result<Integer, String> getAssertionResult() {
+            return this.assertionResult;
+        }
+
+        public Result<Boolean, XMLSyntaxError> getSchemaValidationResult() {
+            return this.schemaValidationResult;
+        }
+
+        public void setScenarioSelectionResult(final Result<Scenario, String> scenarioSelectionResult) {
+            this.scenarioSelectionResult = scenarioSelectionResult;
+        }
+
+        /**
+         * The final result
+         */
+        public void setReport(final XdmNode report) {
+            this.report = report;
+        }
+
+        public void setFinished(final boolean finished) {
+            this.finished = finished;
+        }
+
+        public void setStopped(final boolean stopped) {
+            this.stopped = stopped;
+        }
+
+        public void setAcceptStatus(final AcceptRecommendation acceptStatus) {
+            this.acceptStatus = acceptStatus;
+        }
+
+        /**
+         * The document to validate
+         */
+        public void setInput(final Input input) {
+            this.input = input;
+        }
+
+        public void setParserResult(final Result<XdmNode, XMLSyntaxError> parserResult) {
+            this.parserResult = parserResult;
+        }
+
+        public void setAssertionResult(final Result<Integer, String> assertionResult) {
+            this.assertionResult = assertionResult;
+        }
+
+        public void setSchemaValidationResult(final Result<Boolean, XMLSyntaxError> schemaValidationResult) {
+            this.schemaValidationResult = schemaValidationResult;
+        }
     }
 
     /**
-     * Ausfürhung des Prüfschrittes und Erweiterung der gesammelten Informationen.
+     * Executes the check step and extends the gathered information.
      *
-     * @param results die Informationssammlung
+     * @param results the information collection
      */
     void check(Bag results);
 
     /**
-     * Ermittlung, ob ein Schritt u.U. ausgelassen werden kann. Die Funktion wird vor der eigentlichen Prüfaktion
-     * aufgerufen und kann somit eine Ausführung des Prüfschrittes verhindern. Entwickler können diese Funktion
-     * überschreiben, um den Prüfschritt bedingt auszuführen.
+     * Determines whether a step can possibly be skipped. The function is called before the actual check action and can
+     * therefore prevent execution of the check step. Developers can override this function to execute the check step
+     * conditionally.
      *
-     * @param results die bisher gesammelten Information
-     * @return <code>true</code> wenn der Schritt ausgelassen werden soll
+     * @param results the information gathered so far
+     * @return <code>true</code> if the step should be skipped
      */
     default boolean isSkipped(final Bag results) {
         return false;
     }
-
 }

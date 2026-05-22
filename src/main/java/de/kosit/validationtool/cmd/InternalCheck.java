@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import java.io.PrintWriter;
@@ -23,8 +22,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.fusesource.jansi.AnsiRenderer.Code;
-
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
@@ -36,26 +35,26 @@ import de.kosit.validationtool.cmd.report.Justify;
 import de.kosit.validationtool.cmd.report.Line;
 import de.kosit.validationtool.impl.DefaultCheck;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
 import net.sf.saxon.s9api.Processor;
 
 /**
- * Simple Erweiterung der Klasse {@link DefaultCheck} um das Ergebnis der Assertion-Prüfung auszuwerten und auszugeben.
- * Diese Klasse stellt keine fachliche Erweiterung des eigentlichen Prüfvorganges dar!
+ * Simple extension of the class {@link DefaultCheck} to evaluate and output the result of the assertion check. This
+ * class does not represent a domain-specific extension of the actual validation process!
  * 
  * @author Andreas Penski
  */
-@Slf4j
 class InternalCheck extends DefaultCheck {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternalCheck.class);
 
     private int checkAssertions = 0;
 
     private int failedAssertions = 0;
 
     /**
-     * Erzeugt eine neue Instanz mit der angegebenen Konfiguration.
+     * Creates a new instance with the specified configuration.
      *
-     * @param configuration die Konfiguration
+     * @param configuration the configuration
      */
     InternalCheck(final Processor processor, final Configuration... configuration) {
         super(processor, configuration);
@@ -77,16 +76,10 @@ class InternalCheck extends DefaultCheck {
     private static Grid createResultGrid(final Map<String, Result> results) {
         final Grid grid = new Grid(
         //@formatter:off
-                new ColumnDefinition("File", 60, 10, 1),
-                new ColumnDefinition("Schema", 7).justify(Justify.CENTER),
-                new ColumnDefinition("Schematron", 10).justify(Justify.CENTER),
-                new ColumnDefinition("Acceptance", 10, 5).justify(Justify.CENTER),
-                new ColumnDefinition("Error/Description", 60,20,3)
-        );
+        new ColumnDefinition("File", 60, 10, 1), new ColumnDefinition("Schema", 7).justify(Justify.CENTER), new ColumnDefinition("Schematron", 10).justify(Justify.CENTER), new ColumnDefinition("Acceptance", 10, 5).justify(Justify.CENTER), new ColumnDefinition("Error/Description", 60, 20, 3));
         //@formatter:on
         results.entrySet().stream().sorted(Entry.comparingByKey()).forEach(e -> {
             final Result value = e.getValue();
-
             final Code textcolor = value.isAcceptable() ? Code.GREEN : Code.RED;
             grid.addCell(e.getKey(), textcolor);
             grid.addCell(value.isSchemaValid() ? "Y" : "N", textcolor);
@@ -112,10 +105,10 @@ class InternalCheck extends DefaultCheck {
     }
 
     /**
-     * Prüft die Prüflinge und gibt Informationen über etwaige Assertions aus.
+     * Validates the test candidates and outputs information about any assertions.
      *
-     * @param input die Prüflinge
-     * @return false wenn es Assertion-Fehler gibt, sonst true
+     * @param input the test candidates
+     * @return false if there are assertion errors, otherwise true
      */
     @Override
     public Result checkInput(final Input input) {
@@ -129,7 +122,8 @@ class InternalCheck extends DefaultCheck {
     }
 
     void printResults(final Map<String, Result> results) {
-        final PrintWriter writer = new PrintWriter(System.out);// NOSONAR
+        // NOSONAR
+        final PrintWriter writer = new PrintWriter(System.out);
         writer.write("Results:\n");
         writer.write(createResultGrid(results).render());
         writer.write(createStatusLine(results));
@@ -140,12 +134,12 @@ class InternalCheck extends DefaultCheck {
     private String createAssertionStatus() {
         final Line line = new Line();
         if (this.failedAssertions > 0) {
-            log.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
+            LOGGER.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
                     this.failedAssertions);
             line.add(MessageFormat.format("Assertions run: {0}, Assertions failed: ", this.checkAssertions));
             line.add(this.failedAssertions, Code.RED);
         } else if (this.checkAssertions > 0) {
-            log.info("Assertion check successful.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
+            LOGGER.info("Assertion check successful.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
                     this.failedAssertions);
             line.add(MessageFormat.format("Assertions run: {0}, Assertions failed: {1}", this.checkAssertions, this.failedAssertions));
         }
@@ -163,5 +157,4 @@ class InternalCheck extends DefaultCheck {
     public int getNotAcceptableCount(final Map<String, Result> results) {
         return (int) (this.failedAssertions + results.values().stream().filter(e -> !e.isAcceptable()).count());
     }
-
 }

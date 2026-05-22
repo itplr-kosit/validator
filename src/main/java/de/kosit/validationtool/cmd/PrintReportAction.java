@@ -13,29 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import java.io.StringWriter;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.Printer;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 
 /**
- * Gibt das Ergebnis-Document auf std-out aus.
+ * Outputs the result document to std-out.
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@RequiredArgsConstructor
 class PrintReportAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrintReportAction.class);
 
     private final Processor processor;
 
@@ -47,7 +45,11 @@ class PrintReportAction implements CheckAction {
             serializer.serializeNode(results.getReport());
             Printer.writeOut(writer.toString());
         } catch (final SaxonApiException e) {
-            log.error("Error while printing result to stdout", e);
+            LOGGER.error("Error while printing result to stdout", e);
         }
+    }
+
+    public PrintReportAction(final Processor processor) {
+        this.processor = processor;
     }
 }

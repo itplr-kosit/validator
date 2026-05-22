@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.tasks;
 
 import java.util.Optional;
 
 import org.oclc.purl.dsdl.svrl.FailedAssert;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.api.AcceptRecommendation;
-
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathSelector;
 
@@ -34,14 +31,14 @@ import net.sf.saxon.s9api.XPathSelector;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 public class ComputeAcceptanceAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputeAcceptanceAction.class);
 
     @Override
     public void check(final Bag results) {
         if (results.isStopped() && results.getParserResult().isValid()) {
-            // xml wurde aus irgendwelchen Gründen nicht korrekt verarbeitet, dann lassen wir es als undefined
+            // xml was not processed correctly for some reason, leave it as undefined
             return;
         }
         if (preCondtionsMatch(results)) {
@@ -78,8 +75,8 @@ public class ComputeAcceptanceAction implements CheckAction {
             selector.setContextItem(results.getReport());
             results.setAcceptStatus(selector.effectiveBooleanValue() ? AcceptRecommendation.ACCEPTABLE : AcceptRecommendation.REJECT);
         } catch (final SaxonApiException e) {
-            final String msg = String.format("Error evaluating accept recommendation: %s", selector.getUnderlyingXPathContext().toString());
-            log.error(msg, e);
+            final String msg = "Error evaluating accept recommendation: " + selector.getUnderlyingXPathContext().toString();
+            LOGGER.error(msg, e);
             results.stopProcessing(msg);
         }
     }
@@ -88,4 +85,6 @@ public class ComputeAcceptanceAction implements CheckAction {
         return results.getReport() != null && results.getSchemaValidationResult() != null && results.getScenarioSelectionResult() != null;
     }
 
+    public ComputeAcceptanceAction() {
+    }
 }

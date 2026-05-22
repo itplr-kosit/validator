@@ -35,8 +35,8 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XsltExecutable;
 
 /**
- * Testet das repository.
- * 
+ * Tests the repository.
+ *
  * @author Andreas Penski
  */
 public class ContentRepositoryTest {
@@ -89,7 +89,7 @@ public class ContentRepositoryTest {
 
     @Test(expected = IllegalStateException.class)
     public void testIllegalXpath() {
-        this.repository.createXPath("kein Xpath Ausdruck", null);
+        this.repository.createXPath("no Xpath expression", null);
     }
 
     @Test

@@ -38,11 +38,10 @@ import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Helferlein für Test-Artefakte
- * 
+ * Helper for test artifacts
+ *
  * @author Andreas Penski
  */
-
 public class Helper {
 
     public static class Simple {
@@ -140,16 +139,16 @@ public class Helper {
     public static final URI LARGE_XML = Paths.get("pom.xml").toUri();
 
     /**
-     * Lädt ein XML-Dokument von der gegebenen URL
-     * 
-     * @param url die url die geladen werden soll
-     * @return ein result objekt mit Dokument
+     * Loads an XML document from the given URL
+     *
+     * @param url the URL to load
+     * @return a result object with the document
      */
     public static XdmNode load(final URL url) {
         try ( final InputStream input = url.openStream() ) {
             return TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
         } catch (final SaxonApiException | IOException e) {
-            throw new IllegalStateException("Fehler beim Laden der XML-Datei", e);
+            throw new IllegalStateException("Error loading the XML file", e);
 
         }
 

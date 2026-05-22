@@ -21,8 +21,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Hält statische Informatione über diesen Validator.
- * 
+ * Holds static information about this validator.
+ *
  * @author Andreas Penski
  */
 public class EngineInformation {
@@ -45,37 +45,37 @@ public class EngineInformation {
     }
 
     /**
-     * Gibt die Versions-Nummer des Validators zurück.
-     * 
-     * @return die Version
+     * Returns the version number of the validator.
+     *
+     * @return the version
      */
     public static String getVersion() {
         return PROPERTIES.getProperty("project_version");
     }
 
     /**
-     * Gibt den Namen der Engine zurück.
-     * 
-     * @return der Name
+     * Returns the name of the engine.
+     *
+     * @return the name
      */
     public static String getName() {
         return PROPERTIES.getProperty("engine_name");
     }
 
     /**
-     * Gibt die Versions-Nummer des verwendeten Frameworks zurück. Diese ist relevant um Scenario-Konfiguration und
-     * Validator-Versionen aufeinander abzustimmen.
+     * Returns the version number of the framework in use. This is relevant for aligning scenario configuration and
+     * validator versions.
      *
-     * @return die Framework-Version
+     * @return the framework version
      */
     public static String getFrameworkVersion() {
         return PROPERTIES.getProperty("framework_version");
     }
 
     /**
-     * Gibt die Major-Versions-Nummer des eingesetzten Frameworks zurück.
-     * 
-     * @return die Major-Versions-Nummer
+     * Returns the major version number of the framework in use.
+     *
+     * @return the major version number
      */
     public static String getFrameworkMajorVersion() {
         return getFrameworkVersion().substring(0, 1);
@@ -86,9 +86,9 @@ public class EngineInformation {
     }
 
     /**
-     * Gibt den Namespace des eingesetzten Frameworks zurück.
-     * 
-     * @return die Major-Versions-Nummer
+     * Returns the namespace of the framework in use.
+     *
+     * @return the major version number
      */
     public static String getFrameworkNamespace() {
         return "http://www.xoev.de/de/validator/framework/" + getFrameworkMajorVersion() + "/createreportinput";

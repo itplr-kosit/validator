@@ -50,8 +50,8 @@ import de.kosit.validationtool.model.scenarios.ErrorLevelType;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Test das Check-Interface
- * 
+ * Tests the Check interface
+ *
  * @author Andreas Penski
  */
 public class DefaultCheckTest {

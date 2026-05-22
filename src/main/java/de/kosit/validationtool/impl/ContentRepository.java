@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl;
 
 import java.io.IOException;
@@ -35,6 +34,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
@@ -45,9 +46,6 @@ import de.kosit.validationtool.model.scenarios.NamespaceType;
 import de.kosit.validationtool.model.scenarios.ResourceType;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -57,15 +55,14 @@ import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 
 /**
- * Repository für verschiedene XML Artefakte zur Vearbeitung der Prüfszenarien.
- * 
+ * Repository for various XML artifacts used to process the check scenarios.
+ *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 public class ContentRepository {
 
-    @Getter
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContentRepository.class);
+
     private final Processor processor;
 
     private final URI repository;
@@ -76,7 +73,6 @@ public class ContentRepository {
 
     private final SchemaFactory schemaFactory;
 
-    @Getter
     private final ResolvingConfigurationStrategy resolvingConfigurationStrategy;
 
     /**
@@ -114,13 +110,13 @@ public class ContentRepository {
     }
 
     /**
-     * Lädt ein XSL von der angegebenen URI
+     * Loads an XSL from the given URI
      *
-     * @param uri die URI der XSL Definition
-     * @return ein XSLT Executable
+     * @param uri the URI of the XSL definition
+     * @return an XSLT executable
      */
     public XsltExecutable loadXsltScript(final URI uri) {
-        log.info("Loading XSLT script from  {}", uri);
+        LOGGER.info("Loading XSLT script from  {}", uri);
         final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
         final CollectingErrorEventHandler listener = new CollectingErrorEventHandler();
         try {
@@ -129,24 +125,23 @@ public class ContentRepository {
                 // otherwise use default resolver
                 xsltCompiler.setURIResolver(getResolver());
             }
-
             return xsltCompiler.compile(resolveInRepository(uri));
         } catch (final SaxonApiException e) {
-            listener.getErrors().forEach(event -> event.log(log));
+            listener.getErrors().forEach(event -> event.log(LOGGER));
             throw new IllegalStateException("Can not compile xslt executable for uri " + uri, e);
         } finally {
             if (!listener.hasErrors() && listener.hasEvents()) {
-                log.warn("Received warnings or errors while loading a xslt script {}", uri);
-                listener.getErrors().forEach(e -> e.log(log));
+                LOGGER.warn("Received warnings or errors while loading a xslt script {}", uri);
+                listener.getErrors().forEach(e -> e.log(LOGGER));
             }
         }
     }
 
     /**
-     * Erzeugt ein Schema-Objekt auf Basis der übergebenen URL.
+     * Creates a schema object based on the given URL.
      *
-     * @param url die url
-     * @return das erzeugte Schema
+     * @param url the url
+     * @return the created schema
      */
     public Schema createSchema(final URL url) {
         return createSchema(new Source[] { resolve(url) });
@@ -157,19 +152,19 @@ public class ContentRepository {
     }
 
     /**
-     * Erzeugt ein Schema auf Basis der übegebenen URIs
-     * 
-     * @param uris die uris in String-Repräsentation
-     * @return das Schema
+     * Creates a schema based on the given URIs
+     *
+     * @param uris the URIs in String representation
+     * @return the schema
      */
     public Schema createSchema(final Collection<String> uris) {
         return createSchema(uris.stream().map(s -> resolveInRepository(URI.create(s))).toArray(Source[]::new));
     }
 
     /**
-     * Liefert das Schema zu diesem Szenario.
+     * Returns the schema for this scenario.
      *
-     * @return das passende Schema
+     * @return the matching schema
      */
     public Schema createSchema(final ScenarioType s) {
         Schema schema = null;
@@ -184,24 +179,24 @@ public class ContentRepository {
     private Source resolveInRepository(final URI source) {
         try {
             if (this.resolver == null) {
-                // TODO wie wird ohne resolver das richtige Artefakt gefunden?
+                // TODO how is the correct artifact found without a resolver?
                 // assume local
                 final URI resolved = RelativeUriResolver.resolve(source, this.repository);
                 return new StreamSource(resolved.toASCIIString());
             }
             return this.resolver.resolve(source.toString(), this.repository.toString());
         } catch (final TransformerException e) {
-            log.error("Error resolving source {}", source, e);
-            throw new IllegalStateException(String.format("Can not resolve %s in repository %s", source, this.repository), e);
+            LOGGER.error("Error resolving source {}", source, e);
+            throw new IllegalStateException("Can not resolve " + source + " in repository " + this.repository, e);
         }
     }
 
     /**
-     * Erzeugt einen [@link XPathExecutable} auf Basis der angegebenen Informationen.
-     * 
-     * @param expression der XPATH-Ausdruck
-     * @param namespaces optionale Namespace-Mappings
-     * @return ein kompiliertes Executable
+     * Creates an [@link XPathExecutable} based on the given information.
+     *
+     * @param expression the XPATH expression
+     * @param namespaces optional namespace mappings
+     * @return a compiled executable
      */
     public XPathExecutable createXPath(final String expression, final Map<String, String> namespaces) {
         try {
@@ -211,8 +206,8 @@ public class ContentRepository {
             }
             return compiler.compile(expression);
         } catch (final SaxonApiException e) {
-            throw new IllegalStateException(String.format("Can not compile xpath match expression '%s'",
-                    StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION"), e);
+            throw new IllegalStateException("Can not compile xpath match expression \'"
+                    + (StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION") + "\'", e);
         }
     }
 
@@ -230,9 +225,9 @@ public class ContentRepository {
     }
 
     /**
-     * Gibt eine Transformation zurück.
+     * Returns a transformation.
      *
-     * @return initialisierte Transformation
+     * @return initialized transformation
      */
     public Transformation createReportTransformation(final ScenarioType t) {
         final ResourceType resource = t.getCreateReport().getResource();
@@ -267,7 +262,7 @@ public class ContentRepository {
 
     public Transformation createIdentityTransformation() {
         final URL url = ContentRepository.class.getClassLoader().getResource("transform/identity.xsl");
-        try ( final InputStream input = url.openStream() ) {
+        try ( InputStream input = url.openStream() ) {
             final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
             final XsltExecutable executable = xsltCompiler.compile(new StreamSource(input));
             final ResourceType resource = new ResourceType();
@@ -277,5 +272,24 @@ public class ContentRepository {
         } catch (final IOException | SaxonApiException e) {
             throw new IllegalStateException("Error creating identity transformation", e);
         }
+    }
+
+    public ContentRepository(final Processor processor, final URI repository, final URIResolver resolver,
+            final UnparsedTextURIResolver unparsedTextURIResolver, final SchemaFactory schemaFactory,
+            final ResolvingConfigurationStrategy resolvingConfigurationStrategy) {
+        this.processor = processor;
+        this.repository = repository;
+        this.resolver = resolver;
+        this.unparsedTextURIResolver = unparsedTextURIResolver;
+        this.schemaFactory = schemaFactory;
+        this.resolvingConfigurationStrategy = resolvingConfigurationStrategy;
+    }
+
+    public Processor getProcessor() {
+        return this.processor;
+    }
+
+    public ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
+        return this.resolvingConfigurationStrategy;
     }
 }

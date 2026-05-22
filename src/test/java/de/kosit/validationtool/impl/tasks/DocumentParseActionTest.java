@@ -29,7 +29,7 @@ import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Testet die Document Parsing-Funktionalitäten.
+ * Tests the document parsing functionality.
  *
  * @author Andreas Penski
  */

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.xml;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,21 +28,20 @@ import org.junit.Test;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
-import lombok.RequiredArgsConstructor;
-
 /**
- * 
  * Tests the internal functions used to create a secure resolver
  * 
  * @author Andreas Penski
  */
 public class BaseResolverConfigurationTest {
 
-    @RequiredArgsConstructor
     private class TestResolvingStrategy extends StrictRelativeResolvingStrategy {
 
         void setInternalProperty(final SchemaFactory factory, final boolean lenient) {
             allowExternalSchema(factory, lenient, NOT_EXISTING_SCHEME);
+        }
+
+        public TestResolvingStrategy() {
         }
     }
 
@@ -73,5 +71,4 @@ public class BaseResolverConfigurationTest {
         s.setInternalProperty(sf, false);
         verify(sf, times(2)).setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, BaseResolverConfigurationTest.NOT_EXISTING_SCHEME);
     }
-
 }

@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import java.text.NumberFormat;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
  * Prints some memory usage information for debugging purposes.
  * 
  * @author Andreas Penski
  */
-@Slf4j
 class PrintMemoryStats implements de.kosit.validationtool.impl.tasks.CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrintMemoryStats.class);
 
     private static final int BYTES_PER_K = 1024;
 
@@ -37,13 +37,12 @@ class PrintMemoryStats implements de.kosit.validationtool.impl.tasks.CheckAction
         long maxMemory = runtime.maxMemory();
         long allocatedMemory = runtime.totalMemory();
         long freeMemory = runtime.freeMemory();
-
         NumberFormat format = NumberFormat.getInstance();
         final String freeStr = format.format(freeMemory / BYTES_PER_K);
         final String allocStr = format.format(allocatedMemory / BYTES_PER_K);
         final String maxStr = format.format(maxMemory / BYTES_PER_K);
         final String totalFreeStr = format.format((freeMemory + (maxMemory - allocatedMemory)) / BYTES_PER_K);
-        log.info("free memory: {}MB; allocated memory: {}MB", freeStr, allocStr);
-        log.info("max memory: {}MB; total free memory: {}MB", maxStr, totalFreeStr);
+        LOGGER.info("free memory: {}MB; allocated memory: {}MB", freeStr, allocStr);
+        LOGGER.info("max memory: {}MB; total free memory: {}MB", maxStr, totalFreeStr);
     }
 }

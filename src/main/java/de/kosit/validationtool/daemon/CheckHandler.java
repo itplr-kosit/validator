@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.daemon;
 
 import java.io.BufferedInputStream;
@@ -23,29 +22,26 @@ import java.net.URI;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.net.httpserver.HttpExchange;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.Check;
 import de.kosit.validationtool.api.InputFactory;
 import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.input.SourceInput;
 import de.kosit.validationtool.impl.input.StreamHelper;
-
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 
 /**
- * Wir benötigen einen Handler, der zur Verarbeitung von HTTP-Anforderungen aufgerufen wird um hier die Verarbeitung des
- * POST Request zu realisieren.
+ * We need a handler that is called to process HTTP requests in order to handle the processing of the POST request here.
  */
-@Slf4j
-@RequiredArgsConstructor
 class CheckHandler extends BaseHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckHandler.class);
 
     private static final AtomicLong counter = new AtomicLong(0);
 
@@ -54,17 +50,17 @@ class CheckHandler extends BaseHandler {
     private final Processor processor;
 
     /**
-     * Methode, die eine gegebene Anforderung verarbeitet und eine entsprechende Antwort generiert
+     * Method that processes a given request and generates a corresponding response.
      *
-     * @param httpExchange kapselt eine empfangene HTTP-Anforderung und eine Antwort, die in einem Exchange generiert
-     *            werden soll.
+     * @param httpExchange encapsulates a received HTTP request and a response to be generated in an exchange.
      */
     @Override
     public void handle(final HttpExchange httpExchange) throws IOException {
         try {
-            log.debug("Incoming request");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Incoming request");
             final String requestMethod = httpExchange.getRequestMethod();
-            // check neccessary, since gui can be disabled
+            // check necessary, since gui can be disabled
             if (requestMethod.equals("POST")) {
                 final BufferedInputStream buffered = StreamHelper.wrapPeekable(httpExchange.getRequestBody());
                 if (!isMultipartFormData(httpExchange) && isContentAvailable(httpExchange, buffered)) {
@@ -75,12 +71,11 @@ class CheckHandler extends BaseHandler {
                 } else {
                     error(httpExchange, HttpStatus.SC_BAD_REQUEST, "No content supplied");
                 }
-
             } else {
                 error(httpExchange, HttpStatus.SC_METHOD_NOT_ALLOWED, "Method not supported");
             }
         } catch (final Exception e) {
-            log.error("Error checking entity", e);
+            LOGGER.error("Error checking entity", e);
             error(httpExchange, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal error: " + e.getMessage());
         }
     }
@@ -100,7 +95,6 @@ class CheckHandler extends BaseHandler {
 
     private static boolean streamContainsContent(final BufferedInputStream requestBody) throws IOException {
         return requestBody.available() > 0;
-
     }
 
     private static String resolveInputName(final URI requestURI) {
@@ -119,14 +113,18 @@ class CheckHandler extends BaseHandler {
     }
 
     private byte[] serialize(final Result result) {
-        try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
+        try ( ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
             final Serializer serializer = this.processor.newSerializer(out);
             serializer.serializeNode(result.getReport());
             return out.toByteArray();
         } catch (final SaxonApiException | IOException e) {
-            log.error("Error serializing result", e);
+            LOGGER.error("Error serializing result", e);
             throw new IllegalStateException("Can not serialize result", e);
         }
     }
 
+    public CheckHandler(final Check implemenation, final Processor processor) {
+        this.implemenation = implemenation;
+        this.processor = processor;
+    }
 }

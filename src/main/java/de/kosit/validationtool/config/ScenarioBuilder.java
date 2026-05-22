@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.config;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -28,11 +27,8 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.ContentRepository;
 import de.kosit.validationtool.impl.Scenario;
@@ -45,7 +41,6 @@ import de.kosit.validationtool.model.scenarios.ObjectFactory;
 import de.kosit.validationtool.model.scenarios.ScenarioType;
 import de.kosit.validationtool.model.scenarios.ValidateWithSchematron;
 import de.kosit.validationtool.model.scenarios.ValidateWithXmlSchema;
-
 import net.sf.saxon.s9api.XPathExecutable;
 
 /**
@@ -53,14 +48,13 @@ import net.sf.saxon.s9api.XPathExecutable;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
-@Getter(AccessLevel.PACKAGE)
 public class ScenarioBuilder implements Builder<Scenario> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioBuilder.class);
 
     private static int nameCount = 0;
 
-    private static final String DEFAULT_DESCRIPTION = "Dieses Scenario wurde per API erstellt";
+    private static final String DEFAULT_DESCRIPTION = "This scenario was created via the API";
 
     private final Map<String, String> namespaces = new HashMap<>();
 
@@ -238,7 +232,8 @@ public class ScenarioBuilder implements Builder<Scenario> {
                 errors.addAll(result.getErrors());
             }
         } else {
-            log.debug("No accept configuration available");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("No accept configuration available");
         }
     }
 
@@ -295,5 +290,40 @@ public class ScenarioBuilder implements Builder<Scenario> {
     public ScenarioBuilder name(final String name) {
         this.name = name;
         return this;
+    }
+
+    public ScenarioBuilder() {
+    }
+
+    Map<String, String> getNamespaces() {
+        return this.namespaces;
+    }
+
+    XPathBuilder getMatchConfig() {
+        return this.matchConfig;
+    }
+
+    XPathBuilder getAcceptConfig() {
+        return this.acceptConfig;
+    }
+
+    String getName() {
+        return this.name;
+    }
+
+    SchemaBuilder getSchemaBuilder() {
+        return this.schemaBuilder;
+    }
+
+    List<SchematronBuilder> getSchematronBuilders() {
+        return this.schematronBuilders;
+    }
+
+    ReportBuilder getReportBuilder() {
+        return this.reportBuilder;
+    }
+
+    String getDescription() {
+        return this.description;
     }
 }

@@ -42,7 +42,8 @@ public class StreamHelper {
      * Helper class, which generates the hashcode while reading the stream e.g. for parsing the document. This allows
      * generating the hashcode without an additional reading step.
      */
-    @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
+    // efficient read is done by internally used stream
+    @SuppressWarnings("squid:S4929")
     private static class DigestingInputStream extends FilterInputStream {
 
         private final MessageDigest digest;
@@ -92,7 +93,8 @@ public class StreamHelper {
         }
     }
 
-    @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
+    // efficient read is done by internally used stream
+    @SuppressWarnings("squid:S4929")
     private static class CountInputStream extends FilterInputStream {
 
         private final LazyReadInput reference;
@@ -124,7 +126,7 @@ public class StreamHelper {
             return digest;
         } catch (final NoSuchAlgorithmException e) {
             // should not happen
-            throw new IllegalArgumentException(String.format("Specified method %s is not available", algorithm), e);
+            throw new IllegalArgumentException("Specified method " + algorithm + " is not available", e);
         }
     }
 

@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.tasks;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.ScenarioRepository;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
-
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Identifiziert das der Eingabe entsprechende Szenario, sofern eines konfiguriert ist. Setzt das Fallback-Szenario,
- * wenn keines identifiziert werden konnte.
- * 
+ * Identifies the scenario corresponding to the input, if one is configured. Sets the fallback scenario if none could be
+ * identified.
+ *
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 public class ScenarioSelectionAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioSelectionAction.class);
 
     private final ScenarioRepository repository;
 
@@ -42,7 +40,6 @@ public class ScenarioSelectionAction implements CheckAction {
     public void check(final Bag results) {
         final CreateReportInput report = results.getReportInput();
         final Result<Scenario, String> scenarioTypeResult;
-
         if (results.getParserResult().isValid()) {
             scenarioTypeResult = determineScenario(results.getParserResult().getObject());
         } else {
@@ -51,9 +48,9 @@ public class ScenarioSelectionAction implements CheckAction {
         results.setScenarioSelectionResult(scenarioTypeResult);
         if (!scenarioTypeResult.getObject().isFallback()) {
             report.setScenario(scenarioTypeResult.getObject().getConfiguration());
-            log.info("Scenario {} identified for {}", scenarioTypeResult.getObject().getName(), results.getInput().getName());
+            LOGGER.info("Scenario {} identified for {}", scenarioTypeResult.getObject().getName(), results.getInput().getName());
         } else {
-            log.info("No valid scenario configuration found for {}", results.getInput().getName());
+            LOGGER.info("No valid scenario configuration found for {}", results.getInput().getName());
         }
     }
 
@@ -65,4 +62,7 @@ public class ScenarioSelectionAction implements CheckAction {
         return result;
     }
 
+    public ScenarioSelectionAction(final ScenarioRepository repository) {
+        this.repository = repository;
+    }
 }

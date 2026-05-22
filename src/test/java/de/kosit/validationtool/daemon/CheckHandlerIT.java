@@ -29,13 +29,12 @@ import org.junit.Test;
 
 import de.kosit.validationtool.impl.Helper;
 import de.kosit.validationtool.impl.Helper.Simple;
-
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.MultiPartSpecification;
 
 /**
- * Testet the Daemon-Mode input , Methoden , Output Content-Type and the success case
+ * Tests the Daemon-Mode input, methods, output Content-Type and the success case.
  *
  * @author Roula Antoun
  * @author Andreas Penski

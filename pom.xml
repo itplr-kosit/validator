@@ -39,19 +39,18 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.assertj>3.27.7</version.assertj>
-        <version.commons-io>2.21.0</version.commons-io>
+        <version.commons-io>2.22.0</version.commons-io>
         <version.commons-lang>3.20.0</version.commons-lang>
         <version.jacoco>0.8.13</version.jacoco>
-        <version.jaxb-api>4.0.4</version.jaxb-api>
-        <version.jaxb-impl>4.0.6</version.jaxb-impl>
-        <version.lombok>1.18.42</version.lombok>
-        <version.mockito>5.21.0</version.mockito>
+        <version.jaxb-api>4.0.5</version.jaxb-api>
+        <version.jaxb-impl>4.0.8</version.jaxb-impl>
+        <version.mockito>5.23.0</version.mockito>
         <version.owasp-dependency-check>12.1.8</version.owasp-dependency-check>
         <!-- 6.0.0 requires Java 17+ -->
         <version.rest-assured>5.5.7</version.rest-assured>
         <version.saxon-he>12.9</version.saxon-he>
-        <version.slf4j>2.0.17</version.slf4j>
-        <version.jaxb-maven-plugin>4.0.11</version.jaxb-maven-plugin>
+        <version.slf4j>2.0.18</version.slf4j>
+        <version.jaxb-maven-plugin>4.0.14</version.jaxb-maven-plugin>
     </properties>
 
     <repositories>
@@ -76,12 +75,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${version.lombok}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${version.slf4j}</version>
@@ -100,7 +93,7 @@
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
-            <version>2.4.2</version>
+            <version>2.4.3</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -196,17 +189,6 @@
         </pluginManagement>
 
         <plugins>
-            <!-- for PR 152 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <configuration>
-                    <propertiesEncoding>ISO-8859-1</propertiesEncoding>
-                </configuration>
-            </plugin>
-
-
             <plugin>
               <artifactId>maven-resources-plugin</artifactId>
               <version>3.4.0</version>
@@ -231,6 +213,10 @@
                   </configuration>
                 </execution>
               </executions>
+              <!-- for PR 152 -->
+              <configuration>
+                <propertiesEncoding>ISO-8859-1</propertiesEncoding>
+              </configuration>
             </plugin>
 
             <plugin>
@@ -269,16 +255,6 @@
                                     <!-- minimum for OWASP check-->
                                     <version>[3.6.3,)</version>
                                 </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <!-- Required for "-proc:full" required for Lombok: 
-                                      Any Java 11 (LTS) >= 11.0.23
-                                      No Java 12 to 16
-                                      Any Java 17 (LTS) >= 17.0.11
-                                      No Java 18 to 20
-                                      Any Java 21 or higher
-                                    -->
-                                    <version>[11.0.23,12),[17.0.11,18),[21,)</version>
-                                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
@@ -291,11 +267,6 @@
                 <configuration>
                     <release>11</release>
                     <encoding>UTF-8</encoding>
-                    <!-- This is required for Lombok only since JDK 23
-                         Was backported to 17.0.11 and 11.0.23.
-                         See: https://inside.java/2024/06/18/quality-heads-up/ 
-                    -->
-                    <proc>full</proc>
                 </configuration>
             </plugin>
 
