@@ -51,7 +51,7 @@ import net.sf.saxon.s9api.XsltTransformer;
  */
 public class CreateReportsAction implements CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(CreateReportsAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateReportsAction.class);
 
     public static final Process.Key<List<BusinessReport>, XMLSyntaxError> KEY = new Process.Key<>(null, XMLSyntaxError.class);
 
@@ -113,7 +113,7 @@ public class CreateReportsAction implements CheckAction {
             r.setContent(destination.getXdmNode());
             r.setReport(generateXVRLReport(transformation.getResourceType(), destination.getXdmNode()));
         } catch (final SaxonApiException | JAXBException e) {
-            log.error("Error creating final report", e);
+            LOGGER.error("Error creating final report", e);
             process.setStopped(true);
             final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
             xmlSyntaxError.setMessage("Can not create final report: " + e.getMessage());

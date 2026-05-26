@@ -50,7 +50,7 @@ import net.sf.saxon.s9api.XPathExecutable;
  */
 public class ScenarioBuilder implements Builder<Scenario> {
 
-    private static final Logger log = LoggerFactory.getLogger(ScenarioBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioBuilder.class);
 
     private static int nameCount = 0;
 
@@ -231,7 +231,8 @@ public class ScenarioBuilder implements Builder<Scenario> {
                 errors.addAll(result.getErrors());
             }
         } else {
-            log.debug("No accept configuration available");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("No accept configuration available");
         }
     }
 

@@ -53,7 +53,7 @@ import net.sf.saxon.s9api.Processor;
  */
 public class ConfigurationBuilder {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfigurationBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationBuilder.class);
 
     private final List<ScenarioBuilder> scenarios = new ArrayList<>();
 
@@ -241,7 +241,7 @@ public class ConfigurationBuilder {
      */
     public ConfigurationBuilder with(final FallbackBuilder builder) {
         if (this.fallbackBuilder != null) {
-            log.warn("Overriding previously created fallback scenario");
+            LOGGER.warn("Overriding previously created fallback scenario");
         }
         this.fallbackBuilder = builder;
         return this;
@@ -295,7 +295,7 @@ public class ConfigurationBuilder {
             final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
             this.contentRepository = new ContentRepository(processor, resolving, this.repository);
         } else if (this.resolvingConfigurationStrategy != null) {
-            log.warn("Ignore definition of resolve strategy since a custom ContentRepository is supplied");
+            LOGGER.warn("Ignore definition of resolve strategy since a custom ContentRepository is supplied");
         }
         return this.contentRepository;
     }
@@ -339,10 +339,10 @@ public class ConfigurationBuilder {
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
         if (this.resolvingConfigurationStrategy != null) {
-            log.info("Custom resolving strategy supplied. Please take care of xml security!");
+            LOGGER.info("Custom resolving strategy supplied. Please take care of xml security!");
             return this.resolvingConfigurationStrategy;
         }
-        log.info("Using resolving strategy {}", this.resolvingMode);
+        LOGGER.info("Using resolving strategy {}", this.resolvingMode);
         return this.resolvingMode.getStrategy();
     }
 

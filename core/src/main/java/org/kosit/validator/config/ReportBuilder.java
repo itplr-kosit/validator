@@ -40,7 +40,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  */
 public class ReportBuilder implements Builder<Pair<CreateReportType, Transformation>> {
 
-    private static final Logger log = LoggerFactory.getLogger(ReportBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReportBuilder.class);
 
     private static final String DEFAULT_NAME = "manually created report";
 
@@ -69,7 +69,7 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
             }
             result = new Result<>(new ImmutablePair<>(object, new Transformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
-            log.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             result = createError(" Can not create report configuration based on " + this.source + ". Exception is " + e.getMessage());
         }
         return result;

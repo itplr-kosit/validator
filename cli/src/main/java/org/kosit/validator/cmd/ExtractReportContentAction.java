@@ -45,7 +45,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 class ExtractReportContentAction implements CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(ExtractReportContentAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExtractReportContentAction.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 
@@ -86,10 +86,10 @@ class ExtractReportContentAction implements CheckAction {
         final Path file = this.outputDirectory.resolve(name + ".xml");
         final Serializer serializer = this.processor.newSerializer(file.toFile());
         try {
-            log.info("Writing create-report result \'{}\' to {}", name, file.toAbsolutePath());
+            LOGGER.info("Writing create-report result \'{}\' to {}", name, file.toAbsolutePath());
             serializer.serializeNode(node);
         } catch (final SaxonApiException e) {
-            log.error("Error extracting create-report content to {}", file.toAbsolutePath(), e);
+            LOGGER.error("Error extracting create-report content to {}", file.toAbsolutePath(), e);
         }
     }
 
@@ -97,7 +97,7 @@ class ExtractReportContentAction implements CheckAction {
     public boolean isSkipped(final Process results) {
         final Result<List<BusinessReport>, XMLSyntaxError> createReportResult = results.getResult(CreateReportsAction.KEY);
         if (createReportResult == null || createReportResult.getObject() == null) {
-            log.warn("Can not extract create-report content. No report document found");
+            LOGGER.warn("Can not extract create-report content. No report document found");
             return true;
         }
         return false;

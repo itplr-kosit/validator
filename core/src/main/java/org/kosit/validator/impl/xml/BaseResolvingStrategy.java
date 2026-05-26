@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
  */
 public abstract class BaseResolvingStrategy implements ResolvingConfigurationStrategy {
 
-    private static final Logger log = LoggerFactory.getLogger(BaseResolvingStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseResolvingStrategy.class);
 
     private static final String ORACLE_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
 
@@ -44,8 +44,8 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
             Class.forName(ORACLE_XERCES_CLASS);
             return true;
         } catch (final ClassNotFoundException e) {
-            log.warn("No oracle JDK version of XERCES found. Configured security features may not have any effect.");
-            log.warn("Please take care of XML security while checking your xml contents");
+            LOGGER.warn("No oracle JDK version of XERCES found. Configured security features may not have any effect.");
+            LOGGER.warn("Please take care of XML security while checking your xml contents");
             return false;
         }
     }
@@ -55,8 +55,9 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
             setter.apply();
         } catch (final SAXException e) {
             if (lenient) {
-                log.warn(errorMessage);
-                log.debug(e.getMessage(), e);
+                LOGGER.warn(errorMessage);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(e.getMessage(), e);
             } else {
                 throw new IllegalStateException(errorMessage);
             }
@@ -92,13 +93,15 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
     }
 
     protected void disableExternalEntities(final Validator validator, final boolean lenient) {
-        log.debug("Try to disable extern DTD access");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Try to disable extern DTD access");
         setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
                 "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
     }
 
     protected void disableExternalEntities(final SchemaFactory schemaFactory, final boolean lenient) {
-        log.debug("Try to disable extern DTD access");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Try to disable extern DTD access");
         setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
                 "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
     }

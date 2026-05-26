@@ -57,7 +57,7 @@ import net.sf.saxon.s9api.XdmNodeKind;
  */
 public class ConfigurationLoader {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationLoader.class);
 
     private static final String SUPPORTED_MAJOR_VERSION = "2";
 
@@ -109,7 +109,7 @@ public class ConfigurationLoader {
     }
 
     private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {
-        log.info("create Fallback: ");
+        LOGGER.info("create Fallback: ");
         return new FallbackBuilder().build(repository).getObject();
     }
 
@@ -134,7 +134,7 @@ public class ConfigurationLoader {
 
     URI getScenarioRepository() {
         if (this.scenarioRepository == null) {
-            log.info("Creating default scenario repository (alongside scenario definition)");
+            LOGGER.info("Creating default scenario repository (alongside scenario definition)");
             return RelativeUriResolver.resolve(URI.create("."), this.scenarioDefinition);
         }
         return this.scenarioRepository;
@@ -159,21 +159,21 @@ public class ConfigurationLoader {
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
         if (this.resolvingConfigurationStrategy != null) {
-            log.info("Custom resolving strategy supplied. Please take care of xml security!");
+            LOGGER.info("Custom resolving strategy supplied. Please take care of xml security!");
             return this.resolvingConfigurationStrategy;
         }
-        log.info("Using resolving strategy {}", this.resolvingMode);
+        LOGGER.info("Using resolving strategy {}", this.resolvingMode);
         return this.resolvingMode.getStrategy();
     }
 
     private Scenarios loadScenarios(final Schema scenarioSchema, final Processor processor) {
         checkVersion(this.scenarioDefinition, processor);
-        log.info("Loading scenarios from {}", this.scenarioDefinition);
+        LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
         final ConversionService conversionService = new ConversionService();
         final Scenarios scenarios = conversionService.readXml(this.scenarioDefinition, Scenarios.class, scenarioSchema, handler);
         if (!handler.hasErrors()) {
-            log.info("Loading scenario content from {}", this.getScenarioRepository());
+            LOGGER.info("Loading scenario content from {}", this.getScenarioRepository());
         } else {
             throw new IllegalStateException(
                     "Can not load scenarios from " + getScenarioDefinition() + " due to " + handler.getErrorDescription());
@@ -189,7 +189,7 @@ public class ConfigurationLoader {
      */
     public ConfigurationLoader setResolvingMode(final ResolvingMode mode) {
         if (this.resolvingConfigurationStrategy != null) {
-            log.warn("Ignoring resolving mode configuration since a custom strategy is already defined");
+            LOGGER.warn("Ignoring resolving mode configuration since a custom strategy is already defined");
         }
         this.resolvingMode = mode;
         return this;

@@ -67,7 +67,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class SchemaValidationAction implements CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(SchemaValidationAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaValidationAction.class);
 
     public static final Key<Boolean, XMLSyntaxError> KEY = new Key<>(Boolean.class, XMLSyntaxError.class);
 
@@ -91,7 +91,8 @@ public class SchemaValidationAction implements CheckAction {
     }
 
     private Result<Boolean, XMLSyntaxError> validate(final Process process, final Scenario scenario) {
-        log.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
         try ( SourceProvider validateInput = resolveSource(process) ) {
             final Validator validator = scenario.getFactory().createValidator(scenario.getSchema());
@@ -100,7 +101,7 @@ public class SchemaValidationAction implements CheckAction {
             return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
         } catch (final SAXException | SaxonApiException | IOException e) {
             final String msg = "Error processing schema validation for scenario " + scenario.getConfiguration().getName();
-            log.error(msg, e);
+            LOGGER.error(msg, e);
             process.setStopped(true);
             final XMLSyntaxError error = new XMLSyntaxError();
             error.setMessage(msg);

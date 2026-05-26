@@ -39,7 +39,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class ScenarioSelectionAction implements CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(ScenarioSelectionAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioSelectionAction.class);
 
     public static final Process.Key<Scenario, String> KEY = new Process.Key<>(Scenario.class, String.class);
 
@@ -69,9 +69,9 @@ public class ScenarioSelectionAction implements CheckAction {
             scenarioTypeResult = new Result<>(this.repository.getFallbackScenario());
         }
         if (!scenarioTypeResult.getObject().isFallback()) {
-            log.info("Scenario \'{}\' identified for \'{}\'", scenarioTypeResult.getObject().getName(), results.getInput().getName());
+            LOGGER.info("Scenario \'{}\' identified for \'{}\'", scenarioTypeResult.getObject().getName(), results.getInput().getName());
         } else {
-            log.info("No valid scenario configuration found for \'{}\'", results.getInput().getName());
+            LOGGER.info("No valid scenario configuration found for \'{}\'", results.getInput().getName());
         }
         final ProcessStepResult<Scenario, String> result = new ProcessStepResult<>(ScenarioSelectionAction.KEY);
         result.setResult(scenarioTypeResult);

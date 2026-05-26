@@ -40,7 +40,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  */
 public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, Transformation>> {
 
-    private static final Logger log = LoggerFactory.getLogger(SchematronBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchematronBuilder.class);
 
     private static final String DEFAULT_NAME = "manually configured";
 
@@ -67,7 +67,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
             }
             result = new Result<>(new ImmutablePair<>(object, new Transformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
-            log.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             result = createError("Can not create schematron configuration based  on " + this.source + ". Exception is " + e.getMessage());
         }
         return result;

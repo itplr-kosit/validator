@@ -51,7 +51,7 @@ import net.sf.saxon.om.TreeInfo;
  */
 public class SourceInput extends AbstractInput {
 
-    private static final Logger log = LoggerFactory.getLogger(SourceInput.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SourceInput.class);
 
     private final Source source;
 
@@ -81,10 +81,10 @@ public class SourceInput extends AbstractInput {
             throw new IllegalStateException("Unsupported source. Only StreamSource supported yet");
         }
         if (!isHashcodeComputed() && ((StreamSource) this.source).getInputStream() == null) {
-            log.warn("No hashcode supplied, will wrap the reader using system default charset");
+            LOGGER.warn("No hashcode supplied, will wrap the reader using system default charset");
         }
         if (!(isTreeInfo() || isDomSource() || isStreamSource() || isJaxbSource())) {
-            log.warn("No known to be working Source implementation provided.");
+            LOGGER.warn("No known to be working Source implementation provided.");
         }
     }
 
@@ -107,7 +107,7 @@ public class SourceInput extends AbstractInput {
                 return (ss.getInputStream() != null && ss.getInputStream().available() == 0)
                         || (ss.getReader() != null && !ss.getReader().ready());
             } catch (final IOException e) {
-                log.error("Error checking consumed state", e);
+                LOGGER.error("Error checking consumed state", e);
                 return true;
             }
         }

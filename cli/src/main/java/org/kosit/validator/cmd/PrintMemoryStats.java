@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(PrintMemoryStats.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrintMemoryStats.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 
@@ -51,8 +51,8 @@ class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckAction {
         final String allocStr = format.format(allocatedMemory / BYTES_PER_K);
         final String maxStr = format.format(maxMemory / BYTES_PER_K);
         final String totalFreeStr = format.format((freeMemory + (maxMemory - allocatedMemory)) / BYTES_PER_K);
-        log.info("free memory: {}MB; allocated memory: {}MB", freeStr, allocStr);
-        log.info("max memory: {}MB; total free memory: {}MB", maxStr, totalFreeStr);
+        LOGGER.info("free memory: {}MB; allocated memory: {}MB", freeStr, allocStr);
+        LOGGER.info("max memory: {}MB; total free memory: {}MB", maxStr, totalFreeStr);
         return Util.createResult(KEY, true, createReport());
     }
 }

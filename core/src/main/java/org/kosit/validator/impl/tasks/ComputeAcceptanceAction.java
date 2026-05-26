@@ -45,7 +45,7 @@ import net.sf.saxon.s9api.XPathSelector;
  */
 public class ComputeAcceptanceAction implements CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(ComputeAcceptanceAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputeAcceptanceAction.class);
 
     public static final Process.Key<AcceptRecommendation, XMLSyntaxError> KEY = new Process.Key<>(AcceptRecommendation.class,
             XMLSyntaxError.class);
@@ -94,7 +94,7 @@ public class ComputeAcceptanceAction implements CheckAction {
             return new Result<>(effectiveBooleanValue);
         } catch (final SaxonApiException e) {
             final String msg = "Error evaluating accept recommendation: " + selector.getUnderlyingXPathContext().toString();
-            log.error(msg, e);
+            LOGGER.error(msg, e);
             final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
             xmlSyntaxError.setMessage(msg);
             return new Result<>(org.kosit.validator.api.AcceptRecommendation.REJECT, Collections.singletonList(xmlSyntaxError));

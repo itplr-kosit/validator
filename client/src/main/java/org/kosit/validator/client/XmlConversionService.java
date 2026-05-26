@@ -42,7 +42,7 @@ import jakarta.xml.bind.annotation.XmlRegistry;
  */
 public class XmlConversionService {
 
-    private static final Logger log = LoggerFactory.getLogger(XmlConversionService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlConversionService.class);
 
     /**
      * Exception while serializing/deserializing with jaxb.

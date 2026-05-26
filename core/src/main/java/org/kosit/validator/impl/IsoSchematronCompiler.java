@@ -22,7 +22,7 @@ import net.sf.saxon.s9api.XsltTransformer;
 
 public final class IsoSchematronCompiler implements SchematronCompiler {
 
-    private static final Logger log = LoggerFactory.getLogger(IsoSchematronCompiler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IsoSchematronCompiler.class);
 
     public static final String COMPILER_ID = "iso-schematron";
 
@@ -61,7 +61,7 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
     public Source compileToXslt(final URI schematronUri, final Function<URI, Source> rawResolver) {
         Objects.requireNonNull(schematronUri, "schematronUri");
         Objects.requireNonNull(rawResolver, "rawResolver");
-        log.info("Trying to compile Schematron file {} using ISO Schematron skeleton (classpath-only)", schematronUri);
+        LOGGER.info("Trying to compile Schematron file {} using ISO Schematron skeleton (classpath-only)", schematronUri);
         try {
             Source schSource = rawResolver.apply(schematronUri);
             if (schSource == null) {

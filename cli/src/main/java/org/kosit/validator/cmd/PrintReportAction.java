@@ -40,7 +40,7 @@ import net.sf.saxon.s9api.Serializer;
  */
 class PrintReportAction implements CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(PrintReportAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrintReportAction.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 
@@ -61,7 +61,7 @@ class PrintReportAction implements CheckAction {
             }
             Printer.writeOut(writer.toString());
         } catch (final SaxonApiException e) {
-            log.error("Error while printing result to stdout", e);
+            LOGGER.error("Error while printing result to stdout", e);
         }
         return Util.createResult(KEY, true, createReport());
     }

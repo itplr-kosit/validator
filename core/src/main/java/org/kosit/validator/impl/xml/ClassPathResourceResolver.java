@@ -34,7 +34,7 @@ import org.w3c.dom.ls.LSResourceResolver;
  */
 public class ClassPathResourceResolver implements LSResourceResolver {
 
-    private static final Logger log = LoggerFactory.getLogger(ClassPathResourceResolver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassPathResourceResolver.class);
 
     /**
      * Simple {@link LSInput} implementation that can provide a stream.
@@ -171,7 +171,7 @@ public class ClassPathResourceResolver implements LSResourceResolver {
                 input.setByteStream(in);
                 return input;
             } catch (final IOException e) {
-                log.error("Error loading schema resource from {}", resolved, e);
+                LOGGER.error("Error loading schema resource from {}", resolved, e);
             }
         }
         // not found

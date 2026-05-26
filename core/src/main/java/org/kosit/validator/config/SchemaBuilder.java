@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema>> {
 
-    private static final Logger log = LoggerFactory.getLogger(SchemaBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaBuilder.class);
 
     private static final String DEFAULT_NAME = "manually configured";
 
@@ -69,7 +69,7 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
             }
             result = new Result<>(new ImmutablePair<>(createObject(), this.schema));
         } catch (final IllegalStateException e) {
-            log.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             result = createError("Can not create schema based " + this.schemaLocation + ". Exception is " + e.getMessage());
         }
         return result;

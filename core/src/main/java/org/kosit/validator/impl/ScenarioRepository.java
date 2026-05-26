@@ -36,7 +36,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class ScenarioRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(ScenarioRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioRepository.class);
 
     public static final String DEFAULT = "default";
 
@@ -49,13 +49,13 @@ public class ScenarioRepository {
             throw new IllegalArgumentException("Must provide at least one configuration");
         }
         this.configuration = Arrays.asList(configuration);
-        this.configuration.forEach(v -> log.info("Loaded scenarios for {} by {} from {}.", v.getName(), v.getAuthor(), v.getDate()));
-        log.info("The following scenarios are available:\n{}", summarizeScenarios());
+        this.configuration.forEach(v -> LOGGER.info("Loaded scenarios for {} by {} from {}.", v.getName(), v.getAuthor(), v.getDate()));
+        LOGGER.info("The following scenarios are available:\n{}", summarizeScenarios());
     }
 
     public Scenario getFallbackScenario() {
         if (this.configuration.size() > 1) {
-            log.warn("Multiple configurations found. Using fallback scenario from first configuration");
+            LOGGER.warn("Multiple configurations found. Using fallback scenario from first configuration");
         }
         return this.configuration.get(0).getFallbackScenario();
     }
@@ -96,7 +96,7 @@ public class ScenarioRepository {
             selector.setContextItem(document);
             return selector.effectiveBooleanValue();
         } catch (final SaxonApiException e) {
-            log.error("Error evaluating xpath expression", e);
+            LOGGER.error("Error evaluating xpath expression", e);
         }
         return false;
     }

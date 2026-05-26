@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 class SerializeReportAction implements CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(SerializeReportAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerializeReportAction.class);
 
     public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
 
@@ -64,11 +64,11 @@ class SerializeReportAction implements CheckAction {
     public ProcessStepResult<Boolean, String> check(final Process process) {
         final Path file = this.outputDirectory.resolve(this.namingStrategy.createName(process.getName()));
         try {
-            log.info("Serializing result to {}", file.toAbsolutePath());
+            LOGGER.info("Serializing result to {}", file.toAbsolutePath());
             final String xml = this.conversionService.writeXml(process.getXvrlReportSummary());
             Files.write(file, xml.getBytes());
         } catch (final IOException e) {
-            log.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
+            LOGGER.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
         }
         final ProcessStepResult<Boolean, String> processStepResult = new ProcessStepResult<>(KEY);
         final Result<Boolean, String> stepResult = new Result<>();
@@ -80,7 +80,7 @@ class SerializeReportAction implements CheckAction {
     @Override
     public boolean isSkipped(final Process results) {
         if (results.getResult(CreateReportsAction.KEY) == null) {
-            log.warn("Can not serialize result report. No document found");
+            LOGGER.warn("Can not serialize result report. No document found");
             return true;
         }
         return false;

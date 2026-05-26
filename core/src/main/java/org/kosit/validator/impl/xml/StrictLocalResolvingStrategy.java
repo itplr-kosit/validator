@@ -35,7 +35,7 @@ import net.sf.saxon.lib.ResourceResolver;
  */
 public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrategy {
 
-    private static final Logger log = LoggerFactory.getLogger(StrictLocalResolvingStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StrictLocalResolvingStrategy.class);
 
     /**
      * Allow loading schema files from any local location.

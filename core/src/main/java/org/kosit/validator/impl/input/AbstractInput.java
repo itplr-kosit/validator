@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractInput implements Input, LazyReadInput {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractInput.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractInput.class);
 
     private byte[] hashCode;
 
@@ -40,7 +40,7 @@ public abstract class AbstractInput implements Input, LazyReadInput {
     @Override
     public byte[] getHashCode() {
         if (this.hashCode == null) {
-            log.warn("Extra calculating hashcode. This is in-efficient in most cases");
+            LOGGER.warn("Extra calculating hashcode. This is in-efficient in most cases");
             computeHashcode();
         }
         return this.hashCode;
@@ -50,7 +50,7 @@ public abstract class AbstractInput implements Input, LazyReadInput {
         try {
             drain(this);
         } catch (final IOException e) {
-            log.error("Error extra computing hashcode", e);
+            LOGGER.error("Error extra computing hashcode", e);
         }
     }
 
