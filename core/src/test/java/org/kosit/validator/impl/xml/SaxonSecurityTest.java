@@ -51,7 +51,7 @@ import net.sf.saxon.s9api.XsltTransformer;
  */
 public class SaxonSecurityTest {
 
-    private static final Logger log = LoggerFactory.getLogger(SaxonSecurityTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaxonSecurityTest.class);
 
     @Test
     public void testEvilStylesheets() throws IOException {
@@ -77,7 +77,7 @@ public class SaxonSecurityTest {
                     fail("Saxon configuration should prevent expansion within " + resource);
                 }
             } catch (final SaxonApiException | RuntimeException e) {
-                log.info("Expected exception detected {}", e.getMessage(), e);
+                LOGGER.info("Expected exception detected {}", e.getMessage(), e);
             }
         }
     }

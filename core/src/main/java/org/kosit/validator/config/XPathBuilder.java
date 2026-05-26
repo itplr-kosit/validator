@@ -39,7 +39,7 @@ import net.sf.saxon.s9api.XPathExecutable;
  */
 class XPathBuilder implements Builder<XPathExecutable> {
 
-    private static final Logger log = LoggerFactory.getLogger(XPathBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XPathBuilder.class);
 
     private static final String[] IGNORED_PREFIXES = new String[] { "xsd", "saxon", "xsl", "xs", "xml" };
 
@@ -90,7 +90,7 @@ class XPathBuilder implements Builder<XPathExecutable> {
             }
         } catch (final IllegalStateException e) {
             final String msg = "Error creating " + this.name + " xpath: " + e.getMessage();
-            log.error(msg, e);
+            LOGGER.error(msg, e);
             return new Result<>(Collections.singletonList(msg));
         }
         return new Result<>(this.executable);

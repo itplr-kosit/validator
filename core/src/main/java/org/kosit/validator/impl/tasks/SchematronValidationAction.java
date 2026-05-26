@@ -57,7 +57,7 @@ import net.sf.saxon.s9api.XsltTransformer;
  */
 public class SchematronValidationAction implements CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(SchematronValidationAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchematronValidationAction.class);
 
     public static final Process.Key<List<ValidationResultsSchematron>, String> KEY = new Process.Key<>(null, String.class);
 
@@ -133,7 +133,7 @@ public class SchematronValidationAction implements CheckAction {
         } catch (final SaxonApiException e) {
             final String msg = "Error processing schematron validation '" + validation.getResourceType().getName() + "'. Error is '"
                     + e.getMessage() + "'";
-            log.error(msg, e);
+            LOGGER.error(msg, e);
             this.errorMessages.add(msg);
             process.setStopped(true);
             validationResultsSchematron.setResults(createErrorResult(msg));

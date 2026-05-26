@@ -59,7 +59,7 @@ import net.sf.saxon.s9api.Processor;
  */
 public class DefaultCheck implements Check {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCheck.class);
 
     private final ConversionService conversionService;
 
@@ -147,18 +147,18 @@ public class DefaultCheck implements Check {
 
     protected Result runCheckInternal(final Process checkProcess) {
         final long started = System.currentTimeMillis();
-        log.info("Checking content of {}", checkProcess.getInput().getName());
+        LOGGER.info("Checking content of {}", checkProcess.getInput().getName());
         for (final CheckAction action : this.checkSteps) {
             final long start = System.currentTimeMillis();
             if (!action.isSkipped(checkProcess)) {
                 final ProcessStepResult<?, ?> result = action.check(checkProcess);
                 checkProcess.addStepResult(result);
             }
-            if (log.isDebugEnabled())
-                log.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
         }
         checkProcess.setFinished(true);
-        log.info("Finished check of {} in {}ms\n", checkProcess.getInput().getName(), System.currentTimeMillis() - started);
+        LOGGER.info("Finished check of {} in {}ms\n", checkProcess.getInput().getName(), System.currentTimeMillis() - started);
         return createResult(checkProcess);
     }
 

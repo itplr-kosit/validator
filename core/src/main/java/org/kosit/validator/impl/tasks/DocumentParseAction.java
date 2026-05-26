@@ -47,7 +47,7 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public class DocumentParseAction implements CheckAction {
 
-    private static final Logger log = LoggerFactory.getLogger(DocumentParseAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentParseAction.class);
 
     public static final Process.Key<XdmNode, XMLSyntaxError> KEY = new Process.Key<>(XdmNode.class, XMLSyntaxError.class);
 
@@ -88,7 +88,8 @@ public class DocumentParseAction implements CheckAction {
                 result = new Result<>(doc);
             }
         } catch (final SaxonApiException | IOException e) {
-            log.debug("Exception while parsing {}", content.getName(), e);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Exception while parsing {}", content.getName(), e);
             final XMLSyntaxError error = new XMLSyntaxError();
             error.setSeverityCode(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
             error.setMessage("IOException while reading resource " + content.getName() + ": " + e.getMessage());

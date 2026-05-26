@@ -46,7 +46,7 @@ import net.sf.saxon.s9api.Processor;
  */
 class InternalCheck extends DefaultCheck {
 
-    private static final Logger log = LoggerFactory.getLogger(InternalCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternalCheck.class);
 
     private int checkAssertions = 0;
 
@@ -118,7 +118,7 @@ class InternalCheck extends DefaultCheck {
     }
 
     void printResults(final Map<String, Result> results) {
-        final PrintWriter writer = new PrintWriter(System.out);// NOSONAR
+        final PrintWriter writer = new PrintWriter(System.out); // NOSONAR
         writer.write("Results:\n");
         writer.write(createResultGrid(results).render());
         writer.write(createStatusLine(results));
@@ -129,12 +129,12 @@ class InternalCheck extends DefaultCheck {
     private String createAssertionStatus() {
         final Line line = new Line();
         if (this.failedAssertions > 0) {
-            log.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
+            LOGGER.error("Assertion check failed.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
                     this.failedAssertions);
             line.add(MessageFormat.format("Assertions run: {0}, Assertions failed: ", this.checkAssertions));
             line.add(this.failedAssertions, Code.RED);
         } else if (this.checkAssertions > 0) {
-            log.info("Assertion check successful.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
+            LOGGER.info("Assertion check successful.\n\nAssertions run: {}, Assertions failed: {}\n", this.checkAssertions,
                     this.failedAssertions);
             line.add(MessageFormat.format("Assertions run: {0}, Assertions failed: {1}", this.checkAssertions, this.failedAssertions));
         }

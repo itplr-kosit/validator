@@ -18,7 +18,7 @@ import name.dmaus.schxslt.SchematronException;
 
 public abstract class AbstractSchXsltCompiler implements SchematronCompiler {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractSchXsltCompiler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSchXsltCompiler.class);
 
     protected final Compiler compiler;
 
@@ -28,7 +28,7 @@ public abstract class AbstractSchXsltCompiler implements SchematronCompiler {
 
     @Override
     public Source compileToXslt(URI schematronUri, Function<URI, Source> rawResolver) {
-        log.info("Trying to compile Schematron file {} using schxslt-java", schematronUri);
+        LOGGER.info("Trying to compile Schematron file {} using schxslt-java", schematronUri);
         try {
             Source schSource = rawResolver.apply(schematronUri);
             if (schSource == null) {
@@ -37,8 +37,8 @@ public abstract class AbstractSchXsltCompiler implements SchematronCompiler {
             if (schSource.getSystemId() == null && schSource instanceof StreamSource) {
                 schSource.setSystemId(schematronUri.toString());
             }
-            Document stylesheetDoc = compiler.compile(schSource, Map.of()); // oder null, falls du keine Optionen
-            // brauchst
+            // or null, if you don't need any options
+            Document stylesheetDoc = compiler.compile(schSource, Map.of());
             return new DOMSource(stylesheetDoc, stylesheetDoc.getDocumentURI());
         } catch (SchematronException e) {
             throw new IllegalStateException("Error compiling " + schematronUri, e);

@@ -59,7 +59,7 @@ import net.sf.saxon.s9api.Processor;
 @SuppressWarnings("squid:S3725")
 public class Validator {
 
-    private static final Logger log = LoggerFactory.getLogger(Validator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Validator.class);
 
     private Validator() {
         // hide
@@ -84,9 +84,9 @@ public class Validator {
             e.printStackTrace();
             Printer.writeErr(e.getMessage());
             if (cmd.isDebugOutput()) {
-                log.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             } else {
-                log.error(e.getMessage());
+                LOGGER.error(e.getMessage());
             }
             return ReturnValue.CONFIGURATION_ERROR;
         }
@@ -115,7 +115,7 @@ public class Validator {
         if (cliOptions.isPrintMemoryStats()) {
             check.getCheckSteps().add(new PrintMemoryStats());
         }
-        log.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
+        LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
         final Collection<Input> targets = determineTestTargets(cliOptions);
         start = System.currentTimeMillis();
         final Map<String, Result> results = new HashMap<>();
@@ -131,7 +131,7 @@ public class Validator {
         final long processingTime = System.currentTimeMillis() - start;
         Printer.writeOut("Processing of {0} object(s) completed in {1}ms", targets.size(), processingTime);
         check.printResults(results);
-        log.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
+        LOGGER.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
         return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
     }
 
@@ -254,7 +254,7 @@ public class Validator {
         } else if (Files.exists(d)) {
             return Collections.singleton(InputFactory.read(d));
         }
-        log.warn("The specified test target {} does not exist. Will be ignored", d);
+        LOGGER.warn("The specified test target {} does not exist. Will be ignored", d);
         return Collections.emptyList();
     }
 

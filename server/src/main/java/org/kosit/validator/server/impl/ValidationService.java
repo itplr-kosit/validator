@@ -38,7 +38,7 @@ import net.sf.saxon.s9api.Processor;
 @Named("validationService")
 public class ValidationService {
 
-    private static final Logger log = LoggerFactory.getLogger(ValidationService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidationService.class);
 
     private final Processor processor = ProcessorProvider.getProcessor();
 
@@ -52,7 +52,7 @@ public class ValidationService {
         this.configuration = getConfiguration(cfg, processor);
         this.engineInformation = engineInformation;
         check = new DefaultCheck(engineInformation, processor, configuration.toArray(new Configuration[0]));
-        log.info("Validator started");
+        LOGGER.info("Validator started");
     }
 
     public List<Scenario> getScenarios() {
@@ -62,7 +62,7 @@ public class ValidationService {
     public Result validate(final Input input) {
         long t0 = System.currentTimeMillis();
         final Result result = check.checkInput(input);
-        log.info("Validated {} input in {} ms", input.getName(), System.currentTimeMillis() - t0);
+        LOGGER.info("Validated {} input in {} ms", input.getName(), System.currentTimeMillis() - t0);
         return result;
     }
 

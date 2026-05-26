@@ -66,7 +66,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  */
 public class ContentRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(ContentRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContentRepository.class);
 
     private static final class CacheKey {
 
@@ -196,7 +196,7 @@ public class ContentRepository {
      * @return an XSLT executable
      */
     public XsltExecutable loadXsltScript(final URI uri) {
-        log.info("  Loading XSLT script from  {}", uri);
+        LOGGER.info("  Loading XSLT script from  {}", uri);
         final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
         final CollectingErrorEventHandler listener = new CollectingErrorEventHandler();
         try {
@@ -207,18 +207,18 @@ public class ContentRepository {
             }
             return xsltCompiler.compile(resolveInRepository(uri));
         } catch (final SaxonApiException e) {
-            listener.getErrors().forEach(event -> event.log(log));
+            listener.getErrors().forEach(event -> event.log(LOGGER));
             throw new IllegalStateException("Can not compile xslt executable for uri " + uri, e);
         } finally {
             if (!listener.hasErrors() && listener.hasEvents()) {
-                log.warn("Received warnings or errors while loading a xslt script {}", uri);
-                listener.getErrors().forEach(e -> e.log(log));
+                LOGGER.warn("Received warnings or errors while loading a xslt script {}", uri);
+                listener.getErrors().forEach(e -> e.log(LOGGER));
             }
         }
     }
 
     public XsltExecutable loadSchematronXslt(final URI schUri, final String compilerId) {
-        log.info("Loading or compiling Schematron {} using compiler {}", schUri, compilerId);
+        LOGGER.info("Loading or compiling Schematron {} using compiler {}", schUri, compilerId);
         SchematronCompiler compiler = compilerRegistry.get(compilerId);
         CacheKey key = new CacheKey(compilerId, schUri);
         Source xsltSource = schematronXsltCache.computeIfAbsent(key, k -> compiler.compileToXslt(schUri, this::resolveInRepository));
@@ -283,7 +283,7 @@ public class ContentRepository {
             // return this.resolver.resolve(source.toString(), this.repository.toString());
             return this.resolver.resolve(r);
         } catch (final TransformerException e) {
-            log.error("Error resolving source {}", source, e);
+            LOGGER.error("Error resolving source {}", source, e);
             throw new IllegalStateException("Can not resolve " + source + " in repository " + this.repository, e);
         }
     }
@@ -327,7 +327,7 @@ public class ContentRepository {
      * @return initialized transformation
      */
     public List<Transformation> createReportTransformations(final ScenarioType t) {
-        log.info("Create Report Transformations:");
+        LOGGER.info("Create Report Transformations:");
         return t.getCreateReport().stream().map(createReportType -> createTransformation(createReportType.getResource()))
                 .collect(Collectors.toList());
     }
@@ -355,7 +355,7 @@ public class ContentRepository {
     }
 
     public Transformation createSchematronTransformation(final ValidateWithSchematron validateWithSchematron) {
-        log.info("Create Schematron Transformation:");
+        LOGGER.info("Create Schematron Transformation:");
         final ResourceType resource = validateWithSchematron.getResource();
         final URI uri = URI.create(resource.getLocation());
         final String path = uri.getPath();

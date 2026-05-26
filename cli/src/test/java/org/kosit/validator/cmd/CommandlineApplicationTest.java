@@ -30,11 +30,11 @@ import java.util.logging.Level;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Strings;
 import org.assertj.core.api.Condition;
-import org.jboss.logmanager.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper.Simple;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.quarkus.picocli.runtime.annotations.TopCommand;
@@ -51,7 +51,7 @@ public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(InternalCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternalCheck.class);
 
     private final Path output = Paths.get("target/test-output");
 
@@ -87,7 +87,7 @@ public class CommandlineApplicationTest {
         // Printer output
         Printer.configure(new PrintWriter(testWriter.getOutWriter(), true), new PrintWriter(testWriter.getErrWriter(), true));
         // Log capture
-        Logger root = Logger.getLogger("");
+        org.jboss.logmanager.Logger root = org.jboss.logmanager.Logger.getLogger("");
         logCapture = new LogCaptureHandler(Level.ALL);
         root.addHandler(logCapture);
         if (Files.exists(this.output)) {
@@ -102,11 +102,11 @@ public class CommandlineApplicationTest {
             try {
                 Files.delete(path);
             } catch (final IOException e) {
-                log.error("Error deleting file", e);
+                LOGGER.error("Error deleting file", e);
             }
         });
         Printer.reset();
-        Logger.getLogger("").removeHandler(logCapture);
+        org.jboss.logmanager.Logger.getLogger("").removeHandler(logCapture);
     }
 
     @Test
