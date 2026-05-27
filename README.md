@@ -53,14 +53,14 @@ The Validator can be used in three different ways:
 The general way using the CLI is:
 
 ```shell
-java -jar validator-cli-<version>-runner.jar -s <scenario-config-file> [-r <repository-path>]
+java -jar validator-cli-<version>.jar -s <scenario-config-file> [-r <repository-path>]
 [OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
 The help option displays further CLI options to customize the process:
 
 ```shell
-java -jar validator-cli-<version>-runner.jar --help
+java -jar validator-cli-<version>.jar --help
 ```
 
 A concrete example with a specific Validator configuration can be found on 
@@ -93,7 +93,7 @@ as that dependency is marked `optional` in this project and will thus not be res
 The Validator distribution contains the following artifacts:
 
 1. **validator-core-`<version>`.jar**: Java library for embedded use within an application
-1. **validator-cli-`<version>`-runner.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file. This file is now Quarkus-based and can be used with Java >= 17)
+1. **validator-cli-`<version>`.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file.
 1. **libs/**: directory containing all (incl. optional) dependencies of the validator
 
 ## Installation

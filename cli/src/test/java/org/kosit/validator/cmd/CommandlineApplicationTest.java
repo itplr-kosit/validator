@@ -25,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Strings;
@@ -37,16 +36,11 @@ import org.kosit.validator.impl.Helper.Simple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.picocli.runtime.annotations.TopCommand;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-
 /**
  * Tests the parameters of the command line tool.
  *
  * @author Andreas Penski
  */
-@QuarkusTest
 public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
@@ -59,10 +53,6 @@ public class CommandlineApplicationTest {
 
     TestWriter testWriter;
 
-    LogCaptureHandler logCapture;
-
-    @Inject
-    @TopCommand
     CommandLineOptions options;
 
     private static void checkForHelp(final List<String> outputLines) {
@@ -73,10 +63,12 @@ public class CommandlineApplicationTest {
     @BeforeEach
     public void setup() throws IOException {
         testWriter = new TestWriter();
+        options = new CommandLineOptions();
+        options.setEngineInformation(new CliEngineInformation());
         // Picocli output
         commandLine = new picocli.CommandLine(options);
-        commandLine.setOut(new PrintWriter(testWriter.getOutWriter()));
-        commandLine.setErr(new PrintWriter(testWriter.getErrWriter()));
+        commandLine.setOut(new PrintWriter(testWriter.getOutWriter(), true));
+        commandLine.setErr(new PrintWriter(testWriter.getErrWriter(), true));
         System.setIn(new InputStream() {
 
             @Override
@@ -86,10 +78,8 @@ public class CommandlineApplicationTest {
         });
         // Printer output
         Printer.configure(new PrintWriter(testWriter.getOutWriter(), true), new PrintWriter(testWriter.getErrWriter(), true));
-        // Log capture
-        org.jboss.logmanager.Logger root = org.jboss.logmanager.Logger.getLogger("");
-        logCapture = new LogCaptureHandler(Level.ALL);
-        root.addHandler(logCapture);
+        // Capture System.out/System.err so slf4j-simple log output and stack traces land in testWriter.
+        testWriter.installAsSystemStreams();
         if (Files.exists(this.output)) {
             FileUtils.cleanDirectory(this.output.toFile());
         }
@@ -106,7 +96,7 @@ public class CommandlineApplicationTest {
             }
         });
         Printer.reset();
-        org.jboss.logmanager.Logger.getLogger("").removeHandler(logCapture);
+        testWriter.restoreSystemStreams();
     }
 
     @Test
@@ -164,7 +154,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
     }
 
     @Test
@@ -172,7 +162,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS_WITH_RELATIVE_PATHS).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
     }
 
     @Test
@@ -180,7 +170,7 @@ public class CommandlineApplicationTest {
         final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS_WITH_MANY_CONFIGS).toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
     }
 
     @Test
@@ -188,8 +178,8 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString(), "--report-prefix", "somePrefix", "--report-postfix", "somePostfix" };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
-        assertThat(logCapture.getLogs()).contains("somePrefix-simple-somePostfix");
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains("somePrefix-simple-somePostfix");
     }
 
     @Test
@@ -197,7 +187,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString(), Paths.get(Simple.FOO).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains("Processing 2 object(s) completed");
+        assertThat(testWriter.getErrorOutput()).contains("Processing 2 object(s) completed");
     }
 
     @Test
@@ -205,7 +195,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.EXAMPLES).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains("Processing 8 object(s) completed");
+        assertThat(testWriter.getErrorOutput()).contains("Processing 8 object(s) completed");
     }
 
     @Test
@@ -213,7 +203,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(this.output).exists();
         assertThat(Files.list(this.output)).hasSize(1);
     }
@@ -231,7 +221,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-p", "-r", Paths.get(Simple.REPOSITORY_URI).toString(), "-o",
                 this.output.toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(testWriter.getOutputLines()).haveAtLeastOne(new Condition<>(
                 s -> Strings.CS.contains(s, "<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
     }
@@ -242,7 +232,7 @@ public class CommandlineApplicationTest {
                 this.output.toAbsolutePath().toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(Files.list(this.output).filter(f -> f.toString().endsWith(".xml")).count()).isPositive();
     }
 
@@ -252,7 +242,7 @@ public class CommandlineApplicationTest {
                 this.output.toAbsolutePath().toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(Files.list(this.output).filter(f -> f.toString().endsWith(".xml")).count()).isPositive();
     }
 
@@ -261,7 +251,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", "unknown", "-o", this.output.toString(), "-d",
                 Paths.get(ASSERTIONS).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains("at org.kosit.validator");
+        assertThat(testWriter.getErrorOutput()).contains("at org.kosit.validator");
     }
 
     @Test
@@ -269,8 +259,8 @@ public class CommandlineApplicationTest {
         final String[] args = { "-m", "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
-        assertThat(logCapture.getLogs()).contains("total");
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains("total");
     }
 
     @Test
@@ -278,7 +268,7 @@ public class CommandlineApplicationTest {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString() };
         System.setIn(Files.newInputStream(Paths.get(Simple.SIMPLE_VALID)));
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains(RESULT_OUTPUT);
+        assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
     }
 
     @Test
@@ -312,7 +302,7 @@ public class CommandlineApplicationTest {
                 "s2=" + Paths.get(Simple.OTHER_SCENARIOS).toString(), "-r", "s1=" + Paths.get(Simple.REPOSITORY_URI).toString(), "-r",
                 "typo=" + Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
-        assertThat(logCapture.getLogs()).contains("No repository location for scenario definition \'s2\' specified");
+        assertThat(testWriter.getErrorOutput()).contains("No repository location for scenario definition \'s2\' specified");
     }
 
     @Test
