@@ -28,7 +28,7 @@ import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.impl.tasks.CreateReportsAction;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.model.XVRLReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

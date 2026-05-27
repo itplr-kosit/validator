@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl">
+    <metadata>
+        <timestamp>2026-05-27T10:00:00+02:00</timestamp>
+        <validator name="xvrl-sample-validator" version="1.0.0"/>
+        <document href="sample.xml"/>
+    </metadata>
+    <report xml:id="schema-validation">
+        <metadata>
+            <validator name="Schema Validator" xml:id="schema-validation"/>
+            <schema href="sample.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
+        </metadata>
+        <detection severity="error" code="cvc-complex-type.2.4.a">
+            <location xpath-default-namespace="urn:sample">/sample/missing</location>
+            <message>Required element 'missing' is not present.</message>
+        </detection>
+        <detection severity="info">
+            <message>Validation finished.</message>
+        </detection>
+        <digest valid="false" fatal-error-count="0" error-count="1" warning-count="0" info-count="1"/>
+    </report>
+    <report xml:id="schematron-validation">
+        <metadata>
+            <validator name="Schematron Validator" xml:id="schematron-validation"/>
+        </metadata>
+        <detection severity="warning" code="rule-42">
+            <message>The value should be in upper case.</message>
+        </detection>
+        <digest valid="partial" error-count="0" warning-count="1" info-count="0"/>
+    </report>
+</reports>

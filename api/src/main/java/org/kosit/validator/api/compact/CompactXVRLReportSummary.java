@@ -1,14 +1,16 @@
 package org.kosit.validator.api.compact;
 
-import org.kosit.validator.model.xvrl.XVRLMetadata;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
-import org.kosit.validator.model.xvrl.Validator;
-import org.kosit.validator.model.xvrl.ObjectFactory;
-import javax.xml.namespace.QName;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
+import org.kosit.xvrl.model.ObjectFactory;
+import org.kosit.xvrl.model.Validator;
+import org.kosit.xvrl.model.XVRLMetadata;
+import org.kosit.xvrl.model.XVRLReportSummary;
 
 /**
  * Compact summary of the validation results using the existing XVRL. Provides convenience access to additive attributes

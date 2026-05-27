@@ -19,7 +19,7 @@ package org.kosit.validator.cmd;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.CheckAction;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.model.XVRLReport;
 
 class Util {
 

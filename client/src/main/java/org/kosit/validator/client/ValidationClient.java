@@ -7,7 +7,7 @@ import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.client.api.ValidationApi;
 import org.kosit.validator.client.filter.ValidationRequestConfig;
 import org.kosit.validator.client.filter.ValidationResponseMetadata;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.kosit.xvrl.model.XVRLReportSummary;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.MediaType;

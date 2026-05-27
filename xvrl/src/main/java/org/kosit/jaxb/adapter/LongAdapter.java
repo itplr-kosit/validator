@@ -14,30 +14,21 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.impl.xml;
+package org.kosit.jaxb.adapter;
+
+import java.math.BigInteger;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
-public class StringTrimAdapter extends XmlAdapter<String, String> {
+public class LongAdapter extends XmlAdapter<BigInteger, Long> {
 
     @Override
-    public String unmarshal(final String v) {
-        return trimInternal(v);
+    public Long unmarshal(final BigInteger bigInteger) throws Exception {
+        return bigInteger != null ? bigInteger.longValue() : null;
     }
 
     @Override
-    public String marshal(final String v) {
-        return trimInternal(v);
-    }
-
-    public static String trim(final String v) {
-        return trimInternal(v);
-    }
-
-    private static String trimInternal(final String v) {
-        if (v == null) {
-            return null;
-        }
-        return v.trim();
+    public BigInteger marshal(final Long integer) throws Exception {
+        return integer != null ? BigInteger.valueOf(integer.longValue()) : null;
     }
 }

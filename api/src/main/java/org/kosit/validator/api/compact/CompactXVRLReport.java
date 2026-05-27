@@ -1,17 +1,29 @@
 package org.kosit.validator.api.compact;
 
-import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.XmlError;
-import org.kosit.validator.model.xvrl.*;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
-
-import javax.xml.namespace.QName;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import static org.kosit.validator.api.compact.CompactXVRLReportSummary.CVRL_NS;
 import static org.kosit.validator.api.compact.CompactXVRLReportSummary.CVRL_PREFIX;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
+import org.kosit.validator.api.AcceptRecommendation;
+import org.kosit.validator.api.XmlError;
+import org.kosit.xvrl.model.Creator;
+import org.kosit.xvrl.model.Document;
+import org.kosit.xvrl.model.Location;
+import org.kosit.xvrl.model.ObjectFactory;
+import org.kosit.xvrl.model.Provenance;
+import org.kosit.xvrl.model.Schema;
+import org.kosit.xvrl.model.XVRLDetection;
+import org.kosit.xvrl.model.XVRLMessage;
+import org.kosit.xvrl.model.XVRLReport;
+import org.oclc.purl.dsdl.svrl.FailedAssert;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
 
 /**
  * Compact XVRL report with convenience access to additive attributes.

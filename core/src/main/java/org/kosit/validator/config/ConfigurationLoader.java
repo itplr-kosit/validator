@@ -31,9 +31,9 @@ import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.ScenariosConversionService;
 import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.DocumentParseAction;
@@ -170,8 +170,9 @@ public class ConfigurationLoader {
         checkVersion(this.scenarioDefinition, processor);
         LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        final ConversionService conversionService = new ConversionService();
-        final Scenarios scenarios = conversionService.readXml(this.scenarioDefinition, Scenarios.class, scenarioSchema, handler);
+        final ScenariosConversionService conversionService = new ScenariosConversionService();
+        final Scenarios scenarios = conversionService.withSchema(scenarioSchema).withEventHandler(handler).readXml(this.scenarioDefinition,
+                Scenarios.class);
         if (!handler.hasErrors()) {
             LOGGER.info("Loading scenario content from {}", this.getScenarioRepository());
         } else {

@@ -43,9 +43,10 @@ import org.kosit.validator.impl.tasks.SchematronValidationAction;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.xvrl.Timestamp;
-import org.kosit.validator.model.xvrl.Validator;
-import org.kosit.validator.model.xvrl.XVRLMetadata;
+import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.xvrl.model.Timestamp;
+import org.kosit.xvrl.model.Validator;
+import org.kosit.xvrl.model.XVRLMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public class DefaultCheck implements Check {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCheck.class);
 
-    private final ConversionService conversionService;
+    private final XvrlConversionService xvrlConversionService;
 
     private final List<Configuration> configuration;
 
@@ -86,14 +87,14 @@ public class DefaultCheck implements Check {
         this.engineInformation = engineInformation;
         this.configuration = Arrays.asList(configuration);
         this.processor = processor;
-        this.conversionService = new ConversionService();
+        this.xvrlConversionService = new XvrlConversionService();
         this.checkSteps = new ArrayList<>();
         this.checkSteps.add(new DocumentParseAction(processor));
         this.checkSteps.add(new CreateDocumentIdentificationAction());
         this.checkSteps.add(new ScenarioSelectionAction(new ScenarioRepository(configuration)));
         this.checkSteps.add(new SchemaValidationAction(processor));
-        this.checkSteps.add(new SchematronValidationAction(this.conversionService));
-        this.checkSteps.add(new CreateReportsAction(processor, this.conversionService));
+        this.checkSteps.add(new SchematronValidationAction(new SchematronConversionService()));
+        this.checkSteps.add(new CreateReportsAction(processor, this.xvrlConversionService));
         this.checkSteps.add(new ComputeAcceptanceAction());
     }
 
@@ -162,8 +163,8 @@ public class DefaultCheck implements Check {
         return createResult(checkProcess);
     }
 
-    public ConversionService getConversionService() {
-        return this.conversionService;
+    public XvrlConversionService getXvrlConversionService() {
+        return this.xvrlConversionService;
     }
 
     public List<Configuration> getConfiguration() {

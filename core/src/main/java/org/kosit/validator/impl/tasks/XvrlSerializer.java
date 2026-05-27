@@ -15,8 +15,8 @@
  */
 package org.kosit.validator.impl.tasks;
 
-import org.kosit.validator.impl.ConversionService;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.xvrl.model.XVRLReportSummary;
 
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -28,7 +28,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 public class XvrlSerializer {
 
-    private final ConversionService conversionService;
+    private final XvrlConversionService conversionService;
 
     private final Processor processor;
 
@@ -41,7 +41,7 @@ public class XvrlSerializer {
         return documentBuilder.build(source);
     }
 
-    public XvrlSerializer(final ConversionService conversionService, final Processor processor) {
+    public XvrlSerializer(final XvrlConversionService conversionService, final Processor processor) {
         this.conversionService = conversionService;
         this.processor = processor;
     }

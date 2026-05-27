@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.api.xvrl;
+package org.kosit.xvrl.api;
 
 import java.util.List;
 import java.util.stream.Collectors;

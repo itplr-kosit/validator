@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kosit.validator.impl.tasks.CheckAction;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.model.XVRLReport;
 
 public class ProcessStepResult<T, E> {
 

@@ -26,16 +26,16 @@ import java.util.stream.Stream;
 import javax.xml.transform.dom.DOMSource;
 
 import org.kosit.validator.impl.CollectingErrorEventHandler;
-import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
+import org.kosit.validator.impl.SchematronConversionService;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.model.XVRLReport;
 import org.oclc.purl.dsdl.svrl.ActivePattern;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.FiredRule;
@@ -63,7 +63,7 @@ public class SchematronValidationAction implements CheckAction {
 
     private static final String REPORT_NAME = "Schematron Validator";
 
-    private final ConversionService conversionService;
+    private final SchematronConversionService conversionService;
 
     private final List<String> errorMessages = new ArrayList<>();
 
@@ -126,7 +126,7 @@ public class SchematronValidationAction implements CheckAction {
             transformer.setInitialContextNode(document);
             transformer.transform();
             final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
-            r.setSchematronOutput(this.conversionService.readDocument(
+            r.setSchematronOutput(this.conversionService.readXml(
                     new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
                     SchematronOutput.class));
             validationResultsSchematron.setResults(r);
@@ -158,7 +158,7 @@ public class SchematronValidationAction implements CheckAction {
         return hasNoSchematrons(result.getObject()) || isSchemaInvalid(results);
     }
 
-    public SchematronValidationAction(final ConversionService conversionService) {
+    public SchematronValidationAction(final SchematronConversionService conversionService) {
         this.conversionService = conversionService;
     }
 }

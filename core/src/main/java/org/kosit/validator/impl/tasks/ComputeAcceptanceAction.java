@@ -29,7 +29,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.model.XVRLReport;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

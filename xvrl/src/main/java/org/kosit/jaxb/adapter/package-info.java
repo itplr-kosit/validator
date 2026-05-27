@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.api.xvrl;
+/**
+ * JAXB adapeter classes.
+ *
+ * <p>
+ * All types in this package follow the {@link org.jspecify.annotations.NullMarked} contract: members are non-null
+ * unless explicitly annotated {@link org.jspecify.annotations.Nullable}.
+ */
+@NullMarked
+package org.kosit.jaxb.adapter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.kosit.validator.model.xvrl.XVRLReport;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
-
-public interface BaseReportSummary {
-
-    List<XVRLReport> getReports();
-
-    List<XVRLReportSummary> getReportSummaries();
-
-    default List<String> getAllErrors() {
-        return getReports().stream().flatMap(xvrlReport -> xvrlReport.getAllErrors().stream()).collect(Collectors.toList());
-    }
-}
+import org.jspecify.annotations.NullMarked;

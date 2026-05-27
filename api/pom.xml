@@ -14,12 +14,9 @@
     
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
+            <groupId>org.kosit</groupId>
+            <artifactId>xvrl</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     
