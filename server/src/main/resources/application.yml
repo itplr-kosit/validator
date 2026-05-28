@@ -22,5 +22,5 @@ quarkus:
       type: uber-jar
   container-image:
     tag: ${quarkus.application.version}
-    build: true
+    build: false
     push: false
