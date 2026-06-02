@@ -93,7 +93,7 @@ public class DefaultCheck implements Check {
         this.checkSteps.add(new CreateDocumentIdentificationAction());
         this.checkSteps.add(new ScenarioSelectionAction(new ScenarioRepository(configuration)));
         this.checkSteps.add(new SchemaValidationAction(processor));
-        this.checkSteps.add(new SchematronValidationAction(new SchematronConversionService()));
+        this.checkSteps.add(new SchematronValidationAction(new SvrlConversionService()));
         this.checkSteps.add(new CreateReportsAction(processor, this.xvrlConversionService));
         this.checkSteps.add(new ComputeAcceptanceAction());
     }

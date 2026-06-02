@@ -28,7 +28,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
-import org.kosit.validator.impl.SchematronConversionService;
+import org.kosit.validator.impl.SvrlConversionService;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
@@ -63,7 +63,7 @@ public class SchematronValidationAction implements CheckAction {
 
     private static final String REPORT_NAME = "Schematron Validator";
 
-    private final SchematronConversionService conversionService;
+    private final SvrlConversionService conversionService;
 
     private final List<String> errorMessages = new ArrayList<>();
 
@@ -158,7 +158,7 @@ public class SchematronValidationAction implements CheckAction {
         return hasNoSchematrons(result.getObject()) || isSchemaInvalid(results);
     }
 
-    public SchematronValidationAction(final SchematronConversionService conversionService) {
+    public SchematronValidationAction(final SvrlConversionService conversionService) {
         this.conversionService = conversionService;
     }
 }

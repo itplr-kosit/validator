@@ -25,14 +25,14 @@ import jakarta.xml.bind.JAXBException;
  * Convenience {@link JaxbConversionService} preconfigured for the SVRL JAXB model package
  * ({@code org.kosit.validator.model.scenarios}).
  */
-public class SchematronConversionService extends JaxbConversionService {
+public class SvrlConversionService extends JaxbConversionService {
 
     private static final JAXBContext JAXB_CTX;
 
     static {
         try {
             JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(),
-                    SchematronConversionService.class.getClassLoader());
+                    SvrlConversionService.class.getClassLoader());
         } catch (final JAXBException e) {
             throw new IllegalStateException("Can not create SVRL JAXB context", e);
         }
@@ -43,7 +43,7 @@ public class SchematronConversionService extends JaxbConversionService {
      *
      * @throws IllegalStateException if the JAXB context for the SVRL model package can not be created
      */
-    public SchematronConversionService() {
+    public SvrlConversionService() {
         super(JAXB_CTX);
     }
 }
