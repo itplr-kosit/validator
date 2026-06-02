@@ -70,6 +70,7 @@
         <version.xmlresolver>6.0.4</version.xmlresolver>
         <version.picocli>4.7.7</version.picocli>
         <version.jansi>2.4.1</version.jansi>
+        <version.cyclonedx-maven-plugin>2.9.1</version.cyclonedx-maven-plugin>
     </properties>
 
     <repositories>
@@ -334,6 +335,53 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${version.jacoco}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.cyclonedx</groupId>
+                    <artifactId>cyclonedx-maven-plugin</artifactId>
+                    <version>${version.cyclonedx-maven-plugin}</version>
+                    <executions>
+                        <execution>
+                            <id>embed-bom</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>makeBom</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.outputDirectory}/META-INF/sbom</outputDirectory>
+                                <skipAttach>true</skipAttach>
+                                <outputFormat>xml</outputFormat>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <!-- Pin the CycloneDX spec version so it doesn't silently move with plugin upgrades -->
+                        <schemaVersion>1.6</schemaVersion>
+                        <!-- Default. Override to "application" in modules that build deployable apps. -->
+                        <projectType>library</projectType>
+                        <outputFormat>xml</outputFormat>
+                        <outputName>bom</outputName>
+                        <!-- Traceability -->
+                        <includeBomSerialNumber>true</includeBomSerialNumber>
+                        <outputReactorProjects>true</outputReactorProjects>
+                        <!-- Scopes: include everything that ends up on the runtime classpath -->
+                        <includeCompileScope>true</includeCompileScope>
+                        <includeProvidedScope>true</includeProvidedScope>
+                        <includeRuntimeScope>true</includeRuntimeScope>
+                        <includeSystemScope>true</includeSystemScope>
+                        <includeTestScope>false</includeTestScope>
+                        <!-- Keep SBOM compact; flip to true only if legal review requires embedded license texts -->
+                        <includeLicenseText>false</includeLicenseText>
+                        <!-- Skip modules that aren't deployed (parent POMs, internal test fixtures, etc.) -->
+                        <skipNotDeployed>true</skipNotDeployed>
+                        <!--
+                            detectUnusedForOptionalScope requires bytecode scanning. The ASM bundled in
+                            cyclonedx-maven-plugin 2.9.1 / cyclonedx-core-java 9.0.5 does not yet support
+                            Java 25 class files (major 69) and fails with "Unsupported class file major
+                            version 69". Re-enable once the plugin updates ASM.
+                        -->
+                        <detectUnusedForOptionalScope>false</detectUnusedForOptionalScope>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

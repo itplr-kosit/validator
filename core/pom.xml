@@ -67,4 +67,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <!-- Embed CycloneDX SBOM in the deployable jar (config inherited from parent pluginManagement). -->
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

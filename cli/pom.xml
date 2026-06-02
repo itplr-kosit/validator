@@ -85,6 +85,15 @@
                 </executions>
             </plugin>
 
+            <!-- CLI is a deployable application, not a library; override the parent's default projectType. -->
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <configuration>
+                    <projectType>application</projectType>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
