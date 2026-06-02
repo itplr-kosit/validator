@@ -31,8 +31,7 @@ public class SvrlConversionService extends JaxbConversionService {
 
     static {
         try {
-            JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(),
-                    SvrlConversionService.class.getClassLoader());
+            JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(), SvrlConversionService.class.getClassLoader());
         } catch (final JAXBException e) {
             throw new IllegalStateException("Can not create SVRL JAXB context", e);
         }
