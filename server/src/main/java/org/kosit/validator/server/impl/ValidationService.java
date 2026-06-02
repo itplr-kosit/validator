@@ -23,8 +23,8 @@ import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
 import org.kosit.validator.impl.xml.ProcessorProvider;
-import org.kosit.validator.model.xvrl.XVRLDetection;
 import org.kosit.validator.server.config.ValidationConfig;
+import org.kosit.xvrl.model.XVRLDetection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

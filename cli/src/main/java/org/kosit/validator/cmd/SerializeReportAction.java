@@ -22,14 +22,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.impl.tasks.CreateReportsAction;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
-import org.kosit.validator.model.xvrl.XVRLDetection;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.xvrl.model.XVRLDetection;
+import org.kosit.xvrl.model.XVRLReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ class SerializeReportAction implements CheckAction {
 
     private final Path outputDirectory;
 
-    private final ConversionService conversionService;
+    private final XvrlConversionService conversionService;
 
     private final NamingStrategy namingStrategy;
 
@@ -86,7 +86,7 @@ class SerializeReportAction implements CheckAction {
         return false;
     }
 
-    public SerializeReportAction(final Path outputDirectory, final ConversionService conversionService,
+    public SerializeReportAction(final Path outputDirectory, final XvrlConversionService conversionService,
             final NamingStrategy namingStrategy) {
         this.outputDirectory = outputDirectory;
         this.conversionService = conversionService;

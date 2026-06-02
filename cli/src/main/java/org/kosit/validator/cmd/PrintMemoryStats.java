@@ -19,7 +19,7 @@ import java.text.NumberFormat;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.model.XVRLReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

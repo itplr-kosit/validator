@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
-import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.scenarios.ResourceType;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.xvrl.model.XVRLReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,8 +59,8 @@ public class CreateReportsAction implements CheckAction {
 
     private final XvrlSerializer xvrlSerializer;
 
-    public CreateReportsAction(final Processor processor, final ConversionService conversionService) {
-        this.xvrlSerializer = new XvrlSerializer(conversionService, processor);
+    public CreateReportsAction(final Processor processor, final XvrlConversionService xvrlConversionService) {
+        this.xvrlSerializer = new XvrlSerializer(xvrlConversionService, processor);
     }
 
     private static List<Scenario.Transformation> getTransformations(final Process results) {

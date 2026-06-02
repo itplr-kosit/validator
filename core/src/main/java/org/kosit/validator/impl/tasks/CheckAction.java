@@ -24,9 +24,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.model.xvrl.XVRLMetadata;
-import org.kosit.validator.model.xvrl.XVRLReport;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.kosit.xvrl.model.XVRLMetadata;
+import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLReportSummary;
 
 /**
  * Interface that is implemented by all check steps. The parameter of type {@link Process} serves both as a source for

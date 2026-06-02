@@ -30,11 +30,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
+import org.kosit.validator.impl.SvrlConversionService;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.ValidationResultsSchematron;
@@ -55,7 +55,7 @@ public class SchematronValidationActionTest {
 
     @BeforeEach
     public void setup() {
-        this.action = new SchematronValidationAction(new ConversionService());
+        this.action = new SchematronValidationAction(new SvrlConversionService());
     }
 
     @Test

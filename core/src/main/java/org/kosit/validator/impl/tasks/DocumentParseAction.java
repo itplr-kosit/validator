@@ -17,8 +17,8 @@ package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemental;
-import static org.kosit.validator.model.xvrl.XVRLDetection.Severity.ERROR;
-import static org.kosit.validator.model.xvrl.XVRLDetection.Severity.INFO;
+import static org.kosit.xvrl.model.XVRLDetection.Severity.ERROR;
+import static org.kosit.xvrl.model.XVRLDetection.Severity.INFO;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -31,7 +31,7 @@ import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder.DetectionBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.XMLSyntaxErrorSeverity;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.model.XVRLReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -23,7 +23,8 @@ import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.tasks.ReaderWrapper;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.xvrl.model.XVRLReportSummary;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
@@ -60,7 +61,7 @@ public class DefaultResult implements Result {
     public XdmNode getReport() {
         final Marshaller marshaller;
         try {
-            marshaller = new ConversionService().getJaxbContext().createMarshaller();
+            marshaller = new XvrlConversionService().getJaxbContext().createMarshaller();
             final JAXBSource source = new JAXBSource(marshaller, getReportSummary());
             // wrap to circumvent inconsistency between sax and saxon
             source.setXMLReader(new ReaderWrapper(source.getXMLReader()));

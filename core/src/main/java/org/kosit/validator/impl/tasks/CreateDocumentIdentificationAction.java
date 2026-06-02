@@ -25,10 +25,10 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.DocumentIdentificationType;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.xvrl.Document;
-import org.kosit.validator.model.xvrl.XVRLDetection;
-import org.kosit.validator.model.xvrl.XVRLMetadata;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.model.Document;
+import org.kosit.xvrl.model.XVRLDetection;
+import org.kosit.xvrl.model.XVRLMetadata;
+import org.kosit.xvrl.model.XVRLReport;
 
 /**
  * Creates a document identification element for the report by using the generates hash.

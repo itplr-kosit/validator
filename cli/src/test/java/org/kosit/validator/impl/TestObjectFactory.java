@@ -16,6 +16,8 @@
 
 package org.kosit.validator.impl;
 
+import org.kosit.xvrl.impl.XvrlConversionService;
+
 import net.sf.saxon.s9api.Processor;
 
 /**
@@ -25,7 +27,7 @@ public class TestObjectFactory {
 
     private static Processor processor;
 
-    private static ConversionService conversionService;
+    private static XvrlConversionService conversionService;
 
     public static Processor createProcessor() {
         if (processor == null) {
@@ -34,9 +36,9 @@ public class TestObjectFactory {
         return processor;
     }
 
-    public static ConversionService createConversionService() {
+    public static XvrlConversionService createXvrlConversionService() {
         if (conversionService == null) {
-            conversionService = new ConversionService();
+            conversionService = new XvrlConversionService();
         }
         return conversionService;
     }

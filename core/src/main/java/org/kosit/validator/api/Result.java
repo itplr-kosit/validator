@@ -18,7 +18,7 @@ package org.kosit.validator.api;
 
 import java.util.List;
 
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.kosit.xvrl.model.XVRLReportSummary;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;

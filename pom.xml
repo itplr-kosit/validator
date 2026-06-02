@@ -5,6 +5,7 @@
 
     <name>KoSIT XML Validator</name>
     <modules>
+        <module>xvrl</module>
         <module>api</module>
         <module>core</module>
         <module>cli</module>
@@ -70,6 +71,7 @@
         <version.xmlresolver>6.0.4</version.xmlresolver>
         <version.picocli>4.7.7</version.picocli>
         <version.jansi>2.4.1</version.jansi>
+        <version.jspecify>1.0.0</version.jspecify>
     </properties>
 
     <repositories>
@@ -120,6 +122,12 @@
                 <version>${version.slf4j}</version>
             </dependency>
             
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${version.jspecify}</version>
+            </dependency>
+
             <dependency>
                 <groupId>jakarta.xml.bind</groupId>
                 <artifactId>jakarta.xml.bind-api</artifactId>

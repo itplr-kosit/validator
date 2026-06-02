@@ -29,10 +29,10 @@
         <xjc:javaType
                 name="java.lang.String"
                 xmlType="xs:string"
-                adapter="org.kosit.validator.impl.xml.StringTrimAdapter"/>
+                adapter="org.kosit.jaxb.adapter.StringTrimAdapter"/>
         <xjc:javaType
                 name="java.lang.Long"
-                xmlType="xs:integer" adapter="org.kosit.validator.impl.xml.LongAdapter"/>
+                xmlType="xs:integer" adapter="org.kosit.jaxb.adapter.LongAdapter"/>
     </jaxb:globalBindings>
 
     <jaxb:bindings schemaLocation="../xsd/model.xsd">
@@ -59,54 +59,6 @@
     <jaxb:bindings schemaLocation="../xsd/svrl-kosit.xsd">
         <jaxb:bindings node="//xs:element[@name='schematron-output']/xs:complexType">
             <inheritance:extends>org.kosit.validator.impl.model.BaseOutput</inheritance:extends>
-        </jaxb:bindings>
-    </jaxb:bindings>
-
-    <jaxb:bindings schemaLocation="../xsd/xvrl-1.0.xsd">
-
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.kosit.validator.model.xvrl"/>
-        </jaxb:schemaBindings>
-
-        <jaxb:bindings node="//xs:element[@name='report']">
-            <jaxb:class name="XVRLReport"/>
-            <inheritance:extends>org.kosit.validator.impl.xvrl.BaseReport</inheritance:extends>
-        </jaxb:bindings>
-
-        <jaxb:bindings node="//xs:element[@name='reports']">
-            <jaxb:class name="XVRLReportSummary"/>
-            <inheritance:extends>org.kosit.validator.impl.xvrl.AbstractXVRLReportSummary</inheritance:extends>
-
-       </jaxb:bindings>
-
-        <jaxb:bindings node="//xs:element[@name='detection']">
-            <jaxb:class name="XVRLDetection"/>
-            <inheritance:implements>org.kosit.validator.api.xvrl.BaseDetection</inheritance:implements>
-
-            <jaxb:bindings node=".//xs:complexType/xs:choice">
-                 <simplify:as-element-property/>
-            </jaxb:bindings>
-        </jaxb:bindings>
-
-        <jaxb:bindings node="//xs:element[@name='metadata']">
-            <jaxb:class name="XVRLMetadata"/>
-
-            <jaxb:bindings node=".//xs:complexType/xs:choice">
-                <simplify:as-element-property/>
-            </jaxb:bindings>
-        </jaxb:bindings>
-
-        <jaxb:bindings node="//xs:element[@name='digest']">
-            <jaxb:class name="XVRLDigest"/>
-        </jaxb:bindings>
-
-        <jaxb:bindings node="//xs:element[@name='message']">
-            <jaxb:class name="XVRLMessage"/>
-            <inheritance:implements>org.kosit.validator.api.xvrl.BaseMessage</inheritance:implements>
-        </jaxb:bindings>
-
-        <jaxb:bindings node="//xs:attribute[@name='severity']/xs:simpleType">
-            <jaxb:typesafeEnumClass name="Severity" />
         </jaxb:bindings>
     </jaxb:bindings>
 

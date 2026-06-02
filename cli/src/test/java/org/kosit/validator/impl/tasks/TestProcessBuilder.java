@@ -16,7 +16,9 @@
 
 package org.kosit.validator.impl.tasks;
 
-import net.sf.saxon.s9api.XdmNode;
+import java.util.Collections;
+import java.util.List;
+
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.impl.Helper;
@@ -27,13 +29,12 @@ import org.kosit.validator.impl.tasks.CheckAction.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.xvrl.XVRLMetadata;
-import org.kosit.validator.model.xvrl.XVRLReport;
+import org.kosit.xvrl.model.XVRLMetadata;
+import org.kosit.xvrl.model.XVRLReport;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 
-import java.util.Collections;
-import java.util.List;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Utilities for creating test objects.

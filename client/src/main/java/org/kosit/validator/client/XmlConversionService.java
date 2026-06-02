@@ -24,11 +24,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.StringJoiner;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.kosit.jaxb.JaxbConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,31 +44,6 @@ public class XmlConversionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlConversionService.class);
 
-    /**
-     * Exception while serializing/deserializing with jaxb.
-     */
-    public static class ConversionExeption extends RuntimeException {
-
-        /**
-         * Constructor.
-         *
-         * @param message the message.
-         * @param cause the cause
-         */
-        public ConversionExeption(final String message, final Exception cause) {
-            super(message, cause);
-        }
-
-        /**
-         * Constructor.
-         *
-         * @param message the message.
-         */
-        public ConversionExeption(final String message) {
-            super(message);
-        }
-    }
-
     private static final int MAX_LOG_CONTENT = 50;
 
     // context setup
@@ -81,19 +56,15 @@ public class XmlConversionService {
         return this.jaxbContext;
     }
 
-    private static <T> QName createQName(final T model) {
-        return new QName(model.getClass().getSimpleName().toLowerCase());
-    }
-
     private void checkInputEmpty(final File xml) {
         if (xml == null) {
-            throw new ConversionExeption("Can not unmarshal from empty input file");
+            throw new JaxbConversionException("Can not unmarshal from empty input file");
         }
     }
 
     private <T> void checkTypeEmpty(final Class<T> type) {
         if (type == null) {
-            throw new ConversionExeption("Can not unmarshal without type information. Need to specify a target type");
+            throw new JaxbConversionException("Can not unmarshal without type information. Need to specify a target type");
         }
     }
 
@@ -103,7 +74,7 @@ public class XmlConversionService {
     public void initialize() {
         final Collection<Package> p = new ArrayList<>();
         p.add(org.kosit.validator.model.ObjectFactory.class.getPackage());
-        p.add(org.kosit.validator.model.xvrl.ObjectFactory.class.getPackage());
+        p.add(org.kosit.xvrl.model.ObjectFactory.class.getPackage());
         p.add(org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
         initialize(p);
     }
@@ -149,7 +120,7 @@ public class XmlConversionService {
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
             return u.unmarshal(xsr, type).getValue();
         } catch (final JAXBException | XMLStreamException | IOException e) {
-            throw new ConversionExeption("Can not unmarshal to type " + type.getSimpleName() + " from " + xml, e);
+            throw new JaxbConversionException("Can not unmarshal to type " + type.getSimpleName() + " from " + xml, e);
         }
     }
 }

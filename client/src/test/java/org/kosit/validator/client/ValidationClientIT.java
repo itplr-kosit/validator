@@ -1,22 +1,24 @@
 package org.kosit.validator.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.MediaType;
-import org.jboss.resteasy.reactive.RestResponse;
-import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.compact.CompactXVRLReportSummary;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
-import org.kosit.validator.server.api.CompactValidationResultsDto;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.jboss.resteasy.reactive.RestResponse;
+import org.junit.jupiter.api.Test;
+import org.kosit.validator.api.AcceptRecommendation;
+import org.kosit.validator.api.compact.CompactXVRLReportSummary;
+import org.kosit.validator.server.api.CompactValidationResultsDto;
+import org.kosit.xvrl.model.XVRLReportSummary;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 
 @QuarkusTest
 class ValidationClientIT {
