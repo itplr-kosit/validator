@@ -1,0 +1,61 @@
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:svrl="http://purl.oclc.org/dsdl/svrl" xmlns:model="http://www.xoev.de/de/validator/framework/1/model" xmlns:scenarios="http://www.xoev.de/de/validator/framework/2/scenarios"><metadata><timestamp>2026-05-26T13:15:42.572+02:00</timestamp><validator name="validator-cli" version="2.0.0-SNAPSHOT"></validator><document href="/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/cli/src/test/resources/examples/simple/input/simple.xml"></document></metadata><report xml:id="Document wellformedness Validator"><metadata><validator name="Document wellformedness Validator" xml:id="Document wellformedness Validator"></validator></metadata><detection severity="info"><supplemental><simple xmlns="http://validator.kosit.de/test-sample">
+    <inner>asldkfj</inner>
+    <content>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                
+            </head>
+            <body>
+                <div>some data</div>
+            </body>
+        </html>
+    </content>
+</simple></supplemental></detection><digest valid="true" fatal-error-count="0" error-count="0" info-count="1"></digest></report><report xml:id="CreateDocument Identification Validator"><metadata><validator name="CreateDocument Identification Validator" xml:id="CreateDocument Identification Validator"></validator></metadata><detection severity="info"><message>/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/cli/src/test/resources/examples/simple/input/simple.xml</message></detection><digest valid="true" fatal-error-count="0" error-count="0" info-count="1"></digest></report><report xml:id="scenario_selection"><metadata><validator name="Scenario Selection" xml:id="scenario_selection"></validator></metadata><detection severity="info" code="scenario-matched"><message>Scenario 'Simple' identified for '/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/cli/src/test/resources/examples/simple/input/simple.xml'</message></detection><detection severity="info" code="Simple" xml:id="scenario"></detection><digest valid="true" fatal-error-count="0" error-count="0" info-count="2"></digest></report><report xml:id="Schema Validator"><metadata><validator name="Schema Validator" xml:id="Schema Validator"></validator><schema href="repository/simple.xsd" schematypens="Sample Schema"></schema></metadata><digest valid="true" fatal-error-count="0" error-count="0" info-count="0"></digest></report><report xml:id="Schematron Validator"><metadata><validator name="Schematron Validator" xml:id="Schematron Validator"></validator><schema href="repository/simple.xsl" schematypens="Sample Schematron"></schema></metadata><detection severity="info"></detection><detection severity="info"></detection><digest valid="true" fatal-error-count="0" error-count="0" info-count="2"></digest></report><report xml:id="create_report"><metadata><validator name="Create report" xml:id="create_report"></validator></metadata><detection severity="info" xml:id="Report for eInvoice"><supplemental xml:id="Report for eInvoice"><report xmlns:xvrl="http://www.xproc.org/ns/xvrl" xmlns="http://validator.kosit.de/test-report"><input><simple xmlns="http://validator.kosit.de/test-sample">
+    <inner>asldkfj</inner>
+    <content>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                
+            </head>
+            <body>
+                <div>some data</div>
+            </body>
+        </html>
+    </content>
+</simple></input><result><ns4:reports xmlns:ns3="http://purl.oclc.org/dsdl/svrl" xmlns:ns2="http://www.xoev.de/de/validator/framework/1/model" xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" xmlns:ns4="http://www.xproc.org/ns/xvrl"><ns4:metadata><ns4:timestamp>2026-05-26T13:15:42.572+02:00</ns4:timestamp><ns4:validator name="validator-cli" version="2.0.0-SNAPSHOT"></ns4:validator><ns4:document href="/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/cli/src/test/resources/examples/simple/input/simple.xml"></ns4:document></ns4:metadata><ns4:report xml:id="Document wellformedness Validator"><ns4:metadata><ns4:validator name="Document wellformedness Validator" xml:id="Document wellformedness Validator"></ns4:validator></ns4:metadata><ns4:detection severity="info"><ns4:supplemental><simple xmlns="http://validator.kosit.de/test-sample">
+    <inner>asldkfj</inner>
+    <content>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                
+            </head>
+            <body>
+                <div>some data</div>
+            </body>
+        </html>
+    </content>
+</simple></ns4:supplemental></ns4:detection><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="1"></ns4:digest></ns4:report><ns4:report xml:id="CreateDocument Identification Validator"><ns4:metadata><ns4:validator name="CreateDocument Identification Validator" xml:id="CreateDocument Identification Validator"></ns4:validator></ns4:metadata><ns4:detection severity="info"><ns4:message>/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/cli/src/test/resources/examples/simple/input/simple.xml</ns4:message></ns4:detection><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="1"></ns4:digest></ns4:report><ns4:report xml:id="scenario_selection"><ns4:metadata><ns4:validator name="Scenario Selection" xml:id="scenario_selection"></ns4:validator></ns4:metadata><ns4:detection severity="info" code="scenario-matched"><ns4:message>Scenario 'Simple' identified for '/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/cli/src/test/resources/examples/simple/input/simple.xml'</ns4:message></ns4:detection><ns4:detection severity="info" code="Simple" xml:id="scenario"></ns4:detection><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="2"></ns4:digest></ns4:report><ns4:report xml:id="Schema Validator"><ns4:metadata><ns4:validator name="Schema Validator" xml:id="Schema Validator"></ns4:validator><ns4:schema href="repository/simple.xsd" schematypens="Sample Schema"></ns4:schema></ns4:metadata><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="0"></ns4:digest></ns4:report><ns4:report xml:id="Schematron Validator"><ns4:metadata><ns4:validator name="Schematron Validator" xml:id="Schematron Validator"></ns4:validator><ns4:schema href="repository/simple.xsl" schematypens="Sample Schematron"></ns4:schema></ns4:metadata><ns4:detection severity="info"></ns4:detection><ns4:detection severity="info"></ns4:detection><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="2"></ns4:digest></ns4:report></ns4:reports></result><text>This content should be transferred to the result document</text></report></supplemental></detection><digest valid="true" fatal-error-count="0" error-count="0" info-count="1"></digest></report><report xml:id="create_report"><metadata><validator name="Create report" xml:id="create_report"></validator></metadata><detection severity="info" xml:id="Report for eInvoice"><supplemental xml:id="Report for eInvoice"><report xmlns:xvrl="http://www.xproc.org/ns/xvrl" xmlns="http://validator.kosit.de/test-report"><input><simple xmlns="http://validator.kosit.de/test-sample">
+    <inner>asldkfj</inner>
+    <content>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                
+            </head>
+            <body>
+                <div>some data</div>
+            </body>
+        </html>
+    </content>
+</simple></input><result><ns4:reports xmlns:ns3="http://purl.oclc.org/dsdl/svrl" xmlns:ns2="http://www.xoev.de/de/validator/framework/1/model" xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" xmlns:ns4="http://www.xproc.org/ns/xvrl"><ns4:metadata><ns4:timestamp>2026-05-26T13:15:42.572+02:00</ns4:timestamp><ns4:validator name="validator-cli" version="2.0.0-SNAPSHOT"></ns4:validator><ns4:document href="/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/cli/src/test/resources/examples/simple/input/simple.xml"></ns4:document></ns4:metadata><ns4:report xml:id="Document wellformedness Validator"><ns4:metadata><ns4:validator name="Document wellformedness Validator" xml:id="Document wellformedness Validator"></ns4:validator></ns4:metadata><ns4:detection severity="info"><ns4:supplemental><simple xmlns="http://validator.kosit.de/test-sample">
+    <inner>asldkfj</inner>
+    <content>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                
+            </head>
+            <body>
+                <div>some data</div>
+            </body>
+        </html>
+    </content>
+</simple></ns4:supplemental></ns4:detection><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="1"></ns4:digest></ns4:report><ns4:report xml:id="CreateDocument Identification Validator"><ns4:metadata><ns4:validator name="CreateDocument Identification Validator" xml:id="CreateDocument Identification Validator"></ns4:validator></ns4:metadata><ns4:detection severity="info"><ns4:message>/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/cli/src/test/resources/examples/simple/input/simple.xml</ns4:message></ns4:detection><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="1"></ns4:digest></ns4:report><ns4:report xml:id="scenario_selection"><ns4:metadata><ns4:validator name="Scenario Selection" xml:id="scenario_selection"></ns4:validator></ns4:metadata><ns4:detection severity="info" code="scenario-matched"><ns4:message>Scenario 'Simple' identified for '/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/cli/src/test/resources/examples/simple/input/simple.xml'</ns4:message></ns4:detection><ns4:detection severity="info" code="Simple" xml:id="scenario"></ns4:detection><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="2"></ns4:digest></ns4:report><ns4:report xml:id="Schema Validator"><ns4:metadata><ns4:validator name="Schema Validator" xml:id="Schema Validator"></ns4:validator><ns4:schema href="repository/simple.xsd" schematypens="Sample Schema"></ns4:schema></ns4:metadata><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="0"></ns4:digest></ns4:report><ns4:report xml:id="Schematron Validator"><ns4:metadata><ns4:validator name="Schematron Validator" xml:id="Schematron Validator"></ns4:validator><ns4:schema href="repository/simple.xsl" schematypens="Sample Schematron"></ns4:schema></ns4:metadata><ns4:detection severity="info"></ns4:detection><ns4:detection severity="info"></ns4:detection><ns4:digest valid="true" fatal-error-count="0" error-count="0" info-count="2"></ns4:digest></ns4:report></ns4:reports></result><text>This content should be transferred to the result document</text></report></supplemental></detection><digest valid="true" fatal-error-count="0" error-count="0" info-count="1"></digest></report><report xml:id="Compute Acceptance Validator"><metadata><validator name="Compute Acceptance Validator" xml:id="Compute Acceptance Validator"></validator></metadata><detection severity="info"><message>ACCEPTABLE</message></detection><digest valid="true" fatal-error-count="0" error-count="0" info-count="1"></digest></report></reports>
