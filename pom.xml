@@ -381,7 +381,7 @@
                         <!-- Keep SBOM compact; flip to true only if legal review requires embedded license texts -->
                         <includeLicenseText>false</includeLicenseText>
                         <!-- Skip modules that aren't deployed (parent POMs, internal test fixtures, etc.) -->
-                        <skipNotDeployed>true</skipNotDeployed>
+                        <skipNotDeployed>false</skipNotDeployed>
                         <!--
                             detectUnusedForOptionalScope requires bytecode scanning. The ASM bundled in
                             cyclonedx-maven-plugin 2.9.1 / cyclonedx-core-java 9.0.5 does not yet support
