@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.impl.xvrl;
+package org.kosit.xvrl.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.kosit.validator.api.xvrl.BaseDetection;
-import org.kosit.validator.model.xvrl.XVRLDetection;
-import org.kosit.validator.model.xvrl.XVRLDigest;
+import org.kosit.xvrl.api.BaseDetection;
+import org.kosit.xvrl.model.XVRLDetection;
+import org.kosit.xvrl.model.XVRLDigest;
 
 public abstract class BaseReport {
 

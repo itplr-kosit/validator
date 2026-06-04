@@ -18,6 +18,7 @@ package org.kosit.validator.cmd;
 import static org.apache.commons.io.FilenameUtils.isExtension;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 

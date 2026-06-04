@@ -1,0 +1,3 @@
+quarkus:
+  port: 8080
+  

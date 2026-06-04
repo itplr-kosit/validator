@@ -25,19 +25,10 @@ public class TestObjectFactory {
 
     private static Processor processor;
 
-    private static ConversionService conversionService;
-
     public static Processor createProcessor() {
         if (processor == null) {
             processor = Helper.getTestProcessor();
         }
         return processor;
-    }
-
-    public static ConversionService createConversionService() {
-        if (conversionService == null) {
-            conversionService = new ConversionService();
-        }
-        return conversionService;
     }
 }

@@ -46,7 +46,7 @@ public class SerializeReportActionTest {
     public void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
         final DefaultNamingStrategy namingStrategy = new DefaultNamingStrategy();
-        this.action = new SerializeReportAction(this.tmpDirectory, TestObjectFactory.createConversionService(), namingStrategy);
+        this.action = new SerializeReportAction(this.tmpDirectory, TestObjectFactory.createXvrlConversionService(), namingStrategy);
     }
 
     @AfterEach

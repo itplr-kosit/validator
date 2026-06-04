@@ -104,6 +104,7 @@
                         </goals>
                     </execution>
                 </executions>
+                <extensions>true</extensions>
             </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>

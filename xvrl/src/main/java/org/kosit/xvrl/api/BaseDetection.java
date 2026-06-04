@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.api.xvrl;
-
-import org.kosit.validator.model.xvrl.Location;
-import org.kosit.validator.model.xvrl.XVRLDetection;
-import org.kosit.validator.model.xvrl.XVRLMessage;
+package org.kosit.xvrl.api;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.kosit.xvrl.model.Location;
+import org.kosit.xvrl.model.XVRLDetection;
+import org.kosit.xvrl.model.XVRLMessage;
 
 public interface BaseDetection {
 

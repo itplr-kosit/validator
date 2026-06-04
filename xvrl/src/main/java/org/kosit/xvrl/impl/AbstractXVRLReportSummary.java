@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.impl.xvrl;
+package org.kosit.xvrl.impl;
 
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.kosit.validator.model.xvrl.XVRLReport;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
-import org.kosit.validator.api.xvrl.BaseReportSummary;
+import org.kosit.xvrl.api.BaseReportSummary;
+import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLReportSummary;
 
 /**
  * Base class for XVRLReportSummary to overcome the issue that simplifying and pluralizing the choice elements of

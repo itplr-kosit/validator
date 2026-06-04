@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.kosit.validator.impl.xml;
+package org.kosit.xvrl.api;
 
-import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
+import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLReportSummary;
 
-public class LongAdapter extends XmlAdapter<BigInteger, Long> {
+public interface BaseReportSummary {
 
-    @Override
-    public Long unmarshal(final BigInteger bigInteger) throws Exception {
-        return bigInteger != null ? bigInteger.longValue() : null;
-    }
+    List<XVRLReport> getReports();
 
-    @Override
-    public BigInteger marshal(final Long integer) throws Exception {
-        return integer != null ? BigInteger.valueOf(integer) : null;
+    List<XVRLReportSummary> getReportSummaries();
+
+    default List<String> getAllErrors() {
+        return getReports().stream().flatMap(xvrlReport -> xvrlReport.getAllErrors().stream()).collect(Collectors.toList());
     }
 }

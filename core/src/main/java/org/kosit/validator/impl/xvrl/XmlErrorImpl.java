@@ -17,8 +17,8 @@
 package org.kosit.validator.impl.xvrl;
 
 import org.kosit.validator.api.XmlError;
-import org.kosit.validator.model.xvrl.Location;
-import org.kosit.validator.model.xvrl.XVRLDetection;
+import org.kosit.xvrl.model.Location;
+import org.kosit.xvrl.model.XVRLDetection;
 
 public class XmlErrorImpl implements XmlError {
 

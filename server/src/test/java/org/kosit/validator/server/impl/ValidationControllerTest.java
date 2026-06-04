@@ -25,7 +25,7 @@ class ValidationControllerTest {
         given().contentType(ContentType.XML).body(xmlFile).when().post("/api/validate").then().statusCode(200).contentType(ContentType.XML)
                 .header("Content-Disposition", allOf(containsString("attachment"), containsString("validation-result.xml")))
                 .header("X-VALIDATOR-Acceptance", "ACCEPTABLE").header("X-VALIDATOR-Schema-Valid", "true")
-                .header("X-VALIDATOR-Schematron-Valid", "true").body(startsWith("<reports"))
+                .header("X-VALIDATOR-Schematron-Valid", "true").body(startsWith("<?xml version=\"1.0\" ?><reports"))
                 .body(containsString("<validator name=\"Schematron Validator\""));
     }
 
@@ -52,6 +52,7 @@ class ValidationControllerTest {
                 .body(containsString("rejected=\"0\"")).body(containsString("processing-errors=\"0\""))
                 .header("Content-Disposition", allOf(containsString("attachment"), containsString("validation-result.xml")))
                 .header("X-VALIDATOR-Acceptance", "ACCEPTABLE").header("X-VALIDATOR-Schema-Valid", "true")
-                .header("X-VALIDATOR-Schematron-Valid", "true").body(startsWith("<reports")).body(containsString("<report"));
+                .header("X-VALIDATOR-Schematron-Valid", "true").body(startsWith("<?xml version=\"1.0\" ?><reports"))
+                .body(containsString("<report"));
     }
 }

@@ -1,16 +1,20 @@
 package org.kosit.validator.server.impl;
 
-import org.kosit.validator.api.compact.CompactXVRLReport;
-import org.kosit.validator.api.compact.CompactXVRLReportSummary;
-import org.kosit.validator.api.compact.ValidatorEngineInformation;
-import org.kosit.validator.model.xvrl.XVRLDetection;
-import org.kosit.validator.server.api.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+
+import org.kosit.validator.api.compact.CompactXVRLReport;
+import org.kosit.validator.api.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.compact.ValidatorEngineInformation;
+import org.kosit.validator.server.api.CompactResultDto;
+import org.kosit.validator.server.api.CompactResultLayerDto;
+import org.kosit.validator.server.api.CompactValidationResultsDto;
+import org.kosit.validator.server.api.CompactViolationDto;
+import org.kosit.validator.server.api.ValidatorEngineDto;
+import org.kosit.xvrl.model.XVRLDetection;
 
 public final class CompactXVRLReportSummaryMapper {
 

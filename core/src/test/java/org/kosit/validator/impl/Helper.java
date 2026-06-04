@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.kosit.jaxb.JaxbConversionService;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.xsd.ValidatorSchemas;
@@ -166,8 +167,7 @@ public class Helper {
     }
 
     public static <T> T load(final URL url, final Class<T> type) throws URISyntaxException {
-        final ConversionService c = new ConversionService();
-        c.initialize(org.kosit.validator.model.ObjectFactory.class.getPackage(),
+        final JaxbConversionService c = JaxbConversionService.forPackages(org.kosit.validator.model.ObjectFactory.class.getPackage(),
                 org.kosit.validator.cmd.assertions.ObjectFactory.class.getPackage(),
                 org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
         return c.readXml(url.toURI(), type);

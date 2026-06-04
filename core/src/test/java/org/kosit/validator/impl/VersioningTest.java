@@ -24,6 +24,7 @@ import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kosit.jaxb.JaxbConversionException;
 import org.kosit.validator.model.scenarios.Scenarios;
 
 /**
@@ -41,34 +42,32 @@ public class VersioningTest {
 
     private static final URL NEW_VERSION = VersioningTest.class.getResource("/examples/versioning/scenarios-newversion.xml");
 
-    private ConversionService service;
+    private ScenariosConversionService service;
 
     @BeforeEach
     public void setup() {
-        this.service = new ConversionService();
+        this.service = new ScenariosConversionService();
     }
 
     @Test
     public void testBase() throws URISyntaxException {
-        final Scenarios result = this.service.readXml(BASE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
+        final Scenarios result = this.service.readXml(BASE.toURI(), Scenarios.class);
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testFrameworkIncrement() throws URISyntaxException {
-        final Scenarios result = this.service.readXml(INCREMENT.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema());
+        final Scenarios result = this.service.readXml(INCREMENT.toURI(), Scenarios.class);
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testNewFeature() {
-        assertThrows(ConversionService.ConversionExeption.class,
-                () -> this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
+        assertThrows(JaxbConversionException.class, () -> this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class));
     }
 
     @Test
     public void testNewVersion() {
-        assertThrows(ConversionService.ConversionExeption.class,
-                () -> this.service.readXml(NEW_VERSION.toURI(), Scenarios.class, SchemaProvider.getScenarioSchema()));
+        assertThrows(JaxbConversionException.class, () -> this.service.readXml(NEW_VERSION.toURI(), Scenarios.class));
     }
 }

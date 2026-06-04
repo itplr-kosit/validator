@@ -21,18 +21,21 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
 import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
+
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
-import org.kosit.validator.model.xvrl.Supplemental;
-import org.kosit.validator.model.xvrl.XVRLDetection;
-import org.kosit.validator.model.xvrl.XVRLReport;
-import org.kosit.validator.model.xvrl.XVRLReportSummary;
+import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.xvrl.model.Supplemental;
+import org.kosit.xvrl.model.XVRLDetection;
+import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLReportSummary;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
+
 import jakarta.xml.bind.JAXBException;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -59,7 +62,7 @@ public class BaseResolverConfigurationTest {
         d.getSupplementals().add(s);
         r.getDetection().add(d);
         report.getReports().add(r);
-        final XvrlSerializer ser = new XvrlSerializer(new ConversionService(), ProcessorProvider.getProcessor());
+        final XvrlSerializer ser = new XvrlSerializer(new XvrlConversionService(), ProcessorProvider.getProcessor());
         final XdmNode result = ser.serialize(report);
         final Serializer serialize = ProcessorProvider.getProcessor().newSerializer();
         final String string = serialize.serializeNodeToString(result);

@@ -35,11 +35,11 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kosit.jaxb.adapter.StringTrimAdapter;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.SchematronCompiler;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
-import org.kosit.validator.impl.xml.StringTrimAdapter;
 import org.kosit.validator.model.scenarios.NamespaceType;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ScenarioType;

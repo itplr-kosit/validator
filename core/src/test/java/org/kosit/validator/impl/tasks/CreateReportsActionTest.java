@@ -29,11 +29,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ConversionService;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
 import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.xvrl.impl.XvrlConversionService;
 
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
@@ -53,7 +53,7 @@ public class CreateReportsActionTest {
     @BeforeEach
     public void setup() {
         this.repository = Simple.createContentRepository();
-        this.action = new CreateReportsAction(this.repository.getProcessor(), new ConversionService());
+        this.action = new CreateReportsAction(this.repository.getProcessor(), new XvrlConversionService());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class CreateReportsActionTest {
     public void testExecutionException() throws SaxonApiException {
         final Processor p = mock(Processor.class);
         final DocumentBuilder documentBuilder = mock(DocumentBuilder.class);
-        this.action = new CreateReportsAction(p, new ConversionService());
+        this.action = new CreateReportsAction(p, new XvrlConversionService());
 
         when(p.newDocumentBuilder()).thenReturn(documentBuilder);
         when(documentBuilder.build(any(Source.class))).thenThrow(new SaxonApiException("mocked"));

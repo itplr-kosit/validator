@@ -44,6 +44,7 @@ import org.kosit.validator.api.Result;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
 import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.kosit.xvrl.impl.XvrlConversionService;
 import org.w3c.dom.Document;
 
 import jakarta.xml.bind.JAXBException;
@@ -101,7 +102,7 @@ public class DefaultCheckTest {
         assertThat(doc.getSchematronResult().get(0).hasFailedAsserts()).isFalse();
         assertThat(doc.getSchematronResult().get(0).getFailedAsserts()).isEmpty();
         assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
-        final XvrlSerializer s = new XvrlSerializer(new ConversionService(), ProcessorProvider.getProcessor());
+        final XvrlSerializer s = new XvrlSerializer(new XvrlConversionService(), ProcessorProvider.getProcessor());
         final XdmNode blub = s.serialize(doc.getReportSummary());
         System.out.println(blub);
     }

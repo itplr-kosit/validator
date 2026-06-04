@@ -16,20 +16,6 @@
 
 package org.kosit.validator.impl;
 
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
-import net.sf.saxon.s9api.XdmNode;
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.api.xsd.ValidatorSchemas;
-import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.tasks.BusinessReport;
-import org.kosit.validator.impl.tasks.DocumentParseAction;
-import org.kosit.validator.impl.xml.ProcessorProvider;
-import org.kosit.validator.model.XMLSyntaxError;
-
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -39,6 +25,23 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
+
+import javax.xml.transform.stream.StreamSource;
+
+import org.kosit.jaxb.JaxbConversionService;
+import org.kosit.validator.api.Input;
+import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.api.xsd.ValidatorSchemas;
+import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.tasks.BusinessReport;
+import org.kosit.validator.impl.tasks.DocumentParseAction;
+import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.kosit.validator.model.XMLSyntaxError;
+
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Helper for test artifacts.
@@ -159,8 +162,7 @@ public class Helper {
     }
 
     public static <T> T load(final URL url, final Class<T> type) throws URISyntaxException {
-        final ConversionService c = new ConversionService();
-        c.initialize(org.kosit.validator.model.ObjectFactory.class.getPackage(),
+        final JaxbConversionService c = JaxbConversionService.forPackages(org.kosit.validator.model.ObjectFactory.class.getPackage(),
                 org.kosit.validator.cmd.assertions.ObjectFactory.class.getPackage(),
                 org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
         return c.readXml(url.toURI(), type);
