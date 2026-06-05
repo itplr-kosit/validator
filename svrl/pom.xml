@@ -10,30 +10,54 @@
     </parent>
 
     <packaging>jar</packaging>
-    <artifactId>validator-api</artifactId>
-    
+    <artifactId>svrl</artifactId>
+    <name>KoSIT SVRL JAXB binding</name>
+    <description>Standalone JAXB binding and read/write helper for the Schematron Validation Report Language (SVRL).</description>
+
     <dependencies>
         <dependency>
-            <groupId>org.kosit</groupId>
-            <artifactId>svrl</artifactId>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jaxb</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kosit</groupId>
-            <artifactId>xvrl</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <resources>
             <resource>
                 <directory>src/main/model</directory>
             </resource>
         </resources>
-        
+
         <plugins>
-            <!-- Generate model classes -->
+            <!-- Generate SVRL JAXB model from svrl-kosit.xsd -->
             <plugin>
                 <groupId>org.jvnet.jaxb</groupId>
                 <artifactId>jaxb-maven-plugin</artifactId>
@@ -50,20 +74,12 @@
                     <extension>true</extension>
                     <schemaDirectory>src/main/model/xsd</schemaDirectory>
                     <bindingDirectory>src/main/model/binding</bindingDirectory>
-                    <!--generateDirectory>${project.build.directory}/generated-sources/xjc</generateDirectory-->
                     <packageLevelAnnotations>false</packageLevelAnnotations>
                     <args>
                         <arg>-Xinheritance</arg>
                         <arg>-Xsimplify</arg>
                         <arg>-Xsimplify-usePluralForm=true</arg>
                     </args>
-                    <!-- Reuse the SVRL JAXB classes generated in the svrl module instead of regenerating them. -->
-                    <episodes>
-                        <episode>
-                            <groupId>org.kosit</groupId>
-                            <artifactId>svrl</artifactId>
-                        </episode>
-                    </episodes>
                     <plugins>
                         <plugin>
                             <groupId>org.jvnet.jaxb</groupId>
@@ -80,10 +96,12 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <!-- Embed CycloneDX SBOM in the deployable jar (config inherited from parent pluginManagement). -->
             <plugin>
-                <groupId>org.cyclonedx</groupId>
-                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <skipAssembly>true</skipAssembly>
+                </configuration>
             </plugin>
         </plugins>
     </build>

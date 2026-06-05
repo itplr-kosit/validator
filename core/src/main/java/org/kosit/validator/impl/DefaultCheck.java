@@ -28,6 +28,7 @@ import org.kosit.validator.impl.tasks.SchematronValidationAction;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.svrl.impl.SvrlConversionService;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.Timestamp;
 import org.kosit.xvrl.model.Validator;

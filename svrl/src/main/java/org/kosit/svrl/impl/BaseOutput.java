@@ -1,4 +1,4 @@
-package org.kosit.validator.impl.model;
+package org.kosit.svrl.impl;
 
 import java.io.Serializable;
 import java.util.List;
