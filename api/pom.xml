@@ -48,8 +48,10 @@
                 </executions>
                 <configuration>
                     <extension>true</extension>
+                    <strict>false</strict>
                     <schemaDirectory>src/main/model/xsd</schemaDirectory>
                     <bindingDirectory>src/main/model/binding</bindingDirectory>
+                    <catalog>src/main/model/binding/catalog.txt</catalog>
                     <!--generateDirectory>${project.build.directory}/generated-sources/xjc</generateDirectory-->
                     <packageLevelAnnotations>false</packageLevelAnnotations>
                     <args>
