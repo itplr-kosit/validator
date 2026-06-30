@@ -1,4 +1,4 @@
-package org.kosit.validator.impl;
+package org.kosit.svrl.impl;
 
 import org.kosit.jaxb.JaxbConversionService;
 import org.oclc.purl.dsdl.svrl.ObjectFactory;
@@ -8,7 +8,7 @@ import jakarta.xml.bind.JAXBException;
 
 /**
  * Convenience {@link JaxbConversionService} preconfigured for the SVRL JAXB model package
- * ({@code org.kosit.validator.model.scenarios}).
+ * ({@code org.oclc.purl.dsdl.svrl}).
  */
 public class SvrlConversionService extends JaxbConversionService {
 

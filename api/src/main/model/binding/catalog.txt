@@ -1,0 +1,1 @@
+PUBLIC "http://purl.oclc.org/dsdl/svrl" "maven:org.kosit:svrl:jar::!/xsd/svrl-kosit.xsd"
