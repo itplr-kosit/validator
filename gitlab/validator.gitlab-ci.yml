@@ -1,0 +1,82 @@
+# Reusable GitLab CI template for the KoSIT validator.
+#
+# Include it and extend the hidden job:
+#
+#   include:
+#     - remote: "https://raw.githubusercontent.com/itplr-kosit/validator/<ref>/gitlab/validator.gitlab-ci.yml"
+#
+#   validate-invoices:
+#     extends: .kosit-validate
+#     variables:
+#       KOSIT_CONFIGURATION_URL: "https://github.com/itplr-kosit/validator-configuration-xrechnung/releases/download/v2026-01-31/xrechnung-3.0.2-validator-configuration-2026-01-31.zip"
+#       KOSIT_FILES: "invoices/"
+#
+# Variables (mirroring the GitHub Action inputs):
+#   KOSIT_VERSION                  validator release, default 1.6.2
+#   KOSIT_CHECKSUM                 optional SHA-256 of the validator jar
+#   KOSIT_CONFIGURATION_URL        URL of a configuration zip, or
+#   KOSIT_CONFIGURATION_DIR        path to an unpacked configuration
+#   KOSIT_CONFIGURATION_CHECKSUM   optional SHA-256 of the configuration zip
+#   KOSIT_FILES                    file, directory or glob of XML documents
+#   KOSIT_REPORT_DIR               report output directory, default validator-reports
+
+.kosit-validate:
+  image: eclipse-temurin:21-jre
+  variables:
+    KOSIT_VERSION: "1.6.2"
+    KOSIT_CHECKSUM: ""
+    KOSIT_CONFIGURATION_URL: ""
+    KOSIT_CONFIGURATION_DIR: ""
+    KOSIT_CONFIGURATION_CHECKSUM: ""
+    KOSIT_FILES: ""
+    KOSIT_REPORT_DIR: "validator-reports"
+  script:
+    - |
+      set -euo pipefail
+      apt-get update -qq >/dev/null && apt-get install -qqy --no-install-recommends curl unzip >/dev/null
+
+      verify() {
+        echo "$1  $2" | sha256sum -c - >/dev/null
+      }
+
+      jar="validator-$KOSIT_VERSION-standalone.jar"
+      if [ ! -f "$jar" ]; then
+        curl -fsSL "https://github.com/itplr-kosit/validator/releases/download/v$KOSIT_VERSION/$jar" -o "$jar"
+      fi
+      if [ -n "$KOSIT_CHECKSUM" ]; then verify "$KOSIT_CHECKSUM" "$jar"; fi
+
+      if [ -n "$KOSIT_CONFIGURATION_URL" ]; then
+        config_dir="kosit-configuration"
+        if [ ! -f "$config_dir/scenarios.xml" ]; then
+          curl -fsSL "$KOSIT_CONFIGURATION_URL" -o configuration.zip
+          if [ -n "$KOSIT_CONFIGURATION_CHECKSUM" ]; then verify "$KOSIT_CONFIGURATION_CHECKSUM" configuration.zip; fi
+          unzip -o -q configuration.zip -d "$config_dir"
+        fi
+      else
+        config_dir="$KOSIT_CONFIGURATION_DIR"
+      fi
+      test -f "$config_dir/scenarios.xml"
+
+      files=""
+      if [ -d "$KOSIT_FILES" ]; then
+        files="$(find "$KOSIT_FILES" -name '*.xml' -type f | sort)"
+      else
+        files="$(ls $KOSIT_FILES)"
+      fi
+      test -n "$files"
+
+      mkdir -p "$KOSIT_REPORT_DIR"
+      rejected=0
+      for f in $files; do
+        if java -jar "$jar" -s "$config_dir/scenarios.xml" -r "$config_dir" -o "$KOSIT_REPORT_DIR" "$f"; then
+          echo "PASS  $f"
+        else
+          rejected=$((rejected + 1))
+          echo "FAIL  $f"
+        fi
+      done
+      test "$rejected" -eq 0
+  artifacts:
+    when: always
+    paths:
+      - $KOSIT_REPORT_DIR

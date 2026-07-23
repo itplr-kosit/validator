@@ -1,0 +1,77 @@
+name: Action self-test
+
+on:
+  pull_request:
+    paths:
+      - action.yml
+      - gitlab/**
+      - .github/workflows/action-test.yml
+  push:
+    branches: [main, feature/ci-action]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CONFIGURATION_URL: https://github.com/itplr-kosit/validator-configuration-xrechnung/releases/download/v2026-01-31/xrechnung-3.0.2-validator-configuration-2026-01-31.zip
+  CONFIGURATION_SHA256: 6a5a5911a421b25fbc423f62f93f894df7b236f5d73ca4f84bb222a945082704
+  VALIDATOR_SHA256: 244978514ad48f67c7573acfffc8f4fd73d81feda6f276710033f9913579857e
+  # A conformant XRechnung 3.0.2 reference instance from the KoSIT test suite.
+  SAMPLE_URL: https://raw.githubusercontent.com/itplr-kosit/xrechnung-testsuite/b3791d47a2e1446b1751a27cb732aac294231293/src/test/business-cases/standard/01.01a-INVOICE_uncefact.xml
+
+jobs:
+  accepts-a-valid-document:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fetch a conformant reference instance
+        run: |
+          mkdir samples
+          curl -fsSL "$SAMPLE_URL" -o samples/invoice.xml
+
+      - name: Validate (must accept)
+        id: validate
+        uses: ./
+        with:
+          version: "1.6.2"
+          checksum: ${{ env.VALIDATOR_SHA256 }}
+          configuration: ${{ env.CONFIGURATION_URL }}
+          configuration-checksum: ${{ env.CONFIGURATION_SHA256 }}
+          files: samples/
+
+      - name: Outputs are reported
+        run: |
+          test "${{ steps.validate.outputs.accepted }}" = "1"
+          test "${{ steps.validate.outputs.rejected }}" = "0"
+          test -d "${{ steps.validate.outputs.report-dir }}"
+
+  rejects-a-broken-document:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fetch and break a reference instance
+        run: |
+          mkdir samples
+          curl -fsSL "$SAMPLE_URL" -o samples/invoice.xml
+          # Corrupt the issue date (BT-2): schema-invalid, must be rejected.
+          sed -i '0,/format="102">[0-9]*</s//format="102">not-a-date</' samples/invoice.xml
+
+      - name: Validate (must reject)
+        id: validate
+        continue-on-error: true
+        uses: ./
+        with:
+          version: "1.6.2"
+          checksum: ${{ env.VALIDATOR_SHA256 }}
+          configuration: ${{ env.CONFIGURATION_URL }}
+          configuration-checksum: ${{ env.CONFIGURATION_SHA256 }}
+          files: samples/invoice.xml
+
+      - name: The action failed as required
+        run: |
+          test "${{ steps.validate.outcome }}" = "failure"
