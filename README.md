@@ -100,6 +100,24 @@ java -jar  validator-<version>-standalone.jar  -s <scenario-config-file> -D
 
 The [daemon documentation](./docs/daemon.md) shows more usage details and further configuration options.
 
+### Continuous Integration
+
+The repository ships a GitHub Action and a GitLab CI template so documents can be validated as part of a pipeline.
+
+Validate a directory of XML documents against the current XRechnung configuration with the GitHub Action:
+
+```yaml
+- uses: itplr-kosit/validator@main
+  with:
+    version: "1.6.2"
+    configuration: "https://github.com/itplr-kosit/validator-configuration-xrechnung/releases/download/v2026-01-31/xrechnung-3.0.2-validator-configuration-2026-01-31.zip"
+    files: invoices/
+```
+
+The action downloads the released standalone jar, runs every document and fails the job if any document is rejected, printing the failing rule ids. The optional `checksum` and `configuration-checksum` inputs verify the downloads against a SHA-256 pin. The reports are written to `report-dir` (default `validator-reports`), and the `accepted`/`rejected` counts are exposed as outputs.
+
+On GitLab, include [`gitlab/validator.gitlab-ci.yml`](./gitlab/validator.gitlab-ci.yml) and extend the `.kosit-validate` job template; its variables mirror the action inputs.
+
 ## Packages
 
 The Validator distribution contains the following artifacts:
