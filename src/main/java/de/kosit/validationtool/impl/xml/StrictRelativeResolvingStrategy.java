@@ -41,6 +41,7 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         disableExternalEntities(sf);
         allowExternalSchema(sf, "file");
+        enableSecureProcessing(sf);
         return sf;
     }
 
@@ -63,6 +64,7 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
         final Validator validator = schema.newValidator();
         disableExternalEntities(validator);
         allowExternalSchema(validator, "file" /* allow nothing external */);
+        enableSecureProcessing(validator);
         return validator;
 
     }
