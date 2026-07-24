@@ -24,6 +24,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.lib.UnparsedTextURIResolver;
 
 /**
  * This is a slightly more open implementation that allows resolving artifacts from local filesystems. Your are not
@@ -48,15 +49,19 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
     }
 
     /**
-     * The default resolver is able to resolve locally and relative.
-     * 
+     * Resolves any local artifact, independent of a specific repository. Remote locations are rejected.
+     *
      * @param repository the repository is not used by this strategy
-     * @return null!
+     * @return a resolver for local artifacts
      */
     @Override
     public URIResolver createResolver(final URI repository) {
-        // intentionally return 'null', since all resolving is configured with the other objects
-        return null;
+        return new LocalUriResolver();
+    }
+
+    @Override
+    public UnparsedTextURIResolver createUnparsedTextURIResolver(final URI scenarioRepository) {
+        return new LocalUriResolver();
     }
 
     @Override
