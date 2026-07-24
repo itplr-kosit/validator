@@ -107,6 +107,16 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
                 "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
     }
 
+    protected void enableSecureProcessing(final Validator validator) {
+        setProperty(() -> validator.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true), false,
+                "Can not enable secure processing. Maybe an unsupported JAXP implementation is used.");
+    }
+
+    protected void enableSecureProcessing(final SchemaFactory schemaFactory) {
+        setProperty(() -> schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true), false,
+                "Can not enable secure processing. Maybe an unsupported JAXP implementation is used.");
+    }
+
     @FunctionalInterface
     private interface PropertySetter {
 
