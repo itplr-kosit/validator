@@ -100,6 +100,26 @@ java -jar  validator-<version>-standalone.jar  -s <scenario-config-file> -D
 
 The [daemon documentation](./docs/daemon.md) shows more usage details and further configuration options.
 
+### Continuous Integration
+
+The repository ships a GitHub Action and a GitLab CI template so documents can be validated as part of a pipeline.
+
+Validate a directory of XML documents against the current XRechnung configuration with the GitHub Action:
+
+```yaml
+- uses: itplr-kosit/validator@main
+  with:
+    version: "1.6.2"
+    configuration: "https://github.com/itplr-kosit/validator-configuration-xrechnung/releases/download/v2026-01-31/xrechnung-3.0.2-validator-configuration-2026-01-31.zip"
+    files: invoices/
+```
+
+The action downloads the released standalone jar, runs every document and fails the job if any document is rejected, printing the failing rule ids. The optional `checksum` and `configuration-checksum` inputs verify the downloads against a SHA-256 pin. The reports are written to `report-dir` (default `validator-reports`), and the `accepted`/`rejected` counts are exposed as outputs.
+
+When Docker is available on the runner the action executes the validator inside an `eclipse-temurin:21-jre` container without network access, a read-only root, no capabilities and no privilege escalation; the document and the configuration are mounted read-only, only the report directory is writable, and downloads always happen outside the container, so the validator itself never touches the network. The `sealed` input controls this (`auto` default, `always`, `never`), and the `image` input replaces the default image — the floating tag receives Java security patches automatically, while a digest-pinned reference can be passed for a stricter supply-chain policy.
+
+On GitLab, include [`gitlab/validator.gitlab-ci.yml`](./gitlab/validator.gitlab-ci.yml) and extend the `.kosit-validate` job template; its variables mirror the action inputs and its job image is the same pinned runtime the sealed action uses, so both platforms execute the validator in an identical environment.
+
 ## Packages
 
 The Validator distribution contains the following artifacts:

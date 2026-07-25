@@ -1,0 +1,55 @@
+# Reusable GitLab CI template for the KoSIT validator.
+#
+# Include it and extend the hidden job:
+#
+#   include:
+#     - remote: "https://raw.githubusercontent.com/itplr-kosit/validator/<ref>/gitlab/validator.gitlab-ci.yml"
+#
+#   validate-invoices:
+#     extends: .kosit-validate
+#     variables:
+#       KOSIT_SCRIPT_REF: "<ref>"
+#       KOSIT_CONFIGURATION: "https://github.com/itplr-kosit/validator-configuration-xrechnung/releases/download/v2026-01-31/xrechnung-3.0.2-validator-configuration-2026-01-31.zip"
+#       KOSIT_FILES: "invoices/"
+#
+# The job fetches scripts/validate.sh — the same engine the GitHub Action
+# runs — from this repository at KOSIT_SCRIPT_REF. Use the same ref for
+# the include and the script, and pin a tag or commit for reproducible
+# pipelines. The variables are the script's interface:
+#
+#   KOSIT_VERSION                  validator release, default 1.6.2
+#   KOSIT_CHECKSUM                 optional SHA-256 of the validator jar
+#   KOSIT_CONFIGURATION            configuration zip URL, or a path to an
+#                                  unpacked configuration with scenarios.xml
+#   KOSIT_CONFIGURATION_CHECKSUM   optional SHA-256 of the configuration zip
+#   KOSIT_FILES                    file, directory or glob of XML documents
+#   KOSIT_REPORT_DIR               report output directory, default validator-reports
+#
+# The job image is the same runtime the GitHub Action uses for its sealed
+# execution, so both platforms run the validator in an identical
+# environment. The tag pins the Java 21 JRE contract and floats the patch
+# level; override KOSIT_IMAGE with a digest-pinned reference for a
+# stricter policy. Docker is not available inside the job container, so
+# the script runs its host path — which here already is the pinned image.
+
+.kosit-validate:
+  image: $KOSIT_IMAGE
+  variables:
+    KOSIT_IMAGE: "eclipse-temurin:21-jre"
+    KOSIT_SCRIPT_REF: "main"
+    KOSIT_VERSION: "1.6.2"
+    KOSIT_CHECKSUM: ""
+    KOSIT_CONFIGURATION: ""
+    KOSIT_CONFIGURATION_CHECKSUM: ""
+    KOSIT_FILES: ""
+    KOSIT_REPORT_DIR: "validator-reports"
+    KOSIT_SEALED: "never"
+    KOSIT_CACHE: "$CI_PROJECT_DIR/.kosit-cache"
+  script:
+    - apt-get update -qq >/dev/null && apt-get install -qqy --no-install-recommends curl unzip >/dev/null
+    - curl -fsSL "https://raw.githubusercontent.com/itplr-kosit/validator/$KOSIT_SCRIPT_REF/scripts/validate.sh" -o /tmp/kosit-validate.sh
+    - bash /tmp/kosit-validate.sh
+  artifacts:
+    when: always
+    paths:
+      - $KOSIT_REPORT_DIR
