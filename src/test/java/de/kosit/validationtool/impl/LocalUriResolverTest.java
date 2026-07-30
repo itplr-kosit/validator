@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -70,5 +71,12 @@ public class LocalUriResolverTest {
     public void testRemoteUnparsedTextRejected() throws URISyntaxException {
         assertThatThrownBy(() -> this.resolver.resolve(new URI("http://example.org/evil.txt"), "UTF-8", null))
                 .isInstanceOf(XPathException.class).hasMessageContaining("Only local artifacts");
+    }
+
+    @Test
+    public void testClasspathJAR() throws URISyntaxException, TransformerException {
+        final URL main = LocalUriResolverTest.class.getClassLoader().getResource("packaged/main.xsd");
+        final Source resolved = this.resolver.resolve("./resources/reference.xsd", main.toURI().toASCIIString());
+        assertThat(resolved).isNotNull();
     }
 }
