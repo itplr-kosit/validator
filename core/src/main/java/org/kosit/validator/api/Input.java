@@ -8,8 +8,17 @@ import javax.xml.transform.Source;
  * An input for the validator.
  *
  * @author apenski
+ *
+ * @deprecated Replaced by the conformatron-api handshake types: at the very beginning of the processing pipeline by
+ *             {@link org.conformatron.api.model.source.ICTValidationSource} and after parsing by
+ *             {@link org.conformatron.api.model.source.ICTParsedValidationSource}. Validator implementations live in
+ *             {@code org.kosit.validator.impl.conformatron} ({@code ValidationSource}, {@code DomValidationSource},
+ *             {@code XdmNodeValidationSource}). The digest handling ({@link #getHashCode()} /
+ *             {@link #getDigestAlgorithm()}) is superseded by ADR-003: hash computation is its own concern (SHA-512,
+ *             {@code SourceDigest}) and no longer configured on the source. Remaining usages mark the code paths still
+ *             to be migrated.
  */
-
+@Deprecated(since = "2.0.0")
 public interface Input {
 
     /**

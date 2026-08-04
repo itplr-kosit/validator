@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
+import org.conformatron.api.model.source.ICTParsedValidationSource;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
@@ -56,6 +57,14 @@ public interface CheckAction {
 
         /** The document to be checked */
         private Input input;
+
+        /**
+         * Conformatron handshake object carrying the parsed document (immutable byte array, SHA-512 hash, parsed
+         * representation). Set by the parse step; {@code null} until parsing succeeded or when the input was already
+         * parsed ({@code XdmNodeInput} shortcut). Successor of {@link #getInput()} — downstream steps migrate to this
+         * step by step.
+         */
+        private ICTParsedValidationSource parsedSource;
 
         public Process(final Input input) {
             this(input, new XVRLMetadata());
@@ -166,6 +175,17 @@ public interface CheckAction {
          */
         public void setInput(final Input input) {
             this.input = input;
+        }
+
+        /**
+         * The parsed document as conformatron handshake object; {@code null} until the parse step succeeded.
+         */
+        public ICTParsedValidationSource getParsedSource() {
+            return this.parsedSource;
+        }
+
+        public void setParsedSource(final ICTParsedValidationSource parsedSource) {
+            this.parsedSource = parsedSource;
         }
     }
 }

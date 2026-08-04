@@ -75,6 +75,7 @@
         <version.jansi>2.4.1</version.jansi>
         <version.cyclonedx-maven-plugin>2.9.1</version.cyclonedx-maven-plugin>
         <version.jspecify>1.0.0</version.jspecify>
+        <version.conformatron-api>0.1.0-SNAPSHOT</version.conformatron-api>
     </properties>
 
     <repositories>
@@ -129,6 +130,11 @@
                 <groupId>org.jspecify</groupId>
                 <artifactId>jspecify</artifactId>
                 <version>${version.jspecify}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.conformatron</groupId>
+                <artifactId>conformatron-api</artifactId>
+                <version>${version.conformatron-api}</version>
             </dependency>
 
             <dependency>
