@@ -4,10 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.CountingInputStream;
@@ -130,6 +132,39 @@ public class StreamHelper {
      */
     public static InputStream wrapDigesting(final LazyReadInput input, final InputStream stream, final String digestAlgorithm) {
         return new DigestingInputStream(input, stream, createDigest(digestAlgorithm));
+    }
+
+    /**
+     * Reads the entire content of the given {@link Source} into memory, so that the source document can be retained
+     * as an immutable byte array (conformatron-api step 2, {@code parse-document}). Reading happens through the
+     * supplied stream, so any digest/counting wrapping of the owning {@link Input} stays intact.
+     *
+     * @param source the source to read
+     * @return the complete content, or {@code null} if the source type does not allow byte retention (callers must
+     *         then process the source directly)
+     * @throws IOException on read errors
+     */
+    public static byte[] tryReadBytes(final Source source) throws IOException {
+        if (source instanceof final StreamSource streamSource) {
+            if (streamSource.getInputStream() != null) {
+                try (InputStream in = streamSource.getInputStream()) {
+                    return in.readAllBytes();
+                }
+            }
+            if (streamSource.getSystemId() != null) {
+                try {
+                    final URI uri = URI.create(streamSource.getSystemId());
+                    if (uri.isAbsolute()) {
+                        try (InputStream in = uri.toURL().openStream()) {
+                            return in.readAllBytes();
+                        }
+                    }
+                } catch (final IllegalArgumentException e) {
+                    // not a URI; let the caller process the source directly
+                }
+            }
+        }
+        return null;
     }
 
     public static BufferedInputStream wrapPeekable(final InputStream stream) {

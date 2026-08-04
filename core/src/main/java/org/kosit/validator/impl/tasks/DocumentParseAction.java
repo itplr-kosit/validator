@@ -5,10 +5,17 @@ import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemental;
 import static org.kosit.xvrl.model.XVRLDetection.Severity.ERROR;
 import static org.kosit.xvrl.model.XVRLDetection.Severity.INFO;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collections;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+
 import org.kosit.validator.api.Input;
+import org.kosit.validator.impl.conformatron.ValidationSource;
+import org.kosit.validator.impl.conformatron.XdmNodeValidationSource;
+import org.kosit.validator.impl.input.StreamHelper;
 import org.kosit.validator.impl.input.XdmNodeInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
@@ -51,6 +58,17 @@ public class DocumentParseAction implements CheckAction {
     }
 
     /**
+     * Outcome of a parse run: the legacy result for the existing pipeline plus the conformatron handshake object
+     * (facade migration, step {@code parse-document}).
+     *
+     * @param result the legacy parse result consumed by the downstream steps
+     * @param parsedSource the conformatron handshake object; {@code null} on parse failure or when the source bytes
+     *            could not be retained (e.g. {@link XdmNodeInput} shortcut)
+     */
+    public record ParseOutcome(Result<XdmNode, XMLSyntaxError> result, XdmNodeValidationSource parsedSource) {
+    }
+
+    /**
      * Parses and checks the supplied document for well-formedness. This is the first processing step of the validation
      * tool. This function explicitly skips validation against a schema.
      *
@@ -58,29 +76,46 @@ public class DocumentParseAction implements CheckAction {
      * @return result of the parsing including any errors
      */
     public Result<XdmNode, XMLSyntaxError> parseDocument(final Input content) {
+        return parseRetaining(content).result();
+    }
+
+    /**
+     * Parses the supplied document and additionally retains the entire source document as an immutable byte array
+     * (conformatron-api step 2): parsing operates on that buffer and the {@link XdmNodeValidationSource} carrying
+     * bytes, SHA-512 hash and the parsed Saxon node is created from it. When the source type does not allow byte
+     * retention, the document is parsed directly as before and no handshake object is created.
+     *
+     * @param content a document
+     * @return the legacy parse result plus the conformatron handshake object (if available)
+     */
+    public ParseOutcome parseRetaining(final Input content) {
         if (content == null) {
             throw new IllegalArgumentException("Input may not be null");
         }
-        Result<XdmNode, XMLSyntaxError> result;
         try {
             if (content instanceof XdmNodeInput && hasCompatibleConfiguration((XdmNodeInput) content)) {
-                // parsing not necessary
-                result = new Result<>(((XdmNodeInput) content).getNode());
-            } else {
-                final DocumentBuilder builder = this.processor.newDocumentBuilder();
-                builder.setLineNumbering(true);
-                final XdmNode doc = builder.build(content.getSource());
-                result = new Result<>(doc);
+                // parsing not necessary; no source bytes available for the conformatron handshake object
+                return new ParseOutcome(new Result<>(((XdmNodeInput) content).getNode()), null);
             }
+            final DocumentBuilder builder = this.processor.newDocumentBuilder();
+            builder.setLineNumbering(true);
+            final Source source = content.getSource();
+            final byte[] bytes = StreamHelper.tryReadBytes(source);
+            if (bytes == null) {
+                // byte retention not possible for this source type; parse directly (legacy behavior)
+                return new ParseOutcome(new Result<>(builder.build(source)), null);
+            }
+            final XdmNode doc = builder.build(new StreamSource(new ByteArrayInputStream(bytes), content.getName()));
+            final XdmNodeValidationSource parsedSource = new XdmNodeValidationSource(ValidationSource.of(content), bytes, doc);
+            return new ParseOutcome(new Result<>(doc), parsedSource);
         } catch (final SaxonApiException | IOException e) {
             if (LOGGER.isDebugEnabled())
                 LOGGER.debug("Exception while parsing {}", content.getName(), e);
             final XMLSyntaxError error = new XMLSyntaxError();
             error.setSeverityCode(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
             error.setMessage("IOException while reading resource " + content.getName() + ": " + e.getMessage());
-            result = new Result<>(Collections.singleton(error));
+            return new ParseOutcome(new Result<>(Collections.singleton(error)), null);
         }
-        return result;
     }
 
     private boolean hasCompatibleConfiguration(final XdmNodeInput content) {
@@ -90,7 +125,11 @@ public class DocumentParseAction implements CheckAction {
     @Override
     public ProcessStepResult<XdmNode, XMLSyntaxError> check(final Process process) {
         final ProcessStepResult<XdmNode, XMLSyntaxError> result = new ProcessStepResult<>(KEY);
-        final Result<XdmNode, XMLSyntaxError> parserResult = parseDocument(process.getInput());
+        final ParseOutcome outcome = parseRetaining(process.getInput());
+        final Result<XdmNode, XMLSyntaxError> parserResult = outcome.result();
+        if (outcome.parsedSource() != null) {
+            process.setParsedSource(outcome.parsedSource());
+        }
         result.setResult(parserResult);
         if (parserResult.isInvalid()) {
             process.setStopped(true);
