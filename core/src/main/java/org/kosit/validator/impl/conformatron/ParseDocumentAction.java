@@ -167,6 +167,7 @@ public class ParseDocumentAction implements ICTAction {
         }
     }
 
+    // Auslagern in XML-helper
     private static DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
