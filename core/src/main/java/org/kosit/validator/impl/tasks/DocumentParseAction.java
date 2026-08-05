@@ -103,6 +103,10 @@ public class DocumentParseAction implements CheckAction {
             final byte[] bytes = StreamHelper.tryReadBytes(source);
             if (bytes == null) {
                 // byte retention not possible for this source type; parse directly (legacy behavior)
+                LOGGER.info(
+                        "Source type {} of input {} does not allow byte retention; "
+                                + "no conformatron handshake object will be available for this document",
+                        source.getClass().getSimpleName(), content.getName());
                 return new ParseOutcome(new Result<>(builder.build(source)), null);
             }
             final XdmNode doc = builder.build(new StreamSource(new ByteArrayInputStream(bytes), content.getName()));
