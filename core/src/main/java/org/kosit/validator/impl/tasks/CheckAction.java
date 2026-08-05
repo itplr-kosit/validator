@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
+import org.conformatron.api.model.scenario.ICTScenarioMatch;
 import org.conformatron.api.model.source.ICTParsedValidationSource;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -65,6 +66,13 @@ public interface CheckAction {
          * step by step.
          */
         private ICTParsedValidationSource parsedSource;
+
+        /**
+         * Conformatron handshake object of the scenario steps (3+4): the selected scenario match. {@code null} until
+         * scenario selection succeeded, when the fallback scenario applies (not representable as a match) or when no
+         * parsed source is available.
+         */
+        private ICTScenarioMatch scenarioMatch;
 
         public Process(final Input input) {
             this(input, new XVRLMetadata());
@@ -186,6 +194,18 @@ public interface CheckAction {
 
         public void setParsedSource(final ICTParsedValidationSource parsedSource) {
             this.parsedSource = parsedSource;
+        }
+
+        /**
+         * The selected scenario as conformatron handshake object; {@code null} until scenario selection succeeded or
+         * when the fallback scenario applies.
+         */
+        public ICTScenarioMatch getScenarioMatch() {
+            return this.scenarioMatch;
+        }
+
+        public void setScenarioMatch(final ICTScenarioMatch scenarioMatch) {
+            this.scenarioMatch = scenarioMatch;
         }
     }
 }

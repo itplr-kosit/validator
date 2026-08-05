@@ -18,7 +18,7 @@ import javax.xml.transform.Source;
  *             {@code SourceDigest}) and no longer configured on the source. Remaining usages mark the code paths still
  *             to be migrated.
  */
-@Deprecated(since = "2.0.0", forRemoval=true)
+@Deprecated(since = "2.0.0", forRemoval = true)
 public interface Input {
 
     /**

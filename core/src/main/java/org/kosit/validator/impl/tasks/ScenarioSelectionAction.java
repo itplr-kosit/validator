@@ -5,6 +5,7 @@ import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.ScenarioMatch;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
@@ -55,6 +56,10 @@ public class ScenarioSelectionAction implements CheckAction {
         }
         if (!scenarioTypeResult.getObject().isFallback()) {
             LOGGER.info("Scenario \'{}\' identified for \'{}\'", scenarioTypeResult.getObject().getName(), results.getInput().getName());
+            if (results.getParsedSource() != null) {
+                // facade: expose the selected scenario as conformatron handshake object (steps 3+4)
+                results.setScenarioMatch(ScenarioMatch.of(scenarioTypeResult.getObject(), results.getParsedSource()));
+            }
         } else {
             LOGGER.info("No valid scenario configuration found for \'{}\'", results.getInput().getName());
         }
