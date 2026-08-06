@@ -19,6 +19,7 @@ package de.kosit.validationtool.impl.xml;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.xml.transform.Source;
@@ -35,7 +36,8 @@ import net.sf.saxon.trans.XPathException;
  * {@link URIResolver} that allows resolving local artifacts only. Any uri scheme designating a remote location (e.g.
  * http(s)) is rejected.
  *
- * @author Andreas Penski
+ * @author Stefan Grönke
+ * @since 1.6.3
  */
 public class LocalUriResolver implements URIResolver, UnparsedTextURIResolver {
 
@@ -63,7 +65,7 @@ public class LocalUriResolver implements URIResolver, UnparsedTextURIResolver {
     }
 
     private static boolean isLocal(final URI uri) {
-        return uri.getScheme() != null && LOCAL_SCHEMES.contains(uri.getScheme().toLowerCase());
+        return uri.getScheme() != null && LOCAL_SCHEMES.contains(uri.getScheme().toLowerCase(Locale.ROOT));
     }
 
 }
