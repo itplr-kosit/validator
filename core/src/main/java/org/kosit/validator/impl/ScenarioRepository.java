@@ -56,6 +56,18 @@ public class ScenarioRepository {
     }
 
     /**
+     * Determines <b>all</b> scenarios whose match expression fires for the provided document (conformatron-api step 3,
+     * {@code DETECT_SCENARIOS}). Evaluation errors of single match expressions are logged and treated as non-match
+     * (legacy parity).
+     *
+     * @param document input document
+     * @return all matching scenarios, in configuration order; may be empty
+     */
+    public List<Scenario> findMatches(final XdmNode document) {
+        return getScenarios().stream().filter(s -> match(document, s)).collect(Collectors.toList());
+    }
+
+    /**
      * Determine the matching Scenario for the provided input document
      *
      * @param document input document
@@ -63,7 +75,7 @@ public class ScenarioRepository {
      */
     public Result<Scenario, String> selectScenario(final XdmNode document) {
         final Result<Scenario, String> result;
-        final List<Scenario> collect = getScenarios().stream().filter(s -> match(document, s)).collect(Collectors.toList());
+        final List<Scenario> collect = findMatches(document);
         if (collect.size() == 1) {
             result = new Result<>(collect.get(0));
         } else if (collect.isEmpty()) {
