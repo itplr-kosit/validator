@@ -14,8 +14,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.svrl.impl.SvrlConversionService;
@@ -23,6 +25,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.scenarios.ResourceType;
+import org.kosit.validator.model.scenarios.ValidateWithSchematron;
 
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
@@ -59,6 +62,34 @@ public class SchematronValidationActionTest {
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
         assertThat(result.getObject()).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
+    }
+
+    @Test
+    public void testSchxsltRuntimeProcessingError() throws IOException {
+        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+        final Scenario scenario = process.getResult(ScenarioSelectionAction.KEY).getObject();
+
+        // real SchXslt compilation (no mock): the schematron compiles fine but raises a dynamic
+        // XPath error (FORG0001) when validating simple.xml, whose inner element is not a number
+        final ContentRepository repo = new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
+                Simple.REPOSITORY_URI);
+        final ValidateWithSchematron validateWithSchematron = new ValidateWithSchematron();
+        final ResourceType resource = new ResourceType();
+        resource.setName("runtime error schematron");
+        resource.setLocation("simple-runtime-error.sch");
+        validateWithSchematron.setResource(resource);
+        scenario.setSchematronValidations(Collections.singletonList(repo.createSchematronTransformation(validateWithSchematron)));
+
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+
+        assertThat(result.isValid()).isFalse();
+        assertThat(result.getErrors()).isNotEmpty();
+        assertThat(result.getErrors().iterator().next()).contains("Error processing schematron validation")
+                .contains("runtime error schematron");
+        assertThat(process.isStopped()).isTrue();
+        // the processing error also contributes to the report (synthetic failed-assert)
+        assertThat(processStepResult.getReport()).isNotEmpty();
     }
 
     @Test
