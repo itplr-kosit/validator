@@ -145,7 +145,7 @@ public class ParseDocumentAction implements ICTAction {
             }
             final DomValidationSource parsed = new DomValidationSource(source, bytes, dom);
             final Detection info = Detection.of(ECTSeverity.INFO, CODE_DOCUMENT_PARSED, DetectionLocation.ofResource(source.getName()),
-                    "sha512=" + parsed.getSha512Hash());
+                    parsed.getHashAlgorithmName() + "=" + SourceDigest.hashHex(bytes));
             return new ParseDocumentResult(ECTStepResult.SUCCESS, parsed, DetectionList.of(info));
         } catch (final SAXParseException e) {
             // already collected by CollectingErrorHandler#fatalError unless thrown directly

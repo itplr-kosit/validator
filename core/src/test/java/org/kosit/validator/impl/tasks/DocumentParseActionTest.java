@@ -63,10 +63,11 @@ public class DocumentParseActionTest {
         assertThat(parsedSource).isNotNull();
         assertThat(parsedSource.isParsed()).isTrue();
         assertThat(parsedSource.getParsedContent()).isInstanceOf(XdmNode.class);
-        assertThat(parsedSource.getDom()).isNotNull();
-        assertThat(parsedSource.getDom().getDocumentElement()).isNotNull();
+        assertThat(parsedSource.getAsDom()).isNotNull();
+        assertThat(parsedSource.getAsDom().getDocumentElement()).isNotNull();
         assertThat(parsedSource.getSourceBytes()).isNotEmpty();
-        assertThat(parsedSource.getSha512Hash()).isEqualTo(SourceDigest.sha512Hex(parsedSource.getSourceBytes()));
+        assertThat(parsedSource.getHashAlgorithmName()).isEqualTo(SourceDigest.getAlgorithmName());
+        assertThat(parsedSource.getHashBytes()).isEqualTo(SourceDigest.hashBytes(parsedSource.getSourceBytes()));
         assertThat(parsedSource.getSource().getDetectedSyntax()).isEqualTo(ECTValidationBaseType.XML);
     }
 
