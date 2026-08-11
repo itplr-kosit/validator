@@ -3,14 +3,18 @@ package org.kosit.validator.impl.tasks;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.validation.Schema;
 
+import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
 import org.kosit.validator.model.scenarios.CreateReportType;
@@ -22,6 +26,59 @@ public class TestScenarioBuilder {
 
     public static Scenario createDefault() {
         return createScenario(Helper.Simple.SCHEMA, Helper.Simple.REPORT_XSL);
+    }
+
+    /**
+     * Creates a {@link ScenarioRepository} around the given scenarios (match executables are compiled from the
+     * configured match expressions) with a synthetic fallback scenario.
+     */
+    public static ScenarioRepository createRepository(final Scenario... scenarios) {
+        final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), new StrictRelativeResolvingStrategy(),
+                Helper.Simple.REPOSITORY_URI);
+        for (final Scenario scenario : scenarios) {
+            scenario.setMatchExecutable(repo.createMatchExecutable(scenario.getConfiguration()));
+        }
+        final Scenario fallback = createDefault();
+        fallback.getConfiguration().setName("fallback");
+        fallback.setFallback(true);
+        final Configuration configuration = new Configuration() {
+
+            @Override
+            public List<Scenario> getScenarios() {
+                return List.of(scenarios);
+            }
+
+            @Override
+            public Scenario getFallbackScenario() {
+                return fallback;
+            }
+
+            @Override
+            public String getAuthor() {
+                return "test";
+            }
+
+            @Override
+            public String getName() {
+                return "test-configuration";
+            }
+
+            @Override
+            public String getDate() {
+                return "2026-08-11";
+            }
+
+            @Override
+            public Map<String, Object> getAdditionalParameters() {
+                return Map.of();
+            }
+
+            @Override
+            public ContentRepository getContentRepository() {
+                return repo;
+            }
+        };
+        return new ScenarioRepository(configuration);
     }
 
     private static Schema createSchema(final URL toURL) {

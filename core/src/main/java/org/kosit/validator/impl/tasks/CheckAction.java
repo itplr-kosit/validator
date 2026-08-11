@@ -68,9 +68,15 @@ public interface CheckAction {
         private ICTParsedValidationSource parsedSource;
 
         /**
-         * Conformatron handshake object of the scenario steps (3+4): the selected scenario match. {@code null} until
-         * scenario selection succeeded, when the fallback scenario applies (not representable as a match) or when no
-         * parsed source is available.
+         * Conformatron handshake object of step 3 ({@code DETECT_SCENARIOS}): all detected scenario matches.
+         * {@code null} until detection ran successfully; contains more than one entry on ambiguous configurations.
+         */
+        private List<ICTScenarioMatch> scenarioMatches;
+
+        /**
+         * Conformatron handshake object of step 4 ({@code SELECT_SCENARIO}): the selected scenario match. {@code null}
+         * until scenario selection succeeded, when the fallback scenario applies (not representable as a match), on
+         * ambiguity or when no parsed source is available.
          */
         private ICTScenarioMatch scenarioMatch;
 
@@ -197,8 +203,19 @@ public interface CheckAction {
         }
 
         /**
-         * The selected scenario as conformatron handshake object; {@code null} until scenario selection succeeded or
-         * when the fallback scenario applies.
+         * All detected scenarios as conformatron handshake objects (step 3); {@code null} until detection succeeded.
+         */
+        public List<ICTScenarioMatch> getScenarioMatches() {
+            return this.scenarioMatches;
+        }
+
+        public void setScenarioMatches(final List<ICTScenarioMatch> scenarioMatches) {
+            this.scenarioMatches = scenarioMatches;
+        }
+
+        /**
+         * The selected scenario as conformatron handshake object (step 4); {@code null} until scenario selection
+         * succeeded or when the fallback scenario applies.
          */
         public ICTScenarioMatch getScenarioMatch() {
             return this.scenarioMatch;
