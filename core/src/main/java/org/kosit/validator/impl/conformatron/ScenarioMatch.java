@@ -73,6 +73,29 @@ public final class ScenarioMatch implements ICTScenarioMatch {
                 collectArtifactReferences(configuration), parsedSource);
     }
 
+    /**
+     * Wraps a legacy scenario that was fixed by explicit user input (conformatron-api step 3,
+     * {@code requestedScenarioId} path): no XPath evaluation happened, so match expression and matched value are
+     * {@code null} per {@link ICTScenarioMatch} contract.
+     *
+     * @param scenario the user-requested legacy scenario; must not be a fallback scenario (see class Javadoc)
+     * @param parsedSource the parsed source from step 2, carried through per specification
+     * @return the wrapped match with {@link #isUserSelected()} {@code == true}
+     */
+    public static ScenarioMatch userSelected(final Scenario scenario, final ICTParsedValidationSource parsedSource) {
+        if (scenario == null) {
+            throw new IllegalArgumentException("scenario may not be null");
+        }
+        if (scenario.isFallback()) {
+            throw new IllegalArgumentException("A fallback scenario is not a match and can not be wrapped");
+        }
+        if (parsedSource == null) {
+            throw new IllegalArgumentException("parsedSource may not be null");
+        }
+        return new ScenarioMatch(scenario.getName(), scenario.getName(), null, true, collectArtifactReferences(scenario.getConfiguration()),
+                parsedSource);
+    }
+
     private static List<String> collectArtifactReferences(final ScenarioType configuration) {
         if (configuration == null) {
             return Collections.emptyList();
