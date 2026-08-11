@@ -20,41 +20,53 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 
 /**
- * Computes document digests. Hash computation is its own concern (conformatron-api ADR-003): the digest algorithm is
- * never carried by or configured on the source objects.
+ * Central helper for document hash computation (conformatron-api ADR-003): hash computation is its own concern — the
+ * digest algorithm is never carried by or configured on the source objects, its name is never part of a method name,
+ * and it is exchangeable in exactly one place ({@link #getAlgorithmName()}, currently SHA-512; e.g. for future
+ * post-quantum requirements).
  *
  * @author Andreas Schmitz
  */
 public final class SourceDigest {
 
-    private static final String SHA_512 = "SHA-512";
+    /** The current default algorithm. Exchange here — never in method names or call sites. */
+    private static final String ALGORITHM = "SHA-512";
 
     private SourceDigest() {
         // static utility
     }
 
     /**
-     * Computes the SHA-512 hash of the given data as required by {@code ICTParsedValidationSource#getSha512Hash()}.
-     *
-     * @param data the data to hash
-     * @return the hash, hex-encoded (lower case)
+     * @return the name of the algorithm used by {@link #hashBytes(byte[])}, as required by
+     *         {@code ICTParsedValidationSource#getHashAlgorithmName()}
      */
-    public static String sha512Hex(final byte[] data) {
-        return hex(SHA_512, data);
+    public static String getAlgorithmName() {
+        return ALGORITHM;
     }
 
     /**
-     * Computes a hash of the given data with the given algorithm.
+     * Computes the hash of the given data with the central algorithm, as required by
+     * {@code ICTParsedValidationSource#getHashBytes()}.
      *
-     * @param algorithm a {@link MessageDigest} algorithm name
+     * @param data the data to hash
+     * @return the hash bytes
+     */
+    public static byte[] hashBytes(final byte[] data) {
+        try {
+            return MessageDigest.getInstance(ALGORITHM).digest(data);
+        } catch (final NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Central digest algorithm " + ALGORITHM + " is not available", e);
+        }
+    }
+
+    /**
+     * Convenience: the hash of the given data with the central algorithm, hex-encoded (lower case) — e.g. for report
+     * texts and log output.
+     *
      * @param data the data to hash
      * @return the hash, hex-encoded (lower case)
      */
-    public static String hex(final String algorithm, final byte[] data) {
-        try {
-            return HexFormat.of().formatHex(MessageDigest.getInstance(algorithm).digest(data));
-        } catch (final NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException("Unknown digest algorithm " + algorithm, e);
-        }
+    public static String hashHex(final byte[] data) {
+        return HexFormat.of().formatHex(hashBytes(data));
     }
 }

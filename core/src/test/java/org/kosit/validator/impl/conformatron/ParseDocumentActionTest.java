@@ -61,12 +61,13 @@ public class ParseDocumentActionTest {
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.status()).isEqualTo(ECTStepResult.SUCCESS);
         assertThat(result.parsedSource()).isNotNull();
-        assertThat(result.parsedSource().getDom()).isNotNull();
-        assertThat(result.parsedSource().getDom().getDocumentElement().getLocalName()).isEqualTo("doc");
-        assertThat(result.parsedSource().getParsedContent()).isSameAs(result.parsedSource().getDom());
+        assertThat(result.parsedSource().getAsDom()).isNotNull();
+        assertThat(result.parsedSource().getAsDom().getDocumentElement().getLocalName()).isEqualTo("doc");
+        assertThat(result.parsedSource().getParsedContent()).isSameAs(result.parsedSource().getAsDom());
         assertThat(result.parsedSource().isParsed()).isTrue();
         assertThat(result.parsedSource().getSourceBytes()).isEqualTo(bytes);
-        assertThat(result.parsedSource().getSha512Hash()).isEqualTo(SourceDigest.sha512Hex(bytes));
+        assertThat(result.parsedSource().getHashAlgorithmName()).isEqualTo(SourceDigest.getAlgorithmName());
+        assertThat(result.parsedSource().getHashBytes()).isEqualTo(SourceDigest.hashBytes(bytes));
         assertThat(result.parsedSource().getSource().getName()).isEqualTo("test.xml");
         assertThat(result.parsedSource().getSource().getDetectedSyntax()).isEqualTo(ECTValidationBaseType.XML);
         assertThat(result.detections().getCount()).isEqualTo(1);
@@ -84,9 +85,10 @@ public class ParseDocumentActionTest {
         // spec output path 2: source identity retained (bytes + hash), only the parsed content is absent
         assertThat(result.parsedSource()).isNotNull();
         assertThat(result.parsedSource().isParsed()).isFalse();
-        assertThat(result.parsedSource().getDom()).isNull();
+        assertThat(result.parsedSource().getAsDom()).isNull();
         assertThat(result.parsedSource().getSourceBytes()).isEqualTo(bytes);
-        assertThat(result.parsedSource().getSha512Hash()).isEqualTo(SourceDigest.sha512Hex(bytes));
+        assertThat(result.parsedSource().getHashAlgorithmName()).isEqualTo(SourceDigest.getAlgorithmName());
+        assertThat(result.parsedSource().getHashBytes()).isEqualTo(SourceDigest.hashBytes(bytes));
         assertThat(result.detections().containsAtLeastOneError()).isTrue();
         assertThat(result.detections().getWorstSeverity()).isEqualTo(ECTSeverity.FATAL_ERROR);
         assertThat(result.detections().getAll()).allSatisfy(detection -> {

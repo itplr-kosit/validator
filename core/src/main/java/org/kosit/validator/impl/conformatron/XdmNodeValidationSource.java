@@ -29,9 +29,9 @@ import net.sf.saxon.type.Type;
  * works with. Facade: the existing Saxon parse result keeps doing the heavy lifting while downstream steps can already
  * consume the conformatron handshake type.
  * <p>
- * The DOM contract (ADR-002) is fulfilled without re-parsing: {@link #getDom()} exposes a read-only W3C DOM view over
+ * The DOM contract (ADR-002) is fulfilled without re-parsing: {@link #getAsDom()} exposes a read-only W3C DOM view over
  * the Saxon tree. The view carries no line numbers (ADR-001). The source bytes are defensively copied on construction
- * and cloned on access; the SHA-512 hash is computed once via {@link SourceDigest} (ADR-003).
+ * and cloned on access; the hash is computed once via the central {@link SourceDigest} helper (ADR-003).
  * </p>
  *
  * @author Andreas Schmitz
@@ -42,7 +42,7 @@ public final class XdmNodeValidationSource implements ICTParsedValidationSource 
 
     private final byte[] sourceBytes;
 
-    private final String sha512Hash;
+    private final byte[] hashBytes;
 
     private final XdmNode node;
 
@@ -58,7 +58,7 @@ public final class XdmNodeValidationSource implements ICTParsedValidationSource 
         }
         this.source = source;
         this.sourceBytes = sourceBytes.clone();
-        this.sha512Hash = SourceDigest.sha512Hex(this.sourceBytes);
+        this.hashBytes = SourceDigest.hashBytes(this.sourceBytes);
         this.node = node;
     }
 
@@ -73,8 +73,13 @@ public final class XdmNodeValidationSource implements ICTParsedValidationSource 
     }
 
     @Override
-    public String getSha512Hash() {
-        return this.sha512Hash;
+    public String getHashAlgorithmName() {
+        return SourceDigest.getAlgorithmName();
+    }
+
+    @Override
+    public byte[] getHashBytes() {
+        return this.hashBytes.clone();
     }
 
     @Override
@@ -86,7 +91,7 @@ public final class XdmNodeValidationSource implements ICTParsedValidationSource 
      * @return a <b>read-only</b> W3C DOM view over the underlying Saxon tree (no re-parse, no line numbers)
      */
     @Override
-    public Document getDom() {
+    public Document getAsDom() {
         final NodeInfo root = this.node.getUnderlyingNode().getRoot();
         if (root.getNodeKind() != Type.DOCUMENT) {
             throw new IllegalStateException("Underlying Saxon tree has no document root node");

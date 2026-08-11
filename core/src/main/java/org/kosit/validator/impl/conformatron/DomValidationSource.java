@@ -23,10 +23,10 @@ import org.w3c.dom.Document;
  * Validator implementation of {@link ICTParsedValidationSource} carrying the document as a W3C DOM (conformatron-api
  * ADR-002). The DOM is built without line numbering (ADR-001).
  * <p>
- * Instances are immutable: the source bytes are defensively copied on construction and cloned on access, the SHA-512
- * hash is computed once from the retained bytes (ADR-003). On a well-formedness failure the instance is created
- * {@link #unparsed(ICTValidationSource, byte[]) without a DOM} — bytes and hash are retained so the partial CVRL can
- * identify the document ({@link #isParsed()} returns {@code false}).
+ * Instances are immutable: the source bytes are defensively copied on construction and cloned on access, the hash is
+ * computed once from the retained bytes via the central {@link SourceDigest} helper (ADR-003). On a well-formedness
+ * failure the instance is created {@link #unparsed(ICTValidationSource, byte[]) without a DOM} — bytes and hash are
+ * retained so the partial CVRL can identify the document ({@link #isParsed()} returns {@code false}).
  * </p>
  *
  * @author Andreas Schmitz
@@ -37,7 +37,7 @@ public final class DomValidationSource implements ICTParsedValidationSource {
 
     private final byte[] sourceBytes;
 
-    private final String sha512Hash;
+    private final byte[] hashBytes;
 
     private final Document dom;
 
@@ -50,7 +50,7 @@ public final class DomValidationSource implements ICTParsedValidationSource {
         }
         this.source = source;
         this.sourceBytes = sourceBytes.clone();
-        this.sha512Hash = SourceDigest.sha512Hex(this.sourceBytes);
+        this.hashBytes = SourceDigest.hashBytes(this.sourceBytes);
         this.dom = dom;
     }
 
@@ -77,8 +77,13 @@ public final class DomValidationSource implements ICTParsedValidationSource {
     }
 
     @Override
-    public String getSha512Hash() {
-        return this.sha512Hash;
+    public String getHashAlgorithmName() {
+        return SourceDigest.getAlgorithmName();
+    }
+
+    @Override
+    public byte[] getHashBytes() {
+        return this.hashBytes.clone();
     }
 
     @Override
@@ -87,7 +92,7 @@ public final class DomValidationSource implements ICTParsedValidationSource {
     }
 
     @Override
-    public Document getDom() {
+    public Document getAsDom() {
         return this.dom;
     }
 }
