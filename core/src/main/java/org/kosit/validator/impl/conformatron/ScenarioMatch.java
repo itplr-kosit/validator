@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.conformatron.api.model.scenario.ICTScenarioMatch;
 import org.conformatron.api.model.source.ICTParsedValidationSource;
+import org.conformatron.api.model.source.ICTValidationArtifactReference;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ScenarioType;
@@ -37,12 +38,12 @@ public final class ScenarioMatch implements ICTScenarioMatch {
 
     private final boolean userSelected;
 
-    private final List<String> artifactReferences;
+    private final List<ICTValidationArtifactReference> artifactReferences;
 
     private final ICTParsedValidationSource parsedSource;
 
     private ScenarioMatch(final String scenarioId, final String scenarioName, final String matchExpression, final boolean userSelected,
-            final List<String> artifactReferences, final ICTParsedValidationSource parsedSource) {
+            final List<ICTValidationArtifactReference> artifactReferences, final ICTParsedValidationSource parsedSource) {
         this.scenarioId = scenarioId;
         this.scenarioName = scenarioName;
         this.matchExpression = matchExpression;
@@ -96,17 +97,18 @@ public final class ScenarioMatch implements ICTScenarioMatch {
                 parsedSource);
     }
 
-    private static List<String> collectArtifactReferences(final ScenarioType configuration) {
+    private static List<ICTValidationArtifactReference> collectArtifactReferences(final ScenarioType configuration) {
         if (configuration == null) {
             return Collections.emptyList();
         }
-        final List<String> references = new ArrayList<>();
+        final List<ICTValidationArtifactReference> references = new ArrayList<>();
         if (configuration.getValidateWithXmlSchema() != null) {
-            configuration.getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation).forEach(references::add);
+            configuration.getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation)
+                    .map(ValidationArtifactReference::of).forEach(references::add);
         }
         for (final ValidateWithSchematron schematron : configuration.getValidateWithSchematron()) {
             if (schematron.getResource() != null) {
-                references.add(schematron.getResource().getLocation());
+                references.add(ValidationArtifactReference.of(schematron.getResource().getLocation()));
             }
         }
         return references;
@@ -139,7 +141,7 @@ public final class ScenarioMatch implements ICTScenarioMatch {
     }
 
     @Override
-    public List<String> getArtifactReferences() {
+    public List<ICTValidationArtifactReference> getArtifactReferences() {
         return this.artifactReferences;
     }
 
