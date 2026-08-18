@@ -8,14 +8,14 @@ import org.conformatron.api.model.detection.ECTSeverity;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
-import org.kosit.validator.impl.conformatron.AdHocSchematronValidation.AdHocValidationResult;
+import org.kosit.validator.impl.conformatron.SchematronValidation.AdHocValidationResult;
 
 /**
  * Tests the ad-hoc schematron validation prototype: validate directly against a schematron, no scenario configuration.
  */
-public class AdHocSchematronValidationTest {
+public class SchematronValidationTest {
 
-    private final AdHocSchematronValidation validation = new AdHocSchematronValidation(Helper.getTestProcessor());
+    private final SchematronValidation validation = new SchematronValidation(Helper.getTestProcessor());
 
     @Test
     public void testConformantDocument() {
@@ -35,7 +35,7 @@ public class AdHocSchematronValidationTest {
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.isConformant()).isFalse();
-        assertThat(result.detections().getAll()).extracting("code").contains(AdHocSchematronValidation.CODE_FAILED_ASSERT);
+        assertThat(result.detections().getAll()).extracting("code").contains(SchematronValidation.CODE_FAILED_ASSERT);
         // the violated assert id and the SVRL location are part of the message
         assertThat(result.detections().getAll().get(0).getText().getDisplayTextLocaleIndependent()).contains("content-1");
     }
@@ -48,7 +48,7 @@ public class AdHocSchematronValidationTest {
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
         assertThat(result.isConformant()).isFalse();
-        assertThat(result.detections().getAll()).extracting("code").containsExactly(AdHocSchematronValidation.CODE_RULES_PROCESSING_ERROR);
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(SchematronValidation.CODE_RULES_PROCESSING_ERROR);
         assertThat(result.detections().getWorstSeverity().getNumericLevel()).isEqualTo(ECTSeverity.FATAL_ERROR.getNumericLevel());
         // document identity is retained even on failure
         assertThat(result.parsedSource()).isNotNull();
@@ -56,12 +56,13 @@ public class AdHocSchematronValidationTest {
     }
 
     @Test
-    public void testPreparationErrorFailsTheRun() {
+    public void testMissingSchematronFailsInRetrieveStep() {
         final AdHocValidationResult result = this.validation.validate(read(Simple.SIMPLE_VALID),
                 Simple.REPOSITORY_URI.resolve("does-not-exist.sch"));
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.detections().getAll()).extracting("code").containsExactly(AdHocSchematronValidation.CODE_RULES_PREPARATION_ERROR);
+        // reported under the canonical step-5 code, not a generic ad-hoc preparation error
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(RetrieveArtifactsAction.CODE_ARTIFACT_MISSING);
     }
 
     @Test
