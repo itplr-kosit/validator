@@ -1,0 +1,103 @@
+name: KoSIT Validator
+description: >-
+  Validate XML documents against a validator configuration (e.g. XRechnung)
+  using the KoSIT validator. Downloads a released validator jar, optionally
+  verifies checksums, runs each file and fails if any document is rejected.
+author: KoSIT contributors
+branding:
+  icon: check-circle
+  color: green
+
+inputs:
+  version:
+    description: >-
+      Validator release to use (a tag of this repository without the leading
+      "v", e.g. "1.6.2"). The standalone jar is downloaded from the GitHub
+      release of this repository.
+    required: false
+    default: "1.6.2"
+  checksum:
+    description: >-
+      Optional SHA-256 checksum of the validator jar. When set, the download
+      is verified against it and the action fails on a mismatch.
+    required: false
+    default: ""
+  configuration:
+    description: >-
+      The validator configuration: either a URL to a configuration zip (for
+      example a release asset of validator-configuration-xrechnung) or a
+      path to an already unpacked configuration directory containing
+      scenarios.xml.
+    required: true
+  configuration-checksum:
+    description: >-
+      Optional SHA-256 checksum of the configuration zip. Only used when
+      "configuration" is a URL.
+    required: false
+    default: ""
+  files:
+    description: >-
+      XML documents to validate: a file, a directory (validated recursively,
+      *.xml) or a shell glob.
+    required: true
+  report-dir:
+    description: Directory the validation reports are written to.
+    required: false
+    default: validator-reports
+  sealed:
+    description: >-
+      Execute the validator inside a Docker container without network access,
+      a read-only root, no capabilities and no privilege escalation; the
+      document, the jar and the configuration are mounted read-only, only
+      the report directory is writable. "auto" (default) seals when
+      Docker is available and falls back to the host JVM otherwise; "always"
+      fails when Docker is unavailable; "never" always uses the host JVM.
+      Downloads are always performed on the host, so the validator itself
+      never needs the network.
+    required: false
+    default: auto
+  image:
+    description: >-
+      Container image for the sealed execution. The default floats on the
+      Java 21 JRE contract so runtime security patches arrive without a
+      change to this repository; pass a digest-pinned reference for a
+      stricter supply-chain policy.
+    required: false
+    default: eclipse-temurin:21-jre
+
+outputs:
+  report-dir:
+    description: Directory containing the validation reports.
+    value: ${{ steps.validate.outputs.report-dir }}
+  accepted:
+    description: Number of accepted documents.
+    value: ${{ steps.validate.outputs.accepted }}
+  rejected:
+    description: Number of rejected documents.
+    value: ${{ steps.validate.outputs.rejected }}
+
+runs:
+  using: composite
+  steps:
+    # The host JVM is only used by unsealed runs: "never", or "auto" on a
+    # runner without Docker. "always" executes exclusively in the container.
+    - name: Set up Java
+      if: ${{ inputs.sealed != 'always' }}
+      uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: "21"
+
+    - name: Validate
+      id: validate
+      shell: bash
+      env:
+        KOSIT_VERSION: ${{ inputs.version }}
+        KOSIT_CHECKSUM: ${{ inputs.checksum }}
+        KOSIT_CONFIGURATION: ${{ inputs.configuration }}
+        KOSIT_CONFIGURATION_CHECKSUM: ${{ inputs.configuration-checksum }}
+        KOSIT_FILES: ${{ inputs.files }}
+        KOSIT_REPORT_DIR: ${{ inputs.report-dir }}
+        KOSIT_SEALED: ${{ inputs.sealed }}
+        KOSIT_IMAGE: ${{ inputs.image }}
+      run: bash "$GITHUB_ACTION_PATH/scripts/validate.sh"
