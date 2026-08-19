@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.StringJoiner;
 
 import javax.xml.namespace.QName;
@@ -92,7 +93,7 @@ public class ConversionService {
     }
 
     private static <T> QName createQName(final T model) {
-        return new QName(model.getClass().getSimpleName().toLowerCase());
+        return new QName(model.getClass().getSimpleName().toLowerCase(Locale.ROOT));
     }
 
     private void checkInputEmpty(final URI xml) {
