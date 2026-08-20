@@ -31,8 +31,8 @@ import org.junit.Test;
 import de.kosit.validationtool.impl.xml.RelativeUriResolver;
 
 /**
- * Testet den Uri-Resolver der relative auflösen soll
- * 
+ * Tests the URI resolver that should resolve relatively.
+ *
  * @author Andreas Penski
  */
 public class RelativeUriResolverTest {

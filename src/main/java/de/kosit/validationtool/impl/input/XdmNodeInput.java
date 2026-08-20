@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.input;
 
 import javax.xml.transform.Source;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import de.kosit.validationtool.api.Input;
-
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -30,8 +25,6 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Getter
 public class XdmNodeInput implements Input {
 
     private final XdmNode node;
@@ -46,5 +39,28 @@ public class XdmNodeInput implements Input {
     public Source getSource() {
         // usually not neccessary to be called.
         return this.node.getUnderlyingNode();
+    }
+
+    public XdmNodeInput(final XdmNode node, final String name, final String digestAlgorithm, final byte[] hashCode) {
+        this.node = node;
+        this.name = name;
+        this.digestAlgorithm = digestAlgorithm;
+        this.hashCode = hashCode;
+    }
+
+    public XdmNode getNode() {
+        return this.node;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDigestAlgorithm() {
+        return this.digestAlgorithm;
+    }
+
+    public byte[] getHashCode() {
+        return this.hashCode;
     }
 }

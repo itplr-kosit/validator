@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.xml;
 
 import java.net.URI;
@@ -24,23 +23,21 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import lombok.RequiredArgsConstructor;
-
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 
 /**
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
 public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
 
     @Override
     public SchemaFactory createSchemaFactory() {
         forceOpenJdkXmlImplementation();
-        @SuppressWarnings("java:S2755") //
+        @SuppressWarnings("java:S2755")
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         disableExternalEntities(sf);
         allowExternalSchema(sf, "file");
+        enableSecureProcessing(sf);
         return sf;
     }
 
@@ -63,8 +60,10 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
         final Validator validator = schema.newValidator();
         disableExternalEntities(validator);
         allowExternalSchema(validator, "file" /* allow nothing external */);
+        enableSecureProcessing(validator);
         return validator;
-
     }
 
+    public StrictRelativeResolvingStrategy() {
+    }
 }

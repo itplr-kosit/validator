@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import java.nio.file.Path;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.HtmlExtractor;
 import de.kosit.validationtool.impl.tasks.CheckAction;
-
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -32,13 +30,13 @@ import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Extrahiert HTML-Dokumente aus dem Report und persistiert diese im konfigurierten Ausgabe-Verzeichnis.
+ * Extracts HTML documents from the report and persists them in the configured output directory.
  * 
  * @author Andreas Penski
  */
-@RequiredArgsConstructor
-@Slf4j
 class ExtractHtmlContentAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExtractHtmlContentAction.class);
 
     private static final QName NAME_ATTRIBUTE = new QName("data-report-type");
 
@@ -65,19 +63,23 @@ class ExtractHtmlContentAction implements CheckAction {
         final Path file = this.outputDirectory.resolve(name + ".html");
         final Serializer serializer = this.processor.newSerializer(file.toFile());
         try {
-            log.info("Writing report html '{}' to {}", name, file.toAbsolutePath());
+            LOGGER.info("Writing report html \'{}\' to {}", name, file.toAbsolutePath());
             serializer.serializeNode(node);
         } catch (final SaxonApiException e) {
-            log.error("Error extracting html content to {}", file.toAbsolutePath(), e);
+            LOGGER.error("Error extracting html content to {}", file.toAbsolutePath(), e);
         }
     }
 
     @Override
     public boolean isSkipped(final Bag results) {
         if (results.getReport() == null) {
-            log.warn("Can not extract html content. No report document found");
+            LOGGER.warn("Can not extract html content. No report document found");
             return true;
         }
         return false;
+    }
+
+    public ExtractHtmlContentAction(final Path outputDirectory) {
+        this.outputDirectory = outputDirectory;
     }
 }

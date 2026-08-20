@@ -27,7 +27,6 @@ import de.kosit.validationtool.cmd.CommandLineOptions.Definition;
 import de.kosit.validationtool.cmd.CommandLineOptions.RepositoryDefinition;
 import de.kosit.validationtool.cmd.CommandLineOptions.ScenarioDefinition;
 import de.kosit.validationtool.impl.ScenarioRepository;
-
 import picocli.CommandLine.ITypeConverter;
 
 /**

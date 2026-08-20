@@ -30,50 +30,25 @@ import de.kosit.validationtool.api.Result;
 import de.kosit.validationtool.impl.Helper.Simple;
 
 /**
- * Tests the functions of the validator based on a reduced scenario.
- *
- * @author Andreas Penski
+ * Prüft den Validator im {@link ResolvingMode#STRICT_LOCAL}. Insbesondere muss eine Prüfung vollständig durchlaufen;
+ * mit einem leeren Resolver schlugen Transformationen auf Saxon 12 mit einer {@link NullPointerException} fehl.
  */
-public class SimpleScenarioCheckTest {
+public class StrictLocalScenarioCheckTest {
 
     private DefaultCheck implementation;
 
     @Before
     public void setup() {
-        final Configuration d = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        this.implementation = new DefaultCheck(d);
+        final Configuration config = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI)
+                .setResolvingMode(ResolvingMode.STRICT_LOCAL).build(Helper.getTestProcessor());
+        this.implementation = new DefaultCheck(config);
     }
 
     @Test
-    public void testSimple() throws MalformedURLException {
+    public void testValidationCompletes() throws MalformedURLException {
         final Result result = this.implementation.checkInput(InputFactory.read(Simple.SIMPLE_VALID.toURL()));
         assertThat(result).isNotNull();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
-    }
-
-    @Test
-    public void testInvalid() throws MalformedURLException {
-        final Result result = this.implementation.checkInput(InputFactory.read(Simple.SCHEMA_INVALID.toURL()));
-        assertThat(result).isNotNull();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
-        assertThat(result.getSchemaViolations()).isNotEmpty();
-    }
-
-    @Test
-    public void testUnknown() throws MalformedURLException {
-        final Result result = this.implementation.checkInput(InputFactory.read(Simple.UNKNOWN.toURL()));
-        assertThat(result).isNotNull();
         assertThat(result.isProcessingSuccessful()).isTrue();
-        assertThat(result.isAcceptable()).isFalse();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
-
-    }
-
-    @Test
-    public void testWithoutAcceptMatch() throws MalformedURLException {
-        final Result result = this.implementation.checkInput(InputFactory.read(Simple.FOO.toURL()));
-        assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
-
 }

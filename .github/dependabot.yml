@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - target-branch: "release/1.6.x"
+    package-ecosystem: "maven"
+    directories:
+      - "/**"
+      - "!/server/ui/**"
+    schedule:
+      interval: "weekly"
+      
+  - target-branch: "release/2.x"
+    package-ecosystem: "maven"
+    directories:
+      - "/**"
+    schedule:
+      interval: "weekly"

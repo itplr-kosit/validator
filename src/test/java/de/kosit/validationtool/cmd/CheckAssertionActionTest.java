@@ -32,7 +32,7 @@ import de.kosit.validationtool.impl.tasks.CheckAction;
 import de.kosit.validationtool.model.reportInput.CreateReportInput;
 
 /**
- * Testet das Assertion-Feature.
+ * Tests the assertion feature.
  * 
  * @author Andreas Penski
  */

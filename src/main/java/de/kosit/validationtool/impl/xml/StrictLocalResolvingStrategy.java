@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.xml;
 
 import java.net.URI;
@@ -23,7 +22,10 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sf.saxon.lib.UnparsedTextURIResolver;
 
 /**
  * This is a slightly more open implementation that allows resolving artifacts from local filesystems. Your are not
@@ -32,8 +34,9 @@ import lombok.extern.slf4j.Slf4j;
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrategy {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StrictLocalResolvingStrategy.class);
 
     /**
      * Allow loading schema files from any local location.
@@ -48,15 +51,19 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
     }
 
     /**
-     * The default resolver is able to resolve locally and relative.
-     * 
+     * Resolves any local artifact, independent of a specific repository. Remote locations are rejected.
+     *
      * @param repository the repository is not used by this strategy
-     * @return null!
+     * @return a resolver for local artifacts
      */
     @Override
     public URIResolver createResolver(final URI repository) {
-        // intentionally return 'null', since all resolving is configured with the other objects
-        return null;
+        return new LocalUriResolver();
+    }
+
+    @Override
+    public UnparsedTextURIResolver createUnparsedTextURIResolver(final URI scenarioRepository) {
+        return new LocalUriResolver();
     }
 
     @Override
@@ -65,5 +72,4 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
         allowExternalSchema(validator, "file");
         return validator;
     }
-
 }

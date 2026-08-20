@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import static org.apache.commons.lang3.ObjectUtils.getIfNull;
@@ -36,6 +35,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.fusesource.jansi.AnsiRenderer.Code;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.api.Configuration;
 import de.kosit.validationtool.api.Input;
@@ -52,7 +53,6 @@ import de.kosit.validationtool.impl.EngineInformation;
 import de.kosit.validationtool.impl.Printer;
 import de.kosit.validationtool.impl.ScenarioRepository;
 import de.kosit.validationtool.impl.xml.ProcessorProvider;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.Processor;
 
 /**
@@ -60,16 +60,16 @@ import net.sf.saxon.s9api.Processor;
  * 
  * @author Andreas Penski
  */
-@Slf4j
-@SuppressWarnings("squid:S3725")
 public class Validator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Validator.class);
 
     private Validator() {
         // hide
     }
 
     /**
-     * Hauptprogramm für die Kommandozeilen-Applikation.
+     * Main program for the command line application.
      *
      * @param cmd parsed commandline.
      */
@@ -90,9 +90,9 @@ public class Validator {
             e.printStackTrace();
             Printer.writeErr(e.getMessage());
             if (cmd.isDebugOutput()) {
-                log.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             } else {
-                log.error(e.getMessage());
+                LOGGER.error(e.getMessage());
             }
             return ReturnValue.CONFIGURATION_ERROR;
         }
@@ -141,7 +141,6 @@ public class Validator {
         if (cliOptions.isPrintReport()) {
             check.getCheckSteps().add(new PrintReportAction(processor));
         }
-
         if (cliOptions.getAssertions() != null) {
             final Assertions assertions = loadAssertions(cliOptions.getAssertions());
             check.getCheckSteps().add(new CheckAssertionAction(assertions, processor));
@@ -149,8 +148,7 @@ public class Validator {
         if (cliOptions.isPrintMemoryStats()) {
             check.getCheckSteps().add(new PrintMemoryStats());
         }
-        log.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
-
+        LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
         final Collection<Input> targets = determineTestTargets(cliOptions);
         start = System.currentTimeMillis();
         final Map<String, Result> results = new HashMap<>();
@@ -165,9 +163,8 @@ public class Validator {
         }
         final long processingTime = System.currentTimeMillis() - start;
         Printer.writeOut("Processing of {0} objects completed in {1}ms", targets.size(), processingTime);
-
         check.printResults(results);
-        log.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
+        LOGGER.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
         return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
     }
 
@@ -185,19 +182,16 @@ public class Validator {
         final Map<String, Path> mappedRepos = repos.stream()
                 .collect(Collectors.toMap(RepositoryDefinition::getName, RepositoryDefinition::getPath));
         checkUnused(mappedScenarios, mappedRepos);
-
         return mappedScenarios.entrySet().stream().map(e -> {
             assertFileExistance(e.getValue(), "scenario");
             final URI scenarioLocation = e.getValue().toUri();
             final URI repositoryLocation = findRepository(scenarioLocation, e.getKey(), mappedRepos);
-
             reportLoading(scenarioLocation, repositoryLocation);
             final Configuration configuration = Configuration.load(scenarioLocation, repositoryLocation)
                     .build(ProcessorProvider.getProcessor());
             reportConfiguration(configuration);
             return configuration;
         }).collect(Collectors.toList());
-
     }
 
     private static void checkUnused(final Map<String, Path> scenarios, final Map<String, Path> repositories) {
@@ -215,7 +209,7 @@ public class Validator {
                 // Assume directory of scenario location instead
                 return Paths.get(scenarioLocation).getParent().toUri();
             }
-            throw new IllegalArgumentException(String.format("No repository location for scenario definition '%s' specified", key));
+            throw new IllegalArgumentException("No repository location for scenario definition \'" + key + "\' specified");
         }
         return determineRepository(path);
     }
@@ -233,10 +227,8 @@ public class Validator {
             final Line line = new Line(Code.GREEN);
             line.add("  * " + e.getName());
             Printer.writeOut(line.render(false, false));
-
         });
         Printer.writeOut(EMPTY);
-
     }
 
     private static NamingStrategy determineNamingStrategy(final CommandLineOptions.CliOptions cmd) {
@@ -265,10 +257,11 @@ public class Validator {
         if (cmd.getOutputPath() != null) {
             dir = cmd.getOutputPath();
             if ((!Files.exists(dir) && !dir.toFile().mkdirs()) || !Files.isDirectory(dir)) {
-                throw new IllegalStateException(String.format("Invalid target directory %s specified", dir.toString()));
+                throw new IllegalStateException("Invalid target directory " + dir.toString() + " specified");
             }
         } else {
-            dir = Paths.get(""/* cwd */);
+            // cwd
+            dir = Paths.get("");
         }
         return dir;
     }
@@ -287,12 +280,14 @@ public class Validator {
         return targets;
     }
 
-    @SuppressWarnings("java:S4829") // sanitation is delegated to xml stack
+    // sanitation is delegated to xml stack
+    @SuppressWarnings("java:S4829")
     private static boolean isPiped() throws IOException {
         return System.in.available() > 0;
     }
 
-    @SuppressWarnings("java:S4829") // sanitation is delegated to xml stack
+    // sanitation is delegated to xml stack
+    @SuppressWarnings("java:S4829")
     private static Input readFromPipe() {
         return InputFactory.read(System.in, "stdin");
     }
@@ -303,34 +298,29 @@ public class Validator {
         } else if (Files.exists(d)) {
             return Collections.singleton(InputFactory.read(d));
         }
-        log.warn("The specified test target {} does not exist. Will be ignored", d);
+        LOGGER.warn("The specified test target {} does not exist. Will be ignored", d);
         return Collections.emptyList();
-
     }
 
     private static Collection<Input> listDirectoryTargets(final Path d) {
-        try ( final Stream<Path> stream = Files.list(d) ) {
+        try ( Stream<Path> stream = Files.list(d) ) {
             return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(InputFactory::read)
                     .collect(Collectors.toList());
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }
-
     }
 
     private static URI determineRepository(final Path d) {
         if (Files.isDirectory(d)) {
             return d.toUri();
         }
-        throw new IllegalArgumentException(String.format("Not a valid path for repository definition specified: '%s'", d.toAbsolutePath()));
-
+        throw new IllegalArgumentException("Not a valid path for repository definition specified: \'" + d.toAbsolutePath() + "\'");
     }
 
     private static void assertFileExistance(final Path f, final String type) {
         if (!Files.isRegularFile(f)) {
-            throw new IllegalArgumentException(
-                    String.format("Not a valid path for %s definition specified: '%s'", type, f.toAbsolutePath()));
+            throw new IllegalArgumentException("Not a valid path for " + type + " definition specified: \'" + f.toAbsolutePath() + "\'");
         }
     }
-
 }

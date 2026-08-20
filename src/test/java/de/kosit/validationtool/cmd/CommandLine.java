@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import java.io.ByteArrayInputStream;
@@ -29,26 +28,21 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * Helferlein um Ausgaben auf der Kommandozeile zu testen.
+ * Helper for testing output on the command line.
  * 
  * @author Andreas Penski
  */
 public class CommandLine {
 
     /**
-     * Simpler Proxy für {@link OutputStream}, dessen target ausgetauscht werden kann.
+     * Simple proxy for {@link OutputStream}, whose target can be exchanged.
      *
-     * @param <O> Typ des eigentlichen {@link OutputStream}
+     * @param <O> type of the actual {@link OutputStream}
      */
     private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
 
         @SuppressWarnings("hiding")
-        @Getter
-        @Setter
         private O out;
 
         @Override
@@ -74,7 +68,6 @@ public class CommandLine {
 
         @Override
         public void flush() throws IOException {
-
             if (this.out != null) {
                 this.out.flush();
             }
@@ -86,6 +79,14 @@ public class CommandLine {
                 this.out.close();
             }
         }
+
+        public O getOut() {
+            return this.out;
+        }
+
+        public void setOut(final O out) {
+            this.out = out;
+        }
     }
 
     private static final ReplaceableOutputStream<ByteArrayOutputStream> out = new ReplaceableOutputStream<>();
@@ -93,8 +94,8 @@ public class CommandLine {
     private static final ReplaceableOutputStream<ByteArrayOutputStream> error = new ReplaceableOutputStream<>();
 
     static {
-        // Initialisierung muss vor SL4J's SimpleLogger erfolgen, sonst sind logs nicht erfasst.
-        // deshalb darf diese Klasse kein Log haben
+        // Initialization must happen before SL4J's SimpleLogger, otherwise logs are not captured.
+        // therefore this class must not have a log
         System.setOut(new PrintStream(new TeeOutputStream(System.out, out)));
         System.setErr(new PrintStream(new TeeOutputStream(System.err, error)));
         setStandardInput(nullInputStream());
@@ -131,9 +132,8 @@ public class CommandLine {
     }
 
     private static List<String> readLines(final byte[] bytes) {
-        try ( final ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-              final Reader r = new InputStreamReader(in) ) {
-
+        try ( ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+              Reader r = new InputStreamReader(in) ) {
             return IOUtils.readLines(r);
         } catch (final IOException e) {
             throw new IllegalStateException("Can not read input");
@@ -143,7 +143,6 @@ public class CommandLine {
     public static void activate() {
         out.setOut(new ByteArrayOutputStream());
         error.setOut(new ByteArrayOutputStream());
-
     }
 
     public static void deactivate() {
@@ -151,5 +150,4 @@ public class CommandLine {
         error.setOut(null);
         setStandardInput(nullInputStream());
     }
-
 }

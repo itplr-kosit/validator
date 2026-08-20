@@ -17,9 +17,11 @@
 package de.kosit.validationtool.impl.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertTrue;
 
+import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -54,5 +56,15 @@ public class StrictLocalResolvingTest {
         final SchemaFactory schemaFactory = s.createSchemaFactory();
         final Schema schema = schemaFactory.newSchema(Resolving.SCHEMA_WITH_REFERENCE.toURL());
         assertThat(schema).isNotNull();
+    }
+
+    @Test
+    public void testResolverRejectsRemoteArtifacts() throws Exception {
+        final ResolvingConfigurationStrategy s = new StrictLocalResolvingStrategy();
+        assertThat(s.createResolver(null)).isNotNull();
+        assertThat(s.createUnparsedTextURIResolver(null)).isNotNull();
+        assertThatThrownBy(
+                () -> s.createResolver(null).resolve("http://example.org/evil.xsl", Resolving.SCHEMA_WITH_REFERENCE.toASCIIString()))
+                        .isInstanceOf(TransformerException.class);
     }
 }

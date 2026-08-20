@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.cmd;
 
 import static de.kosit.validationtool.impl.Helper.ASSERTIONS;
@@ -31,17 +30,19 @@ import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.kosit.validationtool.impl.Helper.Simple;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * Testet die Parameter des Kommandozeilen-Tools.
+ * Tests the parameters of the command line tool.
  * 
  * @author Andreas Penski
  */
-@Slf4j
 public class CommandlineApplicationTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandlineApplicationTest.class);
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
@@ -62,7 +63,7 @@ public class CommandlineApplicationTest {
             try {
                 Files.delete(path);
             } catch (final IOException e) {
-                log.error("Error deleting file", e);
+                LOGGER.error("Error deleting file", e);
             }
         });
         CommandLine.deactivate();
@@ -91,10 +92,10 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testRequiredScenarioFile() {
-        final String[] args = { "arguments", "egal welche", "argumente drin sind" };
+        final String[] args = { "arguments", "no matter which", "arguments are in there" };
         CommandLineApplication.mainProgram(args);
         assertThat(CommandLine.getErrorOutput()).isNotEmpty();
-        assertThat(CommandLine.getErrorOutput()).contains("Missing required option: '--scenarios");
+        assertThat(CommandLine.getErrorOutput()).contains("Missing required option: \'--scenarios");
     }
 
     @Test
@@ -175,7 +176,6 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testValidOutputConfiguration() throws IOException {
-
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
@@ -187,14 +187,13 @@ public class CommandlineApplicationTest {
     @Test
     public void testNoInput() {
         // assertThat(output).doesNotExist();
-        final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(), };
+        final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString() };
         CommandLineApplication.mainProgram(args);
         checkForHelp(CommandLine.getOutputLines());
     }
 
     @Test
     public void testPrint() {
-
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-p", "-r", Paths.get(Simple.REPOSITORY_URI).toString(), "-o",
                 this.output.toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
@@ -294,7 +293,7 @@ public class CommandlineApplicationTest {
                 "s2=" + Paths.get(Simple.OTHER_SCENARIOS).toString(), "-r", "s1=" + Paths.get(Simple.REPOSITORY_URI).toString(), "-r",
                 "typo=" + Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         CommandLineApplication.mainProgram(args);
-        assertThat(CommandLine.getErrorOutput()).contains("No repository location for scenario definition 's2' specified");
+        assertThat(CommandLine.getErrorOutput()).contains("No repository location for scenario definition \'s2\' specified");
     }
 
     @Test

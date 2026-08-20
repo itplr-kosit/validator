@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.xml;
-
-import static java.lang.String.format;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import de.kosit.validationtool.api.ResolvingConfigurationStrategy;
 
 /**
  * @author Andreas Penski
  */
-@Slf4j
 public abstract class BaseResolvingStrategy implements ResolvingConfigurationStrategy {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseResolvingStrategy.class);
 
     private static final String ORACLE_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
 
@@ -47,8 +45,8 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
             Class.forName(ORACLE_XERCES_CLASS);
             return true;
         } catch (final ClassNotFoundException e) {
-            log.warn("No oracle JDK version of XERCES found. Configured security features may not have any effect.");
-            log.warn("Please take care of XML security while checking your xml contents");
+            LOGGER.warn("No oracle JDK version of XERCES found. Configured security features may not have any effect.");
+            LOGGER.warn("Please take care of XML security while checking your xml contents");
             return false;
         }
     }
@@ -57,10 +55,10 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
         try {
             setter.apply();
         } catch (final SAXException e) {
-
             if (lenient) {
-                log.warn(errorMessage);
-                log.debug(e.getMessage(), e);
+                LOGGER.warn(errorMessage);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(e.getMessage(), e);
             } else {
                 throw new IllegalStateException(errorMessage);
             }
@@ -77,14 +75,14 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
 
     protected void allowExternalSchema(final Validator validator, final boolean lenient, final String... schemes) {
         final String schemeString = String.join(",", schemes);
-        setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient, format(
-                "Can set  external schema  access to schemes (%s). Maybe an unsupported JAXP implementation is used.", schemeString));
+        setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient,
+                "Can set  external schema  access to schemes (" + schemeString + "). Maybe an unsupported JAXP implementation is used.");
     }
 
     protected void allowExternalSchema(final SchemaFactory schemaFactory, final boolean lenient, final String... schemes) {
         final String schemeString = String.join(",", schemes);
-        setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient, format(
-                "Can set  external schema  access to schemes (%s). Maybe an unsupported JAXP implementation is used.", schemeString));
+        setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient,
+                "Can set  external schema  access to schemes (" + schemeString + "). Maybe an unsupported JAXP implementation is used.");
     }
 
     protected void disableExternalEntities(final Validator validator) {
@@ -96,17 +94,27 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
     }
 
     protected void disableExternalEntities(final Validator validator, final boolean lenient) {
-        log.debug("Try to disable extern DTD access");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Try to disable extern DTD access");
         setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
                 "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
-
     }
 
     protected void disableExternalEntities(final SchemaFactory schemaFactory, final boolean lenient) {
-        log.debug("Try to disable extern DTD access");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Try to disable extern DTD access");
         setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
                 "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
+    }
 
+    protected void enableSecureProcessing(final Validator validator) {
+        setProperty(() -> validator.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true), false,
+                "Can not enable secure processing. Maybe an unsupported JAXP implementation is used.");
+    }
+
+    protected void enableSecureProcessing(final SchemaFactory schemaFactory) {
+        setProperty(() -> schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true), false,
+                "Can not enable secure processing. Maybe an unsupported JAXP implementation is used.");
     }
 
     @FunctionalInterface

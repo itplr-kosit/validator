@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl;
 
 import java.io.IOException;
@@ -22,6 +21,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.StringJoiner;
 
 import javax.xml.namespace.QName;
@@ -35,6 +35,8 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
@@ -44,13 +46,13 @@ import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.ValidationEventHandler;
 import jakarta.xml.bind.annotation.XmlRegistry;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * JAXB Conversion Utility.
  */
-@Slf4j
 public class ConversionService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConversionService.class);
 
     /**
      * Exception while serializing/deserializing with jaxb.
@@ -82,9 +84,7 @@ public class ConversionService {
     // context setup
     private JAXBContext jaxbContext;
 
-    public JAXBContext
-
-            getJaxbContext() {
+    public JAXBContext getJaxbContext() {
         if (this.jaxbContext == null) {
             initialize();
         }
@@ -92,7 +92,7 @@ public class ConversionService {
     }
 
     private static <T> QName createQName(final T model) {
-        return new QName(model.getClass().getSimpleName().toLowerCase());
+        return new QName(model.getClass().getSimpleName().toLowerCase(Locale.ROOT));
     }
 
     private void checkInputEmpty(final URI xml) {
@@ -108,7 +108,7 @@ public class ConversionService {
     }
 
     /**
-     * Initialisiert den default context; Alle Packages mit {@link XmlRegistry XmlRegistries}.
+     * Initializes the default context; all packages with {@link XmlRegistry XmlRegistries}.
      */
     public void initialize() {
         final Collection<Package> p = new ArrayList<>();
@@ -122,9 +122,9 @@ public class ConversionService {
     }
 
     /**
-     * Initialisiert den conversion service mit den angegegebenen Packages.
+     * Initializes the conversion service with the given packages.
      *
-     * @param context packages für den JAXB Kontext
+     * @param context packages for the JAXB context
      */
     public void initialize(final Collection<Package> context) {
         final String[] packages = context != null ? context.stream().map(Package::getName).toArray(String[]::new) : new String[0];
@@ -134,15 +134,15 @@ public class ConversionService {
     }
 
     /**
-     * Initialsiert den conversion service mit dem angegebenen Kontextpfad
+     * Initializes the conversion service with the given context path
      *
-     * @param contextPath der Kontextpfad
+     * @param contextPath the context path
      */
     private void initialize(final String contextPath) {
         try {
             this.jaxbContext = JAXBContext.newInstance(contextPath, ConversionService.class.getClassLoader());
         } catch (final JAXBException e) {
-            throw new IllegalStateException(String.format("Can not create JAXB context for given context: %s", contextPath), e);
+            throw new IllegalStateException("Can not create JAXB context for given context: " + contextPath, e);
         }
     }
 
@@ -179,17 +179,15 @@ public class ConversionService {
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(new StreamSource(xml.toASCIIString()));
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
             u.setSchema(schema);
-
             u.setEventHandler(handler2Use);
             final T value = u.unmarshal(xsr, type).getValue();
             if (defaultHandler != null && defaultHandler.hasErrors()) {
                 throw new ConversionExeption(
-                        String.format("Schema errors while reading content from %s: %s", xml, defaultHandler.getErrorDescription()));
+                        "Schema errors while reading content from " + xml + ": " + defaultHandler.getErrorDescription());
             }
-
             return value;
         } catch (final JAXBException | XMLStreamException e) {
-            throw new ConversionExeption(String.format("Can not unmarshal to type %s from %s", type.getSimpleName(), xml.toString()), e);
+            throw new ConversionExeption("Can not unmarshal to type " + type.getSimpleName() + " from " + xml.toString(), e);
         }
     }
 
@@ -208,7 +206,7 @@ public class ConversionService {
         if (model == null) {
             throw new ConversionExeption("Can not serialize null");
         }
-        try ( final StringWriter w = new StringWriter() ) {
+        try ( StringWriter w = new StringWriter() ) {
             final JAXBIntrospector introspector = getJaxbContext().createJAXBIntrospector();
             final Marshaller marshaller = getJaxbContext().createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -228,19 +226,17 @@ public class ConversionService {
             xmlStreamWriter.flush();
             return w.toString();
         } catch (final JAXBException | IOException | XMLStreamException e) {
-            throw new ConversionExeption(String.format("Error serializing Object %s", model.getClass().getName()), e);
+            throw new ConversionExeption("Error serializing Object " + model.getClass().getName(), e);
         }
     }
 
     public <T> T readDocument(final Source source, final Class<T> type) {
         try {
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
-
             return u.unmarshal(source, type).getValue();
-
         } catch (final JAXBException e) {
-            throw new ConversionExeption(String.format("Can not unmarshal to type %s: %s", type.getSimpleName(),
-                    StringUtils.abbreviate(source.getSystemId(), MAX_LOG_CONTENT)), e);
+            throw new ConversionExeption("Can not unmarshal to type " + type.getSimpleName() + ": "
+                    + StringUtils.abbreviate(source.getSystemId(), MAX_LOG_CONTENT), e);
         }
     }
 }

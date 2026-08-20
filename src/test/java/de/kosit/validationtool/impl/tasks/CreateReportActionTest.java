@@ -35,7 +35,6 @@ import de.kosit.validationtool.impl.Helper.Simple;
 import de.kosit.validationtool.impl.Scenario;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.impl.tasks.CheckAction.Bag;
-
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;

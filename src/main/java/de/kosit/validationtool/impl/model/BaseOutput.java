@@ -26,9 +26,9 @@ import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.FiredRule;
 
 /**
- * Basis-Klasse um spezifische Erweiterungen an der generierten Klasse {@link org.oclc.purl.dsdl.svrl.SchematronOutput}
- * umzusetzen.
- * 
+ * Base class for implementing specific extensions to the generated class
+ * {@link org.oclc.purl.dsdl.svrl.SchematronOutput}.
+ *
  * @author Andreas Penski
  */
 public abstract class BaseOutput {
@@ -36,36 +36,36 @@ public abstract class BaseOutput {
     public abstract List<Serializable> getActivePatternAndFiredRuleAndFailedAssert();
 
     /**
-     * Gibt die Liste der {@link FailedAssert} zurück
-     * 
-     * @return Liste mit {@link FailedAssert}
+     * Returns the list of {@link FailedAssert}
+     *
+     * @return list of {@link FailedAssert}
      */
     public List<FailedAssert> getFailedAsserts() {
         return filter(FailedAssert.class);
     }
 
     /**
-     * Gibt die Liste der {@link FailedAssert} zurück
-     * 
-     * @return Liste mit {@link FailedAssert}
+     * Returns the list of {@link FailedAssert}
+     *
+     * @return list of {@link FailedAssert}
      */
     public List<FiredRule> getFiredRules() {
         return filter(FiredRule.class);
     }
 
     /**
-     * Ermittelt, ob es bei der Validierung {@link FailedAssert}s gab.
-     * 
-     * @return true wenn mindestens ein {@link FailedAssert} vorhanden ist
+     * Determines whether there were any {@link FailedAssert}s during validation.
+     *
+     * @return true if at least one {@link FailedAssert} is present
      */
     public boolean hasFailedAsserts() {
         return !getFailedAsserts().isEmpty();
     }
 
     /**
-     * Gibt die Liste der {@link ActivePattern} zurück
+     * Returns the list of {@link ActivePattern}
      *
-     * @return Liste mit {@link ActivePattern}
+     * @return list of {@link ActivePattern}
      */
     public List<ActivePattern> getActivePatterns() {
         return filter(ActivePattern.class);
@@ -76,10 +76,10 @@ public abstract class BaseOutput {
     }
 
     /**
-     * Sucht nach einem {@link FailedAssert} mit einem definierten Namen.
-     * 
-     * @param name der Name
-     * @return Optional mit dem {@link FailedAssert}
+     * Searches for a {@link FailedAssert} with a defined name.
+     *
+     * @param name the name
+     * @return Optional with the {@link FailedAssert}
      */
     public Optional<FailedAssert> findFailedAssert(final String name) {
         return getFailedAsserts().stream().filter(e -> e.getId().equals(name)).findAny();

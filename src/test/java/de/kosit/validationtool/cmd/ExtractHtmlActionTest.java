@@ -35,7 +35,7 @@ import de.kosit.validationtool.impl.TestObjectFactory;
 import de.kosit.validationtool.impl.tasks.CheckAction;
 
 /**
- * Testet die HTML-Extrkation des Kommondazeilenprogramms.
+ * Tests the HTML extraction of the command line program.
  * 
  * @author Andreas Penski
  */

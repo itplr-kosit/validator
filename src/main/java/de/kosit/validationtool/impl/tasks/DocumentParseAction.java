@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package de.kosit.validationtool.impl.tasks;
 
 import java.io.IOException;
@@ -21,44 +20,43 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.kosit.validationtool.api.Input;
 import de.kosit.validationtool.impl.input.XdmNodeInput;
 import de.kosit.validationtool.impl.model.Result;
 import de.kosit.validationtool.model.reportInput.ValidationResultsWellformedness;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxError;
 import de.kosit.validationtool.model.reportInput.XMLSyntaxErrorSeverity;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Setzt Parsing-Funktionalitäten um. Prüft auf well-formedness
- * 
+ * Implements parsing functionality. Checks for well-formedness.
+ *
  * @author Andreas Penski
  */
-@Slf4j
-@RequiredArgsConstructor
 public class DocumentParseAction implements CheckAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentParseAction.class);
 
     private final Processor processor;
 
     /**
-     * Parsed und überprüft ein übergebenes Dokument darauf ob es well-formed ist. Dies stellt den ersten
-     * Verarbeitungsschritt des Prüf-Tools dar. Diese Funktion verzichtet explizit auf die Validierung gegenüber einem
-     * Schema.
-     * 
-     * @param content ein Dokument
-     * @return Ergebnis des Parsings inklusive etwaiger Fehler
+     * Parses and checks a given document for well-formedness. This is the first processing step of the validation tool.
+     * This function explicitly omits validation against a schema.
+     *
+     * @param content a document
+     * @return parsing result including any errors
      */
     public Result<XdmNode, XMLSyntaxError> parseDocument(final Input content) {
         if (content == null) {
             throw new IllegalArgumentException("Input may not be null");
         }
         Result<XdmNode, XMLSyntaxError> result;
-
         try {
             if (content instanceof XdmNodeInput && hasCompatibleConfiguration((XdmNodeInput) content)) {
                 // parsing not neccessary
@@ -70,13 +68,13 @@ public class DocumentParseAction implements CheckAction {
                 result = new Result<>(doc, Collections.emptyList());
             }
         } catch (final SaxonApiException | IOException e) {
-            log.debug("Exception while parsing {}", content.getName(), e);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Exception while parsing {}", content.getName(), e);
             final XMLSyntaxError error = new XMLSyntaxError();
             error.setSeverityCode(XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
-            error.setMessage(String.format("IOException while reading resource %s: %s", content.getName(), e.getMessage()));
+            error.setMessage("IOException while reading resource " + content.getName() + ": " + e.getMessage());
             result = new Result<>(Arrays.asList(error));
         }
-
         return result;
     }
 
@@ -96,4 +94,7 @@ public class DocumentParseAction implements CheckAction {
         }
     }
 
+    public DocumentParseAction(final Processor processor) {
+        this.processor = processor;
+    }
 }
