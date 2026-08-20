@@ -17,6 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (BUILD) [#185](https://projekte.kosit.org/kosit/validator/-/work_items/185) The minimum Java version is now 25
 - (CORE) [#198](https://projekte.kosit.org/kosit/validator/-/work_items/198) Replaced all `String.format` calls with native inline String concatenation
 
+## 1.6.3 - 2026-08-20
+
+### Fixed
+
+- (CORE) [GitHub Advisory](https://github.com/itplr-kosit/validator/security/advisories/GHSA-hg2c-p2m3-q29m) Fixed unrestricted URI resolution in STRICT_LOCAL mode allows remote stylesheet inclusion. Thanks to @gronke
+
+### Changed
+
+- (BUILD) Removed the usage of Lombok.
 
 ## 1.6.2 - 2026-02-17
 
