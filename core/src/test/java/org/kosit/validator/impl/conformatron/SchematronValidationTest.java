@@ -35,9 +35,8 @@ public class SchematronValidationTest {
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.isConformant()).isFalse();
-        assertThat(result.detections().getAll()).extracting("code").contains(SchematronValidation.CODE_FAILED_ASSERT);
-        // the violated assert id and the SVRL location are part of the message
-        assertThat(result.detections().getAll().get(0).getText().getDisplayTextLocaleIndependent()).contains("content-1");
+        // per step-07 spec the assert id becomes the detection code
+        assertThat(result.detections().getAll()).extracting("code").contains("content-1");
     }
 
     @Test
@@ -48,7 +47,7 @@ public class SchematronValidationTest {
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
         assertThat(result.isConformant()).isFalse();
-        assertThat(result.detections().getAll()).extracting("code").containsExactly(SchematronValidation.CODE_RULES_PROCESSING_ERROR);
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(ApplyRulesAction.CODE_RULE_ENGINE_ERROR);
         assertThat(result.detections().getWorstSeverity().getNumericLevel()).isEqualTo(ECTSeverity.FATAL_ERROR.getNumericLevel());
         // document identity is retained even on failure
         assertThat(result.parsedSource()).isNotNull();
