@@ -60,7 +60,7 @@ public class ComputeAcceptanceAction implements CheckAction {
         final Result<List<ValidationResultsSchematron>, String> result = process.getResult(SchematronValidationAction.KEY);
         if (result != null && result.isValid()) {
             return result.getObject().stream().map(v -> v.getResults().getSchematronOutput())
-                    .flatMap(s -> s.getActivePatternAndFiredRuleAndFailedAssert().stream()).anyMatch(FailedAssert.class::isInstance);
+                    .flatMap(s -> s.getActivePatternOrActiveGroupAndFiredRule().stream()).anyMatch(FailedAssert.class::isInstance);
         }
         return false;
     }

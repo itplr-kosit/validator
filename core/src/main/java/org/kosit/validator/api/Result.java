@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.kosit.xvrl.model.XVRLReportSummary;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.w3c.dom.Document;
 
 import net.sf.saxon.s9api.XdmNode;
@@ -70,7 +70,7 @@ public interface Result {
      *
      * @return list of Schematron results
      */
-    List<SchematronOutput> getSchematronResult();
+    List<SchematronOutputType> getSchematronResult();
 
     /**
      * Returns {@link org.oclc.purl.dsdl.svrl.FailedAssert FailedAsserts} of a schematron evaluation.

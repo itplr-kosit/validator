@@ -23,7 +23,7 @@ import org.kosit.xvrl.model.XVRLDetection;
 import org.kosit.xvrl.model.XVRLMessage;
 import org.kosit.xvrl.model.XVRLReport;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 
 /**
  * Compact XVRL report with convenience access to additive attributes.
@@ -352,11 +352,11 @@ public class CompactXVRLReport {
         Optional.ofNullable(violations).ifPresent(v -> v.forEach(this::addSchemaViolation));
     }
 
-    public void addSchematronValidationResults(List<SchematronOutput> schematronOutputs) {
+    public void addSchematronValidationResults(List<SchematronOutputType> schematronOutputs) {
         Optional.ofNullable(schematronOutputs).ifPresent(so -> so.forEach(this::addSchematronValidationResult));
     }
 
-    private void addSchematronValidationResult(SchematronOutput schematronOutput) {
+    private void addSchematronValidationResult(SchematronOutputType schematronOutput) {
         String title = schematronOutput.getTitle() != null ? schematronOutput.getTitle() : "Schematron";
         addSchemaReference(title, CODE_SCHEMATRON_VALIDATION);
         schematronOutput.getFailedAsserts().forEach(fa -> addSchematronViolation(fa, title));

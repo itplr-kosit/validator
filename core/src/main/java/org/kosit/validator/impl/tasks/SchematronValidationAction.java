@@ -1,7 +1,5 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +8,10 @@ import java.util.stream.Stream;
 
 import javax.xml.transform.dom.DOMSource;
 
+import org.kosit.svrl.impl.SvrlConversionService;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
-import org.kosit.svrl.impl.SvrlConversionService;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
@@ -24,7 +22,7 @@ import org.kosit.xvrl.model.XVRLReport;
 import org.oclc.purl.dsdl.svrl.ActivePattern;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.FiredRule;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.oclc.purl.dsdl.svrl.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,12 +52,12 @@ public class SchematronValidationAction implements CheckAction {
 
     private static Results createErrorResult(final String msg) {
         final Results results = new Results();
-        final SchematronOutput schematronOutput = new SchematronOutput();
+        final SchematronOutputType schematronOutput = new SchematronOutputType();
         final FailedAssert failedAssert = new FailedAssert();
         final Text errorText = new Text();
         errorText.getContent().add(msg);
         failedAssert.setText(errorText);
-        schematronOutput.getActivePatternAndFiredRuleAndFailedAssert().add(failedAssert);
+        schematronOutput.getActivePatternOrActiveGroupAndFiredRule().add(failedAssert);
         results.setSchematronOutput(schematronOutput);
         return results;
     }
@@ -74,19 +72,19 @@ public class SchematronValidationAction implements CheckAction {
     }
 
     private static <T> Stream<T> filter(final List<Serializable> list, final Class<T> type) {
-        return list.stream().filter(e -> e.getClass().equals(type)).map(e -> (T) e);
+        return list.stream().filter(e -> e.getClass().equals(type)).map(type::cast);
     }
 
     private static List<XVRLReport> generateXVRLReport(final List<ValidationResultsSchematron> validationResult) {
         return validationResult.stream().map(e -> {
             final XVRLReportBuilder builder = XVRLReportBuilder.builder(REPORT_NAME);
             builder.addSchema(e.getResource());
-            final SchematronOutput schematronOutput = e.getResults().getSchematronOutput();
-            filter(schematronOutput.getActivePatternAndFiredRuleAndFailedAssert(), FailedAssert.class).map(f -> detection().add(f))
+            final SchematronOutputType schematronOutput = e.getResults().getSchematronOutput();
+            filter(schematronOutput.getActivePatternOrActiveGroupAndFiredRule(), FailedAssert.class).map(f -> detection().add(f))
                     .forEach(builder::add);
-            filter(schematronOutput.getActivePatternAndFiredRuleAndFailedAssert(), ActivePattern.class).map(f -> detection().add(f))
+            filter(schematronOutput.getActivePatternOrActiveGroupAndFiredRule(), ActivePattern.class).map(f -> detection().add(f))
                     .forEach(builder::add);
-            filter(schematronOutput.getActivePatternAndFiredRuleAndFailedAssert(), FiredRule.class).map(f -> detection().add(f))
+            filter(schematronOutput.getActivePatternOrActiveGroupAndFiredRule(), FiredRule.class).map(f -> detection().add(f))
                     .forEach(builder::add);
             return builder.build();
         }).collect(Collectors.toList());
@@ -113,7 +111,7 @@ public class SchematronValidationAction implements CheckAction {
             final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
             r.setSchematronOutput(this.conversionService.readXml(
                     new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
-                    SchematronOutput.class));
+                    SchematronOutputType.class));
             validationResultsSchematron.setResults(r);
         } catch (final SaxonApiException e) {
             final String msg = "Error processing schematron validation '" + validation.getResourceType().getName() + "'. Error is '"
