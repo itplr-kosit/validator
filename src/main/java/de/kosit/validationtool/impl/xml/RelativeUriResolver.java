@@ -19,6 +19,9 @@ package de.kosit.validationtool.impl.xml;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -81,12 +84,67 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
     }
 
     private static boolean isUnderBaseUri(final URI resolved, final URI baseUri) {
-        if (resolved == null || baseUri == null) {
+        if (resolved == null || baseUri == null || resolved.getScheme() == null || baseUri.getScheme() == null
+                || !resolved.getScheme().equalsIgnoreCase(baseUri.getScheme())) {
             return false;
         }
-        final String base = baseUri.toASCIIString().replaceAll("file:/+", "");
-        final String r = resolved.toASCIIString().replaceAll("file:/+", "");
-        return r.startsWith(base);
+        if ("file".equalsIgnoreCase(resolved.getScheme())) {
+            return isUnderBasePath(resolved, baseUri);
+        }
+        if (isJarURI(resolved)) {
+            return isUnderBaseJarUri(resolved, baseUri);
+        }
+        // remaining schemes (e.g. http repositories configured via the API): normalized comparison on a path
+        // segment boundary. URI.normalize() does not decode percent-encoded dot segments, but for non-local
+        // schemes decoding happens server-side and can not be validated here.
+        final String base = ensureTrailingSlash(baseUri.normalize().toASCIIString());
+        return resolved.normalize().toASCIIString().startsWith(base);
+    }
+
+    /**
+     * Compares file uris as decoded and normalized paths. {@link Paths#get(URI)} decodes percent-encoded characters, so
+     * encoded dot segments (e.g. {@code %2e%2e}) are resolved by {@link Path#normalize()} before the segment-aware
+     * {@link Path#startsWith(Path)} comparison. Fails closed for uris that can not be mapped to a local path (e.g.
+     * non-local {@code file://host/path} uris).
+     */
+    private static boolean isUnderBasePath(final URI resolved, final URI baseUri) {
+        try {
+            final Path base = Paths.get(baseUri).normalize();
+            return Paths.get(resolved).normalize().startsWith(base);
+        } catch (final IllegalArgumentException | FileSystemNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Compares jar uris by their jar file location and their entry path. The jar file must be identical, since a
+     * relative resolution can never legitimately reach into a different jar. Entries are confined to the same jar file
+     * in any case, so the entry comparison is a plain normalized prefix check.
+     */
+    private static boolean isUnderBaseJarUri(final URI resolved, final URI baseUri) {
+        final String resolvedPart = resolved.getSchemeSpecificPart();
+        final String basePart = baseUri.getSchemeSpecificPart();
+        final int resolvedSeparator = resolvedPart.indexOf("!/");
+        final int baseSeparator = basePart.indexOf("!/");
+        if (resolvedSeparator < 0 || baseSeparator < 0) {
+            return false;
+        }
+        try {
+            final Path resolvedJar = Paths.get(URI.create(resolvedPart.substring(0, resolvedSeparator))).normalize();
+            final Path baseJar = Paths.get(URI.create(basePart.substring(0, baseSeparator))).normalize();
+            if (!resolvedJar.equals(baseJar)) {
+                return false;
+            }
+        } catch (final IllegalArgumentException | FileSystemNotFoundException e) {
+            return false;
+        }
+        final Path resolvedEntry = Paths.get("/", resolvedPart.substring(resolvedSeparator + 2)).normalize();
+        final Path baseEntry = Paths.get("/", basePart.substring(baseSeparator + 2)).normalize();
+        return resolvedEntry.startsWith(baseEntry);
+    }
+
+    private static String ensureTrailingSlash(final String uri) {
+        return uri.endsWith("/") ? uri : uri + "/";
     }
 
     // from UnparsedTextURIResolver
