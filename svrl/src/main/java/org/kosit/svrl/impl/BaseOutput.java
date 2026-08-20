@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.NonNull;
 import org.oclc.purl.dsdl.svrl.ActivePattern;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.FiredRule;
@@ -17,14 +18,18 @@ import org.oclc.purl.dsdl.svrl.FiredRule;
  */
 public abstract class BaseOutput {
 
-    public abstract List<Serializable> getActivePatternAndFiredRuleAndFailedAssert();
+    public abstract List<Serializable> getActivePatternOrActiveGroupAndFiredRule();
+
+    private <T> @NonNull List<@NonNull T> filter(@NonNull final Class<@NonNull T> type) {
+        return getActivePatternOrActiveGroupAndFiredRule().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+    }
 
     /**
      * Returns the list of {@link FailedAssert}.
      *
      * @return list of {@link FailedAssert}
      */
-    public List<FailedAssert> getFailedAsserts() {
+    public @NonNull List<@NonNull FailedAssert> getFailedAsserts() {
         return filter(FailedAssert.class);
     }
 
@@ -33,7 +38,7 @@ public abstract class BaseOutput {
      *
      * @return list of {@link FailedAssert}
      */
-    public List<FiredRule> getFiredRules() {
+    public @NonNull List<@NonNull FiredRule> getFiredRules() {
         return filter(FiredRule.class);
     }
 
@@ -51,12 +56,8 @@ public abstract class BaseOutput {
      *
      * @return list of {@link ActivePattern}
      */
-    public List<ActivePattern> getActivePatterns() {
+    public @NonNull List<@NonNull ActivePattern> getActivePatterns() {
         return filter(ActivePattern.class);
-    }
-
-    private <T> List<T> filter(final Class<T> type) {
-        return getActivePatternAndFiredRuleAndFailedAssert().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
     }
 
     /**
@@ -69,7 +70,7 @@ public abstract class BaseOutput {
         return getFailedAsserts().stream().filter(e -> e.getId().equals(name)).findAny();
     }
 
-    public List<String> getMessages() {
+    public @NonNull List<String> getMessages() {
         return getFailedAsserts().stream().map(FailedAssert::getText).flatMap(e -> e.getContent().stream()).map(Object::toString)
                 .collect(Collectors.toList());
     }
