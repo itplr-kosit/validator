@@ -170,7 +170,7 @@ public class TestProcessBuilder {
         final ValidationResultsSchematron v = new ValidationResultsSchematron();
         final Results results = new Results();
         results.setSchematronOutput(new SchematronOutputType());
-        results.getSchematronOutput().getActivePatternOrActiveGroupAndFiredRule ().add(new FailedAssert());
+        results.getSchematronOutput().getActivePatternOrActiveGroupAndFiredRule().add(new FailedAssert());
         v.setResults(results);
         return setSchematronResult(Collections.singletonList(v));
     }

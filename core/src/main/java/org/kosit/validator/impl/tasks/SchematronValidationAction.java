@@ -1,6 +1,9 @@
 package org.kosit.validator.impl.tasks;
 
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
