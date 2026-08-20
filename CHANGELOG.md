@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.6.3 - 2026-08-20
 
+### Fixed
+
 - (CORE) [GitHub Advisory](https://github.com/itplr-kosit/validator/security/advisories/GHSA-hg2c-p2m3-q29m) Fixed unrestricted URI resolution in STRICT_LOCAL mode allows remote stylesheet inclusion. Thanks to @gronke
 
 ## 1.6.2 - 2026-02-17
