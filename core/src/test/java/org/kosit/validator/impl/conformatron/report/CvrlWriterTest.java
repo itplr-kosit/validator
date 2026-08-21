@@ -59,8 +59,8 @@ public class CvrlWriterTest {
         if (!parsed.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
         }
-        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository,
-                TestHelper.getTestProcessor()).execute(parsed.getParsedSource());
+        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, TestHelper.getTestProcessor())
+                .execute(parsed.getParsedSource());
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)
                 .execute(selected.selected());

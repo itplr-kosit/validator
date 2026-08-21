@@ -66,10 +66,9 @@ public final class CvrlWriter {
      * The results of one canonical pipeline run. Fields from the cancellation point onwards are {@code null} — the
      * report then contains only the executed steps and {@code cvrl:status="CANCELLED"} (partial CVRL, ADR-004).
      */
-    public record PipelineResults(ParseXMLResult parse, DetectScenariosResult detect,
-            SelectScenarioAction.SelectScenarioResult select, RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
-            PrepareRulesAction.PrepareRulesResult prepare, ApplyRulesAction.ApplyRulesActionResult apply,
-            ComputeConformanceAction.ComputeConformanceActionResult conformance) {
+    public record PipelineResults(ParseXMLResult parse, DetectScenariosResult detect, SelectScenarioAction.SelectScenarioResult select,
+            RetrieveArtifactsAction.RetrieveArtifactsResult retrieve, PrepareRulesAction.PrepareRulesResult prepare,
+            ApplyRulesAction.ApplyRulesActionResult apply, ComputeConformanceAction.ComputeConformanceActionResult conformance) {
 
         public boolean isCompleted() {
             return this.conformance != null;
