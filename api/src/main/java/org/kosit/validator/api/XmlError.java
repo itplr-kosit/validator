@@ -7,6 +7,10 @@ package org.kosit.validator.api;
  */
 public interface XmlError {
 
+    enum Severity {
+        SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL_ERROR;
+    }
+
     /**
      * Returns the error message.
      *
@@ -35,9 +39,5 @@ public interface XmlError {
      * @return The column number or <code>null</code>.
      */
     Integer getColumnNumber();
-
-    enum Severity {
-        SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL_ERROR;
-    }
 
 }
