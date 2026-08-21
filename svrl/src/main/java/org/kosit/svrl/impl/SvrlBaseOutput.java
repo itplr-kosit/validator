@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.jspecify.annotations.NonNull;
 import org.oclc.purl.dsdl.svrl.ActiveGroup;
 import org.oclc.purl.dsdl.svrl.ActivePattern;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
@@ -22,7 +21,7 @@ public abstract class SvrlBaseOutput {
 
     public abstract List<Serializable> getActivePatternOrActiveGroupAndFiredRule();
 
-    private <T> @NonNull List<@NonNull T> filter(@NonNull final Class<@NonNull T> type) {
+    private <T> List<T> filter(final Class<T> type) {
         return getActivePatternOrActiveGroupAndFiredRule().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
     }
 
@@ -31,7 +30,7 @@ public abstract class SvrlBaseOutput {
      *
      * @return list of {@link FailedAssert}
      */
-    public @NonNull List<@NonNull FailedAssert> getFailedAsserts() {
+    public List<FailedAssert> getFailedAsserts() {
         return filter(FailedAssert.class);
     }
 
@@ -40,7 +39,7 @@ public abstract class SvrlBaseOutput {
      *
      * @return list of {@link SuccessfulReport}
      */
-    public @NonNull List<@NonNull SuccessfulReport> getSuccessfulReports() {
+    public List<SuccessfulReport> getSuccessfulReports() {
         return filter(SuccessfulReport.class);
     }
 
@@ -49,7 +48,7 @@ public abstract class SvrlBaseOutput {
      *
      * @return list of {@link FailedAssert}
      */
-    public @NonNull List<@NonNull FiredRule> getFiredRules() {
+    public List<FiredRule> getFiredRules() {
         return filter(FiredRule.class);
     }
 
@@ -67,7 +66,7 @@ public abstract class SvrlBaseOutput {
      *
      * @return list of {@link ActivePattern}
      */
-    public @NonNull List<@NonNull ActivePattern> getActivePatterns() {
+    public List<ActivePattern> getActivePatterns() {
         return filter(ActivePattern.class);
     }
 
@@ -76,7 +75,7 @@ public abstract class SvrlBaseOutput {
      *
      * @return list of {@link ActiveGroup}
      */
-    public @NonNull List<@NonNull ActiveGroup> getActiveGroups() {
+    public List<ActiveGroup> getActiveGroups() {
         return filter(ActiveGroup.class);
     }
 
@@ -90,7 +89,7 @@ public abstract class SvrlBaseOutput {
         return getFailedAsserts().stream().filter(e -> e.getId().equals(name)).findAny();
     }
 
-    public @NonNull List<String> getMessages() {
+    public List<String> getMessages() {
         return getFailedAsserts().stream().map(FailedAssert::getText).flatMap(e -> e.getContent().stream()).map(Object::toString)
                 .collect(Collectors.toList());
     }
