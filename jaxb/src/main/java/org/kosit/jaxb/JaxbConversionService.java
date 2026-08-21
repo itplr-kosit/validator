@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
@@ -516,10 +517,10 @@ public class JaxbConversionService {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static <T> JAXBElement wrapAsJAXBElement(final T model) {
+    @SuppressWarnings({ "unchecked" })
+    private static <T> JAXBElement<T> wrapAsJAXBElement(final T model) {
         final QName fallback = new QName(model.getClass().getSimpleName().toLowerCase(Locale.ROOT));
-        return new JAXBElement(fallback, model.getClass(), model);
+        return new JAXBElement<>(fallback, (Class<T>) model.getClass(), model);
     }
 
     private Marshaller createMarshaller() throws JAXBException {
@@ -599,14 +600,10 @@ public class JaxbConversionService {
     }
 
     private static void requireNonNull(final @Nullable Object value, final String name) {
-        if (value == null) {
-            throw new JaxbConversionException(name + " must not be null");
-        }
+        Objects.requireNonNull(value, name + " must not be null");
     }
 
     private static <T> void requireType(final @Nullable Class<T> type) {
-        if (type == null) {
-            throw new JaxbConversionException("Target type must not be null");
-        }
+        Objects.requireNonNull(type, "Target type must not be null");
     }
 }

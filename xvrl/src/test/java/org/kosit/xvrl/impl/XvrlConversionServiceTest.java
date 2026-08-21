@@ -10,7 +10,6 @@ import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.jaxb.JaxbConversionException;
 import org.kosit.xvrl.model.XVRLDetection;
 import org.kosit.xvrl.model.XVRLReport;
 import org.kosit.xvrl.model.XVRLReportSummary;
@@ -72,12 +71,12 @@ public class XvrlConversionServiceTest {
 
     @Test
     public void writeNullThrows() {
-        assertThatThrownBy(() -> this.service.writeXml(null)).isInstanceOf(JaxbConversionException.class);
+        assertThatThrownBy(() -> this.service.writeXml(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void readNullUriThrows() {
-        assertThatThrownBy(() -> this.service.readXml((URI) null, XVRLReportSummary.class)).isInstanceOf(JaxbConversionException.class);
+        assertThatThrownBy(() -> this.service.readXml((URI) null, XVRLReportSummary.class)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -85,7 +84,7 @@ public class XvrlConversionServiceTest {
         final URL url = getClass().getResource(SAMPLE);
         assertThat(url).as("sample-report.xml must be on the test classpath").isNotNull();
         final URI sampleUri = URI.create(url.toString());
-        assertThatThrownBy(() -> this.service.readXml(sampleUri, null)).isInstanceOf(JaxbConversionException.class);
+        assertThatThrownBy(() -> this.service.readXml(sampleUri, null)).isInstanceOf(NullPointerException.class);
     }
 
     private XVRLReportSummary readSample() {
