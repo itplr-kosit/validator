@@ -78,7 +78,7 @@ public class StandardExample {
     }
 
     public static void main(final String[] args) throws Exception {
-        // Use e.g. "src/test/resources/examples/simple/input/foo.xml"
+        // Use e.g. "src/test/resources/examples/simple/VInput/foo.xml"
         if (args.length == 0) {
             throw new IllegalStateException("Provide a test document filename on the commandline");
         }
@@ -98,7 +98,7 @@ The `Result` interface has convenience methods to retrieve details about XSD val
 Initializing all XML artifacts and XSLT-executables is expensive. The `Check` instance is *threadsafe* and keeps all artifacts. Therefore,
 we recommend the re-use of a `Check` instance.
 
-Beside the validator's configuration the only input are instances of [Input](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Input.java)
+Beside the validator's configuration the only VInput are instances of [Input](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Input.java)
 which can be created by various methods of the [InputFactory](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/InputFactory.java).
 The [InputFactory](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/InputFactory.java)
  calculates a hash sum for each Input which is also written to the Report. _SHA-256_ from the JDK is the default algorithm.
@@ -115,8 +115,8 @@ can be retrieved from the [Result](https://github.com/itplr-kosit/validator/blob
 
 The three defined states are:
 
-1. `ACCEPTABLE` i.e. the recommendation is to accept input based on the evaluation of the overall validation.
-1. `REJECT` i.e. the recommendation is to reject input based on the evaluation of the overall validation.
+1. `ACCEPTABLE` i.e. the recommendation is to accept VInput based on the evaluation of the overall validation.
+1. `REJECT` i.e. the recommendation is to reject VInput based on the evaluation of the overall validation.
 1. `UNDEFINED` i.e. the evaluation of the overall validation could not be computed (overall processing is incomplete)
 
 The accept recommendation is based on either:

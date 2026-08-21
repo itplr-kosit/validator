@@ -11,14 +11,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.Result;
-import org.kosit.validator.api.XmlError;
+import org.kosit.validator.api.*;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.compact.CompactXVRLReport;
 import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.api.compact.ValidatorEngineInformation;
-import org.kosit.validator.impl.DefaultCheck;
+import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
@@ -46,12 +44,12 @@ public class ValidationService {
 
     private final EngineInformation engineInformation;
 
-    private final DefaultCheck check;
+    private final DefaultVCheck check;
 
     public ValidationService(final ValidationConfig cfg, final EngineInformation engineInformation) {
         this.configuration = getConfiguration(cfg, processor);
         this.engineInformation = engineInformation;
-        check = new DefaultCheck(engineInformation, processor, configuration.toArray(new Configuration[0]));
+        check = new DefaultVCheck(engineInformation, processor, configuration.toArray(new Configuration[0]));
         LOGGER.info("Validator started");
     }
 
@@ -59,18 +57,18 @@ public class ValidationService {
         return configuration != null ? configuration.stream().flatMap(c -> c.getScenarios().stream()).toList() : Collections.emptyList();
     }
 
-    public Result validate(final Input input) {
+    public Result validate(final VInput VInput) {
         long t0 = System.currentTimeMillis();
-        final Result result = check.checkInput(input);
-        LOGGER.info("Validated {} input in {} ms", input.getName(), System.currentTimeMillis() - t0);
+        final Result result = check.checkInput(VInput);
+        LOGGER.info("Validated {} input in {} ms", VInput.getName(), System.currentTimeMillis() - t0);
         return result;
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final Input input, final Result defaultResult) {
-        return convertMinimalXvrl(Map.of(input, defaultResult));
+    public CompactXVRLReportSummary convertMinimalXvrl(final VInput VInput, final Result defaultResult) {
+        return convertMinimalXvrl(Map.of(VInput, defaultResult));
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final Map<Input, Result> defaultResults) {
+    public CompactXVRLReportSummary convertMinimalXvrl(final Map<VInput, Result> defaultResults) {
         final CompactXVRLReportSummary summary = CompactXVRLReportSummary.create();
         defaultResults.forEach((input, result) -> {
             final CompactXVRLReport report = CompactXVRLReport.create();

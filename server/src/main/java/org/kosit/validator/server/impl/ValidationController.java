@@ -6,7 +6,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.ValidationResource;
@@ -40,10 +40,10 @@ public class ValidationController implements ValidationResource {
 
     @Override
     public Response validateMinimal(File xmlFile) {
-        final Input input = InputFactory.read(xmlFile);
-        final Result result = service.validate(input);
+        final VInput VInput = InputFactory.read(xmlFile);
+        final Result result = service.validate(VInput);
 
-        final CompactXVRLReportSummary compactReport = service.convertMinimalXvrl(input, result);
+        final CompactXVRLReportSummary compactReport = service.convertMinimalXvrl(VInput, result);
 
         MediaType best = headers.getAcceptableMediaTypes().stream()
                 .filter(mt -> mt.isCompatible(APPLICATION_JSON_TYPE) || mt.isCompatible(APPLICATION_XML_TYPE)).findFirst()

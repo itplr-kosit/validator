@@ -2,7 +2,7 @@ package org.kosit.validator.impl.conformatron;
 
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ParseDocumentAction;
+import org.kosit.validator.impl.conformatron.action.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
@@ -27,7 +27,7 @@ import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
 import org.kosit.validator.impl.conformatron.action.DetectScenariosAction.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.ParseDocumentAction.ParseDocumentResult;
+import org.kosit.validator.impl.conformatron.action.ParseXMLAction.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
@@ -61,7 +61,7 @@ public class CanonicalPipelineTest {
     /** Runs the full chain 2–8 and returns the step-8 result; asserts every intermediate step succeeded. */
     private ComputeConformanceActionResult runPipeline(final URI document, final List<String> trace) {
         // step 2: PARSE_DOCUMENT — DOM-based reference action, retains bytes + hash
-        final ParseDocumentResult parsed = new ParseDocumentAction().execute(read(document));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
         assertThat(parsed.isSuccess()).isTrue();
         trace.addAll(codes(parsed.detections().getAll()));
 
@@ -114,7 +114,7 @@ public class CanonicalPipelineTest {
 
         // the full audit trail across all steps, in pipeline order
         assertThat(trace).containsExactly(//
-                ParseDocumentAction.CODE_DOCUMENT_PARSED, // step 2
+                ParseXMLAction.CODE_DOCUMENT_PARSED, // step 2
                 DetectScenariosAction.CODE_SCENARIO_MATCHED, // step 3
                 SelectScenarioAction.CODE_SCENARIO_SELECTED, // step 4
                 RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, // step

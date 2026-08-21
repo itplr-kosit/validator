@@ -4,7 +4,7 @@ The validator itself is just an engine which executes validation according to a 
 see [configuration documentation](configurations.md)).
 
 The validator takes a scenario.xml and the configured directory with all artifacts necessary for validation (scenario repository). Then it
-performs the validation and generates a report in XML format. This report is then the input to an XSLT provided by the configuration.
+performs the validation and generates a report in XML format. This report is then the VInput to an XSLT provided by the configuration.
 
 ## System Overview
 
@@ -73,7 +73,7 @@ sequenceDiagram
     * Depending on the configuration in the scenario, if there is a single *error* or *warning* the report will have status *invalid*, otherwise the status will be *valid*.
 6. *execute configuration report generator*
 
-    The Validator will search for the XSLT as configured in scenario.xml and execute it with the Validator Report as input
+    The Validator will search for the XSLT as configured in scenario.xml and execute it with the Validator Report as VInput
 7. compute Recommendation
 
     In case a scenario contains an `acceptMatch` element with an XPATH expression, this expression will be executed.

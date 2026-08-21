@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.conformatron.api.model.scenario.ICTScenarioMatch;
 import org.conformatron.api.model.source.ICTParsedValidationSource;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.xvrl.model.XVRLMetadata;
@@ -57,7 +57,7 @@ public interface CheckAction {
         private boolean stopped;
 
         /** The document to be checked */
-        private Input input;
+        private VInput VInput;
 
         /**
          * Conformatron handshake object carrying the parsed document (immutable byte array, SHA-512 hash, parsed
@@ -80,12 +80,12 @@ public interface CheckAction {
          */
         private ICTScenarioMatch scenarioMatch;
 
-        public Process(final Input input) {
-            this(input, new XVRLMetadata());
+        public Process(final VInput VInput) {
+            this(VInput, new XVRLMetadata());
         }
 
-        public Process(final Input input, final XVRLMetadata xvrlMetadata) {
-            this.input = input;
+        public Process(final VInput VInput, final XVRLMetadata xvrlMetadata) {
+            this.VInput = VInput;
             this.metadata = xvrlMetadata;
         }
 
@@ -164,8 +164,8 @@ public interface CheckAction {
         /**
          * Das zu prüfende Dokument
          */
-        public Input getInput() {
-            return this.input;
+        public VInput getInput() {
+            return this.VInput;
         }
 
         public void setMetadata(final XVRLMetadata metadata) {
@@ -187,8 +187,8 @@ public interface CheckAction {
         /**
          * Das zu prüfende Dokument
          */
-        public void setInput(final Input input) {
-            this.input = input;
+        public void setInput(final VInput VInput) {
+            this.VInput = VInput;
         }
 
         /**

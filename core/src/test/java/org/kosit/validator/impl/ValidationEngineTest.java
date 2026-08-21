@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.api.InputFactory.read;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.Check;
+import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.ValidationEngine;
@@ -13,14 +13,14 @@ import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation.AdHocValidationResult;
 
 /**
- * Tests the {@link ValidationEngine} contract: {@link ConformanceValidation} (via {@link DefaultCheck}) and
- * {@link SchematronValidation} as individual engine implementations, plus the legacy {@link Check} equivalence.
+ * Tests the {@link ValidationEngine} contract: {@link ConformanceValidation} (via {@link DefaultVCheck}) and
+ * {@link SchematronValidation} as individual engine implementations, plus the legacy {@link VCheck} equivalence.
  */
 public class ValidationEngineTest {
 
-    private DefaultCheck createEngine() {
+    private DefaultVCheck createEngine() {
         final Configuration config = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        return new DefaultCheck(new TestEngineInformation(), Helper.getTestProcessor(), config);
+        return new DefaultVCheck(new TestEngineInformation(), Helper.getTestProcessor(), config);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class ValidationEngineTest {
 
     @Test
     public void testValidateMatchesLegacyCheckInput() {
-        final DefaultCheck engine = createEngine();
+        final DefaultVCheck engine = createEngine();
         final Result viaEngine = engine.validate(read(Simple.SIMPLE_VALID));
         final Result viaLegacy = engine.checkInput(read(Simple.SIMPLE_VALID));
 
@@ -53,7 +53,7 @@ public class ValidationEngineTest {
 
     @Test
     public void testAdHocConvenienceOnDefaultCheck() {
-        final DefaultCheck engine = createEngine();
+        final DefaultVCheck engine = createEngine();
         final AdHocValidationResult result = engine.validateAdHoc(read(Simple.SIMPLE_VALID), Simple.REPOSITORY_URI.resolve("simple.sch"));
 
         assertThat(result.isSuccess()).isTrue();

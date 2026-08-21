@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.Result;
-import org.kosit.validator.impl.DefaultCheck;
+import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.TestEngineInformation;
@@ -22,7 +22,7 @@ public class SimpleConfigTest {
         //@formatter:off
         final Configuration config = createSimpleConfiguration().build(Helper.getTestProcessor());
         //@formatter:on
-        final DefaultCheck check = new DefaultCheck(new TestEngineInformation(), config);
+        final DefaultVCheck check = new DefaultVCheck(new TestEngineInformation(), config);
         final Result result = check.checkInput(InputFactory.read(Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
     }

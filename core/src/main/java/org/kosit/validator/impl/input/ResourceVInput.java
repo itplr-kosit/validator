@@ -8,10 +8,10 @@ import java.net.URL;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 
 /**
- * An {@link Input} carries an {@link URL} which can be used for all 'locatable' inputs such as {@link File},
+ * An {@link VInput} carries an {@link URL} which can be used for all 'locatable' inputs such as {@link File},
  * {@link java.nio.file.Path} and any other {@link URL}.
  * 
  * This stream is NOT read into memory. So this implementation has good in memory efficieny. The validation process MAY
@@ -19,7 +19,7 @@ import org.kosit.validator.api.Input;
  * 
  * @author Andreas Penski
  */
-public class ResourceInput extends AbstractInput {
+public class ResourceVInput extends AbstractVInput {
 
     private final URL url;
 
@@ -48,7 +48,7 @@ public class ResourceInput extends AbstractInput {
         return this.digestAlgorithm;
     }
 
-    public ResourceInput(final URL url, final String name, final String digestAlgorithm) {
+    public ResourceVInput(final URL url, final String name, final String digestAlgorithm) {
         this.url = url;
         this.name = name;
         this.digestAlgorithm = digestAlgorithm;

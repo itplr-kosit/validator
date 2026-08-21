@@ -1,5 +1,7 @@
 package org.kosit.validator.impl.input;
 
+import org.kosit.validator.api.VInput;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
@@ -7,12 +9,12 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 /**
- * Classical in-memory {@link org.kosit.validator.api.Input}. It is not memory efficient to read the whole file into
- * memory prio validating. Consider using the {@link ResourceInput}.
+ * Classical in-memory {@link VInput}. It is not memory efficient to read the whole file into
+ * memory prio validating. Consider using the {@link ResourceVInput}.
  * 
  * @author Andreas Penski
  */
-public class ByteArrayInput extends AbstractInput {
+public class ByteArrayVInput extends AbstractVInput {
 
     private final byte[] content;
 
@@ -43,7 +45,7 @@ public class ByteArrayInput extends AbstractInput {
         return this.digestAlgorithm;
     }
 
-    public ByteArrayInput(final byte[] content, final String name, final String digestAlgorithm) {
+    public ByteArrayVInput(final byte[] content, final String name, final String digestAlgorithm) {
         this.content = content;
         this.name = name;
         this.digestAlgorithm = digestAlgorithm;

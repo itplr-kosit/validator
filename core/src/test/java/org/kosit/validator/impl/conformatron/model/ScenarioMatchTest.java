@@ -1,6 +1,6 @@
 package org.kosit.validator.impl.conformatron.model;
 
-import org.kosit.validator.impl.conformatron.action.ParseDocumentAction;
+import org.kosit.validator.impl.conformatron.action.ParseXMLAction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,7 +9,7 @@ import static org.kosit.validator.api.InputFactory.read;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.conformatron.action.ParseDocumentAction.ParseDocumentResult;
+import org.kosit.validator.impl.conformatron.action.ParseXMLAction.ParseXMLResult;
 import org.kosit.validator.impl.tasks.TestScenarioBuilder;
 
 /**
@@ -17,8 +17,8 @@ import org.kosit.validator.impl.tasks.TestScenarioBuilder;
  */
 public class ScenarioMatchTest {
 
-    private static ParseDocumentResult parseSimple() {
-        return new ParseDocumentAction().execute(read(Simple.SIMPLE_VALID));
+    private static ParseXMLResult parseSimple() {
+        return new ParseXMLAction().execute(read(Simple.SIMPLE_VALID));
     }
 
     private static Scenario createNamedScenario() {
@@ -30,7 +30,7 @@ public class ScenarioMatchTest {
 
     @Test
     public void testWrapsLegacyScenario() {
-        final ParseDocumentResult parsed = parseSimple();
+        final ParseXMLResult parsed = parseSimple();
         final ScenarioMatch match = ScenarioMatch.of(createNamedScenario(), parsed.parsedSource());
 
         assertThat(match.getScenarioID()).isEqualTo("simple");
@@ -47,13 +47,13 @@ public class ScenarioMatchTest {
     public void testRejectsFallbackScenario() {
         final Scenario fallback = createNamedScenario();
         fallback.setFallback(true);
-        final ParseDocumentResult parsed = parseSimple();
+        final ParseXMLResult parsed = parseSimple();
         assertThrows(IllegalArgumentException.class, () -> ScenarioMatch.of(fallback, parsed.parsedSource()));
     }
 
     @Test
     public void testRejectsNullArguments() {
-        final ParseDocumentResult parsed = parseSimple();
+        final ParseXMLResult parsed = parseSimple();
         assertThrows(IllegalArgumentException.class, () -> ScenarioMatch.of(null, parsed.parsedSource()));
         assertThrows(IllegalArgumentException.class, () -> ScenarioMatch.of(createNamedScenario(), null));
     }

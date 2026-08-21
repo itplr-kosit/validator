@@ -17,10 +17,10 @@ package org.kosit.validator.impl.conformatron.model;
 
 import org.conformatron.api.model.source.ICTValidationSource;
 import org.conformatron.api.model.validation.ECTValidationBaseType;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 
 /**
- * Validator implementation of {@link ICTValidationSource}. Facade over the legacy {@link Input} abstraction: the
+ * Validator implementation of {@link ICTValidationSource}. Facade over the legacy {@link VInput} abstraction: the
  * existing input handling keeps doing the heavy lifting while the pipeline is migrated to the conformatron-api step by
  * step.
  *
@@ -44,17 +44,17 @@ public final class ValidationSource implements ICTValidationSource {
     }
 
     /**
-     * Wraps a legacy {@link Input} as a complete XML source. The validator currently only feeds XML documents into the
+     * Wraps a legacy {@link VInput} as a complete XML source. The validator currently only feeds XML documents into the
      * pipeline, so the detected syntax is fixed until DETECT_SYNTAX is implemented as its own action.
      *
-     * @param input the legacy input
+     * @param VInput the legacy input
      * @return a new source facade
      */
-    public static ValidationSource of(final Input input) {
-        if (input == null) {
+    public static ValidationSource of(final VInput VInput) {
+        if (VInput == null) {
             throw new IllegalArgumentException("input may not be null");
         }
-        return new ValidationSource(input.getName(), ECTValidationBaseType.XML, true);
+        return new ValidationSource(VInput.getName(), ECTValidationBaseType.XML, true);
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.List;
 import javax.xml.transform.stream.StreamSource;
 
 import org.kosit.jaxb.JaxbConversionService;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.xsd.ValidatorSchemas;
 import org.kosit.validator.impl.model.Result;
@@ -166,12 +166,12 @@ public class Helper {
         }
     }
 
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final Input input) {
-        return new DocumentParseAction(processor).parseDocument(input);
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final VInput VInput) {
+        return new DocumentParseAction(processor).parseDocument(VInput);
     }
 
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Input input) {
-        return new DocumentParseAction(getTestProcessor()).parseDocument(input);
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final VInput VInput) {
+        return new DocumentParseAction(getTestProcessor()).parseDocument(VInput);
     }
 
     public static Processor getTestProcessor() {

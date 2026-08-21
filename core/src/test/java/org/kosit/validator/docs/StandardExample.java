@@ -5,12 +5,12 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.kosit.validator.api.Check;
+import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.Result;
-import org.kosit.validator.impl.DefaultCheck;
+import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.w3c.dom.Document;
@@ -27,9 +27,9 @@ public class StandardExample {
         // Load the rest of the specific Validator configuration from classpath
         final Configuration config = Configuration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
         // Use the default validation procedure
-        final Check validator = new DefaultCheck(new TestEngineInformation(), config);
+        final VCheck validator = new DefaultVCheck(new TestEngineInformation(), config);
         // Validate a single document
-        final Input document = InputFactory.read(testDocument);
+        final VInput document = InputFactory.read(testDocument);
         // Get Result including information about the whole validation
         final Result report = validator.checkInput(document);
         System.out.println("Is processing successful=" + report.isProcessingSuccessful());

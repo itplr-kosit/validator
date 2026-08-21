@@ -2,16 +2,16 @@ package org.kosit.validator.impl.input;
 
 import javax.xml.transform.Source;
 
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * An {@link Input} implementation holding saxon's {@link XdmNode} object.
+ * An {@link VInput} implementation holding saxon's {@link XdmNode} object.
  * 
  * @author Andreas Penski
  */
-public class XdmNodeInput implements Input {
+public class XdmNodeVInput implements VInput {
 
     private final XdmNode node;
 
@@ -27,7 +27,7 @@ public class XdmNodeInput implements Input {
         return this.node.getUnderlyingNode();
     }
 
-    public XdmNodeInput(final XdmNode node, final String name, final String digestAlgorithm, final byte[] hashCode) {
+    public XdmNodeVInput(final XdmNode node, final String name, final String digestAlgorithm, final byte[] hashCode) {
         this.node = node;
         this.name = name;
         this.digestAlgorithm = digestAlgorithm;

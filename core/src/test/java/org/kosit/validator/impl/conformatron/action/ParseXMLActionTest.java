@@ -28,25 +28,25 @@ import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.validation.ECTValidationBaseType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.conformatron.action.ParseDocumentAction.ParseDocumentResult;
-import org.kosit.validator.impl.input.ByteArrayInput;
+import org.kosit.validator.impl.conformatron.action.ParseXMLAction.ParseXMLResult;
+import org.kosit.validator.impl.input.ByteArrayVInput;
 
 /**
  * Tests the first action built against the conformatron-api (step 2, {@code parse-document}).
  *
  * @author Andreas Schmitz
  */
-public class ParseDocumentActionTest {
+public class ParseXMLActionTest {
 
     private static final String WELLFORMED = "<?xml version=\"1.0\"?><doc><child>content</child></doc>";
 
     private static final String NOT_WELLFORMED = "<?xml version=\"1.0\"?><doc><child>content</doc>";
 
-    private ParseDocumentAction action;
+    private ParseXMLAction action;
 
     @BeforeEach
     public void setup() {
-        this.action = new ParseDocumentAction();
+        this.action = new ParseXMLAction();
     }
 
     @Test
@@ -58,7 +58,7 @@ public class ParseDocumentActionTest {
     @Test
     public void testParseWellformed() {
         final byte[] bytes = WELLFORMED.getBytes(StandardCharsets.UTF_8);
-        final ParseDocumentResult result = this.action.execute(new ByteArrayInput(bytes, "test.xml", "SHA-256"));
+        final ParseXMLResult result = this.action.execute(new ByteArrayVInput(bytes, "test.xml", "SHA-256"));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.status()).isEqualTo(ECTStepResult.SUCCESS);
@@ -74,13 +74,13 @@ public class ParseDocumentActionTest {
         assertThat(result.parsedSource().getSource().getDetectedSyntax()).isEqualTo(ECTValidationBaseType.XML);
         assertThat(result.detections().getCount()).isEqualTo(1);
         assertThat(result.detections().getWorstSeverity()).isEqualTo(ECTSeverity.INFO);
-        assertThat(result.detections().getAll().get(0).getCode()).isEqualTo(ParseDocumentAction.CODE_DOCUMENT_PARSED);
+        assertThat(result.detections().getAll().get(0).getCode()).isEqualTo(ParseXMLAction.CODE_DOCUMENT_PARSED);
     }
 
     @Test
     public void testParseNotWellformed() {
         final byte[] bytes = NOT_WELLFORMED.getBytes(StandardCharsets.UTF_8);
-        final ParseDocumentResult result = this.action.execute(new ByteArrayInput(bytes, "broken.xml", "SHA-256"));
+        final ParseXMLResult result = this.action.execute(new ByteArrayVInput(bytes, "broken.xml", "SHA-256"));
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
@@ -94,7 +94,7 @@ public class ParseDocumentActionTest {
         assertThat(result.detections().containsAtLeastOneError()).isTrue();
         assertThat(result.detections().getWorstSeverity()).isEqualTo(ECTSeverity.FATAL_ERROR);
         assertThat(result.detections().getAll()).allSatisfy(detection -> {
-            assertThat(detection.getCode()).isEqualTo(ParseDocumentAction.CODE_NOT_WELLFORMED);
+            assertThat(detection.getCode()).isEqualTo(ParseXMLAction.CODE_NOT_WELLFORMED);
             assertThat(detection.getLocation().getResourceID()).isEqualTo("broken.xml");
             assertThat(detection.getLocation().hasLineNumber()).isTrue();
         });
@@ -103,7 +103,7 @@ public class ParseDocumentActionTest {
     @Test
     public void testSourceBytesAreImmutable() {
         final byte[] bytes = WELLFORMED.getBytes(StandardCharsets.UTF_8);
-        final ParseDocumentResult result = this.action.execute(new ByteArrayInput(bytes, "test.xml", "SHA-256"));
+        final ParseXMLResult result = this.action.execute(new ByteArrayVInput(bytes, "test.xml", "SHA-256"));
 
         final byte[] exposed = result.parsedSource().getSourceBytes();
         exposed[0] = '!';

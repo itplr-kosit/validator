@@ -8,14 +8,14 @@
 
     <xsl:output method="xml" indent="yes" />
 
-    <xsl:param name="input-document" as="document-node(element())" required="yes" />
+    <xsl:param name="VInput-document" as="document-node(element())" required="yes" />
 
 
     <xsl:template match="xvrl:reports">
         <report xmlns="http://validator.kosit.de/test-report">
-            <input>
-                <xsl:copy-of select="$input-document" />
-            </input>
+            <VInput>
+                <xsl:copy-of select="$VInput-document" />
+            </VInput>
             <result>
                 <xsl:copy-of select="." />
             </result>

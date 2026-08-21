@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.cmd.report.Grid;
 import org.kosit.validator.cmd.report.Grid.ColumnDefinition;
 import org.kosit.validator.cmd.report.Justify;
 import org.kosit.validator.cmd.report.Line;
-import org.kosit.validator.impl.DefaultCheck;
+import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.tasks.CheckAction;
 import org.slf4j.Logger;
@@ -24,14 +24,14 @@ import org.slf4j.LoggerFactory;
 import net.sf.saxon.s9api.Processor;
 
 /**
- * Simple extension of the {@link DefaultCheck} class to evaluate and output the result of the assertion check. This
+ * Simple extension of the {@link DefaultVCheck} class to evaluate and output the result of the assertion check. This
  * class does not represent a functional extension of the actual validation process!
  *
  * @author Andreas Penski
  */
-class InternalCheck extends DefaultCheck {
+class InternalVCheck extends DefaultVCheck {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InternalCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternalVCheck.class);
 
     private int checkAssertions = 0;
 
@@ -42,7 +42,7 @@ class InternalCheck extends DefaultCheck {
      *
      * @param configuration the configuration
      */
-    InternalCheck(final EngineInformation engineInformation, final Processor processor, final Configuration... configuration) {
+    InternalVCheck(final EngineInformation engineInformation, final Processor processor, final Configuration... configuration) {
         super(engineInformation, processor, configuration);
     }
 
@@ -93,12 +93,12 @@ class InternalCheck extends DefaultCheck {
     /**
      * Validates the test documents and outputs information about any assertions.
      *
-     * @param input the test documents
+     * @param VInput the test documents
      * @return false if there are assertion errors, otherwise true
      */
     @Override
-    public Result checkInput(final Input input) {
-        final CheckAction.Process process = new CheckAction.Process(input, createXVRLMetadata());
+    public Result checkInput(final VInput VInput) {
+        final CheckAction.Process process = new CheckAction.Process(VInput, createXVRLMetadata());
         return runCheckInternal(process);
     }
 

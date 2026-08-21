@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.Strings;
-import org.kosit.validator.api.Check;
+import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
@@ -35,7 +35,7 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
 
 /**
- * Configuration class that loads necessary {@link Check} configuration from an existing scenario.xml specification.
+ * Configuration class that loads necessary {@link VCheck} configuration from an existing scenario.xml specification.
  * This is the recommended option when an official configuration exists as is the case with 'xrechnung'.
  * 
  * @author Andreas Penski

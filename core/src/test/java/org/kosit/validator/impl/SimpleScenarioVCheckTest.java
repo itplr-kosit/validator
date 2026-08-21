@@ -17,14 +17,14 @@ import org.kosit.validator.impl.Helper.Simple;
  *
  * @author Andreas Penski
  */
-public class SimpleScenarioCheckTest {
+public class SimpleScenarioVCheckTest {
 
-    private DefaultCheck implementation;
+    private DefaultVCheck implementation;
 
     @BeforeEach
     public void setup() {
         final Configuration d = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        this.implementation = new DefaultCheck(new TestEngineInformation(), d);
+        this.implementation = new DefaultVCheck(new TestEngineInformation(), d);
     }
 
     @Test

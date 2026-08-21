@@ -30,7 +30,7 @@ public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InternalCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternalVCheck.class);
 
     private final Path output = Paths.get("target/test-output");
 

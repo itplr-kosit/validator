@@ -2,7 +2,7 @@ package org.kosit.validator.impl.input;
 
 import java.io.InputStream;
 
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 
 /**
  * Internal interface used for lazy generation of the hashcode for document identification.
@@ -27,7 +27,7 @@ interface LazyReadInput {
     boolean isHashcodeComputed();
 
     /**
-     * Setting the length of the {@link Input}.
+     * Setting the length of the {@link VInput}.
      * 
      * @param length the length
      */

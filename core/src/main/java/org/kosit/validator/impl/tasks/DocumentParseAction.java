@@ -12,11 +12,11 @@ import java.util.Collections;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.conformatron.model.ValidationSource;
 import org.kosit.validator.impl.conformatron.model.XdmNodeValidationSource;
-import org.kosit.validator.impl.input.StreamHelper;
-import org.kosit.validator.impl.input.XdmNodeInput;
+import org.kosit.validator.impl.input.*;
+import org.kosit.validator.impl.input.XdmNodeVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
@@ -63,7 +63,7 @@ public class DocumentParseAction implements CheckAction {
      *
      * @param result the legacy parse result consumed by the downstream steps
      * @param parsedSource the conformatron handshake object; {@code null} on parse failure or when the source bytes
-     *            could not be retained (e.g. {@link XdmNodeInput} shortcut)
+     *            could not be retained (e.g. {@link XdmNodeVInput} shortcut)
      */
     public record ParseOutcome(Result<XdmNode, XMLSyntaxError> result, XdmNodeValidationSource parsedSource) {
     }
@@ -75,7 +75,7 @@ public class DocumentParseAction implements CheckAction {
      * @param content a document
      * @return result of the parsing including any errors
      */
-    public Result<XdmNode, XMLSyntaxError> parseDocument(final Input content) {
+    public Result<XdmNode, XMLSyntaxError> parseDocument(final VInput content) {
         return parseRetaining(content).result();
     }
 
@@ -88,14 +88,14 @@ public class DocumentParseAction implements CheckAction {
      * @param content a document
      * @return the legacy parse result plus the conformatron handshake object (if available)
      */
-    public ParseOutcome parseRetaining(final Input content) {
+    public ParseOutcome parseRetaining(final VInput content) {
         if (content == null) {
             throw new IllegalArgumentException("Input may not be null");
         }
         try {
-            if (content instanceof XdmNodeInput && hasCompatibleConfiguration((XdmNodeInput) content)) {
+            if (content instanceof XdmNodeVInput && hasCompatibleConfiguration((XdmNodeVInput) content)) {
                 // parsing not necessary; no source bytes available for the conformatron handshake object
-                return new ParseOutcome(new Result<>(((XdmNodeInput) content).getNode()), null);
+                return new ParseOutcome(new Result<>(((XdmNodeVInput) content).getNode()), null);
             }
             final DocumentBuilder builder = this.processor.newDocumentBuilder();
             builder.setLineNumbering(true);
@@ -122,7 +122,7 @@ public class DocumentParseAction implements CheckAction {
         }
     }
 
-    private boolean hasCompatibleConfiguration(final XdmNodeInput content) {
+    private boolean hasCompatibleConfiguration(final XdmNodeVInput content) {
         return content.getNode().getProcessor().getUnderlyingConfiguration().isCompatible(this.processor.getUnderlyingConfiguration());
     }
 

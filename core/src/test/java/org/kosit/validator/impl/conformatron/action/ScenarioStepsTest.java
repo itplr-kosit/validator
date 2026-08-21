@@ -13,7 +13,7 @@ import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.scenario.ICTScenarioMatch;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -30,9 +30,9 @@ public class ScenarioStepsTest {
     private final SelectScenarioAction selectAction = new SelectScenarioAction();
 
     private static XdmNodeValidationSource parseSimple() {
-        final Input input = read(Simple.SIMPLE_VALID);
+        final VInput VInput = read(Simple.SIMPLE_VALID);
         // same processor as the scenario match executables (Saxon configuration compatibility)
-        final DocumentParseAction.ParseOutcome outcome = new DocumentParseAction(ProcessorProvider.getProcessor()).parseRetaining(input);
+        final DocumentParseAction.ParseOutcome outcome = new DocumentParseAction(ProcessorProvider.getProcessor()).parseRetaining(VInput);
         return outcome.parsedSource();
     }
 
@@ -52,7 +52,7 @@ public class ScenarioStepsTest {
     @Test
     public void testDetectAcceptsDomParsedContentViaWrapping() {
         // the step-2 reference action produces a DOM source; a configured processor wraps it for the XPath matching
-        final ParseDocumentAction.ParseDocumentResult parsed = new ParseDocumentAction().execute(read(Simple.SIMPLE_VALID));
+        final ParseXMLAction.ParseXMLResult parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID));
         final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
 
         final DetectScenariosAction.DetectScenariosResult result = new DetectScenariosAction(repository, ProcessorProvider.getProcessor())

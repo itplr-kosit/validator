@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.api.XmlError;
@@ -66,12 +66,12 @@ public class ConformanceValidation implements ValidationEngine<Result> {
     /**
      * Full conformance validation ({@link ValidationEngine} contract): runs the complete pipeline over the document.
      *
-     * @param input the document to validate
+     * @param VInput the document to validate
      * @return the assembled {@link Result}
      */
     @Override
-    public Result validate(final Input input) {
-        return run(new Process(input, createMetadata()));
+    public Result validate(final VInput VInput) {
+        return run(new Process(VInput, createMetadata()));
     }
 
     /**

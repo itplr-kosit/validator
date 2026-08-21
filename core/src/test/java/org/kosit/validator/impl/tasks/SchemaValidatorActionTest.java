@@ -18,14 +18,14 @@ import javax.xml.validation.Validator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.*;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.XmlError.Severity;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.TestObjectFactory;
-import org.kosit.validator.impl.input.SourceInput;
+import org.kosit.validator.impl.input.SourceVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
@@ -57,8 +57,8 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testValidationFailure() throws MalformedURLException {
-        final Input input = InputFactory.read(Simple.SCHEMA_INVALID.toURL());
-        final Process process = TestProcessBuilder.create(input).build();
+        final VInput VInput = InputFactory.read(Simple.SCHEMA_INVALID.toURL());
+        final Process process = TestProcessBuilder.create(VInput).build();
         final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
         final Result<Boolean, XMLSyntaxError> result = processStepResult.getResult();
         assertThat(result.isValid()).isFalse();
@@ -90,7 +90,7 @@ public class SchemaValidatorActionTest {
     @Test
     public void testNoRepeatableReadBigFile() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
-            final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(inputStream));
+            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(inputStream));
             final Process process = TestProcessBuilder.create(input).build();
             // process.addStepResult(Helper.createParseResult(Simple.SIMPLE_VALID));
 
@@ -108,7 +108,7 @@ public class SchemaValidatorActionTest {
     public void testNoRepeatableReaderInput() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
               final Reader reader = new InputStreamReader(inputStream) ) {
-            final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(reader));
+            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(reader));
             final Process process = TestProcessBuilder.create(input).build();
             this.service.check(process);
             final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
@@ -122,7 +122,7 @@ public class SchemaValidatorActionTest {
     public void testNoRepeatableReaderInputBigFile() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
               final Reader reader = new InputStreamReader(inputStream) ) {
-            final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(reader));
+            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(reader));
             final Process process = TestProcessBuilder.create(input).setParseResult(InputFactory.read(Simple.SIMPLE_VALID)).build();
             // set limit and length for serialization to 5 bytes
             this.service.setInMemoryLimit(5L);

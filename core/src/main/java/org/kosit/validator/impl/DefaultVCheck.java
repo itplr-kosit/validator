@@ -6,11 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.kosit.validator.api.Check;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.Result;
-import org.kosit.validator.api.ValidationEngine;
+import org.kosit.validator.api.*;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
 import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
@@ -22,8 +19,6 @@ import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
 import org.kosit.validator.impl.tasks.SchemaValidationAction;
 import org.kosit.validator.impl.tasks.SchematronValidationAction;
 import org.kosit.validator.impl.xml.ProcessorProvider;
-import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.svrl.impl.SvrlConversionService;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.XVRLMetadata;
@@ -38,9 +33,9 @@ import net.sf.saxon.s9api.Processor;
  *
  * @author Andreas Penski
  */
-public class DefaultCheck implements Check, ValidationEngine<Result> {
+public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultVCheck.class);
 
     private final XvrlConversionService xvrlConversionService;
 
@@ -56,7 +51,7 @@ public class DefaultCheck implements Check, ValidationEngine<Result> {
 
     private final ConformanceValidation conformanceValidation;
 
-    public DefaultCheck(final EngineInformation engineInformation, final Configuration... configuration) {
+    public DefaultVCheck(final EngineInformation engineInformation, final Configuration... configuration) {
         this(engineInformation, ProcessorProvider.getProcessor(), configuration);
     }
 
@@ -67,7 +62,7 @@ public class DefaultCheck implements Check, ValidationEngine<Result> {
      * @param processor Saxon processor
      * @param configuration the Configuration
      */
-    public DefaultCheck(EngineInformation engineInformation, final Processor processor, final Configuration... configuration) {
+    public DefaultVCheck(EngineInformation engineInformation, final Processor processor, final Configuration... configuration) {
         this.engineInformation = engineInformation;
         this.configuration = Arrays.asList(configuration);
         this.processor = processor;
@@ -93,26 +88,26 @@ public class DefaultCheck implements Check, ValidationEngine<Result> {
     }
 
     @Override
-    public Result checkInput(final Input input) {
-        final Process checkProcess = new Process(input, createXVRLMetadata());
+    public Result checkInput(final VInput VInput) {
+        final Process checkProcess = new Process(VInput, createXVRLMetadata());
         return runCheckInternal(checkProcess);
     }
 
     /**
      * Full conformance validation ({@link ValidationEngine} contract) — same run as the legacy
-     * {@link #checkInput(Input)}, executed by the {@link ConformanceValidation} mode class.
+     * {@link #checkInput(VInput)}, executed by the {@link ConformanceValidation} mode class.
      */
     @Override
-    public Result validate(final Input input) {
-        return checkInput(input);
+    public Result validate(final VInput VInput) {
+        return checkInput(VInput);
     }
 
     /**
      * Convenience for the ad-hoc mode: validates directly against the given Schematron using the
      * {@link SchematronValidation} engine (see {@link ValidationEngine}).
      */
-    public SchematronValidation.AdHocValidationResult validateAdHoc(final Input input, final URI schematron) {
-        return this.adHocValidation.validate(input, schematron);
+    public SchematronValidation.AdHocValidationResult validateAdHoc(final VInput VInput, final URI schematron) {
+        return this.adHocValidation.validate(VInput, schematron);
     }
 
     protected Result runCheckInternal(final Process checkProcess) {

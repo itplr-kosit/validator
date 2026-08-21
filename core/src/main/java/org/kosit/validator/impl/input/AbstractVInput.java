@@ -5,18 +5,18 @@ import static org.kosit.validator.impl.input.StreamHelper.drain;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base class for all {@link Input Inputs}.
+ * Base class for all {@link VInput Inputs}.
  * 
  * @author Andreas Penski
  */
-public abstract class AbstractInput implements Input, LazyReadInput {
+public abstract class AbstractVInput implements VInput, LazyReadInput {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractInput.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractVInput.class);
 
     private byte[] hashCode;
 

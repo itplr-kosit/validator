@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.kosit.validator.api.Configuration;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.*;
 
 /**
  * Default implementation class for {@link Configuration}. This class contains all information to run a
- * {@link org.kosit.validator.impl.DefaultCheck}.
+ * {@link DefaultVCheck}.
  * 
  * @author Andreas Penski
  */

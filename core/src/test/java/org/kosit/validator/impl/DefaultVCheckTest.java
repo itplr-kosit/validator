@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.impl.Helper.Simple;
@@ -40,34 +40,34 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
-public class DefaultCheckTest {
+public class DefaultVCheckTest {
 
     public static final int MULTI_COUNT = 5;
 
-    private DefaultCheck validCheck;
+    private DefaultVCheck validCheck;
 
     // for checking certain error scenarios.
-    private DefaultCheck errorCheck;
+    private DefaultVCheck errorCheck;
 
-    private DefaultCheck jarScenarioCheck;
+    private DefaultVCheck jarScenarioCheck;
 
     final private EngineInformation engineInformation = new TestEngineInformation();
 
     @BeforeEach
     public void setup() throws URISyntaxException {
         final Configuration validConfig = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        this.validCheck = new DefaultCheck(this.engineInformation, validConfig);
+        this.validCheck = new DefaultVCheck(this.engineInformation, validConfig);
 
         final Configuration errorConfig = Configuration.load(Simple.ERROR_SCENARIOS, Simple.REPOSITORY_URI)
                 .build(Helper.getTestProcessor());
-        this.errorCheck = new DefaultCheck(this.engineInformation, errorConfig);
+        this.errorCheck = new DefaultVCheck(this.engineInformation, errorConfig);
 
         final Configuration jarConfig = Configuration
-                .load(requireNonNull(DefaultCheckTest.class.getClassLoader().getResource("simple/packaged/scenarios.xml")).toURI(),
-                        requireNonNull(DefaultCheckTest.class.getClassLoader().getResource("simple/packaged/repository/")).toURI())
+                .load(requireNonNull(DefaultVCheckTest.class.getClassLoader().getResource("simple/packaged/scenarios.xml")).toURI(),
+                        requireNonNull(DefaultVCheckTest.class.getClassLoader().getResource("simple/packaged/repository/")).toURI())
                 .build(Helper.getTestProcessor());
 
-        this.jarScenarioCheck = new DefaultCheck(this.engineInformation, jarConfig);
+        this.jarScenarioCheck = new DefaultVCheck(this.engineInformation, jarConfig);
     }
 
     @Test
@@ -120,16 +120,16 @@ public class DefaultCheckTest {
     @Test
     public void testMultipleCase() {
         @SuppressWarnings("unused")
-        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
-        final List<Result> docs = this.validCheck.checkInput(input);
+        final List<VInput> VInput = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
+        final List<Result> docs = this.validCheck.checkInput(VInput);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
     @Test
     public void testMultipleCaseDocument() {
         @SuppressWarnings("unused")
-        final List<Input> input = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
-        final List<Document> docs = this.validCheck.check(input);
+        final List<VInput> VInput = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
+        final List<Document> docs = this.validCheck.check(VInput);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
@@ -241,14 +241,14 @@ public class DefaultCheckTest {
     @Test
     public void testXdmNode() throws Exception {
         XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
-        Input domInput = InputFactory.read(node, "node test");
-        Result result = this.validCheck.checkInput(domInput);
+        VInput domVInput = InputFactory.read(node, "node test");
+        Result result = this.validCheck.checkInput(domVInput);
         assertThat(result.isProcessingSuccessful()).isTrue();
 
         // test compatible configuration
         node = this.validCheck.getProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
-        domInput = InputFactory.read(node, "node test");
-        result = this.validCheck.checkInput(domInput);
+        domVInput = InputFactory.read(node, "node test");
+        result = this.validCheck.checkInput(domVInput);
         assertThat(result.isProcessingSuccessful()).isTrue();
     }
 }

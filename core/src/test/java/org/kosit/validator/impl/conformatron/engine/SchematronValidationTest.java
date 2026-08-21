@@ -1,7 +1,7 @@
 package org.kosit.validator.impl.conformatron.engine;
 
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ParseDocumentAction;
+import org.kosit.validator.impl.conformatron.action.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,6 +74,6 @@ public class SchematronValidationTest {
                 Simple.REPOSITORY_URI.resolve("simple.sch"));
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.detections().getAll()).extracting("code").contains(ParseDocumentAction.CODE_NOT_WELLFORMED);
+        assertThat(result.detections().getAll()).extracting("code").contains(ParseXMLAction.CODE_NOT_WELLFORMED);
     }
 }

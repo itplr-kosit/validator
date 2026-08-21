@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
-import org.kosit.validator.impl.input.SourceInput;
+import org.kosit.validator.impl.input.SourceVInput;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.w3c.dom.Document;
@@ -38,7 +38,7 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
-public class InputFactoryTest {
+public class VInputFactoryTest {
 
     public static final String SOME_VALUE = "some value";
 
@@ -70,14 +70,14 @@ public class InputFactoryTest {
 
     @Test
     public void testInputByte() {
-        final Input input = InputFactory.read(SOME_VALUE.getBytes(), SOME_VALUE);
-        assertThat(input).isNotNull();
+        final VInput VInput = InputFactory.read(SOME_VALUE.getBytes(), SOME_VALUE);
+        assertThat(VInput).isNotNull();
     }
 
     @Test
     public void testInputStream() {
-        final Input input = InputFactory.read(new ByteArrayInputStream(SOME_VALUE.getBytes()), SOME_VALUE);
-        assertThat(input).isNotNull();
+        final VInput VInput = InputFactory.read(new ByteArrayInputStream(SOME_VALUE.getBytes()), SOME_VALUE);
+        assertThat(VInput).isNotNull();
     }
 
     @Test
@@ -87,14 +87,14 @@ public class InputFactoryTest {
 
     @Test
     public void testInputFile() {
-        final Input input = InputFactory.read(new File(Simple.SIMPLE_VALID));
-        assertThat(input).isNotNull();
+        final VInput VInput = InputFactory.read(new File(Simple.SIMPLE_VALID));
+        assertThat(VInput).isNotNull();
     }
 
     @Test
     public void testInputPath() {
-        final Input input = InputFactory.read(Paths.get(Simple.SIMPLE_VALID));
-        assertThat(input).isNotNull();
+        final VInput VInput = InputFactory.read(Paths.get(Simple.SIMPLE_VALID));
+        assertThat(VInput).isNotNull();
     }
 
     @Test
@@ -110,15 +110,15 @@ public class InputFactoryTest {
     @Test
     public void testEmptyInputName() {
         assertThrows(IllegalArgumentException.class, () -> {
-            final Input input = InputFactory.read(SOME_VALUE.getBytes(), "");
-            drain(input);
+            final VInput VInput = InputFactory.read(SOME_VALUE.getBytes(), "");
+            drain(VInput);
         });
     }
 
     @Test
     public void testSourceInput() throws IOException {
         try ( final InputStream s = Simple.SIMPLE_VALID.toURL().openStream() ) {
-            final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(s));
+            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(s));
             assertThat(input.getSource()).isNotNull();
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
@@ -131,7 +131,7 @@ public class InputFactoryTest {
     public void testSourceInputReader() throws IOException {
         try ( final InputStream s = Simple.SIMPLE_VALID.toURL().openStream();
               final InputStreamReader reader = new InputStreamReader(s) ) {
-            final SourceInput input = (SourceInput) InputFactory.read(new StreamSource(reader));
+            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(reader));
             assertThat(input.getSource()).isNotNull();
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
@@ -153,27 +153,27 @@ public class InputFactoryTest {
         handler.startDocument();
         handler.startElement("http://some.ns", "mynode", "mynode", new AttributesImpl());
         final Document dom = NodeOverNodeInfo.wrap(handler.getDocumentNode().getUnderlyingNode()).getOwnerDocument();
-        final Input domInput = InputFactory.read(new DOMSource(dom), "MD5", "id".getBytes());
-        assertThat(domInput).isNotNull();
-        assertThat(domInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(domInput);
+        final VInput domVInput = InputFactory.read(new DOMSource(dom), "MD5", "id".getBytes());
+        assertThat(domVInput).isNotNull();
+        assertThat(domVInput.getSource()).isNotNull();
+        final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(domVInput);
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
-        assertThat(Helper.parseDocument(domInput).getObject()).isNotNull();
+        assertThat(Helper.parseDocument(domVInput).getObject()).isNotNull();
     }
 
     @Test
     public void testXdmNode() throws Exception {
         final XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
-        final Input nodeInput = InputFactory.read(node, "node test");
-        assertThat(nodeInput).isNotNull();
-        assertThat(nodeInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(nodeInput);
+        final VInput nodeVInput = InputFactory.read(node, "node test");
+        assertThat(nodeVInput).isNotNull();
+        assertThat(nodeVInput.getSource()).isNotNull();
+        final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(nodeVInput);
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
-        assertThat(Helper.parseDocument(nodeInput).getObject()).isNotNull();
+        assertThat(Helper.parseDocument(nodeVInput).getObject()).isNotNull();
     }
 
 }

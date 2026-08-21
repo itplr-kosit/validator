@@ -10,6 +10,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.ReaderInputStream;
+import org.kosit.validator.api.VInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,7 @@ import jakarta.xml.bind.util.JAXBSource;
 import net.sf.saxon.om.TreeInfo;
 
 /**
- * A validator {@link org.kosit.validator.api.Input} based on a {@link Source}.
+ * A validator {@link VInput} based on a {@link Source}.
  * <p>
  * Note: The various implementations of {@link Source} vary whether they can be read twice or not. This implementation
  * tries to handle this with respect document identification (hashcode).
@@ -34,9 +35,9 @@ import net.sf.saxon.om.TreeInfo;
  * 
  * @author Andreas Penski
  */
-public class SourceInput extends AbstractInput {
+public class SourceVInput extends AbstractVInput {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SourceInput.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SourceVInput.class);
 
     private final Source source;
 
@@ -44,11 +45,11 @@ public class SourceInput extends AbstractInput {
 
     private final String digestAlgorithm;
 
-    public SourceInput(final StreamSource source, final String name, final String digestAlgorithm) {
+    public SourceVInput(final StreamSource source, final String name, final String digestAlgorithm) {
         this(source, name, digestAlgorithm, null);
     }
 
-    public SourceInput(final Source source, final String name, final String digestAlgorithm, final byte[] hashCode) {
+    public SourceVInput(final Source source, final String name, final String digestAlgorithm, final byte[] hashCode) {
         this.source = source;
         this.name = name;
         this.digestAlgorithm = digestAlgorithm;

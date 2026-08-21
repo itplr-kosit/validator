@@ -12,6 +12,7 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
@@ -143,7 +144,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     }
 
     /**
-     * Validate matching {@link org.kosit.validator.api.Input Inputs} with the specified schema configuration.
+     * Validate matching {@link VInput Inputs} with the specified schema configuration.
      * 
      * @param schema the schema configuration
      * @return this
@@ -166,7 +167,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     }
 
     /**
-     * Add a configuration for generating the final report for the {@link org.kosit.validator.api.Input}.
+     * Add a configuration for generating the final report for the {@link VInput}.
      * 
      * @param reportBuilder the report configuration
      * @return this

@@ -20,10 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.fusesource.jansi.AnsiRenderer.Code;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.api.Result;
+import org.kosit.validator.api.*;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
@@ -86,7 +84,7 @@ public class Validator {
         long start = System.currentTimeMillis();
         final Processor processor = ProcessorProvider.getProcessor();
         final List<Configuration> config = getConfiguration(cmd);
-        final InternalCheck check = new InternalCheck(cmd.getEngineInformation(), processor, config.toArray(new Configuration[0]));
+        final InternalVCheck check = new InternalVCheck(cmd.getEngineInformation(), processor, config.toArray(new Configuration[0]));
         final CommandLineOptions.CliOptions cliOptions = getIfNull(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
         if (cliOptions.isExtractReport()) {
@@ -101,13 +99,13 @@ public class Validator {
             check.getCheckSteps().add(new PrintMemoryStats());
         }
         LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
-        final Collection<Input> targets = determineTestTargets(cliOptions);
+        final Collection<VInput> targets = determineTestTargets(cliOptions);
         start = System.currentTimeMillis();
         final Map<String, Result> results = new HashMap<>();
         Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
         long tick = System.currentTimeMillis();
-        for (final Input input : targets) {
-            results.put(input.getName(), check.checkInput(input));
+        for (final VInput VInput : targets) {
+            results.put(VInput.getName(), check.checkInput(VInput));
             if (((System.currentTimeMillis() - tick) / 1000) > 5) {
                 tick = System.currentTimeMillis();
                 Printer.writeOut("{0}/{1} object(s) processed", results.size(), targets.size());
@@ -207,8 +205,8 @@ public class Validator {
         return dir;
     }
 
-    private static Collection<Input> determineTestTargets(final CommandLineOptions.CliOptions cmd) throws IOException {
-        final Collection<Input> targets = new ArrayList<>();
+    private static Collection<VInput> determineTestTargets(final CommandLineOptions.CliOptions cmd) throws IOException {
+        final Collection<VInput> targets = new ArrayList<>();
         if (cmd.getFiles() != null && !cmd.getFiles().isEmpty()) {
             cmd.getFiles().forEach(e -> targets.addAll(determineTestTarget(e)));
         }
@@ -229,11 +227,11 @@ public class Validator {
 
     // sanitation is delegated to xml stack
     @SuppressWarnings("java:S4829")
-    private static Input readFromPipe() {
+    private static VInput readFromPipe() {
         return InputFactory.read(System.in, "stdin");
     }
 
-    private static Collection<Input> determineTestTarget(final Path d) {
+    private static Collection<VInput> determineTestTarget(final Path d) {
         if (Files.isDirectory(d)) {
             return listDirectoryTargets(d);
         } else if (Files.exists(d)) {
@@ -243,7 +241,7 @@ public class Validator {
         return Collections.emptyList();
     }
 
-    private static Collection<Input> listDirectoryTargets(final Path d) {
+    private static Collection<VInput> listDirectoryTargets(final Path d) {
         try ( Stream<Path> stream = Files.list(d) ) {
             return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(InputFactory::read)
                     .collect(Collectors.toList());

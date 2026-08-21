@@ -15,6 +15,7 @@
  */
 package org.kosit.validator.impl.conformatron.action;
 
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.conformatron.model.ValidationSource;
 import org.kosit.validator.impl.conformatron.util.SourceDigest;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
@@ -41,7 +42,6 @@ import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.detection.ICTDetection;
 import org.conformatron.api.model.detection.ICTDetectionList;
 import org.conformatron.api.model.source.ICTValidationSource;
-import org.kosit.validator.api.Input;
 import org.kosit.validator.impl.input.StreamHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ import org.xml.sax.SAXParseException;
  * First validator action built against the conformatron-api: step 2 of the canonical pipeline, {@code PARSE_DOCUMENT}
  * (see {@code conformatron-api/doc/steps/step-02-parse-document.md}).
  * <p>
- * Facade strategy: the legacy {@link Input} abstraction keeps doing the heavy lifting of accessing the data. This
+ * Facade strategy: the legacy {@link VInput} abstraction keeps doing the heavy lifting of accessing the data. This
  * action retains the entire source document as an immutable byte array, computes the SHA-512 hash (via
  * {@link SourceDigest}, ADR-003) and parses the document into a W3C DOM <b>without line numbering</b>
  * (ADR-001/ADR-002), producing a {@link DomValidationSource}.
@@ -64,13 +64,14 @@ import org.xml.sax.SAXParseException;
  * ({@code not-wellformed}, one FATAL detection per parser error with line/column) and IO failure
  * ({@code source-read-error}, FATAL). Failures cancel the process; the detections still contribute to the (partial)
  * CVRL report.
+ * In the future we need to also cover each other detected syntaxes (e.g. JSON, edfact etc.) (result from Step 1)
  * </p>
  *
  * @author Andreas Schmitz
  */
-public class ParseDocumentAction implements ICTAction {
+public class ParseXMLAction implements ICTAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParseDocumentAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParseXMLAction.class);
 
     /** Detection code on success. */
     public static final String CODE_DOCUMENT_PARSED = "document-parsed";
@@ -90,7 +91,7 @@ public class ParseDocumentAction implements ICTAction {
      *            ({@code isParsed() == false}). {@code null} only when the source could not be read at all.
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record ParseDocumentResult(ECTStepResult status, DomValidationSource parsedSource, ICTDetectionList detections) {
+    public record ParseXMLResult(ECTStepResult status, DomValidationSource parsedSource, ICTDetectionList detections) {
 
         public boolean isSuccess() {
             return this.status == ECTStepResult.SUCCESS;
@@ -108,27 +109,27 @@ public class ParseDocumentAction implements ICTAction {
     }
 
     /**
-     * Parses the document supplied by the legacy {@link Input} and checks well-formedness.
+     * Parses the document supplied by the legacy {@link VInput} and checks well-formedness.
      *
-     * @param input the legacy input carrying the document
+     * @param VInput the legacy input carrying the document
      * @return the result including the {@link DomValidationSource} on success and any detections
      */
-    public ParseDocumentResult execute(final Input input) {
-        if (input == null) {
+    public ParseXMLResult execute(final VInput VInput) {
+        if (VInput == null) {
             throw new IllegalArgumentException("Input may not be null");
         }
-        final ValidationSource source = ValidationSource.of(input);
+        final ValidationSource source = ValidationSource.of(VInput);
         final byte[] bytes;
         try {
-            bytes = readBytes(input);
+            bytes = readBytes(VInput);
         } catch (final IOException e) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exception while reading {}", input.getName(), e);
+                LOGGER.debug("Exception while reading {}", VInput.getName(), e);
             }
             final Detection detection = new Detection(ECTSeverity.FATAL_ERROR, CODE_SOURCE_READ_ERROR,
-                    DetectionLocation.ofResource(input.getName()),
-                    "IOException while reading resource " + input.getName() + ": " + e.getMessage(), e);
-            return new ParseDocumentResult(ECTStepResult.FAILURE, null, DetectionList.of(detection));
+                    DetectionLocation.ofResource(VInput.getName()),
+                    "IOException while reading resource " + VInput.getName() + ": " + e.getMessage(), e);
+            return new ParseXMLResult(ECTStepResult.FAILURE, null, DetectionList.of(detection));
         }
         return parse(source, bytes);
     }
@@ -140,37 +141,37 @@ public class ParseDocumentAction implements ICTAction {
      * @param bytes the entire source document; retained as immutable byte array
      * @return the result including the {@link DomValidationSource} on success and any detections
      */
-    public ParseDocumentResult parse(final ICTValidationSource source, final byte[] bytes) {
+    public ParseXMLResult parse(final ICTValidationSource source, final byte[] bytes) {
         final List<ICTDetection> errors = new ArrayList<>();
         try {
             final DocumentBuilder builder = createDocumentBuilder();
             builder.setErrorHandler(new CollectingErrorHandler(source.getName(), errors));
             final Document dom = builder.parse(new ByteArrayInputStream(bytes), source.getName());
             if (!errors.isEmpty()) {
-                return new ParseDocumentResult(ECTStepResult.FAILURE, DomValidationSource.unparsed(source, bytes),
+                return new ParseXMLResult(ECTStepResult.FAILURE, DomValidationSource.unparsed(source, bytes),
                         new DetectionList(errors));
             }
             final DomValidationSource parsed = new DomValidationSource(source, bytes, dom);
             final Detection info = Detection.of(ECTSeverity.INFO, CODE_DOCUMENT_PARSED, DetectionLocation.ofResource(source.getName()),
                     parsed.getHashAlgorithmName() + "=" + SourceDigest.hashHex(bytes));
-            return new ParseDocumentResult(ECTStepResult.SUCCESS, parsed, DetectionList.of(info));
+            return new ParseXMLResult(ECTStepResult.SUCCESS, parsed, DetectionList.of(info));
         } catch (final SAXParseException e) {
             // already collected by CollectingErrorHandler#fatalError unless thrown directly
             if (errors.stream().noneMatch(d -> d.getLinkedException() == e)) {
                 errors.add(fatal(source.getName(), e));
             }
-            return new ParseDocumentResult(ECTStepResult.FAILURE, DomValidationSource.unparsed(source, bytes), new DetectionList(errors));
+            return new ParseXMLResult(ECTStepResult.FAILURE, DomValidationSource.unparsed(source, bytes), new DetectionList(errors));
         } catch (final SAXException | ParserConfigurationException e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exception while parsing {}", source.getName(), e);
             }
             errors.add(new Detection(ECTSeverity.FATAL_ERROR, CODE_NOT_WELLFORMED, DetectionLocation.ofResource(source.getName()),
                     e.getMessage(), e));
-            return new ParseDocumentResult(ECTStepResult.FAILURE, DomValidationSource.unparsed(source, bytes), new DetectionList(errors));
+            return new ParseXMLResult(ECTStepResult.FAILURE, DomValidationSource.unparsed(source, bytes), new DetectionList(errors));
         } catch (final IOException e) {
             errors.add(new Detection(ECTSeverity.FATAL_ERROR, CODE_SOURCE_READ_ERROR, DetectionLocation.ofResource(source.getName()),
                     e.getMessage(), e));
-            return new ParseDocumentResult(ECTStepResult.FAILURE, null, new DetectionList(errors));
+            return new ParseXMLResult(ECTStepResult.FAILURE, null, new DetectionList(errors));
         }
     }
 
@@ -184,11 +185,11 @@ public class ParseDocumentAction implements ICTAction {
         return factory.newDocumentBuilder();
     }
 
-    private static byte[] readBytes(final Input input) throws IOException {
-        final Source source = input.getSource();
+    private static byte[] readBytes(final VInput VInput) throws IOException {
+        final Source source = VInput.getSource();
         final byte[] bytes = StreamHelper.tryReadBytes(source);
         if (bytes == null) {
-            throw new IOException("Unsupported source type " + source.getClass().getName() + " for input " + input.getName());
+            throw new IOException("Unsupported source type " + source.getClass().getName() + " for input " + VInput.getName());
         }
         return bytes;
     }

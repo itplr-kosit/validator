@@ -13,7 +13,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.CountingInputStream;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 
 /**
  * Helper for stream handling.
@@ -137,7 +137,7 @@ public class StreamHelper {
     /**
      * Reads the entire content of the given {@link Source} into memory, so that the source document can be retained
      * as an immutable byte array (conformatron-api step 2, {@code parse-document}). Reading happens through the
-     * supplied stream, so any digest/counting wrapping of the owning {@link Input} stays intact.
+     * supplied stream, so any digest/counting wrapping of the owning {@link VInput} stays intact.
      *
      * @param source the source to read
      * @return the complete content, or {@code null} if the source type does not allow byte retention (callers must
@@ -172,18 +172,18 @@ public class StreamHelper {
     }
 
     /**
-     * Drains the {@link Input} without further processing. This is useful to computing hashcode etc.
+     * Drains the {@link VInput} without further processing. This is useful to computing hashcode etc.
      * 
-     * @param input the input
+     * @param VInput the input
      * @return the input drained once
      * @throws IOException on I/O errors
      */
-    public static Input drain(final Input input) throws IOException {
-        final StreamSource s = (StreamSource) input.getSource();
+    public static VInput drain(final VInput VInput) throws IOException {
+        final StreamSource s = (StreamSource) VInput.getSource();
         try ( final InputStream stream = s.getInputStream() ) {
             drain(stream);
         }
-        return input;
+        return VInput;
 
     }
 

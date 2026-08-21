@@ -1,7 +1,7 @@
 package org.kosit.validator.api;
 
 /**
- * The validation engine contract of the validator (successor of the legacy {@link Check} interface, see ADR-008): an
+ * The validation engine contract of the validator (successor of the legacy {@link VCheck} interface, see ADR-008): an
  * engine validates a document and returns its engine-specific result. This interface is a <b>pure contract</b> —
  * behavior lives in the individual implementing classes (validator design philosophy):
  *
@@ -28,8 +28,8 @@ public interface ValidationEngine<R> {
     /**
      * Validates the given document.
      *
-     * @param input the document to validate
+     * @param VInput the document to validate
      * @return the engine-specific result
      */
-    R validate(Input input);
+    R validate(VInput VInput);
 }

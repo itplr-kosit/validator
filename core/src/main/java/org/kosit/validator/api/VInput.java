@@ -19,7 +19,7 @@ import javax.xml.transform.Source;
  *             to be migrated.
  */
 @Deprecated(since = "2.0.0", forRemoval = true)
-public interface Input {
+public interface VInput {
 
     /**
      * The name of the input for document identification

@@ -251,7 +251,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- NPE in Result.getReportDocument for malformed xml input
+- NPE in Result.getReportDocument for malformed xml VInput
 
 ## 1.1.1
 
@@ -271,7 +271,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced API-Usage e.g. return *Result* object with processing information
 - Support loading scenarios and content from a JAR-File
 - Simple Daemon-Mode exposing validation functionality via http
-- cli option to serialize the 'report input' xml document to *cwd* (current working directory)
+- cli option to serialize the 'report VInput' xml document to *cwd* (current working directory)
 - Documentation in `docs` folder
 
 ### Changed

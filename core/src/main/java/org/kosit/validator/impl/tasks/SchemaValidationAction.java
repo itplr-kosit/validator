@@ -17,10 +17,10 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.io.FileUtils;
-import org.kosit.validator.api.Input;
+import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.input.AbstractInput;
+import org.kosit.validator.impl.input.AbstractVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.CheckAction.Process.Key;
@@ -38,12 +38,12 @@ import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Schema valiation of the {@link Input} with the schema of the supplied scenario. This implementation is based on JDK
+ * Schema valiation of the {@link VInput} with the schema of the supplied scenario. This implementation is based on JDK
  * functionality and therefore needs a {@link Source} to do the actual validation. Since we base the validator on Saxon
  * HE functionality, we have no support for schema in Saxon (e.g. the in memory version of the document is not
  * schema-aware) and need to re-read the actual source.
  *
- * Since the actual {@link Input} implementation may not be read twice, we must serialize the previously read document.
+ * Since the actual {@link VInput} implementation may not be read twice, we must serialize the previously read document.
  * This implementation tries to do the validation in an efficient manner. If possible the source is read a second time
  * to validate. If not, the source is serialized to the heap upon re-read/validaiton up to a configurable file size. The
  * document is serialized to a temporary file otherwise.
@@ -111,7 +111,7 @@ public class SchemaValidationAction implements CheckAction {
 
     private SourceProvider resolveSource(final Process results) throws IOException, SaxonApiException {
         final SourceProvider source;
-        if (results.getInput() instanceof AbstractInput && (((AbstractInput) results.getInput()).supportsMultipleReads())) {
+        if (results.getInput() instanceof AbstractVInput && (((AbstractVInput) results.getInput()).supportsMultipleReads())) {
             source = () -> results.getInput().getSource();
         } else {
             final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseAction.KEY);
@@ -122,9 +122,9 @@ public class SchemaValidationAction implements CheckAction {
 
     // intentionally return open stream/autoclosable here
     @SuppressWarnings("squid:S2095")
-    private SerializedDocument serialize(final Input input, final XdmNode object) throws IOException, SaxonApiException {
+    private SerializedDocument serialize(final VInput VInput, final XdmNode object) throws IOException, SaxonApiException {
         final SerializedDocument doc;
-        if (input instanceof AbstractInput && ((AbstractInput) input).getLength() < getInMemoryLimit()) {
+        if (VInput instanceof AbstractVInput && ((AbstractVInput) VInput).getLength() < getInMemoryLimit()) {
             doc = new ByteArraySerializedDocument(this.processor);
         } else {
             doc = new FileSerializedDocument(this.processor);

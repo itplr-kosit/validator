@@ -31,7 +31,7 @@ public class ApplyRulesActionTest {
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
     private static ICTParsedValidationSource parse(final URI document) {
-        final ParseDocumentAction.ParseDocumentResult parsed = new ParseDocumentAction().execute(read(document));
+        final ParseXMLAction.ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
         assertThat(parsed.isSuccess()).isTrue();
         return parsed.parsedSource();
     }
