@@ -3,8 +3,8 @@ image: maven:latest
 variables:
   BUILD_PROPS: "-Dbuild.revision=$CI_COMMIT_SHA -Dbuild.branch=$CI_COMMIT_REF_NAME -Dbuild.number=$CI_PIPELINE_IID -Dfile.encoding=UTF-8  -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Xmx6g"
-  MAVEN_CLI_OPTS: " --batch-mode  --update-snapshots --errors --fail-at-end --show-version -s .mvn/settings.xml"
-  MAVEN_CLI_OPTS_CENTRAL: " --batch-mode --show-version -s .mvn/settings-maven-central.xml"
+  MAVEN_CLI_OPTS: " --batch-mode --update-snapshots --errors --fail-at-end --show-version -s .mvn/settings.xml"
+  MAVEN_CLI_OPTS_CENTRAL: " --batch-mode --update-snapshots --show-version -s .mvn/settings-maven-central.xml"
 
 before_script:
   - export CI_JOB_TIMESTAMP="-Dbuild.timestamp=$(date --utc --iso-8601=seconds)"
