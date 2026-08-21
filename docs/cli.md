@@ -1,6 +1,6 @@
 # Validator Command Line Interface (CLI)
 
-The `validator` comes with a command line interface (CLI) which allows validating any number of VInput XML files.
+The `validator` comes with a command line interface (CLI) which allows validating any number of input XML files.
 
 **Important hint**: since v2.0.0 the filename has been changed from `validator-*` to `validator-cli-*` and the jar is now a Quarkus-based uber-jar.
 
@@ -10,14 +10,14 @@ The general way using the CLI is:
 java -jar  validator-cli-<version>.jar  -s <scenario-config-file> [OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
-The validator can also read the XML file from the standard VInput
+The validator can also read the XML file from the standard input
 
 ```shell
 # via redirection
-java -jar validator-cli-<version>.jar  -s <scenario-config-file> [OPTIONS] < my-VInput.xml
+java -jar validator-cli-<version>.jar  -s <scenario-config-file> [OPTIONS] < my-input.xml
 
 # read from pipe
-cat my-VInput.xml | java -jar validator-cli-<version>.jar  -s <scenario-config-file> [OPTIONS]
+cat my-input.xml | java -jar validator-cli-<version>.jar  -s <scenario-config-file> [OPTIONS]
 ```
 
 The help option displays further CLI options:

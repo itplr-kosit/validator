@@ -126,14 +126,14 @@
    it is not necessary to preprocess the schema.
    
    To summarize, a basic process flow for some commandline processor is like this:
-     XSLT -VInput=xxx.sch  -output=xxx.xsl  -stylesheet=iso_schematron_skeleton.xsl
-     XSLT -VInput=document.xml  -output=xxx-document.results  -stylesheet=xxx.xsl
+     XSLT -input=xxx.sch  -output=xxx.xsl  -stylesheet=iso_schematron_skeleton.xsl
+     XSLT -input=document.xml  -output=xxx-document.results  -stylesheet=xxx.xsl
    
    iso_svrl.xslt is an implementation of Schematron that can use this skeleton and
    generate ISO SVRL reports. A process flow for some commandline processor would
    be like this:
-     XSLT -VInput=xxx.sch  -output=xxx.xsl  -stylesheet=iso_svrl.xsl
-     XSLT -VInput=document.xml  -output=xxx-document.results  -stylesheet=xxx.xsl
+     XSLT -input=xxx.sch  -output=xxx.xsl  -stylesheet=iso_svrl.xsl
+     XSLT -input=document.xml  -output=xxx-document.results  -stylesheet=xxx.xsl
      
    It is not impossible that ultimately a third stage, to handle macro-preprocessing
    and inclusion, might be necessary. (The trade-off is in making this XSLT more

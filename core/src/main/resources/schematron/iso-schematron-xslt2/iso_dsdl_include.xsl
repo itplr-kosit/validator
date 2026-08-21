@@ -73,7 +73,7 @@
 	* Fix inclusion of fragments (KH)
 	
 	2008-07-25
-	* Add selectable VInput parameter
+	* Add selectable input parameter
 	
 	2008-07-24  
 	* RJ New
