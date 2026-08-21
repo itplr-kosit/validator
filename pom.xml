@@ -69,7 +69,7 @@
         <version.rest-assured>5.5.7</version.rest-assured>
         <version.saxon-he>12.9</version.saxon-he>
         <version.slf4j>2.0.17</version.slf4j>
-        <version.jaxb-maven-plugin>4.0.12</version.jaxb-maven-plugin>
+        <version.jaxb-maven-plugin>4.0.16</version.jaxb-maven-plugin>
         <version.xmlresolver>6.0.4</version.xmlresolver>
         <version.picocli>4.7.7</version.picocli>
         <version.jansi>2.4.1</version.jansi>

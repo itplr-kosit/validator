@@ -16,7 +16,7 @@ import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.xvrl.model.XVRLMetadata;
 import org.kosit.xvrl.model.XVRLReport;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 
 import net.sf.saxon.s9api.XdmNode;
 
@@ -62,9 +62,9 @@ public class TestProcessBuilder {
 
     private static List<ValidationResultsSchematron> createSchematronError() {
         final ValidationResultsSchematron v = new ValidationResultsSchematron();
-        final SchematronOutput out = new SchematronOutput();
+        final SchematronOutputType out = new SchematronOutputType();
         final FailedAssert f = new FailedAssert();
-        out.getActivePatternAndFiredRuleAndFailedAssert().add(f);
+        out.getActivePatternOrActiveGroupAndFiredRule().add(f);
         final Results r = new Results();
         r.setSchematronOutput(out);
         v.setResults(r);
@@ -161,7 +161,7 @@ public class TestProcessBuilder {
     public TestProcessBuilder schematronValid() {
         final ValidationResultsSchematron v = new ValidationResultsSchematron();
         final Results results = new Results();
-        results.setSchematronOutput(new SchematronOutput());
+        results.setSchematronOutput(new SchematronOutputType());
         v.setResults(results);
         return setSchematronResult(Collections.singletonList(v));
     }
@@ -169,8 +169,8 @@ public class TestProcessBuilder {
     public TestProcessBuilder schematronInvalid() {
         final ValidationResultsSchematron v = new ValidationResultsSchematron();
         final Results results = new Results();
-        results.setSchematronOutput(new SchematronOutput());
-        results.getSchematronOutput().getActivePatternAndFiredRuleAndFailedAssert().add(new FailedAssert());
+        results.setSchematronOutput(new SchematronOutputType());
+        results.getSchematronOutput().getActivePatternOrActiveGroupAndFiredRule().add(new FailedAssert());
         v.setResults(results);
         return setSchematronResult(Collections.singletonList(v));
     }
