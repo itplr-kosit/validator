@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
@@ -99,7 +98,7 @@ public class ConfigurationLoader {
     }
 
     private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
-        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).collect(Collectors.toList());
+        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).toList();
     }
 
     private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
@@ -158,12 +157,11 @@ public class ConfigurationLoader {
         final ScenariosConversionService conversionService = new ScenariosConversionService();
         final Scenarios scenarios = conversionService.withSchema(scenarioSchema).withEventHandler(handler).readXml(this.scenarioDefinition,
                 Scenarios.class);
-        if (!handler.hasErrors()) {
-            LOGGER.info("Loading scenario content from {}", this.getScenarioRepository());
-        } else {
+        if (handler.hasErrors()) {
             throw new IllegalStateException(
                     "Can not load scenarios from " + getScenarioDefinition() + " due to " + handler.getErrorDescription());
         }
+        LOGGER.info("Loading scenario content from {}", this.getScenarioRepository());
         return scenarios;
     }
 

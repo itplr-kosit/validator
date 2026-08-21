@@ -33,6 +33,7 @@ import javax.xml.validation.Schema;
 
 import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 import org.jspecify.annotations.Nullable;
+import org.kosit.jaxb.xml.XMLHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -587,10 +588,7 @@ public class JaxbConversionService {
     private <T> T readSecure(final StreamSource source, final Class<T> type, final String context) {
         requireType(type);
         try {
-            final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
-            inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-            inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
-            inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+            final XMLInputFactory inputFactory = XMLHelper.createSafeXMLInputFactory();
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(source);
             final Unmarshaller u = createUnmarshaller();
             return u.unmarshal(xsr, type).getValue();

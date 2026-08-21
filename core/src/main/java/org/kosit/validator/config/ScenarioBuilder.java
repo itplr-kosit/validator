@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
@@ -189,7 +188,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
             n.setPrefix(e.getKey());
             n.setValue(e.getValue());
             return n;
-        }).collect(Collectors.toList());
+        }).toList();
         scenario.getConfiguration().getNamespace().addAll(all);
     }
 

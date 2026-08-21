@@ -260,8 +260,7 @@ public class Grid {
     }
 
     public List<Cell> getColumn(final int index) {
-        return IntStream.range(0, this.values.size()).filter(n -> n % this.definitions.size() == index).mapToObj(this.values::get)
-                .collect(Collectors.toList());
+        return IntStream.range(0, this.values.size()).filter(n -> n % this.definitions.size() == index).mapToObj(this.values::get).toList();
     }
 
     public Grid addCell(final Cell cell) {

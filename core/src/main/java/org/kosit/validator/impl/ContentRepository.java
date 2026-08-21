@@ -233,7 +233,7 @@ public class ContentRepository {
         Schema schema = null;
         if (s.getValidateWithXmlSchema() != null) {
             final List<String> schemaResources = s.getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation)
-                    .collect(Collectors.toList());
+                    .toList();
             schema = createSchema(schemaResources);
         }
         return schema;
@@ -298,8 +298,7 @@ public class ContentRepository {
      */
     public List<Transformation> createReportTransformations(final ScenarioType t) {
         LOGGER.info("Create Report Transformations:");
-        return t.getCreateReport().stream().map(createReportType -> createTransformation(createReportType.getResource()))
-                .collect(Collectors.toList());
+        return t.getCreateReport().stream().map(createReportType -> createTransformation(createReportType.getResource())).toList();
     }
 
     public Transformation createTransformation(final ResourceType resource) {
@@ -321,7 +320,7 @@ public class ContentRepository {
 
     public List<Transformation> createSchematronTransformations(final ScenarioType s) {
         return s.getValidateWithSchematron().isEmpty() ? Collections.emptyList()
-                : s.getValidateWithSchematron().stream().map(this::createSchematronTransformation).collect(Collectors.toList());
+                : s.getValidateWithSchematron().stream().map(this::createSchematronTransformation).toList();
     }
 
     public Transformation createSchematronTransformation(final ValidateWithSchematron validateWithSchematron) {

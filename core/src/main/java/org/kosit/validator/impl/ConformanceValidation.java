@@ -4,11 +4,10 @@ import static org.kosit.validator.impl.DateFactory.createTimestamp;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.VInput;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -129,7 +128,7 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
                 .getResult(SchematronValidationTask.KEY);
         if (schematronValidationResult != null) {
             defaultResult.setSchematronResult(schematronValidationResult.getObject().stream()
-                    .map(schematronResult -> schematronResult.getResults().getSchematronOutput()).collect(Collectors.toList()));
+                    .map(schematronResult -> schematronResult.getResults().getSchematronOutput()).toList());
         }
         defaultResult.setProcessingSuccessful(!process.isStopped() && process.isFinished());
         return defaultResult;

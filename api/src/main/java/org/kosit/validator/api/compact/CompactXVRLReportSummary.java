@@ -49,7 +49,7 @@ public class CompactXVRLReportSummary {
      * @return list of {@link CompactXVRLReport}
      */
     public List<CompactXVRLReport> getReports() {
-        return original.getReports().stream().map(CompactXVRLReport::new).collect(Collectors.toList());
+        return original.getReports().stream().map(CompactXVRLReport::new).toList();
     }
 
     /**

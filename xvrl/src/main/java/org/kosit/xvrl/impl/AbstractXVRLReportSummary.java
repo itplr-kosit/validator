@@ -3,7 +3,6 @@ package org.kosit.xvrl.impl;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.kosit.xvrl.api.BaseReportSummary;
 import org.kosit.xvrl.model.XVRLReport;
@@ -23,14 +22,14 @@ public abstract class AbstractXVRLReportSummary implements BaseReportSummary, Se
 
         private final Class<T> type;
 
-        public FilteredList(List<Serializable> unfiltered, Class<T> type) {
+        public FilteredList(final List<Serializable> unfiltered, final Class<T> type) {
             this.unfiltered = unfiltered;
             this.type = type;
         }
 
         @Override
-        public T get(int index) {
-            return type.cast(unfiltered.stream().filter(type::isInstance).collect(Collectors.toList()).get(index));
+        public T get(final int index) {
+            return type.cast(unfiltered.stream().filter(type::isInstance).toList().get(index));
         }
 
         @Override
@@ -39,7 +38,7 @@ public abstract class AbstractXVRLReportSummary implements BaseReportSummary, Se
         }
 
         @Override
-        public boolean add(T element) {
+        public boolean add(final T element) {
             return unfiltered.add(element);
         }
     }

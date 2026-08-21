@@ -13,7 +13,6 @@ import static org.kosit.validator.impl.TestHelper.Simple.UNKNOWN;
 
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.xml.transform.stream.StreamSource;
@@ -21,10 +20,10 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VInputFactory;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
 import org.kosit.validator.impl.xml.ProcessorProvider;
@@ -121,7 +120,7 @@ public class DefaultVCheckTest {
     @Test
     public void testMultipleCase() {
         @SuppressWarnings("unused")
-        final List<VInput> VInput = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
+        final List<VInput> VInput = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
         final List<VResult> docs = this.validCheck.checkInput(VInput);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
@@ -129,7 +128,7 @@ public class DefaultVCheckTest {
     @Test
     public void testMultipleCaseDocument() {
         @SuppressWarnings("unused")
-        final List<VInput> VInput = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
+        final List<VInput> VInput = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
         final List<Document> docs = this.validCheck.check(VInput);
         assertThat(docs).hasSize(MULTI_COUNT);
     }

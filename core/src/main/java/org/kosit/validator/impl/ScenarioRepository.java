@@ -3,7 +3,6 @@ package org.kosit.validator.impl;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.model.Result;
@@ -46,7 +45,7 @@ public class ScenarioRepository {
     }
 
     public List<Scenario> getScenarios() {
-        return this.configuration.stream().flatMap(c -> c.getScenarios().stream()).collect(Collectors.toList());
+        return this.configuration.stream().flatMap(c -> c.getScenarios().stream()).toList();
     }
 
     private String summarizeScenarios() {
@@ -64,7 +63,7 @@ public class ScenarioRepository {
      * @return all matching scenarios, in configuration order; may be empty
      */
     public List<Scenario> findMatches(final XdmNode document) {
-        return getScenarios().stream().filter(s -> match(document, s)).collect(Collectors.toList());
+        return getScenarios().stream().filter(s -> match(document, s)).toList();
     }
 
     /**

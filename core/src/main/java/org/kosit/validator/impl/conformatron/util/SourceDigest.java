@@ -30,7 +30,7 @@ import java.util.HexFormat;
 public final class SourceDigest {
 
     /** The current default algorithm. Exchange here — never in method names or call sites. */
-    private static final String ALGORITHM = "SHA-512";
+    public static final String ALGORITHM = "SHA-512";
 
     private SourceDigest() {
         // static utility

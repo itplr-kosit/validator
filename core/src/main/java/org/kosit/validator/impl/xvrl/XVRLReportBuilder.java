@@ -131,7 +131,7 @@ public class XVRLReportBuilder {
             schema.setHref(resourceType.getLocation());
             schema.setSchematypens(resourceType.getName());
             return schema;
-        }).collect(Collectors.toList());
+        }).toList();
         this.xvrlReport.getMetadata().getSchemas().addAll(schemas);
         return this;
     }

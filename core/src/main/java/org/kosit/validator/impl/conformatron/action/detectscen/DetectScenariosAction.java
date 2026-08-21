@@ -3,7 +3,6 @@ package org.kosit.validator.impl.conformatron.action.detectscen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.action.CTActionType;
@@ -78,9 +77,7 @@ public class DetectScenariosAction implements CTAction {
      *            content is accepted
      */
     public DetectScenariosAction(final ScenarioRepository repository, final Processor processor) {
-        if (repository == null) {
-            throw new IllegalArgumentException("repository may not be null");
-        }
+        Objects.requireNonNull(repository);
         this.repository = repository;
         this.processor = processor;
     }
@@ -122,13 +119,14 @@ public class DetectScenariosAction implements CTAction {
 
     private DetectScenariosResult detectByRequestedId(final CTParsedValidationSource parsedSource, final String requestedScenarioId) {
         final String resourceId = parsedSource.getSource().getName();
-        final Scenario scenario = this.repository.getScenarios().stream()
-                .filter(s -> requestedScenarioId.equals(s.getName()) && !s.isFallback()).findFirst().orElse(null);
+        final Scenario scenario = repository.getScenarios().stream().filter(s -> requestedScenarioId.equals(s.getName()) && !s.isFallback())
+                .findFirst().orElse(null);
         if (scenario == null) {
             final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_UNKNOWN_ID,
                     DetectionLocation.ofResource(resourceId), "Requested scenario '" + requestedScenarioId + "' is not configured");
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
+
         final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource);
         final CTDetection detection = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED,
                 DetectionLocation.ofResource(resourceId), "Scenario '" + scenario.getName() + "' fixed by user input");
@@ -137,15 +135,15 @@ public class DetectScenariosAction implements CTAction {
 
     private DetectScenariosResult detectByMatchExpressions(final CTParsedValidationSource parsedSource, final XdmNode document) {
         final String resourceId = parsedSource.getSource().getName();
-        final List<Scenario> matching = this.repository.findMatches(document);
+        final List<Scenario> matching = repository.findMatches(document);
         if (matching.isEmpty()) {
             final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_NO_SCENARIO_MATCHED,
                     DetectionLocation.ofResource(resourceId), "None of the configured scenarios matches the document");
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
+
         LOGGER.debug("{} scenario(s) matched for {}", matching.size(), resourceId);
-        final List<CTScenarioMatch> matches = matching.stream().map(scenario -> (CTScenarioMatch) ScenarioMatch.of(scenario, parsedSource))
-                .collect(Collectors.toList());
+        final List<ScenarioMatch> matches = matching.stream().map(scenario -> ScenarioMatch.of(scenario, parsedSource)).toList();
         final List<CTDetection> detections = new ArrayList<>();
         for (final CTScenarioMatch match : matches) {
             detections.add(Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_MATCHED, DetectionLocation.ofResource(resourceId),
@@ -161,8 +159,8 @@ public class DetectScenariosAction implements CTAction {
         }
 
         // ADR-002 common denominator: every parsed source can provide a DOM — wrap it into the Saxon model
-        if (parsedSource.isParsed() && this.processor != null) {
-            return this.processor.newDocumentBuilder().wrap(parsedSource.getParsedContent());
+        if (parsedSource.isParsed() && processor != null) {
+            return processor.newDocumentBuilder().wrap(parsedSource.getParsedContent());
         }
 
         throw new IllegalArgumentException(

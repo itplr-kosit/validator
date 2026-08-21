@@ -5,13 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
@@ -50,6 +48,6 @@ public class ExtractReportContentActionTest {
         assertThat(this.action.isSkipped(process)).isFalse();
         this.action.check(process);
         assertThat(process.isStopped()).isFalse();
-        assertThat(Files.list(this.tmpDirectory).collect(Collectors.toList())).hasSize(1);
+        assertThat(Files.list(this.tmpDirectory).toList()).hasSize(1);
     }
 }

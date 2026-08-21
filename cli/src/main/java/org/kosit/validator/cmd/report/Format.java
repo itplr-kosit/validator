@@ -34,7 +34,7 @@ public class Format {
         final Optional<Code> color = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isColor).findFirst();
         final Optional<Code> bg = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isBackground).findFirst();
         final List<Code> attributes = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isBackground).filter(Code::isColor)
-                .collect(Collectors.toList());
+                .toList();
         attributes.add(color.orElse(this.textColor));
         attributes.add(bg.orElse(this.background));
         return attributes.stream().filter(Objects::nonNull).toArray(Code[]::new);

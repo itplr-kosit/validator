@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -66,7 +65,7 @@ public class SchemaValidationTask implements CheckTask {
 
     private static XVRLReport generateXVRLReport(final ValidationResultsXmlSchema result) {
         final XVRLReportBuilder builder = XVRLReportBuilder.builder("Schema Validator").addSchemas(result.getResource());
-        builder.addAll(result.getXmlSyntaxError().stream().map(e -> detection().addError(e)).collect(Collectors.toList()));
+        builder.addAll(result.getXmlSyntaxError().stream().map(e -> detection().addError(e)).toList());
         return builder.build();
     }
 

@@ -16,6 +16,9 @@
 package org.kosit.validator.impl.conformatron.model;
 
 import org.conformatron.api.model.detection.CTDetectionLocation;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.xml.sax.SAXParseException;
 
 /**
  * Immutable implementation of {@link CTDetectionLocation}.
@@ -30,24 +33,30 @@ public final class DetectionLocation implements CTDetectionLocation {
 
     private final int columnNumber;
 
-    public DetectionLocation(final String resourceId, final int lineNumber, final int columnNumber) {
-        this.resourceId = resourceId;
-        this.lineNumber = lineNumber > 0 ? lineNumber : ILLEGAL_NUMBER;
-        this.columnNumber = columnNumber > 0 ? columnNumber : ILLEGAL_NUMBER;
-    }
-
     /**
      * Creates a location referencing a resource without line/column information.
      *
      * @param resourceId the resource identifier, may be null
      * @return a new location
      */
-    public static DetectionLocation ofResource(final String resourceId) {
+    public static DetectionLocation ofResource(final @Nullable String resourceId) {
         return new DetectionLocation(resourceId, ILLEGAL_NUMBER, ILLEGAL_NUMBER);
     }
 
+    @NonNull
+    public static DetectionLocation of(final @Nullable String resourceId, final SAXParseException e) {
+        return new DetectionLocation(resourceId, e.getLineNumber(), e.getColumnNumber());
+    }
+
+    public DetectionLocation(final @Nullable String resourceId, final int lineNumber, final int columnNumber) {
+        this.resourceId = resourceId;
+        this.lineNumber = lineNumber > 0 ? lineNumber : ILLEGAL_NUMBER;
+        this.columnNumber = columnNumber > 0 ? columnNumber : ILLEGAL_NUMBER;
+    }
+
     @Override
-    public String getResourceID() {
+    @Nullable
+    public String getResourceId() {
         return this.resourceId;
     }
 

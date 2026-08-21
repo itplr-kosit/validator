@@ -5,7 +5,6 @@ import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemental;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
@@ -69,9 +68,9 @@ public class CreateReportsTask implements CheckTask {
         final Scenario scenario = scenarioSelection.getObject();
         final XdmNode parsedDocument = process.getResult(DocumentParseTask.KEY).getObject();
         final List<BusinessReport> reports = getTransformations(process).stream()
-                .map(t -> createReport(t, process, scenario, parsedDocument)).collect(Collectors.toList());
+                .map(t -> createReport(t, process, scenario, parsedDocument)).toList();
         processStepResult.setResult(new Result<>(reports, null));
-        processStepResult.addReports(reports.stream().map(BusinessReport::getReport).collect(Collectors.toList()));
+        processStepResult.addReports(reports.stream().map(BusinessReport::getReport).toList());
         return processStepResult;
     }
 

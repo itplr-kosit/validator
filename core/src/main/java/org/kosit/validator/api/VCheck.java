@@ -1,7 +1,6 @@
 package org.kosit.validator.api;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 
@@ -27,6 +26,7 @@ public interface VCheck {
      * @param VInput the resource / xml file to validate.
      * @return a result-{@link Document} (readonly)
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default Document check(final VInput VInput) {
         final VResult result = checkInput(VInput);
         // readonly view of the document!!!
@@ -39,6 +39,7 @@ public interface VCheck {
      * @param VInput the resource / xml file to validate.
      * @return a {@link VResult} object
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     VResult checkInput(VInput VInput);
 
     /**
@@ -49,8 +50,9 @@ public interface VCheck {
      * @param VInput list of xml {@link VInput Inputs}
      * @return list of result-{@link Document Documents} (readonly)
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default List<Document> check(final List<VInput> VInput) {
-        return VInput.stream().map(this::check).collect(Collectors.toList());
+        return VInput.stream().map(this::check).toList();
     }
 
     /**
@@ -59,8 +61,9 @@ public interface VCheck {
      * @param VInput list of xml {@link VInput Inputs}
      * @return list of {@link VResult}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default List<VResult> checkInput(final List<VInput> VInput) {
-        return VInput.stream().map(this::checkInput).collect(Collectors.toList());
+        return VInput.stream().map(this::checkInput).toList();
     }
 
 }

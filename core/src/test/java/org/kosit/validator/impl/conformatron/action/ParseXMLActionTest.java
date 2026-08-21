@@ -95,7 +95,7 @@ public class ParseXMLActionTest {
         assertThat(result.getDetectionList().getWorstSeverity()).isEqualTo(CTStandardSeverity.ERROR);
         assertThat(result.getDetectionList().getAll()).allSatisfy(detection -> {
             assertThat(detection.getCode()).isEqualTo(ParseXMLAction.CODE_NOT_WELLFORMED);
-            assertThat(detection.getLocation().getResourceID()).isEqualTo("broken.xml");
+            assertThat(detection.getLocation().getResourceId()).isEqualTo("broken.xml");
             assertThat(detection.getLocation().hasLineNumber()).isTrue();
         });
     }

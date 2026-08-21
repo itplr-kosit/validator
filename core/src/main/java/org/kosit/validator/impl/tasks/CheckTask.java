@@ -3,7 +3,6 @@ package org.kosit.validator.impl.tasks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
@@ -96,8 +95,8 @@ public interface CheckTask {
         public XVRLReportSummary getXvrlReportSummary() {
             final XVRLReportSummary summary = new XVRLReportSummary();
             summary.setMetadata(this.metadata);
-            summary.getReports().addAll(this.processStepResults.stream()
-                    .flatMap(processStepResult -> processStepResult.getReport().stream()).collect(Collectors.toList()));
+            summary.getReports()
+                    .addAll(this.processStepResults.stream().flatMap(processStepResult -> processStepResult.getReport().stream()).toList());
             return summary;
         }
 

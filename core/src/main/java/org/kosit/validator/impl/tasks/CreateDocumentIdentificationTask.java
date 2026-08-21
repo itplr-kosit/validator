@@ -3,8 +3,6 @@ package org.kosit.validator.impl.tasks;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 
-import java.util.stream.Collectors;
-
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.DocumentIdentificationType;
@@ -32,8 +30,7 @@ public class CreateDocumentIdentificationTask implements CheckTask {
             return builder(REPORT_NAME).add(detection().addMessage(result.getDocumentReference()).severity(XVRLDetection.Severity.INFO))
                     .build();
         }
-        return builder(REPORT_NAME)
-                .addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).collect(Collectors.toList())).build();
+        return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).toList()).build();
 
     }
 

@@ -6,7 +6,6 @@ import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.impl.Scenario;
@@ -41,8 +40,7 @@ public class ComputeAcceptanceTask implements CheckTask {
         if (currentResult.isValid()) {
             return builder(REPORT_NAME).add(detection().addMessage(currentResult.getObject().name())).build();
         }
-        return builder(REPORT_NAME)
-                .addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).collect(Collectors.toList())).build();
+        return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).toList()).build();
     }
 
     private static Result<AcceptRecommendation, XMLSyntaxError> evaluateSchemaAndSchematron(final Process results) {

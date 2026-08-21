@@ -20,8 +20,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.fusesource.jansi.AnsiRenderer.Code;
-import org.kosit.validator.api.*;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
+import org.kosit.validator.api.VInputFactory;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
@@ -141,12 +143,11 @@ public class Validator {
                     .build(ProcessorProvider.getProcessor());
             reportConfiguration(configuration);
             return configuration;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private static void checkUnused(final Map<String, Path> scenarios, final Map<String, Path> repositories) {
-        final List<Entry<String, Path>> unused = repositories.entrySet().stream().filter(e -> scenarios.get(e.getKey()) == null)
-                .collect(Collectors.toList());
+        final List<Entry<String, Path>> unused = repositories.entrySet().stream().filter(e -> scenarios.get(e.getKey()) == null).toList();
         unused.removeIf(e -> e.getKey().equals(ScenarioRepository.DEFAULT_ID));
         unused.forEach(e -> Printer.writeErr("Warning: repository definition \"{0}\" is not used", e.getKey()));
     }
@@ -234,7 +235,8 @@ public class Validator {
     private static Collection<VInput> determineTestTarget(final Path d) {
         if (Files.isDirectory(d)) {
             return listDirectoryTargets(d);
-        } else if (Files.exists(d)) {
+        }
+        if (Files.exists(d)) {
             return Collections.singleton(VInputFactory.read(d));
         }
         LOGGER.warn("The specified test target {} does not exist. Will be ignored", d);
@@ -243,8 +245,7 @@ public class Validator {
 
     private static Collection<VInput> listDirectoryTargets(final Path d) {
         try ( Stream<Path> stream = Files.list(d) ) {
-            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(VInputFactory::read)
-                    .collect(Collectors.toList());
+            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(VInputFactory::read).toList();
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }
@@ -253,9 +254,8 @@ public class Validator {
     private static URI determineRepository(final Path d) {
         if (Files.isDirectory(d)) {
             return d.toUri();
-        } else {
-            throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
         }
+        throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
     }
 
     private static void assertFileExistance(final Path f, final String type) {

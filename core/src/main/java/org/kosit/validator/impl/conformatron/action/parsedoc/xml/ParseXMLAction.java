@@ -21,16 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.source.CTValidationSource;
+import org.jspecify.annotations.NonNull;
+import org.kosit.jaxb.xml.XMLHelper;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
 import org.kosit.validator.impl.conformatron.model.Detection;
@@ -39,11 +38,11 @@ import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 import org.kosit.validator.impl.conformatron.model.DomValidationSource;
 import org.kosit.validator.impl.conformatron.model.ValidationSource;
 import org.kosit.validator.impl.conformatron.util.SourceDigest;
+import org.kosit.validator.impl.conformatron.xml.CollectingErrorHandler;
 import org.kosit.validator.impl.input.StreamHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -119,7 +118,7 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
     public ParseXMLResult parse(final CTValidationSource source, final byte[] bytes) {
         final List<CTDetection> errors = new ArrayList<>();
         try {
-            final DocumentBuilder builder = createDocumentBuilder();
+            final DocumentBuilder builder = XMLHelper.createSafeDocumentBuilder();
             builder.setErrorHandler(new CollectingErrorHandler(source.getName(), errors));
             final Document dom = builder.parse(new ByteArrayInputStream(bytes), source.getName());
             if (!errors.isEmpty()) {
@@ -132,10 +131,10 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
         } catch (final SAXParseException e) {
             // already collected by CollectingErrorHandler#fatalError unless thrown directly
             if (errors.stream().noneMatch(d -> d.getLinkedException() == e)) {
-                errors.add(fatal(source.getName(), e));
+                errors.add(errorNotWellformed(source.getName(), e));
             }
             return new ParseXMLResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
-        } catch (final SAXException | ParserConfigurationException e) {
+        } catch (final SAXException e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exception while parsing {}", source.getName(), e);
             }
@@ -143,57 +142,24 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
                     e.getMessage(), e));
             return new ParseXMLResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
         } catch (final IOException e) {
+            // Should not occur, as we read via ByteArrayStream
             errors.add(new Detection(CTStandardSeverity.ERROR, CODE_SOURCE_READ_ERROR, DetectionLocation.ofResource(source.getName()),
                     e.getMessage(), e));
-            return ParseXMLResult.failure(new DetectionList(errors));
+            return new ParseXMLResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
         }
     }
 
-    // TODO Auslagern in XML-helper
-    private static DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        return factory.newDocumentBuilder();
-    }
-
-    private static byte[] readBytes(final VInput VInput) throws IOException {
-        final Source source = VInput.getSource();
+    private static byte[] readBytes(final VInput input) throws IOException {
+        final Source source = input.getSource();
         final byte[] bytes = StreamHelper.tryReadBytes(source);
         if (bytes == null) {
-            throw new IOException("Unsupported source type " + source.getClass().getName() + " for input " + VInput.getName());
+            throw new IOException("Unsupported source type " + source.getClass().getName() + " for input " + input.getName());
         }
         return bytes;
     }
 
-    private static Detection fatal(final String resourceId, final SAXParseException e) {
-        return new Detection(CTStandardSeverity.ERROR, CODE_NOT_WELLFORMED,
-                new DetectionLocation(resourceId, e.getLineNumber(), e.getColumnNumber()), e.getMessage(), e);
-    }
-
-    /**
-     * Collects every well-formedness error as a FATAL detection (one detection per parser error, with line/column)
-     * instead of aborting on the first one.
-     */
-    // TODO extract in XMLHelper
-    private record CollectingErrorHandler(String resourceId, List<CTDetection> errors) implements ErrorHandler {
-
-        @Override
-        public void warning(final SAXParseException e) {
-            // well-formedness only: parser warnings do not affect the outcome of this step
-        }
-
-        @Override
-        public void error(final SAXParseException e) {
-            this.errors.add(fatal(this.resourceId, e));
-        }
-
-        @Override
-        public void fatalError(final SAXParseException e) throws SAXException {
-            this.errors.add(fatal(this.resourceId, e));
-            throw e;
-        }
+    @NonNull
+    public static Detection errorNotWellformed(final String resourceId, final SAXParseException e) {
+        return new Detection(CTStandardSeverity.ERROR, CODE_NOT_WELLFORMED, DetectionLocation.of(resourceId, e), e.getMessage(), e);
     }
 }

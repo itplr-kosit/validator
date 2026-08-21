@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 
 import org.conformatron.api.model.action.CTStepResult;
-import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.TestHelper.Simple;
@@ -23,8 +22,8 @@ public class RetrieveArtifactsActionTest {
 
     private final RetrieveArtifactsAction action = new RetrieveArtifactsAction(Simple.REPOSITORY_URI);
 
-    private static List<CTValidationArtifactReference> refs(final String... references) {
-        return List.of(references).stream().map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
+    private static List<ValidationArtifactReference> refs(final String... references) {
+        return List.of(references).stream().map(ValidationArtifactReference::of).toList();
     }
 
     @Test

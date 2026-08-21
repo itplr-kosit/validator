@@ -3,7 +3,6 @@ package org.kosit.svrl.impl;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.oclc.purl.dsdl.svrl.ActiveGroup;
 import org.oclc.purl.dsdl.svrl.ActivePattern;
@@ -22,7 +21,7 @@ public abstract class SvrlBaseOutput {
     public abstract List<Serializable> getActivePatternOrActiveGroupAndFiredRule();
 
     private <T> List<T> filter(final Class<T> type) {
-        return getActivePatternOrActiveGroupAndFiredRule().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+        return getActivePatternOrActiveGroupAndFiredRule().stream().filter(type::isInstance).map(type::cast).toList();
     }
 
     /**
@@ -90,7 +89,6 @@ public abstract class SvrlBaseOutput {
     }
 
     public List<String> getMessages() {
-        return getFailedAsserts().stream().map(FailedAssert::getText).flatMap(e -> e.getContent().stream()).map(Object::toString)
-                .collect(Collectors.toList());
+        return getFailedAsserts().stream().map(FailedAssert::getText).flatMap(e -> e.getContent().stream()).map(Object::toString).toList();
     }
 }

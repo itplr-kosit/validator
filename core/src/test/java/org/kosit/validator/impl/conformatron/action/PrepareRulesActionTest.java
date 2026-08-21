@@ -35,9 +35,8 @@ public class PrepareRulesActionTest {
     private final PrepareRulesAction action = new PrepareRulesAction(this.repository);
 
     private static List<CTResolvedValidationArtifact> retrieve(final String... references) {
-        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(List.of(references).stream()
-                .map(r -> (org.conformatron.api.model.source.CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList(),
-                DOCUMENT);
+        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)
+                .execute(List.of(references).stream().map(ValidationArtifactReference::of).toList(), DOCUMENT);
         assertThat(retrieved.isSuccess()).isTrue();
         return retrieved.artifacts();
     }

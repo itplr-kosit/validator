@@ -15,9 +15,13 @@
  */
 package org.kosit.validator.impl.conformatron.model;
 
+import java.util.Objects;
+
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTValidationSource;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.kosit.validator.impl.conformatron.util.SourceDigest;
 import org.w3c.dom.Document;
 
@@ -43,19 +47,6 @@ public final class DomValidationSource implements CTParsedValidationSourceXML {
 
     private final Document dom;
 
-    public DomValidationSource(final CTValidationSource source, final byte[] sourceBytes, final Document dom) {
-        if (source == null) {
-            throw new IllegalArgumentException("source may not be null");
-        }
-        if (sourceBytes == null) {
-            throw new IllegalArgumentException("sourceBytes may not be null");
-        }
-        this.source = source;
-        this.sourceBytes = sourceBytes.clone();
-        this.hashBytes = SourceDigest.hashBytes(this.sourceBytes);
-        this.dom = dom;
-    }
-
     /**
      * Creates the well-formedness-failure representation (step 2 output path 2): source metadata, bytes and hash are
      * retained for document identity in the partial CVRL, but no parsed content is available.
@@ -64,8 +55,17 @@ public final class DomValidationSource implements CTParsedValidationSourceXML {
      * @param sourceBytes the entire source document
      * @return a new source with {@link #isParsed()} {@code == false}
      */
-    public static DomValidationSource unparsed(final CTValidationSource source, final byte[] sourceBytes) {
+    public static DomValidationSource unparsed(final @NonNull CTValidationSource source, final byte @NonNull [] sourceBytes) {
         return new DomValidationSource(source, sourceBytes, null);
+    }
+
+    public DomValidationSource(final @NonNull CTValidationSource source, final byte @NonNull [] sourceBytes, final @Nullable Document dom) {
+        Objects.requireNonNull(source);
+        Objects.requireNonNull(sourceBytes);
+        this.source = source;
+        this.sourceBytes = sourceBytes.clone();
+        this.hashBytes = SourceDigest.hashBytes(this.sourceBytes);
+        this.dom = dom;
     }
 
     @Override
@@ -93,6 +93,7 @@ public final class DomValidationSource implements CTParsedValidationSourceXML {
         return this.dom;
     }
 
+    @Nullable
     public Document getAsDom() {
         return this.dom;
     }

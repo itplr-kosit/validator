@@ -2,7 +2,6 @@ package org.kosit.validator.impl;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.VResult;
@@ -96,7 +95,7 @@ public class DefaultResult implements VResult {
     public List<FailedAssert> getFailedAsserts() {
         return getSchematronResult() != null
                 ? getSchematronResult().stream().flatMap(e -> e.getActivePatternOrActiveGroupAndFiredRule().stream())
-                        .filter(FailedAssert.class::isInstance).map(FailedAssert.class::cast).collect(Collectors.toList())
+                        .filter(FailedAssert.class::isInstance).map(FailedAssert.class::cast).toList()
                 : Collections.emptyList();
     }
 

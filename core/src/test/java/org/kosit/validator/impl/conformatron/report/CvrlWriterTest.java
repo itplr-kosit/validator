@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -85,7 +86,7 @@ public class CvrlWriterTest {
 
     private static List<Element> reports(final Document cvrl) {
         final NodeList nodes = cvrl.getElementsByTagNameNS(NS, "report");
-        return java.util.stream.IntStream.range(0, nodes.getLength()).mapToObj(i -> (Element) nodes.item(i)).toList();
+        return IntStream.range(0, nodes.getLength()).mapToObj(i -> (Element) nodes.item(i)).toList();
     }
 
     private static String creator(final Element report) {

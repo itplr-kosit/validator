@@ -5,7 +5,6 @@ import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.transform.dom.DOMSource;
@@ -89,11 +88,11 @@ public class SchematronValidationTask implements CheckTask {
             filter(schematronOutput.getActivePatternOrActiveGroupAndFiredRule(), FiredRule.class).map(f -> detection().add(f))
                     .forEach(builder::add);
             return builder.build();
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private List<ValidationResultsSchematron> validate(final Process results, final XdmNode document, final Scenario scenario) {
-        return scenario.getSchematronValidations().stream().map(v -> validate(scenario, results, document, v)).collect(Collectors.toList());
+        return scenario.getSchematronValidations().stream().map(v -> validate(scenario, results, document, v)).toList();
     }
 
     private ValidationResultsSchematron validate(final Scenario scenario, final Process process, final XdmNode document,

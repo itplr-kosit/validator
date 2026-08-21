@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
@@ -293,7 +292,7 @@ public class ConfigurationBuilder {
         d.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, "")));
         s.setDescription(d);
         s.setName(configuration.getName());
-        s.getScenario().addAll(configuration.getScenarios().stream().map(Scenario::getConfiguration).collect(Collectors.toList()));
+        s.getScenario().addAll(configuration.getScenarios().stream().map(Scenario::getConfiguration).toList());
         return s;
     }
 
@@ -319,7 +318,7 @@ public class ConfigurationBuilder {
                 throw new IllegalStateException("Invalid configuration for scenario " + s.getName() + " found: " + msg);
             }
             return result.getObject();
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
