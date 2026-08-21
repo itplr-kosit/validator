@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Andreas Schmitz
  */
-public class ConformanceValidation implements ValidationEngine<VResult> {
+public class ConformanceValidation implements ValidationEngine<Result> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConformanceValidation.class);
 
@@ -67,10 +67,10 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
      * Full conformance validation ({@link ValidationEngine} contract): runs the complete pipeline over the document.
      *
      * @param VInput the document to validate
-     * @return the assembled {@link VResult}
+     * @return the assembled {@link Result}
      */
     @Override
-    public VResult validate(final VInput VInput) {
+    public Result validate(final VInput VInput) {
         return run(new Process(VInput, createMetadata()));
     }
 
@@ -95,9 +95,9 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
      * Runs all pipeline steps over the given process and assembles the result.
      *
      * @param checkProcess the process carrying the input and collecting the step results
-     * @return the assembled {@link VResult}
+     * @return the assembled {@link Result}
      */
-    public VResult run(final Process checkProcess) {
+    public Result run(final Process checkProcess) {
         final long started = System.currentTimeMillis();
         LOGGER.info("Checking content of {}", checkProcess.getInput().getName());
         for (final CheckAction action : this.checkSteps) {
@@ -114,7 +114,7 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
         return createResult(checkProcess);
     }
 
-    private static VResult createResult(final Process process) {
+    private static Result createResult(final Process process) {
         final org.kosit.validator.impl.model.Result<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
                 .getResult(ComputeAcceptanceAction.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());

@@ -24,7 +24,6 @@ import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VInputFactory;
-import org.kosit.validator.api.VResult;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
 import org.kosit.validator.impl.xml.ProcessorProvider;
@@ -73,7 +72,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testHappyCase() throws JAXBException, SaxonApiException {
-        final VResult doc = this.validCheck.checkInput(read(SIMPLE_VALID));
+        final Result doc = this.validCheck.checkInput(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
@@ -94,7 +93,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testJarCase() {
-        final VResult doc = this.jarScenarioCheck.checkInput(read(SIMPLE_VALID));
+        final Result doc = this.jarScenarioCheck.checkInput(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
@@ -105,7 +104,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testWithoutAcceptMatch() {
-        final VResult doc = this.validCheck.checkInput(read(Simple.FOO));
+        final Result doc = this.validCheck.checkInput(read(Simple.FOO));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
@@ -122,7 +121,7 @@ public class DefaultVCheckTest {
     public void testMultipleCase() {
         @SuppressWarnings("unused")
         final List<VInput> VInput = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).collect(Collectors.toList());
-        final List<VResult> docs = this.validCheck.checkInput(VInput);
+        final List<Result> docs = this.validCheck.checkInput(VInput);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
@@ -148,7 +147,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testGarbage() {
-        final VResult result = this.validCheck.checkInput(read(GARBAGE));
+        final Result result = this.validCheck.checkInput(read(GARBAGE));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isFalse();
         assertThat(result.isSchemaValid()).isFalse();
@@ -157,7 +156,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testNoScenario() {
-        final VResult result = this.validCheck.checkInput(read(UNKNOWN));
+        final Result result = this.validCheck.checkInput(read(UNKNOWN));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
@@ -168,7 +167,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testNotWellFormed() {
-        final VResult result = this.validCheck.checkInput(read(NOT_WELLFORMED));
+        final Result result = this.validCheck.checkInput(read(NOT_WELLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isFalse();
         assertThat(result.isSchemaValid()).isFalse();
@@ -181,7 +180,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testRejectAcceptMatch() {
-        final VResult result = this.validCheck.checkInput(read(REJECTED));
+        final Result result = this.validCheck.checkInput(read(REJECTED));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
@@ -194,7 +193,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testSchematronFailed() {
-        final VResult result = this.validCheck.checkInput(read(SCHEMATRON_INVALID));
+        final Result result = this.validCheck.checkInput(read(SCHEMATRON_INVALID));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
@@ -212,7 +211,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testSchematronFailedWithoutAcceptMatch() {
-        final VResult result = this.validCheck.checkInput(read(FOO_SCHEMATRON_INVALID));
+        final Result result = this.validCheck.checkInput(read(FOO_SCHEMATRON_INVALID));
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
@@ -228,7 +227,7 @@ public class DefaultVCheckTest {
 
     @Test
     public void testSchematronExecutionError() {
-        final VResult result = this.errorCheck.checkInput(read(SIMPLE_VALID));
+        final Result result = this.errorCheck.checkInput(read(SIMPLE_VALID));
         assertThat(result).isNotNull();
         assertThat(result.isProcessingSuccessful()).isFalse();
         assertThat(result.isSchematronValid()).isFalse();
@@ -243,7 +242,7 @@ public class DefaultVCheckTest {
     public void testXdmNode() throws Exception {
         XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         VInput domVInput = VInputFactory.read(node, "node test");
-        VResult result = this.validCheck.checkInput(domVInput);
+        Result result = this.validCheck.checkInput(domVInput);
         assertThat(result.isProcessingSuccessful()).isTrue();
 
         // test compatible configuration

@@ -33,7 +33,7 @@ import net.sf.saxon.s9api.Processor;
  *
  * @author Andreas Penski
  */
-public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
+public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultVCheck.class);
 
@@ -83,12 +83,12 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
         return this.conformanceValidation.createMetadata();
     }
 
-    protected boolean isSuccessful(final Map<String, VResult> results) {
+    protected boolean isSuccessful(final Map<String, Result> results) {
         return results.entrySet().stream().allMatch(e -> e.getValue().isAcceptable());
     }
 
     @Override
-    public VResult checkInput(final VInput VInput) {
+    public Result checkInput(final VInput VInput) {
         final Process checkProcess = new Process(VInput, createXVRLMetadata());
         return runCheckInternal(checkProcess);
     }
@@ -98,7 +98,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
      * {@link #checkInput(VInput)}, executed by the {@link ConformanceValidation} mode class.
      */
     @Override
-    public VResult validate(final VInput VInput) {
+    public Result validate(final VInput VInput) {
         return checkInput(VInput);
     }
 
@@ -110,7 +110,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
         return this.adHocValidation.validate(VInput, schematron);
     }
 
-    protected VResult runCheckInternal(final Process checkProcess) {
+    protected Result runCheckInternal(final Process checkProcess) {
         return this.conformanceValidation.run(checkProcess);
     }
 

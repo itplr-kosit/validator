@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
  *             {@link ValidationEngine#validate(VInput)}, implemented by individual engine classes —
  *             {@code ConformanceValidation} (full pipeline, all steps) and {@code SchematronValidation} (ad-hoc mode
  *             against a single Schematron). The {@code check(...)} report-document convenience methods are dropped
- *             without replacement — report extraction is a concern of the {@link VResult}. Remaining usages mark the
+ *             without replacement — report extraction is a concern of the {@link Result}. Remaining usages mark the
  *             code paths still to be migrated.
  */
 @Deprecated(since = "2.0.0", forRemoval = true)
@@ -28,7 +28,7 @@ public interface VCheck {
      * @return a result-{@link Document} (readonly)
      */
     default Document check(final VInput VInput) {
-        final VResult result = checkInput(VInput);
+        final Result result = checkInput(VInput);
         // readonly view of the document!!!
         return result.getReportDocument();
     }
@@ -37,9 +37,9 @@ public interface VCheck {
      * Checks an incoming xml file.
      *
      * @param VInput the resource / xml file to validate.
-     * @return a {@link VResult} object
+     * @return a {@link Result} object
      */
-    VResult checkInput(VInput VInput);
+    Result checkInput(VInput VInput);
 
     /**
      * Checks an incoming xml files in batch mode. Processing is sequential. The result-{@link Document Documents} are
@@ -57,9 +57,9 @@ public interface VCheck {
      * Checks an incoming xml files in batch mode. Processing is sequential.
      *
      * @param VInput list of xml {@link VInput Inputs}
-     * @return list of {@link VResult}
+     * @return list of {@link Result}
      */
-    default List<VResult> checkInput(final List<VInput> VInput) {
+    default List<Result> checkInput(final List<VInput> VInput) {
         return VInput.stream().map(this::checkInput).collect(Collectors.toList());
     }
 

@@ -6,7 +6,7 @@ import static org.kosit.validator.api.VInputFactory.read;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VResult;
+import org.kosit.validator.api.Result;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
@@ -25,8 +25,8 @@ public class ValidationEngineTest {
 
     @Test
     public void testFullConformanceValidation() {
-        final ValidationEngine<VResult> engine = createEngine();
-        final VResult result = engine.validate(read(Simple.SIMPLE_VALID));
+        final ValidationEngine<Result> engine = createEngine();
+        final Result result = engine.validate(read(Simple.SIMPLE_VALID));
 
         assertThat(result).isNotNull();
         assertThat(result.isProcessingSuccessful()).isTrue();
@@ -35,8 +35,8 @@ public class ValidationEngineTest {
     @Test
     public void testValidateMatchesLegacyCheckInput() {
         final DefaultVCheck engine = createEngine();
-        final VResult viaEngine = engine.validate(read(Simple.SIMPLE_VALID));
-        final VResult viaLegacy = engine.checkInput(read(Simple.SIMPLE_VALID));
+        final Result viaEngine = engine.validate(read(Simple.SIMPLE_VALID));
+        final Result viaLegacy = engine.checkInput(read(Simple.SIMPLE_VALID));
 
         assertThat(viaEngine.isProcessingSuccessful()).isEqualTo(viaLegacy.isProcessingSuccessful());
         assertThat(viaEngine.getAcceptRecommendation()).isEqualTo(viaLegacy.getAcceptRecommendation());

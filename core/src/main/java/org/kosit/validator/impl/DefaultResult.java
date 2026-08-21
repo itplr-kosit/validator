@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.VResult;
+import org.kosit.validator.api.Result;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.tasks.ReaderWrapper;
 import org.kosit.xvrl.impl.XvrlConversionService;
@@ -22,7 +22,7 @@ import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
-public class DefaultResult implements VResult {
+public class DefaultResult implements Result {
 
     /** The internal report 'preliminary stage' produced by the validator */
     private XVRLReportSummary reportSummary;
