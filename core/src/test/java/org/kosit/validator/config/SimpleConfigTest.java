@@ -6,7 +6,6 @@ import static org.kosit.validator.config.TestConfigurationFactory.createSimpleCo
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInputFactory;
-import org.kosit.validator.api.Result;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.TestHelper;
