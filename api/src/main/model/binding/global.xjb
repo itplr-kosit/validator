@@ -35,10 +35,4 @@
         </jaxb:schemaBindings>
     </jaxb:bindings>
 
-    <jaxb:bindings schemaLocation="../xsd/assertions.xsd">
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.kosit.validator.cmd.assertions"/>
-        </jaxb:schemaBindings>
-    </jaxb:bindings>
-
 </jaxb:bindings>

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
@@ -34,7 +34,7 @@ public class PrintReportActionTest {
     @Test
     public void testSimpleSerialize() {
 
-        final CheckAction.Process b = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID))
+        final CheckAction.Process b = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID))
                 .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
         CommandLine.clear();
         assertThat(this.action.isSkipped(b)).isFalse();

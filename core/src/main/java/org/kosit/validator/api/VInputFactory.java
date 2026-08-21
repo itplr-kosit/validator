@@ -27,7 +27,7 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
-public class InputFactory {
+public class VInputFactory {
 
     static final String DEFAULT_ALGORITHM = "SHA-256";
 
@@ -40,11 +40,11 @@ public class InputFactory {
 
     private final String algorithm;
 
-    InputFactory() {
+    VInputFactory() {
         this(null);
     }
 
-    InputFactory(final String specifiedAlgorithm) {
+    VInputFactory(final String specifiedAlgorithm) {
         this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITHM;
         // check validity
         StreamHelper.createDigest(this.algorithm);

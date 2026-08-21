@@ -6,10 +6,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.kosit.validator.api.VCheck;
-import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
-import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.api.Result;
+import org.kosit.validator.api.VInputFactory;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.xml.ProcessorProvider;
@@ -25,13 +25,13 @@ public class StandardExample {
         // Load scenarios.xml from classpath
         final URL scenarios = this.getClass().getClassLoader().getResource("examples/simple/scenarios-with-relative-paths.xml");
         // Load the rest of the specific Validator configuration from classpath
-        final Configuration config = Configuration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
+        final VConfiguration config = VConfiguration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
         // Use the default validation procedure
         final VCheck validator = new DefaultVCheck(new TestEngineInformation(), config);
         // Validate a single document
-        final VInput document = InputFactory.read(testDocument);
+        final VInput document = VInputFactory.read(testDocument);
         // Get Result including information about the whole validation
-        final Result report = validator.checkInput(document);
+        final VResult report = validator.checkInput(document);
         System.out.println("Is processing successful=" + report.isProcessingSuccessful());
         // Get report document if processing was successful
         Document result = null;

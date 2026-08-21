@@ -3,16 +3,16 @@ package org.kosit.validator.config;
 import java.util.List;
 import java.util.Map;
 
-import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.*;
 
 /**
- * Default implementation class for {@link Configuration}. This class contains all information to run a
+ * Default implementation class for {@link VConfiguration}. This class contains all information to run a
  * {@link DefaultVCheck}.
  * 
  * @author Andreas Penski
  */
-public class DefaultConfiguration implements Configuration {
+public class DefaultConfiguration implements VConfiguration {
 
     private final List<Scenario> scenarios;
 

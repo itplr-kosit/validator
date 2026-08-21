@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.kosit.xvrl.model.XVRLReportSummary;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutputType;
+import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.w3c.dom.Document;
 
 import net.sf.saxon.s9api.XdmNode;
@@ -14,7 +14,7 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
-public interface Result {
+public interface VResult {
 
     /**
      * Indicates whether the processing by the validator was completed successfully. This function explicitly makes no
@@ -70,7 +70,7 @@ public interface Result {
      *
      * @return list of Schematron results
      */
-    List<SchematronOutputType> getSchematronResult();
+    List<SchematronOutput> getSchematronResult();
 
     /**
      * Returns {@link org.oclc.purl.dsdl.svrl.FailedAssert FailedAsserts} of a schematron evaluation.

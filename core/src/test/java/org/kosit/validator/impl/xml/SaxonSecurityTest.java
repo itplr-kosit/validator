@@ -12,7 +12,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
@@ -49,7 +49,7 @@ public class SaxonSecurityTest {
                 compiler.setURIResolver(resolver);
                 final XsltExecutable executable = compiler.compile(new StreamSource(resource.openStream()));
                 final XsltTransformer transformer = executable.load();
-                final Source document = InputFactory.read("<root/>".getBytes(), "dummy").getSource();
+                final Source document = VInputFactory.read("<root/>".getBytes(), "dummy").getSource();
                 // transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
                 transformer.setURIResolver(resolver);
                 transformer.setSource(document);
@@ -70,7 +70,7 @@ public class SaxonSecurityTest {
     @Test
     public void testXxe() {
         final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
-        final Result<XdmNode, XMLSyntaxError> result = Helper.parseDocument(InputFactory.read(resource));
+        final Result<XdmNode, XMLSyntaxError> result = Helper.parseDocument(VInputFactory.read(resource));
         assertThat(result.isValid()).isFalse();
         assertThat(result.getObject()).isNull();
         assertThat(result.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining()))

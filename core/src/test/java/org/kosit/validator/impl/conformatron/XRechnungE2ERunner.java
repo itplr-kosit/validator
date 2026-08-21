@@ -27,8 +27,8 @@ import org.conformatron.api.model.conformance.ICTConformanceStatement;
 import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.detection.ICTDetection;
 import org.conformatron.api.model.rule.ICTPreparedRuleSet;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
@@ -74,13 +74,13 @@ public final class XRechnungE2ERunner {
 
     private final ScenarioRepository scenarioRepository;
 
-    private final Configuration configuration;
+    private final VConfiguration configuration;
 
     private final Processor processor;
 
     private final URI repository;
 
-    private XRechnungE2ERunner(final Configuration configuration, final Processor processor, final URI repository) {
+    private XRechnungE2ERunner(final VConfiguration configuration, final Processor processor, final URI repository) {
         this.configuration = configuration;
         this.processor = processor;
         this.repository = repository;
@@ -105,7 +105,7 @@ public final class XRechnungE2ERunner {
 
         final Processor processor = ProcessorProvider.getProcessor();
         final long t0 = System.currentTimeMillis();
-        final Configuration configuration = Configuration.load(scenarios.toUri(), repository.toUri()).build(processor);
+        final VConfiguration configuration = VConfiguration.load(scenarios.toUri(), repository.toUri()).build(processor);
         System.out.println("Configuration loaded in " + (System.currentTimeMillis() - t0) + " ms (" + configuration.getScenarios().size()
                 + " scenarios)");
 
@@ -179,7 +179,7 @@ public final class XRechnungE2ERunner {
     /** Executes the pipeline; fields from the cancellation point onwards stay {@code null} (partial CVRL). */
     private CvrlWriter.PipelineResults runSteps(final Path file, final String name) {
         // step 2: PARSE_DOCUMENT
-        final ParseXMLResult parsed = new ParseXMLAction().execute(InputFactory.read(file.toFile()));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(VInputFactory.read(file.toFile()));
         if (!parsed.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
         }

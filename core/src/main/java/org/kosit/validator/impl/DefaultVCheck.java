@@ -33,13 +33,13 @@ import net.sf.saxon.s9api.Processor;
  *
  * @author Andreas Penski
  */
-public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
+public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultVCheck.class);
 
     private final XvrlConversionService xvrlConversionService;
 
-    private final List<Configuration> configuration;
+    private final List<VConfiguration> configuration;
 
     private final List<CheckAction> checkSteps;
 
@@ -51,18 +51,18 @@ public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
 
     private final ConformanceValidation conformanceValidation;
 
-    public DefaultVCheck(final EngineInformation engineInformation, final Configuration... configuration) {
+    public DefaultVCheck(final EngineInformation engineInformation, final VConfiguration... configuration) {
         this(engineInformation, ProcessorProvider.getProcessor(), configuration);
     }
 
     /**
-     * Creates a new instance for the {@link Configuration}.
+     * Creates a new instance for the {@link VConfiguration}.
      *
      * @param engineInformation engine info
      * @param processor Saxon processor
      * @param configuration the Configuration
      */
-    public DefaultVCheck(EngineInformation engineInformation, final Processor processor, final Configuration... configuration) {
+    public DefaultVCheck(EngineInformation engineInformation, final Processor processor, final VConfiguration... configuration) {
         this.engineInformation = engineInformation;
         this.configuration = Arrays.asList(configuration);
         this.processor = processor;
@@ -83,12 +83,12 @@ public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
         return this.conformanceValidation.createMetadata();
     }
 
-    protected boolean isSuccessful(final Map<String, Result> results) {
+    protected boolean isSuccessful(final Map<String, VResult> results) {
         return results.entrySet().stream().allMatch(e -> e.getValue().isAcceptable());
     }
 
     @Override
-    public Result checkInput(final VInput VInput) {
+    public VResult checkInput(final VInput VInput) {
         final Process checkProcess = new Process(VInput, createXVRLMetadata());
         return runCheckInternal(checkProcess);
     }
@@ -98,7 +98,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
      * {@link #checkInput(VInput)}, executed by the {@link ConformanceValidation} mode class.
      */
     @Override
-    public Result validate(final VInput VInput) {
+    public VResult validate(final VInput VInput) {
         return checkInput(VInput);
     }
 
@@ -110,7 +110,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
         return this.adHocValidation.validate(VInput, schematron);
     }
 
-    protected Result runCheckInternal(final Process checkProcess) {
+    protected VResult runCheckInternal(final Process checkProcess) {
         return this.conformanceValidation.run(checkProcess);
     }
 
@@ -118,7 +118,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
         return this.xvrlConversionService;
     }
 
-    public List<Configuration> getConfiguration() {
+    public List<VConfiguration> getConfiguration() {
         return this.configuration;
     }
 

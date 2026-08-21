@@ -15,15 +15,6 @@
  */
 package org.kosit.validator.impl.conformatron.action.parsedoc.xml;
 
-import org.kosit.validator.api.VInput;
-import org.kosit.validator.impl.conformatron.model.ValidationSource;
-import org.kosit.validator.impl.conformatron.util.SourceDigest;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.DomValidationSource;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,13 +26,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.action.ICTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.detection.ICTDetection;
 import org.conformatron.api.model.source.ICTValidationSource;
+import org.kosit.validator.api.VInput;
+import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
+import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.DetectionList;
+import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.model.DomValidationSource;
+import org.kosit.validator.impl.conformatron.model.ValidationSource;
+import org.kosit.validator.impl.conformatron.util.SourceDigest;
 import org.kosit.validator.impl.input.StreamHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,6 +116,7 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
      * @param bytes the entire source document; retained as immutable byte array
      * @return the result including the {@link DomValidationSource} on success and any detections
      */
+    // TODO replace bytes parameter with source.getInputStream usage
     public ParseXMLResult parse(final ICTValidationSource source, final byte[] bytes) {
         final List<ICTDetection> errors = new ArrayList<>();
         try {

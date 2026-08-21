@@ -83,8 +83,8 @@ public class Validator {
     private static ReturnValue processActions(final CommandLineOptions cmd) throws IOException {
         long start = System.currentTimeMillis();
         final Processor processor = ProcessorProvider.getProcessor();
-        final List<Configuration> config = getConfiguration(cmd);
-        final InternalVCheck check = new InternalVCheck(cmd.getEngineInformation(), processor, config.toArray(new Configuration[0]));
+        final List<VConfiguration> config = getConfiguration(cmd);
+        final InternalVCheck check = new InternalVCheck(cmd.getEngineInformation(), processor, config.toArray(new VConfiguration[0]));
         final CommandLineOptions.CliOptions cliOptions = getIfNull(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
         if (cliOptions.isExtractReport()) {
@@ -101,7 +101,7 @@ public class Validator {
         LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
         final Collection<VInput> targets = determineTestTargets(cliOptions);
         start = System.currentTimeMillis();
-        final Map<String, Result> results = new HashMap<>();
+        final Map<String, VResult> results = new HashMap<>();
         Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
         long tick = System.currentTimeMillis();
         for (final VInput VInput : targets) {
@@ -123,7 +123,7 @@ public class Validator {
      *
      * @return a list of configurations of the scenarios and repositories passed in cmd
      */
-    private static List<Configuration> getConfiguration(final CommandLineOptions cmd) {
+    private static List<VConfiguration> getConfiguration(final CommandLineOptions cmd) {
         final List<ScenarioDefinition> scenarios = getIfNull(cmd.getScenarios(), Collections.emptyList());
         // Map from scenario name to scenario path
         final Map<String, Path> mappedScenarios = scenarios.stream()
@@ -137,7 +137,7 @@ public class Validator {
             final URI scenarioLocation = e.getValue().toUri();
             final URI repositoryLocation = findRepository(scenarioLocation, e.getKey(), mappedRepos);
             reportLoading(scenarioLocation, repositoryLocation);
-            final Configuration configuration = Configuration.load(scenarioLocation, repositoryLocation)
+            final VConfiguration configuration = VConfiguration.load(scenarioLocation, repositoryLocation)
                     .build(ProcessorProvider.getProcessor());
             reportConfiguration(configuration);
             return configuration;
@@ -170,7 +170,7 @@ public class Validator {
         Printer.writeOut(EMPTY);
     }
 
-    private static void reportConfiguration(final Configuration configuration) {
+    private static void reportConfiguration(final VConfiguration configuration) {
         Printer.writeOut("Loaded \"{0}\" by {1} from {2} ", configuration.getName(), configuration.getAuthor(), configuration.getDate());
         Printer.writeOut("The following scenarios are available:");
         configuration.getScenarios().forEach(e -> {
@@ -228,14 +228,14 @@ public class Validator {
     // sanitation is delegated to xml stack
     @SuppressWarnings("java:S4829")
     private static VInput readFromPipe() {
-        return InputFactory.read(System.in, "stdin");
+        return VInputFactory.read(System.in, "stdin");
     }
 
     private static Collection<VInput> determineTestTarget(final Path d) {
         if (Files.isDirectory(d)) {
             return listDirectoryTargets(d);
         } else if (Files.exists(d)) {
-            return Collections.singleton(InputFactory.read(d));
+            return Collections.singleton(VInputFactory.read(d));
         }
         LOGGER.warn("The specified test target {} does not exist. Will be ignored", d);
         return Collections.emptyList();
@@ -243,7 +243,7 @@ public class Validator {
 
     private static Collection<VInput> listDirectoryTargets(final Path d) {
         try ( Stream<Path> stream = Files.list(d) ) {
-            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(InputFactory::read)
+            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(VInputFactory::read)
                     .collect(Collectors.toList());
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);

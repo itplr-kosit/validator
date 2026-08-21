@@ -152,7 +152,6 @@ public class Helper {
 
     public static <T> T load(final URL url, final Class<T> type) throws URISyntaxException {
         final JaxbConversionService c = JaxbConversionService.forPackages(org.kosit.validator.model.ObjectFactory.class.getPackage(),
-                org.kosit.validator.cmd.assertions.ObjectFactory.class.getPackage(),
                 org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
         return c.readXml(url.toURI(), type);
     }

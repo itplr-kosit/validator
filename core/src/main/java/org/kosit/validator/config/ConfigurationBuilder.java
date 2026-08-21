@@ -17,7 +17,7 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import net.sf.saxon.s9api.Processor;
 
 /**
- * Implements a builder style creation of a {@link Configuration}.
+ * Implements a builder style creation of a {@link VConfiguration}.
  * 
  * @author Andreas Penski
  */
@@ -256,12 +256,12 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Builds the actual {@link Configuration} by validating all builder inputs and constructing necessary objects.
+     * Builds the actual {@link VConfiguration} by validating all builder inputs and constructing necessary objects.
      *
      * @return a valid configuration
      * @throws IllegalStateException when the configuration is not valid/complete
      */
-    public Configuration build(final Processor processor) {
+    public VConfiguration build(final Processor processor) {
         final ContentRepository contentRepository = resolveContentRepository(processor);
         final List<Scenario> list = initializeScenarios(contentRepository);
         final Scenario fallbackScenario = initializeFallback(contentRepository);

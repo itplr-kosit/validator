@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.xml.validation.Schema;
 
-import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper;
@@ -41,7 +41,7 @@ public class TestScenarioBuilder {
         final Scenario fallback = createDefault();
         fallback.getConfiguration().setName("fallback");
         fallback.setFallback(true);
-        final Configuration configuration = new Configuration() {
+        final VConfiguration configuration = new VConfiguration() {
 
             @Override
             public List<Scenario> getScenarios() {

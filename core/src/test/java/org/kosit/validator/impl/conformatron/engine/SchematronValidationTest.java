@@ -5,7 +5,7 @@ import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.api.InputFactory.read;
+import static org.kosit.validator.api.VInputFactory.read;
 
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.detection.ECTSeverity;

@@ -2,7 +2,7 @@ package org.kosit.validator.impl.conformatron.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kosit.validator.api.InputFactory.read;
+import static org.kosit.validator.api.VInputFactory.read;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper.Simple;

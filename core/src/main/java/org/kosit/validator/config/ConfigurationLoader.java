@@ -11,8 +11,8 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.Strings;
 import org.kosit.validator.api.VCheck;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ContentRepository;
@@ -67,7 +67,7 @@ public class ConfigurationLoader {
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
             final Result<XdmNode, XMLSyntaxError> result = new DocumentParseAction(processor)
-                    .parseDocument(InputFactory.read(scenarioDefinition.toURL()));
+                    .parseDocument(VInputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition
                         + " is not supported.\nThis version only supports definitions of '" + SUPPORTED_MAJOR_VERSION_SCHEMA + "'");
@@ -125,7 +125,7 @@ public class ConfigurationLoader {
         return this.scenarioRepository;
     }
 
-    public Configuration build(final Processor processor) {
+    public VConfiguration build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
         final Scenarios def = loadScenarios(SchemaProvider.getScenarioSchema(), processor);

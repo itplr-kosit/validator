@@ -3,7 +3,7 @@ package org.kosit.validator.impl.conformatron.action;
 import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.api.InputFactory.read;
+import static org.kosit.validator.api.VInputFactory.read;
 
 import java.net.URI;
 import java.util.List;

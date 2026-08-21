@@ -44,15 +44,15 @@ public class VInputFactoryTest {
 
     @Test
     public void testDefaultDigestAlgorithm() {
-        assertThat(new InputFactory().getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITHM);
-        assertThat(new InputFactory("").getAlgorithm()).isEqualTo(InputFactory.DEFAULT_ALGORITHM);
+        assertThat(new VInputFactory().getAlgorithm()).isEqualTo(VInputFactory.DEFAULT_ALGORITHM);
+        assertThat(new VInputFactory("").getAlgorithm()).isEqualTo(VInputFactory.DEFAULT_ALGORITHM);
     }
 
     @Test
     public void testHashCodeGeneration() throws IOException {
-        final byte[] s1 = drain(InputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
-        final byte[] s2 = drain(InputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
-        final byte[] s3 = drain(InputFactory.read(Simple.SCHEMA_INVALID.toURL())).getHashCode();
+        final byte[] s1 = drain(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
+        final byte[] s2 = drain(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).getHashCode();
+        final byte[] s3 = drain(VInputFactory.read(Simple.SCHEMA_INVALID.toURL())).getHashCode();
         assertThat(s1).isNotEmpty().isEqualTo(s2);
         assertThat(s3).isNotEmpty();
         assertThat(s1).isNotEqualTo(s3);
@@ -60,57 +60,57 @@ public class VInputFactoryTest {
 
     @Test
     public void testWrongAlgorithm() {
-        assertThrows(IllegalArgumentException.class, () -> new InputFactory("unknown"));
+        assertThrows(IllegalArgumentException.class, () -> new VInputFactory("unknown"));
     }
 
     @Test
     public void testNullInputURL() {
-        assertThrows(IllegalArgumentException.class, () -> InputFactory.read((URL) null));
+        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read((URL) null));
     }
 
     @Test
     public void testInputByte() {
-        final VInput VInput = InputFactory.read(SOME_VALUE.getBytes(), SOME_VALUE);
+        final VInput VInput = VInputFactory.read(SOME_VALUE.getBytes(), SOME_VALUE);
         assertThat(VInput).isNotNull();
     }
 
     @Test
     public void testInputStream() {
-        final VInput VInput = InputFactory.read(new ByteArrayInputStream(SOME_VALUE.getBytes()), SOME_VALUE);
+        final VInput VInput = VInputFactory.read(new ByteArrayInputStream(SOME_VALUE.getBytes()), SOME_VALUE);
         assertThat(VInput).isNotNull();
     }
 
     @Test
     public void testNullStream() {
-        assertThrows(IllegalArgumentException.class, () -> InputFactory.read((InputStream) null, SOME_VALUE));
+        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read((InputStream) null, SOME_VALUE));
     }
 
     @Test
     public void testInputFile() {
-        final VInput VInput = InputFactory.read(new File(Simple.SIMPLE_VALID));
+        final VInput VInput = VInputFactory.read(new File(Simple.SIMPLE_VALID));
         assertThat(VInput).isNotNull();
     }
 
     @Test
     public void testInputPath() {
-        final VInput VInput = InputFactory.read(Paths.get(Simple.SIMPLE_VALID));
+        final VInput VInput = VInputFactory.read(Paths.get(Simple.SIMPLE_VALID));
         assertThat(VInput).isNotNull();
     }
 
     @Test
     public void testNullInput() {
-        assertThrows(IllegalArgumentException.class, () -> InputFactory.read((byte[]) null, SOME_VALUE));
+        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read((byte[]) null, SOME_VALUE));
     }
 
     @Test
     public void testNullInputName() {
-        assertThrows(IllegalArgumentException.class, () -> InputFactory.read(SOME_VALUE.getBytes(), null));
+        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read(SOME_VALUE.getBytes(), null));
     }
 
     @Test
     public void testEmptyInputName() {
         assertThrows(IllegalArgumentException.class, () -> {
-            final VInput VInput = InputFactory.read(SOME_VALUE.getBytes(), "");
+            final VInput VInput = VInputFactory.read(SOME_VALUE.getBytes(), "");
             drain(VInput);
         });
     }
@@ -118,7 +118,7 @@ public class VInputFactoryTest {
     @Test
     public void testSourceInput() throws IOException {
         try ( final InputStream s = Simple.SIMPLE_VALID.toURL().openStream() ) {
-            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(s));
+            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(s));
             assertThat(input.getSource()).isNotNull();
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
@@ -131,7 +131,7 @@ public class VInputFactoryTest {
     public void testSourceInputReader() throws IOException {
         try ( final InputStream s = Simple.SIMPLE_VALID.toURL().openStream();
               final InputStreamReader reader = new InputStreamReader(s) ) {
-            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(reader));
+            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(reader));
             assertThat(input.getSource()).isNotNull();
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
@@ -142,7 +142,7 @@ public class VInputFactoryTest {
 
     @Test
     public void testUnexistingInput() {
-        assertThrows(IllegalArgumentException.class, () -> InputFactory.read(Simple.NOT_EXISTING));
+        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read(Simple.NOT_EXISTING));
     }
 
     @Test
@@ -153,7 +153,7 @@ public class VInputFactoryTest {
         handler.startDocument();
         handler.startElement("http://some.ns", "mynode", "mynode", new AttributesImpl());
         final Document dom = NodeOverNodeInfo.wrap(handler.getDocumentNode().getUnderlyingNode()).getOwnerDocument();
-        final VInput domVInput = InputFactory.read(new DOMSource(dom), "MD5", "id".getBytes());
+        final VInput domVInput = VInputFactory.read(new DOMSource(dom), "MD5", "id".getBytes());
         assertThat(domVInput).isNotNull();
         assertThat(domVInput.getSource()).isNotNull();
         final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(domVInput);
@@ -166,7 +166,7 @@ public class VInputFactoryTest {
     @Test
     public void testXdmNode() throws Exception {
         final XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
-        final VInput nodeVInput = InputFactory.read(node, "node test");
+        final VInput nodeVInput = VInputFactory.read(node, "node test");
         assertThat(nodeVInput).isNotNull();
         assertThat(nodeVInput.getSource()).isNotNull();
         final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(nodeVInput);

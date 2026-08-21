@@ -2,7 +2,7 @@ package org.kosit.validator.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kosit.validator.api.InputFactory.read;
+import static org.kosit.validator.api.VInputFactory.read;
 
 import java.io.IOException;
 import java.net.URI;

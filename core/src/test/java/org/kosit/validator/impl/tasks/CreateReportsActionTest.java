@@ -11,7 +11,7 @@ import javax.xml.transform.Source;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -55,7 +55,7 @@ public class CreateReportsActionTest {
 
         when(p.newDocumentBuilder()).thenReturn(documentBuilder);
         when(documentBuilder.build(any(Source.class))).thenThrow(new SaxonApiException("mocked"));
-        final Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID)).build();
+        final Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID)).build();
         this.action.check(process);
         assertThat(process.isStopped()).isTrue();
 

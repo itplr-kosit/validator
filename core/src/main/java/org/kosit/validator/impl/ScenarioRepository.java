@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.model.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +27,9 @@ public class ScenarioRepository {
 
     public static final String DEFAULT_ID = DEFAULT + "_1";
 
-    private final List<Configuration> configuration;
+    private final List<VConfiguration> configuration;
 
-    public ScenarioRepository(final Configuration... configuration) {
+    public ScenarioRepository(final VConfiguration... configuration) {
         if (configuration.length == 0) {
             throw new IllegalArgumentException("Must provide at least one configuration");
         }

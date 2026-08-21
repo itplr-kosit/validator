@@ -24,7 +24,7 @@ import org.kosit.validator.impl.Scenario;
  * @author Andreas Penski
  */
 
-public interface Configuration {
+public interface VConfiguration {
 
     /**
      * Returns a list of configured scenarios.
@@ -98,7 +98,7 @@ public interface Configuration {
     }
 
     /**
-     * Creates a {@link Configuration} based on a builder style API using {@link ConfigurationBuilder}
+     * Creates a {@link VConfiguration} based on a builder style API using {@link ConfigurationBuilder}
      *
      * @return the Builder
      */

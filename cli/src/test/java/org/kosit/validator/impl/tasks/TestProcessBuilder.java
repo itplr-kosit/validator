@@ -30,7 +30,7 @@ public class TestProcessBuilder {
     private Process process;
 
     public static TestProcessBuilder create() {
-        return create(InputFactory.read("<someXml></someXml>".getBytes(), "someCheck"));
+        return create(VInputFactory.read("<someXml></someXml>".getBytes(), "someCheck"));
     }
 
     public static TestProcessBuilder create(final VInput VInput) {
@@ -56,7 +56,7 @@ public class TestProcessBuilder {
     }
 
     public static List<BusinessReport> createReport() {
-        final XdmNode someXml = Helper.parseDocument(InputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
+        final XdmNode someXml = Helper.parseDocument(VInputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
         return createReport("report", someXml);
     }
 

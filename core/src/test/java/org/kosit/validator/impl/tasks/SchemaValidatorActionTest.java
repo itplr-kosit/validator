@@ -48,7 +48,7 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testSimple() throws MalformedURLException {
-        final Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+        final Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
         final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
         final Result<?, ?> result = processStepResult.getResult();
         assertThat(result).isNotNull();
@@ -57,7 +57,7 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testValidationFailure() throws MalformedURLException {
-        final VInput VInput = InputFactory.read(Simple.SCHEMA_INVALID.toURL());
+        final VInput VInput = VInputFactory.read(Simple.SCHEMA_INVALID.toURL());
         final Process process = TestProcessBuilder.create(VInput).build();
         final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
         final Result<Boolean, XMLSyntaxError> result = processStepResult.getResult();
@@ -79,8 +79,8 @@ public class SchemaValidatorActionTest {
     public void testNoRepeatableRead() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
             // don't read the real inputstream here, use a dummy result!
-            final Process process = TestProcessBuilder.create(InputFactory.read(new StreamSource(inputStream)), false)
-                    .setParseResult(InputFactory.read(Simple.SIMPLE_VALID)).build();
+            final Process process = TestProcessBuilder.create(VInputFactory.read(new StreamSource(inputStream)), false)
+                    .setParseResult(VInputFactory.read(Simple.SIMPLE_VALID)).build();
             final Result<Boolean, XMLSyntaxError> result = this.service.check(process).getResult();
             assertThat(result).isNotNull();
             assertThat(result.isValid()).isTrue();
@@ -90,7 +90,7 @@ public class SchemaValidatorActionTest {
     @Test
     public void testNoRepeatableReadBigFile() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
-            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(inputStream));
+            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(inputStream));
             final Process process = TestProcessBuilder.create(input).build();
             // process.addStepResult(Helper.createParseResult(Simple.SIMPLE_VALID));
 
@@ -108,7 +108,7 @@ public class SchemaValidatorActionTest {
     public void testNoRepeatableReaderInput() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
               final Reader reader = new InputStreamReader(inputStream) ) {
-            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(reader));
+            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(reader));
             final Process process = TestProcessBuilder.create(input).build();
             this.service.check(process);
             final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
@@ -122,8 +122,8 @@ public class SchemaValidatorActionTest {
     public void testNoRepeatableReaderInputBigFile() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
               final Reader reader = new InputStreamReader(inputStream) ) {
-            final SourceVInput input = (SourceVInput) InputFactory.read(new StreamSource(reader));
-            final Process process = TestProcessBuilder.create(input).setParseResult(InputFactory.read(Simple.SIMPLE_VALID)).build();
+            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(reader));
+            final Process process = TestProcessBuilder.create(input).setParseResult(VInputFactory.read(Simple.SIMPLE_VALID)).build();
             // set limit and length for serialization to 5 bytes
             this.service.setInMemoryLimit(5L);
             this.service.check(process);
@@ -136,7 +136,7 @@ public class SchemaValidatorActionTest {
 
     @Test
     public void testProcessingError() throws IOException, SAXException {
-        final Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+        final Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
         final Result<Scenario, String> scenarioCheckResult = process.getResult(ScenarioSelectionAction.KEY);
         final Scenario scenario = scenarioCheckResult.getObject();
         final Schema schema = mock(Schema.class);

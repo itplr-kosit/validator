@@ -12,8 +12,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
@@ -47,7 +47,7 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testProcessingError() throws IOException, SaxonApiException {
-        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
 
         final Result<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionAction.KEY);
         final Scenario scenario = scenarioResult.getObject();
@@ -66,7 +66,7 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testSchxsltRuntimeProcessingError() throws IOException {
-        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
         final Scenario scenario = process.getResult(ScenarioSelectionAction.KEY).getObject();
 
         // real SchXslt compilation (no mock): the schematron compiles fine but raises a dynamic
@@ -94,8 +94,8 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testXsltValid() throws MalformedURLException {
-        final Configuration c = Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL()))
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
@@ -105,8 +105,8 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testSchCompiledValid() throws MalformedURLException {
-        final Configuration c = Configuration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID.toURL()))
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
@@ -116,8 +116,8 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testIsoSchCompiledValid() throws MalformedURLException {
-        final Configuration c = Configuration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_ISO_VALID.toURL()))
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_ISO_VALID.toURL()))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();

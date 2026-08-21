@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
@@ -40,8 +40,8 @@ public class SerializeReportActionTest {
 
     @Test
     public void testSimpleSerialize() {
-        assertThat(this.action.isSkipped(TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID)).schemaValid().build())).isTrue();
-        final CheckAction.Process b = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID)).schemaValid()
+        assertThat(this.action.isSkipped(TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID)).schemaValid().build())).isTrue();
+        final CheckAction.Process b = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID)).schemaValid()
                 .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);
@@ -53,7 +53,7 @@ public class SerializeReportActionTest {
     @Test
     public void testName() {
         final String name = "some.name.with.dots";
-        final CheckAction.Process b = new CheckAction.Process(InputFactory.read("ega".getBytes(), name + ".xml"));
+        final CheckAction.Process b = new CheckAction.Process(VInputFactory.read("ega".getBytes(), name + ".xml"));
         assertThat(b.getName()).isEqualTo(name);
     }
 

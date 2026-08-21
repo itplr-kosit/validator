@@ -12,7 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import org.kosit.validator.api.InputFactory;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
@@ -43,8 +43,8 @@ public class ExtractReportContentActionTest {
 
     @Test
     public void testSimple() throws IOException {
-        assertThat(this.action.isSkipped(TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID)).build())).isTrue();
-        final CheckAction.Process process = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID))
+        assertThat(this.action.isSkipped(TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID)).build())).isTrue();
+        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID))
                 .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
         this.action.check(process);
         assertThat(this.action.isSkipped(process)).isFalse();

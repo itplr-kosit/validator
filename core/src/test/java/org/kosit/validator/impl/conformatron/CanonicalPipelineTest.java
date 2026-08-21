@@ -9,7 +9,7 @@ import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.api.InputFactory.read;
+import static org.kosit.validator.api.VInputFactory.read;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import org.conformatron.api.model.conformance.ECTConformanceResult;
 import org.conformatron.api.model.detection.ICTDetection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -50,11 +50,11 @@ public class CanonicalPipelineTest {
 
     private ScenarioRepository scenarioRepository;
 
-    private Configuration configuration;
+    private VConfiguration configuration;
 
     @BeforeEach
     public void setup() {
-        this.configuration = Configuration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
 
