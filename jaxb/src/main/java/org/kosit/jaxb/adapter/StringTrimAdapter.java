@@ -1,27 +1,22 @@
 package org.kosit.jaxb.adapter;
 
+import org.jspecify.annotations.Nullable;
+
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class StringTrimAdapter extends XmlAdapter<String, String> {
 
-    @Override
-    public String unmarshal(final String v) {
-        return trimInternal(v);
+    public static @Nullable String trim(final @Nullable String v) {
+        return v == null ? null : v.trim();
     }
 
     @Override
-    public String marshal(final String v) {
-        return trimInternal(v);
+    public @Nullable String unmarshal(final @Nullable String v) {
+        return trim(v);
     }
 
-    public static String trim(final String v) {
-        return trimInternal(v);
-    }
-
-    private static String trimInternal(final String v) {
-        if (v == null) {
-            return null;
-        }
-        return v.trim();
+    @Override
+    public @Nullable String marshal(final @Nullable String v) {
+        return trim(v);
     }
 }
