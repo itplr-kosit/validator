@@ -2,7 +2,6 @@ package org.kosit.validator.impl.conformatron;
 
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
@@ -34,10 +33,11 @@ import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
 import org.kosit.validator.impl.conformatron.action.DetectScenariosAction.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.ParseXMLAction.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
@@ -185,7 +185,7 @@ public final class XRechnungE2ERunner {
         }
         // step 3: DETECT_SCENARIOS (DOM wrapped into the Saxon model)
         final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, this.processor)
-                .execute(parsed.parsedSource());
+                .execute(parsed.getParsedSource());
         if (!detected.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, null, null, null, null, null);
         }
@@ -206,7 +206,7 @@ public final class XRechnungE2ERunner {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
         }
         // step 7: APPLY_RULES
-        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.parsedSource(), prepared.ruleSets());
+        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets());
         if (!applied.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
         }
@@ -232,7 +232,7 @@ public final class XRechnungE2ERunner {
     /** Derives the summary row from the (partial) pipeline results. */
     private static InstanceResult toInstanceResult(final String name, final CvrlWriter.PipelineResults r) {
         if (!r.parse().isSuccess()) {
-            return failed(name, "PARSE_DOCUMENT", r.parse().detections().getAll());
+            return failed(name, "PARSE_DOCUMENT", r.parse().getDetectionList().getAll());
         }
         if (r.detect() != null && !r.detect().isSuccess()) {
             return failed(name, "DETECT_SCENARIOS", r.detect().detections().getAll());
@@ -258,7 +258,7 @@ public final class XRechnungE2ERunner {
 
         // complete detection trace across all steps, in pipeline order (for the per-instance report)
         final List<ICTDetection> trace = new ArrayList<>();
-        trace.addAll(parsed.detections().getAll());
+        trace.addAll(parsed.getDetectionList().getAll());
         trace.addAll(r.detect().detections().getAll());
         trace.addAll(selected.detections().getAll());
         trace.addAll(r.retrieve().detections().getAll());
@@ -266,8 +266,8 @@ public final class XRechnungE2ERunner {
         trace.addAll(applied.detections().getAll());
         trace.addAll(conformance.detections().getAll());
 
-        final String hash = parsed.parsedSource().getHashAlgorithmName() + "="
-                + java.util.HexFormat.of().formatHex(parsed.parsedSource().getHashBytes());
+        final String hash = parsed.getParsedSource().getHashAlgorithmName() + "="
+                + java.util.HexFormat.of().formatHex(parsed.getParsedSource().getHashBytes());
         final List<ICTDetection> all = applied.detections().getAll();
         final long infos = count(all, ECTSeverity.INFO);
         final long warnings = count(all, ECTSeverity.WARNING);

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTCanonicalAction;
+import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.ICTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
@@ -103,12 +103,12 @@ public class DetectScenariosAction implements ICTAction {
 
     @Override
     public String getName() {
-        return ECTCanonicalAction.DETECT_SCENARIOS.getCanonicalName();
+        return ECTActionType.DETECT_SCENARIOS.getName();
     }
 
     @Override
     public ECTActionType getType() {
-        return ECTCanonicalAction.DETECT_SCENARIOS.getDefaultType();
+        return ECTActionType.DETECT_SCENARIOS;
     }
 
     /**

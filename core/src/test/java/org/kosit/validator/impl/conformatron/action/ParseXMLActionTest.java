@@ -15,6 +15,8 @@
  */
 package org.kosit.validator.impl.conformatron.action;
 
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.util.SourceDigest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +30,6 @@ import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.validation.ECTValidationBaseType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.conformatron.action.ParseXMLAction.ParseXMLResult;
 import org.kosit.validator.impl.input.ByteArrayVInput;
 
 /**
@@ -52,7 +53,7 @@ public class ParseXMLActionTest {
     @Test
     public void testActionIdentity() {
         assertThat(this.action.getName()).isEqualTo("parse-document");
-        assertThat(this.action.getType()).isEqualTo(ECTActionType.VALIDATOR);
+        assertThat(this.action.getType()).isEqualTo(ECTActionType.PARSE_DOCUMENT);
     }
 
     @Test
@@ -61,20 +62,20 @@ public class ParseXMLActionTest {
         final ParseXMLResult result = this.action.execute(new ByteArrayVInput(bytes, "test.xml", "SHA-256"));
 
         assertThat(result.isSuccess()).isTrue();
-        assertThat(result.status()).isEqualTo(ECTStepResult.SUCCESS);
-        assertThat(result.parsedSource()).isNotNull();
-        assertThat(result.parsedSource().getAsDom()).isNotNull();
-        assertThat(result.parsedSource().getAsDom().getDocumentElement().getLocalName()).isEqualTo("doc");
-        assertThat(result.parsedSource().getParsedContent()).isSameAs(result.parsedSource().getAsDom());
-        assertThat(result.parsedSource().isParsed()).isTrue();
-        assertThat(result.parsedSource().getSourceBytes()).isEqualTo(bytes);
-        assertThat(result.parsedSource().getHashAlgorithmName()).isEqualTo(SourceDigest.getAlgorithmName());
-        assertThat(result.parsedSource().getHashBytes()).isEqualTo(SourceDigest.hashBytes(bytes));
-        assertThat(result.parsedSource().getSource().getName()).isEqualTo("test.xml");
-        assertThat(result.parsedSource().getSource().getDetectedSyntax()).isEqualTo(ECTValidationBaseType.XML);
-        assertThat(result.detections().getCount()).isEqualTo(1);
-        assertThat(result.detections().getWorstSeverity()).isEqualTo(ECTSeverity.INFO);
-        assertThat(result.detections().getAll().get(0).getCode()).isEqualTo(ParseXMLAction.CODE_DOCUMENT_PARSED);
+        assertThat(result.getResult()).isSameAs(ECTStepResult.SUCCESS);
+        assertThat(result.getParsedSource()).isNotNull();
+        assertThat(result.getParsedSource().getAsDom()).isNotNull();
+        assertThat(result.getParsedSource().getAsDom().getDocumentElement().getLocalName()).isEqualTo("doc");
+        assertThat(result.getParsedSource().getParsedContent()).isSameAs(result.getParsedSource().getAsDom());
+        assertThat(result.getParsedSource().isParsed()).isTrue();
+        assertThat(result.getParsedSource().getSourceBytes()).isEqualTo(bytes);
+        assertThat(result.getParsedSource().getHashAlgorithmName()).isEqualTo(SourceDigest.getAlgorithmName());
+        assertThat(result.getParsedSource().getHashBytes()).isEqualTo(SourceDigest.hashBytes(bytes));
+        assertThat(result.getParsedSource().getSource().getName()).isEqualTo("test.xml");
+        assertThat(result.getParsedSource().getSource().getDetectedSyntax()).isEqualTo(ECTValidationBaseType.XML);
+        assertThat(result.getDetectionList().getCount()).isEqualTo(1);
+        assertThat(result.getDetectionList().getWorstSeverity()).isEqualTo(ECTSeverity.INFO);
+        assertThat(result.getDetectionList().getAll().get(0).getCode()).isEqualTo(ParseXMLAction.CODE_DOCUMENT_PARSED);
     }
 
     @Test
@@ -83,17 +84,17 @@ public class ParseXMLActionTest {
         final ParseXMLResult result = this.action.execute(new ByteArrayVInput(bytes, "broken.xml", "SHA-256"));
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
+        assertThat(result.getResult()).isEqualTo(ECTStepResult.FAILURE);
         // spec output path 2: source identity retained (bytes + hash), only the parsed content is absent
-        assertThat(result.parsedSource()).isNotNull();
-        assertThat(result.parsedSource().isParsed()).isFalse();
-        assertThat(result.parsedSource().getAsDom()).isNull();
-        assertThat(result.parsedSource().getSourceBytes()).isEqualTo(bytes);
-        assertThat(result.parsedSource().getHashAlgorithmName()).isEqualTo(SourceDigest.getAlgorithmName());
-        assertThat(result.parsedSource().getHashBytes()).isEqualTo(SourceDigest.hashBytes(bytes));
-        assertThat(result.detections().containsAtLeastOneError()).isTrue();
-        assertThat(result.detections().getWorstSeverity()).isEqualTo(ECTSeverity.FATAL_ERROR);
-        assertThat(result.detections().getAll()).allSatisfy(detection -> {
+        assertThat(result.getParsedSource()).isNotNull();
+        assertThat(result.getParsedSource().isParsed()).isFalse();
+        assertThat(result.getParsedSource().getAsDom()).isNull();
+        assertThat(result.getParsedSource().getSourceBytes()).isEqualTo(bytes);
+        assertThat(result.getParsedSource().getHashAlgorithmName()).isEqualTo(SourceDigest.getAlgorithmName());
+        assertThat(result.getParsedSource().getHashBytes()).isEqualTo(SourceDigest.hashBytes(bytes));
+        assertThat(result.getDetectionList().containsAtLeastOneError()).isTrue();
+        assertThat(result.getDetectionList().getWorstSeverity()).isEqualTo(ECTSeverity.FATAL_ERROR);
+        assertThat(result.getDetectionList().getAll()).allSatisfy(detection -> {
             assertThat(detection.getCode()).isEqualTo(ParseXMLAction.CODE_NOT_WELLFORMED);
             assertThat(detection.getLocation().getResourceID()).isEqualTo("broken.xml");
             assertThat(detection.getLocation().hasLineNumber()).isTrue();
@@ -105,9 +106,9 @@ public class ParseXMLActionTest {
         final byte[] bytes = WELLFORMED.getBytes(StandardCharsets.UTF_8);
         final ParseXMLResult result = this.action.execute(new ByteArrayVInput(bytes, "test.xml", "SHA-256"));
 
-        final byte[] exposed = result.parsedSource().getSourceBytes();
+        final byte[] exposed = result.getParsedSource().getSourceBytes();
         exposed[0] = '!';
-        assertThat(result.parsedSource().getSourceBytes()).isEqualTo(bytes);
+        assertThat(result.getParsedSource().getSourceBytes()).isEqualTo(bytes);
     }
 
     @Test

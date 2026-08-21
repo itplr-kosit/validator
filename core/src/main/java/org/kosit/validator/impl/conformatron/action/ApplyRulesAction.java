@@ -19,7 +19,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
 import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTCanonicalAction;
+import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.ICTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
@@ -96,12 +96,12 @@ public class ApplyRulesAction implements ICTAction {
 
     @Override
     public String getName() {
-        return ECTCanonicalAction.APPLY_RULES.getCanonicalName();
+        return ECTActionType.APPLY_RULES.getName();
     }
 
     @Override
     public ECTActionType getType() {
-        return ECTCanonicalAction.APPLY_RULES.getDefaultType();
+        return ECTActionType.APPLY_RULES;
     }
 
     /**

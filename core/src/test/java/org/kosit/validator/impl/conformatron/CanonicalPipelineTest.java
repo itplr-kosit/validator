@@ -2,7 +2,6 @@ package org.kosit.validator.impl.conformatron;
 
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
@@ -27,10 +26,11 @@ import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
 import org.kosit.validator.impl.conformatron.action.DetectScenariosAction.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.ParseXMLAction.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 
 /**
  * <b>End-to-end walkthrough of the canonical pipeline, steps 2–8</b>, composed exclusively from the new-API actions —
@@ -63,11 +63,11 @@ public class CanonicalPipelineTest {
         // step 2: PARSE_DOCUMENT — DOM-based reference action, retains bytes + hash
         final ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
         assertThat(parsed.isSuccess()).isTrue();
-        trace.addAll(codes(parsed.detections().getAll()));
+        trace.addAll(codes(parsed.getDetectionList().getAll()));
 
         // step 3: DETECT_SCENARIOS — the DOM is wrapped into the Saxon model for the XPath matching
         final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, Helper.getTestProcessor())
-                .execute(parsed.parsedSource());
+                .execute(parsed.getParsedSource());
         assertThat(detected.isSuccess()).isTrue();
         trace.addAll(codes(detected.detections().getAll()));
 
@@ -88,7 +88,7 @@ public class CanonicalPipelineTest {
         trace.addAll(codes(prepared.detections().getAll()));
 
         // step 7: APPLY_RULES — on the retained bytes; findings do not fail the step
-        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.parsedSource(), prepared.ruleSets());
+        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets());
         assertThat(applied.isSuccess()).isTrue();
         trace.addAll(codes(applied.detections().getAll()));
 

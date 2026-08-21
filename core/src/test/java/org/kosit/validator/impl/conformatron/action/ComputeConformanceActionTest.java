@@ -24,6 +24,7 @@ import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 
 /**
  * Tests {@link ComputeConformanceAction} (step 8) on real step-7 results.
@@ -39,7 +40,7 @@ public class ComputeConformanceActionTest {
             List.of("simple.xsd", "simple.sch", "simple-runtime-error.sch"), null);
 
     private ICTApplyRulesResult applyRules(final URI document, final String... references) {
-        final ICTParsedValidationSource parsed = new ParseXMLAction().execute(read(document)).parsedSource();
+        final ICTParsedValidationSource parsed = new ParseXMLAction().execute(read(document)).getParsedSource();
         final List<ICTValidationArtifactReference> refs = List.of(references).stream()
                 .map(r -> (ICTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(refs,
@@ -86,7 +87,7 @@ public class ComputeConformanceActionTest {
 
     @Test
     public void testEmptyApplyRulesResultSkipsTheStepButForwardsAResult() {
-        final ICTParsedValidationSource parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID)).parsedSource();
+        final ICTParsedValidationSource parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID)).getParsedSource();
         final ComputeConformanceActionResult result = this.action.execute(ApplyRulesResult.empty(parsed), List.of(TARGET));
 
         assertThat(result.status()).isEqualTo(ECTStepResult.SKIPPED);

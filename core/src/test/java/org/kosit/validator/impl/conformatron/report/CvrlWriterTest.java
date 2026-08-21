@@ -2,8 +2,9 @@ package org.kosit.validator.impl.conformatron.report;
 
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
@@ -53,18 +54,18 @@ public class CvrlWriterTest {
     }
 
     private CvrlWriter.PipelineResults runPipeline(final URI document) {
-        final ParseXMLAction.ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
         if (!parsed.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
         }
         final DetectScenariosAction.DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository,
-                Helper.getTestProcessor()).execute(parsed.parsedSource());
+                Helper.getTestProcessor()).execute(parsed.getParsedSource());
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)
                 .execute(selected.selected());
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getContentRepository())
                 .execute(retrieved.artifacts(), "test");
-        final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.parsedSource(), prepared.ruleSets());
+        final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets());
         final ComputeConformanceAction.ComputeConformanceActionResult conformance = new ComputeConformanceAction().execute(applied.result(),
                 List.of(ConformanceTarget.ofScenario(selected.selected())));
         return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, conformance);

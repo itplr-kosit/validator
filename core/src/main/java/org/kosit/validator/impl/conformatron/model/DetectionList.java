@@ -15,7 +15,9 @@
  */
 package org.kosit.validator.impl.conformatron.model;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.conformatron.api.model.detection.ECTSeverity;
@@ -30,16 +32,9 @@ import org.conformatron.api.model.detection.ICTSeverity;
  */
 public final class DetectionList implements ICTDetectionList {
 
-    private static final DetectionList EMPTY = new DetectionList(List.of());
+    private static final DetectionList EMPTY = new DetectionList(Collections.emptyList());
 
     private final List<ICTDetection> detections;
-
-    public DetectionList(final List<ICTDetection> detections) {
-        if (detections == null) {
-            throw new IllegalArgumentException("detections may not be null");
-        }
-        this.detections = List.copyOf(detections);
-    }
 
     public static DetectionList empty() {
         return EMPTY;
@@ -47,6 +42,11 @@ public final class DetectionList implements ICTDetectionList {
 
     public static DetectionList of(final ICTDetection... detections) {
         return new DetectionList(List.of(detections));
+    }
+
+    public DetectionList(final List<ICTDetection> detections) {
+        Objects.requireNonNull(detections);
+        this.detections = List.copyOf(detections);
     }
 
     @Override

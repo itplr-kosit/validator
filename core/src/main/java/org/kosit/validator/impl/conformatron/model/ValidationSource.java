@@ -15,8 +15,12 @@
  */
 package org.kosit.validator.impl.conformatron.model;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.conformatron.api.model.source.ICTValidationSource;
 import org.conformatron.api.model.validation.ECTValidationBaseType;
+import org.jspecify.annotations.NonNull;
 import org.kosit.validator.api.VInput;
 
 /**
@@ -34,15 +38,6 @@ public final class ValidationSource implements ICTValidationSource {
 
     private final boolean complete;
 
-    public ValidationSource(final String name, final ECTValidationBaseType detectedSyntax, final boolean complete) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("name may not be null or empty");
-        }
-        this.name = name;
-        this.detectedSyntax = detectedSyntax;
-        this.complete = complete;
-    }
-
     /**
      * Wraps a legacy {@link VInput} as a complete XML source. The validator currently only feeds XML documents into the
      * pipeline, so the detected syntax is fixed until DETECT_SYNTAX is implemented as its own action.
@@ -54,7 +49,17 @@ public final class ValidationSource implements ICTValidationSource {
         if (VInput == null) {
             throw new IllegalArgumentException("input may not be null");
         }
+        // TODO PH create overload for getInputStream
         return new ValidationSource(VInput.getName(), ECTValidationBaseType.XML, true);
+    }
+
+    public ValidationSource(final String name, final ECTValidationBaseType detectedSyntax, final boolean complete) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("name may not be null or empty");
+        }
+        this.name = name;
+        this.detectedSyntax = detectedSyntax;
+        this.complete = complete;
     }
 
     @Override
@@ -70,5 +75,16 @@ public final class ValidationSource implements ICTValidationSource {
     @Override
     public boolean isComplete() {
         return this.complete;
+    }
+
+    public boolean canReadMultiple() {
+        // TODO PH
+        return true;
+    }
+
+    @NonNull
+    public InputStream getInputStream() throws IOException {
+        // TODO PH
+        throw new IOException("TODO");
     }
 }

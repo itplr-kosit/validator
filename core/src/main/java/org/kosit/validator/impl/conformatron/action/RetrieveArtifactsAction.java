@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTCanonicalAction;
+import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.ICTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
@@ -96,12 +96,12 @@ public class RetrieveArtifactsAction implements ICTAction {
 
     @Override
     public String getName() {
-        return ECTCanonicalAction.RETRIEVE_ARTIFACTS.getCanonicalName();
+        return ECTActionType.RETRIEVE_ARTIFACTS.getName();
     }
 
     @Override
     public ECTActionType getType() {
-        return ECTCanonicalAction.RETRIEVE_ARTIFACTS.getDefaultType();
+        return ECTActionType.RETRIEVE_ARTIFACTS;
     }
 
     /**

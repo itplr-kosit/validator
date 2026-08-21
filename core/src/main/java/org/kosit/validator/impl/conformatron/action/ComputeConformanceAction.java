@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTCanonicalAction;
+import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.ICTAction;
 import org.conformatron.api.model.conformance.ECTConformanceResult;
@@ -71,12 +71,12 @@ public class ComputeConformanceAction implements ICTAction {
 
     @Override
     public String getName() {
-        return ECTCanonicalAction.COMPUTE_CONFORMANCE.getCanonicalName();
+        return ECTActionType.COMPUTE_CONFORMANCE.getName();
     }
 
     @Override
     public ECTActionType getType() {
-        return ECTCanonicalAction.COMPUTE_CONFORMANCE.getDefaultType();
+        return ECTActionType.COMPUTE_CONFORMANCE;
     }
 
     /**

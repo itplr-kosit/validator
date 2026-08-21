@@ -2,9 +2,10 @@ package org.kosit.validator.impl.conformatron.engine;
 
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 
 import java.net.URI;
 import java.util.List;
@@ -112,11 +113,12 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
             throw new IllegalArgumentException("schematron may not be null");
         }
         // step 2 (PARSE_DOCUMENT): reference action, retains bytes + hash
-        final ParseXMLAction.ParseXMLResult parsed = new ParseXMLAction().execute(document);
-        if (!parsed.isSuccess()) {
-            return new AdHocValidationResult(ECTStepResult.FAILURE, parsed.parsedSource(), parsed.detections());
+        final ParseXMLResult parsed = new ParseXMLAction().execute(document);
+        if (parsed.isFailure()) {
+            return new AdHocValidationResult(ECTStepResult.FAILURE, parsed.getParsedSource(), parsed.getDetectionList());
         }
-        final String documentName = parsed.parsedSource().getSource().getName();
+        
+        final String documentName = parsed.getParsedSource().getSource().getName();
         // the parent directory of the schematron is the artifact repository of this ad-hoc run
         final URI base = schematron.resolve(".");
         final ValidationArtifactReference reference = ValidationArtifactReference.of(base.relativize(schematron).toString());
@@ -125,17 +127,17 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(base).execute(List.of(reference),
                 documentName);
         if (!retrieved.isSuccess()) {
-            return new AdHocValidationResult(ECTStepResult.FAILURE, parsed.parsedSource(), retrieved.detections());
+            return new AdHocValidationResult(ECTStepResult.FAILURE, parsed.getParsedSource(), retrieved.detections());
         }
         // step 6 (PREPARE_RULES): transpile + compile
         final ContentRepository repository = new ContentRepository(this.processor, ResolvingMode.STRICT_RELATIVE.getStrategy(), base);
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(repository).execute(retrieved.artifacts(),
                 documentName);
         if (!prepared.isSuccess()) {
-            return new AdHocValidationResult(ECTStepResult.FAILURE, parsed.parsedSource(), prepared.detections());
+            return new AdHocValidationResult(ECTStepResult.FAILURE, parsed.getParsedSource(), prepared.detections());
         }
         // step 7 (APPLY_RULES): findings do not fail the run, only engine errors do
-        final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.parsedSource(), prepared.ruleSets());
-        return new AdHocValidationResult(applied.status(), parsed.parsedSource(), applied.detections());
+        final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets());
+        return new AdHocValidationResult(applied.status(), parsed.getParsedSource(), applied.detections());
     }
 }

@@ -19,6 +19,8 @@ import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 
 /**
  * Tests {@link ApplyRulesAction} (step 7) with real rule sets prepared by steps 5+6.
@@ -31,9 +33,9 @@ public class ApplyRulesActionTest {
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
     private static ICTParsedValidationSource parse(final URI document) {
-        final ParseXMLAction.ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
         assertThat(parsed.isSuccess()).isTrue();
-        return parsed.parsedSource();
+        return parsed.getParsedSource();
     }
 
     private List<ICTPreparedRuleSet> prepare(final String... references) {

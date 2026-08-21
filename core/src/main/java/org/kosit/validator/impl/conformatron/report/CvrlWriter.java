@@ -2,8 +2,8 @@ package org.kosit.validator.impl.conformatron.report;
 
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
@@ -20,7 +20,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.conformatron.api.model.action.ECTCanonicalAction;
+import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.detection.ICTDetection;
 import org.conformatron.api.model.detection.ICTDetectionList;
@@ -67,7 +67,7 @@ public final class CvrlWriter {
      * The results of one canonical pipeline run. Fields from the cancellation point onwards are {@code null} — the
      * report then contains only the executed steps and {@code cvrl:status="CANCELLED"} (partial CVRL, ADR-004).
      */
-    public record PipelineResults(ParseXMLAction.ParseXMLResult parse, DetectScenariosAction.DetectScenariosResult detect,
+    public record PipelineResults(ParseXMLResult parse, DetectScenariosAction.DetectScenariosResult detect,
                                   SelectScenarioAction.SelectScenarioResult select, RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
                                   PrepareRulesAction.PrepareRulesResult prepare, ApplyRulesAction.ApplyRulesActionResult apply,
                                   ComputeConformanceAction.ComputeConformanceActionResult conformance) {
@@ -113,28 +113,28 @@ public final class CvrlWriter {
             writer.writeAttribute(NS_CVRL, "status", results.isCompleted() ? "COMPLETED" : "CANCELLED");
 
             writeRootMetadata(writer, documentName, results.parse());
-            writeStepReport(writer, ECTCanonicalAction.PARSE_DOCUMENT, results.parse().detections(), null);
+            writeStepReport(writer, ECTActionType.PARSE_DOCUMENT, results.parse().getDetectionList(), null);
             if (results.detect() != null) {
-                writeStepReport(writer, ECTCanonicalAction.DETECT_SCENARIOS, results.detect().detections(), null);
+                writeStepReport(writer, ECTActionType.DETECT_SCENARIOS, results.detect().detections(), null);
             }
             if (results.select() != null) {
-                writeStepReport(writer, ECTCanonicalAction.SELECT_SCENARIO, results.select().detections(), null);
+                writeStepReport(writer, ECTActionType.SELECT_SCENARIO, results.select().detections(), null);
             }
             if (results.retrieve() != null) {
-                writeStepReport(writer, ECTCanonicalAction.RETRIEVE_ARTIFACTS, results.retrieve().detections(), null);
+                writeStepReport(writer, ECTActionType.RETRIEVE_ARTIFACTS, results.retrieve().detections(), null);
             }
             if (results.prepare() != null) {
-                writeStepReport(writer, ECTCanonicalAction.PREPARE_RULES, results.prepare().detections(), null);
+                writeStepReport(writer, ECTActionType.PREPARE_RULES, results.prepare().detections(), null);
             }
             if (results.apply() != null) {
                 // D3: one report per rule set execution, in scenario order
                 for (final Map.Entry<ICTPreparedRuleSet, ICTDetectionList> entry : results.apply().result().getResultsByRuleSet()
                         .entrySet()) {
-                    writeStepReport(writer, ECTCanonicalAction.APPLY_RULES, entry.getValue(), entry.getKey());
+                    writeStepReport(writer, ECTActionType.APPLY_RULES, entry.getValue(), entry.getKey());
                 }
             }
             if (results.conformance() != null) {
-                writeStepReport(writer, ECTCanonicalAction.COMPUTE_CONFORMANCE, results.conformance().detections(), null);
+                writeStepReport(writer, ECTActionType.COMPUTE_CONFORMANCE, results.conformance().detections(), null);
             }
             newline(writer, 0);
             writer.writeEndElement();
@@ -146,7 +146,7 @@ public final class CvrlWriter {
     }
 
     private void writeRootMetadata(final XMLStreamWriter writer, final String documentName,
-            final ParseXMLAction.ParseXMLResult parse) throws XMLStreamException {
+            final ParseXMLResult parse) throws XMLStreamException {
         newline(writer, 1);
         writer.writeStartElement(NS_XVRL, "metadata");
         newline(writer, 2);
@@ -161,7 +161,7 @@ public final class CvrlWriter {
         writer.writeEmptyElement(NS_XVRL, "document");
         writer.writeAttribute("href", documentName);
         // D6: document by reference + checksum; audit-mode embedding is an open question
-        final ICTParsedValidationSource source = parse.parsedSource();
+        final ICTParsedValidationSource source = parse.getParsedSource();
         if (source != null) {
             writer.writeAttribute(NS_CVRL, "checksum", HexFormat.of().formatHex(source.getHashBytes()));
             writer.writeAttribute(NS_CVRL, "checksum-algorithm", source.getHashAlgorithmName());
@@ -170,7 +170,7 @@ public final class CvrlWriter {
         writer.writeEndElement();
     }
 
-    private void writeStepReport(final XMLStreamWriter writer, final ECTCanonicalAction action, final ICTDetectionList detections,
+    private void writeStepReport(final XMLStreamWriter writer, final ECTActionType action, final ICTDetectionList detections,
             final ICTPreparedRuleSet ruleSet) throws XMLStreamException {
         newline(writer, 1);
         writer.writeStartElement(NS_XVRL, "report");
@@ -179,7 +179,7 @@ public final class CvrlWriter {
         newline(writer, 3);
         writer.writeEmptyElement(NS_XVRL, "creator");
         // D2: the canonical names of ECTCanonicalAction are normative for <creator @name>
-        writer.writeAttribute("name", action.getCanonicalName());
+        writer.writeAttribute("name", action.getName());
         newline(writer, 3);
         // D10: serialization time, not execution time (needs ICTActionExecution)
         writer.writeStartElement(NS_XVRL, "timestamp");

@@ -1,6 +1,8 @@
 package org.kosit.validator.impl.conformatron.action;
 
 import org.kosit.validator.impl.conformatron.model.XdmNodeValidationSource;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,11 +54,11 @@ public class ScenarioStepsTest {
     @Test
     public void testDetectAcceptsDomParsedContentViaWrapping() {
         // the step-2 reference action produces a DOM source; a configured processor wraps it for the XPath matching
-        final ParseXMLAction.ParseXMLResult parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID));
         final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
 
         final DetectScenariosAction.DetectScenariosResult result = new DetectScenariosAction(repository, ProcessorProvider.getProcessor())
-                .execute(parsed.parsedSource());
+                .execute(parsed.getParsedSource());
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.matches()).hasSize(1);

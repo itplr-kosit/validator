@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kosit.validator.impl.conformatron.action;
+package org.kosit.validator.impl.conformatron.action.parsedoc.xml;
 
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.conformatron.model.ValidationSource;
 import org.kosit.validator.impl.conformatron.util.SourceDigest;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
+import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 import org.kosit.validator.impl.conformatron.model.DomValidationSource;
@@ -34,13 +35,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 
-import org.conformatron.api.model.action.ECTCanonicalAction;
+import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.ICTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
 import org.conformatron.api.model.source.ICTValidationSource;
 import org.kosit.validator.impl.input.StreamHelper;
 import org.slf4j.Logger;
@@ -63,13 +63,13 @@ import org.xml.sax.SAXParseException;
  * Output paths per step specification: success ({@code document-parsed}, INFO), well-formedness failure
  * ({@code not-wellformed}, one FATAL detection per parser error with line/column) and IO failure
  * ({@code source-read-error}, FATAL). Failures cancel the process; the detections still contribute to the (partial)
- * CVRL report.
- * In the future we need to also cover each other detected syntaxes (e.g. JSON, edfact etc.) (result from Step 1)
+ * CVRL report. In the future we need to also cover each other detected syntaxes (e.g. JSON, edfact etc.) (result from
+ * Step 1)
  * </p>
  *
  * @author Andreas Schmitz
  */
-public class ParseXMLAction implements ICTAction {
+public class ParseXMLAction extends AbstractParseDocumentAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParseXMLAction.class);
 
@@ -82,30 +82,9 @@ public class ParseXMLAction implements ICTAction {
     /** Detection code for IO failures while reading the source. */
     public static final String CODE_SOURCE_READ_ERROR = "source-read-error";
 
-    /**
-     * Result of a single execution of this action.
-     *
-     * @param status success or failure (failure cancels the process)
-     * @param parsedSource the parsed source. On a well-formedness failure it still carries source metadata, bytes and
-     *            SHA-512 hash for document identity in the partial CVRL — only without parsed content
-     *            ({@code isParsed() == false}). {@code null} only when the source could not be read at all.
-     * @param detections this execution's contribution to the report; never {@code null}
-     */
-    public record ParseXMLResult(ECTStepResult status, DomValidationSource parsedSource, ICTDetectionList detections) {
-
-        public boolean isSuccess() {
-            return this.status == ECTStepResult.SUCCESS;
-        }
-    }
-
     @Override
     public String getName() {
-        return ECTCanonicalAction.PARSE_DOCUMENT.getCanonicalName();
-    }
-
-    @Override
-    public ECTActionType getType() {
-        return ECTCanonicalAction.PARSE_DOCUMENT.getDefaultType();
+        return "ParseXML";
     }
 
     /**
@@ -129,7 +108,7 @@ public class ParseXMLAction implements ICTAction {
             final Detection detection = new Detection(ECTSeverity.FATAL_ERROR, CODE_SOURCE_READ_ERROR,
                     DetectionLocation.ofResource(VInput.getName()),
                     "IOException while reading resource " + VInput.getName() + ": " + e.getMessage(), e);
-            return new ParseXMLResult(ECTStepResult.FAILURE, null, DetectionList.of(detection));
+            return ParseXMLResult.failure(DetectionList.of(detection));
         }
         return parse(source, bytes);
     }
@@ -148,34 +127,33 @@ public class ParseXMLAction implements ICTAction {
             builder.setErrorHandler(new CollectingErrorHandler(source.getName(), errors));
             final Document dom = builder.parse(new ByteArrayInputStream(bytes), source.getName());
             if (!errors.isEmpty()) {
-                return new ParseXMLResult(ECTStepResult.FAILURE, DomValidationSource.unparsed(source, bytes),
-                        new DetectionList(errors));
+                return new ParseXMLResult(ECTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
             }
             final DomValidationSource parsed = new DomValidationSource(source, bytes, dom);
             final Detection info = Detection.of(ECTSeverity.INFO, CODE_DOCUMENT_PARSED, DetectionLocation.ofResource(source.getName()),
                     parsed.getHashAlgorithmName() + "=" + SourceDigest.hashHex(bytes));
-            return new ParseXMLResult(ECTStepResult.SUCCESS, parsed, DetectionList.of(info));
+            return new ParseXMLResult(ECTStepResult.SUCCESS, DetectionList.of(info), parsed);
         } catch (final SAXParseException e) {
             // already collected by CollectingErrorHandler#fatalError unless thrown directly
             if (errors.stream().noneMatch(d -> d.getLinkedException() == e)) {
                 errors.add(fatal(source.getName(), e));
             }
-            return new ParseXMLResult(ECTStepResult.FAILURE, DomValidationSource.unparsed(source, bytes), new DetectionList(errors));
+            return new ParseXMLResult(ECTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
         } catch (final SAXException | ParserConfigurationException e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exception while parsing {}", source.getName(), e);
             }
             errors.add(new Detection(ECTSeverity.FATAL_ERROR, CODE_NOT_WELLFORMED, DetectionLocation.ofResource(source.getName()),
                     e.getMessage(), e));
-            return new ParseXMLResult(ECTStepResult.FAILURE, DomValidationSource.unparsed(source, bytes), new DetectionList(errors));
+            return new ParseXMLResult(ECTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
         } catch (final IOException e) {
             errors.add(new Detection(ECTSeverity.FATAL_ERROR, CODE_SOURCE_READ_ERROR, DetectionLocation.ofResource(source.getName()),
                     e.getMessage(), e));
-            return new ParseXMLResult(ECTStepResult.FAILURE, null, new DetectionList(errors));
+            return ParseXMLResult.failure(new DetectionList(errors));
         }
     }
 
-    // Auslagern in XML-helper
+    // TODO Auslagern in XML-helper
     private static DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -203,6 +181,7 @@ public class ParseXMLAction implements ICTAction {
      * Collects every well-formedness error as a FATAL detection (one detection per parser error, with line/column)
      * instead of aborting on the first one.
      */
+    // TODO extract in XMLHelper
     private record CollectingErrorHandler(String resourceId, List<ICTDetection> errors) implements ErrorHandler {
 
         @Override

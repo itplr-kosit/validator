@@ -14,7 +14,7 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
 import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTCanonicalAction;
+import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.ICTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
@@ -108,12 +108,12 @@ public class PrepareRulesAction implements ICTAction {
 
     @Override
     public String getName() {
-        return ECTCanonicalAction.PREPARE_RULES.getCanonicalName();
+        return ECTActionType.PREPARE_RULES.getName();
     }
 
     @Override
     public ECTActionType getType() {
-        return ECTCanonicalAction.PREPARE_RULES.getDefaultType();
+        return ECTActionType.PREPARE_RULES;
     }
 
     /**
