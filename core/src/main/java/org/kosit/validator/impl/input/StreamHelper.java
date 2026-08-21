@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.io.input.CountingInputStream;
+import org.apache.commons.io.input.BoundedInputStream;
 import org.kosit.validator.api.VInput;
 
 /**
@@ -26,7 +26,7 @@ public class StreamHelper {
      * Helper class, which generates the hashcode while reading the stream e.g. for parsing the document. This allows
      * generating the hashcode without an additional reading step.
      */
-    @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
+    // efficient read is done by internally used stream
     private static class DigestingInputStream extends FilterInputStream {
 
         private final MessageDigest digest;
@@ -62,7 +62,6 @@ public class StreamHelper {
             return count;
         }
 
-        @SuppressWarnings("ResultOfMethodCallIgnored")
         private int peek() throws IOException {
             try {
                 mark(2);
@@ -76,20 +75,20 @@ public class StreamHelper {
         }
     }
 
-    @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
+    // efficient read is done by internally used stream
     private static class CountInputStream extends FilterInputStream {
 
         private final LazyReadInput reference;
 
-        public CountInputStream(final LazyReadInput input, final InputStream stream) {
-            super(new org.apache.commons.io.input.CountingInputStream(stream));
+        public CountInputStream(final LazyReadInput input, final InputStream stream) throws IOException {
+            super(BoundedInputStream.builder().setInputStream(stream).get());
             this.reference = input;
         }
 
         @Override
         public void close() throws IOException {
             super.close();
-            this.reference.setLength(((CountingInputStream) this.in).getByteCount());
+            this.reference.setLength(((BoundedInputStream) this.in).getCount());
         }
     }
 
@@ -103,9 +102,7 @@ public class StreamHelper {
 
     public static MessageDigest createDigest(final String algorithm) {
         try {
-            final MessageDigest digest;
-            digest = MessageDigest.getInstance(algorithm);
-            return digest;
+            return MessageDigest.getInstance(algorithm);
         } catch (final NoSuchAlgorithmException e) {
             // should not happen
             throw new IllegalArgumentException("Specified method " + algorithm + " is not available", e);
@@ -120,7 +117,11 @@ public class StreamHelper {
      * @return a wrapped stream
      */
     public static InputStream wrapCount(final LazyReadInput input, final InputStream stream) {
-        return new CountInputStream(input, stream);
+        try {
+            return new CountInputStream(input, stream);
+        } catch (final IOException e) {
+            throw new IllegalArgumentException("Failed to open counting stream", e);
+        }
     }
 
     /**
@@ -135,19 +136,19 @@ public class StreamHelper {
     }
 
     /**
-     * Reads the entire content of the given {@link Source} into memory, so that the source document can be retained
-     * as an immutable byte array (conformatron-api step 2, {@code parse-document}). Reading happens through the
-     * supplied stream, so any digest/counting wrapping of the owning {@link VInput} stays intact.
+     * Reads the entire content of the given {@link Source} into memory, so that the source document can be retained as
+     * an immutable byte array (conformatron-api step 2, {@code parse-document}). Reading happens through the supplied
+     * stream, so any digest/counting wrapping of the owning {@link VInput} stays intact.
      *
      * @param source the source to read
-     * @return the complete content, or {@code null} if the source type does not allow byte retention (callers must
-     *         then process the source directly)
+     * @return the complete content, or {@code null} if the source type does not allow byte retention (callers must then
+     *         process the source directly)
      * @throws IOException on read errors
      */
     public static byte[] tryReadBytes(final Source source) throws IOException {
         if (source instanceof final StreamSource streamSource) {
             if (streamSource.getInputStream() != null) {
-                try (InputStream in = streamSource.getInputStream()) {
+                try ( InputStream in = streamSource.getInputStream() ) {
                     return in.readAllBytes();
                 }
             }
@@ -155,7 +156,7 @@ public class StreamHelper {
                 try {
                     final URI uri = URI.create(streamSource.getSystemId());
                     if (uri.isAbsolute()) {
-                        try (InputStream in = uri.toURL().openStream()) {
+                        try ( InputStream in = uri.toURL().openStream() ) {
                             return in.readAllBytes();
                         }
                     }
@@ -174,16 +175,16 @@ public class StreamHelper {
     /**
      * Drains the {@link VInput} without further processing. This is useful to computing hashcode etc.
      * 
-     * @param VInput the input
+     * @param input the input
      * @return the input drained once
      * @throws IOException on I/O errors
      */
-    public static VInput drain(final VInput VInput) throws IOException {
-        final StreamSource s = (StreamSource) VInput.getSource();
+    public static VInput drain(final VInput input) throws IOException {
+        final StreamSource s = (StreamSource) input.getSource();
         try ( final InputStream stream = s.getInputStream() ) {
             drain(stream);
         }
-        return VInput;
+        return input;
 
     }
 
@@ -193,17 +194,10 @@ public class StreamHelper {
      * @param input the input
      * @throws IOException on I/O errors
      */
-    @SuppressWarnings("squid:S1854")
     public static void drain(final InputStream input) throws IOException {
         final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-
-        // noinspection unused
-        int n;
-
-        // noinspection StatementWithEmptyBody,UnusedAssignment
-        while (EOF != (n = input.read(buffer))) {
+        while (input.read(buffer) >= 0) {
             // nothing
         }
-
     }
 }

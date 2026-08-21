@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
 
 import net.sf.saxon.lib.ResourceRequest;
 import net.sf.saxon.lib.ResourceResolver;
-import net.sf.saxon.lib.ResourceResolverWrappingURIResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -73,18 +72,17 @@ public class ContentRepository {
         }
 
         @Override
-        public boolean equals(final java.lang.Object o) {
+        public boolean equals(final Object o) {
             if (o == this)
                 return true;
-            if (!(o instanceof ContentRepository.CacheKey))
+            if (!(o instanceof final ContentRepository.CacheKey other))
                 return false;
-            final ContentRepository.CacheKey other = (ContentRepository.CacheKey) o;
-            final java.lang.Object this$compilerId = this.getCompilerId();
-            final java.lang.Object other$compilerId = other.getCompilerId();
+            final String this$compilerId = this.getCompilerId();
+            final String other$compilerId = other.getCompilerId();
             if (this$compilerId == null ? other$compilerId != null : !this$compilerId.equals(other$compilerId))
                 return false;
-            final java.lang.Object this$uri = this.getUri();
-            final java.lang.Object other$uri = other.getUri();
+            final URI this$uri = this.getUri();
+            final URI other$uri = other.getUri();
             if (this$uri == null ? other$uri != null : !this$uri.equals(other$uri))
                 return false;
             return true;
@@ -94,15 +92,15 @@ public class ContentRepository {
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
-            final java.lang.Object $compilerId = this.getCompilerId();
+            final String $compilerId = this.getCompilerId();
             result = result * PRIME + ($compilerId == null ? 43 : $compilerId.hashCode());
-            final java.lang.Object $uri = this.getUri();
+            final URI $uri = this.getUri();
             result = result * PRIME + ($uri == null ? 43 : $uri.hashCode());
             return result;
         }
 
         @Override
-        public java.lang.String toString() {
+        public String toString() {
             return "ContentRepository.CacheKey(compilerId=" + this.getCompilerId() + ", uri=" + this.getUri() + ")";
         }
     }
@@ -134,35 +132,22 @@ public class ContentRepository {
         this.repository = repository;
         this.resolvingConfigurationStrategy = strategy;
         this.processor = processor;
-        this.resolver = getResolver(strategy, repository);
+        this.resolver = strategy.createResourceResolver(repository);
         this.unparsedTextURIResolver = this.resolvingConfigurationStrategy.createUnparsedTextURIResolver(repository);
         this.schemaFactory = this.resolvingConfigurationStrategy.createSchemaFactory();
         this.compilerRegistry = defaultSchematronCompilerRegistry(processor);
     }
 
-    private static SchematronCompilerRegistry defaultSchematronCompilerRegistry(Processor processor) {
+    private static SchematronCompilerRegistry defaultSchematronCompilerRegistry(final Processor processor) {
         return new SchematronCompilerRegistry(List.of(new SchXsltCompiler(), new SchXslt2Compiler(), new IsoSchematronCompiler(processor)));
     }
 
-    @SuppressWarnings("squid:S2095")
     private static Source resolve(final URL resource) {
         try {
             return new StreamSource(resource.openStream(), resource.toURI().getRawPath());
         } catch (final IOException | URISyntaxException e) {
             throw new IllegalStateException("Can not load schema for resource " + resource.getPath(), e);
         }
-    }
-
-    private static ResourceResolver getResolver(final ResolvingConfigurationStrategy strategy, final URI repository) {
-        final URIResolver uriResolver = strategy.createResolver(repository);
-        final ResourceResolver resourceResolver = strategy.createResourceResolver(repository);
-        if (uriResolver != null && resourceResolver != null) {
-            throw new IllegalStateException("Must not provide both URIResolver and ResourceResolver");
-        }
-        if (uriResolver != null) {
-            return new ResourceResolverWrappingURIResolver(uriResolver);
-        }
-        return resourceResolver;
     }
 
     private Schema createSchema(final Source[] schemaSources) {
@@ -204,9 +189,9 @@ public class ContentRepository {
 
     public XsltExecutable loadSchematronXslt(final URI schUri, final String compilerId) {
         LOGGER.info("Loading or compiling Schematron {} using compiler {}", schUri, compilerId);
-        SchematronCompiler compiler = compilerRegistry.get(compilerId);
-        CacheKey key = new CacheKey(compilerId, schUri);
-        Source xsltSource = schematronXsltCache.computeIfAbsent(key, k -> compiler.compileToXslt(schUri, this::resolveInRepository));
+        final SchematronCompiler compiler = compilerRegistry.get(compilerId);
+        final CacheKey key = new CacheKey(compilerId, schUri);
+        final Source xsltSource = schematronXsltCache.computeIfAbsent(key, k -> compiler.compileToXslt(schUri, this::resolveInRepository));
         final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
         try {
             return xsltCompiler.compile(xsltSource);

@@ -2,7 +2,6 @@ package org.kosit.validator.docs;
 
 import java.net.URI;
 
-import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -29,13 +28,7 @@ public class MiscDocExampleCodes {
             return null;
         }
 
-        public URIResolver createResolver(final URI scenarioRepository) {
-            // TODO
-            return null;
-        }
-
-        @Override
-        public ResourceResolver createResourceResolver(URI scenarioRepository) {
+        public ResourceResolver createResourceResolver(final URI scenarioRepository) {
             return null;
         }
 
