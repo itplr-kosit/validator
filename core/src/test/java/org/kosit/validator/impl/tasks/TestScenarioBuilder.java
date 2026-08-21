@@ -11,7 +11,7 @@ import javax.xml.validation.Schema;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Helper;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -25,7 +25,7 @@ import org.kosit.validator.model.scenarios.ValidateWithXmlSchema;
 public class TestScenarioBuilder {
 
     public static Scenario createDefault() {
-        return createScenario(Helper.Simple.SCHEMA, Helper.Simple.REPORT_XSL);
+        return createScenario(TestHelper.Simple.SCHEMA, TestHelper.Simple.REPORT_XSL);
     }
 
     /**
@@ -34,7 +34,7 @@ public class TestScenarioBuilder {
      */
     public static ScenarioRepository createRepository(final Scenario... scenarios) {
         final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), new StrictRelativeResolvingStrategy(),
-                Helper.Simple.REPOSITORY_URI);
+                TestHelper.Simple.REPOSITORY_URI);
         for (final Scenario scenario : scenarios) {
             scenario.setMatchExecutable(repo.createMatchExecutable(scenario.getConfiguration()));
         }
@@ -82,7 +82,7 @@ public class TestScenarioBuilder {
     }
 
     private static Schema createSchema(final URL toURL) {
-        final ContentRepository contentRepository = new ContentRepository(Helper.getTestProcessor(),
+        final ContentRepository contentRepository = new ContentRepository(TestHelper.getTestProcessor(),
                 ResolvingMode.STRICT_RELATIVE.getStrategy(), null);
         return contentRepository.createSchema(toURL);
     }
@@ -91,7 +91,7 @@ public class TestScenarioBuilder {
 
         try {
             final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), new StrictRelativeResolvingStrategy(),
-                    Helper.Simple.REPOSITORY_URI);
+                    TestHelper.Simple.REPOSITORY_URI);
             final ScenarioType t = new ScenarioType();
             final Scenario scenario = new Scenario(t);
             scenario.setUnparsedTextURIResolver(repo.getUnparsedTextURIResolver());

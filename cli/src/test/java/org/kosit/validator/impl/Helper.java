@@ -81,7 +81,7 @@ public class Helper {
 
         public static final ContentRepository createContentRepository() {
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
-            return new ContentRepository(Helper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
+            return new ContentRepository(TestHelper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
         }
 
         public static URI getSchemaLocation() {
@@ -108,16 +108,13 @@ public class Helper {
         public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
     }
 
-    public static final URI ASSERTION_SCHEMA = URI
-            .create(ValidatorSchemas.class.getResource(ValidatorSchemas.ASSERTIONS_XSD_PATH).toExternalForm());
-
     public static final URI TEST_ROOT = Paths.get("src/test/resources").toAbsolutePath().toUri();
 
     public static final URI EXAMPLES_DIR = TEST_ROOT.resolve("examples/");
 
     public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
 
-    public static final URL JAR_REPOSITORY = Helper.class.getClassLoader().getResource("simple/packaged/repository/");
+    public static final URL JAR_REPOSITORY = TestHelper.class.getClassLoader().getResource("simple/packaged/repository/");
 
     public static final URI LARGE_XML = Paths.get("pom.xml").toUri();
 
@@ -153,7 +150,7 @@ public class Helper {
 
     public static String serialize(final List<BusinessReport> reports) {
         try ( final StringWriter writer = new StringWriter() ) {
-            final Processor processor = Helper.getTestProcessor();
+            final Processor processor = TestHelper.getTestProcessor();
             final Serializer serializer = processor.newSerializer(writer);
             for (final BusinessReport report : reports) {
                 final XdmNode node = report.getContent();

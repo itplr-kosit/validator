@@ -20,8 +20,8 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
@@ -33,7 +33,7 @@ public class ComputeConformanceActionTest {
 
     private final ComputeConformanceAction action = new ComputeConformanceAction();
 
-    private final ContentRepository repository = new ContentRepository(Helper.getTestProcessor(),
+    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
     private static final CTConformanceTarget TARGET = ConformanceTarget.of("simple-target", "Simple Target",

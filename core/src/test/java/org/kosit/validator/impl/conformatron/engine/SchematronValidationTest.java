@@ -10,8 +10,8 @@ import static org.kosit.validator.api.VInputFactory.read;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation.AdHocValidationResult;
 
 /**
@@ -19,7 +19,7 @@ import org.kosit.validator.impl.conformatron.engine.SchematronValidation.AdHocVa
  */
 public class SchematronValidationTest {
 
-    private final SchematronValidation validation = new SchematronValidation(Helper.getTestProcessor());
+    private final SchematronValidation validation = new SchematronValidation(TestHelper.getTestProcessor());
 
     @Test
     public void testConformantDocument() {

@@ -1,7 +1,7 @@
 package org.kosit.validator.config;
 
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.ResolvingMode;
 
 import java.net.URI;

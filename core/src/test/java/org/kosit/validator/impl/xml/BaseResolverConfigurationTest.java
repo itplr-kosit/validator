@@ -11,7 +11,7 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.Helper;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.Supplemental;
@@ -42,7 +42,7 @@ public class BaseResolverConfigurationTest {
         final XVRLDetection d = new XVRLDetection();
         final Supplemental s = new Supplemental();
         s.setId("bla");
-        final XdmNode node = Helper.load(Helper.Simple.SIMPLE_VALID);
+        final XdmNode node = TestHelper.load(TestHelper.Simple.SIMPLE_VALID);
         s.getContent().add(NodeOverNodeInfo.wrap(node.getUnderlyingNode()).getOwnerDocument().getDocumentElement());
         d.getSupplementals().add(s);
         r.getDetection().add(d);

@@ -11,8 +11,8 @@ import org.conformatron.api.model.source.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
@@ -29,7 +29,7 @@ public class PrepareRulesActionTest {
 
     private static final String DOCUMENT = "simple.xml";
 
-    private final ContentRepository repository = new ContentRepository(Helper.getTestProcessor(),
+    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
     private final PrepareRulesAction action = new PrepareRulesAction(this.repository);

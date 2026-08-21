@@ -12,7 +12,7 @@ import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.config.TestConfiguration;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.ScenarioType;
 
@@ -35,7 +35,7 @@ public class ScenarioRepositoryTest {
     public void setup() {
         this.configInstance = new TestConfiguration();
         this.configInstance
-                .setContentRepository(new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
+                .setContentRepository(new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
 
         final Scenario s = createScenario();
         this.configInstance.setScenarios(new ArrayList<>());
@@ -104,7 +104,7 @@ public class ScenarioRepositoryTest {
     }
 
     private XdmNode load(final URI uri) throws IOException {
-        return Helper.parseDocument(this.configInstance.getContentRepository().getProcessor(), read(uri.toURL())).getObject();
+        return TestHelper.parseDocument(this.configInstance.getContentRepository().getProcessor(), read(uri.toURL())).getObject();
     }
 
     private XPathExecutable createXpath(final String expression) {

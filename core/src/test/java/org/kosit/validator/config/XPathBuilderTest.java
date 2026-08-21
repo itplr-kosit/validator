@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.Result;
 
 import net.sf.saxon.s9api.XPathExecutable;

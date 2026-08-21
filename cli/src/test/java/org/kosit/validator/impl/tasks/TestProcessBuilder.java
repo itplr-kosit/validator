@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.kosit.validator.api.*;
 import org.kosit.validator.api.VInput;
-import org.kosit.validator.impl.Helper;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
@@ -56,7 +56,7 @@ public class TestProcessBuilder {
     }
 
     public static List<BusinessReport> createReport() {
-        final XdmNode someXml = Helper.parseDocument(VInputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
+        final XdmNode someXml = TestHelper.parseDocument(VInputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
         return createReport("report", someXml);
     }
 
@@ -73,7 +73,7 @@ public class TestProcessBuilder {
 
     private static ProcessStepResult<XdmNode, XMLSyntaxError> parseInput(final VInput VInput) {
         final ProcessStepResult<XdmNode, XMLSyntaxError> stepResult = new ProcessStepResult<>(DocumentParseAction.KEY);
-        stepResult.setResult(Helper.parseDocument(VInput));
+        stepResult.setResult(TestHelper.parseDocument(VInput));
         stepResult.setReport(new XVRLReport());
         return stepResult;
     }
@@ -176,6 +176,6 @@ public class TestProcessBuilder {
     }
 
     public TestProcessBuilder setDummyReport() {
-        return setCreateReport(createReport("report", Helper.load(Helper.Simple.SIMPLE_VALID)));
+        return setCreateReport(createReport("report", TestHelper.load(TestHelper.Simple.SIMPLE_VALID)));
     }
 }

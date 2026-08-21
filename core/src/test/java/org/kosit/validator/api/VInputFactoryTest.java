@@ -2,7 +2,7 @@ package org.kosit.validator.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kosit.validator.impl.Helper.Simple.SIMPLE_VALID;
+import static org.kosit.validator.impl.TestHelper.Simple.SIMPLE_VALID;
 import static org.kosit.validator.impl.input.StreamHelper.drain;
 
 import java.io.ByteArrayInputStream;
@@ -17,8 +17,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.input.SourceVInput;
 import org.kosit.validator.impl.model.Result;
@@ -156,11 +156,11 @@ public class VInputFactoryTest {
         final VInput domVInput = VInputFactory.read(new DOMSource(dom), "MD5", "id".getBytes());
         assertThat(domVInput).isNotNull();
         assertThat(domVInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(domVInput);
+        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(domVInput);
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
-        assertThat(Helper.parseDocument(domVInput).getObject()).isNotNull();
+        assertThat(TestHelper.parseDocument(domVInput).getObject()).isNotNull();
     }
 
     @Test
@@ -169,11 +169,11 @@ public class VInputFactoryTest {
         final VInput nodeVInput = VInputFactory.read(node, "node test");
         assertThat(nodeVInput).isNotNull();
         assertThat(nodeVInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = Helper.parseDocument(nodeVInput);
+        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(nodeVInput);
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
-        assertThat(Helper.parseDocument(nodeVInput).getObject()).isNotNull();
+        assertThat(TestHelper.parseDocument(nodeVInput).getObject()).isNotNull();
     }
 
 }

@@ -9,7 +9,7 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 import org.kosit.validator.impl.conformatron.util.ArtifactResolver;

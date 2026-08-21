@@ -167,7 +167,7 @@ public class ApplyRulesAction implements CTAction {
 
     private CTDetectionList applySchematron(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
             final String documentName) throws SaxonApiException {
-        final XsltExecutable executable = (XsltExecutable) ruleSet.getCompiledArtifact();
+        final XsltExecutable executable = (XsltExecutable) ruleSet.getCompiledArtifact().getCompilation();
         final XsltTransformer transformer = executable.load();
         final XdmDestination destination = new XdmDestination();
         transformer.setDestination(destination);
@@ -182,7 +182,7 @@ public class ApplyRulesAction implements CTAction {
 
     private static CTDetectionList applySchema(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
             final String documentName) throws IOException {
-        final Schema schema = (Schema) ruleSet.getCompiledArtifact();
+        final Schema schema = (Schema) ruleSet.getCompiledArtifact().getCompilation();
         final Validator validator = schema.newValidator();
         secure(validator);
         final List<CTDetection> violations = new ArrayList<>();

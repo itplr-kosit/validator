@@ -14,6 +14,7 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
+@Deprecated(since = "2.0.0")
 public interface VResult {
 
     /**
@@ -23,6 +24,7 @@ public interface VResult {
      * @return true if the processing was completed fully and successfully
      * @see #getAcceptRecommendation()
      */
+    @Deprecated(since = "2.0.0")
     boolean isProcessingSuccessful();
 
     /**
@@ -30,13 +32,16 @@ public interface VResult {
      *
      * @return list of error messages
      */
+    @Deprecated(since = "2.0.0")
     List<String> getProcessingErrors();
 
     /**
      * The generated report.
      */
+    @Deprecated(since = "2.0.0")
     XdmNode getReport();
 
+    @Deprecated(since = "2.0.0")
     XVRLReportSummary getReportSummary();
 
     /**
@@ -44,6 +49,7 @@ public interface VResult {
      *
      * @return AcceptRecommendation
      */
+    @Deprecated(since = "2.0.0")
     AcceptRecommendation getAcceptRecommendation();
 
     /**
@@ -51,6 +57,7 @@ public interface VResult {
      *
      * @return the report
      */
+    @Deprecated(since = "2.0.0")
     Document getReportDocument();
 
     /**
@@ -58,11 +65,13 @@ public interface VResult {
      *
      * @return true if {@link AcceptRecommendation#ACCEPTABLE}
      */
+    @Deprecated(since = "2.0.0")
     boolean isAcceptable();
 
     /**
      * Returns a list of schema validation errors found. This list is empty if no errors were found.
      */
+    @Deprecated(since = "2.0.0")
     List<XmlError> getSchemaViolations();
 
     /**
@@ -70,6 +79,7 @@ public interface VResult {
      *
      * @return list of Schematron results
      */
+    @Deprecated(since = "2.0.0")
     List<SchematronOutput> getSchematronResult();
 
     /**
@@ -77,21 +87,24 @@ public interface VResult {
      *
      * @return list of {@link org.oclc.purl.dsdl.svrl.FailedAssert FailedAsserts}, if any, empty list otherwise
      */
+    @Deprecated(since = "2.0.0")
     List<FailedAssert> getFailedAsserts();
-
-    /**
-     * Returns true if no schema violations are present.
-     *
-     * @return true if schema-valid
-     */
-    boolean isSchemaValid();
 
     /**
      * Returns true if the test document is a well-formed XML file.
      *
      * @return true if well-formed
      */
+    @Deprecated(since = "2.0.0")
     boolean isWellformed();
+
+    /**
+     * Returns true if no schema violations are present.
+     *
+     * @return true if schema-valid
+     */
+    @Deprecated(since = "2.0.0")
+    boolean isSchemaValid();
 
     /**
      * Returns true, if schematron has been checked and the result does not contain any {@link FailedAssert
@@ -99,5 +112,6 @@ public interface VResult {
      *
      * @return true, if valid
      */
+    @Deprecated(since = "2.0.0")
     boolean isSchematronValid();
 }

@@ -3,13 +3,13 @@ package org.kosit.validator.impl;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.api.VInputFactory.read;
-import static org.kosit.validator.impl.Helper.Simple.FOO_SCHEMATRON_INVALID;
-import static org.kosit.validator.impl.Helper.Simple.GARBAGE;
-import static org.kosit.validator.impl.Helper.Simple.NOT_WELLFORMED;
-import static org.kosit.validator.impl.Helper.Simple.REJECTED;
-import static org.kosit.validator.impl.Helper.Simple.SCHEMATRON_INVALID;
-import static org.kosit.validator.impl.Helper.Simple.SIMPLE_VALID;
-import static org.kosit.validator.impl.Helper.Simple.UNKNOWN;
+import static org.kosit.validator.impl.TestHelper.Simple.FOO_SCHEMATRON_INVALID;
+import static org.kosit.validator.impl.TestHelper.Simple.GARBAGE;
+import static org.kosit.validator.impl.TestHelper.Simple.NOT_WELLFORMED;
+import static org.kosit.validator.impl.TestHelper.Simple.REJECTED;
+import static org.kosit.validator.impl.TestHelper.Simple.SCHEMATRON_INVALID;
+import static org.kosit.validator.impl.TestHelper.Simple.SIMPLE_VALID;
+import static org.kosit.validator.impl.TestHelper.Simple.UNKNOWN;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -25,7 +25,7 @@ import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.xvrl.impl.XvrlConversionService;
@@ -55,17 +55,17 @@ public class DefaultVCheckTest {
 
     @BeforeEach
     public void setup() throws URISyntaxException {
-        final VConfiguration validConfig = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final VConfiguration validConfig = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
         this.validCheck = new DefaultVCheck(this.engineInformation, validConfig);
 
         final VConfiguration errorConfig = VConfiguration.load(Simple.ERROR_SCENARIOS, Simple.REPOSITORY_URI)
-                .build(Helper.getTestProcessor());
+                .build(TestHelper.getTestProcessor());
         this.errorCheck = new DefaultVCheck(this.engineInformation, errorConfig);
 
         final VConfiguration jarConfig = VConfiguration
                 .load(requireNonNull(DefaultVCheckTest.class.getClassLoader().getResource("simple/packaged/scenarios.xml")).toURI(),
                         requireNonNull(DefaultVCheckTest.class.getClassLoader().getResource("simple/packaged/repository/")).toURI())
-                .build(Helper.getTestProcessor());
+                .build(TestHelper.getTestProcessor());
 
         this.jarScenarioCheck = new DefaultVCheck(this.engineInformation, jarConfig);
     }

@@ -1,26 +1,26 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.kosit.validator.api.VInputFactory.read;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
-import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 
 /**
  * Tests {@link ApplyRulesAction} (step 7) with real rule sets prepared by steps 5+6.
@@ -29,7 +29,7 @@ public class ApplyRulesActionTest {
 
     private final ApplyRulesAction action = new ApplyRulesAction();
 
-    private final ContentRepository repository = new ContentRepository(Helper.getTestProcessor(),
+    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
     private static CTParsedValidationSource parse(final URI document) {
@@ -39,9 +39,10 @@ public class ApplyRulesActionTest {
     }
 
     private List<CTPreparedRuleSet> prepare(final String... references) {
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(
-                List.of(references).stream().map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList(), "test");
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)
+                .execute(Arrays.stream(references).map(ValidationArtifactReference::of).toList(), "test");
         assertThat(retrieved.isSuccess()).isTrue();
+
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(),
                 "test");
         assertThat(prepared.isSuccess()).isTrue();
@@ -50,7 +51,13 @@ public class ApplyRulesActionTest {
 
     @Test
     public void testCleanRunAppliesAllRuleSetsInOrder() {
-        final ApplyRulesActionResult result = this.action.execute(parse(Simple.SIMPLE_VALID), prepare("simple.xsd", "simple.sch"));
+        final var step1 = parse(Simple.SIMPLE_VALID);
+        assertNotNull(step1);
+
+        final var step2 = prepare("simple.xsd", "simple.sch");
+        assertNotNull(step2);
+
+        final ApplyRulesActionResult result = this.action.execute(step1, step2);
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.result().getResultsByRuleSet()).hasSize(2);

@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
 import org.kosit.validator.api.xsd.ValidatorSchemas;
-import org.kosit.validator.impl.Helper.Invalid;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Invalid;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.model.scenarios.Scenarios;
 
 /**

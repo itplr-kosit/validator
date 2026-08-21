@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
@@ -71,7 +71,7 @@ public class SchematronValidationActionTest {
 
         // real SchXslt compilation (no mock): the schematron compiles fine but raises a dynamic
         // XPath error (FORG0001) when validating simple.xml, whose inner element is not a number
-        final ContentRepository repo = new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
+        final ContentRepository repo = new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
                 Simple.REPOSITORY_URI);
         final ValidateWithSchematron validateWithSchematron = new ValidateWithSchematron();
         final ResourceType resource = new ResourceType();
@@ -94,7 +94,7 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testXsltValid() throws MalformedURLException {
-        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
         final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
@@ -105,7 +105,7 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testSchCompiledValid() throws MalformedURLException {
-        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
         final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
@@ -116,7 +116,7 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testIsoSchCompiledValid() throws MalformedURLException {
-        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
         final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_ISO_VALID.toURL()))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);

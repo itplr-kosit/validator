@@ -10,7 +10,7 @@ import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 
 /**
  * Tests the validator functionality based on a reduced scenario.
@@ -23,7 +23,7 @@ public class SimpleScenarioVCheckTest {
 
     @BeforeEach
     public void setup() {
-        final VConfiguration d = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        final VConfiguration d = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
         this.implementation = new DefaultVCheck(new TestEngineInformation(), d);
     }
 

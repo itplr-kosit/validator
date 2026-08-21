@@ -51,7 +51,7 @@ public class ParseXMLActionTest {
 
     @Test
     public void testActionIdentity() {
-        assertThat(this.action.getName()).isEqualTo("parse-document");
+        assertThat(this.action.getName()).isEqualTo("ParseXML");
         assertThat(this.action.getType()).isEqualTo(CTActionType.PARSE_DOCUMENT);
     }
 
@@ -112,6 +112,6 @@ public class ParseXMLActionTest {
 
     @Test
     public void testNullInput() {
-        assertThrows(IllegalArgumentException.class, () -> this.action.execute(null));
+        assertThrows(NullPointerException.class, () -> this.action.execute(null));
     }
 }

@@ -1,15 +1,5 @@
 package org.kosit.validator.impl.conformatron.report;
 
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
-import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.api.VInputFactory.read;
 
@@ -21,12 +11,22 @@ import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.conformatron.api.model.action.CTActionType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
+import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -49,7 +49,7 @@ public class CvrlWriterTest {
 
     @BeforeEach
     public void setup() {
-        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
 
@@ -59,7 +59,7 @@ public class CvrlWriterTest {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
         }
         final DetectScenariosAction.DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository,
-                Helper.getTestProcessor()).execute(parsed.getParsedSource());
+                TestHelper.getTestProcessor()).execute(parsed.getParsedSource());
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)
                 .execute(selected.selected());
@@ -104,9 +104,10 @@ public class CvrlWriterTest {
         assertThat(document.getAttributeNS(NS_CVRL, "checksum")).isNotEmpty();
         assertThat(document.getAttributeNS(NS_CVRL, "checksum-algorithm")).isEqualTo("SHA-512");
         // 6 steps + APPLY_RULES twice (xsd + schematron rule set) = 8 reports
-        assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly("parse-document", "scenario-matcher",
-                "scenario-selector", "artifact-retriever", "rule-transpiler", "apply-validation-rules", "apply-validation-rules",
-                "conformance-computer");
+        assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly(CTActionType.PARSE_DOCUMENT.getName(),
+                CTActionType.DETECT_SCENARIOS.getName(), CTActionType.SELECT_SCENARIO.getName(), CTActionType.RETRIEVE_ARTIFACTS.getName(),
+                CTActionType.PREPARE_RULES.getName(), CTActionType.APPLY_RULES.getName(), CTActionType.APPLY_RULES.getName(),
+                CTActionType.COMPUTE_CONFORMANCE.getName());
         // the APPLY_RULES reports carry the rule set identity
         final Element schematronReport = reports(cvrl).get(6);
         final Element schema = (Element) schematronReport.getElementsByTagNameNS(NS, "schema").item(0);
@@ -140,6 +141,6 @@ public class CvrlWriterTest {
         assertThat(document.getAttributeNS(NS_CVRL, "checksum")).isNotEmpty();
         final Element digest = (Element) cvrl.getElementsByTagNameNS(NS, "digest").item(0);
         assertThat(digest.getAttribute("valid")).isEqualTo("false");
-        assertThat(digest.getAttribute("worst-severity")).isEqualTo("fatal-error");
+        assertThat(digest.getAttribute("worst-severity")).isEqualTo("error");
     }
 }

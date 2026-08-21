@@ -8,8 +8,8 @@ import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.impl.DefaultVCheck;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestEngineInformation;
 
 /**
@@ -20,7 +20,7 @@ public class SimpleConfigTest {
     @Test
     public void testSimpleWithApi() {
         //@formatter:off
-        final VConfiguration config = createSimpleConfiguration().build(Helper.getTestProcessor());
+        final VConfiguration config = createSimpleConfiguration().build(TestHelper.getTestProcessor());
         //@formatter:on
         final DefaultVCheck check = new DefaultVCheck(new TestEngineInformation(), config);
         final VResult result = check.checkInput(VInputFactory.read(Simple.SIMPLE_VALID));

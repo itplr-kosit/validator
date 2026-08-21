@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Helper;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -31,7 +31,7 @@ public class ComputeAcceptanceActionTest {
     private final ComputeAcceptanceAction action = new ComputeAcceptanceAction();
 
     private static XPathExecutable createXpath(final String expression) {
-        return new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null).createXPath(expression,
+        return new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null).createXPath(expression,
                 new HashMap<>());
     }
 

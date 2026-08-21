@@ -10,7 +10,7 @@ import java.net.URI;
 import java.util.Date;
 
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.ResolvingMode;
 
 /**

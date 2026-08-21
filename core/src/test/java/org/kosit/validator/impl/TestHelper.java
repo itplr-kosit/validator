@@ -32,7 +32,7 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Penski
  */
 
-public class Helper {
+public class TestHelper {
 
     public static class Simple {
 
@@ -84,7 +84,7 @@ public class Helper {
 
         public static final ContentRepository createContentRepository() {
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
-            return new ContentRepository(Helper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
+            return new ContentRepository(TestHelper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
         }
 
         public static URI getSchemaLocation() {
@@ -118,7 +118,7 @@ public class Helper {
     public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
 
     public static final URI JAR_REPOSITORY = URI
-            .create(Helper.class.getClassLoader().getResource("simple/packaged/repository/").toExternalForm());
+            .create(TestHelper.class.getClassLoader().getResource("simple/packaged/repository/").toExternalForm());
 
     public static final URI LARGE_XML = Paths.get("pom.xml").toUri();
 
@@ -154,7 +154,7 @@ public class Helper {
 
     public static String serialize(final List<BusinessReport> reports) {
         try ( final StringWriter writer = new StringWriter() ) {
-            final Processor processor = Helper.getTestProcessor();
+            final Processor processor = TestHelper.getTestProcessor();
             final Serializer serializer = processor.newSerializer(writer);
             for (final BusinessReport report : reports) {
                 final XdmNode node = report.getContent();

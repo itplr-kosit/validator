@@ -11,8 +11,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VInputFactory;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.impl.tasks.TestProcessBuilder;
@@ -42,7 +42,7 @@ public class SerializeReportActionTest {
     public void testSimpleSerialize() {
         assertThat(this.action.isSkipped(TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID)).schemaValid().build())).isTrue();
         final CheckAction.Process b = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID)).schemaValid()
-                .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
+                .setCreateReport(TestHelper.load(Simple.SIMPLE_VALID)).build();
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);
         assertThat(b.isStopped()).isFalse();

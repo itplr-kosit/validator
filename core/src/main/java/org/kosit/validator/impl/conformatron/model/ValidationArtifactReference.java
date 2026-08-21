@@ -1,11 +1,11 @@
 package org.kosit.validator.impl.conformatron.model;
 
-import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
-
 import java.net.URI;
 import java.util.Objects;
 
+import org.conformatron.api.annotation.Nonempty;
 import org.conformatron.api.model.source.CTValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
 
 /**
  * Validator implementation of {@link CTValidationArtifactReference}: a pure carrier for the reference to a validation
@@ -22,18 +22,12 @@ public final class ValidationArtifactReference implements CTValidationArtifactRe
 
     private final URI reference;
 
-    private ValidationArtifactReference(final URI reference) {
-        this.reference = reference;
-    }
-
     /**
      * @param reference the artifact reference; must not be {@code null}
      * @return the carrier for this reference
      */
     public static ValidationArtifactReference of(final URI reference) {
-        if (reference == null) {
-            throw new IllegalArgumentException("reference may not be null");
-        }
+        Objects.requireNonNull(reference);
         return new ValidationArtifactReference(reference);
     }
 
@@ -41,11 +35,15 @@ public final class ValidationArtifactReference implements CTValidationArtifactRe
      * @param reference the artifact reference as declared in the scenario configuration (e.g. {@code "simple.sch"})
      * @return the carrier for this reference
      */
-    public static ValidationArtifactReference of(final String reference) {
+    public static ValidationArtifactReference of(@Nonempty final String reference) {
         if (reference == null || reference.isBlank()) {
             throw new IllegalArgumentException("reference may not be null or blank");
         }
         return of(URI.create(reference));
+    }
+
+    private ValidationArtifactReference(final URI reference) {
+        this.reference = reference;
     }
 
     @Override
@@ -55,7 +53,12 @@ public final class ValidationArtifactReference implements CTValidationArtifactRe
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof final ValidationArtifactReference o && this.reference.equals(o.reference);
+        if (other == this)
+            return true;
+        if (other == null || !other.getClass().equals(ValidationArtifactReference.class))
+            return false;
+        final ValidationArtifactReference rhs = (ValidationArtifactReference) other;
+        return this.reference.equals(rhs.reference);
     }
 
     @Override

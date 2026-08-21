@@ -16,7 +16,7 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VInput;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.xml.ProcessorProvider;
@@ -27,7 +27,7 @@ import org.kosit.validator.impl.tasks.TestScenarioBuilder;
  * Tests {@link DetectScenariosAction} (step 3) and {@link SelectScenarioAction} (step 4) against the legacy scenario
  * machinery via the facade types.
  */
-public class ScenarioStepsTest {
+public class SelectScenarioActionTest {
 
     private final SelectScenarioAction selectAction = new SelectScenarioAction();
 

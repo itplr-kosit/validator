@@ -122,7 +122,7 @@ public class RetrieveArtifactsAction implements CTAction {
      * @param resourceId the document name used as detection location
      * @return the result including the resolved artifacts and any detections
      */
-    public RetrieveArtifactsResult execute(final List<CTValidationArtifactReference> references, final String resourceId) {
+    public RetrieveArtifactsResult execute(final List<? extends CTValidationArtifactReference> references, final String resourceId) {
         if (references == null) {
             throw new IllegalArgumentException("references may not be null");
         }

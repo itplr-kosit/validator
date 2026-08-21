@@ -13,8 +13,8 @@ import org.conformatron.api.model.detection.CTDetection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
@@ -54,7 +54,7 @@ public class CanonicalPipelineTest {
 
     @BeforeEach
     public void setup() {
-        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
+        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
 
@@ -66,7 +66,7 @@ public class CanonicalPipelineTest {
         trace.addAll(codes(parsed.getDetectionList().getAll()));
 
         // step 3: DETECT_SCENARIOS — the DOM is wrapped into the Saxon model for the XPath matching
-        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, Helper.getTestProcessor())
+        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, TestHelper.getTestProcessor())
                 .execute(parsed.getParsedSource());
         assertThat(detected.isSuccess()).isTrue();
         trace.addAll(codes(detected.detections().getAll()));

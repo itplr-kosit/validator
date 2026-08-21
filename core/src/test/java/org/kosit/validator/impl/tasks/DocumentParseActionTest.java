@@ -9,8 +9,8 @@ import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.validation.CTValidationSyntax;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.util.SourceDigest;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.XMLSyntaxError;
@@ -28,7 +28,7 @@ public class DocumentParseActionTest {
 
     @BeforeEach
     public void setup() {
-        this.action = new DocumentParseAction(Helper.createProcessor());
+        this.action = new DocumentParseAction(TestHelper.createProcessor());
     }
 
     @Test

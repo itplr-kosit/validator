@@ -8,7 +8,7 @@ import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation.AdHocValidationResult;
 
@@ -19,8 +19,8 @@ import org.kosit.validator.impl.conformatron.engine.SchematronValidation.AdHocVa
 public class ValidationEngineTest {
 
     private DefaultVCheck createEngine() {
-        final VConfiguration config = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(Helper.getTestProcessor());
-        return new DefaultVCheck(new TestEngineInformation(), Helper.getTestProcessor(), config);
+        final VConfiguration config = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        return new DefaultVCheck(new TestEngineInformation(), TestHelper.getTestProcessor(), config);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ValidationEngineTest {
 
     @Test
     public void testSchematronValidationIsAnEngine() {
-        final ValidationEngine<AdHocValidationResult> engine = new SchematronValidation(Helper.getTestProcessor(),
+        final ValidationEngine<AdHocValidationResult> engine = new SchematronValidation(TestHelper.getTestProcessor(),
                 Simple.REPOSITORY_URI.resolve("simple.sch"));
 
         assertThat(engine.validate(read(Simple.SIMPLE_VALID)).isConformant()).isTrue();
