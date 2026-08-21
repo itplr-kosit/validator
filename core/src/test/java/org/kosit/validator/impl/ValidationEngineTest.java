@@ -9,8 +9,8 @@ import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.Helper.Simple;
-import org.kosit.validator.impl.conformatron.SchematronValidation;
-import org.kosit.validator.impl.conformatron.SchematronValidation.AdHocValidationResult;
+import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
+import org.kosit.validator.impl.conformatron.engine.SchematronValidation.AdHocValidationResult;
 
 /**
  * Tests the {@link ValidationEngine} contract: {@link ConformanceValidation} (via {@link DefaultCheck}) and

@@ -1,5 +1,14 @@
 package org.kosit.validator.impl.conformatron;
 
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.validator.impl.conformatron.action.ParseDocumentAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
+import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
+import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.api.InputFactory.read;
 
@@ -15,13 +24,13 @@ import org.kosit.validator.api.Configuration;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.conformatron.ApplyRulesAction.ApplyRulesActionResult;
-import org.kosit.validator.impl.conformatron.ComputeConformanceAction.ComputeConformanceActionResult;
-import org.kosit.validator.impl.conformatron.DetectScenariosAction.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.ParseDocumentAction.ParseDocumentResult;
-import org.kosit.validator.impl.conformatron.PrepareRulesAction.PrepareRulesResult;
-import org.kosit.validator.impl.conformatron.RetrieveArtifactsAction.RetrieveArtifactsResult;
-import org.kosit.validator.impl.conformatron.SelectScenarioAction.SelectScenarioResult;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
+import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
+import org.kosit.validator.impl.conformatron.action.DetectScenariosAction.DetectScenariosResult;
+import org.kosit.validator.impl.conformatron.action.ParseDocumentAction.ParseDocumentResult;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
 
 /**
  * <b>End-to-end walkthrough of the canonical pipeline, steps 2–8</b>, composed exclusively from the new-API actions —

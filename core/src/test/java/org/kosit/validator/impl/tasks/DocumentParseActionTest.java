@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
-import org.kosit.validator.impl.conformatron.SourceDigest;
+import org.kosit.validator.impl.conformatron.util.SourceDigest;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.XMLSyntaxError;
 

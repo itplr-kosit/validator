@@ -11,7 +11,7 @@ import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.Input;
 import org.kosit.validator.api.Result;
 import org.kosit.validator.api.ValidationEngine;
-import org.kosit.validator.impl.conformatron.SchematronValidation;
+import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
 import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
 import org.kosit.validator.impl.tasks.ComputeAcceptanceAction;
