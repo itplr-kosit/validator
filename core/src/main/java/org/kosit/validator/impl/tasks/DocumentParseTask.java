@@ -37,9 +37,9 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
-public class DocumentParseAction implements CheckAction {
+public class DocumentParseTask implements CheckTask {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentParseAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentParseTask.class);
 
     public static final Process.Key<XdmNode, XMLSyntaxError> KEY = new Process.Key<>(XdmNode.class, XMLSyntaxError.class);
 
@@ -142,7 +142,7 @@ public class DocumentParseAction implements CheckAction {
         return result;
     }
 
-    public DocumentParseAction(final Processor processor) {
+    public DocumentParseTask(final Processor processor) {
         this.processor = processor;
     }
 }

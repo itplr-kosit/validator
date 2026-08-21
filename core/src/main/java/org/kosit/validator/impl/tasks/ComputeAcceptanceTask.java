@@ -28,9 +28,9 @@ import net.sf.saxon.s9api.XPathSelector;
  * 
  * @author Andreas Penski
  */
-public class ComputeAcceptanceAction implements CheckAction {
+public class ComputeAcceptanceTask implements CheckTask {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputeAcceptanceAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputeAcceptanceTask.class);
 
     public static final Process.Key<AcceptRecommendation, XMLSyntaxError> KEY = new Process.Key<>(AcceptRecommendation.class,
             XMLSyntaxError.class);
@@ -46,7 +46,7 @@ public class ComputeAcceptanceAction implements CheckAction {
     }
 
     private static Result<AcceptRecommendation, XMLSyntaxError> evaluateSchemaAndSchematron(final Process results) {
-        if (results.getResult(SchemaValidationAction.KEY).isValid() && isSchematronValid(results)) {
+        if (results.getResult(SchemaValidationTask.KEY).isValid() && isSchematronValid(results)) {
             return new Result<>(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
         }
         return new Result<>(org.kosit.validator.api.AcceptRecommendation.REJECT);
@@ -57,7 +57,7 @@ public class ComputeAcceptanceAction implements CheckAction {
     }
 
     private static boolean hasSchematronErrors(final Process process) {
-        final Result<List<ValidationResultsSchematron>, String> result = process.getResult(SchematronValidationAction.KEY);
+        final Result<List<ValidationResultsSchematron>, String> result = process.getResult(SchematronValidationTask.KEY);
         if (result != null && result.isValid()) {
             return result.getObject().stream().map(v -> v.getResults().getSchematronOutput())
                     .flatMap(s -> s.getActivePatternOrActiveGroupAndFiredRule().stream()).anyMatch(FailedAssert.class::isInstance);
@@ -68,7 +68,7 @@ public class ComputeAcceptanceAction implements CheckAction {
     private static Result<AcceptRecommendation, XMLSyntaxError> evaluateAcceptanceMatch(final Process results,
             final XPathSelector selector) {
         try {
-            final Result<List<BusinessReport>, XMLSyntaxError> reportResult = results.getResult(CreateReportsAction.KEY);
+            final Result<List<BusinessReport>, XMLSyntaxError> reportResult = results.getResult(CreateReportsTask.KEY);
             boolean result = true;
             for (final BusinessReport report : reportResult.getObject()) {
                 selector.setContextItem(report.getContent());
@@ -87,19 +87,19 @@ public class ComputeAcceptanceAction implements CheckAction {
     }
 
     private static boolean preCondtionsMatch(final Process results) {
-        final Result<List<BusinessReport>, XMLSyntaxError> report = results.getResult(CreateReportsAction.KEY);
-        return results.getResult(SchemaValidationAction.KEY) != null && results.getResult(ScenarioSelectionAction.KEY) != null;
+        final Result<List<BusinessReport>, XMLSyntaxError> report = results.getResult(CreateReportsTask.KEY);
+        return results.getResult(SchemaValidationTask.KEY) != null && results.getResult(ScenarioSelectionTask.KEY) != null;
     }
 
     @Override
     public ProcessStepResult<AcceptRecommendation, XMLSyntaxError> check(final Process process) {
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = new ProcessStepResult<>(KEY);
         Result<AcceptRecommendation, XMLSyntaxError> result = new Result<>(org.kosit.validator.api.AcceptRecommendation.UNDEFINED);
-        if (!process.isStopped() && process.getResult(DocumentParseAction.KEY).isValid()) {
+        if (!process.isStopped() && process.getResult(DocumentParseTask.KEY).isValid()) {
             if (preCondtionsMatch(process)) {
-                final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionAction.KEY);
+                final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
                 final Optional<XPathSelector> acceptMatch = scenarioSelection.getObject().getAcceptSelector();
-                if (process.getResult(SchemaValidationAction.KEY).isValid() && acceptMatch.isPresent()) {
+                if (process.getResult(SchemaValidationTask.KEY).isValid() && acceptMatch.isPresent()) {
                     result = evaluateAcceptanceMatch(process, acceptMatch.get());
                 } else {
                     result = evaluateSchemaAndSchematron(process);
@@ -115,6 +115,6 @@ public class ComputeAcceptanceAction implements CheckAction {
         return stepResult;
     }
 
-    public ComputeAcceptanceAction() {
+    public ComputeAcceptanceTask() {
     }
 }

@@ -5,8 +5,9 @@ import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
+import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
@@ -24,9 +25,9 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
-public class ScenarioSelectionAction implements CheckAction {
+public class ScenarioSelectionTask implements CheckTask {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioSelectionAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioSelectionTask.class);
 
     public static final Process.Key<Scenario, String> KEY = new Process.Key<>(Scenario.class, String.class);
 
@@ -53,7 +54,7 @@ public class ScenarioSelectionAction implements CheckAction {
     @Override
     public ProcessStepResult<Scenario, String> check(final Process results) {
         final Result<Scenario, String> scenarioTypeResult;
-        final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseAction.KEY);
+        final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
         if (parseResult.isValid()) {
             scenarioTypeResult = determineScenario(parseResult.getObject());
         } else {
@@ -65,7 +66,7 @@ public class ScenarioSelectionAction implements CheckAction {
             LOGGER.info("No valid scenario configuration found for \'{}\'", results.getInput().getName());
         }
         runConformatronScenarioSteps(results);
-        final ProcessStepResult<Scenario, String> result = new ProcessStepResult<>(ScenarioSelectionAction.KEY);
+        final ProcessStepResult<Scenario, String> result = new ProcessStepResult<>(ScenarioSelectionTask.KEY);
         result.setResult(scenarioTypeResult);
         result.setReport(generateXVRLReport(scenarioTypeResult, results.getInput().getName()));
         return result;
@@ -83,7 +84,7 @@ public class ScenarioSelectionAction implements CheckAction {
         if (results.getParsedSource() == null) {
             return;
         }
-        final DetectScenariosAction.DetectScenariosResult detected = this.detectScenariosAction.execute(results.getParsedSource());
+        final DetectScenariosResult detected = this.detectScenariosAction.execute(results.getParsedSource());
         if (!detected.isSuccess()) {
             return;
         }
@@ -102,7 +103,7 @@ public class ScenarioSelectionAction implements CheckAction {
         return result;
     }
 
-    public ScenarioSelectionAction(final ScenarioRepository repository) {
+    public ScenarioSelectionTask(final ScenarioRepository repository) {
         this.repository = repository;
         this.detectScenariosAction = new DetectScenariosAction(repository);
         this.selectScenarioAction = new SelectScenarioAction();

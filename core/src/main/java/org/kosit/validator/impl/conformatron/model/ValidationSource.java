@@ -15,13 +15,10 @@
  */
 package org.kosit.validator.impl.conformatron.model;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
 
 import org.conformatron.api.model.source.CTValidationSource;
 import org.conformatron.api.model.validation.CTValidationSyntax;
-import org.jspecify.annotations.NonNull;
 import org.kosit.validator.api.VInput;
 
 /**
@@ -46,9 +43,8 @@ public final class ValidationSource implements CTValidationSource {
      * @param input the legacy input
      * @return a new source facade
      */
-    public static ValidationSource of(final VInput input) {
+    public static CTValidationSource of(final VInput input) {
         Objects.requireNonNull(input);
-        // TODO PH create overload for getInputStream
         return new ValidationSource(input.getName(), CTValidationSyntax.XML, true);
     }
 
@@ -74,16 +70,5 @@ public final class ValidationSource implements CTValidationSource {
     @Override
     public boolean isComplete() {
         return this.complete;
-    }
-
-    public boolean canReadMultiple() {
-        // TODO PH
-        return true;
-    }
-
-    @NonNull
-    public InputStream getInputStream() throws IOException {
-        // TODO PH
-        throw new IOException("TODO");
     }
 }

@@ -20,10 +20,11 @@ import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
-import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
+import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
@@ -58,7 +59,7 @@ public class CvrlWriterTest {
         if (!parsed.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
         }
-        final DetectScenariosAction.DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository,
+        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository,
                 TestHelper.getTestProcessor()).execute(parsed.getParsedSource());
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)

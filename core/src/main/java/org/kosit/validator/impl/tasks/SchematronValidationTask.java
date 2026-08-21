@@ -40,9 +40,9 @@ import net.sf.saxon.s9api.XsltTransformer;
  *
  * @author Andreas Penski
  */
-public class SchematronValidationAction implements CheckAction {
+public class SchematronValidationTask implements CheckTask {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SchematronValidationAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchematronValidationTask.class);
 
     public static final Process.Key<List<ValidationResultsSchematron>, String> KEY = new Process.Key<>(null, String.class);
 
@@ -65,7 +65,7 @@ public class SchematronValidationAction implements CheckAction {
     }
 
     private static boolean isSchemaInvalid(final Process results) {
-        final Result<Boolean, XMLSyntaxError> result = results.getResult(SchemaValidationAction.KEY);
+        final Result<Boolean, XMLSyntaxError> result = results.getResult(SchemaValidationTask.KEY);
         return result == null || result.isInvalid();
     }
 
@@ -128,8 +128,8 @@ public class SchematronValidationAction implements CheckAction {
 
     @Override
     public ProcessStepResult<List<ValidationResultsSchematron>, String> check(final Process process) {
-        final Result<XdmNode, XMLSyntaxError> parseResult = process.getResult(DocumentParseAction.KEY);
-        final Result<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionAction.KEY);
+        final Result<XdmNode, XMLSyntaxError> parseResult = process.getResult(DocumentParseTask.KEY);
+        final Result<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionTask.KEY);
         final List<ValidationResultsSchematron> validationResult = validate(process, parseResult.getObject(), scenarioResult.getObject());
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = new ProcessStepResult<>(KEY);
         processStepResult.setResult(new Result<>(validationResult, this.errorMessages));
@@ -139,11 +139,11 @@ public class SchematronValidationAction implements CheckAction {
 
     @Override
     public boolean isSkipped(final Process results) {
-        final Result<Scenario, String> result = results.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> result = results.getResult(ScenarioSelectionTask.KEY);
         return hasNoSchematrons(result.getObject()) || isSchemaInvalid(results);
     }
 
-    public SchematronValidationAction(final SvrlConversionService conversionService) {
+    public SchematronValidationTask(final SvrlConversionService conversionService) {
         this.conversionService = conversionService;
     }
 }

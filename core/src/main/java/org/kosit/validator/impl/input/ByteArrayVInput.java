@@ -3,7 +3,6 @@ package org.kosit.validator.impl.input;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.kosit.validator.api.VInput;
@@ -28,7 +27,7 @@ public class ByteArrayVInput extends AbstractVInput {
     }
 
     @Override
-    public Source getSource() {
+    public StreamSource getSource() {
         final InputStream stream = wrap(new ByteArrayInputStream(this.content));
         return new StreamSource(stream, getName());
     }

@@ -17,7 +17,7 @@ import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.BusinessReport;
-import org.kosit.validator.impl.tasks.DocumentParseAction;
+import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.model.XMLSyntaxError;
 
@@ -167,11 +167,11 @@ public class TestHelper {
     }
 
     public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final VInput VInput) {
-        return new DocumentParseAction(processor).parseDocument(VInput);
+        return new DocumentParseTask(processor).parseDocument(VInput);
     }
 
     public static Result<XdmNode, XMLSyntaxError> parseDocument(final VInput VInput) {
-        return new DocumentParseAction(getTestProcessor()).parseDocument(VInput);
+        return new DocumentParseTask(getTestProcessor()).parseDocument(VInput);
     }
 
     public static Processor getTestProcessor() {

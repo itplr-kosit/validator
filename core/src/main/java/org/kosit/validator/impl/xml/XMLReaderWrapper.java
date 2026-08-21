@@ -1,4 +1,4 @@
-package org.kosit.validator.impl.tasks;
+package org.kosit.validator.impl.xml;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ import jakarta.xml.bind.util.JAXBSource;
  * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect on
  * {@link JAXBSource}'s XMLReader, but it throws exceptions on unknown properties. This just drops this exceptions.
  */
-public class ReaderWrapper implements XMLReader {
+public class XMLReaderWrapper implements XMLReader {
 
     private static final String SAX_FEATURES_NAMESPACE_PREFIXES = "http://xml.org/sax/features/namespace-prefixes";
 
@@ -26,7 +26,7 @@ public class ReaderWrapper implements XMLReader {
 
     private final XMLReader delegate;
 
-    public ReaderWrapper(final XMLReader xmlReader) {
+    public XMLReaderWrapper(final XMLReader xmlReader) {
         this.delegate = xmlReader;
     }
 

@@ -13,7 +13,7 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.tasks.CheckAction.Process;
+import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
 
@@ -24,11 +24,11 @@ import net.sf.saxon.s9api.XPathExecutable;
  * 
  * @author Andreas Penski
  */
-public class ComputeAcceptanceActionTest {
+public class ComputeAcceptanceTaskTest {
 
     private static final String DOESNOT_EXIST = "count(//doesnotExist) = 0";
 
-    private final ComputeAcceptanceAction action = new ComputeAcceptanceAction();
+    private final ComputeAcceptanceTask action = new ComputeAcceptanceTask();
 
     private static XPathExecutable createXpath(final String expression) {
         return new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null)
@@ -38,7 +38,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void simpleTest() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
-        final Result<AcceptRecommendation, XMLSyntaxError> result = process.getResult(ComputeAcceptanceAction.KEY);
+        final Result<AcceptRecommendation, XMLSyntaxError> result = process.getResult(ComputeAcceptanceTask.KEY);
         assertThat(result).isNull();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
@@ -64,7 +64,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testValidAcceptMatch() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
-        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
@@ -74,7 +74,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testAcceptMatchNotSatisfied() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
-        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath("count(//doesnotExist) = 1"));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
@@ -84,7 +84,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testAcceptMatchOverridesSchematronErrors() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronInvalid().setDummyReport().build();
-        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
@@ -94,7 +94,7 @@ public class ComputeAcceptanceActionTest {
     @Test
     public void testValidAcceptMatchOnSchemaFailed() {
         final Process process = TestProcessBuilder.create().schemaInvalid().schematronValid().setDummyReport().build();
-        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
         final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
@@ -114,7 +114,7 @@ public class ComputeAcceptanceActionTest {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
         // remove schematron results
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = process
-                .getActionResult(SchematronValidationAction.KEY).get();
+                .getActionResult(SchematronValidationTask.KEY).get();
 
         process.getProcessStepResults().remove(processStepResult);
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);

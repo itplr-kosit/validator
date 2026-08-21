@@ -32,24 +32,24 @@ import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 
 /**
- * Tests {@link SchematronValidationAction}.
+ * Tests {@link SchematronValidationTask}.
  * 
  * @author Andreas Penski
  */
-public class SchematronValidationActionTest {
+public class SchematronValidationTaskTest {
 
-    private SchematronValidationAction action;
+    private SchematronValidationTask action;
 
     @BeforeEach
     public void setup() {
-        this.action = new SchematronValidationAction(new SvrlConversionService());
+        this.action = new SchematronValidationTask(new SvrlConversionService());
     }
 
     @Test
     public void testProcessingError() throws IOException, SaxonApiException {
-        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
 
-        final Result<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioResult.getObject();
         final XsltExecutable exec = mock(XsltExecutable.class);
         final XsltTransformer transformer = mock(XsltTransformer.class);
@@ -66,8 +66,8 @@ public class SchematronValidationActionTest {
 
     @Test
     public void testSchxsltRuntimeProcessingError() throws IOException {
-        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
-        final Scenario scenario = process.getResult(ScenarioSelectionAction.KEY).getObject();
+        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+        final Scenario scenario = process.getResult(ScenarioSelectionTask.KEY).getObject();
 
         // real SchXslt compilation (no mock): the schematron compiles fine but raises a dynamic
         // XPath error (FORG0001) when validating simple.xml, whose inner element is not a number
@@ -95,7 +95,7 @@ public class SchematronValidationActionTest {
     @Test
     public void testXsltValid() throws MalformedURLException {
         final VConfiguration c = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
-        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
+        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
@@ -106,7 +106,7 @@ public class SchematronValidationActionTest {
     @Test
     public void testSchCompiledValid() throws MalformedURLException {
         final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
-        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
+        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
@@ -117,7 +117,7 @@ public class SchematronValidationActionTest {
     @Test
     public void testIsoSchCompiledValid() throws MalformedURLException {
         final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
-        final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_ISO_VALID.toURL()))
+        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_ISO_VALID.toURL()))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();

@@ -17,7 +17,7 @@ import org.kosit.validator.cmd.report.Justify;
 import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.EngineInformation;
-import org.kosit.validator.impl.tasks.CheckAction;
+import org.kosit.validator.impl.tasks.CheckTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +98,7 @@ class InternalVCheck extends DefaultVCheck {
      */
     @Override
     public VResult checkInput(final VInput VInput) {
-        final CheckAction.Process process = new CheckAction.Process(VInput, createXVRLMetadata());
+        final CheckTask.Process process = new CheckTask.Process(VInput, createXVRLMetadata());
         return runCheckInternal(process);
     }
 

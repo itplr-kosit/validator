@@ -13,15 +13,15 @@ import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
-import org.kosit.validator.impl.tasks.CheckAction;
-import org.kosit.validator.impl.tasks.CheckAction.Process;
-import org.kosit.validator.impl.tasks.ComputeAcceptanceAction;
-import org.kosit.validator.impl.tasks.CreateDocumentIdentificationAction;
-import org.kosit.validator.impl.tasks.CreateReportsAction;
-import org.kosit.validator.impl.tasks.DocumentParseAction;
-import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
-import org.kosit.validator.impl.tasks.SchemaValidationAction;
-import org.kosit.validator.impl.tasks.SchematronValidationAction;
+import org.kosit.validator.impl.tasks.CheckTask;
+import org.kosit.validator.impl.tasks.CheckTask.Process;
+import org.kosit.validator.impl.tasks.ComputeAcceptanceTask;
+import org.kosit.validator.impl.tasks.CreateDocumentIdentificationTask;
+import org.kosit.validator.impl.tasks.CreateReportsTask;
+import org.kosit.validator.impl.tasks.DocumentParseTask;
+import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
+import org.kosit.validator.impl.tasks.SchemaValidationTask;
+import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.XVRLMetadata;
@@ -44,7 +44,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
 
     private final List<VConfiguration> configuration;
 
-    private final List<CheckAction> checkSteps;
+    private final List<CheckTask> checkSteps;
 
     private final Processor processor;
 
@@ -72,13 +72,13 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
         this.adHocValidation = new SchematronValidation(processor);
         this.xvrlConversionService = new XvrlConversionService();
         this.checkSteps = new ArrayList<>();
-        this.checkSteps.add(new DocumentParseAction(processor));
-        this.checkSteps.add(new CreateDocumentIdentificationAction());
-        this.checkSteps.add(new ScenarioSelectionAction(new ScenarioRepository(configuration)));
-        this.checkSteps.add(new SchemaValidationAction(processor));
-        this.checkSteps.add(new SchematronValidationAction(new SvrlConversionService()));
-        this.checkSteps.add(new CreateReportsAction(processor, this.xvrlConversionService));
-        this.checkSteps.add(new ComputeAcceptanceAction());
+        this.checkSteps.add(new DocumentParseTask(processor));
+        this.checkSteps.add(new CreateDocumentIdentificationTask());
+        this.checkSteps.add(new ScenarioSelectionTask(new ScenarioRepository(configuration)));
+        this.checkSteps.add(new SchemaValidationTask(processor));
+        this.checkSteps.add(new SchematronValidationTask(new SvrlConversionService()));
+        this.checkSteps.add(new CreateReportsTask(processor, this.xvrlConversionService));
+        this.checkSteps.add(new ComputeAcceptanceTask());
         this.conformanceValidation = new ConformanceValidation(engineInformation, this.checkSteps);
     }
 
@@ -125,7 +125,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
         return this.configuration;
     }
 
-    public List<CheckAction> getCheckSteps() {
+    public List<CheckTask> getCheckSteps() {
         return this.checkSteps;
     }
 

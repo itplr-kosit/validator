@@ -34,9 +34,9 @@ import net.sf.saxon.s9api.XsltTransformer;
  *
  * @author Andreas Penski
  */
-public class CreateReportsAction implements CheckAction {
+public class CreateReportsTask implements CheckTask {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CreateReportsAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateReportsTask.class);
 
     public static final Process.Key<List<BusinessReport>, XMLSyntaxError> KEY = new Process.Key<>(null, XMLSyntaxError.class);
 
@@ -44,12 +44,12 @@ public class CreateReportsAction implements CheckAction {
 
     private final XvrlSerializer xvrlSerializer;
 
-    public CreateReportsAction(final Processor processor, final XvrlConversionService xvrlConversionService) {
+    public CreateReportsTask(final Processor processor, final XvrlConversionService xvrlConversionService) {
         this.xvrlSerializer = new XvrlSerializer(xvrlConversionService, processor);
     }
 
     private static List<Scenario.Transformation> getTransformations(final Process results) {
-        final Result<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionTask.KEY);
         return scenarioSelection.getObject().getReportTransformations();
     }
 
@@ -65,9 +65,9 @@ public class CreateReportsAction implements CheckAction {
     @Override
     public ProcessStepResult<List<BusinessReport>, XMLSyntaxError> check(final Process process) {
         final ProcessStepResult<List<BusinessReport>, XMLSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
-        final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioSelection.getObject();
-        final XdmNode parsedDocument = process.getResult(DocumentParseAction.KEY).getObject();
+        final XdmNode parsedDocument = process.getResult(DocumentParseTask.KEY).getObject();
         final List<BusinessReport> reports = getTransformations(process).stream()
                 .map(t -> createReport(t, process, scenario, parsedDocument)).collect(Collectors.toList());
         processStepResult.setResult(new Result<>(reports, null));
@@ -109,6 +109,6 @@ public class CreateReportsAction implements CheckAction {
 
     @Override
     public boolean isSkipped(final Process results) {
-        return results.getResult(DocumentParseAction.KEY).isInvalid();
+        return results.getResult(DocumentParseTask.KEY).isInvalid();
     }
 }

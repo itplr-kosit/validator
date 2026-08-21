@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andreas Penski
  */
-class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckAction {
+class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrintMemoryStats.class);
 

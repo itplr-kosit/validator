@@ -6,8 +6,8 @@ import java.util.List;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.BusinessReport;
-import org.kosit.validator.impl.tasks.CheckAction;
-import org.kosit.validator.impl.tasks.CreateReportsAction;
+import org.kosit.validator.impl.tasks.CheckTask;
+import org.kosit.validator.impl.tasks.CreateReportsTask;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.xvrl.model.XVRLReport;
@@ -23,7 +23,7 @@ import net.sf.saxon.s9api.Serializer;
  *
  * @author Andreas Penski
  */
-class PrintReportAction implements CheckAction {
+class PrintReportAction implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrintReportAction.class);
 
@@ -40,7 +40,7 @@ class PrintReportAction implements CheckAction {
         try {
             final StringWriter writer = new StringWriter();
             final Serializer serializer = this.processor.newSerializer(writer);
-            final Result<List<BusinessReport>, XMLSyntaxError> result = results.getResult(CreateReportsAction.KEY);
+            final Result<List<BusinessReport>, XMLSyntaxError> result = results.getResult(CreateReportsTask.KEY);
             for (final BusinessReport node : result.getObject()) {
                 serializer.serializeNode(node.getContent());
             }

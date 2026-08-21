@@ -10,7 +10,7 @@ import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
-import org.kosit.validator.impl.tasks.CheckAction;
+import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.TestProcessBuilder;
 
 /**
@@ -34,7 +34,7 @@ public class PrintReportActionTest {
     @Test
     public void testSimpleSerialize() {
 
-        final CheckAction.Process b = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID))
+        final CheckTask.Process b = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID))
                 .setCreateReport(TestHelper.load(Simple.SIMPLE_VALID)).build();
         CommandLine.clear();
         assertThat(this.action.isSkipped(b)).isFalse();

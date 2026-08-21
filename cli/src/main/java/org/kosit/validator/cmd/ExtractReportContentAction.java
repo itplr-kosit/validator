@@ -9,8 +9,8 @@ import java.util.List;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.BusinessReport;
-import org.kosit.validator.impl.tasks.CheckAction;
-import org.kosit.validator.impl.tasks.CreateReportsAction;
+import org.kosit.validator.impl.tasks.CheckTask;
+import org.kosit.validator.impl.tasks.CreateReportsTask;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.xvrl.model.XVRLReport;
@@ -28,7 +28,7 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
-class ExtractReportContentAction implements CheckAction {
+class ExtractReportContentAction implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtractReportContentAction.class);
 
@@ -54,7 +54,7 @@ class ExtractReportContentAction implements CheckAction {
 
     @Override
     public ProcessStepResult<Boolean, String> check(final Process results) {
-        final Result<List<BusinessReport>, XMLSyntaxError> reportReposts = results.getResult(CreateReportsAction.KEY);
+        final Result<List<BusinessReport>, XMLSyntaxError> reportReposts = results.getResult(CreateReportsTask.KEY);
         reportReposts.getObject().forEach(entry -> {
             print(entry.getName(), entry.getContent());
         });
@@ -80,7 +80,7 @@ class ExtractReportContentAction implements CheckAction {
 
     @Override
     public boolean isSkipped(final Process results) {
-        final Result<List<BusinessReport>, XMLSyntaxError> createReportResult = results.getResult(CreateReportsAction.KEY);
+        final Result<List<BusinessReport>, XMLSyntaxError> createReportResult = results.getResult(CreateReportsTask.KEY);
         if (createReportResult == null || createReportResult.getObject() == null) {
             LOGGER.warn("Can not extract create-report content. No report document found");
             return true;

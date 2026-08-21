@@ -15,7 +15,7 @@ import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.tasks.CheckAction.Process;
+import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.xvrl.impl.XvrlConversionService;
 
@@ -24,20 +24,20 @@ import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 
 /**
- * Test for {@link CreateReportsAction}.
+ * Test for {@link CreateReportsTask}.
  * 
  * @author Andreas Penski
  */
-public class CreateReportsActionTest {
+public class CreateReportsTaskTest {
 
-    private CreateReportsAction action;
+    private CreateReportsTask action;
 
     private ContentRepository repository;
 
     @BeforeEach
     public void setup() {
         this.repository = Simple.createContentRepository();
-        this.action = new CreateReportsAction(this.repository.getProcessor(), new XvrlConversionService());
+        this.action = new CreateReportsTask(this.repository.getProcessor(), new XvrlConversionService());
     }
 
     @Test
@@ -51,7 +51,7 @@ public class CreateReportsActionTest {
     public void testExecutionException() throws SaxonApiException {
         final Processor p = mock(Processor.class);
         final DocumentBuilder documentBuilder = mock(DocumentBuilder.class);
-        this.action = new CreateReportsAction(p, new XvrlConversionService());
+        this.action = new CreateReportsTask(p, new XvrlConversionService());
 
         when(p.newDocumentBuilder()).thenReturn(documentBuilder);
         when(documentBuilder.build(any(Source.class))).thenThrow(new SaxonApiException("mocked"));

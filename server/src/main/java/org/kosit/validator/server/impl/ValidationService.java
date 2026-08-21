@@ -19,7 +19,7 @@ import org.kosit.validator.api.compact.ValidatorEngineInformation;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
+import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.server.config.ValidationConfig;
 import org.kosit.xvrl.model.XVRLDetection;
@@ -102,7 +102,7 @@ public class ValidationService {
 
     private String detectSelectedScenario(VResult defaultResult) {
         return defaultResult.getReportSummary().getReports().stream()
-                .filter(rep -> rep.getId().equals(ScenarioSelectionAction.METADATA.getId())).findFirst()
+                .filter(rep -> rep.getId().equals(ScenarioSelectionTask.METADATA.getId())).findFirst()
                 .map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario")).findFirst()
                         .map(XVRLDetection::getCode).orElse("null"))
                 .orElse("null");

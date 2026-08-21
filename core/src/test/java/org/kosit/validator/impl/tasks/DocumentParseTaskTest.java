@@ -22,13 +22,13 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
-public class DocumentParseActionTest {
+public class DocumentParseTaskTest {
 
-    private DocumentParseAction action;
+    private DocumentParseTask action;
 
     @BeforeEach
     public void setup() {
-        this.action = new DocumentParseAction(TestHelper.createProcessor());
+        this.action = new DocumentParseTask(TestHelper.createProcessor());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class DocumentParseActionTest {
 
     @Test
     public void testCheckCarriesConformatronParsedSource() {
-        final CheckAction.Process process = new CheckAction.Process(read(Simple.SIMPLE_VALID));
+        final CheckTask.Process process = new CheckTask.Process(read(Simple.SIMPLE_VALID));
         this.action.check(process);
 
         final CTParsedValidationSource parsedSource = process.getParsedSource();
@@ -75,7 +75,7 @@ public class DocumentParseActionTest {
 
     @Test
     public void testCheckLeavesNoParsedSourceOnFailure() {
-        final CheckAction.Process process = new CheckAction.Process(read(Simple.NOT_WELLFORMED));
+        final CheckTask.Process process = new CheckTask.Process(read(Simple.NOT_WELLFORMED));
         this.action.check(process);
 
         assertThat(process.getParsedSource()).isNull();

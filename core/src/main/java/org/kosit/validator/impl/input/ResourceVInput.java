@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.kosit.validator.api.VInput;
@@ -28,7 +27,7 @@ public class ResourceVInput extends AbstractVInput {
     private final String digestAlgorithm;
 
     @Override
-    public Source getSource() throws IOException {
+    public StreamSource getSource() throws IOException {
         InputStream stream = this.url.openStream();
         if (!isHashcodeComputed()) {
             stream = StreamHelper.wrapDigesting(this, stream, getDigestAlgorithm());

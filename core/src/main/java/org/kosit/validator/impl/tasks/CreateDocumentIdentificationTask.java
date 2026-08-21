@@ -19,7 +19,7 @@ import org.kosit.xvrl.model.XVRLReport;
  * 
  * @author Andreas Penski
  */
-public class CreateDocumentIdentificationAction implements CheckAction {
+public class CreateDocumentIdentificationTask implements CheckTask {
 
     public static final Process.Key<DocumentIdentificationType, XMLSyntaxError> KEY = new Process.Key<>(DocumentIdentificationType.class,
             XMLSyntaxError.class);

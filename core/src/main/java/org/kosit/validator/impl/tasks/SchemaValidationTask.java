@@ -23,7 +23,7 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.input.AbstractVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.tasks.CheckAction.Process.Key;
+import org.kosit.validator.impl.tasks.CheckTask.Process.Key;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
 import org.kosit.validator.model.XMLSyntaxError;
@@ -50,9 +50,9 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
-public class SchemaValidationAction implements CheckAction {
+public class SchemaValidationTask implements CheckTask {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaValidationAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaValidationTask.class);
 
     public static final Key<Boolean, XMLSyntaxError> KEY = new Key<>(Boolean.class, XMLSyntaxError.class);
 
@@ -71,7 +71,7 @@ public class SchemaValidationAction implements CheckAction {
     }
 
     private static boolean hasNoSchema(final Process results) {
-        final Result<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionTask.KEY);
         return scenarioSelection == null || scenarioSelection.getObject().getSchema() == null;
     }
 
@@ -96,7 +96,7 @@ public class SchemaValidationAction implements CheckAction {
 
     @Override
     public ProcessStepResult<Boolean, XMLSyntaxError> check(final Process results) {
-        final Result<Scenario, String> scenarioResult = results.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioResult = results.getResult(ScenarioSelectionTask.KEY);
         final ProcessStepResult<Boolean, XMLSyntaxError> stepResult = new ProcessStepResult<>(KEY);
         final Result<Boolean, XMLSyntaxError> validateResult = validate(results, scenarioResult.getObject());
         stepResult.setResult(validateResult);
@@ -114,7 +114,7 @@ public class SchemaValidationAction implements CheckAction {
         if (results.getInput() instanceof AbstractVInput && (((AbstractVInput) results.getInput()).supportsMultipleReads())) {
             source = () -> results.getInput().getSource();
         } else {
-            final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseAction.KEY);
+            final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
             source = serialize(results.getInput(), parseResult.getObject());
         }
         return source;
@@ -224,7 +224,7 @@ public class SchemaValidationAction implements CheckAction {
         }
     }
 
-    public SchemaValidationAction(final Processor processor) {
+    public SchemaValidationTask(final Processor processor) {
         this.processor = processor;
     }
 

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.kosit.validator.impl.tasks.CheckAction;
+import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.xvrl.model.XVRLReport;
 
 public class ProcessStepResult<T, E> {
 
-    private final CheckAction.Process.Key<T, E> key;
+    private final CheckTask.Process.Key<T, E> key;
 
     private Result<T, E> result;
 
@@ -28,7 +28,7 @@ public class ProcessStepResult<T, E> {
         }
     }
 
-    public CheckAction.Process.Key<T, E> getKey() {
+    public CheckTask.Process.Key<T, E> getKey() {
         return this.key;
     }
 
@@ -44,7 +44,7 @@ public class ProcessStepResult<T, E> {
         this.result = result;
     }
 
-    public ProcessStepResult(final CheckAction.Process.Key<T, E> key) {
+    public ProcessStepResult(final CheckTask.Process.Key<T, E> key) {
         this.key = key;
     }
 }

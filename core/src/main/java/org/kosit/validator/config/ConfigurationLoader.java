@@ -21,7 +21,7 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenariosConversionService;
 import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.tasks.DocumentParseAction;
+import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.scenarios.ScenarioType;
@@ -66,7 +66,7 @@ public class ConfigurationLoader {
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
-            final Result<XdmNode, XMLSyntaxError> result = new DocumentParseAction(processor)
+            final Result<XdmNode, XMLSyntaxError> result = new DocumentParseTask(processor)
                     .parseDocument(VInputFactory.read(scenarioDefinition.toURL()));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition

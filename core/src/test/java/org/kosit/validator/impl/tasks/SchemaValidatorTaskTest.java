@@ -28,22 +28,22 @@ import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.input.SourceVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.tasks.CheckAction.Process;
+import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.xml.sax.SAXException;
 
 /**
- * Tests the {@link SchemaValidationAction}.
+ * Tests the {@link SchemaValidationTask}.
  *
  * @author Andreas Penski
  */
-public class SchemaValidatorActionTest {
+public class SchemaValidatorTaskTest {
 
-    private SchemaValidationAction service;
+    private SchemaValidationTask service;
 
     @BeforeEach
     public void setup() {
-        this.service = new SchemaValidationAction(TestObjectFactory.createProcessor());
+        this.service = new SchemaValidationTask(TestObjectFactory.createProcessor());
     }
 
     @Test
@@ -137,7 +137,7 @@ public class SchemaValidatorActionTest {
     @Test
     public void testProcessingError() throws IOException, SAXException {
         final Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
-        final Result<Scenario, String> scenarioCheckResult = process.getResult(ScenarioSelectionAction.KEY);
+        final Result<Scenario, String> scenarioCheckResult = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioCheckResult.getObject();
         final Schema schema = mock(Schema.class);
         final Validator validator = mock(Validator.class);

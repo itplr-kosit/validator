@@ -22,7 +22,7 @@ import org.kosit.xvrl.model.XVRLReportSummary;
  * @author Andreas Penski
  */
 @FunctionalInterface
-public interface CheckAction {
+public interface CheckTask {
 
     /**
      * Executes the check step and extends the collected information.

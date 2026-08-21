@@ -12,12 +12,12 @@ import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.tasks.CheckAction;
-import org.kosit.validator.impl.tasks.CheckAction.Process;
-import org.kosit.validator.impl.tasks.ComputeAcceptanceAction;
-import org.kosit.validator.impl.tasks.DocumentParseAction;
-import org.kosit.validator.impl.tasks.SchemaValidationAction;
-import org.kosit.validator.impl.tasks.SchematronValidationAction;
+import org.kosit.validator.impl.tasks.CheckTask;
+import org.kosit.validator.impl.tasks.CheckTask.Process;
+import org.kosit.validator.impl.tasks.ComputeAcceptanceTask;
+import org.kosit.validator.impl.tasks.DocumentParseTask;
+import org.kosit.validator.impl.tasks.SchemaValidationTask;
+import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.xvrl.model.Timestamp;
@@ -44,7 +44,7 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
 
     private final EngineInformation engineInformation;
 
-    private final List<CheckAction> checkSteps;
+    private final List<CheckTask> checkSteps;
 
     /**
      * Creates the conformance validation engine over the given pipeline steps.
@@ -52,7 +52,7 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
      * @param engineInformation engine info for the report metadata
      * @param checkSteps the configured pipeline steps, executed in order
      */
-    public ConformanceValidation(final EngineInformation engineInformation, final List<CheckAction> checkSteps) {
+    public ConformanceValidation(final EngineInformation engineInformation, final List<CheckTask> checkSteps) {
         if (engineInformation == null) {
             throw new IllegalArgumentException("engineInformation may not be null");
         }
@@ -100,7 +100,7 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     public VResult run(final Process checkProcess) {
         final long started = System.currentTimeMillis();
         LOGGER.info("Checking content of {}", checkProcess.getInput().getName());
-        for (final CheckAction action : this.checkSteps) {
+        for (final CheckTask action : this.checkSteps) {
             final long start = System.currentTimeMillis();
             if (!action.isSkipped(checkProcess)) {
                 final ProcessStepResult<?, ?> result = action.check(checkProcess);
@@ -116,17 +116,17 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
 
     private static VResult createResult(final Process process) {
         final org.kosit.validator.impl.model.Result<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
-                .getResult(ComputeAcceptanceAction.KEY);
+                .getResult(ComputeAcceptanceTask.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
-        defaultResult.setWellformed(process.getResult(DocumentParseAction.KEY).isValid());
+        defaultResult.setWellformed(process.getResult(DocumentParseTask.KEY).isValid());
         defaultResult.setReportSummary(process.getXvrlReportSummary());
         final org.kosit.validator.impl.model.Result<Boolean, XMLSyntaxError> schemaValidationResult = process
-                .getResult(SchemaValidationAction.KEY);
+                .getResult(SchemaValidationTask.KEY);
         if (schemaValidationResult != null) {
             defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
         }
         final org.kosit.validator.impl.model.Result<List<ValidationResultsSchematron>, String> schematronValidationResult = process
-                .getResult(SchematronValidationAction.KEY);
+                .getResult(SchematronValidationTask.KEY);
         if (schematronValidationResult != null) {
             defaultResult.setSchematronResult(schematronValidationResult.getObject().stream()
                     .map(schematronResult -> schematronResult.getResults().getSchematronOutput()).collect(Collectors.toList()));

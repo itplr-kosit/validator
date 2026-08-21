@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.XmlError;
-import org.kosit.validator.impl.tasks.ReaderWrapper;
+import org.kosit.validator.impl.xml.XMLReaderWrapper;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.XVRLReportSummary;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
@@ -49,7 +49,7 @@ public class DefaultResult implements VResult {
             marshaller = new XvrlConversionService().getJaxbContext().createMarshaller();
             final JAXBSource source = new JAXBSource(marshaller, getReportSummary());
             // wrap to circumvent inconsistency between sax and saxon
-            source.setXMLReader(new ReaderWrapper(source.getXMLReader()));
+            source.setXMLReader(new XMLReaderWrapper(source.getXMLReader()));
             return new Processor(false).newDocumentBuilder().build(source);
         } catch (JAXBException | SaxonApiException e) {
             e.printStackTrace();
