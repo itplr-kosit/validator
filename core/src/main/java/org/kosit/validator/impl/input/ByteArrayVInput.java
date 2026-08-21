@@ -9,8 +9,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 /**
- * Classical in-memory {@link VInput}. It is not memory efficient to read the whole file into
- * memory prio validating. Consider using the {@link ResourceVInput}.
+ * Classical in-memory {@link VInput}. It is not memory efficient to read the whole file into memory prio validating.
+ * Consider using the {@link ResourceVInput}.
  * 
  * @author Andreas Penski
  */

@@ -1,13 +1,13 @@
 package org.kosit.validator.impl.conformatron.action.parsedoc;
 
-import org.conformatron.api.model.action.ECTStepResult;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.jspecify.annotations.Nullable;
 
 public interface ParseDocumentActionResult<T extends CTParsedValidationSource> {
 
-    ECTStepResult getResult();
+    CTStepResult getResult();
 
     default boolean isSuccess() {
         return getResult().isSuccess();

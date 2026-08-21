@@ -1,28 +1,27 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.ResolvedValidationArtifact;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.CTAction;
-import org.conformatron.api.model.detection.ECTSeverity;
+import org.conformatron.api.model.action.CTActionType;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTResolvedValidationArtifact;
 import org.conformatron.api.model.source.CTValidationArtifactReference;
-import org.conformatron.api.model.validation.ECTValidationType;
+import org.conformatron.api.model.validation.CTStandardValidationType;
+import org.conformatron.api.model.validation.CTValidationType;
+import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.DetectionList;
+import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.model.ResolvedValidationArtifact;
+import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,22 +85,21 @@ public class RetrieveArtifactsAction implements CTAction {
      * @param artifacts the resolved artifacts; on failure the partial list of those that did resolve
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record RetrieveArtifactsResult(ECTStepResult status, List<CTResolvedValidationArtifact> artifacts,
-            CTDetectionList detections) {
+    public record RetrieveArtifactsResult(CTStepResult status, List<CTResolvedValidationArtifact> artifacts, CTDetectionList detections) {
 
         public boolean isSuccess() {
-            return this.status == ECTStepResult.SUCCESS;
+            return this.status == CTStepResult.SUCCESS;
         }
     }
 
     @Override
     public String getName() {
-        return ECTActionType.RETRIEVE_ARTIFACTS.getName();
+        return CTActionType.RETRIEVE_ARTIFACTS.getName();
     }
 
     @Override
-    public ECTActionType getType() {
-        return ECTActionType.RETRIEVE_ARTIFACTS;
+    public CTActionType getType() {
+        return CTActionType.RETRIEVE_ARTIFACTS;
     }
 
     /**
@@ -135,7 +133,7 @@ public class RetrieveArtifactsAction implements CTAction {
         }
         // completeness: every declared artifact must have resolved
         final boolean complete = artifacts.size() == references.size();
-        return new RetrieveArtifactsResult(complete ? ECTStepResult.SUCCESS : ECTStepResult.FAILURE, List.copyOf(artifacts),
+        return new RetrieveArtifactsResult(complete ? CTStepResult.SUCCESS : CTStepResult.FAILURE, List.copyOf(artifacts),
                 new DetectionList(detections));
     }
 
@@ -145,26 +143,26 @@ public class RetrieveArtifactsAction implements CTAction {
         try {
             // security first: a reference escaping the repository is rejected before it is interpreted or read
             final URI resolved = this.resolver.resolve(reference);
-            final ECTValidationType validationType = determineValidationType(reference);
+            final CTValidationType validationType = determineValidationType(reference);
             final byte[] content = this.resolver.read(resolved);
             if (content.length == 0) {
-                detections.add(Detection.of(ECTSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.ofResource(resourceId),
+                detections.add(Detection.of(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.ofResource(resourceId),
                         "Artifact '" + href + "' is empty"));
                 return;
             }
             artifacts.add(ResolvedValidationArtifact.loaded(reference, validationType, content));
-            detections.add(Detection.of(ECTSeverity.INFO, CODE_ARTIFACTS_RETRIEVED, DetectionLocation.ofResource(resourceId),
+            detections.add(Detection.of(CTStandardSeverity.NONE, CODE_ARTIFACTS_RETRIEVED, DetectionLocation.ofResource(resourceId),
                     "Artifact '" + href + "' retrieved as " + validationType.getID()));
         } catch (final ArtifactResolver.AccessDeniedException e) {
             LOGGER.error("Rejected artifact reference {}", href, e);
-            detections.add(new Detection(ECTSeverity.ERROR, CODE_ARTIFACT_ACCESS_DENIED, DetectionLocation.ofResource(resourceId),
+            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_ACCESS_DENIED, DetectionLocation.ofResource(resourceId),
                     e.getMessage(), e));
         } catch (final IOException e) {
             LOGGER.error("Could not read artifact {}", href, e);
-            detections.add(new Detection(ECTSeverity.ERROR, CODE_ARTIFACT_MISSING, DetectionLocation.ofResource(resourceId),
+            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_MISSING, DetectionLocation.ofResource(resourceId),
                     "Artifact '" + href + "' could not be read: " + e.getMessage(), e));
         } catch (final IllegalArgumentException e) {
-            detections.add(new Detection(ECTSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.ofResource(resourceId),
+            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.ofResource(resourceId),
                     "Artifact '" + href + "' is not usable: " + e.getMessage(), e));
         }
     }
@@ -177,16 +175,16 @@ public class RetrieveArtifactsAction implements CTAction {
      * @param reference the artifact reference
      * @return the validation type
      */
-    public static ECTValidationType determineValidationType(final CTValidationArtifactReference reference) {
+    public static CTValidationType determineValidationType(final CTValidationArtifactReference reference) {
         final String path = reference.getValidationArtifactReference().toString().toLowerCase(Locale.ROOT);
         if (path.endsWith(".xsd")) {
-            return ECTValidationType.XSD;
+            return CTStandardValidationType.XSD;
         }
         if (path.endsWith(".sch")) {
-            return ECTValidationType.SCHEMATRON_SCH;
+            return CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3;
         }
         if (path.endsWith(".xsl") || path.endsWith(".xslt")) {
-            return ECTValidationType.SCHEMATRON_XSLT;
+            return CTStandardValidationType.SCHEMATRON_XSLT2;
         }
         throw new IllegalArgumentException("Can not determine validation type from reference '" + path + "'");
     }

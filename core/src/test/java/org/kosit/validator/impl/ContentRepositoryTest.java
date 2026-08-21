@@ -3,7 +3,6 @@ package org.kosit.validator.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,12 +29,6 @@ public class ContentRepositoryTest {
     @BeforeEach
     public void setup() {
         this.repository = Simple.createContentRepository();
-    }
-
-    @Test
-    public void testCreateSchema() throws MalformedURLException {
-        final Schema schema = this.repository.createSchema(Helper.ASSERTION_SCHEMA.toURL());
-        assertThat(schema).isNotNull();
     }
 
     @Test

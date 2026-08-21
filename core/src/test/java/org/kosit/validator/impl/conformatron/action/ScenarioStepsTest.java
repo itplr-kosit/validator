@@ -11,8 +11,8 @@ import static org.kosit.validator.api.VInputFactory.read;
 
 import java.util.List;
 
-import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.detection.ECTSeverity;
+import org.conformatron.api.model.action.CTStepResult;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VInput;
@@ -90,10 +90,10 @@ public class ScenarioStepsTest {
         final DetectScenariosAction.DetectScenariosResult result = new DetectScenariosAction(repository).execute(parseSimple());
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
+        assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
         assertThat(result.matches()).isEmpty();
         assertThat(result.detections().getAll()).extracting("code").containsExactly(DetectScenariosAction.CODE_NO_SCENARIO_MATCHED);
-        assertThat(result.detections().getWorstSeverity().getNumericLevel()).isEqualTo(ECTSeverity.ERROR.getNumericLevel());
+        assertThat(result.detections().getWorstSeverity().getNumericLevel()).isEqualTo(CTStandardSeverity.ERROR.getNumericLevel());
     }
 
     @Test

@@ -8,7 +8,7 @@ import static org.kosit.validator.api.VInputFactory.read;
 import java.net.URI;
 import java.util.List;
 
-import org.conformatron.api.model.action.ECTStepResult;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
@@ -87,7 +87,7 @@ public class ApplyRulesActionTest {
                 prepare("simple-runtime-error.sch", "simple.sch"));
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
+        assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
         // both keys stay present: the failed one and the skipped one
         assertThat(result.result().getResultsByRuleSet()).hasSize(2);
         final List<CTDetectionList> lists = List.copyOf(result.result().getResultsByRuleSet().values());
@@ -99,7 +99,7 @@ public class ApplyRulesActionTest {
     public void testNoRuleSetsSkipsTheStep() {
         final ApplyRulesActionResult result = this.action.execute(parse(Simple.SIMPLE_VALID), List.of());
 
-        assertThat(result.status()).isEqualTo(ECTStepResult.SKIPPED);
+        assertThat(result.status()).isEqualTo(CTStepResult.SKIPPED);
         assertThat(result.result().isEmpty()).isTrue();
         assertThat(result.detections().getAll()).extracting("code").containsExactly(ApplyRulesAction.CODE_STEP_SKIPPED);
     }

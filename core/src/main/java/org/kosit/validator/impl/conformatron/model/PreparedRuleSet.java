@@ -3,7 +3,8 @@ package org.kosit.validator.impl.conformatron.model;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTCompiledValidationArtifact;
 import org.conformatron.api.model.source.CTValidationArtifactReference;
-import org.conformatron.api.model.validation.ECTValidationType;
+import org.conformatron.api.model.validation.CTStandardValidationType;
+import org.conformatron.api.model.validation.CTValidationType;
 
 /**
  * Validator implementation of {@link CTPreparedRuleSet} (conformatron-api step 6, {@code PREPARE_RULES}): an
@@ -28,7 +29,7 @@ public final class PreparedRuleSet implements CTPreparedRuleSet {
     /** Default Schematron phase when the scenario does not select one. */
     public static final String PHASE_ALL = "#ALL";
 
-    private final ECTValidationType engineType;
+    private final CTValidationType engineType;
 
     private final String engineVersion;
 
@@ -42,7 +43,7 @@ public final class PreparedRuleSet implements CTPreparedRuleSet {
 
     private final CTCompiledValidationArtifact<?> compiledArtifact;
 
-    private PreparedRuleSet(final ECTValidationType engineType, final String engineVersion, final String outputFormatName,
+    private PreparedRuleSet(final CTValidationType engineType, final String engineVersion, final String outputFormatName,
             final String outputFormatVersion, final String phase, final CTValidationArtifactReference artifactReference,
             final CTCompiledValidationArtifact<?> compiledArtifact) {
         if (artifactReference == null) {
@@ -83,11 +84,11 @@ public final class PreparedRuleSet implements CTPreparedRuleSet {
      */
     public static PreparedRuleSet xsd(final CTValidationArtifactReference artifactReference,
             final CTCompiledValidationArtifact<?> compiledArtifact) {
-        return new PreparedRuleSet(ECTValidationType.XSD, null, null, null, null, artifactReference, compiledArtifact);
+        return new PreparedRuleSet(CTStandardValidationType.XSD, null, null, null, null, artifactReference, compiledArtifact);
     }
 
     @Override
-    public ECTValidationType getEngineType() {
+    public CTValidationType getEngineType() {
         return this.engineType;
     }
 

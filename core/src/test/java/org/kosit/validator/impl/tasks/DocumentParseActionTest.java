@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kosit.validator.api.VInputFactory.read;
 
 import org.conformatron.api.model.source.CTParsedValidationSource;
-import org.conformatron.api.model.validation.ECTValidationBaseType;
+import org.conformatron.api.model.source.CTParsedValidationSourceXML;
+import org.conformatron.api.model.validation.CTValidationSyntax;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper;
@@ -61,14 +62,15 @@ public class DocumentParseActionTest {
 
         final CTParsedValidationSource parsedSource = process.getParsedSource();
         assertThat(parsedSource).isNotNull();
+        assertThat(parsedSource).isInstanceOf(CTParsedValidationSourceXML.class);
         assertThat(parsedSource.isParsed()).isTrue();
         assertThat(parsedSource.getParsedContent()).isInstanceOf(XdmNode.class);
-        assertThat(parsedSource.getAsDom()).isNotNull();
-        assertThat(parsedSource.getAsDom().getDocumentElement()).isNotNull();
+        assertThat(parsedSource.getParsedContent()).isNotNull();
+        assertThat(((CTParsedValidationSourceXML) parsedSource).getAsDom().getDocumentElement()).isNotNull();
         assertThat(parsedSource.getSourceBytes()).isNotEmpty();
         assertThat(parsedSource.getHashAlgorithmName()).isEqualTo(SourceDigest.getAlgorithmName());
         assertThat(parsedSource.getHashBytes()).isEqualTo(SourceDigest.hashBytes(parsedSource.getSourceBytes()));
-        assertThat(parsedSource.getSource().getDetectedSyntax()).isEqualTo(ECTValidationBaseType.XML);
+        assertThat(parsedSource.getSource().getDetectedSyntax()).isEqualTo(CTValidationSyntax.XML);
     }
 
     @Test

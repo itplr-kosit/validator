@@ -10,7 +10,7 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import java.net.URI;
 import java.util.List;
 
-import org.conformatron.api.model.action.ECTStepResult;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.kosit.validator.api.VInput;
@@ -86,10 +86,10 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
      * @param parsedSource the parsed document; may be {@code null} if the source could not be read
      * @param detections all findings and errors of the run; never {@code null}
      */
-    public record AdHocValidationResult(ECTStepResult status, CTParsedValidationSource parsedSource, CTDetectionList detections) {
+    public record AdHocValidationResult(CTStepResult status, CTParsedValidationSource parsedSource, CTDetectionList detections) {
 
         public boolean isSuccess() {
-            return this.status == ECTStepResult.SUCCESS;
+            return this.status == CTStepResult.SUCCESS;
         }
 
         /**
@@ -115,9 +115,9 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
         // step 2 (PARSE_DOCUMENT): reference action, retains bytes + hash
         final ParseXMLResult parsed = new ParseXMLAction().execute(document);
         if (parsed.isFailure()) {
-            return new AdHocValidationResult(ECTStepResult.FAILURE, parsed.getParsedSource(), parsed.getDetectionList());
+            return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(), parsed.getDetectionList());
         }
-        
+
         final String documentName = parsed.getParsedSource().getSource().getName();
         // the parent directory of the schematron is the artifact repository of this ad-hoc run
         final URI base = schematron.resolve(".");
@@ -127,17 +127,18 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(base).execute(List.of(reference),
                 documentName);
         if (!retrieved.isSuccess()) {
-            return new AdHocValidationResult(ECTStepResult.FAILURE, parsed.getParsedSource(), retrieved.detections());
+            return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(), retrieved.detections());
         }
         // step 6 (PREPARE_RULES): transpile + compile
         final ContentRepository repository = new ContentRepository(this.processor, ResolvingMode.STRICT_RELATIVE.getStrategy(), base);
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(repository).execute(retrieved.artifacts(),
                 documentName);
         if (!prepared.isSuccess()) {
-            return new AdHocValidationResult(ECTStepResult.FAILURE, parsed.getParsedSource(), prepared.detections());
+            return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(), prepared.detections());
         }
         // step 7 (APPLY_RULES): findings do not fail the run, only engine errors do
-        final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets());
+        final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
+                prepared.ruleSets());
         return new AdHocValidationResult(applied.status(), parsed.getParsedSource(), applied.detections());
     }
 }

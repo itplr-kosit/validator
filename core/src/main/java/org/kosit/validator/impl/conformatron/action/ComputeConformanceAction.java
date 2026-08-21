@@ -1,29 +1,27 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.ComputeConformanceResult;
-import org.kosit.validator.impl.conformatron.model.ConformanceStatement;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.CTAction;
-import org.conformatron.api.model.conformance.ECTConformanceResult;
+import org.conformatron.api.model.action.CTActionType;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.conformance.CTComputeConformanceResult;
+import org.conformatron.api.model.conformance.CTConformanceResult;
 import org.conformatron.api.model.conformance.CTConformanceStatement;
-import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTApplyRulesResult;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.scenario.CTConformanceTarget;
+import org.kosit.validator.impl.conformatron.model.ComputeConformanceResult;
+import org.kosit.validator.impl.conformatron.model.ConformanceStatement;
+import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.DetectionList;
+import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 
 /**
  * Step 8 of the canonical pipeline, {@code COMPUTE_CONFORMANCE} (see
@@ -62,21 +60,21 @@ public class ComputeConformanceAction implements CTAction {
      * @param result the per-rule-set statements plus provenance; forwarded to step 9 even when skipped (empty)
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record ComputeConformanceActionResult(ECTStepResult status, CTComputeConformanceResult result, CTDetectionList detections) {
+    public record ComputeConformanceActionResult(CTStepResult status, CTComputeConformanceResult result, CTDetectionList detections) {
 
         public boolean isSuccess() {
-            return this.status == ECTStepResult.SUCCESS;
+            return this.status == CTStepResult.SUCCESS;
         }
     }
 
     @Override
     public String getName() {
-        return ECTActionType.COMPUTE_CONFORMANCE.getName();
+        return CTActionType.COMPUTE_CONFORMANCE.getName();
     }
 
     @Override
-    public ECTActionType getType() {
-        return ECTActionType.COMPUTE_CONFORMANCE;
+    public CTActionType getType() {
+        return CTActionType.COMPUTE_CONFORMANCE;
     }
 
     /**
@@ -101,9 +99,9 @@ public class ComputeConformanceAction implements CTAction {
         });
         final String resourceId = applyRulesResult.getParsedSource().getSource().getName();
         if (applyRulesResult.isEmpty()) {
-            final CTDetection skipped = Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
+            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
                     "No rule results to evaluate (reason: no-rule-results)");
-            return new ComputeConformanceActionResult(ECTStepResult.SKIPPED, ComputeConformanceResult.empty(applyRulesResult),
+            return new ComputeConformanceActionResult(CTStepResult.SKIPPED, ComputeConformanceResult.empty(applyRulesResult),
                     DetectionList.of(skipped));
         }
         final LinkedHashMap<CTPreparedRuleSet, CTConformanceStatement> statements = new LinkedHashMap<>();
@@ -114,7 +112,7 @@ public class ComputeConformanceAction implements CTAction {
             statements.put(entry.getKey(), statement);
             detections.add(toDetection(statement, entry.getKey(), entry.getValue(), resourceId));
         }
-        return new ComputeConformanceActionResult(ECTStepResult.SUCCESS, new ComputeConformanceResult(applyRulesResult, statements),
+        return new ComputeConformanceActionResult(CTStepResult.SUCCESS, new ComputeConformanceResult(applyRulesResult, statements),
                 new DetectionList(detections));
     }
 
@@ -129,14 +127,14 @@ public class ComputeConformanceAction implements CTAction {
         final String href = ruleSet.getArtifactReference().getValidationArtifactReference().toString();
         if (wasSkipped(detections)) {
             // a rule set that never ran must not look conformant (spec: empty result -> NON_CONFORMANT)
-            return ConformanceStatement.of(target, ECTConformanceResult.NON_CONFORMANT, "Rule set '" + href + "' was not executed");
+            return ConformanceStatement.of(target, CTConformanceResult.NON_CONFORMANT, "Rule set '" + href + "' was not executed");
         }
         final long errors = detections.getCount(d -> d.getSeverity().isError());
         if (errors > 0) {
-            return ConformanceStatement.of(target, ECTConformanceResult.NON_CONFORMANT,
+            return ConformanceStatement.of(target, CTConformanceResult.NON_CONFORMANT,
                     errors + " error detection(s) from rule set '" + href + "'");
         }
-        return ConformanceStatement.of(target, ECTConformanceResult.CONFORMANT, "Rule set '" + href + "' passed");
+        return ConformanceStatement.of(target, CTConformanceResult.CONFORMANT, "Rule set '" + href + "' passed");
     }
 
     private static boolean wasSkipped(final CTDetectionList detections) {
@@ -148,11 +146,11 @@ public class ComputeConformanceAction implements CTAction {
             final CTDetectionList ruleDetections, final String resourceId) {
         final String targetName = statement.getTarget().getTargetName();
         final String href = ruleSet.getArtifactReference().getValidationArtifactReference().toString();
-        if (statement.getResult() == ECTConformanceResult.CONFORMANT) {
-            return Detection.of(ECTSeverity.INFO, CODE_TARGET_CONFORMANT, DetectionLocation.ofResource(resourceId),
+        if (statement.getResult().isConformant()) {
+            return Detection.of(CTStandardSeverity.NONE, CODE_TARGET_CONFORMANT, DetectionLocation.ofResource(resourceId),
                     "Target '" + targetName + "' conformant (rule set '" + href + "')");
         }
-        return Detection.of(ECTSeverity.ERROR, CODE_TARGET_NON_CONFORMANT, DetectionLocation.ofResource(resourceId),
+        return Detection.of(CTStandardSeverity.ERROR, CODE_TARGET_NON_CONFORMANT, DetectionLocation.ofResource(resourceId),
                 "Target '" + targetName + "' non-conformant: " + statement.getRationale());
     }
 }

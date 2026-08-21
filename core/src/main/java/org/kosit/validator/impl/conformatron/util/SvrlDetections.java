@@ -1,17 +1,16 @@
 package org.kosit.validator.impl.conformatron.util;
 
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTStandardSeverity;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.DetectionList;
+import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.oclc.purl.dsdl.svrl.SuccessfulReport;
@@ -55,9 +54,8 @@ public final class SvrlDetections {
                         code(failedAssert.getId(), CODE_FAILED_ASSERT), DetectionLocation.ofResource(documentName),
                         message(failedAssert.getLocation(), textOf(failedAssert.getText()))));
             } else if (entry instanceof final SuccessfulReport report) {
-                detections.add(Detection.of(severityOf(report.getRole(), report.getFlag()),
-                        code(report.getId(), CODE_SUCCESSFUL_REPORT), DetectionLocation.ofResource(documentName),
-                        message(report.getLocation(), textOf(report.getText()))));
+                detections.add(Detection.of(severityOf(report.getRole(), report.getFlag()), code(report.getId(), CODE_SUCCESSFUL_REPORT),
+                        DetectionLocation.ofResource(documentName), message(report.getLocation(), textOf(report.getText()))));
             }
         }
         return new DetectionList(detections);
@@ -72,16 +70,15 @@ public final class SvrlDetections {
      * fallback (SchXslt-compiled XRechnung rules carry the level in {@code @flag}). No attribute at all defaults to
      * ERROR — an unclassified failed assert must not disappear.
      */
-    private static ECTSeverity severityOf(final String role, final String flag) {
+    private static CTStandardSeverity severityOf(final String role, final String flag) {
         final String level = role != null && !role.isBlank() ? role : flag;
         if (level == null || level.isBlank()) {
-            return ECTSeverity.ERROR;
+            return CTStandardSeverity.ERROR;
         }
         return switch (level.toLowerCase(Locale.ROOT)) {
-            case "information", "info" -> ECTSeverity.INFO;
-            case "warning", "warn" -> ECTSeverity.WARNING;
-            case "fatal" -> ECTSeverity.FATAL_ERROR;
-            default -> ECTSeverity.ERROR;
+            case "information", "info" -> CTStandardSeverity.NONE;
+            case "warning", "warn" -> CTStandardSeverity.WARNING;
+            default -> CTStandardSeverity.ERROR;
         };
     }
 

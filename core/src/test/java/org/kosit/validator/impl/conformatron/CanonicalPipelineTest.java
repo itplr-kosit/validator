@@ -1,13 +1,5 @@
 package org.kosit.validator.impl.conformatron;
 
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
-import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.api.VInputFactory.read;
 
@@ -15,7 +7,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.conformatron.api.model.conformance.ECTConformanceResult;
+import org.conformatron.api.model.conformance.CTConformanceResult;
+import org.conformatron.api.model.conformance.CTConformanceResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,14 +16,21 @@ import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
+import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
+import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.DetectScenariosAction.DetectScenariosResult;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 
 /**
  * <b>End-to-end walkthrough of the canonical pipeline, steps 2–8</b>, composed exclusively from the new-API actions —
@@ -110,7 +110,7 @@ public class CanonicalPipelineTest {
         final ComputeConformanceActionResult conformance = runPipeline(Simple.SIMPLE_VALID, trace);
 
         assertThat(conformance.result().hasNonConformantTarget()).isFalse();
-        assertThat(conformance.result().getAllStatements()).extracting("result").containsOnly(ECTConformanceResult.CONFORMANT);
+        assertThat(conformance.result().getAllStatements()).extracting("result").containsOnly(CTConformanceResult.CONFORMANT);
 
         // the full audit trail across all steps, in pipeline order
         assertThat(trace).containsExactly(//
@@ -132,8 +132,8 @@ public class CanonicalPipelineTest {
 
         assertThat(conformance.result().hasNonConformantTarget()).isTrue();
         // XSD passed, the schematron drove the non-conformance — per-rule-set traceability
-        assertThat(conformance.result().getAllStatements()).extracting("result").containsExactly(ECTConformanceResult.CONFORMANT,
-                ECTConformanceResult.NON_CONFORMANT);
+        assertThat(conformance.result().getAllStatements()).extracting("result").containsExactly(CTConformanceResult.CONFORMANT,
+                CTConformanceResult.NON_CONFORMANT);
         // the violated assert id travels through as detection code (step-07 spec)
         assertThat(trace).contains("content-1", ComputeConformanceAction.CODE_TARGET_NON_CONFORMANT);
     }

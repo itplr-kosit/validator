@@ -20,13 +20,13 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.detection.ECTSeverity;
+import org.conformatron.api.model.action.CTActionType;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
-import org.conformatron.api.model.validation.ECTValidationBaseType;
+import org.conformatron.api.model.validation.CTValidationSyntax;
 
 /**
  * <b>DRAFT intermediate format</b>: serializes a canonical pipeline run (steps 2–8) to a CVRL report — an XVRL profile
@@ -68,9 +68,9 @@ public final class CvrlWriter {
      * report then contains only the executed steps and {@code cvrl:status="CANCELLED"} (partial CVRL, ADR-004).
      */
     public record PipelineResults(ParseXMLResult parse, DetectScenariosAction.DetectScenariosResult detect,
-                                  SelectScenarioAction.SelectScenarioResult select, RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
-                                  PrepareRulesAction.PrepareRulesResult prepare, ApplyRulesAction.ApplyRulesActionResult apply,
-                                  ComputeConformanceAction.ComputeConformanceActionResult conformance) {
+            SelectScenarioAction.SelectScenarioResult select, RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
+            PrepareRulesAction.PrepareRulesResult prepare, ApplyRulesAction.ApplyRulesActionResult apply,
+            ComputeConformanceAction.ComputeConformanceActionResult conformance) {
 
         public boolean isCompleted() {
             return this.conformance != null;
@@ -113,28 +113,28 @@ public final class CvrlWriter {
             writer.writeAttribute(NS_CVRL, "status", results.isCompleted() ? "COMPLETED" : "CANCELLED");
 
             writeRootMetadata(writer, documentName, results.parse());
-            writeStepReport(writer, ECTActionType.PARSE_DOCUMENT, results.parse().getDetectionList(), null);
+            writeStepReport(writer, CTActionType.PARSE_DOCUMENT, results.parse().getDetectionList(), null);
             if (results.detect() != null) {
-                writeStepReport(writer, ECTActionType.DETECT_SCENARIOS, results.detect().detections(), null);
+                writeStepReport(writer, CTActionType.DETECT_SCENARIOS, results.detect().detections(), null);
             }
             if (results.select() != null) {
-                writeStepReport(writer, ECTActionType.SELECT_SCENARIO, results.select().detections(), null);
+                writeStepReport(writer, CTActionType.SELECT_SCENARIO, results.select().detections(), null);
             }
             if (results.retrieve() != null) {
-                writeStepReport(writer, ECTActionType.RETRIEVE_ARTIFACTS, results.retrieve().detections(), null);
+                writeStepReport(writer, CTActionType.RETRIEVE_ARTIFACTS, results.retrieve().detections(), null);
             }
             if (results.prepare() != null) {
-                writeStepReport(writer, ECTActionType.PREPARE_RULES, results.prepare().detections(), null);
+                writeStepReport(writer, CTActionType.PREPARE_RULES, results.prepare().detections(), null);
             }
             if (results.apply() != null) {
                 // D3: one report per rule set execution, in scenario order
                 for (final Map.Entry<CTPreparedRuleSet, CTDetectionList> entry : results.apply().result().getResultsByRuleSet()
                         .entrySet()) {
-                    writeStepReport(writer, ECTActionType.APPLY_RULES, entry.getValue(), entry.getKey());
+                    writeStepReport(writer, CTActionType.APPLY_RULES, entry.getValue(), entry.getKey());
                 }
             }
             if (results.conformance() != null) {
-                writeStepReport(writer, ECTActionType.COMPUTE_CONFORMANCE, results.conformance().detections(), null);
+                writeStepReport(writer, CTActionType.COMPUTE_CONFORMANCE, results.conformance().detections(), null);
             }
             newline(writer, 0);
             writer.writeEndElement();
@@ -145,8 +145,8 @@ public final class CvrlWriter {
         }
     }
 
-    private void writeRootMetadata(final XMLStreamWriter writer, final String documentName,
-            final ParseXMLResult parse) throws XMLStreamException {
+    private void writeRootMetadata(final XMLStreamWriter writer, final String documentName, final ParseXMLResult parse)
+            throws XMLStreamException {
         newline(writer, 1);
         writer.writeStartElement(NS_XVRL, "metadata");
         newline(writer, 2);
@@ -170,7 +170,7 @@ public final class CvrlWriter {
         writer.writeEndElement();
     }
 
-    private void writeStepReport(final XMLStreamWriter writer, final ECTActionType action, final CTDetectionList detections,
+    private void writeStepReport(final XMLStreamWriter writer, final CTActionType action, final CTDetectionList detections,
             final CTPreparedRuleSet ruleSet) throws XMLStreamException {
         newline(writer, 1);
         writer.writeStartElement(NS_XVRL, "report");
@@ -190,7 +190,7 @@ public final class CvrlWriter {
             newline(writer, 3);
             writer.writeEmptyElement(NS_XVRL, "schema");
             writer.writeAttribute("href", ruleSet.getArtifactReference().getValidationArtifactReference().toString());
-            writer.writeAttribute("language", ruleSet.getEngineType().getBaseType() == ECTValidationBaseType.XSD ? "XSD" : "Schematron");
+            writer.writeAttribute("language", ruleSet.getEngineType().getBaseType() == CTValidationSyntax.XSD ? "XSD" : "Schematron");
             if (ruleSet.getEngineVersion() != null) {
                 writer.writeAttribute(NS_CVRL, "engine-version", ruleSet.getEngineVersion());
             }
@@ -210,9 +210,9 @@ public final class CvrlWriter {
 
     private static void writeDigest(final XMLStreamWriter writer, final CTDetectionList detections) throws XMLStreamException {
         // D4: consistent digest attribute set
-        final long fatals = detections.getCount(d -> d.getSeverity() == ECTSeverity.FATAL_ERROR);
-        final long errors = detections.getCount(d -> d.getSeverity() == ECTSeverity.ERROR);
-        final long warnings = detections.getCount(d -> d.getSeverity() == ECTSeverity.WARNING);
+        final long fatals = detections.getCount(d -> d.getSeverity() == CTStandardSeverity.ERROR);
+        final long errors = detections.getCount(d -> d.getSeverity() == CTStandardSeverity.ERROR);
+        final long warnings = detections.getCount(d -> d.getSeverity() == CTStandardSeverity.WARNING);
         final Set<String> errorCodes = new LinkedHashSet<>();
         detections.getAll().stream().filter(d -> d.getSeverity().isError()).forEach(d -> errorCodes.add(d.getCode()));
         newline(writer, 2);

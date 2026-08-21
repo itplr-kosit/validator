@@ -1,14 +1,5 @@
 package org.kosit.validator.impl.conformatron;
 
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.report.CvrlWriter;
-import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
-import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -24,20 +15,28 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import org.conformatron.api.model.conformance.CTConformanceStatement;
-import org.conformatron.api.model.detection.ECTSeverity;
 import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
+import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
+import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.DetectScenariosAction.DetectScenariosResult;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
+import org.kosit.validator.impl.conformatron.report.CvrlWriter;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
@@ -269,25 +268,25 @@ public final class XRechnungE2ERunner {
         final String hash = parsed.getParsedSource().getHashAlgorithmName() + "="
                 + java.util.HexFormat.of().formatHex(parsed.getParsedSource().getHashBytes());
         final List<CTDetection> all = applied.detections().getAll();
-        final long infos = count(all, ECTSeverity.INFO);
-        final long warnings = count(all, ECTSeverity.WARNING);
+        final long infos = count(all, CTStandardSeverity.NONE);
+        final long warnings = count(all, CTStandardSeverity.WARNING);
         final long errors = all.stream().filter(d -> d.getSeverity().isError()).count();
         final List<String> statements = new ArrayList<>();
         for (final Map.Entry<CTPreparedRuleSet, CTConformanceStatement> e : conformance.result().getStatementsByRuleSet().entrySet()) {
             statements.add(shortRef(e.getKey()) + " → " + e.getValue().getResult());
         }
         final boolean conformant = !conformance.result().hasNonConformantTarget();
-        final List<CTDetection> findings = all.stream().filter(d -> d.getSeverity() != ECTSeverity.INFO).toList();
+        final List<CTDetection> findings = all.stream().filter(d -> d.getSeverity() != CTStandardSeverity.NONE).toList();
         return new InstanceResult(name, conformant ? "CONFORMANT" : "NON_CONFORMANT", scenarioName, prepared.ruleSets().size(), infos,
                 warnings, errors, statements, findings, null, hash, trace);
     }
 
     private static InstanceResult failed(final String name, final String step, final List<CTDetection> detections) {
-        final List<CTDetection> findings = detections.stream().filter(d -> d.getSeverity() != ECTSeverity.INFO).toList();
+        final List<CTDetection> findings = detections.stream().filter(d -> d.getSeverity() != CTStandardSeverity.NONE).toList();
         return new InstanceResult(name, "FAILED@" + step, "-", 0, 0, 0, findings.size(), List.of(), findings, step, "-", detections);
     }
 
-    private static long count(final List<CTDetection> detections, final ECTSeverity severity) {
+    private static long count(final List<CTDetection> detections, final CTStandardSeverity severity) {
         return detections.stream().filter(d -> d.getSeverity() == severity).count();
     }
 

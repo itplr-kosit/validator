@@ -1,6 +1,6 @@
 package org.kosit.validator.impl.conformatron.model;
 
-import org.conformatron.api.model.conformance.ECTConformanceResult;
+import org.conformatron.api.model.conformance.CTConformanceResult;
 import org.conformatron.api.model.conformance.CTConformanceStatement;
 import org.conformatron.api.model.scenario.CTConformanceTarget;
 
@@ -14,13 +14,13 @@ public final class ConformanceStatement implements CTConformanceStatement {
 
     private final CTConformanceTarget target;
 
-    private final ECTConformanceResult result;
+    private final CTConformanceResult result;
 
     private final String rationale;
 
     private final boolean acceptSelectorApplied;
 
-    private ConformanceStatement(final CTConformanceTarget target, final ECTConformanceResult result, final String rationale,
+    private ConformanceStatement(final CTConformanceTarget target, final CTConformanceResult result, final String rationale,
             final boolean acceptSelectorApplied) {
         if (target == null) {
             throw new IllegalArgumentException("target may not be null");
@@ -42,7 +42,7 @@ public final class ConformanceStatement implements CTConformanceStatement {
      * @param rationale human-readable rationale; may be {@code null}
      * @return the statement
      */
-    public static ConformanceStatement of(final CTConformanceTarget target, final ECTConformanceResult result, final String rationale) {
+    public static ConformanceStatement of(final CTConformanceTarget target, final CTConformanceResult result, final String rationale) {
         return new ConformanceStatement(target, result, rationale, false);
     }
 
@@ -52,7 +52,7 @@ public final class ConformanceStatement implements CTConformanceStatement {
     }
 
     @Override
-    public ECTConformanceResult getResult() {
+    public CTConformanceResult getResult() {
         return this.result;
     }
 

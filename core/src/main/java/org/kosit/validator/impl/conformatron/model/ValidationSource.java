@@ -17,9 +17,10 @@ package org.kosit.validator.impl.conformatron.model;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import org.conformatron.api.model.source.CTValidationSource;
-import org.conformatron.api.model.validation.ECTValidationBaseType;
+import org.conformatron.api.model.validation.CTValidationSyntax;
 import org.jspecify.annotations.NonNull;
 import org.kosit.validator.api.VInput;
 
@@ -34,7 +35,7 @@ public final class ValidationSource implements CTValidationSource {
 
     private final String name;
 
-    private final ECTValidationBaseType detectedSyntax;
+    private final CTValidationSyntax detectedSyntax;
 
     private final boolean complete;
 
@@ -42,18 +43,16 @@ public final class ValidationSource implements CTValidationSource {
      * Wraps a legacy {@link VInput} as a complete XML source. The validator currently only feeds XML documents into the
      * pipeline, so the detected syntax is fixed until DETECT_SYNTAX is implemented as its own action.
      *
-     * @param VInput the legacy input
+     * @param input the legacy input
      * @return a new source facade
      */
-    public static ValidationSource of(final VInput VInput) {
-        if (VInput == null) {
-            throw new IllegalArgumentException("input may not be null");
-        }
+    public static ValidationSource of(final VInput input) {
+        Objects.requireNonNull(input);
         // TODO PH create overload for getInputStream
-        return new ValidationSource(VInput.getName(), ECTValidationBaseType.XML, true);
+        return new ValidationSource(input.getName(), CTValidationSyntax.XML, true);
     }
 
-    public ValidationSource(final String name, final ECTValidationBaseType detectedSyntax, final boolean complete) {
+    public ValidationSource(final String name, final CTValidationSyntax detectedSyntax, final boolean complete) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name may not be null or empty");
         }
@@ -68,7 +67,7 @@ public final class ValidationSource implements CTValidationSource {
     }
 
     @Override
-    public ECTValidationBaseType getDetectedSyntax() {
+    public CTValidationSyntax getDetectedSyntax() {
         return this.detectedSyntax;
     }
 

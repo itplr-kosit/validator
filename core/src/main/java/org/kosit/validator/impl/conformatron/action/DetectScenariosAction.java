@@ -1,25 +1,23 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.CTAction;
-import org.conformatron.api.model.detection.ECTSeverity;
+import org.conformatron.api.model.action.CTActionType;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.DetectionList;
+import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,21 +92,21 @@ public class DetectScenariosAction implements CTAction {
      *            on the fixed-scenario path
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record DetectScenariosResult(ECTStepResult status, List<CTScenarioMatch> matches, CTDetectionList detections) {
+    public record DetectScenariosResult(CTStepResult status, List<CTScenarioMatch> matches, CTDetectionList detections) {
 
         public boolean isSuccess() {
-            return this.status == ECTStepResult.SUCCESS;
+            return this.status == CTStepResult.SUCCESS;
         }
     }
 
     @Override
     public String getName() {
-        return ECTActionType.DETECT_SCENARIOS.getName();
+        return CTActionType.DETECT_SCENARIOS.getName();
     }
 
     @Override
-    public ECTActionType getType() {
-        return ECTActionType.DETECT_SCENARIOS;
+    public CTActionType getType() {
+        return CTActionType.DETECT_SCENARIOS;
     }
 
     /**
@@ -141,33 +139,33 @@ public class DetectScenariosAction implements CTAction {
         final Scenario scenario = this.repository.getScenarios().stream()
                 .filter(s -> requestedScenarioId.equals(s.getName()) && !s.isFallback()).findFirst().orElse(null);
         if (scenario == null) {
-            final CTDetection detection = Detection.of(ECTSeverity.ERROR, CODE_SCENARIO_UNKNOWN_ID,
+            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_UNKNOWN_ID,
                     DetectionLocation.ofResource(resourceId), "Requested scenario '" + requestedScenarioId + "' is not configured");
-            return new DetectScenariosResult(ECTStepResult.FAILURE, List.of(), DetectionList.of(detection));
+            return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
         final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource);
-        final CTDetection detection = Detection.of(ECTSeverity.INFO, CODE_SCENARIO_USER_SELECTED, DetectionLocation.ofResource(resourceId),
-                "Scenario '" + scenario.getName() + "' fixed by user input");
-        return new DetectScenariosResult(ECTStepResult.SUCCESS, List.of(match), DetectionList.of(detection));
+        final CTDetection detection = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED,
+                DetectionLocation.ofResource(resourceId), "Scenario '" + scenario.getName() + "' fixed by user input");
+        return new DetectScenariosResult(CTStepResult.SUCCESS, List.of(match), DetectionList.of(detection));
     }
 
     private DetectScenariosResult detectByMatchExpressions(final CTParsedValidationSource parsedSource, final XdmNode document) {
         final String resourceId = parsedSource.getSource().getName();
         final List<Scenario> matching = this.repository.findMatches(document);
         if (matching.isEmpty()) {
-            final CTDetection detection = Detection.of(ECTSeverity.ERROR, CODE_NO_SCENARIO_MATCHED,
+            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_NO_SCENARIO_MATCHED,
                     DetectionLocation.ofResource(resourceId), "None of the configured scenarios matches the document");
-            return new DetectScenariosResult(ECTStepResult.FAILURE, List.of(), DetectionList.of(detection));
+            return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
         LOGGER.debug("{} scenario(s) matched for {}", matching.size(), resourceId);
-        final List<CTScenarioMatch> matches = matching.stream()
-                .map(scenario -> (CTScenarioMatch) ScenarioMatch.of(scenario, parsedSource)).collect(Collectors.toList());
+        final List<CTScenarioMatch> matches = matching.stream().map(scenario -> (CTScenarioMatch) ScenarioMatch.of(scenario, parsedSource))
+                .collect(Collectors.toList());
         final List<CTDetection> detections = new ArrayList<>();
         for (final CTScenarioMatch match : matches) {
-            detections.add(Detection.of(ECTSeverity.INFO, CODE_SCENARIO_MATCHED, DetectionLocation.ofResource(resourceId),
+            detections.add(Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_MATCHED, DetectionLocation.ofResource(resourceId),
                     "Scenario '" + match.getScenarioName() + "' matched"));
         }
-        return new DetectScenariosResult(ECTStepResult.SUCCESS, List.copyOf(matches), new DetectionList(detections));
+        return new DetectScenariosResult(CTStepResult.SUCCESS, List.copyOf(matches), new DetectionList(detections));
     }
 
     private XdmNode requireXdmNode(final CTParsedValidationSource parsedSource) {
@@ -178,11 +176,11 @@ public class DetectScenariosAction implements CTAction {
             return node;
         }
         // ADR-002 common denominator: every parsed source can provide a DOM — wrap it into the Saxon model
-        if (parsedSource.getAsDom() != null && this.processor != null) {
-            return this.processor.newDocumentBuilder().wrap(parsedSource.getAsDom());
+        if (parsedSource.getParsedContent() != null && this.processor != null) {
+            return this.processor.newDocumentBuilder().wrap(parsedSource.getParsedContent());
         }
-        throw new IllegalArgumentException("Scenario detection requires an XdmNode as parsed content (or a DOM plus a "
-                + "configured processor), but got "
-                + (parsedSource.getParsedContent() == null ? "null" : parsedSource.getParsedContent().getClass().getName()));
+        throw new IllegalArgumentException(
+                "Scenario detection requires an XdmNode as parsed content (or a DOM plus a " + "configured processor), but got "
+                        + (parsedSource.getParsedContent() == null ? "null" : parsedSource.getParsedContent().getClass().getName()));
     }
 }

@@ -7,8 +7,8 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.api.VInputFactory.read;
 
-import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.detection.ECTSeverity;
+import org.conformatron.api.model.action.CTStepResult;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper;
 import org.kosit.validator.impl.Helper.Simple;
@@ -49,10 +49,10 @@ public class SchematronValidationTest {
                 Simple.REPOSITORY_URI.resolve("simple-runtime-error.sch"));
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
+        assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
         assertThat(result.isConformant()).isFalse();
         assertThat(result.detections().getAll()).extracting("code").containsExactly(ApplyRulesAction.CODE_RULE_ENGINE_ERROR);
-        assertThat(result.detections().getWorstSeverity().getNumericLevel()).isEqualTo(ECTSeverity.FATAL_ERROR.getNumericLevel());
+        assertThat(result.detections().getWorstSeverity().getNumericLevel()).isEqualTo(CTStandardSeverity.ERROR.getNumericLevel());
         // document identity is retained even on failure
         assertThat(result.parsedSource()).isNotNull();
         assertThat(result.parsedSource().getHashBytes()).isNotEmpty();

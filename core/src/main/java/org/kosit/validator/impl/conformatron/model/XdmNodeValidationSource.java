@@ -15,10 +15,10 @@
  */
 package org.kosit.validator.impl.conformatron.model;
 
-import org.kosit.validator.impl.conformatron.util.SourceDigest;
-
 import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTValidationSource;
+import org.kosit.validator.impl.conformatron.util.SourceDigest;
 import org.w3c.dom.Document;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
@@ -38,7 +38,7 @@ import net.sf.saxon.type.Type;
  *
  * @author Andreas Schmitz
  */
-public final class XdmNodeValidationSource implements CTParsedValidationSource {
+public final class XdmNodeValidationSource implements CTParsedValidationSourceXML {
 
     private final CTValidationSource source;
 
@@ -85,14 +85,13 @@ public final class XdmNodeValidationSource implements CTParsedValidationSource {
     }
 
     @Override
-    public Object getParsedContent() {
+    public XdmNode getParsedContent() {
         return this.node;
     }
 
     /**
      * @return a <b>read-only</b> W3C DOM view over the underlying Saxon tree (no re-parse, no line numbers)
      */
-    @Override
     public Document getAsDom() {
         final NodeInfo root = this.node.getUnderlyingNode().getRoot();
         if (root.getNodeKind() != Type.DOCUMENT) {

@@ -65,7 +65,8 @@ public class CvrlWriterTest {
                 .execute(selected.selected());
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getContentRepository())
                 .execute(retrieved.artifacts(), "test");
-        final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets());
+        final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
+                prepared.ruleSets());
         final ComputeConformanceAction.ComputeConformanceActionResult conformance = new ComputeConformanceAction().execute(applied.result(),
                 List.of(ConformanceTarget.ofScenario(selected.selected())));
         return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, conformance);

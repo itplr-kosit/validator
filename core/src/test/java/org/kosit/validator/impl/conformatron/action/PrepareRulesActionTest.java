@@ -1,18 +1,14 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.ResolvedValidationArtifact;
-import org.kosit.validator.impl.conformatron.model.PreparedRuleSet;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
 import javax.xml.validation.Schema;
 
-import org.conformatron.api.model.action.ECTStepResult;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.source.CTResolvedValidationArtifact;
-import org.conformatron.api.model.validation.ECTValidationType;
+import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper;
@@ -20,6 +16,9 @@ import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.validator.impl.conformatron.model.PreparedRuleSet;
+import org.kosit.validator.impl.conformatron.model.ResolvedValidationArtifact;
+import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 
 import net.sf.saxon.s9api.XsltExecutable;
 
@@ -51,13 +50,13 @@ public class PrepareRulesActionTest {
         assertThat(result.ruleSets()).hasSize(2);
 
         final var xsd = result.ruleSets().get(0);
-        assertThat(xsd.getEngineType()).isEqualTo(ECTValidationType.XSD);
+        assertThat(xsd.getEngineType()).isEqualTo(CTStandardValidationType.XSD);
         assertThat(xsd.getCompiledArtifact().getCompilation()).isInstanceOf(Schema.class);
         assertThat(xsd.getOutputFormatName()).isNull();
         assertThat(xsd.getPhase()).isNull();
 
         final var schematron = result.ruleSets().get(1);
-        assertThat(schematron.getEngineType()).isEqualTo(ECTValidationType.SCHEMATRON_SCH);
+        assertThat(schematron.getEngineType()).isEqualTo(CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3);
         assertThat(schematron.getCompiledArtifact().getCompilation()).isInstanceOf(XsltExecutable.class);
         assertThat(schematron.getOutputFormatName()).isEqualTo(PreparedRuleSet.OUTPUT_FORMAT_SVRL);
         assertThat(schematron.getPhase()).isEqualTo(PreparedRuleSet.PHASE_ALL);
@@ -93,21 +92,22 @@ public class PrepareRulesActionTest {
     @Test
     public void testBrokenSchematronFailsTheStep() {
         final CTResolvedValidationArtifact broken = ResolvedValidationArtifact.loaded(
-                ValidationArtifactReference.of("does-not-compile.sch"), ECTValidationType.SCHEMATRON_SCH, "not a schematron".getBytes());
+                ValidationArtifactReference.of("does-not-compile.sch"), CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3,
+                "not a schematron".getBytes());
 
         final PrepareRulesResult result = this.action.execute(List.of(broken), DOCUMENT);
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
+        assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
         assertThat(result.detections().getAll()).extracting("code").containsExactly(PrepareRulesAction.CODE_RULE_PREPARE_ERROR);
-        assertThat(result.detections().getWorstSeverity().isFatalError()).isTrue();
+        assertThat(result.detections().getWorstSeverity().isError()).isTrue();
     }
 
     @Test
     public void testNoArtifactsSkipsTheStep() {
         final PrepareRulesResult result = this.action.execute(List.of(), DOCUMENT);
 
-        assertThat(result.status()).isEqualTo(ECTStepResult.SKIPPED);
+        assertThat(result.status()).isEqualTo(CTStepResult.SKIPPED);
         assertThat(result.ruleSets()).isEmpty();
         assertThat(result.detections().getAll()).extracting("code").containsExactly(PrepareRulesAction.CODE_STEP_SKIPPED);
     }

@@ -13,9 +13,8 @@ import java.util.List;
 import javax.xml.transform.stream.StreamSource;
 
 import org.kosit.jaxb.JaxbConversionService;
-import org.kosit.validator.api.*;
+import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VInput;
-import org.kosit.validator.api.xsd.ValidatorSchemas;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseAction;
@@ -111,9 +110,6 @@ public class Helper {
 
         public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
     }
-
-    public static final URI ASSERTION_SCHEMA = URI
-            .create(ValidatorSchemas.class.getResource(ValidatorSchemas.ASSERTIONS_XSD_PATH).toExternalForm());
 
     public static final URI TEST_ROOT = Paths.get("src/test/resources").toAbsolutePath().toUri();
 

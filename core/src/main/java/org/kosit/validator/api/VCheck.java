@@ -21,8 +21,8 @@ import org.w3c.dom.Document;
 public interface VCheck {
 
     /**
-     * Checks an incoming xml {@link VInput Inputs}. The result-{@link Document} is readonly. To change the this document
-     * you need to copy the nodes into an new {@link Document}.
+     * Checks an incoming xml {@link VInput Inputs}. The result-{@link Document} is readonly. To change the this
+     * document you need to copy the nodes into an new {@link Document}.
      *
      * @param VInput the resource / xml file to validate.
      * @return a result-{@link Document} (readonly)

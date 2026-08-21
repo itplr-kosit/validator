@@ -1,11 +1,5 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.ApplyRulesResult;
-import org.kosit.validator.impl.conformatron.util.SvrlDetections;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,17 +12,21 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.CTAction;
-import org.conformatron.api.model.detection.ECTSeverity;
+import org.conformatron.api.model.action.CTActionType;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTApplyRulesResult;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.kosit.svrl.impl.SvrlConversionService;
+import org.kosit.validator.impl.conformatron.model.ApplyRulesResult;
+import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.DetectionList;
+import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.util.SvrlDetections;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,21 +85,21 @@ public class ApplyRulesAction implements CTAction {
      * @param detections this execution's contribution to the report: all per-rule-set detections, flattened in
      *            execution order; never {@code null}
      */
-    public record ApplyRulesActionResult(ECTStepResult status, CTApplyRulesResult result, CTDetectionList detections) {
+    public record ApplyRulesActionResult(CTStepResult status, CTApplyRulesResult result, CTDetectionList detections) {
 
         public boolean isSuccess() {
-            return this.status == ECTStepResult.SUCCESS;
+            return this.status == CTStepResult.SUCCESS;
         }
     }
 
     @Override
     public String getName() {
-        return ECTActionType.APPLY_RULES.getName();
+        return CTActionType.APPLY_RULES.getName();
     }
 
     @Override
-    public ECTActionType getType() {
-        return ECTActionType.APPLY_RULES;
+    public CTActionType getType() {
+        return CTActionType.APPLY_RULES;
     }
 
     /**
@@ -120,9 +118,9 @@ public class ApplyRulesAction implements CTAction {
         }
         final String documentName = parsedSource.getSource().getName();
         if (ruleSets.isEmpty()) {
-            final CTDetection skipped = Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(documentName),
+            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.ofResource(documentName),
                     "No rule sets prepared (reason: no-rule-sets)");
-            return new ApplyRulesActionResult(ECTStepResult.SKIPPED, ApplyRulesResult.empty(parsedSource), DetectionList.of(skipped));
+            return new ApplyRulesActionResult(CTStepResult.SKIPPED, ApplyRulesResult.empty(parsedSource), DetectionList.of(skipped));
         }
         final LinkedHashMap<CTPreparedRuleSet, CTDetectionList> results = new LinkedHashMap<>();
         boolean failed = false;
@@ -130,8 +128,9 @@ public class ApplyRulesAction implements CTAction {
             if (failed) {
                 // fail-fast per spec: executions after an engine failure are skipped, but keep their key
                 results.put(ruleSet,
-                        DetectionList.of(Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(documentName),
-                                "Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)")));
+                        DetectionList
+                                .of(Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.ofResource(documentName),
+                                        "Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)")));
                 continue;
             }
             final CTDetectionList detections = applyOne(parsedSource, ruleSet, documentName);
@@ -140,8 +139,8 @@ public class ApplyRulesAction implements CTAction {
         }
         final List<CTDetection> all = new ArrayList<>();
         results.values().forEach(list -> all.addAll(list.getAll()));
-        return new ApplyRulesActionResult(failed ? ECTStepResult.FAILURE : ECTStepResult.SUCCESS,
-                new ApplyRulesResult(parsedSource, results), new DetectionList(all));
+        return new ApplyRulesActionResult(failed ? CTStepResult.FAILURE : CTStepResult.SUCCESS, new ApplyRulesResult(parsedSource, results),
+                new DetectionList(all));
     }
 
     private CTDetectionList applyOne(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
@@ -154,21 +153,21 @@ public class ApplyRulesAction implements CTAction {
                         "Unsupported engine type " + ruleSet.getEngineType().getID() + " for rule application");
             };
             if (findings.getCount() == 0) {
-                return DetectionList.of(Detection.of(ECTSeverity.INFO, CODE_RULES_APPLIED, DetectionLocation.ofResource(documentName),
-                        "Rule set '" + href(ruleSet) + "' applied without findings"));
+                return DetectionList.of(Detection.of(CTStandardSeverity.NONE, CODE_RULES_APPLIED,
+                        DetectionLocation.ofResource(documentName), "Rule set '" + href(ruleSet) + "' applied without findings"));
             }
             return findings;
         } catch (final SaxonApiException | IOException | RuntimeException e) {
             LOGGER.error("Rule engine error applying {}", href(ruleSet), e);
             return DetectionList
-                    .of(new Detection(ECTSeverity.FATAL_ERROR, CODE_RULE_ENGINE_ERROR, DetectionLocation.ofResource(documentName),
+                    .of(new Detection(CTStandardSeverity.ERROR, CODE_RULE_ENGINE_ERROR, DetectionLocation.ofResource(documentName),
                             "Rule set '" + href(ruleSet) + "' could not be applied: " + e.getMessage(), e));
         }
     }
 
     private CTDetectionList applySchematron(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
             final String documentName) throws SaxonApiException {
-        final XsltExecutable executable = (XsltExecutable) ruleSet.getCompiledArtifact().getCompilation();
+        final XsltExecutable executable = (XsltExecutable) ruleSet.getCompiledArtifact();
         final XsltTransformer transformer = executable.load();
         final XdmDestination destination = new XdmDestination();
         transformer.setDestination(destination);
@@ -183,7 +182,7 @@ public class ApplyRulesAction implements CTAction {
 
     private static CTDetectionList applySchema(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
             final String documentName) throws IOException {
-        final Schema schema = (Schema) ruleSet.getCompiledArtifact().getCompilation();
+        final Schema schema = (Schema) ruleSet.getCompiledArtifact();
         final Validator validator = schema.newValidator();
         secure(validator);
         final List<CTDetection> violations = new ArrayList<>();
@@ -226,20 +225,20 @@ public class ApplyRulesAction implements CTAction {
 
         @Override
         public void warning(final SAXParseException exception) {
-            add(ECTSeverity.WARNING, exception);
+            add(CTStandardSeverity.WARNING, exception);
         }
 
         @Override
         public void error(final SAXParseException exception) {
-            add(ECTSeverity.ERROR, exception);
+            add(CTStandardSeverity.ERROR, exception);
         }
 
         @Override
         public void fatalError(final SAXParseException exception) {
-            add(ECTSeverity.ERROR, exception);
+            add(CTStandardSeverity.ERROR, exception);
         }
 
-        private void add(final ECTSeverity severity, final SAXParseException exception) {
+        private void add(final CTStandardSeverity severity, final SAXParseException exception) {
             this.violations.add(new Detection(severity, CODE_SCHEMA_VIOLATION,
                     new DetectionLocation(this.documentName, exception.getLineNumber(), exception.getColumnNumber()),
                     exception.getMessage(), exception));

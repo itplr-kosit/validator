@@ -1,19 +1,18 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
-import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
-import org.conformatron.api.model.action.ECTStepResult;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.source.CTValidationArtifactReference;
-import org.conformatron.api.model.validation.ECTValidationType;
+import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Helper.Simple;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
 
 /**
  * Tests {@link RetrieveArtifactsAction} (step 5) including the repository confinement of {@link ArtifactResolver}.
@@ -34,8 +33,8 @@ public class RetrieveArtifactsActionTest {
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.artifacts()).hasSize(2);
-        assertThat(result.artifacts()).extracting("validationType").containsExactly(ECTValidationType.XSD,
-                ECTValidationType.SCHEMATRON_SCH);
+        assertThat(result.artifacts()).extracting("validationType").containsExactly(CTStandardValidationType.XSD,
+                CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3);
         assertThat(result.artifacts().get(0).getContent()).isNotEmpty();
         assertThat(result.artifacts().get(0).isPrecompiled()).isFalse();
         assertThat(result.detections().getAll()).extracting("code").containsOnly(RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED);
@@ -46,7 +45,7 @@ public class RetrieveArtifactsActionTest {
         final RetrieveArtifactsResult result = this.action.execute(refs("simple.xsl"), DOCUMENT);
 
         assertThat(result.isSuccess()).isTrue();
-        assertThat(result.artifacts().get(0).getValidationType()).isEqualTo(ECTValidationType.SCHEMATRON_XSLT);
+        assertThat(result.artifacts().get(0).getValidationType()).isEqualTo(CTStandardValidationType.SCHEMATRON_XSLT2);
     }
 
     @Test
@@ -54,7 +53,7 @@ public class RetrieveArtifactsActionTest {
         final RetrieveArtifactsResult result = this.action.execute(refs("simple.sch", "does-not-exist.sch"), DOCUMENT);
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
+        assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
         // partial list: the resolvable artifact is still reported
         assertThat(result.artifacts()).hasSize(1);
         assertThat(result.detections().getAll()).extracting("code").contains(RetrieveArtifactsAction.CODE_ARTIFACT_MISSING);

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import org.conformatron.api.model.detection.ECTSeverity;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTSeverity;
@@ -71,7 +71,7 @@ public final class DetectionList implements CTDetectionList {
 
     @Override
     public CTSeverity getWorstSeverity() {
-        CTSeverity worst = ECTSeverity.NONE;
+        CTSeverity worst = CTStandardSeverity.NONE;
         for (final CTDetection detection : this.detections) {
             worst = CTSeverity.getWorst(worst, detection.getSeverity());
         }

@@ -11,8 +11,8 @@ import static org.kosit.validator.api.VInputFactory.read;
 import java.net.URI;
 import java.util.List;
 
-import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.conformance.ECTConformanceResult;
+import org.conformatron.api.model.action.CTStepResult;
+import org.conformatron.api.model.conformance.CTConformanceResult;
 import org.conformatron.api.model.rule.CTApplyRulesResult;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.scenario.CTConformanceTarget;
@@ -58,7 +58,7 @@ public class ComputeConformanceActionTest {
         assertThat(result.result().hasNonConformantTarget()).isFalse();
         // per-rule-set granularity: one statement per rule set
         assertThat(result.result().getStatementsByRuleSet()).hasSize(2);
-        assertThat(result.result().getAllStatements()).extracting("result").containsOnly(ECTConformanceResult.CONFORMANT);
+        assertThat(result.result().getAllStatements()).extracting("result").containsOnly(CTConformanceResult.CONFORMANT);
         assertThat(result.detections().getAll()).extracting("code").containsOnly(ComputeConformanceAction.CODE_TARGET_CONFORMANT);
     }
 
@@ -70,8 +70,8 @@ public class ComputeConformanceActionTest {
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.result().hasNonConformantTarget()).isTrue();
         // the XSD rule set passed, the schematron rule set drove the non-conformance — traceable per rule set
-        assertThat(result.result().getAllStatements()).extracting("result").containsExactly(ECTConformanceResult.CONFORMANT,
-                ECTConformanceResult.NON_CONFORMANT);
+        assertThat(result.result().getAllStatements()).extracting("result").containsExactly(CTConformanceResult.CONFORMANT,
+                CTConformanceResult.NON_CONFORMANT);
         assertThat(result.detections().containsAtLeastOneError()).isTrue();
     }
 
@@ -81,8 +81,8 @@ public class ComputeConformanceActionTest {
         final ComputeConformanceActionResult result = this.action
                 .execute(applyRules(Simple.SIMPLE_VALID, "simple-runtime-error.sch", "simple.sch"), List.of(TARGET));
 
-        assertThat(result.result().getAllStatements()).extracting("result").containsExactly(ECTConformanceResult.NON_CONFORMANT,
-                ECTConformanceResult.NON_CONFORMANT);
+        assertThat(result.result().getAllStatements()).extracting("result").containsExactly(CTConformanceResult.NON_CONFORMANT,
+                CTConformanceResult.NON_CONFORMANT);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ComputeConformanceActionTest {
         final CTParsedValidationSource parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID)).getParsedSource();
         final ComputeConformanceActionResult result = this.action.execute(ApplyRulesResult.empty(parsed), List.of(TARGET));
 
-        assertThat(result.status()).isEqualTo(ECTStepResult.SKIPPED);
+        assertThat(result.status()).isEqualTo(CTStepResult.SKIPPED);
         assertThat(result.result().isEmpty()).isTrue();
         assertThat(result.result().getParsedSource()).isSameAs(parsed);
         assertThat(result.detections().getAll()).extracting("code").containsExactly(ComputeConformanceAction.CODE_STEP_SKIPPED);

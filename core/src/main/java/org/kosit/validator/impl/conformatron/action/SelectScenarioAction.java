@@ -1,20 +1,18 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.CTAction;
-import org.conformatron.api.model.detection.ECTSeverity;
+import org.conformatron.api.model.action.CTActionType;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
+import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.DetectionList;
+import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 
 /**
  * Step 4 of the canonical pipeline, {@code SELECT_SCENARIO} (see
@@ -43,21 +41,21 @@ public class SelectScenarioAction implements CTAction {
      * @param selected the selected scenario; {@code null} unless status is {@code SUCCESS}
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record SelectScenarioResult(ECTStepResult status, CTScenarioMatch selected, CTDetectionList detections) {
+    public record SelectScenarioResult(CTStepResult status, CTScenarioMatch selected, CTDetectionList detections) {
 
         public boolean isSuccess() {
-            return this.status == ECTStepResult.SUCCESS;
+            return this.status == CTStepResult.SUCCESS;
         }
     }
 
     @Override
     public String getName() {
-        return ECTActionType.SELECT_SCENARIO.getName();
+        return CTActionType.SELECT_SCENARIO.getName();
     }
 
     @Override
-    public ECTActionType getType() {
-        return ECTActionType.SELECT_SCENARIO;
+    public CTActionType getType() {
+        return CTActionType.SELECT_SCENARIO;
     }
 
     /**
@@ -74,13 +72,13 @@ public class SelectScenarioAction implements CTAction {
         final String resourceId = detectedScenarios.get(0).getParsedSource().getSource().getName();
         if (detectedScenarios.size() > 1) {
             final String candidates = detectedScenarios.stream().map(CTScenarioMatch::getScenarioID).collect(Collectors.joining(", "));
-            final CTDetection detection = Detection.of(ECTSeverity.ERROR, CODE_SCENARIO_AMBIGUOUS,
+            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_AMBIGUOUS,
                     DetectionLocation.ofResource(resourceId), "More than one scenario matches the document: " + candidates);
-            return new SelectScenarioResult(ECTStepResult.FAILURE, null, DetectionList.of(detection));
+            return new SelectScenarioResult(CTStepResult.FAILURE, null, DetectionList.of(detection));
         }
         final CTScenarioMatch selected = detectedScenarios.get(0);
-        final CTDetection detection = Detection.of(ECTSeverity.INFO, CODE_SCENARIO_SELECTED, DetectionLocation.ofResource(resourceId),
-                "Scenario '" + selected.getScenarioID() + "' selected");
-        return new SelectScenarioResult(ECTStepResult.SUCCESS, selected, DetectionList.of(detection));
+        final CTDetection detection = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_SELECTED,
+                DetectionLocation.ofResource(resourceId), "Scenario '" + selected.getScenarioID() + "' selected");
+        return new SelectScenarioResult(CTStepResult.SUCCESS, selected, DetectionList.of(detection));
     }
 }

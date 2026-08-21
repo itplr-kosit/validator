@@ -1,7 +1,7 @@
 package org.kosit.validator.impl.conformatron.model;
 
 import org.conformatron.api.model.source.CTCompiledValidationArtifact;
-import org.conformatron.api.model.validation.ECTValidationType;
+import org.conformatron.api.model.validation.CTValidationType;
 
 /**
  * Validator implementation of {@link CTCompiledValidationArtifact}: an engine-ready compilation together with the
@@ -14,14 +14,9 @@ import org.conformatron.api.model.validation.ECTValidationType;
  */
 public final class CompiledValidationArtifact<T> implements CTCompiledValidationArtifact<T> {
 
-    private final ECTValidationType validationType;
+    private final CTValidationType validationType;
 
     private final T compilation;
-
-    private CompiledValidationArtifact(final ECTValidationType validationType, final T compilation) {
-        this.validationType = validationType;
-        this.compilation = compilation;
-    }
 
     /**
      * @param validationType the validation type this compilation belongs to
@@ -29,7 +24,7 @@ public final class CompiledValidationArtifact<T> implements CTCompiledValidation
      * @param <T> the engine-specific compilation type
      * @return the typed compiled artifact
      */
-    public static <T> CompiledValidationArtifact<T> of(final ECTValidationType validationType, final T compilation) {
+    public static <T> CompiledValidationArtifact<T> of(final CTValidationType validationType, final T compilation) {
         if (validationType == null) {
             throw new IllegalArgumentException("validationType may not be null");
         }
@@ -39,13 +34,18 @@ public final class CompiledValidationArtifact<T> implements CTCompiledValidation
         return new CompiledValidationArtifact<>(validationType, compilation);
     }
 
+    private CompiledValidationArtifact(final CTValidationType validationType, final T compilation) {
+        this.validationType = validationType;
+        this.compilation = compilation;
+    }
+
     @Override
-    public ECTValidationType getValidationType() {
-        return this.validationType;
+    public CTValidationType getValidationType() {
+        return validationType;
     }
 
     @Override
     public T getCompilation() {
-        return this.compilation;
+        return compilation;
     }
 }

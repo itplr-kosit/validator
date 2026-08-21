@@ -1,11 +1,5 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.PreparedRuleSet;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.CompiledValidationArtifact;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +7,23 @@ import java.util.List;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTActionType;
-import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.action.CTAction;
-import org.conformatron.api.model.detection.ECTSeverity;
+import org.conformatron.api.model.action.CTActionType;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTResolvedValidationArtifact;
 import org.conformatron.api.model.source.CTValidationArtifactReference;
+import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.SchXsltCompiler;
+import org.kosit.validator.impl.conformatron.model.CompiledValidationArtifact;
+import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.DetectionList;
+import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.model.PreparedRuleSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,21 +98,21 @@ public class PrepareRulesAction implements CTAction {
      * @param ruleSets the prepared rule sets, one per artifact; empty on failure or skip
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record PrepareRulesResult(ECTStepResult status, List<CTPreparedRuleSet> ruleSets, CTDetectionList detections) {
+    public record PrepareRulesResult(CTStepResult status, List<CTPreparedRuleSet> ruleSets, CTDetectionList detections) {
 
         public boolean isSuccess() {
-            return this.status == ECTStepResult.SUCCESS;
+            return this.status == CTStepResult.SUCCESS;
         }
     }
 
     @Override
     public String getName() {
-        return ECTActionType.PREPARE_RULES.getName();
+        return CTActionType.PREPARE_RULES.getName();
     }
 
     @Override
-    public ECTActionType getType() {
-        return ECTActionType.PREPARE_RULES;
+    public CTActionType getType() {
+        return CTActionType.PREPARE_RULES;
     }
 
     /**
@@ -128,19 +127,19 @@ public class PrepareRulesAction implements CTAction {
             throw new IllegalArgumentException("artifacts may not be null");
         }
         if (artifacts.isEmpty()) {
-            final CTDetection skipped = Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
+            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
                     "No artifacts retrieved (reason: no-artifacts)");
-            return new PrepareRulesResult(ECTStepResult.SKIPPED, List.of(), DetectionList.of(skipped));
+            return new PrepareRulesResult(CTStepResult.SKIPPED, List.of(), DetectionList.of(skipped));
         }
         final List<CTPreparedRuleSet> ruleSets = new ArrayList<>();
         final List<CTDetection> detections = new ArrayList<>();
         for (final CTResolvedValidationArtifact artifact : artifacts) {
             if (!prepare(artifact, resourceId, ruleSets, detections)) {
                 // compile failure cancels the process; the partial CVRL keeps what was prepared so far
-                return new PrepareRulesResult(ECTStepResult.FAILURE, List.copyOf(ruleSets), new DetectionList(detections));
+                return new PrepareRulesResult(CTStepResult.FAILURE, List.copyOf(ruleSets), new DetectionList(detections));
             }
         }
-        return new PrepareRulesResult(ECTStepResult.SUCCESS, List.copyOf(ruleSets), new DetectionList(detections));
+        return new PrepareRulesResult(CTStepResult.SUCCESS, List.copyOf(ruleSets), new DetectionList(detections));
     }
 
     private boolean prepare(final CTResolvedValidationArtifact artifact, final String resourceId, final List<CTPreparedRuleSet> ruleSets,
@@ -155,25 +154,25 @@ public class PrepareRulesAction implements CTAction {
             }
             final URI uri = reference.getValidationArtifactReference();
             switch (artifact.getValidationType()) {
-                case XSD -> {
+                case CTStandardValidationType.XSD -> {
                     final Schema schema = this.repository.createSchema(uri);
                     ruleSets.add(PreparedRuleSet.xsd(reference, CompiledValidationArtifact.of(artifact.getValidationType(), schema)));
                     detections.add(compiled(href, resourceId, "XML Schema"));
                 }
-                case SCHEMATRON_SCH -> {
+                case CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3 -> {
                     final XsltExecutable executable = this.repository.loadSchematronXslt(uri, this.compilerId);
                     ruleSets.add(PreparedRuleSet.schematron(reference,
                             CompiledValidationArtifact.of(artifact.getValidationType(), executable), engineVersion()));
                     detections.add(compiled(href, resourceId, "Schematron via " + this.compilerId));
                 }
-                case SCHEMATRON_XSLT -> {
+                case CTStandardValidationType.SCHEMATRON_XSLT2 -> {
                     final XsltExecutable executable = this.repository.loadXsltScript(uri);
                     ruleSets.add(PreparedRuleSet.schematron(reference,
                             CompiledValidationArtifact.of(artifact.getValidationType(), executable), engineVersion()));
                     detections.add(passThrough(href, resourceId, "transpiled ahead of time"));
                 }
                 default -> {
-                    detections.add(Detection.of(ECTSeverity.FATAL_ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.ofResource(resourceId),
+                    detections.add(Detection.of(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.ofResource(resourceId),
                             "Artifact '" + href + "' has unsupported validation type " + artifact.getValidationType().getID()));
                     return false;
                 }
@@ -181,7 +180,7 @@ public class PrepareRulesAction implements CTAction {
             return true;
         } catch (final RuntimeException e) {
             LOGGER.error("Could not prepare artifact {}", href, e);
-            detections.add(new Detection(ECTSeverity.FATAL_ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.ofResource(resourceId),
+            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.ofResource(resourceId),
                     "Artifact '" + href + "' could not be prepared: " + e.getMessage(), e));
             return false;
         }
@@ -192,12 +191,12 @@ public class PrepareRulesAction implements CTAction {
     }
 
     private static CTDetection compiled(final String href, final String resourceId, final String what) {
-        return Detection.of(ECTSeverity.INFO, CODE_RULE_COMPILED, DetectionLocation.ofResource(resourceId),
+        return Detection.of(CTStandardSeverity.NONE, CODE_RULE_COMPILED, DetectionLocation.ofResource(resourceId),
                 "Artifact '" + href + "' compiled (" + what + ")");
     }
 
     private static CTDetection passThrough(final String href, final String resourceId, final String why) {
-        return Detection.of(ECTSeverity.INFO, CODE_RULE_PRECOMPILED, DetectionLocation.ofResource(resourceId),
+        return Detection.of(CTStandardSeverity.NONE, CODE_RULE_PRECOMPILED, DetectionLocation.ofResource(resourceId),
                 "Artifact '" + href + "' passed through (" + why + ")");
     }
 }

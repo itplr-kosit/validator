@@ -1,9 +1,11 @@
 package org.kosit.validator.impl.conformatron.model;
 
+import java.util.Objects;
+
 import org.conformatron.api.model.source.CTCompiledValidationArtifact;
 import org.conformatron.api.model.source.CTResolvedValidationArtifact;
 import org.conformatron.api.model.source.CTValidationArtifactReference;
-import org.conformatron.api.model.validation.ECTValidationType;
+import org.conformatron.api.model.validation.CTValidationType;
 
 /**
  * Validator implementation of {@link CTResolvedValidationArtifact} (conformatron-api step 5,
@@ -24,20 +26,16 @@ public final class ResolvedValidationArtifact implements CTResolvedValidationArt
 
     private final CTValidationArtifactReference reference;
 
-    private final ECTValidationType validationType;
+    private final CTValidationType validationType;
 
     private final byte[] content;
 
     private final CTCompiledValidationArtifact<?> compiledArtifact;
 
-    private ResolvedValidationArtifact(final CTValidationArtifactReference reference, final ECTValidationType validationType,
+    private ResolvedValidationArtifact(final CTValidationArtifactReference reference, final CTValidationType validationType,
             final byte[] content, final CTCompiledValidationArtifact<?> compiledArtifact) {
-        if (reference == null) {
-            throw new IllegalArgumentException("reference may not be null");
-        }
-        if (validationType == null) {
-            throw new IllegalArgumentException("validationType may not be null");
-        }
+        Objects.requireNonNull(reference);
+        Objects.requireNonNull(validationType);
         this.reference = reference;
         this.validationType = validationType;
         this.content = content == null ? null : content.clone();
@@ -52,11 +50,9 @@ public final class ResolvedValidationArtifact implements CTResolvedValidationArt
      * @param content the artifact content
      * @return the resolved artifact
      */
-    public static ResolvedValidationArtifact loaded(final CTValidationArtifactReference reference, final ECTValidationType validationType,
+    public static ResolvedValidationArtifact loaded(final CTValidationArtifactReference reference, final CTValidationType validationType,
             final byte[] content) {
-        if (content == null) {
-            throw new IllegalArgumentException("content may not be null");
-        }
+        Objects.requireNonNull(content);
         return new ResolvedValidationArtifact(reference, validationType, content, null);
     }
 
@@ -70,9 +66,7 @@ public final class ResolvedValidationArtifact implements CTResolvedValidationArt
      */
     public static ResolvedValidationArtifact precompiled(final CTValidationArtifactReference reference,
             final CTCompiledValidationArtifact<?> compiledArtifact) {
-        if (compiledArtifact == null) {
-            throw new IllegalArgumentException("compiledArtifact may not be null");
-        }
+        Objects.requireNonNull(compiledArtifact);
         return new ResolvedValidationArtifact(reference, compiledArtifact.getValidationType(), null, compiledArtifact);
     }
 
@@ -82,7 +76,7 @@ public final class ResolvedValidationArtifact implements CTResolvedValidationArt
     }
 
     @Override
-    public ECTValidationType getValidationType() {
+    public CTValidationType getValidationType() {
         return this.validationType;
     }
 

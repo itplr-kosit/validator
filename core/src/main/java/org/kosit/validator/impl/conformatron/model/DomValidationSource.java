@@ -15,10 +15,10 @@
  */
 package org.kosit.validator.impl.conformatron.model;
 
-import org.kosit.validator.impl.conformatron.util.SourceDigest;
-
 import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTValidationSource;
+import org.kosit.validator.impl.conformatron.util.SourceDigest;
 import org.w3c.dom.Document;
 
 /**
@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  *
  * @author Andreas Schmitz
  */
-public final class DomValidationSource implements CTParsedValidationSource {
+public final class DomValidationSource implements CTParsedValidationSourceXML {
 
     private final CTValidationSource source;
 
@@ -93,7 +93,6 @@ public final class DomValidationSource implements CTParsedValidationSource {
         return this.dom;
     }
 
-    @Override
     public Document getAsDom() {
         return this.dom;
     }

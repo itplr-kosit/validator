@@ -10,9 +10,9 @@ import org.conformatron.api.model.source.CTValidationArtifactReference;
  * Validator implementation of {@link CTConformanceTarget} (conformatron-api step 8, {@code COMPUTE_CONFORMANCE}): a
  * named group of rule sets against which conformance is evaluated.
  * <p>
- * Facade note: the legacy scenario model declares no conformance targets — {@link #ofScenario(CTScenarioMatch)}
- * derives a single scenario-wide target covering all rule sets of the selected scenario. The legacy {@code acceptMatch}
- * is deliberately <b>not</b> carried over as {@code acceptSelector}: it is evaluated against the rendered report, which
+ * Facade note: the legacy scenario model declares no conformance targets — {@link #ofScenario(CTScenarioMatch)} derives
+ * a single scenario-wide target covering all rule sets of the selected scenario. The legacy {@code acceptMatch} is
+ * deliberately <b>not</b> carried over as {@code acceptSelector}: it is evaluated against the rendered report, which
  * does not exist in the canonical pipeline yet (ADR-004 follow-up).
  * </p>
  *

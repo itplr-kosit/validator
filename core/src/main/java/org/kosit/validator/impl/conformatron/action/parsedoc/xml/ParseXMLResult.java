@@ -2,7 +2,7 @@ package org.kosit.validator.impl.conformatron.action.parsedoc.xml;
 
 import java.util.List;
 
-import org.conformatron.api.model.action.ECTStepResult;
+import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.jspecify.annotations.Nullable;
@@ -15,18 +15,18 @@ import org.kosit.validator.impl.conformatron.model.DomValidationSource;
  */
 public class ParseXMLResult implements ParseDocumentActionResult<DomValidationSource> {
 
-    private ECTStepResult result;
+    private CTStepResult result;
 
     private CTDetectionList detections;
 
     private DomValidationSource parsedSource;
 
     public static ParseXMLResult failure(List<CTDetection> detections) {
-        return failure (new DetectionList(detections));
+        return failure(new DetectionList(detections));
     }
 
     public static ParseXMLResult failure(CTDetectionList detections) {
-        return new ParseXMLResult(ECTStepResult.FAILURE, detections, null);
+        return new ParseXMLResult(CTStepResult.FAILURE, detections, null);
     }
 
     /**
@@ -36,13 +36,13 @@ public class ParseXMLResult implements ParseDocumentActionResult<DomValidationSo
      *            SHA-512 hash for document identity in the partial CVRL — only without parsed content
      *            ({@code isParsed() == false}). {@code null} only when the source could not be read at all.
      */
-    public ParseXMLResult(ECTStepResult result, CTDetectionList detections, @Nullable DomValidationSource parsedSource) {
+    public ParseXMLResult(CTStepResult result, CTDetectionList detections, @Nullable DomValidationSource parsedSource) {
         this.result = result;
         this.detections = detections;
         this.parsedSource = parsedSource;
     }
 
-    public ECTStepResult getResult() {
+    public CTStepResult getResult() {
         return this.result;
     }
 
