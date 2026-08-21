@@ -92,7 +92,7 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
      */
     public ParseXMLResult execute(final VInput input) {
         Objects.requireNonNull(input);
-        final ValidationSource source = ValidationSource.of(input);
+        final CTValidationSource source = ValidationSource.of(input);
         final byte[] bytes;
         try {
             bytes = readBytes(input);

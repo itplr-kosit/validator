@@ -1,19 +1,20 @@
-package org.kosit.validator.impl.conformatron.action;
+package org.kosit.validator.impl.conformatron.action.detectscen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
-import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
@@ -82,21 +83,6 @@ public class DetectScenariosAction implements CTAction {
         }
         this.repository = repository;
         this.processor = processor;
-    }
-
-    /**
-     * Result of a single execution of this action.
-     *
-     * @param status success or failure (failure cancels the process)
-     * @param matches all detected scenarios; empty on failure. Exactly one entry with {@code isUserSelected() == true}
-     *            on the fixed-scenario path
-     * @param detections this execution's contribution to the report; never {@code null}
-     */
-    public record DetectScenariosResult(CTStepResult status, List<CTScenarioMatch> matches, CTDetectionList detections) {
-
-        public boolean isSuccess() {
-            return this.status == CTStepResult.SUCCESS;
-        }
     }
 
     @Override
@@ -169,16 +155,16 @@ public class DetectScenariosAction implements CTAction {
     }
 
     private XdmNode requireXdmNode(final CTParsedValidationSource parsedSource) {
-        if (parsedSource == null) {
-            throw new IllegalArgumentException("parsedSource may not be null");
-        }
+        Objects.requireNonNull(parsedSource);
         if (parsedSource.getParsedContent() instanceof final XdmNode node) {
             return node;
         }
+
         // ADR-002 common denominator: every parsed source can provide a DOM — wrap it into the Saxon model
-        if (parsedSource.getParsedContent() != null && this.processor != null) {
+        if (parsedSource.isParsed() && this.processor != null) {
             return this.processor.newDocumentBuilder().wrap(parsedSource.getParsedContent());
         }
+
         throw new IllegalArgumentException(
                 "Scenario detection requires an XdmNode as parsed content (or a DOM plus a " + "configured processor), but got "
                         + (parsedSource.getParsedContent() == null ? "null" : parsedSource.getParsedContent().getClass().getName()));
