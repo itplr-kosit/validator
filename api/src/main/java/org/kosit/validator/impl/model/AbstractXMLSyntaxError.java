@@ -10,7 +10,14 @@ import org.kosit.validator.model.XMLSyntaxErrorSeverity;
  *
  * @author Andreas Penski
  */
-public abstract class BaseXMLSyntaxError implements XmlError {
+public abstract class AbstractXMLSyntaxError implements XmlError {
+
+    /**
+     * Getter from the schema
+     *
+     * @return severity
+     */
+    public abstract XMLSyntaxErrorSeverity getSeverityCode();
 
     /**
      * Logs the syntax error via a defined logger.
@@ -25,20 +32,7 @@ public abstract class BaseXMLSyntaxError implements XmlError {
         } else {
             logger.error(msgTemplate, params);
         }
-
     }
-
-    @Override
-    public String toString() {
-        return getMessage() + " At row " + getRowNumber() + " at pos " + getColumnNumber();
-    }
-
-    /**
-     * Getter from the schema
-     *
-     * @return severity
-     */
-    public abstract XMLSyntaxErrorSeverity getSeverityCode();
 
     /**
      * This is the API access. There are two methods because the API uses a different type.
@@ -46,8 +40,13 @@ public abstract class BaseXMLSyntaxError implements XmlError {
      * @return the severity
      */
     @Override
-    public Severity getSeverity() {
+    public XmlError.Severity getSeverity() {
         final XMLSyntaxErrorSeverity code = getSeverityCode();
         return code != null ? Severity.valueOf(code.name()) : null;
+    }
+
+    @Override
+    public String toString() {
+        return getMessage() + " At row " + getRowNumber() + " at pos " + getColumnNumber();
     }
 }
