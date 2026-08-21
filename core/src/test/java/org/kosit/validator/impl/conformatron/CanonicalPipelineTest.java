@@ -8,14 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.conformatron.api.model.conformance.CTConformanceResult;
-import org.conformatron.api.model.conformance.CTConformanceResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;

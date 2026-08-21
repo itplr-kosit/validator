@@ -45,7 +45,11 @@ public class ExtractReportContentActionTest {
     public void testSimple() throws IOException {
         assertThat(this.action.isSkipped(TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID)).build())).isTrue();
         final CheckAction.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID))
+<<<<<<< HEAD
                 .setCreateReport(TestHelper.load(Simple.SIMPLE_VALID)).build();
+=======
+                .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
+>>>>>>> 489fbbd (Renamed interfaces; assertions.xsd removed)
         this.action.check(process);
         assertThat(this.action.isSkipped(process)).isFalse();
         this.action.check(process);

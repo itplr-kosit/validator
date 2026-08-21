@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.xml.RemoteResolvingStrategy;
 import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
 

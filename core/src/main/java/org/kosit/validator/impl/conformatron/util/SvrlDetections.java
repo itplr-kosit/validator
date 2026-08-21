@@ -12,7 +12,7 @@ import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.oclc.purl.dsdl.svrl.SuccessfulReport;
 
 /**
@@ -46,9 +46,9 @@ public final class SvrlDetections {
      * @param documentName the validated document, used as detection location resource
      * @return the detections, in SVRL order; empty if the document satisfied all rules
      */
-    public static CTDetectionList toDetections(final SchematronOutput svrl, final String documentName) {
+    public static CTDetectionList toDetections(final SchematronOutputType svrl, final String documentName) {
         final List<CTDetection> detections = new ArrayList<>();
-        for (final Object entry : svrl.getActivePatternAndFiredRuleAndFailedAssert()) {
+        for (final Object entry : svrl.getActivePatternOrActiveGroupAndFiredRule()) {
             if (entry instanceof final FailedAssert failedAssert) {
                 detections.add(Detection.of(severityOf(failedAssert.getRole(), failedAssert.getFlag()),
                         code(failedAssert.getId(), CODE_FAILED_ASSERT), DetectionLocation.ofResource(documentName),
@@ -70,8 +70,8 @@ public final class SvrlDetections {
      * fallback (SchXslt-compiled XRechnung rules carry the level in {@code @flag}). No attribute at all defaults to
      * ERROR — an unclassified failed assert must not disappear.
      */
-    private static CTStandardSeverity severityOf(final String role, final String flag) {
-        final String level = role != null && !role.isBlank() ? role : flag;
+    private static CTStandardSeverity severityOf(final String role, final List<String> flag) {
+        final String level = role != null && !role.isBlank() ? role : flag != null && !flag.isEmpty() ? flag.get(0) : null;
         if (level == null || level.isBlank()) {
             return CTStandardSeverity.ERROR;
         }

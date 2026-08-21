@@ -3,10 +3,10 @@ package org.kosit.validator.impl.tasks;
 import java.util.Collections;
 import java.util.List;
 
-import org.kosit.validator.api.*;
 import org.kosit.validator.api.VInput;
-import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
