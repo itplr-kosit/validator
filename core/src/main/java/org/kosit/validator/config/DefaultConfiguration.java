@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.*;
+import org.kosit.validator.impl.ContentRepository;
+import org.kosit.validator.impl.DefaultVCheck;
+import org.kosit.validator.impl.Scenario;
 
 /**
  * Default implementation class for {@link VConfiguration}. This class contains all information to run a

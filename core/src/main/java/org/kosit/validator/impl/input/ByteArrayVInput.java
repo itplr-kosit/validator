@@ -1,12 +1,12 @@
 package org.kosit.validator.impl.input;
 
-import org.kosit.validator.api.VInput;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+
+import org.kosit.validator.api.VInput;
 
 /**
  * Classical in-memory {@link VInput}. It is not memory efficient to read the whole file into memory prio validating.

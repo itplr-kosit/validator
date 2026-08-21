@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTSeverity;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 
 /**
  * Immutable implementation of {@link CTDetectionList}.

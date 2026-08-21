@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.AcceptRecommendation;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.TestHelper.Simple;
@@ -28,14 +29,14 @@ public class SimpleScenarioVCheckTest {
 
     @Test
     public void testSimple() throws MalformedURLException {
-        final Result result = this.implementation.checkInput(VInputFactory.read(Simple.SIMPLE_VALID.toURL()));
+        final VResult result = this.implementation.checkInput(VInputFactory.read(Simple.SIMPLE_VALID.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
     public void testInvalid() throws MalformedURLException {
-        final Result result = this.implementation.checkInput(VInputFactory.read(Simple.SCHEMA_INVALID.toURL()));
+        final VResult result = this.implementation.checkInput(VInputFactory.read(Simple.SCHEMA_INVALID.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
         assertThat(result.getSchemaViolations()).isNotEmpty();
@@ -43,7 +44,7 @@ public class SimpleScenarioVCheckTest {
 
     @Test
     public void testUnknown() throws MalformedURLException {
-        final Result result = this.implementation.checkInput(VInputFactory.read(Simple.UNKNOWN.toURL()));
+        final VResult result = this.implementation.checkInput(VInputFactory.read(Simple.UNKNOWN.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.isProcessingSuccessful()).isTrue();
         assertThat(result.isAcceptable()).isFalse();
@@ -53,7 +54,7 @@ public class SimpleScenarioVCheckTest {
 
     @Test
     public void testWithoutAcceptMatch() throws MalformedURLException {
-        final Result result = this.implementation.checkInput(VInputFactory.read(Simple.FOO.toURL()));
+        final VResult result = this.implementation.checkInput(VInputFactory.read(Simple.FOO.toURL()));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }

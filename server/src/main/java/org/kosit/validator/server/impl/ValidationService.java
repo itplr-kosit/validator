@@ -57,18 +57,18 @@ public class ValidationService {
         return configuration != null ? configuration.stream().flatMap(c -> c.getScenarios().stream()).toList() : Collections.emptyList();
     }
 
-    public Result validate(final VInput VInput) {
+    public VResult validate(final VInput VInput) {
         long t0 = System.currentTimeMillis();
-        final Result result = check.checkInput(VInput);
+        final VResult result = check.checkInput(VInput);
         LOGGER.info("Validated {} input in {} ms", VInput.getName(), System.currentTimeMillis() - t0);
         return result;
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final VInput VInput, final Result defaultResult) {
+    public CompactXVRLReportSummary convertMinimalXvrl(final VInput VInput, final VResult defaultResult) {
         return convertMinimalXvrl(Map.of(VInput, defaultResult));
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final Map<VInput, Result> defaultResults) {
+    public CompactXVRLReportSummary convertMinimalXvrl(final Map<VInput, VResult> defaultResults) {
         final CompactXVRLReportSummary summary = CompactXVRLReportSummary.create();
         defaultResults.forEach((input, result) -> {
             final CompactXVRLReport report = CompactXVRLReport.create();
@@ -93,14 +93,14 @@ public class ValidationService {
             report.setChecksum(HexFormat.of().formatHex(input.getHashCode()));
             summary.addReport(report);
         });
-        summary.setAcceptable(defaultResults.values().stream().filter(Result::isAcceptable).count());
+        summary.setAcceptable(defaultResults.values().stream().filter(VResult::isAcceptable).count());
         summary.setRejected(defaultResults.values().stream().filter(r -> !r.isAcceptable()).count());
         summary.setProcessingErrors(defaultResults.values().stream().filter(r -> !r.isProcessingSuccessful()).count());
         summary.setValidatorInformation(new ValidatorEngineInformation(engineInformation.getName(), engineInformation.getVersion()));
         return summary;
     }
 
-    private String detectSelectedScenario(Result defaultResult) {
+    private String detectSelectedScenario(VResult defaultResult) {
         return defaultResult.getReportSummary().getReports().stream()
                 .filter(rep -> rep.getId().equals(ScenarioSelectionAction.METADATA.getId())).findFirst()
                 .map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario")).findFirst()
@@ -108,7 +108,7 @@ public class ValidationService {
                 .orElse("null");
     }
 
-    private static String joinErrors(final Result value) {
+    private static String joinErrors(final VResult value) {
         final StringBuilder b = new StringBuilder();
         b.append(String.join(";", value.getProcessingErrors()));
         if (value.getSchemaViolations() != null && !value.getSchemaViolations().isEmpty()) {

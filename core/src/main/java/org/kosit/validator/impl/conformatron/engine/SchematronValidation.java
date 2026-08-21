@@ -1,12 +1,5 @@
 package org.kosit.validator.impl.conformatron.engine;
 
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
-
 import java.net.URI;
 import java.util.List;
 
@@ -17,6 +10,12 @@ import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 
 import net.sf.saxon.s9api.Processor;
 

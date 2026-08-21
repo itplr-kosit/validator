@@ -15,7 +15,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.conformatron.model.ValidationSource;
 import org.kosit.validator.impl.conformatron.model.XdmNodeValidationSource;
-import org.kosit.validator.impl.input.*;
+import org.kosit.validator.impl.input.StreamHelper;
 import org.kosit.validator.impl.input.XdmNodeVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;

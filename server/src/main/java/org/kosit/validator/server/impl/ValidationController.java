@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VInputFactory;
-import org.kosit.validator.api.Result;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationResource;
 import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
@@ -31,7 +31,7 @@ public class ValidationController implements ValidationResource {
     }
 
     public Response validate(File xmlFile) {
-        final Result result = service.validate(VInputFactory.read(xmlFile));
+        final VResult result = service.validate(VInputFactory.read(xmlFile));
         final XvrlConversionService conversionService = new XvrlConversionService();
         final byte[] resultBytes = conversionService.writeXml(result.getReportSummary()).getBytes();
         return addHeaders(result, Response.ok(resultBytes).type(MediaType.APPLICATION_XML).header("Content-Disposition",
@@ -41,7 +41,7 @@ public class ValidationController implements ValidationResource {
     @Override
     public Response validateMinimal(File xmlFile) {
         final VInput VInput = VInputFactory.read(xmlFile);
-        final Result result = service.validate(VInput);
+        final VResult result = service.validate(VInput);
 
         final CompactXVRLReportSummary compactReport = service.convertMinimalXvrl(VInput, result);
 
@@ -61,7 +61,7 @@ public class ValidationController implements ValidationResource {
                 "attachment; filename=compact-validation-result.xml")).build();
     }
 
-    private Response.ResponseBuilder addHeaders(final Result result, final Response.ResponseBuilder responseBuilder) {
+    private Response.ResponseBuilder addHeaders(final VResult result, final Response.ResponseBuilder responseBuilder) {
         final String headerPrefix = "X-VALIDATOR-";
 
         responseBuilder.header(headerPrefix + "Schema-Valid", result.isSchemaValid())

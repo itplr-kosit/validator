@@ -8,13 +8,13 @@ import java.util.Map;
 
 import javax.xml.validation.Schema;
 
-import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
 import org.kosit.validator.model.scenarios.CreateReportType;

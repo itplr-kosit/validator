@@ -101,7 +101,7 @@ public class Validator {
         LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
         final Collection<VInput> targets = determineTestTargets(cliOptions);
         start = System.currentTimeMillis();
-        final Map<String, Result> results = new HashMap<>();
+        final Map<String, VResult> results = new HashMap<>();
         Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
         long tick = System.currentTimeMillis();
         for (final VInput VInput : targets) {

@@ -6,8 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.kosit.validator.api.*;
+import org.kosit.svrl.impl.SvrlConversionService;
+import org.kosit.validator.api.VResult;
+import org.kosit.validator.api.VCheck;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
+import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
 import org.kosit.validator.impl.tasks.CheckAction;
 import org.kosit.validator.impl.tasks.CheckAction.Process;
@@ -19,7 +23,6 @@ import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
 import org.kosit.validator.impl.tasks.SchemaValidationAction;
 import org.kosit.validator.impl.tasks.SchematronValidationAction;
 import org.kosit.validator.impl.xml.ProcessorProvider;
-import org.kosit.svrl.impl.SvrlConversionService;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.XVRLMetadata;
 import org.slf4j.Logger;
@@ -33,7 +36,7 @@ import net.sf.saxon.s9api.Processor;
  *
  * @author Andreas Penski
  */
-public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
+public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultVCheck.class);
 
@@ -83,12 +86,12 @@ public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
         return this.conformanceValidation.createMetadata();
     }
 
-    protected boolean isSuccessful(final Map<String, Result> results) {
+    protected boolean isSuccessful(final Map<String, VResult> results) {
         return results.entrySet().stream().allMatch(e -> e.getValue().isAcceptable());
     }
 
     @Override
-    public Result checkInput(final VInput VInput) {
+    public VResult checkInput(final VInput VInput) {
         final Process checkProcess = new Process(VInput, createXVRLMetadata());
         return runCheckInternal(checkProcess);
     }
@@ -98,7 +101,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
      * {@link #checkInput(VInput)}, executed by the {@link ConformanceValidation} mode class.
      */
     @Override
-    public Result validate(final VInput VInput) {
+    public VResult validate(final VInput VInput) {
         return checkInput(VInput);
     }
 
@@ -110,7 +113,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<Result> {
         return this.adHocValidation.validate(VInput, schematron);
     }
 
-    protected Result runCheckInternal(final Process checkProcess) {
+    protected VResult runCheckInternal(final Process checkProcess) {
         return this.conformanceValidation.run(checkProcess);
     }
 

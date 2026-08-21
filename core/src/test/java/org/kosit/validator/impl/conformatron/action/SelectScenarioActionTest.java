@@ -1,10 +1,5 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.XdmNodeValidationSource;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
-import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kosit.validator.api.VInputFactory.read;
@@ -16,12 +11,16 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VInput;
-import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
+import org.kosit.validator.impl.conformatron.model.XdmNodeValidationSource;
 import org.kosit.validator.impl.tasks.DocumentParseAction;
 import org.kosit.validator.impl.tasks.TestScenarioBuilder;
+import org.kosit.validator.impl.xml.ProcessorProvider;
 
 /**
  * Tests {@link DetectScenariosAction} (step 3) and {@link SelectScenarioAction} (step 4) against the legacy scenario

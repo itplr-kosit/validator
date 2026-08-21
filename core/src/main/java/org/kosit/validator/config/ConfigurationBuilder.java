@@ -17,8 +17,8 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;

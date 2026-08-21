@@ -16,8 +16,11 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.kosit.validator.impl.input.*;
+import org.kosit.validator.impl.input.ByteArrayVInput;
+import org.kosit.validator.impl.input.ResourceVInput;
 import org.kosit.validator.impl.input.SourceVInput;
+import org.kosit.validator.impl.input.StreamHelper;
+import org.kosit.validator.impl.input.XdmNodeVInput;
 
 import net.sf.saxon.s9api.XdmNode;
 

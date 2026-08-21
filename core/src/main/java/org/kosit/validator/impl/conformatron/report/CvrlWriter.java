@@ -1,13 +1,5 @@
 package org.kosit.validator.impl.conformatron.report;
 
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
-import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
-
 import java.io.OutputStream;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -21,12 +13,19 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.conformatron.api.model.action.CTActionType;
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationSyntax;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
+import org.kosit.validator.impl.conformatron.action.DetectScenariosAction;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 
 /**
  * <b>DRAFT intermediate format</b>: serializes a canonical pipeline run (steps 2–8) to a CVRL report — an XVRL profile

@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.Strings;
+import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInputFactory;
-import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;

@@ -1,9 +1,5 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import org.kosit.validator.impl.conformatron.model.ApplyRulesResult;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
-import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kosit.validator.api.VInputFactory.read;
@@ -20,11 +16,14 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
+import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.model.ApplyRulesResult;
+import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
+import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 
 /**
  * Tests {@link ComputeConformanceAction} (step 8) on real step-7 results.

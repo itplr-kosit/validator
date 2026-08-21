@@ -18,12 +18,12 @@ import javax.xml.validation.Validator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.*;
 import org.kosit.validator.api.VInput;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.XmlError.Severity;
-import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.SchemaProvider;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.input.SourceVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;

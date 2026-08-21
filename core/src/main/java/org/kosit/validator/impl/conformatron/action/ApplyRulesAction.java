@@ -27,7 +27,7 @@ import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 import org.kosit.validator.impl.conformatron.util.SvrlDetections;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.ErrorHandler;
@@ -174,9 +174,9 @@ public class ApplyRulesAction implements CTAction {
         // apply on the retained immutable byte array — no re-read of the original source
         transformer.setSource(new StreamSource(new ByteArrayInputStream(parsedSource.getSourceBytes()), documentName));
         transformer.transform();
-        final SchematronOutput svrl = this.conversionService.readXml(
+        final SchematronOutputType svrl = this.conversionService.readXml(
                 new DOMSource(NodeOverNodeInfo.wrap(destination.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
-                SchematronOutput.class);
+                SchematronOutputType.class);
         return SvrlDetections.toDetections(svrl, documentName);
     }
 

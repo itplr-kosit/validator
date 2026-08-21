@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
-import org.kosit.validator.api.Result;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.cmd.report.Grid;
 import org.kosit.validator.cmd.report.Grid.ColumnDefinition;
@@ -46,7 +46,7 @@ class InternalVCheck extends DefaultVCheck {
         super(engineInformation, processor, configuration);
     }
 
-    private static String createStatusLine(final Map<String, Result> results) {
+    private static String createStatusLine(final Map<String, VResult> results) {
         final long acceptable = results.entrySet().stream().filter(e -> e.getValue().isAcceptable()).count();
         final long rejected = results.entrySet().stream().filter(e -> !e.getValue().isAcceptable()).count();
         final long errors = results.entrySet().stream().filter(e -> !e.getValue().isProcessingSuccessful()).count();
@@ -59,13 +59,13 @@ class InternalVCheck extends DefaultVCheck {
         return line.render(true, false);
     }
 
-    private static Grid createResultGrid(final Map<String, Result> results) {
+    private static Grid createResultGrid(final Map<String, VResult> results) {
         final Grid grid = new Grid(
         //@formatter:off
         new ColumnDefinition("File", 60, 10, 1), new ColumnDefinition("Schema", 7).justify(Justify.CENTER), new ColumnDefinition("Schematron", 10).justify(Justify.CENTER), new ColumnDefinition("Acceptance", 10, 5).justify(Justify.CENTER), new ColumnDefinition("Error/Description", 60, 20, 3));
         //@formatter:on
         results.entrySet().stream().sorted(Entry.comparingByKey()).forEach(e -> {
-            final Result value = e.getValue();
+            final VResult value = e.getValue();
             final Code textcolor = value.isAcceptable() ? Code.GREEN : Code.RED;
             grid.addCell(e.getKey(), textcolor);
             grid.addCell(value.isSchemaValid() ? "Y" : "N", textcolor);
@@ -76,7 +76,7 @@ class InternalVCheck extends DefaultVCheck {
         return grid;
     }
 
-    private static String joinErrors(final Result value) {
+    private static String joinErrors(final VResult value) {
         final StringBuilder b = new StringBuilder();
         b.append(String.join(";", value.getProcessingErrors()));
         if (value.getSchemaViolations() != null && !value.getSchemaViolations().isEmpty()) {
@@ -97,12 +97,12 @@ class InternalVCheck extends DefaultVCheck {
      * @return false if there are assertion errors, otherwise true
      */
     @Override
-    public Result checkInput(final VInput VInput) {
+    public VResult checkInput(final VInput VInput) {
         final CheckAction.Process process = new CheckAction.Process(VInput, createXVRLMetadata());
         return runCheckInternal(process);
     }
 
-    void printResults(final Map<String, Result> results) {
+    void printResults(final Map<String, VResult> results) {
         final PrintWriter writer = new PrintWriter(System.out); // NOSONAR
         writer.write("Results:\n");
         writer.write(createResultGrid(results).render());
@@ -127,14 +127,14 @@ class InternalVCheck extends DefaultVCheck {
     }
 
     @Override
-    public boolean isSuccessful(final Map<String, Result> results) {
+    public boolean isSuccessful(final Map<String, VResult> results) {
         if (this.checkAssertions > 0) {
             return this.failedAssertions == 0;
         }
         return super.isSuccessful(results);
     }
 
-    public int getNotAcceptableCount(final Map<String, Result> results) {
+    public int getNotAcceptableCount(final Map<String, VResult> results) {
         return (int) (this.failedAssertions + results.values().stream().filter(e -> !e.isAcceptable()).count());
     }
 }
