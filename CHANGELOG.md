@@ -5,17 +5,49 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 2.0.0
+## 2.0.0 - work in progress
 
 ### Changed
 
-- Modularisierung. Bereistellung des Servers als Quarkus App
+- Modularized. Server application made available as Quarkus App
+- Changed all source code comments to English
+- Updated to use the SVRL XSD that matches the Schematron 2025 standard
 - (DAEMON) remove Daemon mode
 - (BUILD) [#169](https://projekte.kosit.org/kosit/validator/-/work_items/169) Removed the usage of Lombok
 - (BUILD) [#185](https://projekte.kosit.org/kosit/validator/-/work_items/185) The minimum Java version is now 25
 - (CORE) [#198](https://projekte.kosit.org/kosit/validator/-/work_items/198) Replaced all `String.format` calls with native inline String concatenation
 
-## 1.6.0
+## 1.6.3 - 2026-08-20
+
+### Fixed
+
+- (CORE) [GitHub Advisory](https://github.com/itplr-kosit/validator/security/advisories/GHSA-hg2c-p2m3-q29m) Fixed unrestricted URI resolution in STRICT_LOCAL mode allows remote stylesheet inclusion. Thanks to @gronke
+
+### Changed
+
+- (BUILD) Removed the usage of Lombok.
+
+## 1.6.2 - 2026-02-17
+
+### Changed
+
+- (BUILD) [GitHub #173](https://github.com/itplr-kosit/validator/issues/173) The JAR files now contain details on the used third-party component licenses. Thanks to @cech12
+- (BUILD) [GitHub #169](https://github.com/itplr-kosit/validator/issues/169) The `.zip` file created from `maven-assembly-plugin` now contains the correct xml-resolver dependencies. Thanks to @landrix for pointing that out
+- (BUILD) [#179](https://projekte.kosit.org/kosit/validator/-/issues/179) Updated all dependencies to the latest suitable versions
+
+## 1.6.1 - 2026-02-05
+
+### Changed
+
+- (CORE)  [#106](https://projekte.kosit.org/kosit/validator/-/issues/106) The `match` element in `scenarios.xml` is required to have at least one character (per XSD change)
+- (BUILD) [#176](https://projekte.kosit.org/kosit/validator/-/issues/176) The Maven Central deployed `pom.xml` properly includes runtime dependencies
+- (BUILD) [#175](https://projekte.kosit.org/kosit/validator/-/issues/175) The `.zip` file created from `maven-assembly-plugin` no longer contains the standalone validator, which reduces its size to 50%
+
+## 1.6.0 - 2025-11-07
+
+### Added
+
+- (CORE) [GitHub #127](https://github.com/itplr-kosit/validator/issues/127) New API method `Result.getCustomFailedAsserts()` to access failed asserts with custom error levels
 
 ### Fixed
 
@@ -25,6 +57,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - (CORE) Migration from javax to jakarta xml bind
 - (DOC) [GitHub PR#132](https://github.com/itplr-kosit/validator/pull/132) Updated the link to the example Validator scenario configuration
+- (BUILD) Support for *building and compilation* is restricted to the following Java versions:
+    - Java 11: any version &ge; 11.0.23
+    - Java 12 to 16 will not work
+    - Java 17: any version &ge; 17.0.11
+    - Java 18 to 20 will not work
+    - Any version from Java 21 onwards will work
+    - The reason for this is the usage of the `-proc:full` compiler parameter which in turn is needed for Lombok usage in JDK 23+.
 
 ### Removed
 

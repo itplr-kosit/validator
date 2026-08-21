@@ -11,7 +11,7 @@ import org.kosit.validator.impl.tasks.ReaderWrapper;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.XVRLReportSummary;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.SchematronOutput;
+import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.w3c.dom.Document;
 
 import jakarta.xml.bind.JAXBException;
@@ -32,7 +32,7 @@ public class DefaultResult implements Result {
 
     private List<XmlError> schemaViolations;
 
-    private List<SchematronOutput> schematronResult;
+    private List<SchematronOutputType> schematronResult;
 
     private boolean processingSuccessful;
 
@@ -95,14 +95,14 @@ public class DefaultResult implements Result {
     @Override
     public List<FailedAssert> getFailedAsserts() {
         return getSchematronResult() != null
-                ? getSchematronResult().stream().flatMap(e -> e.getActivePatternAndFiredRuleAndFailedAssert().stream())
+                ? getSchematronResult().stream().flatMap(e -> e.getActivePatternOrActiveGroupAndFiredRule().stream())
                         .filter(FailedAssert.class::isInstance).map(FailedAssert.class::cast).collect(Collectors.toList())
                 : Collections.emptyList();
     }
 
     private boolean isSchematronEvaluated() {
         return getSchematronResult() != null
-                && getSchematronResult().stream().noneMatch(e -> e.getActivePatternAndFiredRuleAndFailedAssert().isEmpty());
+                && getSchematronResult().stream().noneMatch(e -> e.getActivePatternOrActiveGroupAndFiredRule().isEmpty());
     }
 
     @Override
@@ -139,11 +139,11 @@ public class DefaultResult implements Result {
         return this.schemaViolations;
     }
 
-    public List<SchematronOutput> getSchematronResult() {
+    public List<SchematronOutputType> getSchematronResult() {
         return this.schematronResult;
     }
 
-    void setSchematronResult(final List<SchematronOutput> schematronResult) {
+    void setSchematronResult(final List<SchematronOutputType> schematronResult) {
         this.schematronResult = schematronResult;
     }
 
