@@ -8,7 +8,7 @@ public class LongAdapter extends XmlAdapter<BigInteger, Long> {
 
     @Override
     public Long unmarshal(final BigInteger bigInteger) throws Exception {
-        return bigInteger != null ? bigInteger.longValue() : null;
+        return bigInteger != null ? Long.valueOf(bigInteger.longValue()) : null;
     }
 
     @Override
