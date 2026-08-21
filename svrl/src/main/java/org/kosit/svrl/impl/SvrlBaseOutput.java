@@ -6,9 +6,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jspecify.annotations.NonNull;
+import org.oclc.purl.dsdl.svrl.ActiveGroup;
 import org.oclc.purl.dsdl.svrl.ActivePattern;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.FiredRule;
+import org.oclc.purl.dsdl.svrl.SuccessfulReport;
 
 /**
  * Base class for implementing specific extensions to the generated class
@@ -31,6 +33,15 @@ public abstract class SvrlBaseOutput {
      */
     public @NonNull List<@NonNull FailedAssert> getFailedAsserts() {
         return filter(FailedAssert.class);
+    }
+
+    /**
+     * Returns the list of {@link SuccessfulReport}.
+     *
+     * @return list of {@link SuccessfulReport}
+     */
+    public @NonNull List<@NonNull SuccessfulReport> getSuccessfulReports() {
+        return filter(SuccessfulReport.class);
     }
 
     /**
@@ -58,6 +69,15 @@ public abstract class SvrlBaseOutput {
      */
     public @NonNull List<@NonNull ActivePattern> getActivePatterns() {
         return filter(ActivePattern.class);
+    }
+
+    /**
+     * Returns the list of {@link ActiveGroup}.
+     *
+     * @return list of {@link ActiveGroup}
+     */
+    public @NonNull List<@NonNull ActiveGroup> getActiveGroups() {
+        return filter(ActiveGroup.class);
     }
 
     /**
