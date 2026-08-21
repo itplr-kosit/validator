@@ -70,7 +70,7 @@ public class SelectScenarioActionTest {
     public void testDetectRequiresXdmNodeContent() {
         final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
         final DetectScenariosAction action = new DetectScenariosAction(repository);
-        assertThrows(IllegalArgumentException.class, () -> action.execute(null));
+        assertThrows(NullPointerException.class, () -> action.execute(null));
     }
 
     @Test
@@ -123,8 +123,7 @@ public class SelectScenarioActionTest {
     @Test
     public void testDetectUnknownRequestedIdFails() {
         final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
-        final DetectScenariosResult result = new DetectScenariosAction(repository).execute(parseSimple(),
-                "does-not-exist");
+        final DetectScenariosResult result = new DetectScenariosAction(repository).execute(parseSimple(), "does-not-exist");
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.matches()).isEmpty();

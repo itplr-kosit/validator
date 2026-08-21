@@ -143,6 +143,11 @@
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${version.jaxb-impl}</version>
+            </dependency>            
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-runtime</artifactId>
                 <version>${version.jaxb-impl}</version>
             </dependency>            

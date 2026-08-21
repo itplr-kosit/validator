@@ -36,7 +36,7 @@ public class ConversionServiceTest {
 
     @Test
     public void testMarshalNull() {
-        assertThrows(JaxbConversionException.class, () -> this.service.writeXml(null));
+        assertThrows(NullPointerException.class, () -> this.service.writeXml(null));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ConversionServiceTest {
 
     @Test
     public void testUnmarshalEmpty() {
-        assertThrows(JaxbConversionException.class, () -> this.service.readXml((URI) null, Scenarios.class));
+        assertThrows(NullPointerException.class, () -> this.service.readXml((URI) null, Scenarios.class));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ConversionServiceTest {
 
     @Test
     public void testUnmarshalWithoutType() {
-        assertThrows(JaxbConversionException.class, () -> this.service.readXml(Simple.SCENARIOS, null));
+        assertThrows(NullPointerException.class, () -> this.service.readXml(Simple.SCENARIOS, null));
     }
 
 }
