@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.scenario.ICTScenarioMatch;
+import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.Helper.Simple;
@@ -45,7 +45,7 @@ public class ScenarioStepsTest {
         return scenario;
     }
 
-    private static ICTScenarioMatch match(final String name) {
+    private static CTScenarioMatch match(final String name) {
         return ScenarioMatch.of(createScenario(name, "/*"), parseSimple());
     }
 
@@ -134,7 +134,7 @@ public class ScenarioStepsTest {
 
     @Test
     public void testSelectSingleCandidate() {
-        final ICTScenarioMatch candidate = match("simple");
+        final CTScenarioMatch candidate = match("simple");
         final SelectScenarioAction.SelectScenarioResult result = this.selectAction.execute(List.of(candidate));
 
         assertThat(result.isSuccess()).isTrue();

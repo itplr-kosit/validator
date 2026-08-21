@@ -17,8 +17,8 @@ package org.kosit.validator.impl.conformatron.model;
 
 import org.kosit.validator.impl.conformatron.util.SourceDigest;
 
-import org.conformatron.api.model.source.ICTParsedValidationSource;
-import org.conformatron.api.model.source.ICTValidationSource;
+import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTValidationSource;
 import org.w3c.dom.Document;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
@@ -27,7 +27,7 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.type.Type;
 
 /**
- * Validator implementation of {@link ICTParsedValidationSource} backed by the Saxon {@link XdmNode} the legacy pipeline
+ * Validator implementation of {@link CTParsedValidationSource} backed by the Saxon {@link XdmNode} the legacy pipeline
  * works with. Facade: the existing Saxon parse result keeps doing the heavy lifting while downstream steps can already
  * consume the conformatron handshake type.
  * <p>
@@ -38,9 +38,9 @@ import net.sf.saxon.type.Type;
  *
  * @author Andreas Schmitz
  */
-public final class XdmNodeValidationSource implements ICTParsedValidationSource {
+public final class XdmNodeValidationSource implements CTParsedValidationSource {
 
-    private final ICTValidationSource source;
+    private final CTValidationSource source;
 
     private final byte[] sourceBytes;
 
@@ -48,7 +48,7 @@ public final class XdmNodeValidationSource implements ICTParsedValidationSource 
 
     private final XdmNode node;
 
-    public XdmNodeValidationSource(final ICTValidationSource source, final byte[] sourceBytes, final XdmNode node) {
+    public XdmNodeValidationSource(final CTValidationSource source, final byte[] sourceBytes, final XdmNode node) {
         if (source == null) {
             throw new IllegalArgumentException("source may not be null");
         }
@@ -65,7 +65,7 @@ public final class XdmNodeValidationSource implements ICTParsedValidationSource 
     }
 
     @Override
-    public ICTValidationSource getSource() {
+    public CTValidationSource getSource() {
         return this.source;
     }
 

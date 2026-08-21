@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Locale;
 
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionList;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.oclc.purl.dsdl.svrl.SuccessfulReport;
 
 /**
- * Maps an SVRL {@link SchematronOutput} to an {@link ICTDetectionList} (conformatron-api step 7, {@code APPLY_RULES}).
+ * Maps an SVRL {@link SchematronOutput} to an {@link CTDetectionList} (conformatron-api step 7, {@code APPLY_RULES}).
  * Shared by {@link ApplyRulesAction} and the ad-hoc engine.
  * <p>
  * Field mapping per step-07 spec: the assertion {@code @id} becomes the detection <b>code</b> (fallback:
@@ -47,8 +47,8 @@ public final class SvrlDetections {
      * @param documentName the validated document, used as detection location resource
      * @return the detections, in SVRL order; empty if the document satisfied all rules
      */
-    public static ICTDetectionList toDetections(final SchematronOutput svrl, final String documentName) {
-        final List<ICTDetection> detections = new ArrayList<>();
+    public static CTDetectionList toDetections(final SchematronOutput svrl, final String documentName) {
+        final List<CTDetection> detections = new ArrayList<>();
         for (final Object entry : svrl.getActivePatternAndFiredRuleAndFailedAssert()) {
             if (entry instanceof final FailedAssert failedAssert) {
                 detections.add(Detection.of(severityOf(failedAssert.getRole(), failedAssert.getFlag()),

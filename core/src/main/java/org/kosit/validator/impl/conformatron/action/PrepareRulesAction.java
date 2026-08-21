@@ -16,13 +16,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.action.ICTAction;
+import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.rule.ICTPreparedRuleSet;
-import org.conformatron.api.model.source.ICTResolvedValidationArtifact;
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.rule.CTPreparedRuleSet;
+import org.conformatron.api.model.source.CTResolvedValidationArtifact;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.SchXsltCompiler;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ import net.sf.saxon.s9api.XsltExecutable;
 /**
  * Step 6 of the canonical pipeline, {@code PREPARE_RULES} (see
  * {@code conformatron-api/doc/steps/step-06-prepare-rules.md}): turns every artifact retrieved in step 5 into an
- * engine-ready {@link ICTPreparedRuleSet} for step 7.
+ * engine-ready {@link CTPreparedRuleSet} for step 7.
  * <p>
  * Three paths, mirroring the spec: an artifact that already carries a compilation is passed through unchanged
  * ({@code rule-precompiled}); a {@code .sch} is transpiled and compiled ({@code rule-compiled}); a {@code .xsl} was
@@ -53,7 +53,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  *
  * @author Andreas Schmitz
  */
-public class PrepareRulesAction implements ICTAction {
+public class PrepareRulesAction implements CTAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrepareRulesAction.class);
 
@@ -99,7 +99,7 @@ public class PrepareRulesAction implements ICTAction {
      * @param ruleSets the prepared rule sets, one per artifact; empty on failure or skip
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record PrepareRulesResult(ECTStepResult status, List<ICTPreparedRuleSet> ruleSets, ICTDetectionList detections) {
+    public record PrepareRulesResult(ECTStepResult status, List<CTPreparedRuleSet> ruleSets, CTDetectionList detections) {
 
         public boolean isSuccess() {
             return this.status == ECTStepResult.SUCCESS;
@@ -123,18 +123,18 @@ public class PrepareRulesAction implements ICTAction {
      * @param resourceId the document name used as detection location
      * @return the result including the prepared rule sets and any detections
      */
-    public PrepareRulesResult execute(final List<ICTResolvedValidationArtifact> artifacts, final String resourceId) {
+    public PrepareRulesResult execute(final List<CTResolvedValidationArtifact> artifacts, final String resourceId) {
         if (artifacts == null) {
             throw new IllegalArgumentException("artifacts may not be null");
         }
         if (artifacts.isEmpty()) {
-            final ICTDetection skipped = Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
+            final CTDetection skipped = Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
                     "No artifacts retrieved (reason: no-artifacts)");
             return new PrepareRulesResult(ECTStepResult.SKIPPED, List.of(), DetectionList.of(skipped));
         }
-        final List<ICTPreparedRuleSet> ruleSets = new ArrayList<>();
-        final List<ICTDetection> detections = new ArrayList<>();
-        for (final ICTResolvedValidationArtifact artifact : artifacts) {
+        final List<CTPreparedRuleSet> ruleSets = new ArrayList<>();
+        final List<CTDetection> detections = new ArrayList<>();
+        for (final CTResolvedValidationArtifact artifact : artifacts) {
             if (!prepare(artifact, resourceId, ruleSets, detections)) {
                 // compile failure cancels the process; the partial CVRL keeps what was prepared so far
                 return new PrepareRulesResult(ECTStepResult.FAILURE, List.copyOf(ruleSets), new DetectionList(detections));
@@ -143,9 +143,9 @@ public class PrepareRulesAction implements ICTAction {
         return new PrepareRulesResult(ECTStepResult.SUCCESS, List.copyOf(ruleSets), new DetectionList(detections));
     }
 
-    private boolean prepare(final ICTResolvedValidationArtifact artifact, final String resourceId, final List<ICTPreparedRuleSet> ruleSets,
-            final List<ICTDetection> detections) {
-        final ICTValidationArtifactReference reference = artifact.getReference();
+    private boolean prepare(final CTResolvedValidationArtifact artifact, final String resourceId, final List<CTPreparedRuleSet> ruleSets,
+            final List<CTDetection> detections) {
+        final CTValidationArtifactReference reference = artifact.getReference();
         final String href = reference.getValidationArtifactReference().toString();
         try {
             if (artifact.isPrecompiled()) {
@@ -191,12 +191,12 @@ public class PrepareRulesAction implements ICTAction {
         return this.repository.getProcessor().getSaxonProductVersion();
     }
 
-    private static ICTDetection compiled(final String href, final String resourceId, final String what) {
+    private static CTDetection compiled(final String href, final String resourceId, final String what) {
         return Detection.of(ECTSeverity.INFO, CODE_RULE_COMPILED, DetectionLocation.ofResource(resourceId),
                 "Artifact '" + href + "' compiled (" + what + ")");
     }
 
-    private static ICTDetection passThrough(final String href, final String resourceId, final String why) {
+    private static CTDetection passThrough(final String href, final String resourceId, final String why) {
         return Detection.of(ECTSeverity.INFO, CODE_RULE_PRECOMPILED, DetectionLocation.ofResource(resourceId),
                 "Artifact '" + href + "' passed through (" + why + ")");
     }

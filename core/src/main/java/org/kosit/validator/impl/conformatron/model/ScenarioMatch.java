@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.conformatron.api.model.scenario.ICTScenarioMatch;
-import org.conformatron.api.model.source.ICTParsedValidationSource;
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.scenario.CTScenarioMatch;
+import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ScenarioType;
 import org.kosit.validator.model.scenarios.ValidateWithSchematron;
 
 /**
- * Validator implementation of {@link ICTScenarioMatch} (conformatron-api steps 3+4). Facade: wraps the legacy
+ * Validator implementation of {@link CTScenarioMatch} (conformatron-api steps 3+4). Facade: wraps the legacy
  * {@link Scenario} selected by the existing {@code ScenarioSelectionAction} so downstream steps can consume the
  * conformatron handshake type while the legacy scenario machinery keeps doing the heavy lifting.
  * <p>
@@ -28,7 +28,7 @@ import org.kosit.validator.model.scenarios.ValidateWithSchematron;
  *
  * @author Andreas Schmitz
  */
-public final class ScenarioMatch implements ICTScenarioMatch {
+public final class ScenarioMatch implements CTScenarioMatch {
 
     private final String scenarioId;
 
@@ -38,12 +38,12 @@ public final class ScenarioMatch implements ICTScenarioMatch {
 
     private final boolean userSelected;
 
-    private final List<ICTValidationArtifactReference> artifactReferences;
+    private final List<CTValidationArtifactReference> artifactReferences;
 
-    private final ICTParsedValidationSource parsedSource;
+    private final CTParsedValidationSource parsedSource;
 
     private ScenarioMatch(final String scenarioId, final String scenarioName, final String matchExpression, final boolean userSelected,
-            final List<ICTValidationArtifactReference> artifactReferences, final ICTParsedValidationSource parsedSource) {
+            final List<CTValidationArtifactReference> artifactReferences, final CTParsedValidationSource parsedSource) {
         this.scenarioId = scenarioId;
         this.scenarioName = scenarioName;
         this.matchExpression = matchExpression;
@@ -59,7 +59,7 @@ public final class ScenarioMatch implements ICTScenarioMatch {
      * @param parsedSource the parsed source from step 2, carried through per specification
      * @return the wrapped match
      */
-    public static ScenarioMatch of(final Scenario scenario, final ICTParsedValidationSource parsedSource) {
+    public static ScenarioMatch of(final Scenario scenario, final CTParsedValidationSource parsedSource) {
         if (scenario == null) {
             throw new IllegalArgumentException("scenario may not be null");
         }
@@ -77,13 +77,13 @@ public final class ScenarioMatch implements ICTScenarioMatch {
     /**
      * Wraps a legacy scenario that was fixed by explicit user input (conformatron-api step 3,
      * {@code requestedScenarioId} path): no XPath evaluation happened, so match expression and matched value are
-     * {@code null} per {@link ICTScenarioMatch} contract.
+     * {@code null} per {@link CTScenarioMatch} contract.
      *
      * @param scenario the user-requested legacy scenario; must not be a fallback scenario (see class Javadoc)
      * @param parsedSource the parsed source from step 2, carried through per specification
      * @return the wrapped match with {@link #isUserSelected()} {@code == true}
      */
-    public static ScenarioMatch userSelected(final Scenario scenario, final ICTParsedValidationSource parsedSource) {
+    public static ScenarioMatch userSelected(final Scenario scenario, final CTParsedValidationSource parsedSource) {
         if (scenario == null) {
             throw new IllegalArgumentException("scenario may not be null");
         }
@@ -97,11 +97,11 @@ public final class ScenarioMatch implements ICTScenarioMatch {
                 parsedSource);
     }
 
-    private static List<ICTValidationArtifactReference> collectArtifactReferences(final ScenarioType configuration) {
+    private static List<CTValidationArtifactReference> collectArtifactReferences(final ScenarioType configuration) {
         if (configuration == null) {
             return Collections.emptyList();
         }
-        final List<ICTValidationArtifactReference> references = new ArrayList<>();
+        final List<CTValidationArtifactReference> references = new ArrayList<>();
         if (configuration.getValidateWithXmlSchema() != null) {
             configuration.getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation)
                     .map(ValidationArtifactReference::of).forEach(references::add);
@@ -141,12 +141,12 @@ public final class ScenarioMatch implements ICTScenarioMatch {
     }
 
     @Override
-    public List<ICTValidationArtifactReference> getArtifactReferences() {
+    public List<CTValidationArtifactReference> getArtifactReferences() {
         return this.artifactReferences;
     }
 
     @Override
-    public ICTParsedValidationSource getParsedSource() {
+    public CTParsedValidationSource getParsedSource() {
         return this.parsedSource;
     }
 }

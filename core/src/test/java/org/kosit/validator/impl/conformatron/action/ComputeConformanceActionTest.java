@@ -13,11 +13,11 @@ import java.util.List;
 
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.conformance.ECTConformanceResult;
-import org.conformatron.api.model.rule.ICTApplyRulesResult;
-import org.conformatron.api.model.rule.ICTPreparedRuleSet;
-import org.conformatron.api.model.scenario.ICTConformanceTarget;
-import org.conformatron.api.model.source.ICTParsedValidationSource;
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.rule.CTApplyRulesResult;
+import org.conformatron.api.model.rule.CTPreparedRuleSet;
+import org.conformatron.api.model.scenario.CTConformanceTarget;
+import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper;
@@ -36,16 +36,16 @@ public class ComputeConformanceActionTest {
     private final ContentRepository repository = new ContentRepository(Helper.getTestProcessor(),
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
-    private static final ICTConformanceTarget TARGET = ConformanceTarget.of("simple-target", "Simple Target",
+    private static final CTConformanceTarget TARGET = ConformanceTarget.of("simple-target", "Simple Target",
             List.of("simple.xsd", "simple.sch", "simple-runtime-error.sch"), null);
 
-    private ICTApplyRulesResult applyRules(final URI document, final String... references) {
-        final ICTParsedValidationSource parsed = new ParseXMLAction().execute(read(document)).getParsedSource();
-        final List<ICTValidationArtifactReference> refs = List.of(references).stream()
-                .map(r -> (ICTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
+    private CTApplyRulesResult applyRules(final URI document, final String... references) {
+        final CTParsedValidationSource parsed = new ParseXMLAction().execute(read(document)).getParsedSource();
+        final List<CTValidationArtifactReference> refs = List.of(references).stream()
+                .map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(refs,
                 "test");
-        final List<ICTPreparedRuleSet> ruleSets = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(), "test").ruleSets();
+        final List<CTPreparedRuleSet> ruleSets = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(), "test").ruleSets();
         return new ApplyRulesAction().execute(parsed, ruleSets).result();
     }
 
@@ -87,7 +87,7 @@ public class ComputeConformanceActionTest {
 
     @Test
     public void testEmptyApplyRulesResultSkipsTheStepButForwardsAResult() {
-        final ICTParsedValidationSource parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID)).getParsedSource();
+        final CTParsedValidationSource parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID)).getParsedSource();
         final ComputeConformanceActionResult result = this.action.execute(ApplyRulesResult.empty(parsed), List.of(TARGET));
 
         assertThat(result.status()).isEqualTo(ECTStepResult.SKIPPED);
@@ -98,8 +98,8 @@ public class ComputeConformanceActionTest {
 
     @Test
     public void testAcceptSelectorTargetsAreRejectedForNow() {
-        final ICTConformanceTarget withSelector = ConformanceTarget.of("t", "T", List.of("simple.sch"), "count(//x) = 0");
-        final ICTApplyRulesResult applied = applyRules(Simple.SIMPLE_VALID, "simple.sch");
+        final CTConformanceTarget withSelector = ConformanceTarget.of("t", "T", List.of("simple.sch"), "count(//x) = 0");
+        final CTApplyRulesResult applied = applyRules(Simple.SIMPLE_VALID, "simple.sch");
 
         assertThrows(IllegalArgumentException.class, () -> this.action.execute(applied, List.of(withSelector)));
     }

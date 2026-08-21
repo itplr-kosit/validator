@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.conformatron.api.model.conformance.ECTConformanceResult;
-import org.conformatron.api.model.detection.ICTDetection;
+import org.conformatron.api.model.detection.CTDetection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
@@ -100,8 +100,8 @@ public class CanonicalPipelineTest {
         return conformance;
     }
 
-    private static List<String> codes(final List<ICTDetection> detections) {
-        return detections.stream().map(ICTDetection::getCode).toList();
+    private static List<String> codes(final List<CTDetection> detections) {
+        return detections.stream().map(CTDetection::getCode).toList();
     }
 
     @Test

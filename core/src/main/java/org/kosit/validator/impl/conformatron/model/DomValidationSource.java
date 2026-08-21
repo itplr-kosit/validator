@@ -17,25 +17,25 @@ package org.kosit.validator.impl.conformatron.model;
 
 import org.kosit.validator.impl.conformatron.util.SourceDigest;
 
-import org.conformatron.api.model.source.ICTParsedValidationSource;
-import org.conformatron.api.model.source.ICTValidationSource;
+import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTValidationSource;
 import org.w3c.dom.Document;
 
 /**
- * Validator implementation of {@link ICTParsedValidationSource} carrying the document as a W3C DOM (conformatron-api
+ * Validator implementation of {@link CTParsedValidationSource} carrying the document as a W3C DOM (conformatron-api
  * ADR-002). The DOM is built without line numbering (ADR-001).
  * <p>
  * Instances are immutable: the source bytes are defensively copied on construction and cloned on access, the hash is
  * computed once from the retained bytes via the central {@link SourceDigest} helper (ADR-003). On a well-formedness
- * failure the instance is created {@link #unparsed(ICTValidationSource, byte[]) without a DOM} — bytes and hash are
+ * failure the instance is created {@link #unparsed(CTValidationSource, byte[]) without a DOM} — bytes and hash are
  * retained so the partial CVRL can identify the document ({@link #isParsed()} returns {@code false}).
  * </p>
  *
  * @author Andreas Schmitz
  */
-public final class DomValidationSource implements ICTParsedValidationSource {
+public final class DomValidationSource implements CTParsedValidationSource {
 
-    private final ICTValidationSource source;
+    private final CTValidationSource source;
 
     private final byte[] sourceBytes;
 
@@ -43,7 +43,7 @@ public final class DomValidationSource implements ICTParsedValidationSource {
 
     private final Document dom;
 
-    public DomValidationSource(final ICTValidationSource source, final byte[] sourceBytes, final Document dom) {
+    public DomValidationSource(final CTValidationSource source, final byte[] sourceBytes, final Document dom) {
         if (source == null) {
             throw new IllegalArgumentException("source may not be null");
         }
@@ -64,12 +64,12 @@ public final class DomValidationSource implements ICTParsedValidationSource {
      * @param sourceBytes the entire source document
      * @return a new source with {@link #isParsed()} {@code == false}
      */
-    public static DomValidationSource unparsed(final ICTValidationSource source, final byte[] sourceBytes) {
+    public static DomValidationSource unparsed(final CTValidationSource source, final byte[] sourceBytes) {
         return new DomValidationSource(source, sourceBytes, null);
     }
 
     @Override
-    public ICTValidationSource getSource() {
+    public CTValidationSource getSource() {
         return this.source;
     }
 

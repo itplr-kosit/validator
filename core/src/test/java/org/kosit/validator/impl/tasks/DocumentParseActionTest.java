@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kosit.validator.api.VInputFactory.read;
 
-import org.conformatron.api.model.source.ICTParsedValidationSource;
+import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.ECTValidationBaseType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ public class DocumentParseActionTest {
         final CheckAction.Process process = new CheckAction.Process(read(Simple.SIMPLE_VALID));
         this.action.check(process);
 
-        final ICTParsedValidationSource parsedSource = process.getParsedSource();
+        final CTParsedValidationSource parsedSource = process.getParsedSource();
         assertThat(parsedSource).isNotNull();
         assertThat(parsedSource.isParsed()).isTrue();
         assertThat(parsedSource.getParsedContent()).isInstanceOf(XdmNode.class);

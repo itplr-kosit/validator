@@ -1,12 +1,12 @@
 package org.kosit.validator.impl.conformatron.model;
 
-import org.conformatron.api.model.source.ICTCompiledValidationArtifact;
-import org.conformatron.api.model.source.ICTResolvedValidationArtifact;
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.source.CTCompiledValidationArtifact;
+import org.conformatron.api.model.source.CTResolvedValidationArtifact;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.ECTValidationType;
 
 /**
- * Validator implementation of {@link ICTResolvedValidationArtifact} (conformatron-api step 5,
+ * Validator implementation of {@link CTResolvedValidationArtifact} (conformatron-api step 5,
  * {@code RETRIEVE_ARTIFACTS}).
  * <p>
  * An instance is in exactly one of two states, mirroring the API contract:
@@ -20,18 +20,18 @@ import org.conformatron.api.model.validation.ECTValidationType;
  *
  * @author Andreas Schmitz
  */
-public final class ResolvedValidationArtifact implements ICTResolvedValidationArtifact {
+public final class ResolvedValidationArtifact implements CTResolvedValidationArtifact {
 
-    private final ICTValidationArtifactReference reference;
+    private final CTValidationArtifactReference reference;
 
     private final ECTValidationType validationType;
 
     private final byte[] content;
 
-    private final ICTCompiledValidationArtifact<?> compiledArtifact;
+    private final CTCompiledValidationArtifact<?> compiledArtifact;
 
-    private ResolvedValidationArtifact(final ICTValidationArtifactReference reference, final ECTValidationType validationType,
-            final byte[] content, final ICTCompiledValidationArtifact<?> compiledArtifact) {
+    private ResolvedValidationArtifact(final CTValidationArtifactReference reference, final ECTValidationType validationType,
+            final byte[] content, final CTCompiledValidationArtifact<?> compiledArtifact) {
         if (reference == null) {
             throw new IllegalArgumentException("reference may not be null");
         }
@@ -52,7 +52,7 @@ public final class ResolvedValidationArtifact implements ICTResolvedValidationAr
      * @param content the artifact content
      * @return the resolved artifact
      */
-    public static ResolvedValidationArtifact loaded(final ICTValidationArtifactReference reference, final ECTValidationType validationType,
+    public static ResolvedValidationArtifact loaded(final CTValidationArtifactReference reference, final ECTValidationType validationType,
             final byte[] content) {
         if (content == null) {
             throw new IllegalArgumentException("content may not be null");
@@ -68,8 +68,8 @@ public final class ResolvedValidationArtifact implements ICTResolvedValidationAr
      * @param compiledArtifact the engine-ready compilation
      * @return the resolved artifact
      */
-    public static ResolvedValidationArtifact precompiled(final ICTValidationArtifactReference reference,
-            final ICTCompiledValidationArtifact<?> compiledArtifact) {
+    public static ResolvedValidationArtifact precompiled(final CTValidationArtifactReference reference,
+            final CTCompiledValidationArtifact<?> compiledArtifact) {
         if (compiledArtifact == null) {
             throw new IllegalArgumentException("compiledArtifact may not be null");
         }
@@ -77,7 +77,7 @@ public final class ResolvedValidationArtifact implements ICTResolvedValidationAr
     }
 
     @Override
-    public ICTValidationArtifactReference getReference() {
+    public CTValidationArtifactReference getReference() {
         return this.reference;
     }
 
@@ -92,7 +92,7 @@ public final class ResolvedValidationArtifact implements ICTResolvedValidationAr
     }
 
     @Override
-    public ICTCompiledValidationArtifact<?> getCompiledArtifact() {
+    public CTCompiledValidationArtifact<?> getCompiledArtifact() {
         return this.compiledArtifact;
     }
 }

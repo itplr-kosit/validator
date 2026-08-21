@@ -11,7 +11,7 @@ import java.util.List;
 import javax.xml.validation.Schema;
 
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.source.ICTResolvedValidationArtifact;
+import org.conformatron.api.model.source.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.ECTValidationType;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
@@ -35,9 +35,9 @@ public class PrepareRulesActionTest {
 
     private final PrepareRulesAction action = new PrepareRulesAction(this.repository);
 
-    private static List<ICTResolvedValidationArtifact> retrieve(final String... references) {
+    private static List<CTResolvedValidationArtifact> retrieve(final String... references) {
         final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(List.of(references).stream()
-                .map(r -> (org.conformatron.api.model.source.ICTValidationArtifactReference) ValidationArtifactReference.of(r)).toList(),
+                .map(r -> (org.conformatron.api.model.source.CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList(),
                 DOCUMENT);
         assertThat(retrieved.isSuccess()).isTrue();
         return retrieved.artifacts();
@@ -81,7 +81,7 @@ public class PrepareRulesActionTest {
         final PrepareRulesResult prepared = this.action.execute(retrieve("simple.sch"), DOCUMENT);
         final var compiled = prepared.ruleSets().get(0).getCompiledArtifact();
 
-        final ICTResolvedValidationArtifact precompiled = ResolvedValidationArtifact
+        final CTResolvedValidationArtifact precompiled = ResolvedValidationArtifact
                 .precompiled(ValidationArtifactReference.of("simple.sch"), compiled);
         final PrepareRulesResult result = this.action.execute(List.of(precompiled), DOCUMENT);
 
@@ -92,7 +92,7 @@ public class PrepareRulesActionTest {
 
     @Test
     public void testBrokenSchematronFailsTheStep() {
-        final ICTResolvedValidationArtifact broken = ResolvedValidationArtifact.loaded(
+        final CTResolvedValidationArtifact broken = ResolvedValidationArtifact.loaded(
                 ValidationArtifactReference.of("does-not-compile.sch"), ECTValidationType.SCHEMATRON_SCH, "not a schematron".getBytes());
 
         final PrepareRulesResult result = this.action.execute(List.of(broken), DOCUMENT);

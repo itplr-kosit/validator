@@ -1,18 +1,18 @@
 package org.kosit.validator.impl.conformatron.model;
 
 import org.conformatron.api.model.conformance.ECTConformanceResult;
-import org.conformatron.api.model.conformance.ICTConformanceStatement;
-import org.conformatron.api.model.scenario.ICTConformanceTarget;
+import org.conformatron.api.model.conformance.CTConformanceStatement;
+import org.conformatron.api.model.scenario.CTConformanceTarget;
 
 /**
- * Validator implementation of {@link ICTConformanceStatement} (conformatron-api step 8, {@code COMPUTE_CONFORMANCE}):
+ * Validator implementation of {@link CTConformanceStatement} (conformatron-api step 8, {@code COMPUTE_CONFORMANCE}):
  * the conformance verdict for one target, derived from one rule set's detections.
  *
  * @author Andreas Schmitz
  */
-public final class ConformanceStatement implements ICTConformanceStatement {
+public final class ConformanceStatement implements CTConformanceStatement {
 
-    private final ICTConformanceTarget target;
+    private final CTConformanceTarget target;
 
     private final ECTConformanceResult result;
 
@@ -20,7 +20,7 @@ public final class ConformanceStatement implements ICTConformanceStatement {
 
     private final boolean acceptSelectorApplied;
 
-    private ConformanceStatement(final ICTConformanceTarget target, final ECTConformanceResult result, final String rationale,
+    private ConformanceStatement(final CTConformanceTarget target, final ECTConformanceResult result, final String rationale,
             final boolean acceptSelectorApplied) {
         if (target == null) {
             throw new IllegalArgumentException("target may not be null");
@@ -42,12 +42,12 @@ public final class ConformanceStatement implements ICTConformanceStatement {
      * @param rationale human-readable rationale; may be {@code null}
      * @return the statement
      */
-    public static ConformanceStatement of(final ICTConformanceTarget target, final ECTConformanceResult result, final String rationale) {
+    public static ConformanceStatement of(final CTConformanceTarget target, final ECTConformanceResult result, final String rationale) {
         return new ConformanceStatement(target, result, rationale, false);
     }
 
     @Override
-    public ICTConformanceTarget getTarget() {
+    public CTConformanceTarget getTarget() {
         return this.target;
     }
 

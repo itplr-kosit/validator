@@ -15,13 +15,13 @@ import java.util.Locale;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.action.ICTAction;
+import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.scenario.ICTScenarioMatch;
-import org.conformatron.api.model.source.ICTResolvedValidationArtifact;
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.scenario.CTScenarioMatch;
+import org.conformatron.api.model.source.CTResolvedValidationArtifact;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.ECTValidationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Andreas Schmitz
  */
-public class RetrieveArtifactsAction implements ICTAction {
+public class RetrieveArtifactsAction implements CTAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RetrieveArtifactsAction.class);
 
@@ -86,8 +86,8 @@ public class RetrieveArtifactsAction implements ICTAction {
      * @param artifacts the resolved artifacts; on failure the partial list of those that did resolve
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record RetrieveArtifactsResult(ECTStepResult status, List<ICTResolvedValidationArtifact> artifacts,
-            ICTDetectionList detections) {
+    public record RetrieveArtifactsResult(ECTStepResult status, List<CTResolvedValidationArtifact> artifacts,
+            CTDetectionList detections) {
 
         public boolean isSuccess() {
             return this.status == ECTStepResult.SUCCESS;
@@ -110,7 +110,7 @@ public class RetrieveArtifactsAction implements ICTAction {
      * @param selectedScenario the scenario selected in step 4
      * @return the result including the resolved artifacts and any detections
      */
-    public RetrieveArtifactsResult execute(final ICTScenarioMatch selectedScenario) {
+    public RetrieveArtifactsResult execute(final CTScenarioMatch selectedScenario) {
         if (selectedScenario == null) {
             throw new IllegalArgumentException("selectedScenario may not be null");
         }
@@ -124,13 +124,13 @@ public class RetrieveArtifactsAction implements ICTAction {
      * @param resourceId the document name used as detection location
      * @return the result including the resolved artifacts and any detections
      */
-    public RetrieveArtifactsResult execute(final List<ICTValidationArtifactReference> references, final String resourceId) {
+    public RetrieveArtifactsResult execute(final List<CTValidationArtifactReference> references, final String resourceId) {
         if (references == null) {
             throw new IllegalArgumentException("references may not be null");
         }
-        final List<ICTResolvedValidationArtifact> artifacts = new ArrayList<>();
-        final List<ICTDetection> detections = new ArrayList<>();
-        for (final ICTValidationArtifactReference reference : references) {
+        final List<CTResolvedValidationArtifact> artifacts = new ArrayList<>();
+        final List<CTDetection> detections = new ArrayList<>();
+        for (final CTValidationArtifactReference reference : references) {
             retrieve(reference, resourceId, artifacts, detections);
         }
         // completeness: every declared artifact must have resolved
@@ -139,8 +139,8 @@ public class RetrieveArtifactsAction implements ICTAction {
                 new DetectionList(detections));
     }
 
-    private void retrieve(final ICTValidationArtifactReference reference, final String resourceId,
-            final List<ICTResolvedValidationArtifact> artifacts, final List<ICTDetection> detections) {
+    private void retrieve(final CTValidationArtifactReference reference, final String resourceId,
+            final List<CTResolvedValidationArtifact> artifacts, final List<CTDetection> detections) {
         final String href = reference.getValidationArtifactReference().toString();
         try {
             // security first: a reference escaping the repository is rejected before it is interpreted or read
@@ -177,7 +177,7 @@ public class RetrieveArtifactsAction implements ICTAction {
      * @param reference the artifact reference
      * @return the validation type
      */
-    public static ECTValidationType determineValidationType(final ICTValidationArtifactReference reference) {
+    public static ECTValidationType determineValidationType(final CTValidationArtifactReference reference) {
         final String path = reference.getValidationArtifactReference().toString().toLowerCase(Locale.ROOT);
         if (path.endsWith(".xsd")) {
             return ECTValidationType.XSD;

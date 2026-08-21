@@ -1,12 +1,12 @@
 package org.kosit.validator.impl.conformatron.model;
 
-import org.conformatron.api.model.rule.ICTPreparedRuleSet;
-import org.conformatron.api.model.source.ICTCompiledValidationArtifact;
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.rule.CTPreparedRuleSet;
+import org.conformatron.api.model.source.CTCompiledValidationArtifact;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.ECTValidationType;
 
 /**
- * Validator implementation of {@link ICTPreparedRuleSet} (conformatron-api step 6, {@code PREPARE_RULES}): an
+ * Validator implementation of {@link CTPreparedRuleSet} (conformatron-api step 6, {@code PREPARE_RULES}): an
  * engine-ready rule set with the identity needed by steps 7 and 8 and by the report metadata.
  * <p>
  * Field availability per engine (open question of the step spec, answered for this implementation):
@@ -20,7 +20,7 @@ import org.conformatron.api.model.validation.ECTValidationType;
  *
  * @author Andreas Schmitz
  */
-public final class PreparedRuleSet implements ICTPreparedRuleSet {
+public final class PreparedRuleSet implements CTPreparedRuleSet {
 
     /** Output format of all Schematron engines used here. */
     public static final String OUTPUT_FORMAT_SVRL = "SVRL";
@@ -38,13 +38,13 @@ public final class PreparedRuleSet implements ICTPreparedRuleSet {
 
     private final String phase;
 
-    private final ICTValidationArtifactReference artifactReference;
+    private final CTValidationArtifactReference artifactReference;
 
-    private final ICTCompiledValidationArtifact<?> compiledArtifact;
+    private final CTCompiledValidationArtifact<?> compiledArtifact;
 
     private PreparedRuleSet(final ECTValidationType engineType, final String engineVersion, final String outputFormatName,
-            final String outputFormatVersion, final String phase, final ICTValidationArtifactReference artifactReference,
-            final ICTCompiledValidationArtifact<?> compiledArtifact) {
+            final String outputFormatVersion, final String phase, final CTValidationArtifactReference artifactReference,
+            final CTCompiledValidationArtifact<?> compiledArtifact) {
         if (artifactReference == null) {
             throw new IllegalArgumentException("artifactReference may not be null");
         }
@@ -68,8 +68,8 @@ public final class PreparedRuleSet implements ICTPreparedRuleSet {
      * @param engineVersion the engine version used for compilation, may be {@code null}
      * @return the prepared rule set
      */
-    public static PreparedRuleSet schematron(final ICTValidationArtifactReference artifactReference,
-            final ICTCompiledValidationArtifact<?> compiledArtifact, final String engineVersion) {
+    public static PreparedRuleSet schematron(final CTValidationArtifactReference artifactReference,
+            final CTCompiledValidationArtifact<?> compiledArtifact, final String engineVersion) {
         return new PreparedRuleSet(compiledArtifact.getValidationType(), engineVersion, OUTPUT_FORMAT_SVRL, null, PHASE_ALL,
                 artifactReference, compiledArtifact);
     }
@@ -81,8 +81,8 @@ public final class PreparedRuleSet implements ICTPreparedRuleSet {
      * @param compiledArtifact the compiled schema
      * @return the prepared rule set
      */
-    public static PreparedRuleSet xsd(final ICTValidationArtifactReference artifactReference,
-            final ICTCompiledValidationArtifact<?> compiledArtifact) {
+    public static PreparedRuleSet xsd(final CTValidationArtifactReference artifactReference,
+            final CTCompiledValidationArtifact<?> compiledArtifact) {
         return new PreparedRuleSet(ECTValidationType.XSD, null, null, null, null, artifactReference, compiledArtifact);
     }
 
@@ -112,12 +112,12 @@ public final class PreparedRuleSet implements ICTPreparedRuleSet {
     }
 
     @Override
-    public ICTValidationArtifactReference getArtifactReference() {
+    public CTValidationArtifactReference getArtifactReference() {
         return this.artifactReference;
     }
 
     @Override
-    public ICTCompiledValidationArtifact<?> getCompiledArtifact() {
+    public CTCompiledValidationArtifact<?> getCompiledArtifact() {
         return this.compiledArtifact;
     }
 }

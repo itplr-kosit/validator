@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 
 /**
- * Resolves {@link ICTValidationArtifactReference}s against the artifact repository and loads their content
+ * Resolves {@link CTValidationArtifactReference}s against the artifact repository and loads their content
  * (conformatron-api step 5, {@code RETRIEVE_ARTIFACTS}).
  * <p>
  * <b>Security concern</b> (step-05 spec): an artifact reference is untrusted configuration input. Resolution is
@@ -52,7 +52,7 @@ public final class ArtifactResolver {
      * @return the absolute URI inside the repository
      * @throws AccessDeniedException if the reference resolves outside the repository
      */
-    public URI resolve(final ICTValidationArtifactReference reference) throws AccessDeniedException {
+    public URI resolve(final CTValidationArtifactReference reference) throws AccessDeniedException {
         if (reference == null) {
             throw new IllegalArgumentException("reference may not be null");
         }
@@ -88,13 +88,13 @@ public final class ArtifactResolver {
      * @throws AccessDeniedException if the reference resolves outside the repository
      * @throws IOException if the artifact can not be read (missing or unreadable)
      */
-    public byte[] load(final ICTValidationArtifactReference reference) throws AccessDeniedException, IOException {
+    public byte[] load(final CTValidationArtifactReference reference) throws AccessDeniedException, IOException {
         return read(resolve(reference));
     }
 
     /**
      * Reads an already-resolved artifact location. Callers must pass a URI obtained from
-     * {@link #resolve(ICTValidationArtifactReference)} — this method performs no confinement check of its own.
+     * {@link #resolve(CTValidationArtifactReference)} — this method performs no confinement check of its own.
      *
      * @param resolved the resolved artifact location
      * @return the content of the artifact

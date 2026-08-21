@@ -18,14 +18,14 @@ package org.kosit.validator.impl.conformatron.model;
 import java.util.List;
 import java.util.Locale;
 
-import org.conformatron.api.model.detection.ICTDetectionText;
+import org.conformatron.api.model.detection.CTDetectionText;
 
 /**
- * Locale-independent single-text implementation of {@link ICTDetectionText}.
+ * Locale-independent single-text implementation of {@link CTDetectionText}.
  *
  * @author Andreas Schmitz
  */
-public final class DetectionText implements ICTDetectionText {
+public final class DetectionText implements CTDetectionText {
 
     private final String text;
 

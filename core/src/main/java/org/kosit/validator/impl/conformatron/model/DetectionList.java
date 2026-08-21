@@ -21,36 +21,36 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.detection.ICTSeverity;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTSeverity;
 
 /**
- * Immutable implementation of {@link ICTDetectionList}.
+ * Immutable implementation of {@link CTDetectionList}.
  *
  * @author Andreas Schmitz
  */
-public final class DetectionList implements ICTDetectionList {
+public final class DetectionList implements CTDetectionList {
 
     private static final DetectionList EMPTY = new DetectionList(Collections.emptyList());
 
-    private final List<ICTDetection> detections;
+    private final List<CTDetection> detections;
 
     public static DetectionList empty() {
         return EMPTY;
     }
 
-    public static DetectionList of(final ICTDetection... detections) {
+    public static DetectionList of(final CTDetection... detections) {
         return new DetectionList(List.of(detections));
     }
 
-    public DetectionList(final List<ICTDetection> detections) {
+    public DetectionList(final List<CTDetection> detections) {
         Objects.requireNonNull(detections);
         this.detections = List.copyOf(detections);
     }
 
     @Override
-    public List<ICTDetection> getAll() {
+    public List<CTDetection> getAll() {
         return this.detections;
     }
 
@@ -60,20 +60,20 @@ public final class DetectionList implements ICTDetectionList {
     }
 
     @Override
-    public List<ICTDetection> getAll(final Predicate<? super ICTDetection> filter) {
+    public List<CTDetection> getAll(final Predicate<? super CTDetection> filter) {
         return this.detections.stream().filter(filter).toList();
     }
 
     @Override
-    public int getCount(final Predicate<? super ICTDetection> filter) {
+    public int getCount(final Predicate<? super CTDetection> filter) {
         return (int) this.detections.stream().filter(filter).count();
     }
 
     @Override
-    public ICTSeverity getWorstSeverity() {
-        ICTSeverity worst = ECTSeverity.NONE;
-        for (final ICTDetection detection : this.detections) {
-            worst = ICTSeverity.getWorst(worst, detection.getSeverity());
+    public CTSeverity getWorstSeverity() {
+        CTSeverity worst = ECTSeverity.NONE;
+        for (final CTDetection detection : this.detections) {
+            worst = CTSeverity.getWorst(worst, detection.getSeverity());
         }
         return worst;
     }

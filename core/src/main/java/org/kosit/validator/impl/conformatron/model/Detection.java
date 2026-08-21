@@ -18,31 +18,31 @@ package org.kosit.validator.impl.conformatron.model;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionLocation;
-import org.conformatron.api.model.detection.ICTDetectionText;
-import org.conformatron.api.model.detection.ICTSeverity;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionLocation;
+import org.conformatron.api.model.detection.CTDetectionText;
+import org.conformatron.api.model.detection.CTSeverity;
 
 /**
- * Immutable implementation of {@link ICTDetection}.
+ * Immutable implementation of {@link CTDetection}.
  *
  * @author Andreas Schmitz
  */
-public final class Detection implements ICTDetection {
+public final class Detection implements CTDetection {
 
     private final OffsetDateTime dateTimeUTC;
 
-    private final ICTSeverity severity;
+    private final CTSeverity severity;
 
     private final String code;
 
-    private final ICTDetectionLocation location;
+    private final CTDetectionLocation location;
 
-    private final ICTDetectionText text;
+    private final CTDetectionText text;
 
     private final Exception linkedException;
 
-    public Detection(final ICTSeverity severity, final String code, final ICTDetectionLocation location, final String message,
+    public Detection(final CTSeverity severity, final String code, final CTDetectionLocation location, final String message,
             final Exception linkedException) {
         if (severity == null) {
             throw new IllegalArgumentException("severity may not be null");
@@ -58,7 +58,7 @@ public final class Detection implements ICTDetection {
         this.linkedException = linkedException;
     }
 
-    public static Detection of(final ICTSeverity severity, final String code, final ICTDetectionLocation location, final String message) {
+    public static Detection of(final CTSeverity severity, final String code, final CTDetectionLocation location, final String message) {
         return new Detection(severity, code, location, message, null);
     }
 
@@ -68,7 +68,7 @@ public final class Detection implements ICTDetection {
     }
 
     @Override
-    public ICTSeverity getSeverity() {
+    public CTSeverity getSeverity() {
         return this.severity;
     }
 
@@ -88,17 +88,17 @@ public final class Detection implements ICTDetection {
     }
 
     @Override
-    public ICTDetectionLocation getLocation() {
+    public CTDetectionLocation getLocation() {
         return this.location;
     }
 
     @Override
-    public ICTDetectionText getText() {
+    public CTDetectionText getText() {
         return this.text;
     }
 
     @Override
-    public ICTDetectionText getSummary() {
+    public CTDetectionText getSummary() {
         return null;
     }
 

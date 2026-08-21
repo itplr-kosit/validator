@@ -10,8 +10,8 @@ import javax.xml.transform.Source;
  * @author apenski
  *
  * @deprecated Replaced by the conformatron-api handshake types: at the very beginning of the processing pipeline by
- *             {@link org.conformatron.api.model.source.ICTValidationSource} and after parsing by
- *             {@link org.conformatron.api.model.source.ICTParsedValidationSource}. Validator implementations live in
+ *             {@link org.conformatron.api.model.source.CTValidationSource} and after parsing by
+ *             {@link org.conformatron.api.model.source.CTParsedValidationSource}. Validator implementations live in
  *             {@code org.kosit.validator.impl.conformatron} ({@code ValidationSource}, {@code DomValidationSource},
  *             {@code XdmNodeValidationSource}). The digest handling ({@link #getHashCode()} /
  *             {@link #getDigestAlgorithm()}) is superseded by ADR-003: hash computation is its own concern (SHA-512,

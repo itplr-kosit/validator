@@ -3,7 +3,7 @@ package org.kosit.validator.impl.conformatron.util;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetectionList;
+import org.conformatron.api.model.detection.CTDetectionList;
 import org.junit.jupiter.api.Test;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
@@ -25,7 +25,7 @@ public class SvrlDetectionsTest {
     }
 
     private static ECTSeverity severityOf(final SchematronOutput svrl) {
-        final ICTDetectionList detections = SvrlDetections.toDetections(svrl, "test.xml");
+        final CTDetectionList detections = SvrlDetections.toDetections(svrl, "test.xml");
         return (ECTSeverity) detections.getAll().get(0).getSeverity();
     }
 

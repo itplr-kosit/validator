@@ -14,16 +14,16 @@ import java.util.Map;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.action.ICTAction;
+import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.conformance.ECTConformanceResult;
-import org.conformatron.api.model.conformance.ICTComputeConformanceResult;
-import org.conformatron.api.model.conformance.ICTConformanceStatement;
+import org.conformatron.api.model.conformance.CTComputeConformanceResult;
+import org.conformatron.api.model.conformance.CTConformanceStatement;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.rule.ICTApplyRulesResult;
-import org.conformatron.api.model.rule.ICTPreparedRuleSet;
-import org.conformatron.api.model.scenario.ICTConformanceTarget;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.rule.CTApplyRulesResult;
+import org.conformatron.api.model.rule.CTPreparedRuleSet;
+import org.conformatron.api.model.scenario.CTConformanceTarget;
 
 /**
  * Step 8 of the canonical pipeline, {@code COMPUTE_CONFORMANCE} (see
@@ -43,7 +43,7 @@ import org.conformatron.api.model.scenario.ICTConformanceTarget;
  *
  * @author Andreas Schmitz
  */
-public class ComputeConformanceAction implements ICTAction {
+public class ComputeConformanceAction implements CTAction {
 
     /** Detection code per conformant target (INFO). */
     public static final String CODE_TARGET_CONFORMANT = "target-conformant";
@@ -62,7 +62,7 @@ public class ComputeConformanceAction implements ICTAction {
      * @param result the per-rule-set statements plus provenance; forwarded to step 9 even when skipped (empty)
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record ComputeConformanceActionResult(ECTStepResult status, ICTComputeConformanceResult result, ICTDetectionList detections) {
+    public record ComputeConformanceActionResult(ECTStepResult status, CTComputeConformanceResult result, CTDetectionList detections) {
 
         public boolean isSuccess() {
             return this.status == ECTStepResult.SUCCESS;
@@ -83,34 +83,34 @@ public class ComputeConformanceAction implements ICTAction {
      * Evaluates the conformance statements for the given targets against the step-7 results.
      *
      * @param applyRulesResult the step-7 result; an empty result skips the step (an empty
-     *            {@link ICTComputeConformanceResult} is still forwarded per spec)
+     *            {@link CTComputeConformanceResult} is still forwarded per spec)
      * @param targets the conformance targets declared by the selected scenario; targets with an {@code acceptSelector}
      *            are rejected (see class Javadoc)
      * @return the result including one statement per rule set
      */
-    public ComputeConformanceActionResult execute(final ICTApplyRulesResult applyRulesResult, final List<ICTConformanceTarget> targets) {
+    public ComputeConformanceActionResult execute(final CTApplyRulesResult applyRulesResult, final List<CTConformanceTarget> targets) {
         if (applyRulesResult == null) {
             throw new IllegalArgumentException("applyRulesResult may not be null");
         }
         if (targets == null || targets.isEmpty()) {
             throw new IllegalArgumentException("targets may not be null or empty");
         }
-        targets.stream().filter(ICTConformanceTarget::hasAcceptSelector).findFirst().ifPresent(t -> {
+        targets.stream().filter(CTConformanceTarget::hasAcceptSelector).findFirst().ifPresent(t -> {
             throw new IllegalArgumentException("Target '" + t.getTargetID()
                     + "' declares an acceptSelector, which is not evaluable before the report model exists (ADR-004 follow-up)");
         });
         final String resourceId = applyRulesResult.getParsedSource().getSource().getName();
         if (applyRulesResult.isEmpty()) {
-            final ICTDetection skipped = Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
+            final CTDetection skipped = Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
                     "No rule results to evaluate (reason: no-rule-results)");
             return new ComputeConformanceActionResult(ECTStepResult.SKIPPED, ComputeConformanceResult.empty(applyRulesResult),
                     DetectionList.of(skipped));
         }
-        final LinkedHashMap<ICTPreparedRuleSet, ICTConformanceStatement> statements = new LinkedHashMap<>();
-        final List<ICTDetection> detections = new ArrayList<>();
-        for (final Map.Entry<ICTPreparedRuleSet, ICTDetectionList> entry : applyRulesResult.getResultsByRuleSet().entrySet()) {
-            final ICTConformanceTarget target = targetFor(entry.getKey(), targets);
-            final ICTConformanceStatement statement = evaluate(target, entry.getKey(), entry.getValue());
+        final LinkedHashMap<CTPreparedRuleSet, CTConformanceStatement> statements = new LinkedHashMap<>();
+        final List<CTDetection> detections = new ArrayList<>();
+        for (final Map.Entry<CTPreparedRuleSet, CTDetectionList> entry : applyRulesResult.getResultsByRuleSet().entrySet()) {
+            final CTConformanceTarget target = targetFor(entry.getKey(), targets);
+            final CTConformanceStatement statement = evaluate(target, entry.getKey(), entry.getValue());
             statements.put(entry.getKey(), statement);
             detections.add(toDetection(statement, entry.getKey(), entry.getValue(), resourceId));
         }
@@ -118,14 +118,14 @@ public class ComputeConformanceAction implements ICTAction {
                 new DetectionList(detections));
     }
 
-    private static ICTConformanceTarget targetFor(final ICTPreparedRuleSet ruleSet, final List<ICTConformanceTarget> targets) {
+    private static CTConformanceTarget targetFor(final CTPreparedRuleSet ruleSet, final List<CTConformanceTarget> targets) {
         final String href = ruleSet.getArtifactReference().getValidationArtifactReference().toString();
         return targets.stream().filter(t -> t.getRuleSetReferences().contains(href)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No conformance target declares rule set '" + href + "'"));
     }
 
-    private static ICTConformanceStatement evaluate(final ICTConformanceTarget target, final ICTPreparedRuleSet ruleSet,
-            final ICTDetectionList detections) {
+    private static CTConformanceStatement evaluate(final CTConformanceTarget target, final CTPreparedRuleSet ruleSet,
+            final CTDetectionList detections) {
         final String href = ruleSet.getArtifactReference().getValidationArtifactReference().toString();
         if (wasSkipped(detections)) {
             // a rule set that never ran must not look conformant (spec: empty result -> NON_CONFORMANT)
@@ -139,13 +139,13 @@ public class ComputeConformanceAction implements ICTAction {
         return ConformanceStatement.of(target, ECTConformanceResult.CONFORMANT, "Rule set '" + href + "' passed");
     }
 
-    private static boolean wasSkipped(final ICTDetectionList detections) {
+    private static boolean wasSkipped(final CTDetectionList detections) {
         // an engine error is NOT "skipped": it ran and crashed — its FATAL detection drives NON_CONFORMANT directly
         return detections.getAll().stream().anyMatch(d -> ApplyRulesAction.CODE_STEP_SKIPPED.equals(d.getCode()));
     }
 
-    private static ICTDetection toDetection(final ICTConformanceStatement statement, final ICTPreparedRuleSet ruleSet,
-            final ICTDetectionList ruleDetections, final String resourceId) {
+    private static CTDetection toDetection(final CTConformanceStatement statement, final CTPreparedRuleSet ruleSet,
+            final CTDetectionList ruleDetections, final String resourceId) {
         final String targetName = statement.getTarget().getTargetName();
         final String href = ruleSet.getArtifactReference().getValidationArtifactReference().toString();
         if (statement.getResult() == ECTConformanceResult.CONFORMANT) {

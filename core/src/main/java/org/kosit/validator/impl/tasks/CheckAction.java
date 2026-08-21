@@ -6,8 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
-import org.conformatron.api.model.scenario.ICTScenarioMatch;
-import org.conformatron.api.model.source.ICTParsedValidationSource;
+import org.conformatron.api.model.scenario.CTScenarioMatch;
+import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
@@ -65,20 +65,20 @@ public interface CheckAction {
          * parsed ({@code XdmNodeInput} shortcut). Successor of {@link #getInput()} — downstream steps migrate to this
          * step by step.
          */
-        private ICTParsedValidationSource parsedSource;
+        private CTParsedValidationSource parsedSource;
 
         /**
          * Conformatron handshake object of step 3 ({@code DETECT_SCENARIOS}): all detected scenario matches.
          * {@code null} until detection ran successfully; contains more than one entry on ambiguous configurations.
          */
-        private List<ICTScenarioMatch> scenarioMatches;
+        private List<CTScenarioMatch> scenarioMatches;
 
         /**
          * Conformatron handshake object of step 4 ({@code SELECT_SCENARIO}): the selected scenario match. {@code null}
          * until scenario selection succeeded, when the fallback scenario applies (not representable as a match), on
          * ambiguity or when no parsed source is available.
          */
-        private ICTScenarioMatch scenarioMatch;
+        private CTScenarioMatch scenarioMatch;
 
         public Process(final VInput VInput) {
             this(VInput, new XVRLMetadata());
@@ -194,22 +194,22 @@ public interface CheckAction {
         /**
          * The parsed document as conformatron handshake object; {@code null} until the parse step succeeded.
          */
-        public ICTParsedValidationSource getParsedSource() {
+        public CTParsedValidationSource getParsedSource() {
             return this.parsedSource;
         }
 
-        public void setParsedSource(final ICTParsedValidationSource parsedSource) {
+        public void setParsedSource(final CTParsedValidationSource parsedSource) {
             this.parsedSource = parsedSource;
         }
 
         /**
          * All detected scenarios as conformatron handshake objects (step 3); {@code null} until detection succeeded.
          */
-        public List<ICTScenarioMatch> getScenarioMatches() {
+        public List<CTScenarioMatch> getScenarioMatches() {
             return this.scenarioMatches;
         }
 
-        public void setScenarioMatches(final List<ICTScenarioMatch> scenarioMatches) {
+        public void setScenarioMatches(final List<CTScenarioMatch> scenarioMatches) {
             this.scenarioMatches = scenarioMatches;
         }
 
@@ -217,11 +217,11 @@ public interface CheckAction {
          * The selected scenario as conformatron handshake object (step 4); {@code null} until scenario selection
          * succeeded or when the fallback scenario applies.
          */
-        public ICTScenarioMatch getScenarioMatch() {
+        public CTScenarioMatch getScenarioMatch() {
             return this.scenarioMatch;
         }
 
-        public void setScenarioMatch(final ICTScenarioMatch scenarioMatch) {
+        public void setScenarioMatch(final CTScenarioMatch scenarioMatch) {
             this.scenarioMatch = scenarioMatch;
         }
     }

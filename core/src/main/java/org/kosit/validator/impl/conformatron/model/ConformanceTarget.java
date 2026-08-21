@@ -2,15 +2,15 @@ package org.kosit.validator.impl.conformatron.model;
 
 import java.util.List;
 
-import org.conformatron.api.model.scenario.ICTConformanceTarget;
-import org.conformatron.api.model.scenario.ICTScenarioMatch;
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.scenario.CTConformanceTarget;
+import org.conformatron.api.model.scenario.CTScenarioMatch;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 
 /**
- * Validator implementation of {@link ICTConformanceTarget} (conformatron-api step 8, {@code COMPUTE_CONFORMANCE}): a
+ * Validator implementation of {@link CTConformanceTarget} (conformatron-api step 8, {@code COMPUTE_CONFORMANCE}): a
  * named group of rule sets against which conformance is evaluated.
  * <p>
- * Facade note: the legacy scenario model declares no conformance targets — {@link #ofScenario(ICTScenarioMatch)}
+ * Facade note: the legacy scenario model declares no conformance targets — {@link #ofScenario(CTScenarioMatch)}
  * derives a single scenario-wide target covering all rule sets of the selected scenario. The legacy {@code acceptMatch}
  * is deliberately <b>not</b> carried over as {@code acceptSelector}: it is evaluated against the rendered report, which
  * does not exist in the canonical pipeline yet (ADR-004 follow-up).
@@ -18,7 +18,7 @@ import org.conformatron.api.model.source.ICTValidationArtifactReference;
  *
  * @author Andreas Schmitz
  */
-public final class ConformanceTarget implements ICTConformanceTarget {
+public final class ConformanceTarget implements CTConformanceTarget {
 
     private final String targetId;
 
@@ -66,12 +66,12 @@ public final class ConformanceTarget implements ICTConformanceTarget {
      * @param scenario the scenario selected in step 4
      * @return the derived target
      */
-    public static ConformanceTarget ofScenario(final ICTScenarioMatch scenario) {
+    public static ConformanceTarget ofScenario(final CTScenarioMatch scenario) {
         if (scenario == null) {
             throw new IllegalArgumentException("scenario may not be null");
         }
         final List<String> references = scenario.getArtifactReferences().stream()
-                .map(ICTValidationArtifactReference::getValidationArtifactReference).map(Object::toString).toList();
+                .map(CTValidationArtifactReference::getValidationArtifactReference).map(Object::toString).toList();
         return new ConformanceTarget(scenario.getScenarioID(), scenario.getScenarioName(), references, null);
     }
 

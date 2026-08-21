@@ -1,10 +1,10 @@
 package org.kosit.validator.impl.conformatron.model;
 
-import org.conformatron.api.model.source.ICTCompiledValidationArtifact;
+import org.conformatron.api.model.source.CTCompiledValidationArtifact;
 import org.conformatron.api.model.validation.ECTValidationType;
 
 /**
- * Validator implementation of {@link ICTCompiledValidationArtifact}: an engine-ready compilation together with the
+ * Validator implementation of {@link CTCompiledValidationArtifact}: an engine-ready compilation together with the
  * validation type that determines its concrete Java type (Saxon {@code XsltExecutable} for Schematron,
  * {@code javax.xml.validation.Schema} for XSD).
  *
@@ -12,7 +12,7 @@ import org.conformatron.api.model.validation.ECTValidationType;
  *
  * @author Andreas Schmitz
  */
-public final class CompiledValidationArtifact<T> implements ICTCompiledValidationArtifact<T> {
+public final class CompiledValidationArtifact<T> implements CTCompiledValidationArtifact<T> {
 
     private final ECTValidationType validationType;
 

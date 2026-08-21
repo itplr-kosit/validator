@@ -11,8 +11,8 @@ import java.net.URI;
 import java.util.List;
 
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.source.ICTParsedValidationSource;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.ContentRepository;
@@ -86,7 +86,7 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
      * @param parsedSource the parsed document; may be {@code null} if the source could not be read
      * @param detections all findings and errors of the run; never {@code null}
      */
-    public record AdHocValidationResult(ECTStepResult status, ICTParsedValidationSource parsedSource, ICTDetectionList detections) {
+    public record AdHocValidationResult(ECTStepResult status, CTParsedValidationSource parsedSource, CTDetectionList detections) {
 
         public boolean isSuccess() {
             return this.status == ECTStepResult.SUCCESS;

@@ -15,14 +15,14 @@
  */
 package org.kosit.validator.impl.conformatron.model;
 
-import org.conformatron.api.model.detection.ICTDetectionLocation;
+import org.conformatron.api.model.detection.CTDetectionLocation;
 
 /**
- * Immutable implementation of {@link ICTDetectionLocation}.
+ * Immutable implementation of {@link CTDetectionLocation}.
  *
  * @author Andreas Schmitz
  */
-public final class DetectionLocation implements ICTDetectionLocation {
+public final class DetectionLocation implements CTDetectionLocation {
 
     private final String resourceId;
 

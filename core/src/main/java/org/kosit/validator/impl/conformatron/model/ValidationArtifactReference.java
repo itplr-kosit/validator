@@ -5,10 +5,10 @@ import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
 import java.net.URI;
 import java.util.Objects;
 
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 
 /**
- * Validator implementation of {@link ICTValidationArtifactReference}: a pure carrier for the reference to a validation
+ * Validator implementation of {@link CTValidationArtifactReference}: a pure carrier for the reference to a validation
  * artifact (XSD, Schematron, precompiled XSLT), typically relative to the artifact repository.
  * <p>
  * The reference makes no promise about resolvability — turning it into a readable resource is the job of
@@ -18,7 +18,7 @@ import org.conformatron.api.model.source.ICTValidationArtifactReference;
  *
  * @author Andreas Schmitz
  */
-public final class ValidationArtifactReference implements ICTValidationArtifactReference {
+public final class ValidationArtifactReference implements CTValidationArtifactReference {
 
     private final URI reference;
 

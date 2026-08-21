@@ -21,13 +21,13 @@ import javax.xml.validation.Validator;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.action.ICTAction;
+import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.rule.ICTApplyRulesResult;
-import org.conformatron.api.model.rule.ICTPreparedRuleSet;
-import org.conformatron.api.model.source.ICTParsedValidationSource;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.rule.CTApplyRulesResult;
+import org.conformatron.api.model.rule.CTPreparedRuleSet;
+import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.kosit.svrl.impl.SvrlConversionService;
 import org.oclc.purl.dsdl.svrl.SchematronOutput;
 import org.slf4j.Logger;
@@ -60,7 +60,7 @@ import net.sf.saxon.s9api.XsltTransformer;
  *
  * @author Andreas Schmitz
  */
-public class ApplyRulesAction implements ICTAction {
+public class ApplyRulesAction implements CTAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplyRulesAction.class);
 
@@ -87,7 +87,7 @@ public class ApplyRulesAction implements ICTAction {
      * @param detections this execution's contribution to the report: all per-rule-set detections, flattened in
      *            execution order; never {@code null}
      */
-    public record ApplyRulesActionResult(ECTStepResult status, ICTApplyRulesResult result, ICTDetectionList detections) {
+    public record ApplyRulesActionResult(ECTStepResult status, CTApplyRulesResult result, CTDetectionList detections) {
 
         public boolean isSuccess() {
             return this.status == ECTStepResult.SUCCESS;
@@ -111,7 +111,7 @@ public class ApplyRulesAction implements ICTAction {
      * @param ruleSets the prepared rule sets from step 6; an empty list skips the step
      * @return the result including the per-rule-set detections
      */
-    public ApplyRulesActionResult execute(final ICTParsedValidationSource parsedSource, final List<ICTPreparedRuleSet> ruleSets) {
+    public ApplyRulesActionResult execute(final CTParsedValidationSource parsedSource, final List<CTPreparedRuleSet> ruleSets) {
         if (parsedSource == null) {
             throw new IllegalArgumentException("parsedSource may not be null");
         }
@@ -120,13 +120,13 @@ public class ApplyRulesAction implements ICTAction {
         }
         final String documentName = parsedSource.getSource().getName();
         if (ruleSets.isEmpty()) {
-            final ICTDetection skipped = Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(documentName),
+            final CTDetection skipped = Detection.of(ECTSeverity.INFO, CODE_STEP_SKIPPED, DetectionLocation.ofResource(documentName),
                     "No rule sets prepared (reason: no-rule-sets)");
             return new ApplyRulesActionResult(ECTStepResult.SKIPPED, ApplyRulesResult.empty(parsedSource), DetectionList.of(skipped));
         }
-        final LinkedHashMap<ICTPreparedRuleSet, ICTDetectionList> results = new LinkedHashMap<>();
+        final LinkedHashMap<CTPreparedRuleSet, CTDetectionList> results = new LinkedHashMap<>();
         boolean failed = false;
-        for (final ICTPreparedRuleSet ruleSet : ruleSets) {
+        for (final CTPreparedRuleSet ruleSet : ruleSets) {
             if (failed) {
                 // fail-fast per spec: executions after an engine failure are skipped, but keep their key
                 results.put(ruleSet,
@@ -134,20 +134,20 @@ public class ApplyRulesAction implements ICTAction {
                                 "Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)")));
                 continue;
             }
-            final ICTDetectionList detections = applyOne(parsedSource, ruleSet, documentName);
+            final CTDetectionList detections = applyOne(parsedSource, ruleSet, documentName);
             results.put(ruleSet, detections);
             failed = detections.getAll().stream().anyMatch(d -> CODE_RULE_ENGINE_ERROR.equals(d.getCode()));
         }
-        final List<ICTDetection> all = new ArrayList<>();
+        final List<CTDetection> all = new ArrayList<>();
         results.values().forEach(list -> all.addAll(list.getAll()));
         return new ApplyRulesActionResult(failed ? ECTStepResult.FAILURE : ECTStepResult.SUCCESS,
                 new ApplyRulesResult(parsedSource, results), new DetectionList(all));
     }
 
-    private ICTDetectionList applyOne(final ICTParsedValidationSource parsedSource, final ICTPreparedRuleSet ruleSet,
+    private CTDetectionList applyOne(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
             final String documentName) {
         try {
-            final ICTDetectionList findings = switch (ruleSet.getEngineType().getBaseType()) {
+            final CTDetectionList findings = switch (ruleSet.getEngineType().getBaseType()) {
                 case SCHEMATRON -> applySchematron(parsedSource, ruleSet, documentName);
                 case XSD -> applySchema(parsedSource, ruleSet, documentName);
                 default -> throw new IllegalStateException(
@@ -166,7 +166,7 @@ public class ApplyRulesAction implements ICTAction {
         }
     }
 
-    private ICTDetectionList applySchematron(final ICTParsedValidationSource parsedSource, final ICTPreparedRuleSet ruleSet,
+    private CTDetectionList applySchematron(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
             final String documentName) throws SaxonApiException {
         final XsltExecutable executable = (XsltExecutable) ruleSet.getCompiledArtifact().getCompilation();
         final XsltTransformer transformer = executable.load();
@@ -181,12 +181,12 @@ public class ApplyRulesAction implements ICTAction {
         return SvrlDetections.toDetections(svrl, documentName);
     }
 
-    private static ICTDetectionList applySchema(final ICTParsedValidationSource parsedSource, final ICTPreparedRuleSet ruleSet,
+    private static CTDetectionList applySchema(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
             final String documentName) throws IOException {
         final Schema schema = (Schema) ruleSet.getCompiledArtifact().getCompilation();
         final Validator validator = schema.newValidator();
         secure(validator);
-        final List<ICTDetection> violations = new ArrayList<>();
+        final List<CTDetection> violations = new ArrayList<>();
         validator.setErrorHandler(new CollectingSchemaErrorHandler(violations, documentName));
         try {
             validator.validate(new StreamSource(new ByteArrayInputStream(parsedSource.getSourceBytes()), documentName));
@@ -208,18 +208,18 @@ public class ApplyRulesAction implements ICTAction {
         }
     }
 
-    private static String href(final ICTPreparedRuleSet ruleSet) {
+    private static String href(final CTPreparedRuleSet ruleSet) {
         return ruleSet.getArtifactReference().getValidationArtifactReference().toString();
     }
 
     /** Collects XSD violations as {@code schema-violation} detections with line/column. */
     private static final class CollectingSchemaErrorHandler implements ErrorHandler {
 
-        private final List<ICTDetection> violations;
+        private final List<CTDetection> violations;
 
         private final String documentName;
 
-        CollectingSchemaErrorHandler(final List<ICTDetection> violations, final String documentName) {
+        CollectingSchemaErrorHandler(final List<CTDetection> violations, final String documentName) {
             this.violations = violations;
             this.documentName = documentName;
         }

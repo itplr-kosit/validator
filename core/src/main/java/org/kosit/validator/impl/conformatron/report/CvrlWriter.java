@@ -22,10 +22,10 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.rule.ICTPreparedRuleSet;
-import org.conformatron.api.model.source.ICTParsedValidationSource;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.rule.CTPreparedRuleSet;
+import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.ECTValidationBaseType;
 
 /**
@@ -128,7 +128,7 @@ public final class CvrlWriter {
             }
             if (results.apply() != null) {
                 // D3: one report per rule set execution, in scenario order
-                for (final Map.Entry<ICTPreparedRuleSet, ICTDetectionList> entry : results.apply().result().getResultsByRuleSet()
+                for (final Map.Entry<CTPreparedRuleSet, CTDetectionList> entry : results.apply().result().getResultsByRuleSet()
                         .entrySet()) {
                     writeStepReport(writer, ECTActionType.APPLY_RULES, entry.getValue(), entry.getKey());
                 }
@@ -161,7 +161,7 @@ public final class CvrlWriter {
         writer.writeEmptyElement(NS_XVRL, "document");
         writer.writeAttribute("href", documentName);
         // D6: document by reference + checksum; audit-mode embedding is an open question
-        final ICTParsedValidationSource source = parse.getParsedSource();
+        final CTParsedValidationSource source = parse.getParsedSource();
         if (source != null) {
             writer.writeAttribute(NS_CVRL, "checksum", HexFormat.of().formatHex(source.getHashBytes()));
             writer.writeAttribute(NS_CVRL, "checksum-algorithm", source.getHashAlgorithmName());
@@ -170,8 +170,8 @@ public final class CvrlWriter {
         writer.writeEndElement();
     }
 
-    private void writeStepReport(final XMLStreamWriter writer, final ECTActionType action, final ICTDetectionList detections,
-            final ICTPreparedRuleSet ruleSet) throws XMLStreamException {
+    private void writeStepReport(final XMLStreamWriter writer, final ECTActionType action, final CTDetectionList detections,
+            final CTPreparedRuleSet ruleSet) throws XMLStreamException {
         newline(writer, 1);
         writer.writeStartElement(NS_XVRL, "report");
         newline(writer, 2);
@@ -201,14 +201,14 @@ public final class CvrlWriter {
         newline(writer, 2);
         writer.writeEndElement();
         writeDigest(writer, detections);
-        for (final ICTDetection detection : detections.getAll()) {
+        for (final CTDetection detection : detections.getAll()) {
             writeDetection(writer, detection);
         }
         newline(writer, 1);
         writer.writeEndElement();
     }
 
-    private static void writeDigest(final XMLStreamWriter writer, final ICTDetectionList detections) throws XMLStreamException {
+    private static void writeDigest(final XMLStreamWriter writer, final CTDetectionList detections) throws XMLStreamException {
         // D4: consistent digest attribute set
         final long fatals = detections.getCount(d -> d.getSeverity() == ECTSeverity.FATAL_ERROR);
         final long errors = detections.getCount(d -> d.getSeverity() == ECTSeverity.ERROR);
@@ -225,7 +225,7 @@ public final class CvrlWriter {
         writer.writeAttribute("error-codes", String.join(" ", errorCodes));
     }
 
-    private static void writeDetection(final XMLStreamWriter writer, final ICTDetection detection) throws XMLStreamException {
+    private static void writeDetection(final XMLStreamWriter writer, final CTDetection detection) throws XMLStreamException {
         newline(writer, 2);
         writer.writeStartElement(NS_XVRL, "detection");
         writer.writeAttribute("severity", detection.getSeverity().getID());
@@ -245,7 +245,7 @@ public final class CvrlWriter {
         writer.writeEndElement();
     }
 
-    private static String severityId(final ICTDetectionList detections) {
+    private static String severityId(final CTDetectionList detections) {
         return detections.getCount() == 0 ? "info" : detections.getWorstSeverity().getID();
     }
 

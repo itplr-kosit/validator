@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.action.ICTAction;
+import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.scenario.ICTScenarioMatch;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.scenario.CTScenarioMatch;
 
 /**
  * Step 4 of the canonical pipeline, {@code SELECT_SCENARIO} (see
@@ -28,7 +28,7 @@ import org.conformatron.api.model.scenario.ICTScenarioMatch;
  *
  * @author Andreas Schmitz
  */
-public class SelectScenarioAction implements ICTAction {
+public class SelectScenarioAction implements CTAction {
 
     /** Detection code on successful selection (INFO, scenario id as value). */
     public static final String CODE_SCENARIO_SELECTED = "scenario-selected";
@@ -43,7 +43,7 @@ public class SelectScenarioAction implements ICTAction {
      * @param selected the selected scenario; {@code null} unless status is {@code SUCCESS}
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record SelectScenarioResult(ECTStepResult status, ICTScenarioMatch selected, ICTDetectionList detections) {
+    public record SelectScenarioResult(ECTStepResult status, CTScenarioMatch selected, CTDetectionList detections) {
 
         public boolean isSuccess() {
             return this.status == ECTStepResult.SUCCESS;
@@ -67,19 +67,19 @@ public class SelectScenarioAction implements ICTAction {
      *            already cancelled the process in step 3 per input constraint)
      * @return the result carrying the selected scenario and any detections
      */
-    public SelectScenarioResult execute(final List<ICTScenarioMatch> detectedScenarios) {
+    public SelectScenarioResult execute(final List<CTScenarioMatch> detectedScenarios) {
         if (detectedScenarios == null || detectedScenarios.isEmpty()) {
             throw new IllegalArgumentException("detectedScenarios may not be null or empty (input constraint of step 4)");
         }
         final String resourceId = detectedScenarios.get(0).getParsedSource().getSource().getName();
         if (detectedScenarios.size() > 1) {
-            final String candidates = detectedScenarios.stream().map(ICTScenarioMatch::getScenarioID).collect(Collectors.joining(", "));
-            final ICTDetection detection = Detection.of(ECTSeverity.ERROR, CODE_SCENARIO_AMBIGUOUS,
+            final String candidates = detectedScenarios.stream().map(CTScenarioMatch::getScenarioID).collect(Collectors.joining(", "));
+            final CTDetection detection = Detection.of(ECTSeverity.ERROR, CODE_SCENARIO_AMBIGUOUS,
                     DetectionLocation.ofResource(resourceId), "More than one scenario matches the document: " + candidates);
             return new SelectScenarioResult(ECTStepResult.FAILURE, null, DetectionList.of(detection));
         }
-        final ICTScenarioMatch selected = detectedScenarios.get(0);
-        final ICTDetection detection = Detection.of(ECTSeverity.INFO, CODE_SCENARIO_SELECTED, DetectionLocation.ofResource(resourceId),
+        final CTScenarioMatch selected = detectedScenarios.get(0);
+        final CTDetection detection = Detection.of(ECTSeverity.INFO, CODE_SCENARIO_SELECTED, DetectionLocation.ofResource(resourceId),
                 "Scenario '" + selected.getScenarioID() + "' selected");
         return new SelectScenarioResult(ECTStepResult.SUCCESS, selected, DetectionList.of(detection));
     }

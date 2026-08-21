@@ -28,8 +28,8 @@ import javax.xml.transform.Source;
 
 import org.conformatron.api.model.action.ECTStepResult;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.source.ICTValidationSource;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.source.CTValidationSource;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
 import org.kosit.validator.impl.conformatron.model.Detection;
@@ -117,8 +117,8 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
      * @return the result including the {@link DomValidationSource} on success and any detections
      */
     // TODO replace bytes parameter with source.getInputStream usage
-    public ParseXMLResult parse(final ICTValidationSource source, final byte[] bytes) {
-        final List<ICTDetection> errors = new ArrayList<>();
+    public ParseXMLResult parse(final CTValidationSource source, final byte[] bytes) {
+        final List<CTDetection> errors = new ArrayList<>();
         try {
             final DocumentBuilder builder = createDocumentBuilder();
             builder.setErrorHandler(new CollectingErrorHandler(source.getName(), errors));
@@ -179,7 +179,7 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
      * instead of aborting on the first one.
      */
     // TODO extract in XMLHelper
-    private record CollectingErrorHandler(String resourceId, List<ICTDetection> errors) implements ErrorHandler {
+    private record CollectingErrorHandler(String resourceId, List<CTDetection> errors) implements ErrorHandler {
 
         @Override
         public void warning(final SAXParseException e) {

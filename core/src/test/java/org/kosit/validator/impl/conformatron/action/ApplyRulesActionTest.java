@@ -9,10 +9,10 @@ import java.net.URI;
 import java.util.List;
 
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.rule.ICTPreparedRuleSet;
-import org.conformatron.api.model.source.ICTParsedValidationSource;
-import org.conformatron.api.model.source.ICTValidationArtifactReference;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.rule.CTPreparedRuleSet;
+import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Helper;
@@ -32,15 +32,15 @@ public class ApplyRulesActionTest {
     private final ContentRepository repository = new ContentRepository(Helper.getTestProcessor(),
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
-    private static ICTParsedValidationSource parse(final URI document) {
+    private static CTParsedValidationSource parse(final URI document) {
         final ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
         assertThat(parsed.isSuccess()).isTrue();
         return parsed.getParsedSource();
     }
 
-    private List<ICTPreparedRuleSet> prepare(final String... references) {
+    private List<CTPreparedRuleSet> prepare(final String... references) {
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(
-                List.of(references).stream().map(r -> (ICTValidationArtifactReference) ValidationArtifactReference.of(r)).toList(), "test");
+                List.of(references).stream().map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList(), "test");
         assertThat(retrieved.isSuccess()).isTrue();
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(),
                 "test");
@@ -90,7 +90,7 @@ public class ApplyRulesActionTest {
         assertThat(result.status()).isEqualTo(ECTStepResult.FAILURE);
         // both keys stay present: the failed one and the skipped one
         assertThat(result.result().getResultsByRuleSet()).hasSize(2);
-        final List<ICTDetectionList> lists = List.copyOf(result.result().getResultsByRuleSet().values());
+        final List<CTDetectionList> lists = List.copyOf(result.result().getResultsByRuleSet().values());
         assertThat(lists.get(0).getAll()).extracting("code").containsExactly(ApplyRulesAction.CODE_RULE_ENGINE_ERROR);
         assertThat(lists.get(1).getAll()).extracting("code").containsExactly(ApplyRulesAction.CODE_STEP_SKIPPED);
     }

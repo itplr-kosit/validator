@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTActionType;
 import org.conformatron.api.model.action.ECTStepResult;
-import org.conformatron.api.model.action.ICTAction;
+import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.detection.ICTDetectionList;
-import org.conformatron.api.model.scenario.ICTScenarioMatch;
-import org.conformatron.api.model.source.ICTParsedValidationSource;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.scenario.CTScenarioMatch;
+import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ import net.sf.saxon.s9api.XdmNode;
  * </p>
  * <p>
  * XPath evaluation requires the Saxon representation: the parsed content of the supplied
- * {@link ICTParsedValidationSource} is either an {@link XdmNode} (legacy facade) or — when a {@link Processor} is
+ * {@link CTParsedValidationSource} is either an {@link XdmNode} (legacy facade) or — when a {@link Processor} is
  * configured — any source providing a DOM via {@code getAsDom()} (ADR-002 common denominator), which is then wrapped
  * into the Saxon model without re-parsing. This closes the gap between the DOM-based step-2 reference action and the
  * Saxon-based scenario matching.
@@ -47,7 +47,7 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Schmitz
  */
-public class DetectScenariosAction implements ICTAction {
+public class DetectScenariosAction implements CTAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DetectScenariosAction.class);
 
@@ -94,7 +94,7 @@ public class DetectScenariosAction implements ICTAction {
      *            on the fixed-scenario path
      * @param detections this execution's contribution to the report; never {@code null}
      */
-    public record DetectScenariosResult(ECTStepResult status, List<ICTScenarioMatch> matches, ICTDetectionList detections) {
+    public record DetectScenariosResult(ECTStepResult status, List<CTScenarioMatch> matches, CTDetectionList detections) {
 
         public boolean isSuccess() {
             return this.status == ECTStepResult.SUCCESS;
@@ -117,7 +117,7 @@ public class DetectScenariosAction implements ICTAction {
      * @param parsedSource the parsed source from step 2; parsed content must be an {@link XdmNode}
      * @return the result including all matches and any detections
      */
-    public DetectScenariosResult execute(final ICTParsedValidationSource parsedSource) {
+    public DetectScenariosResult execute(final CTParsedValidationSource parsedSource) {
         return execute(parsedSource, null);
     }
 
@@ -128,7 +128,7 @@ public class DetectScenariosAction implements ICTAction {
      * @param requestedScenarioId optional user-fixed scenario name; bypasses XPath evaluation
      * @return the result including all matches and any detections
      */
-    public DetectScenariosResult execute(final ICTParsedValidationSource parsedSource, final String requestedScenarioId) {
+    public DetectScenariosResult execute(final CTParsedValidationSource parsedSource, final String requestedScenarioId) {
         final XdmNode document = requireXdmNode(parsedSource);
         if (requestedScenarioId != null) {
             return detectByRequestedId(parsedSource, requestedScenarioId);
@@ -136,41 +136,41 @@ public class DetectScenariosAction implements ICTAction {
         return detectByMatchExpressions(parsedSource, document);
     }
 
-    private DetectScenariosResult detectByRequestedId(final ICTParsedValidationSource parsedSource, final String requestedScenarioId) {
+    private DetectScenariosResult detectByRequestedId(final CTParsedValidationSource parsedSource, final String requestedScenarioId) {
         final String resourceId = parsedSource.getSource().getName();
         final Scenario scenario = this.repository.getScenarios().stream()
                 .filter(s -> requestedScenarioId.equals(s.getName()) && !s.isFallback()).findFirst().orElse(null);
         if (scenario == null) {
-            final ICTDetection detection = Detection.of(ECTSeverity.ERROR, CODE_SCENARIO_UNKNOWN_ID,
+            final CTDetection detection = Detection.of(ECTSeverity.ERROR, CODE_SCENARIO_UNKNOWN_ID,
                     DetectionLocation.ofResource(resourceId), "Requested scenario '" + requestedScenarioId + "' is not configured");
             return new DetectScenariosResult(ECTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
         final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource);
-        final ICTDetection detection = Detection.of(ECTSeverity.INFO, CODE_SCENARIO_USER_SELECTED, DetectionLocation.ofResource(resourceId),
+        final CTDetection detection = Detection.of(ECTSeverity.INFO, CODE_SCENARIO_USER_SELECTED, DetectionLocation.ofResource(resourceId),
                 "Scenario '" + scenario.getName() + "' fixed by user input");
         return new DetectScenariosResult(ECTStepResult.SUCCESS, List.of(match), DetectionList.of(detection));
     }
 
-    private DetectScenariosResult detectByMatchExpressions(final ICTParsedValidationSource parsedSource, final XdmNode document) {
+    private DetectScenariosResult detectByMatchExpressions(final CTParsedValidationSource parsedSource, final XdmNode document) {
         final String resourceId = parsedSource.getSource().getName();
         final List<Scenario> matching = this.repository.findMatches(document);
         if (matching.isEmpty()) {
-            final ICTDetection detection = Detection.of(ECTSeverity.ERROR, CODE_NO_SCENARIO_MATCHED,
+            final CTDetection detection = Detection.of(ECTSeverity.ERROR, CODE_NO_SCENARIO_MATCHED,
                     DetectionLocation.ofResource(resourceId), "None of the configured scenarios matches the document");
             return new DetectScenariosResult(ECTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
         LOGGER.debug("{} scenario(s) matched for {}", matching.size(), resourceId);
-        final List<ICTScenarioMatch> matches = matching.stream()
-                .map(scenario -> (ICTScenarioMatch) ScenarioMatch.of(scenario, parsedSource)).collect(Collectors.toList());
-        final List<ICTDetection> detections = new ArrayList<>();
-        for (final ICTScenarioMatch match : matches) {
+        final List<CTScenarioMatch> matches = matching.stream()
+                .map(scenario -> (CTScenarioMatch) ScenarioMatch.of(scenario, parsedSource)).collect(Collectors.toList());
+        final List<CTDetection> detections = new ArrayList<>();
+        for (final CTScenarioMatch match : matches) {
             detections.add(Detection.of(ECTSeverity.INFO, CODE_SCENARIO_MATCHED, DetectionLocation.ofResource(resourceId),
                     "Scenario '" + match.getScenarioName() + "' matched"));
         }
         return new DetectScenariosResult(ECTStepResult.SUCCESS, List.copyOf(matches), new DetectionList(detections));
     }
 
-    private XdmNode requireXdmNode(final ICTParsedValidationSource parsedSource) {
+    private XdmNode requireXdmNode(final CTParsedValidationSource parsedSource) {
         if (parsedSource == null) {
             throw new IllegalArgumentException("parsedSource may not be null");
         }

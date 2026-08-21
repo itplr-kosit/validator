@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.conformatron.api.model.conformance.ICTConformanceStatement;
+import org.conformatron.api.model.conformance.CTConformanceStatement;
 import org.conformatron.api.model.detection.ECTSeverity;
-import org.conformatron.api.model.detection.ICTDetection;
-import org.conformatron.api.model.rule.ICTPreparedRuleSet;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -69,7 +69,7 @@ public final class XRechnungE2ERunner {
 
     /** Result row of one instance run. */
     private record InstanceResult(String instance, String outcome, String scenario, int ruleSets, long infos, long warnings, long errors,
-            List<String> conformance, List<ICTDetection> findings, String failedStep, String hash, List<ICTDetection> allDetections) {
+            List<String> conformance, List<CTDetection> findings, String failedStep, String hash, List<CTDetection> allDetections) {
     }
 
     private final ScenarioRepository scenarioRepository;
@@ -153,7 +153,7 @@ public final class XRechnungE2ERunner {
             out.println();
             out.println("| Severity | Code | Meldung |");
             out.println("|---|---|---|");
-            for (final ICTDetection d : result.allDetections()) {
+            for (final CTDetection d : result.allDetections()) {
                 out.printf("| %s | `%s` | %s |%n", d.getSeverity().getID(), d.getCode(),
                         d.getText().getDisplayTextLocaleIndependent().replace("|", "\\|").replace("\n", " "));
             }
@@ -257,7 +257,7 @@ public final class XRechnungE2ERunner {
         final String scenarioName = selected.selected().getScenarioName();
 
         // complete detection trace across all steps, in pipeline order (for the per-instance report)
-        final List<ICTDetection> trace = new ArrayList<>();
+        final List<CTDetection> trace = new ArrayList<>();
         trace.addAll(parsed.getDetectionList().getAll());
         trace.addAll(r.detect().detections().getAll());
         trace.addAll(selected.detections().getAll());
@@ -268,30 +268,30 @@ public final class XRechnungE2ERunner {
 
         final String hash = parsed.getParsedSource().getHashAlgorithmName() + "="
                 + java.util.HexFormat.of().formatHex(parsed.getParsedSource().getHashBytes());
-        final List<ICTDetection> all = applied.detections().getAll();
+        final List<CTDetection> all = applied.detections().getAll();
         final long infos = count(all, ECTSeverity.INFO);
         final long warnings = count(all, ECTSeverity.WARNING);
         final long errors = all.stream().filter(d -> d.getSeverity().isError()).count();
         final List<String> statements = new ArrayList<>();
-        for (final Map.Entry<ICTPreparedRuleSet, ICTConformanceStatement> e : conformance.result().getStatementsByRuleSet().entrySet()) {
+        for (final Map.Entry<CTPreparedRuleSet, CTConformanceStatement> e : conformance.result().getStatementsByRuleSet().entrySet()) {
             statements.add(shortRef(e.getKey()) + " → " + e.getValue().getResult());
         }
         final boolean conformant = !conformance.result().hasNonConformantTarget();
-        final List<ICTDetection> findings = all.stream().filter(d -> d.getSeverity() != ECTSeverity.INFO).toList();
+        final List<CTDetection> findings = all.stream().filter(d -> d.getSeverity() != ECTSeverity.INFO).toList();
         return new InstanceResult(name, conformant ? "CONFORMANT" : "NON_CONFORMANT", scenarioName, prepared.ruleSets().size(), infos,
                 warnings, errors, statements, findings, null, hash, trace);
     }
 
-    private static InstanceResult failed(final String name, final String step, final List<ICTDetection> detections) {
-        final List<ICTDetection> findings = detections.stream().filter(d -> d.getSeverity() != ECTSeverity.INFO).toList();
+    private static InstanceResult failed(final String name, final String step, final List<CTDetection> detections) {
+        final List<CTDetection> findings = detections.stream().filter(d -> d.getSeverity() != ECTSeverity.INFO).toList();
         return new InstanceResult(name, "FAILED@" + step, "-", 0, 0, 0, findings.size(), List.of(), findings, step, "-", detections);
     }
 
-    private static long count(final List<ICTDetection> detections, final ECTSeverity severity) {
+    private static long count(final List<CTDetection> detections, final ECTSeverity severity) {
         return detections.stream().filter(d -> d.getSeverity() == severity).count();
     }
 
-    private static String shortRef(final ICTPreparedRuleSet ruleSet) {
+    private static String shortRef(final CTPreparedRuleSet ruleSet) {
         final String href = ruleSet.getArtifactReference().getValidationArtifactReference().toString();
         return href.substring(href.lastIndexOf('/') + 1);
     }
@@ -339,7 +339,7 @@ public final class XRechnungE2ERunner {
                     out.println();
                     out.println("Runner/Step-Fehler: " + r.failedStep());
                 }
-                for (final ICTDetection d : r.findings()) {
+                for (final CTDetection d : r.findings()) {
                     out.println("- `" + d.getSeverity().getID() + "` **" + d.getCode() + "** — "
                             + d.getText().getDisplayTextLocaleIndependent());
                 }

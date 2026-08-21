@@ -18,19 +18,19 @@ package org.kosit.validator.impl.conformatron.model;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.conformatron.api.model.source.ICTValidationSource;
+import org.conformatron.api.model.source.CTValidationSource;
 import org.conformatron.api.model.validation.ECTValidationBaseType;
 import org.jspecify.annotations.NonNull;
 import org.kosit.validator.api.VInput;
 
 /**
- * Validator implementation of {@link ICTValidationSource}. Facade over the legacy {@link VInput} abstraction: the
+ * Validator implementation of {@link CTValidationSource}. Facade over the legacy {@link VInput} abstraction: the
  * existing input handling keeps doing the heavy lifting while the pipeline is migrated to the conformatron-api step by
  * step.
  *
  * @author Andreas Schmitz
  */
-public final class ValidationSource implements ICTValidationSource {
+public final class ValidationSource implements CTValidationSource {
 
     private final String name;
 
