@@ -147,7 +147,9 @@ public class Validator {
     }
 
     private static void checkUnused(final Map<String, Path> scenarios, final Map<String, Path> repositories) {
-        final List<Entry<String, Path>> unused = repositories.entrySet().stream().filter(e -> scenarios.get(e.getKey()) == null).toList();
+        // Must use collect for a mutable
+        final List<Entry<String, Path>> unused = repositories.entrySet().stream().filter(e -> scenarios.get(e.getKey()) == null)
+                .collect(Collectors.toList());
         unused.removeIf(e -> e.getKey().equals(ScenarioRepository.DEFAULT_ID));
         unused.forEach(e -> Printer.writeErr("Warning: repository definition \"{0}\" is not used", e.getKey()));
     }
