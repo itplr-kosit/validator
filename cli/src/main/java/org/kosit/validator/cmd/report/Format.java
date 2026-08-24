@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
@@ -34,7 +35,7 @@ public class Format {
         final Optional<Code> color = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isColor).findFirst();
         final Optional<Code> bg = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isBackground).findFirst();
         final List<Code> attributes = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isBackground).filter(Code::isColor)
-                .toList();
+                .collect(Collectors.toList());
         attributes.add(color.orElse(this.textColor));
         attributes.add(bg.orElse(this.background));
         return attributes.stream().filter(Objects::nonNull).toArray(Code[]::new);
