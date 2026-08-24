@@ -3,6 +3,7 @@ package org.kosit.svrl.impl;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.oclc.purl.dsdl.svrl.ActiveGroup;
 import org.oclc.purl.dsdl.svrl.ActivePattern;
@@ -20,8 +21,12 @@ public abstract class SvrlBaseOutput {
 
     public abstract List<Serializable> getActivePatternOrActiveGroupAndFiredRule();
 
+    private <T> Stream<T> filterStream(final Class<T> type) {
+        return getActivePatternOrActiveGroupAndFiredRule().stream().filter(type::isInstance).map(type::cast);
+    }
+
     private <T> List<T> filter(final Class<T> type) {
-        return getActivePatternOrActiveGroupAndFiredRule().stream().filter(type::isInstance).map(type::cast).toList();
+        return filterStream(type).toList();
     }
 
     /**
@@ -85,10 +90,11 @@ public abstract class SvrlBaseOutput {
      * @return Optional containing the {@link FailedAssert}
      */
     public Optional<FailedAssert> findFailedAssert(final String name) {
-        return getFailedAsserts().stream().filter(e -> e.getId().equals(name)).findAny();
+        return filterStream(FailedAssert.class).filter(e -> e.getId().equals(name)).findAny();
     }
 
     public List<String> getMessages() {
-        return getFailedAsserts().stream().map(FailedAssert::getText).flatMap(e -> e.getContent().stream()).map(Object::toString).toList();
+        return filterStream(FailedAssert.class).map(FailedAssert::getText).flatMap(e -> e.getContent().stream()).map(Object::toString)
+                .toList();
     }
 }
