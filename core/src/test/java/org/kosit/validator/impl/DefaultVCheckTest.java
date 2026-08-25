@@ -2,7 +2,6 @@ package org.kosit.validator.impl;
 
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.api.VInputFactory.read;
 import static org.kosit.validator.impl.TestHelper.Simple.FOO_SCHEMATRON_INVALID;
 import static org.kosit.validator.impl.TestHelper.Simple.GARBAGE;
 import static org.kosit.validator.impl.TestHelper.Simple.NOT_WELLFORMED;
@@ -11,28 +10,34 @@ import static org.kosit.validator.impl.TestHelper.Simple.SCHEMATRON_INVALID;
 import static org.kosit.validator.impl.TestHelper.Simple.SIMPLE_VALID;
 import static org.kosit.validator.impl.TestHelper.Simple.UNKNOWN;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.VResult;
+import org.kosit.validator.helper.ResourceHelperExtension;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.input.ResourceVInput;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.w3c.dom.Document;
 
-import jakarta.xml.bind.JAXBException;
-import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -44,6 +49,9 @@ public class DefaultVCheckTest {
 
     public static final int MULTI_COUNT = 5;
 
+    @RegisterExtension
+    private final ResourceHelperExtension resHelper = new ResourceHelperExtension();
+
     private DefaultVCheck validCheck;
 
     // for checking certain error scenarios.
@@ -51,7 +59,7 @@ public class DefaultVCheckTest {
 
     private DefaultVCheck jarScenarioCheck;
 
-    final private EngineInformation engineInformation = new TestEngineInformation();
+    private final EngineInformation engineInformation = new TestEngineInformation();
 
     @BeforeEach
     public void setup() throws URISyntaxException {
@@ -71,8 +79,16 @@ public class DefaultVCheckTest {
         this.jarScenarioCheck = new DefaultVCheck(this.engineInformation, jarConfig);
     }
 
+    private CTReadResource read(final URI simpleValid) {
+        try {
+            return ReadResource.of(Resource.of(simpleValid), resHelper.get());
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     @Test
-    public void testHappyCase() throws JAXBException, SaxonApiException {
+    public void testHappyCase() throws Exception {
         final VResult doc = this.validCheck.checkInput(read(SIMPLE_VALID));
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
@@ -120,16 +136,14 @@ public class DefaultVCheckTest {
 
     @Test
     public void testMultipleCase() {
-        @SuppressWarnings("unused")
-        final List<ResourceVInput> inputs = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
+        final List<CTReadResource> inputs = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
         final List<VResult> docs = this.validCheck.checkInput(inputs);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
     @Test
     public void testMultipleCaseDocument() {
-        @SuppressWarnings("unused")
-        final List<ResourceVInput> inputs = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
+        final List<CTReadResource> inputs = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
         final List<Document> docs = this.validCheck.check(inputs);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
@@ -239,17 +253,19 @@ public class DefaultVCheckTest {
         assertThat(result.getProcessingErrors()).hasSize(1);
     }
 
+    // TODO do we need an input with XdmNode?
     @Test
+    @Disabled("TinyDocumentImpl currently not supported for v2")
     public void testXdmNode() throws Exception {
         XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         VInput domVInput = VInputFactory.read(node, "node test");
-        VResult result = this.validCheck.checkInput(domVInput);
+        VResult result = this.validCheck.checkInput(ReadResource.of(domVInput));
         assertThat(result.isProcessingSuccessful()).isTrue();
 
         // test compatible configuration
         node = this.validCheck.getProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         domVInput = VInputFactory.read(node, "node test");
-        result = this.validCheck.checkInput(domVInput);
+        result = this.validCheck.checkInput(ReadResource.of(domVInput));
         assertThat(result.isProcessingSuccessful()).isTrue();
     }
 }

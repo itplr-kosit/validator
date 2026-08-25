@@ -1,17 +1,20 @@
 package org.kosit.validator.docs;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.kosit.validator.api.VResult;
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VInput;
-import org.kosit.validator.api.VInputFactory;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.TestEngineInformation;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.validator.impl.conformatron.source.ResourceHelper;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.w3c.dom.Document;
 
@@ -20,25 +23,27 @@ import org.w3c.dom.Document;
  */
 public class StandardExample {
 
-    @SuppressWarnings("unused")
-    public void run(final Path testDocument) throws URISyntaxException {
+    public void run(final Path testDocument) throws URISyntaxException, IOException {
         // Load scenarios.xml from classpath
         final URL scenarios = this.getClass().getClassLoader().getResource("examples/simple/scenarios-with-relative-paths.xml");
         // Load the rest of the specific Validator configuration from classpath
         final VConfiguration config = VConfiguration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
         // Use the default validation procedure
         final VCheck validator = new DefaultVCheck(new TestEngineInformation(), config);
-        // Validate a single document
-        final VInput document = VInputFactory.read(testDocument);
-        // Get Result including information about the whole validation
-        final VResult report = validator.checkInput(document);
-        System.out.println("Is processing successful=" + report.isProcessingSuccessful());
-        // Get report document if processing was successful
-        Document result = null;
-        if (report.isProcessingSuccessful()) {
-            result = report.getReportDocument();
+        // Temporary file helper
+        try ( ResourceHelper resHelper = new ResourceHelper() ) {
+            // Validate a single document
+            final CTReadResource document = ReadResource.of(Resource.of(testDocument), resHelper);
+            // Get Result including information about the whole validation
+            final VResult report = validator.checkInput(document);
+            System.out.println("Is processing successful=" + report.isProcessingSuccessful());
+            // Get report document if processing was successful
+            Document result = null;
+            if (report.isProcessingSuccessful()) {
+                result = report.getReportDocument();
+            }
+            // continue processing results...
         }
-        // continue processing results...
     }
 
     public static void main(final String[] args) throws Exception {

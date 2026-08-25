@@ -1,7 +1,8 @@
 package org.kosit.validator.impl.conformatron.report;
 
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HexFormat;
@@ -22,6 +23,7 @@ import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.validation.CTValidationStandard;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
@@ -105,13 +107,13 @@ public final class CvrlWriter {
      * @param results the pipeline results; {@code parse} must not be {@code null}
      * @param out the target stream (UTF-8)
      */
-    public void write(final String documentName, final PipelineResults results, final OutputStream out) {
+    public void write(final String documentName, final PipelineResults results, final OutputStream out) throws IOException {
         if (results == null || results.parse() == null) {
             throw new IllegalArgumentException("results with at least the parse step are required");
         }
         try {
-            final XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, "UTF-8");
-            writer.writeStartDocument("UTF-8", "1.0");
+            final XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, StandardCharsets.UTF_8.name());
+            writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
             newline(writer, 0);
             writer.writeStartElement("reports");
             writer.writeDefaultNamespace(NS_XVRL);
@@ -177,7 +179,7 @@ public final class CvrlWriter {
     }
 
     private void writeStepReport(final XMLStreamWriter writer, final CTActionType action, final CTDetectionList detections,
-            final CTPreparedRuleSet ruleSet, final CTParsedValidationSource parseEvidence) throws XMLStreamException {
+            final CTPreparedRuleSet ruleSet, final CTParsedValidationSource parseEvidence) throws XMLStreamException, IOException {
         newline(writer, 1);
         writer.writeStartElement(NS_XVRL, "report");
         newline(writer, 2);
@@ -236,7 +238,7 @@ public final class CvrlWriter {
     }
 
     private static void writeDetection(final XMLStreamWriter writer, final CTDetection detection,
-            final CTParsedValidationSource parseEvidence) throws XMLStreamException {
+            final CTParsedValidationSource parseEvidence) throws XMLStreamException, IOException {
         newline(writer, 2);
         writer.writeStartElement(NS_XVRL, "detection");
         writer.writeAttribute("severity", detection.getSeverity().getID());
@@ -267,7 +269,8 @@ public final class CvrlWriter {
      * only ever written for a successfully parsed document — failed content is not echoed (injection safety); non-XML
      * sources would be base64 with their own mime type (not applicable to the XML facade).
      */
-    private static void writeParseEvidence(final XMLStreamWriter writer, final CTParsedValidationSource source) throws XMLStreamException {
+    private static void writeParseEvidence(final XMLStreamWriter writer, final CTParsedValidationSource source)
+            throws XMLStreamException, IOException {
         newline(writer, 3);
         writer.writeStartElement(NS_XVRL, "message");
         writer.writeAttribute(NS_CVRL, "algorithm", source.getSource().getReadResource().getHashAlgorithmName());
@@ -276,7 +279,7 @@ public final class CvrlWriter {
         newline(writer, 3);
         writer.writeStartElement(NS_XVRL, "message");
         writer.writeAttribute(NS_CVRL, "mime-type", "application/xml");
-        embedDocument(writer, source.getSourceBytes());
+        embedDocument(writer, source.getSource().getReadResource());
         writer.writeEndElement();
     }
 
@@ -284,11 +287,12 @@ public final class CvrlWriter {
      * Streams the retained source bytes into the report as element content (flat copy, XML declaration and DTD
      * excluded). The copy is event-based so the embedded document keeps its own namespaces without re-serialization.
      */
-    private static void embedDocument(final XMLStreamWriter writer, final byte[] bytes) throws XMLStreamException {
+    private static void embedDocument(final XMLStreamWriter writer, final CTReadResource readResource)
+            throws XMLStreamException, IOException {
         final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
         inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-        final XMLStreamReader reader = inputFactory.createXMLStreamReader(new ByteArrayInputStream(bytes));
+        final XMLStreamReader reader = inputFactory.createXMLStreamReader(readResource.getSourceStream());
         try {
             while (reader.hasNext()) {
                 copyEvent(writer, reader, reader.next());

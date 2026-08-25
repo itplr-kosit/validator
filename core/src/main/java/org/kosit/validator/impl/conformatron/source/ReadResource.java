@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -55,10 +56,13 @@ public final class ReadResource implements CTReadResource {
 
     private final byte @NonNull [] hashBytes;
 
-    public static @NonNull ReadResource of(final @NonNull VInput input) throws IOException {
+    @Deprecated(forRemoval = true)
+    public static @NonNull ReadResource of(final @NonNull VInput input) {
         try {
             // Always read in memory
             return new ReadResource(Resource.of(input), HASH_ALGORITHM_NAME, null, srcLength -> false);
+        } catch (final IOException e) {
+            throw new UncheckedIOException("Error opening/reading old input", e);
         } catch (final NoSuchAlgorithmException e) {
             // Should never happen
             throw new IllegalStateException("Unknown hash algorithm name '" + HASH_ALGORITHM_NAME + "'", e);
@@ -68,6 +72,16 @@ public final class ReadResource implements CTReadResource {
     public static @NonNull ReadResource of(final @NonNull CTResource res, final @NonNull ResourceHelper resHelper) throws IOException {
         try {
             return new ReadResource(res, HASH_ALGORITHM_NAME, resHelper, srcLength -> srcLength < 0 || srcLength > MAX_IN_MEMORY_BYTES);
+        } catch (final NoSuchAlgorithmException e) {
+            // Should never happen
+            throw new IllegalStateException("Unknown hash algorithm name '" + HASH_ALGORITHM_NAME + "'", e);
+        }
+    }
+
+    public static @NonNull ReadResource inMemory(final @NonNull CTResource res) throws IOException {
+        try {
+            // Always read in memory
+            return new ReadResource(res, HASH_ALGORITHM_NAME, null, srcLength -> false);
         } catch (final NoSuchAlgorithmException e) {
             // Should never happen
             throw new IllegalStateException("Unknown hash algorithm name '" + HASH_ALGORITHM_NAME + "'", e);

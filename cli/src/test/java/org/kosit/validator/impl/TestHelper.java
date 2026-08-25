@@ -12,10 +12,9 @@ import java.util.List;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.jaxb.JaxbConversionService;
-import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.api.xsd.ValidatorSchemas;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
@@ -162,11 +161,11 @@ public class TestHelper {
         }
     }
 
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final VInput input) {
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final CTReadResource input) {
         return new DocumentParseTask(processor).parseDocument(input);
     }
 
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final VInput input) {
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final CTReadResource input) {
         return new DocumentParseTask(getTestProcessor()).parseDocument(input);
     }
 

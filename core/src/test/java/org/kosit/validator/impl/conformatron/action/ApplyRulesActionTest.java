@@ -2,7 +2,9 @@ package org.kosit.validator.impl.conformatron.action;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +13,10 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.VInputFactory;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.kosit.validator.helper.ResourceHelperExtension;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.TestHelper;
@@ -21,20 +25,28 @@ import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesA
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
 
 /**
  * Tests {@link ApplyRulesAction} (step 7) with real rule sets prepared by steps 5+6.
  */
 public class ApplyRulesActionTest {
 
+    @RegisterExtension
+    private final ResourceHelperExtension resHelper = new ResourceHelperExtension();
+
     private final ApplyRulesAction action = new ApplyRulesAction();
 
     private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
-    private static CTParsedValidationSource parse(final URI document) {
-        final ParseXMLResult parsed = new ParseXMLAction().execute(VInputFactory.read(document));
-        assertThat(parsed.isSuccess()).isTrue();
+    private @NonNull CTParsedValidationSource parse(final @NonNull URI document) throws IOException {
+        final ParseXMLResult parsed = new ParseXMLAction().execute(ReadResource.of(Resource.of(document), resHelper.get()));
+        assertNotNull(parsed);
+        assertTrue(parsed.isSuccess());
+        assertNotNull(parsed.getParsedSource());
+
         return parsed.getParsedSource();
     }
 
@@ -50,7 +62,7 @@ public class ApplyRulesActionTest {
     }
 
     @Test
-    public void testCleanRunAppliesAllRuleSetsInOrder() {
+    public void testCleanRunAppliesAllRuleSetsInOrder() throws IOException {
         final var step1 = parse(Simple.SIMPLE_VALID);
         assertNotNull(step1);
 
@@ -68,7 +80,7 @@ public class ApplyRulesActionTest {
     }
 
     @Test
-    public void testFindingsAreANegativeButValidResult() {
+    public void testFindingsAreANegativeButValidResult() throws IOException {
         final ApplyRulesActionResult result = this.action.execute(parse(Simple.SCHEMATRON_INVALID), prepare("simple.xsd", "simple.sch"));
 
         // the step succeeded even though the document has findings
@@ -79,7 +91,7 @@ public class ApplyRulesActionTest {
     }
 
     @Test
-    public void testSchemaViolationsAreReportedWithLocation() {
+    public void testSchemaViolationsAreReportedWithLocation() throws IOException {
         final ApplyRulesActionResult result = this.action.execute(parse(Simple.SCHEMA_INVALID), prepare("simple.xsd"));
 
         assertThat(result.isSuccess()).isTrue();
@@ -89,7 +101,7 @@ public class ApplyRulesActionTest {
     }
 
     @Test
-    public void testEngineFailureFailsFastAndSkipsRemaining() {
+    public void testEngineFailureFailsFastAndSkipsRemaining() throws IOException {
         final ApplyRulesActionResult result = this.action.execute(parse(Simple.SIMPLE_VALID),
                 prepare("simple-runtime-error.sch", "simple.sch"));
 
@@ -103,7 +115,7 @@ public class ApplyRulesActionTest {
     }
 
     @Test
-    public void testNoRuleSetsSkipsTheStep() {
+    public void testNoRuleSetsSkipsTheStep() throws IOException {
         final ApplyRulesActionResult result = this.action.execute(parse(Simple.SIMPLE_VALID), List.of());
 
         assertThat(result.status()).isEqualTo(CTStepResult.SKIPPED);

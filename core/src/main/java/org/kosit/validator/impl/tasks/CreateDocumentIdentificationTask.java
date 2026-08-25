@@ -45,8 +45,8 @@ public class CreateDocumentIdentificationTask implements CheckTask {
     public ProcessStepResult<DocumentIdentificationType, XMLSyntaxError> check(final Process process) {
         final DocumentIdentificationType documentIdentificationType = new DocumentIdentificationType();
         final DocumentIdentificationType.DocumentHash documentHash = new DocumentIdentificationType.DocumentHash();
-        documentHash.setHashAlgorithm(process.getInput().getDigestAlgorithm());
-        documentHash.setHashValue(process.getInput().getHashCode());
+        documentHash.setHashAlgorithm(process.getInput().getHashAlgorithmName());
+        documentHash.setHashValue(process.getInput().getHashBytes());
         documentIdentificationType.setDocumentHash(documentHash);
         documentIdentificationType.setDocumentReference(process.getInput().getName());
         addDocumentIdentification(process);

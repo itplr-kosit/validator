@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.stream.Collectors;
 
@@ -68,9 +69,9 @@ public class SaxonSecurityTest {
     }
 
     @Test
-    public void testXxe() {
+    public void testXxe() throws URISyntaxException {
         final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
-        final Result<XdmNode, XMLSyntaxError> result = TestHelper.parseDocument(VInputFactory.read(resource));
+        final Result<XdmNode, XMLSyntaxError> result = TestHelper.parseDocument(TestHelper.read(resource.toURI()));
         assertThat(result.isValid()).isFalse();
         assertThat(result.getObject()).isNull();
         assertThat(result.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining()))

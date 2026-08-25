@@ -2,6 +2,7 @@ package org.kosit.validator.api;
 
 import java.util.List;
 
+import org.conformatron.api.model.source.CTReadResource;
 import org.w3c.dom.Document;
 
 /**
@@ -27,7 +28,7 @@ public interface VCheck {
      * @return a result-{@link Document} (readonly)
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    default Document check(final VInput input) {
+    default Document check(final CTReadResource input) {
         final VResult result = checkInput(input);
         // readonly view of the document!!!
         return result.getReportDocument();
@@ -40,7 +41,7 @@ public interface VCheck {
      * @return a {@link VResult} object
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    VResult checkInput(VInput input);
+    VResult checkInput(CTReadResource input);
 
     /**
      * Checks an incoming xml files in batch mode. Processing is sequential. The result-{@link Document Documents} are
@@ -51,8 +52,8 @@ public interface VCheck {
      * @return list of result-{@link Document Documents} (readonly)
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    default List<Document> check(final List<? extends VInput> VInput) {
-        return VInput.stream().map(this::check).toList();
+    default List<Document> check(final List<? extends CTReadResource> input) {
+        return input.stream().map(this::check).toList();
     }
 
     /**
@@ -62,8 +63,8 @@ public interface VCheck {
      * @return list of {@link VResult}
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    default List<VResult> checkInput(final List<? extends VInput> VInput) {
-        return VInput.stream().map(this::checkInput).toList();
+    default List<VResult> checkInput(final List<? extends CTReadResource> input) {
+        return input.stream().map(this::checkInput).toList();
     }
 
 }

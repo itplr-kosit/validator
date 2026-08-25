@@ -2,9 +2,7 @@ package org.kosit.validator.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kosit.validator.api.VInputFactory.read;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,8 +101,8 @@ public class ScenarioRepositoryTest {
         assertThat(fallback).isSameAs(first.getFallbackScenario()).isNotSameAs(second.getFallbackScenario());
     }
 
-    private XdmNode load(final URI uri) throws IOException {
-        return TestHelper.parseDocument(this.configInstance.getContentRepository().getProcessor(), read(uri.toURL())).getObject();
+    private XdmNode load(final URI uri) {
+        return TestHelper.parseDocument(this.configInstance.getContentRepository().getProcessor(), TestHelper.read(uri)).getObject();
     }
 
     private XPathExecutable createXpath(final String expression) {

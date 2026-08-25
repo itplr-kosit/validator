@@ -1,7 +1,6 @@
 package org.kosit.validator.impl.conformatron.engine;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.api.VInputFactory.read;
 
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTStandardSeverity;
@@ -10,7 +9,7 @@ import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XMLDetection;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation.AdHocValidationResult;
 
 /**
@@ -22,7 +21,7 @@ public class SchematronValidationTest {
 
     @Test
     public void testConformantDocument() {
-        final AdHocValidationResult result = this.validation.validate(read(Simple.SIMPLE_VALID),
+        final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
                 Simple.REPOSITORY_URI.resolve("simple.sch"));
 
         assertThat(result.isSuccess()).isTrue();
@@ -33,7 +32,7 @@ public class SchematronValidationTest {
 
     @Test
     public void testDocumentWithFindings() {
-        final AdHocValidationResult result = this.validation.validate(read(Simple.SCHEMATRON_INVALID),
+        final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SCHEMATRON_INVALID),
                 Simple.REPOSITORY_URI.resolve("simple.sch"));
 
         assertThat(result.isSuccess()).isTrue();
@@ -44,7 +43,7 @@ public class SchematronValidationTest {
 
     @Test
     public void testProcessingErrorFailsTheRun() {
-        final AdHocValidationResult result = this.validation.validate(read(Simple.SIMPLE_VALID),
+        final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
                 Simple.REPOSITORY_URI.resolve("simple-runtime-error.sch"));
 
         assertThat(result.isSuccess()).isFalse();
@@ -54,12 +53,12 @@ public class SchematronValidationTest {
         assertThat(result.detections().getWorstSeverity().getNumericLevel()).isEqualTo(CTStandardSeverity.ERROR.getNumericLevel());
         // document identity is retained even on failure
         assertThat(result.parsedSource()).isNotNull();
-        assertThat(result.parsedSource().getHashBytes()).isNotEmpty();
+        assertThat(result.parsedSource().getSource().getReadResource().getHashBytes()).isNotEmpty();
     }
 
     @Test
     public void testMissingSchematronFailsInRetrieveStep() {
-        final AdHocValidationResult result = this.validation.validate(read(Simple.SIMPLE_VALID),
+        final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
                 Simple.REPOSITORY_URI.resolve("does-not-exist.sch"));
 
         assertThat(result.isSuccess()).isFalse();
@@ -69,10 +68,10 @@ public class SchematronValidationTest {
 
     @Test
     public void testNotWellformedDocumentFailsBeforeRules() {
-        final AdHocValidationResult result = this.validation.validate(read(Simple.NOT_WELLFORMED),
+        final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.NOT_WELLFORMED),
                 Simple.REPOSITORY_URI.resolve("simple.sch"));
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.detections().getAll()).extracting("code").contains(ParseXMLAction.CODE_NOT_WELLFORMED);
+        assertThat(result.detections().getAll()).extracting("code").contains(XMLDetection.CODE_NOT_WELLFORMED);
     }
 }

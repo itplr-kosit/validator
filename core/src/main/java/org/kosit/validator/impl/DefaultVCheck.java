@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.svrl.impl.SvrlConversionService;
 import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
@@ -97,7 +97,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
-    public VResult checkInput(final VInput input) {
+    public VResult checkInput(final CTReadResource input) {
         final Process checkProcess = new Process(input, createXVRLMetadata());
         return runCheckInternal(checkProcess);
     }
@@ -108,7 +108,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
-    public VResult validate(final VInput input) {
+    public VResult validate(final CTReadResource input) {
         return checkInput(input);
     }
 
@@ -117,7 +117,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
      * {@link SchematronValidation} engine (see {@link ValidationEngine}).
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    public SchematronValidation.AdHocValidationResult validateAdHoc(final VInput input, final URI schematron) {
+    public SchematronValidation.AdHocValidationResult validateAdHoc(final CTReadResource input, final URI schematron) {
         return this.adHocValidation.validate(input, schematron);
     }
 

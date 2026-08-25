@@ -2,10 +2,10 @@ package org.kosit.validator.impl.conformatron.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kosit.validator.api.VInputFactory.read;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
@@ -17,7 +17,7 @@ import org.kosit.validator.impl.tasks.TestScenarioBuilder;
 public class ScenarioMatchTest {
 
     private static ParseXMLResult parseSimple() {
-        return new ParseXMLAction().execute(read(Simple.SIMPLE_VALID));
+        return new ParseXMLAction().execute(TestHelper.read(Simple.SIMPLE_VALID));
     }
 
     private static Scenario createNamedScenario() {

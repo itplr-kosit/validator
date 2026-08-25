@@ -2,17 +2,17 @@ package org.kosit.validator.impl.conformatron.action;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kosit.validator.api.VInputFactory.read;
 
 import java.util.List;
 
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
+import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
@@ -33,7 +33,7 @@ public class SelectScenarioActionTest {
     private final SelectScenarioAction selectAction = new SelectScenarioAction();
 
     private static XdmNodeValidationSource parseSimple() {
-        final VInput input = read(Simple.SIMPLE_VALID);
+        final CTReadResource input = TestHelper.read(Simple.SIMPLE_VALID);
         // same processor as the scenario match executables (Saxon configuration compatibility)
         final DocumentParseTask.ParseOutcome outcome = new DocumentParseTask(ProcessorProvider.getProcessor()).parseRetaining(input);
         return outcome.parsedSource();
@@ -55,7 +55,7 @@ public class SelectScenarioActionTest {
     @Test
     public void testDetectAcceptsDomParsedContentViaWrapping() {
         // the step-2 reference action produces a DOM source; a configured processor wraps it for the XPath matching
-        final ParseXMLResult parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(TestHelper.read(Simple.SIMPLE_VALID));
         final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
 
         final DetectScenariosResult result = new DetectScenariosAction(repository, ProcessorProvider.getProcessor())

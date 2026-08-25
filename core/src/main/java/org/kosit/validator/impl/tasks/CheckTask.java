@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.apache.commons.io.FilenameUtils;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
-import org.kosit.validator.api.VInput;
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.xvrl.model.XVRLMetadata;
@@ -57,7 +57,7 @@ public interface CheckTask {
         private boolean stopped;
 
         /** The document to be checked */
-        private VInput input;
+        private CTReadResource input;
 
         /**
          * Conformatron handshake object carrying the parsed document (immutable byte array, SHA-512 hash, parsed
@@ -80,11 +80,11 @@ public interface CheckTask {
          */
         private CTScenarioMatch scenarioMatch;
 
-        public Process(final VInput input) {
+        public Process(final CTReadResource input) {
             this(input, new XVRLMetadata());
         }
 
-        public Process(final VInput input, final XVRLMetadata xvrlMetadata) {
+        public Process(final CTReadResource input, final XVRLMetadata xvrlMetadata) {
             this.input = input;
             this.metadata = xvrlMetadata;
         }
@@ -164,7 +164,7 @@ public interface CheckTask {
         /**
          * @return The document to be checked
          */
-        public VInput getInput() {
+        public CTReadResource getInput() {
             return this.input;
         }
 
@@ -187,7 +187,7 @@ public interface CheckTask {
         /**
          * @param input The input to be checked
          */
-        public void setInput(final VInput input) {
+        public void setInput(final CTReadResource input) {
             this.input = input;
         }
 

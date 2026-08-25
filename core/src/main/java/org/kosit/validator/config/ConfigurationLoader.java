@@ -1,6 +1,6 @@
 package org.kosit.validator.config;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +11,14 @@ import javax.xml.validation.Schema;
 import org.apache.commons.lang3.Strings;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenariosConversionService;
 import org.kosit.validator.impl.SchemaProvider;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
@@ -65,13 +66,13 @@ public class ConfigurationLoader {
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
             final Result<XdmNode, XMLSyntaxError> result = new DocumentParseTask(processor)
-                    .parseDocument(VInputFactory.read(scenarioDefinition.toURL()));
+                    .parseDocument(ReadResource.inMemory(Resource.of(scenarioDefinition.toURL())));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition
                         + " is not supported.\nThis version only supports definitions of '" + SUPPORTED_MAJOR_VERSION_SCHEMA + "'");
             }
-        } catch (final MalformedURLException e) {
-            throw new IllegalStateException("Error reading definition file");
+        } catch (final IOException e) {
+            throw new IllegalStateException("Error reading definition file", e);
         }
     }
 

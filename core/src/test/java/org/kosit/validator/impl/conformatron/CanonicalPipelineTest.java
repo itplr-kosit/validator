@@ -1,7 +1,6 @@
 package org.kosit.validator.impl.conformatron;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.api.VInputFactory.read;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class CanonicalPipelineTest {
     /** Runs the full chain 2–8 and returns the step-8 result; asserts every intermediate step succeeded. */
     private ComputeConformanceActionResult runPipeline(final URI document, final List<String> trace) {
         // step 2: PARSE_DOCUMENT — DOM-based reference action, retains bytes + hash
-        final ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
         trace.addAll(codes(parsed.getDetectionList().getAll()));
 

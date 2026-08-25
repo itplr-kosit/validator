@@ -1,7 +1,6 @@
 package org.kosit.validator.impl.conformatron.report;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.api.VInputFactory.read;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,7 +55,7 @@ public class CvrlWriterTest {
     }
 
     private CvrlWriter.PipelineResults runPipeline(final URI document) {
-        final ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(TestHelper.read(document));
         if (!parsed.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
         }

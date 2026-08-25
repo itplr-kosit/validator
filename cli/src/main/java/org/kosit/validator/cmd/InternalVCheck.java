@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.conformatron.api.model.source.CTReadResource;
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.cmd.report.Grid;
@@ -100,7 +100,7 @@ class InternalVCheck extends DefaultVCheck {
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
-    public VResult checkInput(final VInput input) {
+    public VResult checkInput(final CTReadResource input) {
         final CheckTask.Process process = new CheckTask.Process(input, createXVRLMetadata());
         return runCheckInternal(process);
     }

@@ -2,7 +2,6 @@ package org.kosit.validator.impl.conformatron.action;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kosit.validator.api.VInputFactory.read;
 
 import java.net.URI;
 import java.util.List;
@@ -39,7 +38,7 @@ public class ComputeConformanceActionTest {
             List.of("simple.xsd", "simple.sch", "simple-runtime-error.sch"), null);
 
     private CTApplyRulesResult applyRules(final URI document, final String... references) {
-        final CTParsedValidationSource parsed = new ParseXMLAction().execute(read(document)).getParsedSource();
+        final CTParsedValidationSource parsed = new ParseXMLAction().execute(TestHelper.read(document)).getParsedSource();
         final List<CTValidationArtifactReference> refs = List.of(references).stream()
                 .map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(refs,
@@ -86,7 +85,7 @@ public class ComputeConformanceActionTest {
 
     @Test
     public void testEmptyApplyRulesResultSkipsTheStepButForwardsAResult() {
-        final CTParsedValidationSource parsed = new ParseXMLAction().execute(read(Simple.SIMPLE_VALID)).getParsedSource();
+        final CTParsedValidationSource parsed = new ParseXMLAction().execute(TestHelper.read(Simple.SIMPLE_VALID)).getParsedSource();
         final ComputeConformanceActionResult result = this.action.execute(ApplyRulesResult.empty(parsed), List.of(TARGET));
 
         assertThat(result.status()).isEqualTo(CTStepResult.SKIPPED);

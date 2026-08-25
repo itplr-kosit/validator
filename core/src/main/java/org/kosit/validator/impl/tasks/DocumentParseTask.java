@@ -13,9 +13,8 @@ import java.util.Objects;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
-import org.kosit.validator.api.VInput;
-import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.conformatron.source.ValidationSource;
 import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
 import org.kosit.validator.impl.input.StreamHelper;
@@ -78,7 +77,7 @@ public class DocumentParseTask implements CheckTask {
      * @param content a document
      * @return result of the parsing including any errors
      */
-    public Result<XdmNode, XMLSyntaxError> parseDocument(final VInput content) {
+    public Result<XdmNode, XMLSyntaxError> parseDocument(final CTReadResource content) {
         return parseRetaining(content).result();
     }
 
@@ -91,7 +90,7 @@ public class DocumentParseTask implements CheckTask {
      * @param content a document
      * @return the legacy parse result plus the conformatron handshake object (if available)
      */
-    public ParseOutcome parseRetaining(final @NonNull VInput content) {
+    public ParseOutcome parseRetaining(final @NonNull CTReadResource content) {
         Objects.requireNonNull(content);
 
         try {
@@ -103,7 +102,7 @@ public class DocumentParseTask implements CheckTask {
             final DocumentBuilder builder = this.processor.newDocumentBuilder();
             builder.setLineNumbering(true);
 
-            final Source source = content.getSource();
+            final Source source = content.getAsSource();
             final byte[] bytes = StreamHelper.tryReadBytes(source);
             if (bytes == null) {
                 // byte retention not possible for this source type; parse directly (legacy behavior)
@@ -114,8 +113,7 @@ public class DocumentParseTask implements CheckTask {
                 return new ParseOutcome(new Result<>(builder.build(source)), null);
             }
             final XdmNode doc = builder.build(new StreamSource(new ByteArrayInputStream(bytes), content.getName()));
-            final XdmNodeValidationSource parsedSource = new XdmNodeValidationSource(
-                    ValidationSource.completeXML(Resource.of(Resource.of(content), null)), bytes, doc);
+            final XdmNodeValidationSource parsedSource = new XdmNodeValidationSource(ValidationSource.completeXML(content), doc);
             return new ParseOutcome(new Result<>(doc), parsedSource);
         } catch (final SaxonApiException | IOException e) {
             if (LOGGER.isDebugEnabled())

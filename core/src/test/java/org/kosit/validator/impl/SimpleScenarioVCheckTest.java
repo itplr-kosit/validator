@@ -2,14 +2,11 @@ package org.kosit.validator.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.MalformedURLException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VInputFactory;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.impl.TestHelper.Simple;
 
 /**
@@ -28,23 +25,23 @@ public class SimpleScenarioVCheckTest {
     }
 
     @Test
-    public void testSimple() throws MalformedURLException {
-        final VResult result = this.implementation.checkInput(VInputFactory.read(Simple.SIMPLE_VALID.toURL()));
+    public void testSimple() {
+        final VResult result = this.implementation.checkInput(TestHelper.read(Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
-    public void testInvalid() throws MalformedURLException {
-        final VResult result = this.implementation.checkInput(VInputFactory.read(Simple.SCHEMA_INVALID.toURL()));
+    public void testInvalid() {
+        final VResult result = this.implementation.checkInput(TestHelper.read(Simple.SCHEMA_INVALID));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
         assertThat(result.getSchemaViolations()).isNotEmpty();
     }
 
     @Test
-    public void testUnknown() throws MalformedURLException {
-        final VResult result = this.implementation.checkInput(VInputFactory.read(Simple.UNKNOWN.toURL()));
+    public void testUnknown() {
+        final VResult result = this.implementation.checkInput(TestHelper.read(Simple.UNKNOWN));
         assertThat(result).isNotNull();
         assertThat(result.isProcessingSuccessful()).isTrue();
         assertThat(result.isAcceptable()).isFalse();
@@ -53,8 +50,8 @@ public class SimpleScenarioVCheckTest {
     }
 
     @Test
-    public void testWithoutAcceptMatch() throws MalformedURLException {
-        final VResult result = this.implementation.checkInput(VInputFactory.read(Simple.FOO.toURL()));
+    public void testWithoutAcceptMatch() {
+        final VResult result = this.implementation.checkInput(TestHelper.read(Simple.FOO));
         assertThat(result).isNotNull();
         assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
     }

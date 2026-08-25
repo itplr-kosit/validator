@@ -5,8 +5,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.svrl.impl.SvrlConversionService;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
@@ -46,8 +43,8 @@ public class SchematronValidationTaskTest {
     }
 
     @Test
-    public void testProcessingError() throws IOException, SaxonApiException {
-        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+    public void testProcessingError() throws SaxonApiException {
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
 
         final Result<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioResult.getObject();
@@ -65,8 +62,8 @@ public class SchematronValidationTaskTest {
     }
 
     @Test
-    public void testSchxsltRuntimeProcessingError() throws IOException {
-        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL())).build();
+    public void testSchxsltRuntimeProcessingError() {
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
         final Scenario scenario = process.getResult(ScenarioSelectionTask.KEY).getObject();
 
         // real SchXslt compilation (no mock): the schematron compiles fine but raises a dynamic
@@ -93,9 +90,9 @@ public class SchematronValidationTaskTest {
     }
 
     @Test
-    public void testXsltValid() throws MalformedURLException {
+    public void testXsltValid() {
         final VConfiguration c = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
-        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
@@ -104,9 +101,9 @@ public class SchematronValidationTaskTest {
     }
 
     @Test
-    public void testSchCompiledValid() throws MalformedURLException {
+    public void testSchCompiledValid() {
         final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
-        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID.toURL()))
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
@@ -115,9 +112,9 @@ public class SchematronValidationTaskTest {
     }
 
     @Test
-    public void testIsoSchCompiledValid() throws MalformedURLException {
+    public void testIsoSchCompiledValid() {
         final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
-        final CheckTask.Process process = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_ISO_VALID.toURL()))
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_ISO_VALID))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();

@@ -5,8 +5,8 @@ import static org.kosit.validator.impl.DateFactory.createTimestamp;
 import java.util.Collection;
 import java.util.List;
 
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.AcceptRecommendation;
-import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.api.XmlError;
@@ -69,7 +69,7 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
      * @return the assembled {@link VResult}
      */
     @Override
-    public VResult validate(final VInput input) {
+    public VResult validate(final CTReadResource input) {
         return run(new Process(input, createMetadata()));
     }
 

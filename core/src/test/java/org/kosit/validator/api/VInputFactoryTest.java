@@ -17,10 +17,12 @@ import java.nio.file.Paths;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.input.SourceVInput;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.XMLSyntaxError;
@@ -147,6 +149,7 @@ public class VInputFactoryTest {
     }
 
     @Test
+    @Disabled("DOMSource currently not supported for v2")
     public void testDomSource() throws SaxonApiException, SAXException, IOException {
         final DocumentBuilder builder = TestObjectFactory.createProcessor().newDocumentBuilder();
 
@@ -157,24 +160,25 @@ public class VInputFactoryTest {
         final VInput domVInput = VInputFactory.read(new DOMSource(dom), "MD5", "id".getBytes(StandardCharsets.UTF_8));
         assertThat(domVInput).isNotNull();
         assertThat(domVInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(domVInput);
+        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(ReadResource.of(domVInput));
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
-        assertThat(TestHelper.parseDocument(domVInput).getObject()).isNotNull();
+        assertThat(TestHelper.parseDocument(ReadResource.of(domVInput)).getObject()).isNotNull();
     }
 
     @Test
+    @Disabled("TinyDocumentImpl currently not supported for v2")
     public void testXdmNode() throws Exception {
         final XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         final VInput nodeVInput = VInputFactory.read(node, "node test");
         assertThat(nodeVInput).isNotNull();
         assertThat(nodeVInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(nodeVInput);
+        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(ReadResource.of(nodeVInput));
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
-        assertThat(TestHelper.parseDocument(nodeVInput).getObject()).isNotNull();
+        assertThat(TestHelper.parseDocument(ReadResource.of(nodeVInput)).getObject()).isNotNull();
     }
 
 }

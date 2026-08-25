@@ -26,15 +26,15 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.source.CTResource;
 import org.conformatron.api.model.validation.CTSyntax;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.kosit.validator.helper.ResourceHelperExtension;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XMLDetection;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.impl.conformatron.source.ResourceHelper;
 
 /**
  * Tests the first action built against the conformatron-api (step 2, {@code parse-document}).
@@ -47,19 +47,14 @@ public class ParseXMLActionTest {
 
     private static final String NOT_WELLFORMED = "<?xml version=\"1.0\"?><doc><child>content</doc>";
 
-    private ParseXMLAction action;
+    @RegisterExtension
+    private final ResourceHelperExtension resHelper = new ResourceHelperExtension();
 
-    private ResourceHelper resHelper;
+    private ParseXMLAction action;
 
     @BeforeEach
     public void setup() {
         this.action = new ParseXMLAction();
-        this.resHelper = new ResourceHelper();
-    }
-
-    @AfterEach
-    public void after() {
-        this.resHelper.close();
     }
 
     @Test
@@ -73,7 +68,7 @@ public class ParseXMLActionTest {
         final CTResource res = Resource.utf8("test.xml", WELLFORMED);
         assertNotNull(res);
 
-        final ReadResource readRes = ReadResource.of(res, resHelper);
+        final ReadResource readRes = ReadResource.of(res, resHelper.get());
         assertNotNull(readRes);
 
         final ParseXMLResult result = this.action.execute(readRes);
@@ -97,7 +92,7 @@ public class ParseXMLActionTest {
         final CTResource res = Resource.utf8("broken.xml", NOT_WELLFORMED);
         assertNotNull(res);
 
-        final ReadResource readRes = ReadResource.of(res, resHelper);
+        final ReadResource readRes = ReadResource.of(res, resHelper.get());
         assertNotNull(readRes);
 
         final ParseXMLResult result = this.action.execute(readRes);

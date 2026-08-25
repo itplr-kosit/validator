@@ -1,12 +1,10 @@
 package org.kosit.validator.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.api.VInputFactory.read;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
@@ -26,7 +24,7 @@ public class ValidationEngineTest {
     @Test
     public void testFullConformanceValidation() {
         final ValidationEngine<VResult> engine = createEngine();
-        final VResult result = engine.validate(read(Simple.SIMPLE_VALID));
+        final VResult result = engine.validate(TestHelper.read(Simple.SIMPLE_VALID));
 
         assertThat(result).isNotNull();
         assertThat(result.isProcessingSuccessful()).isTrue();
@@ -35,8 +33,8 @@ public class ValidationEngineTest {
     @Test
     public void testValidateMatchesLegacyCheckInput() {
         final DefaultVCheck engine = createEngine();
-        final VResult viaEngine = engine.validate(read(Simple.SIMPLE_VALID));
-        final VResult viaLegacy = engine.checkInput(read(Simple.SIMPLE_VALID));
+        final VResult viaEngine = engine.validate(TestHelper.read(Simple.SIMPLE_VALID));
+        final VResult viaLegacy = engine.checkInput(TestHelper.read(Simple.SIMPLE_VALID));
 
         assertThat(viaEngine.isProcessingSuccessful()).isEqualTo(viaLegacy.isProcessingSuccessful());
         assertThat(viaEngine.getAcceptRecommendation()).isEqualTo(viaLegacy.getAcceptRecommendation());
@@ -47,14 +45,15 @@ public class ValidationEngineTest {
         final ValidationEngine<AdHocValidationResult> engine = new SchematronValidation(TestHelper.getTestProcessor(),
                 Simple.REPOSITORY_URI.resolve("simple.sch"));
 
-        assertThat(engine.validate(read(Simple.SIMPLE_VALID)).isConformant()).isTrue();
-        assertThat(engine.validate(read(Simple.SCHEMATRON_INVALID)).isConformant()).isFalse();
+        assertThat(engine.validate(TestHelper.read(Simple.SIMPLE_VALID)).isConformant()).isTrue();
+        assertThat(engine.validate(TestHelper.read(Simple.SCHEMATRON_INVALID)).isConformant()).isFalse();
     }
 
     @Test
     public void testAdHocConvenienceOnDefaultCheck() {
         final DefaultVCheck engine = createEngine();
-        final AdHocValidationResult result = engine.validateAdHoc(read(Simple.SIMPLE_VALID), Simple.REPOSITORY_URI.resolve("simple.sch"));
+        final AdHocValidationResult result = engine.validateAdHoc(TestHelper.read(Simple.SIMPLE_VALID),
+                Simple.REPOSITORY_URI.resolve("simple.sch"));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.isConformant()).isTrue();

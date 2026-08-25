@@ -16,7 +16,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.io.FileUtils;
-import org.kosit.validator.api.VInput;
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.input.AbstractVInput;
@@ -110,8 +110,8 @@ public class SchemaValidationTask implements CheckTask {
 
     private SourceProvider resolveSource(final Process results) throws IOException, SaxonApiException {
         final SourceProvider source;
-        if (results.getInput() instanceof AbstractVInput && (((AbstractVInput) results.getInput()).supportsMultipleReads())) {
-            source = () -> results.getInput().getSource();
+        if (results.getInput() instanceof final AbstractVInput abstractInput && abstractInput.supportsMultipleReads()) {
+            source = () -> results.getInput().getAsSource();
         } else {
             final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
             source = serialize(results.getInput(), parseResult.getObject());
@@ -120,7 +120,7 @@ public class SchemaValidationTask implements CheckTask {
     }
 
     // intentionally return open stream/autoclosable here
-    private SerializedDocument serialize(final VInput input, final XdmNode object) throws IOException, SaxonApiException {
+    private SerializedDocument serialize(final CTReadResource input, final XdmNode object) throws IOException, SaxonApiException {
         final SerializedDocument doc;
         if (input instanceof final AbstractVInput abstractInput && abstractInput.getLength() < getInMemoryLimit()) {
             doc = new ByteArraySerializedDocument(this.processor);

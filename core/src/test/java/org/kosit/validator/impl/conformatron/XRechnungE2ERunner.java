@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,8 @@ import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
@@ -179,7 +180,7 @@ public final class XRechnungE2ERunner {
     /** Executes the pipeline; fields from the cancellation point onwards stay {@code null} (partial CVRL). */
     private CvrlWriter.PipelineResults runSteps(final Path file, final String name) {
         // step 2: PARSE_DOCUMENT
-        final ParseXMLResult parsed = new ParseXMLAction().execute(VInputFactory.read(file.toFile()));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(TestHelper.read(file.toFile()));
         if (!parsed.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
         }
@@ -266,8 +267,8 @@ public final class XRechnungE2ERunner {
         trace.addAll(applied.detections().getAll());
         trace.addAll(conformance.detections().getAll());
 
-        final String hash = parsed.getParsedSource().getHashAlgorithmName() + "="
-                + java.util.HexFormat.of().formatHex(parsed.getParsedSource().getHashBytes());
+        final String hash = parsed.getParsedSource().getSource().getReadResource().getHashAlgorithmName() + "="
+                + HexFormat.of().formatHex(parsed.getParsedSource().getSource().getReadResource().getHashBytes());
         final List<CTDetection> all = applied.detections().getAll();
         final long infos = count(all, CTStandardSeverity.NONE);
         final long warnings = count(all, CTStandardSeverity.WARNING);
