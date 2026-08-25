@@ -51,7 +51,7 @@ public interface VCheck {
      * @return list of result-{@link Document Documents} (readonly)
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    default List<Document> check(final List<VInput> VInput) {
+    default List<Document> check(final List<? extends VInput> VInput) {
         return VInput.stream().map(this::check).toList();
     }
 
@@ -62,7 +62,7 @@ public interface VCheck {
      * @return list of {@link VResult}
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    default List<VResult> checkInput(final List<VInput> VInput) {
+    default List<VResult> checkInput(final List<? extends VInput> VInput) {
         return VInput.stream().map(this::checkInput).toList();
     }
 

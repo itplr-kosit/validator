@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.xml.transform.Source;
@@ -30,28 +31,21 @@ import net.sf.saxon.s9api.XdmNode;
  *
  * @author Andreas Penski
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class VInputFactory {
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     static final String DEFAULT_ALGORITHM = "SHA-256";
 
     /**
      * Pseudo hashcode algorithm name, which indicates, that the hashcode of the {@link VInput} is actually the name.
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     static final String PSEUDO_NAME_ALGORITHM = "NAME";
 
     private static final String MESSAGE_OPEN_STREAM_ERROR = "Can not open stream from";
 
     private final String algorithm;
-
-    VInputFactory() {
-        this(null);
-    }
-
-    VInputFactory(final String specifiedAlgorithm) {
-        this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITHM;
-        // check validity
-        StreamHelper.createDigest(this.algorithm);
-    }
 
     /**
      * Reads a test document from the given path. The default checksum algorithm is used to compute the checksum.
@@ -59,7 +53,8 @@ public class VInputFactory {
      * @param path the test document
      * @return a test input object
      */
-    public static VInput read(final Path path) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ResourceVInput read(final Path path) {
         return read(path, DEFAULT_ALGORITHM);
     }
 
@@ -70,8 +65,9 @@ public class VInputFactory {
      * @param digestAlgorithm the checksum algorithm
      * @return a test input object
      */
-    public static VInput read(final Path path, final String digestAlgorithm) {
-        checkNull(path);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ResourceVInput read(final Path path, final String digestAlgorithm) {
+        Objects.requireNonNull(path);
         return read(path.toUri(), digestAlgorithm);
     }
 
@@ -81,7 +77,8 @@ public class VInputFactory {
      * @param file the test document
      * @return a test input object
      */
-    public static VInput read(final File file) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ResourceVInput read(final File file) {
         return read(file, DEFAULT_ALGORITHM);
     }
 
@@ -91,7 +88,8 @@ public class VInputFactory {
      * @param uri URI of the test document
      * @return a test input object
      */
-    public static VInput read(final URI uri) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ResourceVInput read(final URI uri) {
         return read(uri, DEFAULT_ALGORITHM);
     }
 
@@ -102,7 +100,8 @@ public class VInputFactory {
      * @param digestAlgorithm the checksum algorithm
      * @return a test input object
      */
-    public static VInput read(final URI uri, final String digestAlgorithm) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ResourceVInput read(final URI uri, final String digestAlgorithm) {
         try {
             return read(uri.toURL(), digestAlgorithm);
         } catch (final MalformedURLException e) {
@@ -116,7 +115,8 @@ public class VInputFactory {
      * @param url URL of the test document
      * @return a test input object
      */
-    public static VInput read(final URL url) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ResourceVInput read(final URL url) {
         return read(url, DEFAULT_ALGORITHM);
     }
 
@@ -127,8 +127,9 @@ public class VInputFactory {
      * @param digestAlgorithm the checksum algorithm
      * @return a test input object
      */
-    public static VInput read(final URL url, final String digestAlgorithm) {
-        checkNull(url);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ResourceVInput read(final URL url, final String digestAlgorithm) {
+        Objects.requireNonNull(url);
         checkNotEmpty(url.getFile());
         try {
             final URLConnection urlConnection = url.openConnection();
@@ -145,9 +146,10 @@ public class VInputFactory {
      * identification then.
      * 
      * @param source source
-     * @return an {@link VInput}
+     * @return an {@link SourceVInput}
      */
-    public static VInput read(final Source source) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static SourceVInput read(final Source source) {
         if (source instanceof StreamSource) {
             return read(source, source.getSystemId(), DEFAULT_ALGORITHM);
         }
@@ -165,12 +167,14 @@ public class VInputFactory {
      * @param name the digest algorithm
      * @return an {@link VInput}
      */
-    public static VInput read(final Source source, final String name) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static SourceVInput read(final Source source, final String name) {
         checkNotEmpty(name);
         return read(source, name, PSEUDO_NAME_ALGORITHM, name.getBytes());
     }
 
-    public static VInput read(final Source source, final String name, final String digestAlgorithm) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static SourceVInput read(final Source source, final String name, final String digestAlgorithm) {
         return read(source, name, digestAlgorithm, null);
     }
 
@@ -181,13 +185,15 @@ public class VInputFactory {
      * @param digestAlgorithm the digest algorithm
      * @return an {@link VInput}
      */
-    public static VInput read(final Source source, final String digestAlgorithm, final byte[] hashcode) {
-        checkNull(source);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static SourceVInput read(final Source source, final String digestAlgorithm, final byte[] hashcode) {
+        Objects.requireNonNull(source);
         return read(source, source.getSystemId(), digestAlgorithm, hashcode);
     }
 
-    public static VInput read(final Source source, final String name, final String digestAlgorithm, final byte[] hashcode) {
-        checkNull(source);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static SourceVInput read(final Source source, final String name, final String digestAlgorithm, final byte[] hashcode) {
+        Objects.requireNonNull(source);
         return new SourceVInput(source, name, digestAlgorithm, hashcode);
     }
 
@@ -198,8 +204,9 @@ public class VInputFactory {
      * @param digestAlgorithm the checksum algorithm
      * @return a test input object
      */
-    public static VInput read(final File file, final String digestAlgorithm) {
-        checkNull(file);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ResourceVInput read(final File file, final String digestAlgorithm) {
+        Objects.requireNonNull(file);
         try {
             return read(file.toURI().toURL(), digestAlgorithm);
         } catch (final IOException e) {
@@ -213,8 +220,9 @@ public class VInputFactory {
      * @param input URL of the test document
      * @return a test input object
      */
-    public static VInput read(final byte[] input, final String name) {
-        checkNull(input);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ByteArrayVInput read(final byte[] input, final String name) {
+        Objects.requireNonNull(input);
         return read(input, name, DEFAULT_ALGORITHM);
     }
 
@@ -225,8 +233,9 @@ public class VInputFactory {
      * @param digestAlgorithm the checksum algorithm
      * @return a test input object
      */
-    public static VInput read(final byte[] input, final String name, final String digestAlgorithm) {
-        checkNull(input);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static ByteArrayVInput read(final byte[] input, final String name, final String digestAlgorithm) {
+        Objects.requireNonNull(input);
         checkNotEmpty(name);
         return new ByteArrayVInput(input, name, digestAlgorithm);
     }
@@ -237,12 +246,6 @@ public class VInputFactory {
         }
     }
 
-    private static void checkNull(final Object input) {
-        if (input == null) {
-            throw new IllegalArgumentException("Input can not be null");
-        }
-    }
-
     /**
      * Reads a test document from the given {@link InputStream}.
      *
@@ -250,7 +253,8 @@ public class VInputFactory {
      * @param name the name/identifier of the test document
      * @return a test document in the read form
      */
-    public static VInput read(final InputStream inputStream, final String name) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static SourceVInput read(final InputStream inputStream, final String name) {
         return read(inputStream, name, DEFAULT_ALGORITHM);
     }
 
@@ -262,8 +266,9 @@ public class VInputFactory {
      * @param digestAlgorithm the checksum algorithm
      * @return a test document in the read form
      */
-    public static VInput read(final InputStream inputStream, final String name, final String digestAlgorithm) {
-        checkNull(inputStream);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static SourceVInput read(final InputStream inputStream, final String name, final String digestAlgorithm) {
+        Objects.requireNonNull(inputStream);
         return read(new StreamSource(inputStream, name), name, digestAlgorithm);
     }
 
@@ -273,13 +278,27 @@ public class VInputFactory {
      * 
      * @param node the node to read
      * @param name the name of the {@link VInput}
-     * @return an {@link VInput} to validate
+     * @return an {@link XdmNodeVInput} to validate
      */
-    public static VInput read(final XdmNode node, final String name) {
-        checkNull(node);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public static XdmNodeVInput read(final XdmNode node, final String name) {
+        Objects.requireNonNull(node);
         return new XdmNodeVInput(node, name, PSEUDO_NAME_ALGORITHM, name.getBytes());
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    VInputFactory() {
+        this(null);
+    }
+
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    VInputFactory(final String specifiedAlgorithm) {
+        this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITHM;
+        // check validity
+        StreamHelper.createDigest(this.algorithm);
+    }
+
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public String getAlgorithm() {
         return this.algorithm;
     }

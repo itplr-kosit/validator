@@ -23,9 +23,10 @@ import org.kosit.validator.impl.Scenario;
  *
  * @author Andreas Penski
  */
-
+@Deprecated(since = "2.0.0", forRemoval = true)
 public interface VConfiguration {
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * Returns a list of configured scenarios.
      *
@@ -33,6 +34,7 @@ public interface VConfiguration {
      */
     List<Scenario> getScenarios();
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * Returns the configured fallback scenario to use, in case no configured scenario match.
      *
@@ -40,6 +42,7 @@ public interface VConfiguration {
      */
     Scenario getFallbackScenario();
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * Returns the author of this configuration.
      *
@@ -47,6 +50,7 @@ public interface VConfiguration {
      */
     String getAuthor();
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * Returns the name of the specification
      *
@@ -54,6 +58,7 @@ public interface VConfiguration {
      */
     String getName();
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * The creation date of the config
      *
@@ -61,6 +66,7 @@ public interface VConfiguration {
      */
     String getDate();
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * Add some additional parameters to the validator configuration. Parameter usage depends on actual implementation
      * of {@link VCheck}
@@ -69,6 +75,7 @@ public interface VConfiguration {
      */
     Map<String, Object> getAdditionalParameters();
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * The content repository including resolving strategies.
      *
@@ -82,6 +89,7 @@ public interface VConfiguration {
      * @param scenarioDefinition the XML file with scenario definition
      * @return the loaded configuration
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     static ConfigurationLoader load(final URI scenarioDefinition) {
         return load(scenarioDefinition, null);
     }
@@ -93,6 +101,7 @@ public interface VConfiguration {
      * @param scenarioDefinition the XML file with scenario definition
      * @return the loaded configuration
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     static ConfigurationLoader load(final URI scenarioDefinition, final URI repository) {
         return new ConfigurationLoader(scenarioDefinition, repository);
     }
@@ -102,6 +111,7 @@ public interface VConfiguration {
      *
      * @return the Builder
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     static ConfigurationBuilder create() {
         return new ConfigurationBuilder();
     }

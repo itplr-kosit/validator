@@ -21,6 +21,7 @@ import javax.xml.transform.Source;
 @Deprecated(since = "2.0.0", forRemoval = true)
 public interface VInput {
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * The name of the input for document identification
      * 
@@ -28,6 +29,7 @@ public interface VInput {
      */
     String getName();
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * The hashcode for document identification
      * 
@@ -35,13 +37,15 @@ public interface VInput {
      */
     byte[] getHashCode();
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * The digest algorithm used for computing the {@link #getHashCode()}
      * 
-     * @return the name of the digest algorith
+     * @return the name of the digest algorithm
      */
     String getDigestAlgorithm();
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * Creates a new {@link Source } for this input which carries the actual data
      * 
