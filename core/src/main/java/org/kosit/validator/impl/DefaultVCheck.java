@@ -91,8 +91,8 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
     }
 
     @Override
-    public VResult checkInput(final VInput VInput) {
-        final Process checkProcess = new Process(VInput, createXVRLMetadata());
+    public VResult checkInput(final VInput input) {
+        final Process checkProcess = new Process(input, createXVRLMetadata());
         return runCheckInternal(checkProcess);
     }
 
@@ -101,16 +101,16 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
      * {@link #checkInput(VInput)}, executed by the {@link ConformanceValidation} mode class.
      */
     @Override
-    public VResult validate(final VInput VInput) {
-        return checkInput(VInput);
+    public VResult validate(final VInput input) {
+        return checkInput(input);
     }
 
     /**
      * Convenience for the ad-hoc mode: validates directly against the given Schematron using the
      * {@link SchematronValidation} engine (see {@link ValidationEngine}).
      */
-    public SchematronValidation.AdHocValidationResult validateAdHoc(final VInput VInput, final URI schematron) {
-        return this.adHocValidation.validate(VInput, schematron);
+    public SchematronValidation.AdHocValidationResult validateAdHoc(final VInput input, final URI schematron) {
+        return this.adHocValidation.validate(input, schematron);
     }
 
     protected VResult runCheckInternal(final Process checkProcess) {

@@ -70,14 +70,14 @@ public class VInputFactoryTest {
 
     @Test
     public void testInputByte() {
-        final VInput VInput = VInputFactory.read(SOME_VALUE.getBytes(), SOME_VALUE);
-        assertThat(VInput).isNotNull();
+        final VInput input = VInputFactory.read(SOME_VALUE.getBytes(), SOME_VALUE);
+        assertThat(input).isNotNull();
     }
 
     @Test
     public void testInputStream() {
-        final VInput VInput = VInputFactory.read(new ByteArrayInputStream(SOME_VALUE.getBytes()), SOME_VALUE);
-        assertThat(VInput).isNotNull();
+        final VInput input = VInputFactory.read(new ByteArrayInputStream(SOME_VALUE.getBytes()), SOME_VALUE);
+        assertThat(input).isNotNull();
     }
 
     @Test
@@ -87,14 +87,14 @@ public class VInputFactoryTest {
 
     @Test
     public void testInputFile() {
-        final VInput VInput = VInputFactory.read(new File(Simple.SIMPLE_VALID));
-        assertThat(VInput).isNotNull();
+        final VInput input = VInputFactory.read(new File(Simple.SIMPLE_VALID));
+        assertThat(input).isNotNull();
     }
 
     @Test
     public void testInputPath() {
-        final VInput VInput = VInputFactory.read(Paths.get(Simple.SIMPLE_VALID));
-        assertThat(VInput).isNotNull();
+        final VInput input = VInputFactory.read(Paths.get(Simple.SIMPLE_VALID));
+        assertThat(input).isNotNull();
     }
 
     @Test
@@ -110,8 +110,8 @@ public class VInputFactoryTest {
     @Test
     public void testEmptyInputName() {
         assertThrows(IllegalArgumentException.class, () -> {
-            final VInput VInput = VInputFactory.read(SOME_VALUE.getBytes(), "");
-            drain(VInput);
+            final VInput input = VInputFactory.read(SOME_VALUE.getBytes(), "");
+            drain(input);
         });
     }
 

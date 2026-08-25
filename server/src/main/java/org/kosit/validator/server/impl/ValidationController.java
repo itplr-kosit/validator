@@ -40,10 +40,10 @@ public class ValidationController implements ValidationResource {
 
     @Override
     public Response validateMinimal(File xmlFile) {
-        final VInput VInput = VInputFactory.read(xmlFile);
-        final VResult result = service.validate(VInput);
+        final VInput input = VInputFactory.read(xmlFile);
+        final VResult result = service.validate(input);
 
-        final CompactXVRLReportSummary compactReport = service.convertMinimalXvrl(VInput, result);
+        final CompactXVRLReportSummary compactReport = service.convertMinimalXvrl(input, result);
 
         MediaType best = headers.getAcceptableMediaTypes().stream()
                 .filter(mt -> mt.isCompatible(APPLICATION_JSON_TYPE) || mt.isCompatible(APPLICATION_XML_TYPE)).findFirst()

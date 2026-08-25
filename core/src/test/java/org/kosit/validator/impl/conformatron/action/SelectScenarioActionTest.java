@@ -33,9 +33,9 @@ public class SelectScenarioActionTest {
     private final SelectScenarioAction selectAction = new SelectScenarioAction();
 
     private static XdmNodeValidationSource parseSimple() {
-        final VInput VInput = read(Simple.SIMPLE_VALID);
+        final VInput input = read(Simple.SIMPLE_VALID);
         // same processor as the scenario match executables (Saxon configuration compatibility)
-        final DocumentParseTask.ParseOutcome outcome = new DocumentParseTask(ProcessorProvider.getProcessor()).parseRetaining(VInput);
+        final DocumentParseTask.ParseOutcome outcome = new DocumentParseTask(ProcessorProvider.getProcessor()).parseRetaining(input);
         return outcome.parsedSource();
     }
 

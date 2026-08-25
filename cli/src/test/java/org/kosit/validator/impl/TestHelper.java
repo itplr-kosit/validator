@@ -162,12 +162,12 @@ public class TestHelper {
         }
     }
 
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final VInput VInput) {
-        return new DocumentParseTask(processor).parseDocument(VInput);
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final VInput input) {
+        return new DocumentParseTask(processor).parseDocument(input);
     }
 
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final VInput VInput) {
-        return new DocumentParseTask(getTestProcessor()).parseDocument(VInput);
+    public static Result<XdmNode, XMLSyntaxError> parseDocument(final VInput input) {
+        return new DocumentParseTask(getTestProcessor()).parseDocument(input);
     }
 
     public static Processor getTestProcessor() {

@@ -106,8 +106,8 @@ public class Validator {
         final Map<String, VResult> results = new HashMap<>();
         Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
         long tick = System.currentTimeMillis();
-        for (final VInput VInput : targets) {
-            results.put(VInput.getName(), check.checkInput(VInput));
+        for (final VInput input : targets) {
+            results.put(input.getName(), check.checkInput(input));
             if (((System.currentTimeMillis() - tick) / 1000) > 5) {
                 tick = System.currentTimeMillis();
                 Printer.writeOut("{0}/{1} object(s) processed", results.size(), targets.size());

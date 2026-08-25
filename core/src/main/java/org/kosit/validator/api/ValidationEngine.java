@@ -28,8 +28,8 @@ public interface ValidationEngine<R> {
     /**
      * Validates the given document.
      *
-     * @param VInput the document to validate
+     * @param input the document to validate
      * @return the engine-specific result
      */
-    R validate(VInput VInput);
+    R validate(VInput input);
 }

@@ -12,6 +12,7 @@ import java.util.Collections;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import org.jspecify.annotations.NonNull;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.conformatron.model.ValidationSource;
 import org.kosit.validator.impl.conformatron.model.XdmNodeValidationSource;
@@ -88,7 +89,7 @@ public class DocumentParseTask implements CheckTask {
      * @param content a document
      * @return the legacy parse result plus the conformatron handshake object (if available)
      */
-    public ParseOutcome parseRetaining(final VInput content) {
+    public ParseOutcome parseRetaining(final @NonNull VInput content) {
         if (content == null) {
             throw new IllegalArgumentException("Input may not be null");
         }

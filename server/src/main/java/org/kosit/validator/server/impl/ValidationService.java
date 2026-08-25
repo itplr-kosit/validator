@@ -57,15 +57,15 @@ public class ValidationService {
         return configuration != null ? configuration.stream().flatMap(c -> c.getScenarios().stream()).toList() : Collections.emptyList();
     }
 
-    public VResult validate(final VInput VInput) {
+    public VResult validate(final VInput input) {
         long t0 = System.currentTimeMillis();
-        final VResult result = check.checkInput(VInput);
-        LOGGER.info("Validated {} input in {} ms", VInput.getName(), System.currentTimeMillis() - t0);
+        final VResult result = check.checkInput(input);
+        LOGGER.info("Validated {} input in {} ms", input.getName(), System.currentTimeMillis() - t0);
         return result;
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final VInput VInput, final VResult defaultResult) {
-        return convertMinimalXvrl(Map.of(VInput, defaultResult));
+    public CompactXVRLReportSummary convertMinimalXvrl(final VInput input, final VResult defaultResult) {
+        return convertMinimalXvrl(Map.of(input, defaultResult));
     }
 
     public CompactXVRLReportSummary convertMinimalXvrl(final Map<VInput, VResult> defaultResults) {

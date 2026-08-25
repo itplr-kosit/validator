@@ -23,12 +23,12 @@ public interface VCheck {
      * Checks an incoming xml {@link VInput Inputs}. The result-{@link Document} is readonly. To change the this
      * document you need to copy the nodes into an new {@link Document}.
      *
-     * @param VInput the resource / xml file to validate.
+     * @param input the resource / xml file to validate.
      * @return a result-{@link Document} (readonly)
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    default Document check(final VInput VInput) {
-        final VResult result = checkInput(VInput);
+    default Document check(final VInput input) {
+        final VResult result = checkInput(input);
         // readonly view of the document!!!
         return result.getReportDocument();
     }
@@ -36,11 +36,11 @@ public interface VCheck {
     /**
      * Checks an incoming xml file.
      *
-     * @param VInput the resource / xml file to validate.
+     * @param input the resource / xml file to validate.
      * @return a {@link VResult} object
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    VResult checkInput(VInput VInput);
+    VResult checkInput(VInput input);
 
     /**
      * Checks an incoming xml files in batch mode. Processing is sequential. The result-{@link Document Documents} are

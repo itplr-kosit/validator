@@ -120,10 +120,9 @@ public class SchemaValidationTask implements CheckTask {
     }
 
     // intentionally return open stream/autoclosable here
-    @SuppressWarnings("squid:S2095")
-    private SerializedDocument serialize(final VInput VInput, final XdmNode object) throws IOException, SaxonApiException {
+    private SerializedDocument serialize(final VInput input, final XdmNode object) throws IOException, SaxonApiException {
         final SerializedDocument doc;
-        if (VInput instanceof AbstractVInput && ((AbstractVInput) VInput).getLength() < getInMemoryLimit()) {
+        if (input instanceof final AbstractVInput abstractInput && abstractInput.getLength() < getInMemoryLimit()) {
             doc = new ByteArraySerializedDocument(this.processor);
         } else {
             doc = new FileSerializedDocument(this.processor);
@@ -147,7 +146,7 @@ public class SchemaValidationTask implements CheckTask {
         }
     }
 
-    private interface SerializedDocument extends AutoCloseable, SourceProvider {
+    private interface SerializedDocument extends SourceProvider {
 
         void serialize(XdmNode node) throws SaxonApiException, IOException;
 

@@ -56,7 +56,7 @@ public interface CheckTask {
         private boolean stopped;
 
         /** The document to be checked */
-        private VInput VInput;
+        private VInput input;
 
         /**
          * Conformatron handshake object carrying the parsed document (immutable byte array, SHA-512 hash, parsed
@@ -79,12 +79,12 @@ public interface CheckTask {
          */
         private CTScenarioMatch scenarioMatch;
 
-        public Process(final VInput VInput) {
-            this(VInput, new XVRLMetadata());
+        public Process(final VInput input) {
+            this(input, new XVRLMetadata());
         }
 
-        public Process(final VInput VInput, final XVRLMetadata xvrlMetadata) {
-            this.VInput = VInput;
+        public Process(final VInput input, final XVRLMetadata xvrlMetadata) {
+            this.input = input;
             this.metadata = xvrlMetadata;
         }
 
@@ -164,7 +164,7 @@ public interface CheckTask {
          * Das zu prüfende Dokument
          */
         public VInput getInput() {
-            return this.VInput;
+            return this.input;
         }
 
         public void setMetadata(final XVRLMetadata metadata) {
@@ -186,8 +186,8 @@ public interface CheckTask {
         /**
          * Das zu prüfende Dokument
          */
-        public void setInput(final VInput VInput) {
-            this.VInput = VInput;
+        public void setInput(final VInput input) {
+            this.input = input;
         }
 
         /**

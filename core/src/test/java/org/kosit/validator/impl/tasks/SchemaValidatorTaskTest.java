@@ -57,8 +57,8 @@ public class SchemaValidatorTaskTest {
 
     @Test
     public void testValidationFailure() throws MalformedURLException {
-        final VInput VInput = VInputFactory.read(Simple.SCHEMA_INVALID.toURL());
-        final Process process = TestProcessBuilder.create(VInput).build();
+        final VInput input = VInputFactory.read(Simple.SCHEMA_INVALID.toURL());
+        final Process process = TestProcessBuilder.create(input).build();
         final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
         final Result<Boolean, XMLSyntaxError> result = processStepResult.getResult();
         assertThat(result.isValid()).isFalse();

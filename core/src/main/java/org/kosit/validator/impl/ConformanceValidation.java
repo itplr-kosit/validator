@@ -65,12 +65,12 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     /**
      * Full conformance validation ({@link ValidationEngine} contract): runs the complete pipeline over the document.
      *
-     * @param VInput the document to validate
+     * @param input the document to validate
      * @return the assembled {@link VResult}
      */
     @Override
-    public VResult validate(final VInput VInput) {
-        return run(new Process(VInput, createMetadata()));
+    public VResult validate(final VInput input) {
+        return run(new Process(input, createMetadata()));
     }
 
     /**

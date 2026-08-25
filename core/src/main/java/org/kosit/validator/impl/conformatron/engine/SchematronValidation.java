@@ -67,15 +67,15 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
     /**
      * Validates the document against the Schematron fixed at construction time ({@link ValidationEngine} contract).
      *
-     * @param VInput the document to validate
+     * @param input the document to validate
      * @return the result including all detections
      */
     @Override
-    public AdHocValidationResult validate(final VInput VInput) {
+    public AdHocValidationResult validate(final VInput input) {
         if (this.schematron == null) {
             throw new IllegalStateException("No schematron configured for this engine instance");
         }
-        return validate(VInput, this.schematron);
+        return validate(input, this.schematron);
     }
 
     /**

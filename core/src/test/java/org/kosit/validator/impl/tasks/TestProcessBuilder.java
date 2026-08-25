@@ -33,15 +33,15 @@ public class TestProcessBuilder {
         return create(VInputFactory.read("<someXml></someXml>".getBytes(), "someCheck"));
     }
 
-    public static TestProcessBuilder create(final VInput VInput) {
-        return create(VInput, true);
+    public static TestProcessBuilder create(final VInput input) {
+        return create(input, true);
     }
 
-    public static TestProcessBuilder create(final VInput VInput, final boolean parse) {
+    public static TestProcessBuilder create(final VInput input, final boolean parse) {
         final TestProcessBuilder builder = new TestProcessBuilder();
-        builder.process = new Process(VInput, new XVRLMetadata());
+        builder.process = new Process(input, new XVRLMetadata());
         if (parse) {
-            builder.parse(VInput);
+            builder.parse(input);
         }
         builder.setScenario(TestScenarioBuilder.createDefault());
         return builder;
@@ -60,15 +60,15 @@ public class TestProcessBuilder {
         return createReport("report", someXml);
     }
 
-    private static ProcessStepResult<XdmNode, XMLSyntaxError> parseInput(final VInput VInput) {
+    private static ProcessStepResult<XdmNode, XMLSyntaxError> parseInput(final VInput input) {
         final ProcessStepResult<XdmNode, XMLSyntaxError> stepResult = new ProcessStepResult<>(DocumentParseTask.KEY);
-        stepResult.setResult(TestHelper.parseDocument(VInput));
+        stepResult.setResult(TestHelper.parseDocument(input));
         stepResult.setReport(new XVRLReport());
         return stepResult;
     }
 
-    public TestProcessBuilder setParseResult(final VInput VInput) {
-        this.process.addStepResult(parseInput(VInput));
+    public TestProcessBuilder setParseResult(final VInput input) {
+        this.process.addStepResult(parseInput(input));
         return this;
     }
 
@@ -133,8 +133,8 @@ public class TestProcessBuilder {
         return this.process;
     }
 
-    public TestProcessBuilder parse(final VInput VInput) {
-        final ProcessStepResult<XdmNode, XMLSyntaxError> stepResult = parseInput(VInput);
+    public TestProcessBuilder parse(final VInput input) {
+        final ProcessStepResult<XdmNode, XMLSyntaxError> stepResult = parseInput(input);
         this.process.addStepResult(stepResult);
         return this;
     }

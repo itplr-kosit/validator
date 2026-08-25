@@ -93,12 +93,12 @@ class InternalVCheck extends DefaultVCheck {
     /**
      * Validates the test documents and outputs information about any assertions.
      *
-     * @param VInput the test documents
+     * @param input the test documents
      * @return false if there are assertion errors, otherwise true
      */
     @Override
-    public VResult checkInput(final VInput VInput) {
-        final CheckTask.Process process = new CheckTask.Process(VInput, createXVRLMetadata());
+    public VResult checkInput(final VInput input) {
+        final CheckTask.Process process = new CheckTask.Process(input, createXVRLMetadata());
         return runCheckInternal(process);
     }
 
