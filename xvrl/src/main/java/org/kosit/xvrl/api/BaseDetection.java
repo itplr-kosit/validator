@@ -18,7 +18,7 @@ public interface BaseDetection {
     void setSeverity(XVRLDetection.Severity value);
 
     default List<String> getAllMessages() {
-        return getMessages().stream().flatMap(message -> message.getMessageStrings().stream()).collect(Collectors.toList());
+        return getMessages().stream().flatMap(message -> message.getMessageStrings().stream()).toList();
     }
 
     default String getErrorMessage() {

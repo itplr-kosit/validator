@@ -11,14 +11,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import org.kosit.validator.api.Configuration;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
@@ -32,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import net.sf.saxon.s9api.Processor;
 
 /**
- * Implements a builder style creation of a {@link Configuration}.
+ * Implements a builder style creation of a {@link VConfiguration}.
  * 
  * @author Andreas Penski
  */
@@ -256,12 +255,12 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Builds the actual {@link Configuration} by validating all builder inputs and constructing necessary objects.
+     * Builds the actual {@link VConfiguration} by validating all builder inputs and constructing necessary objects.
      *
      * @return a valid configuration
      * @throws IllegalStateException when the configuration is not valid/complete
      */
-    public Configuration build(final Processor processor) {
+    public VConfiguration build(final Processor processor) {
         final ContentRepository contentRepository = resolveContentRepository(processor);
         final List<Scenario> list = initializeScenarios(contentRepository);
         final Scenario fallbackScenario = initializeFallback(contentRepository);
@@ -293,7 +292,7 @@ public class ConfigurationBuilder {
         d.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, "")));
         s.setDescription(d);
         s.setName(configuration.getName());
-        s.getScenario().addAll(configuration.getScenarios().stream().map(Scenario::getConfiguration).collect(Collectors.toList()));
+        s.getScenario().addAll(configuration.getScenarios().stream().map(Scenario::getConfiguration).toList());
         return s;
     }
 
@@ -319,7 +318,7 @@ public class ConfigurationBuilder {
                 throw new IllegalStateException("Invalid configuration for scenario " + s.getName() + " found: " + msg);
             }
             return result.getObject();
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {

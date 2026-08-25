@@ -1,27 +1,26 @@
 package org.kosit.validator.config;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.Strings;
-import org.kosit.validator.api.Check;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.InputFactory;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenariosConversionService;
 import org.kosit.validator.impl.SchemaProvider;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.tasks.DocumentParseAction;
+import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.scenarios.ScenarioType;
@@ -35,7 +34,7 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
 
 /**
- * Configuration class that loads necessary {@link Check} configuration from an existing scenario.xml specification.
+ * Configuration class that loads necessary {@link VCheck} configuration from an existing scenario.xml specification.
  * This is the recommended option when an official configuration exists as is the case with 'xrechnung'.
  * 
  * @author Andreas Penski
@@ -66,14 +65,14 @@ public class ConfigurationLoader {
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
-            final Result<XdmNode, XMLSyntaxError> result = new DocumentParseAction(processor)
-                    .parseDocument(InputFactory.read(scenarioDefinition.toURL()));
+            final Result<XdmNode, XMLSyntaxError> result = new DocumentParseTask(processor)
+                    .parseDocument(ReadResource.inMemory(Resource.of(scenarioDefinition.toURL())));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition
                         + " is not supported.\nThis version only supports definitions of '" + SUPPORTED_MAJOR_VERSION_SCHEMA + "'");
             }
-        } catch (final MalformedURLException e) {
-            throw new IllegalStateException("Error reading definition file");
+        } catch (final IOException e) {
+            throw new IllegalStateException("Error reading definition file", e);
         }
     }
 
@@ -99,7 +98,7 @@ public class ConfigurationLoader {
     }
 
     private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
-        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).collect(Collectors.toList());
+        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).toList();
     }
 
     private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
@@ -125,7 +124,7 @@ public class ConfigurationLoader {
         return this.scenarioRepository;
     }
 
-    public Configuration build(final Processor processor) {
+    public VConfiguration build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
         final Scenarios def = loadScenarios(SchemaProvider.getScenarioSchema(), processor);
@@ -158,12 +157,11 @@ public class ConfigurationLoader {
         final ScenariosConversionService conversionService = new ScenariosConversionService();
         final Scenarios scenarios = conversionService.withSchema(scenarioSchema).withEventHandler(handler).readXml(this.scenarioDefinition,
                 Scenarios.class);
-        if (!handler.hasErrors()) {
-            LOGGER.info("Loading scenario content from {}", this.getScenarioRepository());
-        } else {
+        if (handler.hasErrors()) {
             throw new IllegalStateException(
                     "Can not load scenarios from " + getScenarioDefinition() + " due to " + handler.getErrorDescription());
         }
+        LOGGER.info("Loading scenario content from {}", this.getScenarioRepository());
         return scenarios;
     }
 

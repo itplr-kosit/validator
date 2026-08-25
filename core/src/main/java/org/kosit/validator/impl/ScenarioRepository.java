@@ -3,9 +3,8 @@ package org.kosit.validator.impl;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.model.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +26,9 @@ public class ScenarioRepository {
 
     public static final String DEFAULT_ID = DEFAULT + "_1";
 
-    private final List<Configuration> configuration;
+    private final List<VConfiguration> configuration;
 
-    public ScenarioRepository(final Configuration... configuration) {
+    public ScenarioRepository(final VConfiguration... configuration) {
         if (configuration.length == 0) {
             throw new IllegalArgumentException("Must provide at least one configuration");
         }
@@ -46,13 +45,25 @@ public class ScenarioRepository {
     }
 
     public List<Scenario> getScenarios() {
-        return this.configuration.stream().flatMap(c -> c.getScenarios().stream()).collect(Collectors.toList());
+        return this.configuration.stream().flatMap(c -> c.getScenarios().stream()).toList();
     }
 
     private String summarizeScenarios() {
         final StringBuilder b = new StringBuilder();
         getScenarios().forEach(s -> b.append(s.getName()).append('\n'));
         return b.toString();
+    }
+
+    /**
+     * Determines <b>all</b> scenarios whose match expression fires for the provided document (conformatron-api step 3,
+     * {@code DETECT_SCENARIOS}). Evaluation errors of single match expressions are logged and treated as non-match
+     * (legacy parity).
+     *
+     * @param document input document
+     * @return all matching scenarios, in configuration order; may be empty
+     */
+    public List<Scenario> findMatches(final XdmNode document) {
+        return getScenarios().stream().filter(s -> match(document, s)).toList();
     }
 
     /**
@@ -63,7 +74,7 @@ public class ScenarioRepository {
      */
     public Result<Scenario, String> selectScenario(final XdmNode document) {
         final Result<Scenario, String> result;
-        final List<Scenario> collect = getScenarios().stream().filter(s -> match(document, s)).collect(Collectors.toList());
+        final List<Scenario> collect = findMatches(document);
         if (collect.size() == 1) {
             result = new Result<>(collect.get(0));
         } else if (collect.isEmpty()) {

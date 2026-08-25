@@ -1,6 +1,7 @@
 package org.kosit.validator.impl.xml;
 
 import java.net.URI;
+import java.util.Objects;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
@@ -15,11 +16,13 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
  */
 public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
 
+    public StrictRelativeResolvingStrategy() {
+    }
+
     @Override
     public SchemaFactory createSchemaFactory() {
         forceOpenJdkXmlImplementation();
-        //
-        @SuppressWarnings("java:S2755")
+
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         disableExternalEntities(sf);
         allowExternalSchema(sf, "file");
@@ -38,16 +41,12 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
 
     @Override
     public Validator createValidator(final Schema schema) {
-        if (schema == null) {
-            throw new IllegalArgumentException("No schema supplied. Can not create validator");
-        }
+        Objects.requireNonNull(schema);
         forceOpenJdkXmlImplementation();
+
         final Validator validator = schema.newValidator();
         disableExternalEntities(validator);
         allowExternalSchema(validator, "file" /* allow nothing external */);
         return validator;
-    }
-
-    public StrictRelativeResolvingStrategy() {
     }
 }

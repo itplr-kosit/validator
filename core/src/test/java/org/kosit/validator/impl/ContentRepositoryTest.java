@@ -3,7 +3,6 @@ package org.kosit.validator.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import javax.xml.validation.Schema;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XsltExecutable;
@@ -30,12 +29,6 @@ public class ContentRepositoryTest {
     @BeforeEach
     public void setup() {
         this.repository = Simple.createContentRepository();
-    }
-
-    @Test
-    public void testCreateSchema() throws MalformedURLException {
-        final Schema schema = this.repository.createSchema(Helper.ASSERTION_SCHEMA.toURL());
-        assertThat(schema).isNotNull();
     }
 
     @Test
@@ -78,9 +71,9 @@ public class ContentRepositoryTest {
 
     @Test
     public void loadFromJar() {
-        assert Helper.JAR_REPOSITORY != null;
-        this.repository = new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
-                Helper.JAR_REPOSITORY);
+        assert TestHelper.JAR_REPOSITORY != null;
+        this.repository = new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
+                TestHelper.JAR_REPOSITORY);
         final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("report.xsl"));
         assertThat(xsltExecutable).isNotNull();
         final Schema schema = this.repository.createSchema(URI.create("main.xsd"));

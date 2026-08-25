@@ -2,16 +2,23 @@ package org.kosit.validator.impl.input;
 
 import java.io.BufferedInputStream;
 import java.io.FilterInputStream;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.io.input.CountingInputStream;
-import org.kosit.validator.api.Input;
+import org.apache.commons.io.input.BoundedInputStream;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.kosit.validator.api.VInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper for stream handling.
@@ -24,7 +31,7 @@ public class StreamHelper {
      * Helper class, which generates the hashcode while reading the stream e.g. for parsing the document. This allows
      * generating the hashcode without an additional reading step.
      */
-    @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
+    // efficient read is done by internally used stream
     private static class DigestingInputStream extends FilterInputStream {
 
         private final MessageDigest digest;
@@ -60,7 +67,6 @@ public class StreamHelper {
             return count;
         }
 
-        @SuppressWarnings("ResultOfMethodCallIgnored")
         private int peek() throws IOException {
             try {
                 mark(2);
@@ -74,36 +80,28 @@ public class StreamHelper {
         }
     }
 
-    @SuppressWarnings("squid:S4929") // efficient read is done by internally used stream
+    // efficient read is done by internally used stream
     private static class CountInputStream extends FilterInputStream {
 
         private final LazyReadInput reference;
 
-        public CountInputStream(final LazyReadInput input, final InputStream stream) {
-            super(new org.apache.commons.io.input.CountingInputStream(stream));
+        public CountInputStream(final LazyReadInput input, final InputStream stream) throws IOException {
+            super(BoundedInputStream.builder().setInputStream(stream).get());
             this.reference = input;
         }
 
         @Override
         public void close() throws IOException {
             super.close();
-            this.reference.setLength(((CountingInputStream) this.in).getByteCount());
+            this.reference.setLength(((BoundedInputStream) this.in).getCount());
         }
     }
 
-    private static final int EOF = -1;
-
     private static final int DEFAULT_BUFFER_SIZE = 4096;
-
-    private StreamHelper() {
-        // hide
-    }
 
     public static MessageDigest createDigest(final String algorithm) {
         try {
-            final MessageDigest digest;
-            digest = MessageDigest.getInstance(algorithm);
-            return digest;
+            return MessageDigest.getInstance(algorithm);
         } catch (final NoSuchAlgorithmException e) {
             // should not happen
             throw new IllegalArgumentException("Specified method " + algorithm + " is not available", e);
@@ -118,7 +116,11 @@ public class StreamHelper {
      * @return a wrapped stream
      */
     public static InputStream wrapCount(final LazyReadInput input, final InputStream stream) {
-        return new CountInputStream(input, stream);
+        try {
+            return new CountInputStream(input, stream);
+        } catch (final IOException e) {
+            throw new IllegalArgumentException("Failed to open counting stream", e);
+        }
     }
 
     /**
@@ -132,18 +134,51 @@ public class StreamHelper {
         return new DigestingInputStream(input, stream, createDigest(digestAlgorithm));
     }
 
+    /**
+     * Reads the entire content of the given {@link Source} into memory, so that the source document can be retained as
+     * an immutable byte array (conformatron-api step 2, {@code parse-document}). Reading happens through the supplied
+     * stream, so any digest/counting wrapping of the owning {@link VInput} stays intact.
+     *
+     * @param source the source to read
+     * @return the complete content, or {@code null} if the source type does not allow byte retention (callers must then
+     *         process the source directly)
+     * @throws IOException on read errors
+     */
+    public static byte[] tryReadBytes(final Source source) throws IOException {
+        if (source instanceof final StreamSource streamSource) {
+            if (streamSource.getInputStream() != null) {
+                try ( InputStream in = streamSource.getInputStream() ) {
+                    return in.readAllBytes();
+                }
+            }
+            if (streamSource.getSystemId() != null) {
+                try {
+                    final URI uri = URI.create(streamSource.getSystemId());
+                    if (uri.isAbsolute()) {
+                        try ( InputStream in = uri.toURL().openStream() ) {
+                            return in.readAllBytes();
+                        }
+                    }
+                } catch (final IllegalArgumentException e) {
+                    // not a URI; let the caller process the source directly
+                }
+            }
+        }
+        return null;
+    }
+
     public static BufferedInputStream wrapPeekable(final InputStream stream) {
         return new PeekableInputStream(stream);
     }
 
     /**
-     * Drains the {@link Input} without further processing. This is useful to computing hashcode etc.
+     * Drains the {@link VInput} without further processing. This is useful to computing hashcode etc.
      * 
      * @param input the input
      * @return the input drained once
      * @throws IOException on I/O errors
      */
-    public static Input drain(final Input input) throws IOException {
+    public static VInput drain(final VInput input) throws IOException {
         final StreamSource s = (StreamSource) input.getSource();
         try ( final InputStream stream = s.getInputStream() ) {
             drain(stream);
@@ -158,17 +193,64 @@ public class StreamHelper {
      * @param input the input
      * @throws IOException on I/O errors
      */
-    @SuppressWarnings("squid:S1854")
     public static void drain(final InputStream input) throws IOException {
         final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-
-        // noinspection unused
-        int n;
-
-        // noinspection StatementWithEmptyBody,UnusedAssignment
-        while (EOF != (n = input.read(buffer))) {
+        while (input.read(buffer) >= 0) {
             // nothing
         }
+    }
 
+    /**
+     * Flush the passed object encapsulating the declared {@link IOException}.
+     *
+     * @param aFlushable The flushable to be flushed. May be <code>null</code>.
+     * @return <code>true</code> if the object was successfully flushed.
+     */
+    @NonNull
+    public static boolean flush(@Nullable final Flushable aFlushable) {
+        if (aFlushable != null)
+            try {
+                aFlushable.flush();
+                return true;
+            } catch (final NullPointerException ex) {
+                // Happens if a java.io.FilterOutputStream is already closed!
+            } catch (final IOException ex) {
+                LOGGER.error("Failed to flush object " + aFlushable.getClass().getName(), ex);
+            }
+        return false;
+    }
+
+    /**
+     * Close the passed stream by encapsulating the declared {@link IOException}. If the passed object also implements
+     * the {@link Flushable} interface, it is tried to be flushed before it is closed.
+     *
+     * @param aCloseable The object to be closed. May be <code>null</code>.
+     * @return <code>true</code> if the object was successfully closed.
+     */
+    public static boolean close(@Nullable final AutoCloseable aCloseable) {
+        if (aCloseable != null) {
+            try {
+                // flush object (if available)
+                if (aCloseable instanceof final Flushable aFlushable)
+                    flush(aFlushable);
+
+                // close object
+                aCloseable.close();
+                return true;
+            } catch (final NullPointerException ex) {
+                // Happens if a java.io.FilterInputStream or java.io.FilterOutputStream
+                // has no underlying stream!
+            } catch (final Exception ex) {
+                LOGGER.error("Failed to close object " + aCloseable.getClass().getName(), ex);
+            }
+        }
+
+        return false;
+    }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StreamHelper.class);
+
+    private StreamHelper() {
+        // empty
     }
 }

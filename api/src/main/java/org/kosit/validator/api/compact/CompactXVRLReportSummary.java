@@ -3,7 +3,6 @@ package org.kosit.validator.api.compact;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -49,7 +48,7 @@ public class CompactXVRLReportSummary {
      * @return list of {@link CompactXVRLReport}
      */
     public List<CompactXVRLReport> getReports() {
-        return original.getReports().stream().map(CompactXVRLReport::new).collect(Collectors.toList());
+        return original.getReports().stream().map(CompactXVRLReport::new).toList();
     }
 
     /**

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- CVRL DRAFT 0 - the CVRL profile of XVRL as currently emitted by CvrlWriter.
+
+     Purpose: working basis for the CVRL workshop (2026-08-21). This XSD formalizes exactly what
+     the draft serializer produces (decisions D1-D10, see protokolle/cvrl_workshop_2026-08-21.md)
+     and validates all 86 generated example reports in e2e/comparison/v2_0/reports/.
+
+     It is a PROFILE: deliberately stricter than XVRL (fixed element order, required digest,
+     required creator name from the canonical action vocabulary). Once the decisions are
+     confirmed, this file moves to conformance-validation-specification as the normative schema
+     and should be cross-checked against the upstream XVRL RNC. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:xvrl="http://www.xproc.org/ns/xvrl"
+           xmlns:cvrl="urn:conformatron:cvrl:draft"
+           targetNamespace="http://www.xproc.org/ns/xvrl"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           version="0.1.0-DRAFT">
+
+    <xs:import namespace="urn:conformatron:cvrl:draft" schemaLocation="cvrl-extensions-draft-0.xsd"/>
+
+    <!-- ========== root ========== -->
+    <xs:element name="reports">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="metadata" type="xvrl:RootMetadataType"/>
+                <!-- D3: one report per step execution (APPLY_RULES: one per rule set), pipeline order -->
+                <xs:element name="report" type="xvrl:ReportType" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <!-- D5 -->
+            <xs:attribute ref="cvrl:conformant" use="required"/>
+            <xs:attribute ref="cvrl:status" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ========== metadata ========== -->
+    <xs:complexType name="RootMetadataType">
+        <xs:sequence>
+            <xs:element name="timestamp" type="xs:dateTime"/>
+            <xs:element name="validator" type="xvrl:ValidatorType"/>
+            <xs:element name="document" type="xvrl:DocumentType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ReportMetadataType">
+        <xs:sequence>
+            <xs:element name="creator" type="xvrl:CreatorType"/>
+            <!-- D10: currently the serialization time; becomes the execution time with ICTActionExecution -->
+            <xs:element name="timestamp" type="xs:dateTime"/>
+            <!-- D8: present exactly on APPLY_RULES reports -->
+            <xs:element name="schema" type="xvrl:SchemaType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValidatorType">
+        <xs:attribute name="name" type="xs:token" use="required"/>
+        <xs:attribute name="version" type="xs:token" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DocumentType">
+        <!-- D6: document by reference; embedding (audit mode) is open question F2 -->
+        <xs:attribute name="href" type="xs:anyURI" use="required"/>
+        <xs:attribute ref="cvrl:checksum"/>
+        <xs:attribute ref="cvrl:checksum-algorithm"/>
+    </xs:complexType>
+
+    <xs:complexType name="CreatorType">
+        <!-- D2: the canonical action names of ECTCanonicalAction are normative -->
+        <xs:attribute name="name" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="detect-syntax"/>
+                    <xs:enumeration value="parse-document"/>
+                    <xs:enumeration value="scenario-matcher"/>
+                    <xs:enumeration value="scenario-selector"/>
+                    <xs:enumeration value="artifact-retriever"/>
+                    <xs:enumeration value="rule-transpiler"/>
+                    <xs:enumeration value="apply-validation-rules"/>
+                    <xs:enumeration value="conformance-computer"/>
+                    <xs:enumeration value="decision-recommender"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="SchemaType">
+        <xs:attribute name="href" type="xs:anyURI" use="required"/>
+        <xs:attribute name="language" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="XSD"/>
+                    <xs:enumeration value="Schematron"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute ref="cvrl:engine-version"/>
+        <xs:attribute ref="cvrl:phase"/>
+    </xs:complexType>
+
+    <!-- ========== report ========== -->
+    <xs:complexType name="ReportType">
+        <xs:sequence>
+            <xs:element name="metadata" type="xvrl:ReportMetadataType"/>
+            <!-- D4: digest is REQUIRED on every report (stricter than XVRL) -->
+            <xs:element name="digest" type="xvrl:DigestType"/>
+            <xs:element name="detection" type="xvrl:DetectionType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DigestType">
+        <!-- D4: consistent attribute set (union of the two contradictory spec examples) -->
+        <xs:attribute name="valid" type="xs:boolean" use="required"/>
+        <xs:attribute name="worst-severity" type="xvrl:SeverityType" use="required"/>
+        <xs:attribute name="fatal-error-count" type="xs:nonNegativeInteger" use="required"/>
+        <xs:attribute name="error-count" type="xs:nonNegativeInteger" use="required"/>
+        <xs:attribute name="warning-count" type="xs:nonNegativeInteger" use="required"/>
+        <!-- distinct error codes, space-separated; empty when valid -->
+        <xs:attribute name="error-codes" type="xs:token" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DetectionType">
+        <xs:sequence>
+            <xs:element name="message" type="xs:string" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="severity" type="xvrl:SeverityType" use="required"/>
+        <!-- rule findings carry the assertion id (e.g. BR-CL-10); pipeline events carry the canonical step codes -->
+        <xs:attribute name="code" type="xs:token" use="required"/>
+        <!-- D9 -->
+        <xs:attribute ref="cvrl:line"/>
+        <xs:attribute ref="cvrl:col"/>
+    </xs:complexType>
+
+    <!-- XVRL severity vocabulary -->
+    <xs:simpleType name="SeverityType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="info"/>
+            <xs:enumeration value="warning"/>
+            <xs:enumeration value="error"/>
+            <xs:enumeration value="fatal-error"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

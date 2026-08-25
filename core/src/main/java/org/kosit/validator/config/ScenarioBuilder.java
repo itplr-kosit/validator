@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.validation.Schema;
 
@@ -143,7 +142,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     }
 
     /**
-     * Validate matching {@link org.kosit.validator.api.Input Inputs} with the specified schema configuration.
+     * Validate matching {@link VInput Inputs} with the specified schema configuration.
      * 
      * @param schema the schema configuration
      * @return this
@@ -166,7 +165,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     }
 
     /**
-     * Add a configuration for generating the final report for the {@link org.kosit.validator.api.Input}.
+     * Add a configuration for generating the final report for the {@link VInput}.
      * 
      * @param reportBuilder the report configuration
      * @return this
@@ -188,7 +187,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
             n.setPrefix(e.getKey());
             n.setValue(e.getValue());
             return n;
-        }).collect(Collectors.toList());
+        }).toList();
         scenario.getConfiguration().getNamespace().addAll(all);
     }
 

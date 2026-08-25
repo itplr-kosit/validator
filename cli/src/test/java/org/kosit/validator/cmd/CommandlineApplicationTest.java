@@ -1,7 +1,7 @@
 package org.kosit.validator.cmd;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.impl.Helper.ASSERTIONS;
+import static org.kosit.validator.impl.TestHelper.ASSERTIONS;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InternalCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternalVCheck.class);
 
     private final Path output = Paths.get("target/test-output");
 

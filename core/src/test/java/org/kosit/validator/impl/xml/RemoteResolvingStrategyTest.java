@@ -7,7 +7,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.impl.Helper.Resolving;
+import org.kosit.validator.impl.TestHelper.Resolving;
 
 /**
  * Tests {@link RemoteResolvingStrategy}.

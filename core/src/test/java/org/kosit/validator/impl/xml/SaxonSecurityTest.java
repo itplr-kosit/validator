@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.stream.Collectors;
 
@@ -12,10 +13,11 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.slf4j.Logger;
@@ -49,7 +51,7 @@ public class SaxonSecurityTest {
                 compiler.setURIResolver(resolver);
                 final XsltExecutable executable = compiler.compile(new StreamSource(resource.openStream()));
                 final XsltTransformer transformer = executable.load();
-                final Source document = InputFactory.read("<root/>".getBytes(), "dummy").getSource();
+                final Source document = ReadResource.inMemory(Resource.utf8("dummy", "<root/>")).getAsSource();
                 // transformer.getUnderlyingController().setUnparsedTextURIResolver(resolver);
                 transformer.setURIResolver(resolver);
                 transformer.setSource(document);
@@ -68,9 +70,9 @@ public class SaxonSecurityTest {
     }
 
     @Test
-    public void testXxe() {
+    public void testXxe() throws URISyntaxException {
         final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
-        final Result<XdmNode, XMLSyntaxError> result = Helper.parseDocument(InputFactory.read(resource));
+        final Result<XdmNode, XMLSyntaxError> result = TestHelper.parseDocument(TestHelper.read(resource.toURI()));
         assertThat(result.isValid()).isFalse();
         assertThat(result.getObject()).isNull();
         assertThat(result.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining()))

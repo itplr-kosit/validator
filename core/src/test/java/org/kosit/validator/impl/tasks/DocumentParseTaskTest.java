@@ -1,0 +1,80 @@
+package org.kosit.validator.impl.tasks;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTParsedValidationSourceXML;
+import org.conformatron.api.model.validation.CTSyntax;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.model.XMLSyntaxError;
+
+import net.sf.saxon.s9api.XdmNode;
+
+/**
+ * Tests the document parsing functionality.
+ *
+ * @author Andreas Penski
+ */
+public class DocumentParseTaskTest {
+
+    private DocumentParseTask action;
+
+    @BeforeEach
+    public void setup() {
+        this.action = new DocumentParseTask(TestHelper.createProcessor());
+    }
+
+    @Test
+    public void testSimple() {
+        final Result<XdmNode, XMLSyntaxError> result = this.action.parseDocument(TestHelper.read(Simple.SIMPLE_VALID));
+        assertThat(result).isNotNull();
+        assertThat(result.getObject()).isNotNull();
+        assertThat(result.getErrors()).isEmpty();
+        assertThat(result.isValid()).isTrue();
+    }
+
+    @Test
+    public void testIllformed() {
+        final Result<XdmNode, XMLSyntaxError> result = this.action.parseDocument(TestHelper.read(Simple.NOT_WELLFORMED));
+        assertThat(result).isNotNull();
+        assertThat(result.getErrors()).isNotEmpty();
+        assertThat(result.getObject()).isNull();
+        assertThat(result.isValid()).isFalse();
+    }
+
+    @Test
+    public void testNullInput() {
+        assertThrows(NullPointerException.class, () -> this.action.parseDocument(null));
+
+    }
+
+    @Test
+    public void testCheckCarriesConformatronParsedSource() {
+        final CheckTask.Process process = new CheckTask.Process(TestHelper.read(Simple.SIMPLE_VALID));
+        this.action.check(process);
+
+        final CTParsedValidationSource parsedSource = process.getParsedSource();
+        assertThat(parsedSource).isNotNull();
+        assertThat(parsedSource).isInstanceOf(CTParsedValidationSourceXML.class);
+        assertThat(parsedSource.isParsed()).isTrue();
+        assertThat(parsedSource.getParsedContent()).isInstanceOf(XdmNode.class);
+        assertThat(parsedSource.getParsedContent()).isNotNull();
+        assertThat(((CTParsedValidationSourceXML) parsedSource).getAsDom().getDocumentElement()).isNotNull();
+        assertThat(parsedSource.getSource().getDetectedSyntax()).isEqualTo(CTSyntax.XML);
+    }
+
+    @Test
+    public void testCheckLeavesNoParsedSourceOnFailure() {
+        final CheckTask.Process process = new CheckTask.Process(TestHelper.read(Simple.NOT_WELLFORMED));
+        this.action.check(process);
+
+        assertThat(process.getParsedSource()).isNull();
+        assertThat(process.isStopped()).isTrue();
+    }
+
+}

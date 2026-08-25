@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,22 +15,27 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.conformatron.api.annotation.Nonempty;
+import org.conformatron.api.model.source.CTReadResource;
 import org.fusesource.jansi.AnsiRenderer.Code;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.api.Result;
+import org.jspecify.annotations.NonNull;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
 import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.validator.impl.conformatron.source.ResourceHelper;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +47,6 @@ import net.sf.saxon.s9api.Processor;
  * 
  * @author Andreas Penski
  */
-@SuppressWarnings("squid:S3725")
 public class Validator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Validator.class);
@@ -85,8 +90,8 @@ public class Validator {
     private static ReturnValue processActions(final CommandLineOptions cmd) throws IOException {
         long start = System.currentTimeMillis();
         final Processor processor = ProcessorProvider.getProcessor();
-        final List<Configuration> config = getConfiguration(cmd);
-        final InternalCheck check = new InternalCheck(cmd.getEngineInformation(), processor, config.toArray(new Configuration[0]));
+        final List<VConfiguration> config = getConfiguration(cmd);
+        final InternalVCheck check = new InternalVCheck(cmd.getEngineInformation(), processor, config.toArray(new VConfiguration[0]));
         final CommandLineOptions.CliOptions cliOptions = getIfNull(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
         if (cliOptions.isExtractReport()) {
@@ -100,24 +105,26 @@ public class Validator {
         if (cliOptions.isPrintMemoryStats()) {
             check.getCheckSteps().add(new PrintMemoryStats());
         }
-        LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
-        final Collection<Input> targets = determineTestTargets(cliOptions);
-        start = System.currentTimeMillis();
-        final Map<String, Result> results = new HashMap<>();
-        Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
-        long tick = System.currentTimeMillis();
-        for (final Input input : targets) {
-            results.put(input.getName(), check.checkInput(input));
-            if (((System.currentTimeMillis() - tick) / 1000) > 5) {
-                tick = System.currentTimeMillis();
-                Printer.writeOut("{0}/{1} object(s) processed", results.size(), targets.size());
+        try ( ResourceHelper resHelper = new ResourceHelper() ) {
+            LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
+            final Collection<CTReadResource> targets = determineTestTargets(cliOptions, resHelper);
+            start = System.currentTimeMillis();
+            final Map<String, VResult> results = new HashMap<>();
+            Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
+            long tick = System.currentTimeMillis();
+            for (final CTReadResource input : targets) {
+                results.put(input.getName(), check.checkInput(input));
+                if (((System.currentTimeMillis() - tick) / 1000) > 5) {
+                    tick = System.currentTimeMillis();
+                    Printer.writeOut("{0}/{1} object(s) processed", results.size(), targets.size());
+                }
             }
+            final long processingTime = System.currentTimeMillis() - start;
+            Printer.writeOut("Processing of {0} object(s) completed in {1}ms", targets.size(), processingTime);
+            check.printResults(results);
+            LOGGER.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
+            return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
         }
-        final long processingTime = System.currentTimeMillis() - start;
-        Printer.writeOut("Processing of {0} object(s) completed in {1}ms", targets.size(), processingTime);
-        check.printResults(results);
-        LOGGER.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
-        return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
     }
 
     /**
@@ -125,7 +132,7 @@ public class Validator {
      *
      * @return a list of configurations of the scenarios and repositories passed in cmd
      */
-    private static List<Configuration> getConfiguration(final CommandLineOptions cmd) {
+    private static List<VConfiguration> getConfiguration(final CommandLineOptions cmd) {
         final List<ScenarioDefinition> scenarios = getIfNull(cmd.getScenarios(), Collections.emptyList());
         // Map from scenario name to scenario path
         final Map<String, Path> mappedScenarios = scenarios.stream()
@@ -139,14 +146,15 @@ public class Validator {
             final URI scenarioLocation = e.getValue().toUri();
             final URI repositoryLocation = findRepository(scenarioLocation, e.getKey(), mappedRepos);
             reportLoading(scenarioLocation, repositoryLocation);
-            final Configuration configuration = Configuration.load(scenarioLocation, repositoryLocation)
+            final VConfiguration configuration = VConfiguration.load(scenarioLocation, repositoryLocation)
                     .build(ProcessorProvider.getProcessor());
             reportConfiguration(configuration);
             return configuration;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private static void checkUnused(final Map<String, Path> scenarios, final Map<String, Path> repositories) {
+        // Must use collect for a mutable
         final List<Entry<String, Path>> unused = repositories.entrySet().stream().filter(e -> scenarios.get(e.getKey()) == null)
                 .collect(Collectors.toList());
         unused.removeIf(e -> e.getKey().equals(ScenarioRepository.DEFAULT_ID));
@@ -172,7 +180,7 @@ public class Validator {
         Printer.writeOut(EMPTY);
     }
 
-    private static void reportConfiguration(final Configuration configuration) {
+    private static void reportConfiguration(final VConfiguration configuration) {
         Printer.writeOut("Loaded \"{0}\" by {1} from {2} ", configuration.getName(), configuration.getAuthor(), configuration.getDate());
         Printer.writeOut("The following scenarios are available:");
         configuration.getScenarios().forEach(e -> {
@@ -207,10 +215,14 @@ public class Validator {
         return dir;
     }
 
-    private static Collection<Input> determineTestTargets(final CommandLineOptions.CliOptions cmd) throws IOException {
-        final Collection<Input> targets = new ArrayList<>();
-        if (cmd.getFiles() != null && !cmd.getFiles().isEmpty()) {
-            cmd.getFiles().forEach(e -> targets.addAll(determineTestTarget(e)));
+    @NonNull
+    @Nonempty
+    private static Collection<CTReadResource> determineTestTargets(final CommandLineOptions.CliOptions cmd, final ResourceHelper resHelper)
+            throws IOException {
+        final Collection<CTReadResource> targets = new ArrayList<>();
+        if (cmd.getFiles() != null) {
+            for (final var file : cmd.getFiles())
+                targets.addAll(determineTestTarget(file, resHelper));
         }
         if (isPiped()) {
             targets.add(readFromPipe());
@@ -222,31 +234,35 @@ public class Validator {
     }
 
     // sanitation is delegated to xml stack
-    @SuppressWarnings("java:S4829")
     private static boolean isPiped() throws IOException {
         return System.in.available() > 0;
     }
 
     // sanitation is delegated to xml stack
-    @SuppressWarnings("java:S4829")
-    private static Input readFromPipe() {
-        return InputFactory.read(System.in, "stdin");
+    private static CTReadResource readFromPipe() throws IOException {
+        return ReadResource.inMemory(Resource.stdin());
     }
 
-    private static Collection<Input> determineTestTarget(final Path d) {
+    private static Collection<CTReadResource> determineTestTarget(final Path d, final ResourceHelper resHelper) throws IOException {
         if (Files.isDirectory(d)) {
-            return listDirectoryTargets(d);
-        } else if (Files.exists(d)) {
-            return Collections.singleton(InputFactory.read(d));
+            return listDirectoryTargets(d, resHelper);
+        }
+        if (Files.exists(d)) {
+            return Collections.singleton(ReadResource.of(Resource.of(d), resHelper));
         }
         LOGGER.warn("The specified test target {} does not exist. Will be ignored", d);
         return Collections.emptyList();
     }
 
-    private static Collection<Input> listDirectoryTargets(final Path d) {
+    private static Collection<CTReadResource> listDirectoryTargets(final Path d, final ResourceHelper resHelper) {
         try ( Stream<Path> stream = Files.list(d) ) {
-            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(InputFactory::read)
-                    .collect(Collectors.toList());
+            return stream.filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".xml")).map(p -> {
+                try {
+                    return (CTReadResource) ReadResource.of(Resource.of(p), resHelper);
+                } catch (final IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }).toList();
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }
@@ -255,9 +271,8 @@ public class Validator {
     private static URI determineRepository(final Path d) {
         if (Files.isDirectory(d)) {
             return d.toUri();
-        } else {
-            throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
         }
+        throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
     }
 
     private static void assertFileExistance(final Path f, final String type) {

@@ -4,13 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.config.TestConfigurationFactory.createSimpleConfiguration;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.api.Result;
-import org.kosit.validator.impl.DefaultCheck;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.VResult;
+import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.TestEngineInformation;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 
 /**
  * @author Andreas Penski
@@ -20,10 +19,10 @@ public class SimpleConfigTest {
     @Test
     public void testSimpleWithApi() {
         //@formatter:off
-        final Configuration config = createSimpleConfiguration().build(Helper.getTestProcessor());
+        final VConfiguration config = createSimpleConfiguration().build(TestHelper.getTestProcessor());
         //@formatter:on
-        final DefaultCheck check = new DefaultCheck(new TestEngineInformation(), config);
-        final Result result = check.checkInput(InputFactory.read(Simple.SIMPLE_VALID));
+        final DefaultVCheck check = new DefaultVCheck(new TestEngineInformation(), config);
+        final VResult result = check.checkInput(TestHelper.read(Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
     }
 

@@ -144,19 +144,19 @@ public class JaxbConversionServiceTest {
 
     @Test
     public void writeNullThrows() {
-        assertThatThrownBy(() -> this.service.writeXml(null)).isInstanceOf(JaxbConversionException.class);
+        assertThatThrownBy(() -> this.service.writeXml(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void readNullSourceThrows() {
-        assertThatThrownBy(() -> this.service.readXml((URI) null, Person.class)).isInstanceOf(JaxbConversionException.class);
-        assertThatThrownBy(() -> this.service.readXml((String) null, Person.class)).isInstanceOf(JaxbConversionException.class);
-        assertThatThrownBy(() -> this.service.readXml((byte[]) null, Person.class)).isInstanceOf(JaxbConversionException.class);
+        assertThatThrownBy(() -> this.service.readXml((URI) null, Person.class)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> this.service.readXml((String) null, Person.class)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> this.service.readXml((byte[]) null, Person.class)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void readNullTypeThrows() {
-        assertThatThrownBy(() -> this.service.readXml("<person/>", null)).isInstanceOf(JaxbConversionException.class);
+        assertThatThrownBy(() -> this.service.readXml("<person/>", null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test

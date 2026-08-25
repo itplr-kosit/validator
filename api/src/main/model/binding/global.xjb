@@ -25,19 +25,13 @@
             <jaxb:package name="org.kosit.validator.model"/>
         </jaxb:schemaBindings>
         <jaxb:bindings node="//xs:complexType[@name='XMLSyntaxError']">
-            <inheritance:extends>org.kosit.validator.impl.model.BaseXMLSyntaxError</inheritance:extends>
+            <inheritance:extends>org.kosit.validator.impl.model.AbstractXMLSyntaxError</inheritance:extends>
         </jaxb:bindings>
     </jaxb:bindings>
 
     <jaxb:bindings schemaLocation="../xsd/scenarios.xsd">
         <jaxb:schemaBindings>
             <jaxb:package name="org.kosit.validator.model.scenarios"/>
-        </jaxb:schemaBindings>
-    </jaxb:bindings>
-
-    <jaxb:bindings schemaLocation="../xsd/assertions.xsd">
-        <jaxb:schemaBindings>
-            <jaxb:package name="org.kosit.validator.cmd.assertions"/>
         </jaxb:schemaBindings>
     </jaxb:bindings>
 

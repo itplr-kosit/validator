@@ -11,7 +11,7 @@ public class TestObjectFactory {
 
     public static Processor createProcessor() {
         if (processor == null) {
-            processor = Helper.getTestProcessor();
+            processor = TestHelper.getTestProcessor();
         }
         return processor;
     }

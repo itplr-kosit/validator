@@ -11,17 +11,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.Result;
+import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.XmlError;
 import org.kosit.validator.api.compact.CompactXVRLReport;
 import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.api.compact.ValidatorEngineInformation;
-import org.kosit.validator.impl.DefaultCheck;
+import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.tasks.ScenarioSelectionAction;
+import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.server.config.ValidationConfig;
 import org.kosit.xvrl.model.XVRLDetection;
@@ -42,16 +42,16 @@ public class ValidationService {
 
     private final Processor processor = ProcessorProvider.getProcessor();
 
-    private final List<Configuration> configuration;
+    private final List<VConfiguration> configuration;
 
     private final EngineInformation engineInformation;
 
-    private final DefaultCheck check;
+    private final DefaultVCheck check;
 
     public ValidationService(final ValidationConfig cfg, final EngineInformation engineInformation) {
         this.configuration = getConfiguration(cfg, processor);
         this.engineInformation = engineInformation;
-        check = new DefaultCheck(engineInformation, processor, configuration.toArray(new Configuration[0]));
+        check = new DefaultVCheck(engineInformation, processor, configuration.toArray(new VConfiguration[0]));
         LOGGER.info("Validator started");
     }
 
@@ -59,18 +59,18 @@ public class ValidationService {
         return configuration != null ? configuration.stream().flatMap(c -> c.getScenarios().stream()).toList() : Collections.emptyList();
     }
 
-    public Result validate(final Input input) {
+    public VResult validate(final CTReadResource input) {
         long t0 = System.currentTimeMillis();
-        final Result result = check.checkInput(input);
+        final VResult result = check.checkInput(input);
         LOGGER.info("Validated {} input in {} ms", input.getName(), System.currentTimeMillis() - t0);
         return result;
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final Input input, final Result defaultResult) {
+    public CompactXVRLReportSummary convertMinimalXvrl(final CTReadResource input, final VResult defaultResult) {
         return convertMinimalXvrl(Map.of(input, defaultResult));
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final Map<Input, Result> defaultResults) {
+    public CompactXVRLReportSummary convertMinimalXvrl(final Map<CTReadResource, VResult> defaultResults) {
         final CompactXVRLReportSummary summary = CompactXVRLReportSummary.create();
         defaultResults.forEach((input, result) -> {
             final CompactXVRLReport report = CompactXVRLReport.create();
@@ -92,25 +92,25 @@ public class ValidationService {
              * so.getTitle() != null ? so.getTitle() : "Schematron"; report.addSchemaReference(title, "Schematron");
              * so.getFailedAsserts().forEach(fa -> report.addSchematronViolation(fa, title)); }); }
              */
-            report.setChecksum(HexFormat.of().formatHex(input.getHashCode()));
+            report.setChecksum(HexFormat.of().formatHex(input.getHashBytes()));
             summary.addReport(report);
         });
-        summary.setAcceptable(defaultResults.values().stream().filter(Result::isAcceptable).count());
+        summary.setAcceptable(defaultResults.values().stream().filter(VResult::isAcceptable).count());
         summary.setRejected(defaultResults.values().stream().filter(r -> !r.isAcceptable()).count());
         summary.setProcessingErrors(defaultResults.values().stream().filter(r -> !r.isProcessingSuccessful()).count());
         summary.setValidatorInformation(new ValidatorEngineInformation(engineInformation.getName(), engineInformation.getVersion()));
         return summary;
     }
 
-    private String detectSelectedScenario(Result defaultResult) {
+    private String detectSelectedScenario(VResult defaultResult) {
         return defaultResult.getReportSummary().getReports().stream()
-                .filter(rep -> rep.getId().equals(ScenarioSelectionAction.METADATA.getId())).findFirst()
+                .filter(rep -> rep.getId().equals(ScenarioSelectionTask.METADATA.getId())).findFirst()
                 .map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario")).findFirst()
                         .map(XVRLDetection::getCode).orElse("null"))
                 .orElse("null");
     }
 
-    private static String joinErrors(final Result value) {
+    private static String joinErrors(final VResult value) {
         final StringBuilder b = new StringBuilder();
         b.append(String.join(";", value.getProcessingErrors()));
         if (value.getSchemaViolations() != null && !value.getSchemaViolations().isEmpty()) {
@@ -124,12 +124,12 @@ public class ValidationService {
         return b.toString();
     }
 
-    private static List<Configuration> getConfiguration(final ValidationConfig cfg, Processor processor) {
+    private static List<VConfiguration> getConfiguration(final ValidationConfig cfg, Processor processor) {
         return cfg.scenarios().stream().map(scenarioBundle -> {
             assertFileExistance(scenarioBundle.scenarioPath(), "scenario");
             final URI scenarioLocation = scenarioBundle.scenarioPath().toUri();
             final URI repositoryLocation = findRepository(scenarioLocation, scenarioBundle.repositoryOpt());
-            return Configuration.load(scenarioLocation, repositoryLocation).build(processor);
+            return VConfiguration.load(scenarioLocation, repositoryLocation).build(processor);
         }).toList();
     }
 
@@ -141,9 +141,8 @@ public class ValidationService {
     private static URI determineRepository(final Path d) {
         if (Files.isDirectory(d)) {
             return d.toUri();
-        } else {
-            throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
         }
+        throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
     }
 
     private static void assertFileExistance(final Path f, final String type) {

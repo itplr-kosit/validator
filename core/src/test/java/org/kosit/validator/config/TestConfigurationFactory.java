@@ -9,9 +9,9 @@ import static org.kosit.validator.config.ConfigurationBuilder.schematron;
 import java.net.URI;
 import java.util.Date;
 
-import org.kosit.validator.api.Configuration;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.validator.impl.TestHelper.Simple;
 
 /**
  * @author Andreas Penski
@@ -19,14 +19,14 @@ import org.kosit.validator.impl.ResolvingMode;
 public class TestConfigurationFactory {
 
     public static ConfigurationBuilder createSimpleConfiguration() {
-        return Configuration.create().name("Simple-API").author("me").description("test desc").date(new Date())
+        return VConfiguration.create().name("Simple-API").author("me").description("test desc").date(new Date())
                 .with(createScenario().description("awesome scenario")).with(fallback().name("default").source("report.xsl"))
 
                 .resolvingMode(ResolvingMode.STRICT_RELATIVE).useRepository(Simple.REPOSITORY_URI);
     }
 
     public static ConfigurationLoader loadSimpleConfiguration() {
-        return Configuration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI);
+        return VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI);
     }
 
     public static ScenarioBuilder createScenario() {

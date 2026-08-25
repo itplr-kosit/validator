@@ -2,7 +2,6 @@ package org.kosit.validator.api;
 
 import java.net.URI;
 
-import javax.xml.transform.URIResolver;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -33,26 +32,6 @@ public interface ResolvingConfigurationStrategy {
      * @return preconfigured {@link SchemaFactory}
      */
     SchemaFactory createSchemaFactory();
-
-    /**
-     * Creates a specific implementation for resolving referenced objects in XML files. The URIResolver is used for
-     * de-referencing an absolute URI (after resolution) to return a {@link javax.xml.transform.Source}. It <b>can</b>
-     * be used for resolving relative URIs against a base URI or restrict access to certain URIs.
-     * <p>
-     * This URIResolver is used to dereference the URIs appearing in <code>xsl:import</code>, <code>xsl:include</code>,
-     * and <code>xsl:import-schema</code> declarations.
-     * </p>
-     *
-     * @deprecated since Saxon deprecates the using in favor of {@link ResourceResolver}. Support is removed, when Saxon
-     *             removes it.
-     * @param scenarioRepository an optional repository, your implementation might not need this
-     * @return a preconfigured {@link URIResolver}
-     */
-    @Deprecated
-    default URIResolver createResolver(final URI scenarioRepository) {
-        // intentionally return null, so no subclass needs to implement it.
-        return null;
-    }
 
     /**
      * Creates a specific implementation for resolving referenced objects in XML files. The ResourceResolver is used for

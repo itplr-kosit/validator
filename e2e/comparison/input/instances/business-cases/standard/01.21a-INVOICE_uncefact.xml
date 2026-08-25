@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rsm:CrossIndustryInvoice xmlns:a="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+    <rsm:ExchangedDocumentContext>
+        <ram:BusinessProcessSpecifiedDocumentContextParameter>
+            <ram:ID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</ram:ID>
+        </ram:BusinessProcessSpecifiedDocumentContextParameter>
+        <ram:GuidelineSpecifiedDocumentContextParameter>
+            <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</ram:ID>
+        </ram:GuidelineSpecifiedDocumentContextParameter>
+    </rsm:ExchangedDocumentContext>
+    <rsm:ExchangedDocument>
+        <ram:ID>18383</ram:ID>
+        <ram:TypeCode>380</ram:TypeCode>
+        <ram:IssueDateTime>
+            <udt:DateTimeString format="102">20201127</udt:DateTimeString>
+        </ram:IssueDateTime>
+    </rsm:ExchangedDocument>
+    <rsm:SupplyChainTradeTransaction>
+        <ram:IncludedSupplyChainTradeLineItem>
+            <ram:AssociatedDocumentLineDocument>
+                <ram:LineID>1</ram:LineID>
+            </ram:AssociatedDocumentLineDocument>
+            <ram:SpecifiedTradeProduct>
+                <ram:SellerAssignedID>1</ram:SellerAssignedID>
+                <ram:Name>Tür Instandsetzung</ram:Name>
+            </ram:SpecifiedTradeProduct>
+            <ram:SpecifiedLineTradeAgreement>
+                <ram:GrossPriceProductTradePrice>
+                    <ram:ChargeAmount>62.00</ram:ChargeAmount>
+                    <ram:AppliedTradeAllowanceCharge>
+                        <ram:ChargeIndicator>
+                            <udt:Indicator>false</udt:Indicator>
+                        </ram:ChargeIndicator>
+                        <ram:ActualAmount>10.00</ram:ActualAmount>
+                    </ram:AppliedTradeAllowanceCharge>
+                </ram:GrossPriceProductTradePrice>
+                <ram:NetPriceProductTradePrice>
+                    <ram:ChargeAmount>52.00</ram:ChargeAmount>
+                </ram:NetPriceProductTradePrice>
+            </ram:SpecifiedLineTradeAgreement>
+            <ram:SpecifiedLineTradeDelivery>
+                <ram:BilledQuantity unitCode="HUR">4.00</ram:BilledQuantity>
+            </ram:SpecifiedLineTradeDelivery>
+            <ram:SpecifiedLineTradeSettlement>
+                <ram:ApplicableTradeTax>
+                    <ram:TypeCode>VAT</ram:TypeCode>
+                    <ram:ExemptionReason>Umkehrung der Steuerschuldnerschaft</ram:ExemptionReason>
+                    <ram:CategoryCode>AE</ram:CategoryCode>
+                    <ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>
+                </ram:ApplicableTradeTax>
+                <ram:SpecifiedTradeSettlementLineMonetarySummation>
+                    <ram:LineTotalAmount>208.00</ram:LineTotalAmount>
+                </ram:SpecifiedTradeSettlementLineMonetarySummation>
+            </ram:SpecifiedLineTradeSettlement>
+        </ram:IncludedSupplyChainTradeLineItem>
+        <ram:ApplicableHeaderTradeAgreement>
+            <ram:BuyerReference>04011000-12349-88</ram:BuyerReference>
+            <ram:SellerTradeParty>
+                <ram:ID>116078</ram:ID>
+                <ram:Name>Mustermann GmbH</ram:Name>
+                <ram:DefinedTradeContact>
+                    <ram:PersonName>Wolfgang Muster</ram:PersonName>
+                    <ram:TelephoneUniversalCommunication>
+                        <ram:CompleteNumber>069-12335</ram:CompleteNumber>
+                    </ram:TelephoneUniversalCommunication>
+                    <ram:EmailURIUniversalCommunication>
+                        <ram:URIID>mail@muster.de</ram:URIID>
+                    </ram:EmailURIUniversalCommunication>
+                </ram:DefinedTradeContact>
+                <ram:PostalTradeAddress>
+                    <ram:PostcodeCode>60388</ram:PostcodeCode>
+                    <ram:LineOne>Musterstrasse 4</ram:LineOne>
+                    <ram:CityName>Frankfurt am Main</ram:CityName>
+                    <ram:CountryID>DE</ram:CountryID>
+                </ram:PostalTradeAddress>
+                <ram:URIUniversalCommunication>
+                    <ram:URIID schemeID="EM">seller@email.de</ram:URIID>
+                </ram:URIUniversalCommunication>
+                <ram:SpecifiedTaxRegistration>
+                    <ram:ID schemeID="FC">04523149435</ram:ID>
+                </ram:SpecifiedTaxRegistration>
+                <ram:SpecifiedTaxRegistration>
+                    <ram:ID schemeID="VA">DE152338654</ram:ID>
+                </ram:SpecifiedTaxRegistration>
+            </ram:SellerTradeParty>
+            <ram:BuyerTradeParty>
+                <ram:ID>10099</ram:ID>
+                <ram:Name>DB Station&amp;Service AG RB Mitte</ram:Name>
+                <ram:DefinedTradeContact>
+                    <ram:PersonName>Klaus Koffer</ram:PersonName>
+                </ram:DefinedTradeContact>
+                <ram:PostalTradeAddress>
+                    <ram:PostcodeCode>10115</ram:PostcodeCode>
+                    <ram:LineOne>Musterweg 1</ram:LineOne>
+                    <ram:CityName>Berlin</ram:CityName>
+                    <ram:CountryID>DE</ram:CountryID>
+                </ram:PostalTradeAddress>
+                <ram:URIUniversalCommunication>
+                    <ram:URIID schemeID="EM">buyer@info.de</ram:URIID>
+                </ram:URIUniversalCommunication>
+                <ram:SpecifiedTaxRegistration>
+                    <ram:ID schemeID="VA">DE152138634</ram:ID>
+                </ram:SpecifiedTaxRegistration>
+                <ram:SpecifiedTaxRegistration>
+                    <ram:ID schemeID="FC">04523249415</ram:ID>
+                </ram:SpecifiedTaxRegistration>
+            </ram:BuyerTradeParty>
+        </ram:ApplicableHeaderTradeAgreement>
+        <ram:ApplicableHeaderTradeDelivery>
+            <ram:ActualDeliverySupplyChainEvent>
+                <ram:OccurrenceDateTime>
+                    <udt:DateTimeString format="102">20201123</udt:DateTimeString>
+                </ram:OccurrenceDateTime>
+            </ram:ActualDeliverySupplyChainEvent>
+        </ram:ApplicableHeaderTradeDelivery>
+        <ram:ApplicableHeaderTradeSettlement>
+            <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+            <ram:SpecifiedTradeSettlementPaymentMeans>
+                <ram:TypeCode>58</ram:TypeCode>
+                <ram:Information>Rechnung</ram:Information>
+                <ram:PayeePartyCreditorFinancialAccount>
+                    <ram:IBANID>DE75512108001245126199</ram:IBANID>
+                    <ram:AccountName>Mustermann GmbH</ram:AccountName>
+                </ram:PayeePartyCreditorFinancialAccount>
+                <ram:PayeeSpecifiedCreditorFinancialInstitution>
+                    <ram:BICID>DRESDEFFXXX</ram:BICID>
+                </ram:PayeeSpecifiedCreditorFinancialInstitution>
+            </ram:SpecifiedTradeSettlementPaymentMeans>
+            <ram:ApplicableTradeTax>
+                <ram:CalculatedAmount>0.00</ram:CalculatedAmount>
+                <ram:TypeCode>VAT</ram:TypeCode>
+                <ram:ExemptionReason>als gemeinnützig anerkannt</ram:ExemptionReason>
+                <ram:BasisAmount>233.00</ram:BasisAmount>
+                <ram:CategoryCode>AE</ram:CategoryCode>
+                <ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>
+            </ram:ApplicableTradeTax>
+            <ram:SpecifiedTradeAllowanceCharge>
+                <ram:ChargeIndicator>
+                    <udt:Indicator>true</udt:Indicator>
+                </ram:ChargeIndicator>
+                <ram:ActualAmount>25.00</ram:ActualAmount>
+                <ram:Reason>Lieferpauschale</ram:Reason>
+                <ram:CategoryTradeTax>
+                    <ram:TypeCode>VAT</ram:TypeCode>
+                    <ram:CategoryCode>AE</ram:CategoryCode>
+                    <ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>
+                </ram:CategoryTradeTax>
+            </ram:SpecifiedTradeAllowanceCharge>
+            <ram:SpecifiedTradePaymentTerms>
+                <ram:Description>10 Tage 3% Skonto, 30 Tage netto</ram:Description>
+                <ram:DueDateDateTime>
+                    <udt:DateTimeString format="102">20201227</udt:DateTimeString>
+                </ram:DueDateDateTime>
+            </ram:SpecifiedTradePaymentTerms>
+            <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+                <ram:LineTotalAmount>208.00</ram:LineTotalAmount>
+                <ram:ChargeTotalAmount>25.00</ram:ChargeTotalAmount>
+                <ram:AllowanceTotalAmount>0.00</ram:AllowanceTotalAmount>
+                <ram:TaxBasisTotalAmount>233.00</ram:TaxBasisTotalAmount>
+                <ram:TaxTotalAmount currencyID="EUR">0.00</ram:TaxTotalAmount>
+                <ram:GrandTotalAmount>233.00</ram:GrandTotalAmount>
+                <ram:DuePayableAmount>233.00</ram:DuePayableAmount>
+            </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+        </ram:ApplicableHeaderTradeSettlement>
+    </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>

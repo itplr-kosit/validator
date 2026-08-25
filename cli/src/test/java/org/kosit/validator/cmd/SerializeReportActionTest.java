@@ -10,12 +10,13 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
-import org.kosit.validator.impl.TestObjectFactory;
-import org.kosit.validator.impl.tasks.CheckAction;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.TestProcessBuilder;
+import org.kosit.xvrl.impl.XvrlConversionService;
 
 /**
  * @author Andreas Penski
@@ -30,7 +31,7 @@ public class SerializeReportActionTest {
     public void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
         final DefaultNamingStrategy namingStrategy = new DefaultNamingStrategy();
-        this.action = new SerializeReportAction(this.tmpDirectory, TestObjectFactory.createXvrlConversionService(), namingStrategy);
+        this.action = new SerializeReportAction(this.tmpDirectory, new XvrlConversionService(), namingStrategy);
     }
 
     @AfterEach
@@ -40,9 +41,9 @@ public class SerializeReportActionTest {
 
     @Test
     public void testSimpleSerialize() {
-        assertThat(this.action.isSkipped(TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID)).schemaValid().build())).isTrue();
-        final CheckAction.Process b = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID)).schemaValid()
-                .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
+        assertThat(this.action.isSkipped(TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).schemaValid().build())).isTrue();
+        final CheckTask.Process b = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).schemaValid()
+                .setCreateReport(TestHelper.load(Simple.SIMPLE_VALID)).build();
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);
         assertThat(b.isStopped()).isFalse();
@@ -51,9 +52,9 @@ public class SerializeReportActionTest {
 
     // ERPT-83
     @Test
-    public void testName() {
+    public void testName() throws IOException {
         final String name = "some.name.with.dots";
-        final CheckAction.Process b = new CheckAction.Process(InputFactory.read("ega".getBytes(), name + ".xml"));
+        final CheckTask.Process b = new CheckTask.Process(ReadResource.inMemory(Resource.utf8(name + ".xml", "ega")));
         assertThat(b.getName()).isEqualTo(name);
     }
 

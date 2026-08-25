@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+             xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+             xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+    <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>
+    <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+    <cbc:ID>R123456789</cbc:ID>
+    <cbc:IssueDate>2016-07-06</cbc:IssueDate>
+    <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+    <cbc:Note>#ADU#Die auf Transaktionsebene ausgewiesenen Händlerentgelte und Interchangewerte werden im Rahmen der Abrechnung addiert und kaufmännisch auf ganze Währungseinheiten gerundet.</cbc:Note>
+    <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+    <cbc:BuyerReference>99000000-01944-98</cbc:BuyerReference>
+    <cac:InvoicePeriod>
+        <cbc:StartDate>2016-06-01</cbc:StartDate>
+        <cbc:EndDate>2016-06-30</cbc:EndDate>
+    </cac:InvoicePeriod>
+    <cac:ContractDocumentReference>
+        <cbc:ID>CR987654321</cbc:ID>
+    </cac:ContractDocumentReference>
+    <cac:AccountingSupplierParty>
+        <cac:Party>
+            <cbc:EndpointID schemeID="EM">seller@email.de</cbc:EndpointID>
+            <cac:PostalAddress>
+                <cbc:StreetName>[Seller address line 1]</cbc:StreetName>
+                <cbc:CityName>[Seller city]</cbc:CityName>
+                <cbc:PostalZone>12345</cbc:PostalZone>
+                <cac:Country>
+                    <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:PartyTaxScheme>
+                <cbc:CompanyID>DE123456789</cbc:CompanyID>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:PartyTaxScheme>
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>[Seller name]</cbc:RegistrationName>
+                <cbc:CompanyID>HRB 123456</cbc:CompanyID>
+                <cbc:CompanyLegalForm>Amtsgericht […]</cbc:CompanyLegalForm>
+            </cac:PartyLegalEntity>
+            <cac:Contact>
+                <cbc:Name>Kundenservice - Vertriebspartner Direktkunden</cbc:Name>
+                <cbc:Telephone>+49(0)12 3456-7890</cbc:Telephone>
+                <cbc:ElectronicMail>kundenservice@email.de</cbc:ElectronicMail>
+            </cac:Contact>
+        </cac:Party>
+    </cac:AccountingSupplierParty>
+    <cac:AccountingCustomerParty>
+        <cac:Party>
+            <cbc:EndpointID schemeID="EM">buyer@info.de</cbc:EndpointID>
+            <cac:PartyIdentification>
+                <cbc:ID>B123456789</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PostalAddress>
+                <cbc:StreetName>[Buyer address line 1]</cbc:StreetName>
+                <cbc:CityName>[Buyer city]</cbc:CityName>
+                <cbc:PostalZone>12345</cbc:PostalZone>
+                <cac:Country>
+                    <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>[Buyer name]</cbc:RegistrationName>
+            </cac:PartyLegalEntity>
+            <cac:Contact>
+                <cbc:Name>Abteilung Buchhaltung</cbc:Name>
+            </cac:Contact>
+        </cac:Party>
+    </cac:AccountingCustomerParty>
+    <cac:Delivery>
+        <cac:DeliveryLocation>
+            <cac:Address>
+                <cbc:StreetName>[Deliver to address line 1]</cbc:StreetName>
+                <cbc:CityName>[Deliver to city]</cbc:CityName>
+                <cbc:PostalZone>12345</cbc:PostalZone>
+                <cac:Country>
+                    <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:Address>
+        </cac:DeliveryLocation>
+        <cac:DeliveryParty>
+            <cac:PartyName>
+                <cbc:Name>Leistungsempfänger</cbc:Name>
+            </cac:PartyName>
+        </cac:DeliveryParty>
+    </cac:Delivery>
+    <cac:PaymentMeans>
+        <cbc:PaymentMeansCode>58</cbc:PaymentMeansCode>
+        <cac:PayeeFinancialAccount>
+            <!-- dies ist eine nicht existerende aber valide IBAN als test dummy -->
+            <cbc:ID>DE12500105170648489890</cbc:ID>
+        </cac:PayeeFinancialAccount>
+    </cac:PaymentMeans>
+    <cac:PaymentTerms>
+        <cbc:Note>Bitte überweisen Sie den Gesamtbetrag in Höhe von EUR […] innerhalb von […] Tagen ohne Abzug auf unser Konto IBAN […] bei […] BIC […].</cbc:Note>
+    </cac:PaymentTerms>
+    <cac:TaxTotal>
+        <cbc:TaxAmount currencyID="EUR">3464.98</cbc:TaxAmount>
+        <cac:TaxSubtotal>
+            <cbc:TaxableAmount currencyID="EUR">18236.72</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID="EUR">3464.98</cbc:TaxAmount>
+            <cac:TaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:TaxCategory>
+        </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:LegalMonetaryTotal>
+        <cbc:LineExtensionAmount currencyID="EUR">18236.72</cbc:LineExtensionAmount>
+        <cbc:TaxExclusiveAmount currencyID="EUR">18236.72</cbc:TaxExclusiveAmount>
+        <cbc:TaxInclusiveAmount currencyID="EUR">21701.7</cbc:TaxInclusiveAmount>
+        <cbc:PayableAmount currencyID="EUR">21701.7</cbc:PayableAmount>
+    </cac:LegalMonetaryTotal>
+    <cac:InvoiceLine>
+        <cbc:ID>8000593202</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MON">1</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">17.24</cbc:LineExtensionAmount>
+        <cac:Item>
+            <cbc:Name>Servicegebühren A</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">17.24</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+    <cac:InvoiceLine>
+        <cbc:ID>8000612340</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MON">1</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">16704.07</cbc:LineExtensionAmount>
+        <cac:Item>
+            <cbc:Name>Servicegebühren B</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">16704.07</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+    <cac:InvoiceLine>
+        <cbc:ID>8000619834</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MON">1</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">5.21</cbc:LineExtensionAmount>
+        <cac:Item>
+            <cbc:Name>Servicegebühren C</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">5.21</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+    <cac:InvoiceLine>
+        <cbc:ID>8000619863</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MON">1</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">282.36</cbc:LineExtensionAmount>
+        <cac:Item>
+            <cbc:Name>Servicegebühren D</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">282.36</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+    <cac:InvoiceLine>
+        <cbc:ID>8000613563</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MON">1</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">386.68</cbc:LineExtensionAmount>
+        <cac:Item>
+            <cbc:Name>Servicegebühren E</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">386.68</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+    <cac:InvoiceLine>
+        <cbc:ID>8000648582</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MON">1</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">535.11</cbc:LineExtensionAmount>
+        <cac:Item>
+            <cbc:Name>Servicegebühren F</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">535.11</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+    <cac:InvoiceLine>
+        <cbc:ID>8000648584</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MON">1</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">306.05</cbc:LineExtensionAmount>
+        <cac:Item>
+            <cbc:Name>Servicegebühren G</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">306.05</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+</ubl:Invoice>

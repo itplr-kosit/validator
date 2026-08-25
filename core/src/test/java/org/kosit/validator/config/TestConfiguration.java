@@ -3,14 +3,14 @@ package org.kosit.validator.config;
 import java.util.List;
 import java.util.Map;
 
-import org.kosit.validator.api.Configuration;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 
 /**
  * @author Andreas Penski
  */
-public class TestConfiguration implements Configuration {
+public class TestConfiguration implements VConfiguration {
 
     private List<Scenario> scenarios;
 

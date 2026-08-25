@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
@@ -32,6 +33,7 @@ import javax.xml.validation.Schema;
 
 import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 import org.jspecify.annotations.Nullable;
+import org.kosit.jaxb.xml.XMLHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -516,10 +518,10 @@ public class JaxbConversionService {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static <T> JAXBElement wrapAsJAXBElement(final T model) {
+    @SuppressWarnings({ "unchecked" })
+    private static <T> JAXBElement<T> wrapAsJAXBElement(final T model) {
         final QName fallback = new QName(model.getClass().getSimpleName().toLowerCase(Locale.ROOT));
-        return new JAXBElement(fallback, model.getClass(), model);
+        return new JAXBElement<>(fallback, (Class<T>) model.getClass(), model);
     }
 
     private Marshaller createMarshaller() throws JAXBException {
@@ -586,10 +588,7 @@ public class JaxbConversionService {
     private <T> T readSecure(final StreamSource source, final Class<T> type, final String context) {
         requireType(type);
         try {
-            final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
-            inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-            inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
-            inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+            final XMLInputFactory inputFactory = XMLHelper.createSafeXMLInputFactory();
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(source);
             final Unmarshaller u = createUnmarshaller();
             return u.unmarshal(xsr, type).getValue();
@@ -599,14 +598,10 @@ public class JaxbConversionService {
     }
 
     private static void requireNonNull(final @Nullable Object value, final String name) {
-        if (value == null) {
-            throw new JaxbConversionException(name + " must not be null");
-        }
+        Objects.requireNonNull(value, name + " must not be null");
     }
 
     private static <T> void requireType(final @Nullable Class<T> type) {
-        if (type == null) {
-            throw new JaxbConversionException("Target type must not be null");
-        }
+        Objects.requireNonNull(type, "Target type must not be null");
     }
 }

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright 2017-2022  Koordinierungsstelle für IT-Standards (KoSIT)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- $Id$ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios" targetNamespace="http://www.xoev.de/de/validator/framework/1/scenarios" version="1.1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <xs:element name="scenarios">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:token" />
+                <xs:element minOccurs="0" name="author" type="xs:token" />
+                <xs:element name="date" type="xs:date" />
+                <xs:element name="description" type="s:DescriptionType" />
+                <xs:element ref="s:scenario" minOccurs="1" maxOccurs="unbounded" />
+                <xs:element name="noScenarioReport" type="s:NoScenarioReportType" />
+            </xs:sequence>
+            <xs:attribute name="frameworkVersion" type="xs:string" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="scenario" type="s:ScenarioType" />
+
+    <xs:complexType name="NoScenarioReportType">
+        <xs:sequence>
+            <xs:element ref="s:resource" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DescriptionType">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="p" type="xs:normalizedString" />
+            <xs:element name="ol">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="li" type="xs:normalizedString" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ul">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="li" type="xs:normalizedString" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <!-- TODO: Prüfen, ob restriction passt -->
+    <xs:simpleType name="ErrorLevelType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="error" />
+            <xs:enumeration value="warning" />
+            <xs:enumeration value="information" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="Tokens">
+        <xs:list itemType="xs:token" />
+    </xs:simpleType>
+
+    <xs:complexType name="ScenarioType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:token" />
+            <xs:element minOccurs="0" name="description" type="s:DescriptionType" />
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="namespace" type="s:NamespaceType" />
+            <xs:element name="match" type="xs:string" />
+            <xs:element name="validateWithXmlSchema" type="s:ValidateWithXmlSchema" />
+            <xs:element name="validateWithSchematron" maxOccurs="unbounded" minOccurs="0" type="s:ValidateWithSchematron" />
+            <xs:element name="createReport" type="s:CreateReportType" minOccurs="0"/>
+            <xs:element name="acceptMatch" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Optional: An XPATH expression to be applied to a generated validation report as defined in the createReport element
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="resource" type="s:ResourceType" />
+
+    <xs:complexType name="NamespaceType">
+        <xs:simpleContent>
+            <xs:extension base="xs:anyURI">
+                <xs:attribute name="prefix" use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="ResourceType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:token" />
+            <xs:element name="location" type="xs:anyURI" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValidateWithXmlSchema">
+        <xs:sequence>
+            <xs:element ref="s:resource" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValidateWithSchematron">
+        <xs:sequence>
+            <xs:element ref="s:resource" />
+        </xs:sequence>
+        <xs:attribute name="psvi" type="xs:boolean" default="false" use="optional" />
+    </xs:complexType>
+
+
+    <xs:complexType name="CreateReportType">
+        <xs:sequence>
+            <xs:element ref="s:resource" />
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="customLevel" type="s:CustomErrorLevel" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CustomErrorLevel">
+        <xs:simpleContent>
+            <xs:extension base="s:Tokens">
+                <xs:attribute name="level" type="s:ErrorLevelType" use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>

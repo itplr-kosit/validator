@@ -8,8 +8,6 @@ public final class ValidatorSchemas {
 
     public static final String SCENARIOS_XSD_PATH = XSD_PATH + "/scenarios.xsd";
 
-    public static final String ASSERTIONS_XSD_PATH = XSD_PATH + "/assertions.xsd";
-
     private ValidatorSchemas() {
     }
 }

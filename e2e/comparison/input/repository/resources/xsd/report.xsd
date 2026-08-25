@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: report.xsd 7617 2017-09-21 12:54:43Z fbuettner $ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rep="http://www.xoev.de/de/validator/varl/1" xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios" targetNamespace="http://www.xoev.de/de/validator/varl/1" version="1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:annotation>
+        <xs:documentation>Dieses Schema beschreibt die Struktur von Berichten, mit denen die Prüfung und Bewertung elektronischer Dokumente
+            nachvollziehbar dokumentiert wird.</xs:documentation>
+    </xs:annotation>
+
+    <xs:import namespace="http://www.xoev.de/de/validator/framework/1/scenarios" />
+    <xs:element name="report">
+        <xs:annotation>
+            <xs:documentation>Prüfbericht (das einzige Wurzelelement in diesem Schema)</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="engine" type="rep:EngineType">
+                    <xs:annotation>
+                        <xs:documentation>Angaben zum Prüftool, mit welchem dieser Prüfbericht erstellt wurde</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="timestamp" type="xs:dateTime">
+                    <xs:annotation>
+                        <xs:documentation>Der Zeitpunkt, an dem die Prüfung des Dokuments begann.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="documentIdentification" type="rep:DocumentIdentificationType">
+                    <xs:annotation>
+                        <xs:documentation>Angaben zur eindeutigen Identifikation des geprüften Dokumentes</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:choice>
+                    <xs:element name="scenarioMatched">
+                        <xs:annotation>
+                            <xs:documentation>Dieses Kindelement gibt an, dass das für das geprüfte Dokument ein Szenario (ein Dokumenttyp)
+                                erkannt wurde, für welches weitere Prüfschritte durchgeführt wurden.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="s:scenario" />
+                                <xs:element name="documentData" type="rep:DocumentDataType" minOccurs="0">
+                                    <xs:annotation>
+                                        <xs:documentation>In diesem Element können ausgewählte extrahierte Inhaltsdaten des geprüften Dokuments in
+                                            strukturierter Form abgelegt werden.</xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                                <xs:element name="validationStepResult" maxOccurs="unbounded" type="rep:ValidationStepResultType">
+                                    <xs:annotation>
+                                        <xs:documentation>Für jeden durchgeführten Validierungsschrittes (z. B. einer Prüfung
+                                            gegen eine Schematron-Datei) wird ein entsprechendes
+                                            validationStepResult-Element angelegt.</xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="noScenarioMatched">
+                        <xs:annotation>
+                            <xs:documentation>Dieses Kindelement gibt an, dass das für das geprüfte Dokument kein Szenario
+                                erkannt wurde.</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="validationStepResult" minOccurs="0" type="rep:ValidationStepResultType">
+                                    <xs:annotation>
+                                        <xs:documentation>Angaben zu einer ggf. fehlgeschlagen Prüfung auf XML-Wohlgeformtheit</xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+                <xs:element name="assessment" type="rep:AssessmentType">
+                    <xs:annotation>
+                        <xs:documentation>Dieses Kindelement enthält eine Empfehlung zur Annahme oder Ablehnung des geprüften Dokuments auf Grundlage der Validierungsergebnisse.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="valid" type="xs:boolean" use="required">
+                <xs:annotation>
+                    <xs:documentation>Dieses Attribut ist genau dann 'true', wenn ein Szenario (Dokumenttyp) erkannt wurde und das Attribut valid für alle zugeordneten
+                        Validierungsschritt-Ergebnisse (rep:scenarioMatched/rep:validationStepResult) den Wert 'true' hat.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="varlVersion" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>Die Version dieses Dokumenttyps (Prüfbericht).</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="EngineType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:normalizedString" />
+            <xs:element name="info" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:normalizedString">
+                            <xs:attribute name="key" type="xs:NMTOKEN" use="required" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AssessmentType">
+        <xs:sequence>
+            <xs:element name="customLevel" minOccurs="0" maxOccurs="3" type="s:CustomErrorLevel" />
+            <xs:choice>
+                <xs:annotation>
+                    <xs:documentation>Die Empfehlung zum weiteren Umgang mit dem Dokument.</xs:documentation>
+                </xs:annotation>
+                <xs:element name="accept" type="rep:RecommendationType">
+                    <xs:annotation>
+                        <xs:documentation>Die Existenz dieses Kindelements bedeutet, dass die Weiterverarbeitung des geprüften Dokuments empfohlen
+                            wird.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="reject" type="rep:RecommendationType">
+                    <xs:annotation>
+                        <xs:documentation>Die Existenz dieses Kindelements bedeutet, dass die Ablehnung des geprüften Dokuments empfohlen
+                            wird.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DocumentIdentificationType">
+        <xs:annotation>
+            <xs:documentation>Dient der eindeutigen Identifikation des geprüften Dokuments anhand einer Dokumentenreferenz und seines Hashwertes.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="documentHash">
+                <xs:annotation>
+                    <xs:documentation>Angaben zum Hashwert des geprüften Dokuments.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="hashAlgorithm" type="xs:normalizedString">
+                            <xs:annotation>
+                                <xs:documentation>Bezeichnung des Algorithmus, mit welchem der Hashwert berechnet wurde.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="hashValue" type="xs:base64Binary">
+                            <xs:annotation>
+                                <xs:documentation>Der Hashwert des geprüften Dokuments bei Anwendung des bezeichneten Algorithmus.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="documentReference" type="xs:normalizedString">
+                <xs:annotation>
+                    <xs:documentation>Eine von der prüfenden Organisationseinheit festgelegte, möglichst eindeutige Referenz des geprüften
+                        Dokuments.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MessageType">
+        <xs:simpleContent>
+            <xs:extension base="xs:normalizedString">
+                <xs:attribute name="id" type="xs:token" use="required">
+                    <xs:annotation>
+                        <xs:documentation>Prüfberichtsweit eindeutige Id dieser spezifischen Validierungsmeldung</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="code" type="xs:token" use="required">
+                    <xs:annotation>
+                        <xs:documentation>(Fehler-)Code der Validierungsmeldung, wie er sich aus der zugrundeliegenden
+                            Prüfung ergibt.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="level" type="rep:ErrorLevelType" use="required">
+                    <xs:annotation>
+                        <xs:documentation>Art der Meldung: Fehler (error), Warnung (warning) oder Information
+                            (information).</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="lineNumber" type="xs:int" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>Zeilennummer der auslösenden Stelle im geprüften Dokument (falls bekannt).</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="columnNumber" type="xs:int" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>Spaltennummer der auslösenden Stelle im geprüften Dokument (falls bekannt).</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="xpathLocation" type="xs:token" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>XPath-Ausdruck, welcher die auslösenden Stelle im geprüften Dokument eindeutig
+                            bestimmt (falls bekannt).</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="RecommendationType">
+        <xs:sequence>
+            <xs:element name="explanation" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>Ein oder mehrere HTML-Dokumente, welche die Empfehlung zum weiteren Umgang mit dem Dokument
+                        begründen. Die HTML-Dokumente müssen im Attribut 'data-report-type' des Wurzelelements eine Typ-ID für den Bericht tragen.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:any minOccurs="1" maxOccurs="1" namespace="http://www.w3.org/1999/xhtml" processContents="skip" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="ValidationStepResultType">
+        <xs:sequence>
+            <xs:element ref="s:resource" maxOccurs="unbounded" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Resource(n), mit welchen dieser Validierungsschritt durchgeführt wurde. Dies ist
+                        ein Zitat aus der zugrunde liegenden Prüftoolkonfiguration.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="message" type="rep:MessageType">
+                <xs:annotation>
+                    <xs:documentation>Eine Meldung, welche sich aus validierungsschritt ergeben hat.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID" use="required">
+            <xs:annotation>
+                <xs:documentation>Prüfberichtsweit eindeutige Id dieser spezifischen Validierungsergebnisse.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="valid" type="xs:boolean" use="required">
+            <xs:annotation>
+                <xs:documentation>Konformitätsbewertung der Ergebnisse dieses Validierungsschrittes. Das Attribut ist
+                    genau dann 'true', wenn kein Kindelement message mit error level 'error' oder 'warning' vorliegt.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="DocumentDataType">
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" processContents="skip" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="Tokens">
+        <xs:list itemType="xs:token" />
+    </xs:simpleType>
+
+    <xs:simpleType name="ErrorLevelType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="error" />
+            <xs:enumeration value="warning" />
+            <xs:enumeration value="information" />
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

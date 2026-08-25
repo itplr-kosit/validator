@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+             xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+             xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+   <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>
+   <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+   <cbc:ID>112233</cbc:ID>
+   <cbc:IssueDate>2021-04-23</cbc:IssueDate>
+   <cbc:DueDate>2021-04-28</cbc:DueDate>
+   <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+   <cbc:Note>#ADU#Rechnung enthält 100 EUR (Umsatz)Steuer auf Altteile gem. Abschn. 10.5 Abs. 3 UStAE</cbc:Note>
+   <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+   <cbc:BuyerReference>991-33333TEST-33</cbc:BuyerReference>
+   <cac:AccountingSupplierParty>
+      <cac:Party>
+         <cbc:EndpointID schemeID="EM">seller@email.de</cbc:EndpointID>
+		 <cac:PartyIdentification>
+            <cbc:ID>116078</cbc:ID>
+         </cac:PartyIdentification>
+         <cac:PostalAddress>
+            <cbc:StreetName>Teststraße </cbc:StreetName>
+            <cbc:CityName>12345</cbc:CityName>
+            <cbc:PostalZone>Testhausen</cbc:PostalZone>
+            <cac:Country>
+               <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+            </cac:Country>
+         </cac:PostalAddress>
+         <cac:PartyTaxScheme>
+            <cbc:CompanyID>DE12345464867</cbc:CompanyID>
+            <cac:TaxScheme>
+               <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+         </cac:PartyTaxScheme>
+         <cac:PartyTaxScheme>
+            <cbc:CompanyID>1121081508150</cbc:CompanyID>
+            <cac:TaxScheme>
+               <cbc:ID>ID</cbc:ID>
+            </cac:TaxScheme>
+         </cac:PartyTaxScheme>
+         <cac:PartyLegalEntity>
+            <cbc:RegistrationName>Testverkäufer</cbc:RegistrationName>
+         </cac:PartyLegalEntity>
+         <cac:Contact>
+            <cbc:Name>Test</cbc:Name>
+            <cbc:Telephone>123456789</cbc:Telephone>
+            <cbc:ElectronicMail>test@test.de</cbc:ElectronicMail>
+         </cac:Contact>
+      </cac:Party>
+   </cac:AccountingSupplierParty>
+   <cac:AccountingCustomerParty>
+      <cac:Party>
+         <cbc:EndpointID schemeID="EM">buyer@info.de</cbc:EndpointID>
+         <cac:PostalAddress>
+            <cbc:StreetName>Teststraße </cbc:StreetName>           
+            <cbc:CityName>12345</cbc:CityName>
+            <cbc:PostalZone>Testhausen</cbc:PostalZone>
+            <cac:Country>
+               <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+            </cac:Country>
+         </cac:PostalAddress>
+         <cac:PartyLegalEntity>
+            <cbc:RegistrationName>Testkäufer</cbc:RegistrationName>
+         </cac:PartyLegalEntity>
+      </cac:Party>
+   </cac:AccountingCustomerParty>
+   <cac:Delivery>
+        <cbc:ActualDeliveryDate>2020-11-23</cbc:ActualDeliveryDate>
+    </cac:Delivery>
+   <cac:PaymentMeans>
+      <cbc:PaymentMeansCode name="SEPA-Überweisung">58</cbc:PaymentMeansCode>
+      <cac:PayeeFinancialAccount>
+         <cbc:ID>DE21081508151234123412</cbc:ID>
+         <cbc:Name>Testkäufer</cbc:Name>
+      </cac:PayeeFinancialAccount>
+   </cac:PaymentMeans>
+   <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="EUR">304.00</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+         <cbc:TaxableAmount currencyID="EUR">1600.00</cbc:TaxableAmount>
+         <cbc:TaxAmount currencyID="EUR">304.00</cbc:TaxAmount>
+         <cac:TaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19.00</cbc:Percent>
+            <cac:TaxScheme>
+               <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+         </cac:TaxCategory>
+      </cac:TaxSubtotal>
+      <cac:TaxSubtotal>
+        <cbc:TaxableAmount currencyID="EUR">-100.00</cbc:TaxableAmount>
+         <cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount>
+         <cac:TaxCategory>
+            <cbc:ID>Z</cbc:ID>
+            <cbc:Percent>0.00</cbc:Percent>
+            <cac:TaxScheme>
+               <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+         </cac:TaxCategory>
+      </cac:TaxSubtotal>
+   </cac:TaxTotal>
+   <cac:LegalMonetaryTotal>
+      <cbc:LineExtensionAmount currencyID="EUR">1500.00</cbc:LineExtensionAmount>
+      <cbc:TaxExclusiveAmount currencyID="EUR">1500.00</cbc:TaxExclusiveAmount>
+      <cbc:TaxInclusiveAmount currencyID="EUR">1804.00</cbc:TaxInclusiveAmount>      
+      <cbc:PayableAmount currencyID="EUR">1804.00</cbc:PayableAmount>
+   </cac:LegalMonetaryTotal>
+   <cac:InvoiceLine>
+      <cbc:ID>1</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="C62">1.00</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">1000.00</cbc:LineExtensionAmount>
+		<cac:Item>
+			 <cbc:Name>Neumotor</cbc:Name>
+			 <cac:ClassifiedTaxCategory>
+	            <cbc:ID>S</cbc:ID>
+	            <cbc:Percent>19.00</cbc:Percent>
+				<cac:TaxScheme>
+	               <cbc:ID>VAT</cbc:ID>
+				</cac:TaxScheme>
+			 </cac:ClassifiedTaxCategory>
+		  </cac:Item>
+      <cac:Price>
+         <cbc:PriceAmount currencyID="EUR">1000.00</cbc:PriceAmount>
+		 <cac:AllowanceCharge>
+		     <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+		     <cbc:Amount currencyID="EUR">10.00</cbc:Amount>
+		     <cbc:BaseAmount currencyID="EUR">1010.00</cbc:BaseAmount>
+	     </cac:AllowanceCharge>
+      </cac:Price>
+   </cac:InvoiceLine>   
+   <cac:InvoiceLine>
+      <cbc:ID>2</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="C62">1.00</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">100.00</cbc:LineExtensionAmount>
+      <cac:Item>        
+         <cbc:Name>Bemessungsgrundlage und Umsatzsteuer auf Altteil</cbc:Name>        
+         <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19.00</cbc:Percent>
+            <cac:TaxScheme>
+               <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+         </cac:ClassifiedTaxCategory>
+      </cac:Item>
+      <cac:Price>
+         <cbc:PriceAmount currencyID="EUR">100.00</cbc:PriceAmount>
+		 <cac:AllowanceCharge>
+		     <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+		     <cbc:Amount currencyID="EUR">10.00</cbc:Amount>
+		     <cbc:BaseAmount currencyID="EUR">110.00</cbc:BaseAmount>
+      </cac:AllowanceCharge>
+      </cac:Price>
+   </cac:InvoiceLine>
+   <cac:InvoiceLine>
+      <cbc:ID>3</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="C62">-1.00</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">-100.00</cbc:LineExtensionAmount>
+      <cac:Item>        
+         <cbc:Name>Korrektur/Stornierung Bemessungsgrundlage der Umsatzsteuer auf Altteil</cbc:Name>         
+         <cac:ClassifiedTaxCategory>
+            <cbc:ID>Z</cbc:ID>
+            <cbc:Percent>0.00</cbc:Percent>
+            <cac:TaxScheme>
+               <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+         </cac:ClassifiedTaxCategory>
+      </cac:Item>
+      <cac:Price>
+         <cbc:PriceAmount currencyID="EUR">100.00</cbc:PriceAmount>
+		 <cac:AllowanceCharge>
+		     <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+		     <cbc:Amount currencyID="EUR">10.00</cbc:Amount>
+		     <cbc:BaseAmount currencyID="EUR">110.00</cbc:BaseAmount>
+	     </cac:AllowanceCharge>
+      </cac:Price>
+   </cac:InvoiceLine>
+   <cac:InvoiceLine>
+      <cbc:ID>4</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="HUR">1.00</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">500.00</cbc:LineExtensionAmount>
+      <cac:Item>        
+         <cbc:Name>Montage</cbc:Name>        
+         <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19.00</cbc:Percent>
+            <cac:TaxScheme>
+               <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+         </cac:ClassifiedTaxCategory>
+      </cac:Item>
+      <cac:Price>
+         <cbc:PriceAmount currencyID="EUR">500.00</cbc:PriceAmount>
+		 <cac:AllowanceCharge>
+		     <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+		     <cbc:Amount currencyID="EUR">10.00</cbc:Amount>
+		     <cbc:BaseAmount currencyID="EUR">510.00</cbc:BaseAmount>
+	     </cac:AllowanceCharge>
+      </cac:Price>
+   </cac:InvoiceLine>
+</ubl:Invoice>

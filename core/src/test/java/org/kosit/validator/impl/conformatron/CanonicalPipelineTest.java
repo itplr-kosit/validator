@@ -1,0 +1,139 @@
+package org.kosit.validator.impl.conformatron;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.conformatron.api.model.conformance.CTConformanceResult;
+import org.conformatron.api.model.detection.CTDetection;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
+import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
+import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
+import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
+import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XMLDetection;
+import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
+
+/**
+ * <b>End-to-end walkthrough of the canonical pipeline, steps 2–8</b>, composed exclusively from the new-API actions —
+ * no legacy {@code CheckAction} involved:
+ *
+ * <pre>
+ * 2 PARSE_DOCUMENT → 3 DETECT_SCENARIOS → 4 SELECT_SCENARIO → 5 RETRIEVE_ARTIFACTS
+ *                  → 6 PREPARE_RULES    → 7 APPLY_RULES     → 8 COMPUTE_CONFORMANCE
+ * </pre>
+ *
+ * Step 1 (DETECT_SYNTAX) is not implemented yet; step 9 (DECISION_RECOMMENDATION) is pending. The handshake objects
+ * cross every step boundary exactly as specified: {@code ICTParsedValidationSource} → {@code ICTScenarioMatch} →
+ * {@code ICTResolvedValidationArtifact} → {@code ICTPreparedRuleSet} → {@code ICTApplyRulesResult} →
+ * {@code ICTComputeConformanceResult}.
+ */
+public class CanonicalPipelineTest {
+
+    private ScenarioRepository scenarioRepository;
+
+    private VConfiguration configuration;
+
+    @BeforeEach
+    public void setup() {
+        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        this.scenarioRepository = new ScenarioRepository(this.configuration);
+    }
+
+    /** Runs the full chain 2–8 and returns the step-8 result; asserts every intermediate step succeeded. */
+    private ComputeConformanceActionResult runPipeline(final URI document, final List<String> trace) {
+        // step 2: PARSE_DOCUMENT — DOM-based reference action, retains bytes + hash
+        final ParseXMLResult parsed = new ParseXMLAction().execute(TestHelper.read(document));
+        assertThat(parsed.isSuccess()).isTrue();
+        trace.addAll(codes(parsed.getDetectionList().getAll()));
+
+        // step 3: DETECT_SCENARIOS — the DOM is wrapped into the Saxon model for the XPath matching
+        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, TestHelper.getTestProcessor())
+                .execute(parsed.getParsedSource());
+        assertThat(detected.isSuccess()).isTrue();
+        trace.addAll(codes(detected.detections().getAll()));
+
+        // step 4: SELECT_SCENARIO — strict: exactly one candidate
+        final SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
+        assertThat(selected.isSuccess()).isTrue();
+        trace.addAll(codes(selected.detections().getAll()));
+
+        // step 5: RETRIEVE_ARTIFACTS — repository-confined resolution of the scenario's references
+        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(selected.selected());
+        assertThat(retrieved.isSuccess()).isTrue();
+        trace.addAll(codes(retrieved.detections().getAll()));
+
+        // step 6: PREPARE_RULES — transpile + compile into engine-ready rule sets
+        final PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getContentRepository()).execute(retrieved.artifacts(),
+                selected.selected().getParsedSource().getSource().getName());
+        assertThat(prepared.isSuccess()).isTrue();
+        trace.addAll(codes(prepared.detections().getAll()));
+
+        // step 7: APPLY_RULES — on the retained bytes; findings do not fail the step
+        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets());
+        assertThat(applied.isSuccess()).isTrue();
+        trace.addAll(codes(applied.detections().getAll()));
+
+        // step 8: COMPUTE_CONFORMANCE — scenario-wide default target derived from the selected scenario
+        final ComputeConformanceActionResult conformance = new ComputeConformanceAction().execute(applied.result(),
+                List.of(ConformanceTarget.ofScenario(selected.selected())));
+        assertThat(conformance.isSuccess()).isTrue();
+        trace.addAll(codes(conformance.detections().getAll()));
+        return conformance;
+    }
+
+    private static List<String> codes(final List<CTDetection> detections) {
+        return detections.stream().map(CTDetection::getCode).toList();
+    }
+
+    @Test
+    public void testConformantDocumentPassesAllSteps() {
+        final List<String> trace = new ArrayList<>();
+        final ComputeConformanceActionResult conformance = runPipeline(Simple.SIMPLE_VALID, trace);
+
+        assertThat(conformance.result().hasNonConformantTarget()).isFalse();
+        assertThat(conformance.result().getAllStatements()).extracting("result").containsOnly(CTConformanceResult.CONFORMANT);
+
+        // the full audit trail across all steps, in pipeline order
+        assertThat(trace).containsExactly(//
+                XMLDetection.CODE_DOCUMENT_PARSED, // step 2
+                DetectScenariosAction.CODE_SCENARIO_MATCHED, // step 3
+                SelectScenarioAction.CODE_SCENARIO_SELECTED, // step 4
+                RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, // step
+                                                                                                                    // 5
+                PrepareRulesAction.CODE_RULE_COMPILED, PrepareRulesAction.CODE_RULE_COMPILED, // step 6
+                ApplyRulesAction.CODE_RULES_APPLIED, ApplyRulesAction.CODE_RULES_APPLIED, // step 7
+                ComputeConformanceAction.CODE_TARGET_CONFORMANT, ComputeConformanceAction.CODE_TARGET_CONFORMANT); // step
+                                                                                                                   // 8
+    }
+
+    @Test
+    public void testNonConformantDocumentIsTraceableToTheDrivingRuleSet() {
+        final List<String> trace = new ArrayList<>();
+        final ComputeConformanceActionResult conformance = runPipeline(Simple.SCHEMATRON_INVALID, trace);
+
+        assertThat(conformance.result().hasNonConformantTarget()).isTrue();
+        // XSD passed, the schematron drove the non-conformance — per-rule-set traceability
+        assertThat(conformance.result().getAllStatements()).extracting("result").containsExactly(CTConformanceResult.CONFORMANT,
+                CTConformanceResult.NON_CONFORMANT);
+        // the violated assert id travels through as detection code (step-07 spec)
+        assertThat(trace).contains("content-1", ComputeConformanceAction.CODE_TARGET_NON_CONFORMANT);
+    }
+}

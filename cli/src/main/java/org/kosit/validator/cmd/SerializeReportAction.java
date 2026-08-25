@@ -9,8 +9,8 @@ import java.nio.file.Path;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.tasks.CheckAction;
-import org.kosit.validator.impl.tasks.CreateReportsAction;
+import org.kosit.validator.impl.tasks.CheckTask;
+import org.kosit.validator.impl.tasks.CreateReportsTask;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.XVRLDetection;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Andreas Penski
  */
-class SerializeReportAction implements CheckAction {
+class SerializeReportAction implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SerializeReportAction.class);
 
@@ -64,7 +64,7 @@ class SerializeReportAction implements CheckAction {
 
     @Override
     public boolean isSkipped(final Process results) {
-        if (results.getResult(CreateReportsAction.KEY) == null) {
+        if (results.getResult(CreateReportsTask.KEY) == null) {
             LOGGER.warn("Can not serialize result report. No document found");
             return true;
         }

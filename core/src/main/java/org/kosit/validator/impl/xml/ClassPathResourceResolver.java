@@ -119,9 +119,6 @@ public class ClassPathResourceResolver implements LSResourceResolver {
         public void setStringData(final String stringData) {
             this.stringData = stringData;
         }
-
-        public LSInputImpl() {
-        }
     }
 
     private final URI base;

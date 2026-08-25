@@ -344,7 +344,7 @@ public class CompactXVRLReport {
 
     public List<Schema> getSchemaReferences(String language) {
         return original.getMetadata().getSchemas().stream()
-                .filter(s -> language.equals(s.getOtherAttributes().get(new QName(CVRL_NS, ATTR_LANGUAGE)))).collect(Collectors.toList());
+                .filter(s -> language.equals(s.getOtherAttributes().get(new QName(CVRL_NS, ATTR_LANGUAGE)))).toList();
     }
 
     public void addSchemaValidationResult(List<XmlError> violations) {

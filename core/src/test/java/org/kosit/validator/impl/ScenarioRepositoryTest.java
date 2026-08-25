@@ -2,9 +2,7 @@ package org.kosit.validator.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kosit.validator.api.InputFactory.read;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +10,7 @@ import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.config.TestConfiguration;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.scenarios.ScenarioType;
 
@@ -34,8 +32,8 @@ public class ScenarioRepositoryTest {
     @BeforeEach
     public void setup() {
         this.configInstance = new TestConfiguration();
-        this.configInstance
-                .setContentRepository(new ContentRepository(Helper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
+        this.configInstance.setContentRepository(
+                new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
 
         final Scenario s = createScenario();
         this.configInstance.setScenarios(new ArrayList<>());
@@ -103,8 +101,8 @@ public class ScenarioRepositoryTest {
         assertThat(fallback).isSameAs(first.getFallbackScenario()).isNotSameAs(second.getFallbackScenario());
     }
 
-    private XdmNode load(final URI uri) throws IOException {
-        return Helper.parseDocument(this.configInstance.getContentRepository().getProcessor(), read(uri.toURL())).getObject();
+    private XdmNode load(final URI uri) {
+        return TestHelper.parseDocument(this.configInstance.getContentRepository().getProcessor(), TestHelper.read(uri)).getObject();
     }
 
     private XPathExecutable createXpath(final String expression) {

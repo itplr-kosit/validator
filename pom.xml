@@ -54,27 +54,27 @@
 
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.34.3</quarkus.platform.version>
+        <quarkus.platform.version>3.38.3</quarkus.platform.version>
 
         <version.assertj>3.27.7</version.assertj>
-        <version.commons-io>2.21.0</version.commons-io>
+        <version.commons-io>2.22.0</version.commons-io>
         <version.commons-lang>3.20.0</version.commons-lang>
-        <version.jacoco>0.8.14</version.jacoco>
+        <version.jacoco>0.8.15</version.jacoco>
         <version.jaxb-api>4.0.5</version.jaxb-api>
-        <!-- 4.0.7 has a regression -->
-        <version.jaxb-impl>4.0.6</version.jaxb-impl>
-        <version.junit>6.0.3</version.junit>
-        <version.mockito>5.21.0</version.mockito>
+        <version.jaxb-impl>4.0.9</version.jaxb-impl>
+        <version.junit>6.1.3</version.junit>
+        <version.mockito>5.23.0</version.mockito>
         <version.owasp-dependency-check>12.1.8</version.owasp-dependency-check>
-        <version.rest-assured>5.5.7</version.rest-assured>
-        <version.saxon-he>12.9</version.saxon-he>
-        <version.slf4j>2.0.17</version.slf4j>
+        <version.rest-assured>6.0.1</version.rest-assured>
+        <version.saxon-he>12.10</version.saxon-he>
+        <version.slf4j>2.0.18</version.slf4j>
         <version.jaxb-maven-plugin>4.0.16</version.jaxb-maven-plugin>
-        <version.xmlresolver>6.0.4</version.xmlresolver>
+        <version.xmlresolver>6.0.23</version.xmlresolver>
         <version.picocli>4.7.7</version.picocli>
-        <version.jansi>2.4.1</version.jansi>
-        <version.cyclonedx-maven-plugin>2.9.1</version.cyclonedx-maven-plugin>
-        <version.jspecify>1.0.0</version.jspecify>
+        <version.jansi>2.4.3</version.jansi>
+        <version.cyclonedx-maven-plugin>2.9.3</version.cyclonedx-maven-plugin>
+        <version.jspecify>1.0.1</version.jspecify>
+        <version.conformatron-api>0.1.0-SNAPSHOT</version.conformatron-api>
     </properties>
 
     <repositories>
@@ -130,12 +130,22 @@
                 <artifactId>jspecify</artifactId>
                 <version>${version.jspecify}</version>
             </dependency>
+            <dependency>
+                <groupId>org.conformatron</groupId>
+                <artifactId>conformatron-api</artifactId>
+                <version>${version.conformatron-api}</version>
+            </dependency>
 
             <dependency>
                 <groupId>jakarta.xml.bind</groupId>
                 <artifactId>jakarta.xml.bind-api</artifactId>
                 <version>${version.jaxb-api}</version>
             </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${version.jaxb-impl}</version>
+            </dependency>            
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-runtime</artifactId>

@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
@@ -137,17 +138,11 @@ public class Grid {
 
     private static class Cell {
 
-        private final Format format = DEFAULT_FORMAT;
-
         private final List<Text> text;
 
         public Cell(final Text txt) {
             this.text = new ArrayList<>();
             this.text.add(txt);
-        }
-
-        public Cell(final Object object, final Code... codes) {
-            this(new Text(object, codes));
         }
 
         protected Line getFormattedLine(final int lineNumber, final ColumnDefinition def) {
@@ -190,17 +185,8 @@ public class Grid {
             return def.getJustify().apply("", def.getLength());
         }
 
-        public Cell add(final Object object, final Code... codes) {
-            this.text.add(new Text(object, codes));
-            return this;
-        }
-
         public Cell(final List<Text> text) {
             this.text = text;
-        }
-
-        public Format getFormat() {
-            return this.format;
         }
 
         public List<Text> getText() {
@@ -260,8 +246,7 @@ public class Grid {
     }
 
     public List<Cell> getColumn(final int index) {
-        return IntStream.range(0, this.values.size()).filter(n -> n % this.definitions.size() == index).mapToObj(this.values::get)
-                .collect(Collectors.toList());
+        return IntStream.range(0, this.values.size()).filter(n -> n % this.definitions.size() == index).mapToObj(this.values::get).toList();
     }
 
     public Grid addCell(final Cell cell) {

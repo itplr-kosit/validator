@@ -1,7 +1,6 @@
 package org.kosit.xvrl.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.kosit.xvrl.api.BaseDetection;
 import org.kosit.xvrl.model.XVRLDetection;
@@ -13,7 +12,7 @@ public abstract class BaseReport {
 
     public List<String> getAllErrors() {
         return getDetection().stream().filter(BaseDetection::hasErrors).flatMap(xvrlDetection -> xvrlDetection.getAllMessages().stream())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

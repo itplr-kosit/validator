@@ -5,12 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.impl.Helper;
-import org.kosit.validator.impl.Helper.Simple;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
-import org.kosit.validator.impl.tasks.CheckAction;
+import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.TestProcessBuilder;
 
 /**
@@ -34,8 +32,8 @@ public class PrintReportActionTest {
     @Test
     public void testSimpleSerialize() {
 
-        final CheckAction.Process b = TestProcessBuilder.create(InputFactory.read(Simple.SIMPLE_VALID))
-                .setCreateReport(Helper.load(Simple.SIMPLE_VALID)).build();
+        final CheckTask.Process b = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
+                .setCreateReport(TestHelper.load(Simple.SIMPLE_VALID)).build();
         CommandLine.clear();
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);

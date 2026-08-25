@@ -1,15 +1,18 @@
 package org.kosit.validator.impl.tasks;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.kosit.validator.api.Input;
-import org.kosit.validator.api.InputFactory;
-import org.kosit.validator.impl.Helper;
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.tasks.CheckAction.Process;
+import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.validator.model.XMLSyntaxError;
@@ -30,14 +33,18 @@ public class TestProcessBuilder {
     private Process process;
 
     public static TestProcessBuilder create() {
-        return create(InputFactory.read("<someXml></someXml>".getBytes(), "someCheck"));
+        try {
+            return create(ReadResource.inMemory(Resource.utf8("someCheck", "<someXml></someXml>")));
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
-    public static TestProcessBuilder create(final Input input) {
+    public static TestProcessBuilder create(final CTReadResource input) {
         return create(input, true);
     }
 
-    public static TestProcessBuilder create(final Input input, final boolean parse) {
+    public static TestProcessBuilder create(final CTReadResource input, final boolean parse) {
         final TestProcessBuilder builder = new TestProcessBuilder();
         builder.process = new Process(input, new XVRLMetadata());
         if (parse) {
@@ -55,30 +62,19 @@ public class TestProcessBuilder {
         return Collections.singletonList(r);
     }
 
-    public static List<BusinessReport> createReport() {
-        final XdmNode someXml = Helper.parseDocument(InputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
+    public static List<BusinessReport> createReport() throws IOException {
+        final XdmNode someXml = TestHelper.parseDocument(ReadResource.inMemory(Resource.utf8("someXml", "<some>xml</some>"))).getObject();
         return createReport("report", someXml);
     }
 
-    private static List<ValidationResultsSchematron> createSchematronError() {
-        final ValidationResultsSchematron v = new ValidationResultsSchematron();
-        final SchematronOutputType out = new SchematronOutputType();
-        final FailedAssert f = new FailedAssert();
-        out.getActivePatternOrActiveGroupAndFiredRule().add(f);
-        final Results r = new Results();
-        r.setSchematronOutput(out);
-        v.setResults(r);
-        return Collections.singletonList(v);
-    }
-
-    private static ProcessStepResult<XdmNode, XMLSyntaxError> parseInput(final Input input) {
-        final ProcessStepResult<XdmNode, XMLSyntaxError> stepResult = new ProcessStepResult<>(DocumentParseAction.KEY);
-        stepResult.setResult(Helper.parseDocument(input));
+    private static ProcessStepResult<XdmNode, XMLSyntaxError> parseInput(final CTReadResource input) {
+        final ProcessStepResult<XdmNode, XMLSyntaxError> stepResult = new ProcessStepResult<>(DocumentParseTask.KEY);
+        stepResult.setResult(TestHelper.parseDocument(input));
         stepResult.setReport(new XVRLReport());
         return stepResult;
     }
 
-    public TestProcessBuilder setParseResult(final Input input) {
+    public TestProcessBuilder setParseResult(final CTReadResource input) {
         this.process.addStepResult(parseInput(input));
         return this;
     }
@@ -104,7 +100,7 @@ public class TestProcessBuilder {
     }
 
     public TestProcessBuilder setSchemaValidationResult(final Result<Boolean, XMLSyntaxError> schemaResult) {
-        final ProcessStepResult<Boolean, XMLSyntaxError> stepResult = new ProcessStepResult<>(SchemaValidationAction.KEY);
+        final ProcessStepResult<Boolean, XMLSyntaxError> stepResult = new ProcessStepResult<>(SchemaValidationTask.KEY);
         stepResult.setResult(schemaResult);
         stepResult.setReport(new XVRLReport());
         this.process.addStepResult(stepResult);
@@ -117,7 +113,7 @@ public class TestProcessBuilder {
 
     public TestProcessBuilder setSchematronResult(final Result<List<ValidationResultsSchematron>, String> schematronResult) {
         final ProcessStepResult<List<ValidationResultsSchematron>, String> stepResult = new ProcessStepResult<>(
-                SchematronValidationAction.KEY);
+                SchematronValidationTask.KEY);
         stepResult.setResult(schematronResult);
         stepResult.setReport(new XVRLReport());
         this.process.addStepResult(stepResult);
@@ -133,7 +129,7 @@ public class TestProcessBuilder {
     }
 
     public TestProcessBuilder setCreateReport(final List<BusinessReport> report) {
-        final ProcessStepResult<List<BusinessReport>, XMLSyntaxError> stepResult = new ProcessStepResult<>(CreateReportsAction.KEY);
+        final ProcessStepResult<List<BusinessReport>, XMLSyntaxError> stepResult = new ProcessStepResult<>(CreateReportsTask.KEY);
         stepResult.setResult(new Result<>(report, Collections.emptyList()));
         stepResult.setReport(new XVRLReport());
         this.process.addStepResult(stepResult);
@@ -144,14 +140,14 @@ public class TestProcessBuilder {
         return this.process;
     }
 
-    public TestProcessBuilder parse(final Input input) {
+    public TestProcessBuilder parse(final CTReadResource input) {
         final ProcessStepResult<XdmNode, XMLSyntaxError> stepResult = parseInput(input);
         this.process.addStepResult(stepResult);
         return this;
     }
 
     public TestProcessBuilder setScenario(final Scenario scenario) {
-        final ProcessStepResult<Scenario, String> stepResult = new ProcessStepResult<>(ScenarioSelectionAction.KEY);
+        final ProcessStepResult<Scenario, String> stepResult = new ProcessStepResult<>(ScenarioSelectionTask.KEY);
         stepResult.setResult(new Result<>(scenario));
         stepResult.setReport(new XVRLReport());
         this.process.addStepResult(stepResult);
@@ -176,6 +172,6 @@ public class TestProcessBuilder {
     }
 
     public TestProcessBuilder setDummyReport() {
-        return setCreateReport(createReport("report", Helper.load(Helper.Simple.SIMPLE_VALID)));
+        return setCreateReport(createReport("report", TestHelper.load(TestHelper.Simple.SIMPLE_VALID)));
     }
 }

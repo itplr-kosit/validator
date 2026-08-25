@@ -1,0 +1,124 @@
+package org.kosit.validator.impl.tasks;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kosit.svrl.impl.SvrlConversionService;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.impl.ContentRepository;
+import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.Scenario.Transformation;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.validator.impl.model.ProcessStepResult;
+import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.model.ValidationResultsSchematron;
+import org.kosit.validator.model.scenarios.ResourceType;
+import org.kosit.validator.model.scenarios.ValidateWithSchematron;
+
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XsltExecutable;
+import net.sf.saxon.s9api.XsltTransformer;
+
+/**
+ * Tests {@link SchematronValidationTask}.
+ * 
+ * @author Andreas Penski
+ */
+public class SchematronValidationTaskTest {
+
+    private SchematronValidationTask action;
+
+    @BeforeEach
+    public void setup() {
+        this.action = new SchematronValidationTask(new SvrlConversionService());
+    }
+
+    @Test
+    public void testProcessingError() throws SaxonApiException {
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
+
+        final Result<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionTask.KEY);
+        final Scenario scenario = scenarioResult.getObject();
+        final XsltExecutable exec = mock(XsltExecutable.class);
+        final XsltTransformer transformer = mock(XsltTransformer.class);
+        doThrow(new SaxonApiException("invalid")).when(transformer).transform();
+        when(exec.load()).thenReturn(transformer);
+        final ResourceType resourceType = new ResourceType();
+        resourceType.setName("invalid internal");
+        scenario.setSchematronValidations(Collections.singletonList(new Transformation(exec, resourceType)));
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+        assertThat(result.getObject()).isNotNull();
+        assertThat(result.getErrors()).isNotEmpty();
+    }
+
+    @Test
+    public void testSchxsltRuntimeProcessingError() {
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
+        final Scenario scenario = process.getResult(ScenarioSelectionTask.KEY).getObject();
+
+        // real SchXslt compilation (no mock): the schematron compiles fine but raises a dynamic
+        // XPath error (FORG0001) when validating simple.xml, whose inner element is not a number
+        final ContentRepository repo = new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
+                Simple.REPOSITORY_URI);
+        final ValidateWithSchematron validateWithSchematron = new ValidateWithSchematron();
+        final ResourceType resource = new ResourceType();
+        resource.setName("runtime error schematron");
+        resource.setLocation("simple-runtime-error.sch");
+        validateWithSchematron.setResource(resource);
+        scenario.setSchematronValidations(Collections.singletonList(repo.createSchematronTransformation(validateWithSchematron)));
+
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+
+        assertThat(result.isValid()).isFalse();
+        assertThat(result.getErrors()).isNotEmpty();
+        assertThat(result.getErrors().iterator().next()).contains("Error processing schematron validation")
+                .contains("runtime error schematron");
+        assertThat(process.isStopped()).isTrue();
+        // the processing error also contributes to the report (synthetic failed-assert)
+        assertThat(processStepResult.getReport()).isNotEmpty();
+    }
+
+    @Test
+    public void testXsltValid() {
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
+                .setScenario(c.getScenarios().get(0)).build();
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getErrors()).isEmpty();
+    }
+
+    @Test
+    public void testSchCompiledValid() {
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
+                .setScenario(c.getScenarios().get(0)).build();
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getErrors()).isEmpty();
+    }
+
+    @Test
+    public void testIsoSchCompiledValid() {
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_ISO_VALID))
+                .setScenario(c.getScenarios().get(0)).build();
+        final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
+        final Result<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getErrors()).isEmpty();
+    }
+}
