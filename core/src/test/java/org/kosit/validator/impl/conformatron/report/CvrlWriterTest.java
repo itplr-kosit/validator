@@ -101,10 +101,21 @@ public class CvrlWriterTest {
         assertThat(root.getLocalName()).isEqualTo("reports");
         assertThat(root.getAttributeNS(NS_CVRL, "conformant")).isEqualTo("true");
         assertThat(root.getAttributeNS(NS_CVRL, "status")).isEqualTo("COMPLETED");
-        // document identity: reference + checksum with algorithm name
+        // session 25.08.2026: document by reference only — no checksum attributes in the root metadata anymore
         final Element document = (Element) root.getElementsByTagNameNS(NS, "document").item(0);
-        assertThat(document.getAttributeNS(NS_CVRL, "checksum")).isNotEmpty();
-        assertThat(document.getAttributeNS(NS_CVRL, "checksum-algorithm")).isEqualTo("SHA-512");
+        assertThat(document.getAttribute("href")).isEqualTo("test-document.xml");
+        assertThat(document.getAttributeNS(NS_CVRL, "checksum")).isEmpty();
+        // session 25.08.2026, variant B: document-parsed carries two messages — hash first, then the embedded payload
+        final Element parseReport = reports(cvrl).get(0);
+        final NodeList messages = parseReport.getElementsByTagNameNS(NS, "message");
+        assertThat(messages.getLength()).isEqualTo(2);
+        final Element hashMessage = (Element) messages.item(0);
+        assertThat(hashMessage.getAttributeNS(NS_CVRL, "algorithm")).isEqualTo("SHA-512");
+        assertThat(hashMessage.getTextContent()).matches("[0-9a-f]{128}");
+        final Element payloadMessage = (Element) messages.item(1);
+        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "mime-type")).isEqualTo("application/xml");
+        // the parsed document is embedded as element content, not as escaped text
+        assertThat(payloadMessage.getElementsByTagName("*").getLength()).isGreaterThan(0);
         // 6 steps + APPLY_RULES twice (xsd + schematron rule set) = 8 reports
         assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly(CTActionType.PARSE_DOCUMENT.getName(),
                 CTActionType.DETECT_SCENARIOS.getName(), CTActionType.SELECT_SCENARIO.getName(), CTActionType.RETRIEVE_ARTIFACTS.getName(),
@@ -137,10 +148,13 @@ public class CvrlWriterTest {
 
         assertThat(root.getAttributeNS(NS_CVRL, "status")).isEqualTo("CANCELLED");
         assertThat(root.getAttributeNS(NS_CVRL, "conformant")).isEqualTo("false");
-        // only the executed step is reported — but document identity survives the failed parse
+        // only the executed step is reported
         assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly("parse-document");
-        final Element document = (Element) root.getElementsByTagNameNS(NS, "document").item(0);
-        assertThat(document.getAttributeNS(NS_CVRL, "checksum")).isNotEmpty();
+        // session 25.08.2026 (P8): failed content is never echoed into the report
+        final NodeList messages = cvrl.getElementsByTagNameNS(NS, "message");
+        for (int i = 0; i < messages.getLength(); i++) {
+            assertThat(((Element) messages.item(i)).getAttributeNS(NS_CVRL, "mime-type")).isEmpty();
+        }
         final Element digest = (Element) cvrl.getElementsByTagNameNS(NS, "digest").item(0);
         assertThat(digest.getAttribute("valid")).isEqualTo("false");
         assertThat(digest.getAttribute("worst-severity")).isEqualTo("error");
