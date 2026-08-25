@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UncheckedIOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,7 +20,6 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.source.CTResource;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.helper.ThrowingSupplier;
 
 /**
@@ -42,9 +40,9 @@ public final class ReadResource implements CTReadResource {
         boolean useTempFile(long srcLength);
     }
 
-    private static final long MAX_IN_MEMORY_BYTES = 5 * 1024 * 1024;
+    public static final long MAX_IN_MEMORY_BYTES = 5 * 1024 * 1024;
 
-    private static final String HASH_ALGORITHM_NAME = "SHA-512";
+    public static final String HASH_ALGORITHM_NAME = "SHA-512";
 
     private final @NonNull CTResource res;
 
@@ -55,19 +53,6 @@ public final class ReadResource implements CTReadResource {
     private final @NonNull ThrowingSupplier<InputStream, IOException> streamSupplier;
 
     private final byte @NonNull [] hashBytes;
-
-    @Deprecated(forRemoval = true)
-    public static @NonNull ReadResource of(final @NonNull VInput input) {
-        try {
-            // Always read in memory
-            return new ReadResource(Resource.of(input), HASH_ALGORITHM_NAME, null, srcLength -> false);
-        } catch (final IOException e) {
-            throw new UncheckedIOException("Error opening/reading old input", e);
-        } catch (final NoSuchAlgorithmException e) {
-            // Should never happen
-            throw new IllegalStateException("Unknown hash algorithm name '" + HASH_ALGORITHM_NAME + "'", e);
-        }
-    }
 
     public static @NonNull ReadResource of(final @NonNull CTResource res, final @NonNull ResourceHelper resHelper) throws IOException {
         try {
@@ -88,8 +73,9 @@ public final class ReadResource implements CTReadResource {
         }
     }
 
-    ReadResource(@NonNull final CTResource res, final @NonNull @Nonempty String hashAlgorithm, final @Nullable ResourceHelper resHelper,
-            final @NonNull TempFileUsageDecider tempFileUsage) throws IOException, NoSuchAlgorithmException {
+    public ReadResource(@NonNull final CTResource res, final @NonNull @Nonempty String hashAlgorithm,
+            final @Nullable ResourceHelper resHelper, final @NonNull TempFileUsageDecider tempFileUsage)
+            throws IOException, NoSuchAlgorithmException {
         Objects.requireNonNull(res);
         Objects.requireNonNull(hashAlgorithm);
 

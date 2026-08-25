@@ -32,16 +32,12 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-
 import org.conformatron.api.annotation.CheckForSigned;
 import org.conformatron.api.annotation.Nonempty;
 import org.conformatron.api.annotation.Nonnegative;
 import org.conformatron.api.model.source.CTResource;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.input.StreamHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,41 +219,6 @@ public final class Resource {
             // Buffer immediately for performance
             return new BufferedInputStream(getInputStream(u, -1, -1, null));
         }
-    }
-
-    /**
-     * Wraps a legacy {@link VInput} as a complete XML source. The validator currently only feeds XML documents into the
-     * pipeline, so the detected syntax is fixed until DETECT_SYNTAX is implemented as its own action.
-     *
-     * @param input the legacy input
-     * @return a new source facade
-     */
-    @Deprecated(forRemoval = true)
-    public static @NonNull CTResource of(final @NonNull VInput input) {
-        Objects.requireNonNull(input);
-        return new CTResource() {
-
-            public @NonNull @Nonempty String getName() {
-                return input.getName();
-            }
-
-            public @CheckForSigned long getLength() {
-                return -1;
-            }
-
-            public InputStream getInputStream() throws IOException {
-                if (input.getSource() instanceof final StreamSource src) {
-                    final InputStream ret = src.getInputStream();
-                    if (ret == null)
-                        throw new IOException("Failed to open InputStream from StreamSource");
-                    return ret;
-                }
-                if (input.getSource() instanceof final DOMSource src) {
-                    src.getNode();
-                }
-                throw new IllegalStateException("Unsupported source: " + input.getSource().getClass().getName());
-            }
-        };
     }
 
     public static @NonNull ResourceInputStream of(final @NonNull @Nonempty String name, final @NonNull InputStream is) {

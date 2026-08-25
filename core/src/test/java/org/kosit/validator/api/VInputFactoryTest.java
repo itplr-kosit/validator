@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.input.SourceVInput;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.XMLSyntaxError;
@@ -160,11 +159,11 @@ public class VInputFactoryTest {
         final VInput domVInput = VInputFactory.read(new DOMSource(dom), "MD5", "id".getBytes(StandardCharsets.UTF_8));
         assertThat(domVInput).isNotNull();
         assertThat(domVInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(ReadResource.of(domVInput));
+        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(VInputResourceBridge.of(domVInput));
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
-        assertThat(TestHelper.parseDocument(ReadResource.of(domVInput)).getObject()).isNotNull();
+        assertThat(TestHelper.parseDocument(VInputResourceBridge.of(domVInput)).getObject()).isNotNull();
     }
 
     @Test
@@ -174,11 +173,11 @@ public class VInputFactoryTest {
         final VInput nodeVInput = VInputFactory.read(node, "node test");
         assertThat(nodeVInput).isNotNull();
         assertThat(nodeVInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(ReadResource.of(nodeVInput));
+        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(VInputResourceBridge.of(nodeVInput));
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
-        assertThat(TestHelper.parseDocument(ReadResource.of(nodeVInput)).getObject()).isNotNull();
+        assertThat(TestHelper.parseDocument(VInputResourceBridge.of(nodeVInput)).getObject()).isNotNull();
     }
 
 }

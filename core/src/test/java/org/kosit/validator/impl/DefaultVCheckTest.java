@@ -28,6 +28,7 @@ import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VInputFactory;
+import org.kosit.validator.api.VInputResourceBridge;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.helper.ResourceHelperExtension;
 import org.kosit.validator.impl.TestHelper.Simple;
@@ -259,13 +260,13 @@ public class DefaultVCheckTest {
     public void testXdmNode() throws Exception {
         XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         VInput domVInput = VInputFactory.read(node, "node test");
-        VResult result = this.validCheck.checkInput(ReadResource.of(domVInput));
+        VResult result = this.validCheck.checkInput(VInputResourceBridge.of(domVInput));
         assertThat(result.isProcessingSuccessful()).isTrue();
 
         // test compatible configuration
         node = this.validCheck.getProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         domVInput = VInputFactory.read(node, "node test");
-        result = this.validCheck.checkInput(ReadResource.of(domVInput));
+        result = this.validCheck.checkInput(VInputResourceBridge.of(domVInput));
         assertThat(result.isProcessingSuccessful()).isTrue();
     }
 }
