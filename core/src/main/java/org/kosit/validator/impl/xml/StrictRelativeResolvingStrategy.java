@@ -3,10 +3,11 @@ package org.kosit.validator.impl.xml;
 import java.net.URI;
 import java.util.Objects;
 
-import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+
+import org.kosit.jaxb.xml.XMLHelper;
 
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
@@ -23,10 +24,7 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
     public SchemaFactory createSchemaFactory() {
         forceOpenJdkXmlImplementation();
 
-        final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        disableExternalEntities(sf);
-        allowExternalSchema(sf, "file");
-        return sf;
+        return XMLHelper.createSafeSchemaFactory();
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.config.TestConfiguration;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.model.scenarios.ScenarioType;
+import org.kosit.validator.scenario.model.ScenarioType;
 
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XdmNode;

@@ -48,10 +48,6 @@ public class SchemaProvider {
         }
     }
 
-    private static Schema createSchema(final SchemaFactory sf, final Source... schemaSources) {
-        return createSchema(sf, schemaSources, null);
-    }
-
     private static Source resolve(final URL resource) {
         try {
             final String rawPath = resource.toURI().getRawPath();
@@ -59,16 +55,6 @@ public class SchemaProvider {
         } catch (final IOException | URISyntaxException e) {
             throw new IllegalStateException("Can not load schema for resource " + resource.getPath(), e);
         }
-    }
-
-    /**
-     * Returns the defined schema for the scenario configuration.
-     *
-     * @return scenario schema
-     */
-    public static Schema getScenarioSchema() {
-        final SchemaFactory sf = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
-        return createSchema(sf, resolve(SchemaProvider.class.getResource(ValidatorSchemas.SCENARIOS_XSD_PATH)));
     }
 
 }

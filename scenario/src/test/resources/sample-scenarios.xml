@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" frameworkVersion="2.0.0">
+    <name>Sample-TestSuite</name>
+    <author>QA</author>
+    <date>2017-08-08</date>
+    <description>
+        <p>Scenario configuration used by the tests of this module</p>
+    </description>
+
+    <scenario>
+        <name>Simple</name>
+        <description>
+            <p>XML Schema and Schematron validation.</p>
+        </description>
+        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <match>/test:simple</match>
+        <validateWithXmlSchema>
+            <resource>
+                <name>Sample Schema</name>
+                <location>simple.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+        <validateWithSchematron>
+            <resource>
+                <name>Sample Schematron</name>
+                <location>simple.xsl</location>
+            </resource>
+        </validateWithSchematron>
+        <createReport>
+            <id>Report for eInvoice</id>
+            <resource>
+                <name>Report for eInvoice</name>
+                <location>report.xsl</location>
+            </resource>
+            <customLevel level="warning">BR-01 BR-02</customLevel>
+        </createReport>
+        <acceptMatch>count(//test:rejected) = 0</acceptMatch>
+    </scenario>
+
+    <scenario>
+        <name>SchemaOnly</name>
+        <description>
+            <p>XML Schema validation only.</p>
+        </description>
+        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <match>/test:foo</match>
+        <validateWithXmlSchema>
+            <resource>
+                <name>Sample Schema</name>
+                <location>simple.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+    </scenario>
+
+</scenarios>

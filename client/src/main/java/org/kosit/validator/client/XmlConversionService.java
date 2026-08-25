@@ -55,7 +55,7 @@ public class XmlConversionService {
         final Collection<Package> p = new ArrayList<>();
         p.add(org.kosit.validator.model.ObjectFactory.class.getPackage());
         p.add(org.kosit.xvrl.model.ObjectFactory.class.getPackage());
-        p.add(org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
+        p.add(org.kosit.validator.scenario.model.ObjectFactory.class.getPackage());
         initialize(p);
     }
 

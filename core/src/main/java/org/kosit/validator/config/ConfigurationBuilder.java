@@ -22,9 +22,9 @@ import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.model.scenarios.DescriptionType;
-import org.kosit.validator.model.scenarios.ObjectFactory;
-import org.kosit.validator.model.scenarios.Scenarios;
+import org.kosit.validator.scenario.model.DescriptionType;
+import org.kosit.validator.scenario.model.ObjectFactory;
+import org.kosit.validator.scenario.model.Scenarios;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,16 +15,16 @@ import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.ScenariosConversionService;
-import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.scenarios.ScenarioType;
-import org.kosit.validator.model.scenarios.Scenarios;
+import org.kosit.validator.scenario.impl.ScenarioConversionService;
+import org.kosit.validator.scenario.model.ScenarioType;
+import org.kosit.validator.scenario.model.Scenarios;
+import org.kosit.validator.scenario.xsd.ScenarioSchemaProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,7 +127,7 @@ public class ConfigurationLoader {
     public VConfiguration build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
-        final Scenarios def = loadScenarios(SchemaProvider.getScenarioSchema(), processor);
+        final Scenarios def = loadScenarios(ScenarioSchemaProvider.getScenarioSchema(), processor);
         final List<Scenario> scenarios = initializeScenarios(def, contentRepository);
         final Scenario fallbackScenario = createFallback(def, contentRepository);
         final DefaultConfiguration configuration = new DefaultConfiguration(scenarios, fallbackScenario);
@@ -154,7 +154,7 @@ public class ConfigurationLoader {
         checkVersion(this.scenarioDefinition, processor);
         LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        final ScenariosConversionService conversionService = new ScenariosConversionService();
+        final ScenarioConversionService conversionService = new ScenarioConversionService();
         final Scenarios scenarios = conversionService.withSchema(scenarioSchema).withEventHandler(handler).readXml(this.scenarioDefinition,
                 Scenarios.class);
         if (handler.hasErrors()) {

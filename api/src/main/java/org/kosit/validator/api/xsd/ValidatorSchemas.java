@@ -6,8 +6,6 @@ public final class ValidatorSchemas {
 
     public static final String XVRL_XSD_PATH = XSD_PATH + "/xvrl-1.0.xsd";
 
-    public static final String SCENARIOS_XSD_PATH = XSD_PATH + "/scenarios.xsd";
-
     private ValidatorSchemas() {
     }
 }

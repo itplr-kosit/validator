@@ -8,9 +8,9 @@ import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.model.scenarios.ResourceType;
-import org.kosit.validator.model.scenarios.ScenarioType;
-import org.kosit.validator.model.scenarios.ValidateWithSchematron;
+import org.kosit.validator.scenario.model.ResourceType;
+import org.kosit.validator.scenario.model.ScenarioType;
+import org.kosit.validator.scenario.model.ValidateWithSchematron;
 
 /**
  * Validator implementation of {@link CTScenarioMatch} (conformatron-api steps 3+4). Facade: wraps the legacy

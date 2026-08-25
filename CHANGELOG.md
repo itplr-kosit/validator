@@ -16,6 +16,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (BUILD) [#169](https://projekte.kosit.org/kosit/validator/-/work_items/169) Removed the usage of Lombok
 - (BUILD) [#185](https://projekte.kosit.org/kosit/validator/-/work_items/185) The minimum Java version is now 25
 - (CORE) [#198](https://projekte.kosit.org/kosit/validator/-/work_items/198) Replaced all `String.format` calls with native inline String concatenation
+- (BUILD) Extracted the scenario XSD and its JAXB binding into the new submodule `scenario`, built as the fourth module and depending on `jaxb` only
+- (API) The generated scenario model moved from package `org.kosit.validator.model.scenarios` to `org.kosit.validator.scenario.model`
+- (API) `org.kosit.validator.impl.ScenariosConversionService` moved and renamed to `org.kosit.validator.scenario.impl.ScenarioConversionService`
+- (API) `ValidatorSchemas.SCENARIOS_XSD_PATH` was replaced by `org.kosit.validator.scenario.xsd.ScenarioSchemas.SCENARIOS_XSD_PATH`
+- (API) `SchemaProvider.getScenarioSchema()` was replaced by `org.kosit.validator.scenario.xsd.ScenarioSchemaProvider.getScenarioSchema()`
+
+### Added
+
+- (API) Added `XMLHelper.createSafeSchemaFactory()` providing the hardened `SchemaFactory` that is now shared by the resolving strategies and the scenario schema provider
+
+### Fixed
+
+- (BUILD) The `validator-api` module no longer emits stub `ObjectFactory` classes for the `svrl` and `scenario` packages, which shadowed the complete ones of the respective modules on the classpath
 
 ## 1.6.3 - 2026-08-20
 

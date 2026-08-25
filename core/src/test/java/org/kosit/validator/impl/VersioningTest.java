@@ -9,7 +9,8 @@ import java.net.URL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
-import org.kosit.validator.model.scenarios.Scenarios;
+import org.kosit.validator.scenario.impl.ScenarioConversionService;
+import org.kosit.validator.scenario.model.Scenarios;
 
 /**
  * Tests the versioning of scenario files aka configuration data.
@@ -26,11 +27,11 @@ public class VersioningTest {
 
     private static final URL NEW_VERSION = VersioningTest.class.getResource("/examples/versioning/scenarios-newversion.xml");
 
-    private ScenariosConversionService service;
+    private ScenarioConversionService service;
 
     @BeforeEach
     public void setup() {
-        this.service = new ScenariosConversionService();
+        this.service = new ScenarioConversionService();
     }
 
     @Test

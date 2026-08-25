@@ -20,13 +20,10 @@
                 xmlType="xs:integer" adapter="org.kosit.jaxb.adapter.LongAdapter"/>
     </jaxb:globalBindings>
 
-    <jaxb:bindings schemaLocation="../xsd/model.xsd">
+    <jaxb:bindings schemaLocation="../xsd/scenarios.xsd">
         <jaxb:schemaBindings>
-            <jaxb:package name="org.kosit.validator.model"/>
+            <jaxb:package name="org.kosit.validator.scenario.model"/>
         </jaxb:schemaBindings>
-        <jaxb:bindings node="//xs:complexType[@name='XMLSyntaxError']">
-            <inheritance:extends>org.kosit.validator.impl.model.AbstractXMLSyntaxError</inheritance:extends>
-        </jaxb:bindings>
     </jaxb:bindings>
 
 </jaxb:bindings>

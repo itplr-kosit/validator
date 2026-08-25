@@ -11,8 +11,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.model.scenarios.CreateReportType;
-import org.kosit.validator.model.scenarios.ResourceType;
+import org.kosit.validator.scenario.model.CreateReportType;
+import org.kosit.validator.scenario.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

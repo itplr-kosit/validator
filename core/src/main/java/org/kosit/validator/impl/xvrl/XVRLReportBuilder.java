@@ -13,7 +13,7 @@ import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.XMLSyntaxErrorSeverity;
-import org.kosit.validator.model.scenarios.ResourceType;
+import org.kosit.validator.scenario.model.ResourceType;
 import org.kosit.xvrl.model.Document;
 import org.kosit.xvrl.model.Location;
 import org.kosit.xvrl.model.Schema;

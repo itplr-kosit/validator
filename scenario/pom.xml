@@ -10,35 +10,59 @@
     </parent>
 
     <packaging>jar</packaging>
-    <artifactId>validator-api</artifactId>
-    
+    <artifactId>scenario</artifactId>
+    <name>KoSIT Scenario JAXB binding</name>
+    <description>Standalone JAXB binding and read/write helper for the KoSIT validator scenario configuration.</description>
+
     <dependencies>
         <dependency>
-            <groupId>org.kosit</groupId>
-            <artifactId>svrl</artifactId>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>jaxb</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kosit</groupId>
-            <artifactId>xvrl</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kosit</groupId>
-            <artifactId>scenario</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <resources>
             <resource>
                 <directory>src/main/model</directory>
             </resource>
         </resources>
-        
+
         <plugins>
-            <!-- Generate model classes -->
+            <!-- Generate Scenario JAXB model from scenarios.xsd -->
             <plugin>
                 <groupId>org.jvnet.jaxb</groupId>
                 <artifactId>jaxb-maven-plugin</artifactId>
@@ -53,28 +77,14 @@
                 </executions>
                 <configuration>
                     <extension>true</extension>
-                    <strict>false</strict>
                     <schemaDirectory>src/main/model/xsd</schemaDirectory>
                     <bindingDirectory>src/main/model/binding</bindingDirectory>
-                    <catalog>src/main/model/binding/catalog.txt</catalog>
-                    <!--generateDirectory>${project.build.directory}/generated-sources/xjc</generateDirectory-->
                     <packageLevelAnnotations>false</packageLevelAnnotations>
                     <args>
                         <arg>-Xinheritance</arg>
                         <arg>-Xsimplify</arg>
                         <arg>-Xsimplify-usePluralForm=true</arg>
                     </args>
-                    <!-- Reuse the SVRL and scenario JAXB classes generated in the respective modules instead of regenerating them. -->
-                    <episodes>
-                        <episode>
-                            <groupId>org.kosit</groupId>
-                            <artifactId>svrl</artifactId>
-                        </episode>
-                        <episode>
-                            <groupId>org.kosit</groupId>
-                            <artifactId>scenario</artifactId>
-                        </episode>
-                    </episodes>
                     <plugins>
                         <plugin>
                             <groupId>org.jvnet.jaxb</groupId>
@@ -84,20 +94,6 @@
                     </plugins>
                 </configuration>
             </plugin>
-            <!-- For every element referenced from an imported schema, XJC emits a stub ObjectFactory into the
-                 owning package, even though that package is covered by an episode. Those stubs would shadow the
-                 complete ObjectFactory of the svrl and scenario modules on the classpath. They are not needed here,
-                 because -Xsimplify turns all element references into plain @XmlElement properties. -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>org/oclc/purl/dsdl/svrl/ObjectFactory.java</exclude>
-                        <exclude>org/kosit/validator/scenario/model/ObjectFactory.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -105,10 +101,12 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <!-- Embed CycloneDX SBOM in the deployable jar (config inherited from parent pluginManagement). -->
             <plugin>
-                <groupId>org.cyclonedx</groupId>
-                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <skipAssembly>true</skipAssembly>
+                </configuration>
             </plugin>
         </plugins>
     </build>

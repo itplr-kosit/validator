@@ -8,6 +8,7 @@
         <module>jaxb</module>
         <module>svrl</module>
         <module>xvrl</module>
+        <module>scenario</module>
         <module>api</module>
         <module>core</module>
         <module>cli</module>
