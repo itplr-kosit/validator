@@ -11,8 +11,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.kosit.validator.api.*;
-import org.kosit.validator.api.VInput;
+import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.VResult;
+import org.kosit.validator.api.XmlError;
 import org.kosit.validator.api.compact.CompactXVRLReport;
 import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.api.compact.ValidatorEngineInformation;
@@ -57,18 +59,18 @@ public class ValidationService {
         return configuration != null ? configuration.stream().flatMap(c -> c.getScenarios().stream()).toList() : Collections.emptyList();
     }
 
-    public VResult validate(final VInput input) {
+    public VResult validate(final CTReadResource input) {
         long t0 = System.currentTimeMillis();
         final VResult result = check.checkInput(input);
         LOGGER.info("Validated {} input in {} ms", input.getName(), System.currentTimeMillis() - t0);
         return result;
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final VInput input, final VResult defaultResult) {
+    public CompactXVRLReportSummary convertMinimalXvrl(final CTReadResource input, final VResult defaultResult) {
         return convertMinimalXvrl(Map.of(input, defaultResult));
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final Map<VInput, VResult> defaultResults) {
+    public CompactXVRLReportSummary convertMinimalXvrl(final Map<CTReadResource, VResult> defaultResults) {
         final CompactXVRLReportSummary summary = CompactXVRLReportSummary.create();
         defaultResults.forEach((input, result) -> {
             final CompactXVRLReport report = CompactXVRLReport.create();
@@ -90,7 +92,7 @@ public class ValidationService {
              * so.getTitle() != null ? so.getTitle() : "Schematron"; report.addSchemaReference(title, "Schematron");
              * so.getFailedAsserts().forEach(fa -> report.addSchematronViolation(fa, title)); }); }
              */
-            report.setChecksum(HexFormat.of().formatHex(input.getHashCode()));
+            report.setChecksum(HexFormat.of().formatHex(input.getHashBytes()));
             summary.addReport(report);
         });
         summary.setAcceptable(defaultResults.values().stream().filter(VResult::isAcceptable).count());
@@ -139,9 +141,8 @@ public class ValidationService {
     private static URI determineRepository(final Path d) {
         if (Files.isDirectory(d)) {
             return d.toUri();
-        } else {
-            throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
         }
+        throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
     }
 
     private static void assertFileExistance(final Path f, final String type) {

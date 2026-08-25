@@ -264,6 +264,10 @@ public final class Resource {
         return new ResourceInputStream(name, is);
     }
 
+    public static @NonNull CTResource stdin() {
+        return of("stdin", System.in);
+    }
+
     public static @NonNull ResourceByteArray of(final @NonNull @Nonempty String name, final byte @NonNull [] bytes) {
         return new ResourceByteArray(name, bytes);
     }

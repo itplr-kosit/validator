@@ -3,6 +3,7 @@ package org.kosit.validator.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,8 +14,11 @@ import java.util.List;
 import javax.xml.transform.stream.StreamSource;
 
 import org.conformatron.api.model.source.CTReadResource;
+import org.jspecify.annotations.NonNull;
 import org.kosit.jaxb.JaxbConversionService;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
@@ -176,5 +180,13 @@ public class TestHelper {
 
     public static Processor createProcessor() {
         return ProcessorProvider.getProcessor();
+    }
+
+    public static @NonNull CTReadResource read(final @NonNull URI u) {
+        try {
+            return ReadResource.inMemory(Resource.of(u));
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

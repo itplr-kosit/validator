@@ -2,6 +2,7 @@ package org.kosit.validator.api.helper;
 
 /**
  * Special version of the Supplier interface for methods throwing an exception
+ * 
  * @author Philip Helger
  *
  * @param <T> Return type

@@ -1,12 +1,15 @@
 package org.kosit.validator.impl.tasks;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.kosit.validator.api.VInput;
-import org.kosit.validator.api.VInputFactory;
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
@@ -30,14 +33,18 @@ public class TestProcessBuilder {
     private Process process;
 
     public static TestProcessBuilder create() {
-        return create(VInputFactory.read("<someXml></someXml>".getBytes(), "someCheck"));
+        try {
+            return create(ReadResource.inMemory(Resource.utf8("someCheck", "<someXml></someXml>")));
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
-    public static TestProcessBuilder create(final VInput input) {
+    public static TestProcessBuilder create(final CTReadResource input) {
         return create(input, true);
     }
 
-    public static TestProcessBuilder create(final VInput input, final boolean parse) {
+    public static TestProcessBuilder create(final CTReadResource input, final boolean parse) {
         final TestProcessBuilder builder = new TestProcessBuilder();
         builder.process = new Process(input, new XVRLMetadata());
         if (parse) {
@@ -55,19 +62,19 @@ public class TestProcessBuilder {
         return Collections.singletonList(r);
     }
 
-    public static List<BusinessReport> createReport() {
-        final XdmNode someXml = TestHelper.parseDocument(VInputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
+    public static List<BusinessReport> createReport() throws IOException {
+        final XdmNode someXml = TestHelper.parseDocument(ReadResource.inMemory(Resource.utf8("someXml", "<some>xml</some>"))).getObject();
         return createReport("report", someXml);
     }
 
-    private static ProcessStepResult<XdmNode, XMLSyntaxError> parseInput(final VInput input) {
+    private static ProcessStepResult<XdmNode, XMLSyntaxError> parseInput(final CTReadResource input) {
         final ProcessStepResult<XdmNode, XMLSyntaxError> stepResult = new ProcessStepResult<>(DocumentParseTask.KEY);
         stepResult.setResult(TestHelper.parseDocument(input));
         stepResult.setReport(new XVRLReport());
         return stepResult;
     }
 
-    public TestProcessBuilder setParseResult(final VInput input) {
+    public TestProcessBuilder setParseResult(final CTReadResource input) {
         this.process.addStepResult(parseInput(input));
         return this;
     }
@@ -133,7 +140,7 @@ public class TestProcessBuilder {
         return this.process;
     }
 
-    public TestProcessBuilder parse(final VInput input) {
+    public TestProcessBuilder parse(final CTReadResource input) {
         final ProcessStepResult<XdmNode, XMLSyntaxError> stepResult = parseInput(input);
         this.process.addStepResult(stepResult);
         return this;

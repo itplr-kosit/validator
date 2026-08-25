@@ -10,7 +10,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
@@ -42,9 +41,8 @@ public class SerializeReportActionTest {
 
     @Test
     public void testSimpleSerialize() {
-        assertThat(this.action.isSkipped(TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID)).schemaValid().build()))
-                .isTrue();
-        final CheckTask.Process b = TestProcessBuilder.create(VInputFactory.read(Simple.SIMPLE_VALID)).schemaValid()
+        assertThat(this.action.isSkipped(TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).schemaValid().build())).isTrue();
+        final CheckTask.Process b = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).schemaValid()
                 .setCreateReport(TestHelper.load(Simple.SIMPLE_VALID)).build();
         assertThat(this.action.isSkipped(b)).isFalse();
         this.action.check(b);

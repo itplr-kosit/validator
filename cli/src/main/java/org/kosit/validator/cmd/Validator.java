@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,15 +15,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.conformatron.api.annotation.Nonempty;
+import org.conformatron.api.model.source.CTReadResource;
 import org.fusesource.jansi.AnsiRenderer.Code;
+import org.jspecify.annotations.NonNull;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VInput;
-import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
@@ -30,8 +33,9 @@ import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
 import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.input.ResourceVInput;
-import org.kosit.validator.impl.input.SourceVInput;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.validator.impl.conformatron.source.ResourceHelper;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,24 +105,26 @@ public class Validator {
         if (cliOptions.isPrintMemoryStats()) {
             check.getCheckSteps().add(new PrintMemoryStats());
         }
-        LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
-        final Collection<VInput> targets = determineTestTargets(cliOptions);
-        start = System.currentTimeMillis();
-        final Map<String, VResult> results = new HashMap<>();
-        Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
-        long tick = System.currentTimeMillis();
-        for (final VInput input : targets) {
-            results.put(input.getName(), check.checkInput(input));
-            if (((System.currentTimeMillis() - tick) / 1000) > 5) {
-                tick = System.currentTimeMillis();
-                Printer.writeOut("{0}/{1} object(s) processed", results.size(), targets.size());
+        try ( ResourceHelper resHelper = new ResourceHelper() ) {
+            LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
+            final Collection<CTReadResource> targets = determineTestTargets(cliOptions, resHelper);
+            start = System.currentTimeMillis();
+            final Map<String, VResult> results = new HashMap<>();
+            Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
+            long tick = System.currentTimeMillis();
+            for (final CTReadResource input : targets) {
+                results.put(input.getName(), check.checkInput(input));
+                if (((System.currentTimeMillis() - tick) / 1000) > 5) {
+                    tick = System.currentTimeMillis();
+                    Printer.writeOut("{0}/{1} object(s) processed", results.size(), targets.size());
+                }
             }
+            final long processingTime = System.currentTimeMillis() - start;
+            Printer.writeOut("Processing of {0} object(s) completed in {1}ms", targets.size(), processingTime);
+            check.printResults(results);
+            LOGGER.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
+            return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
         }
-        final long processingTime = System.currentTimeMillis() - start;
-        Printer.writeOut("Processing of {0} object(s) completed in {1}ms", targets.size(), processingTime);
-        check.printResults(results);
-        LOGGER.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
-        return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
     }
 
     /**
@@ -209,10 +215,14 @@ public class Validator {
         return dir;
     }
 
-    private static Collection<VInput> determineTestTargets(final CommandLineOptions.CliOptions cmd) throws IOException {
-        final Collection<VInput> targets = new ArrayList<>();
-        if (cmd.getFiles() != null && !cmd.getFiles().isEmpty()) {
-            cmd.getFiles().forEach(e -> targets.addAll(determineTestTarget(e)));
+    @NonNull
+    @Nonempty
+    private static Collection<CTReadResource> determineTestTargets(final CommandLineOptions.CliOptions cmd, final ResourceHelper resHelper)
+            throws IOException {
+        final Collection<CTReadResource> targets = new ArrayList<>();
+        if (cmd.getFiles() != null) {
+            for (final var file : cmd.getFiles())
+                targets.addAll(determineTestTarget(file, resHelper));
         }
         if (isPiped()) {
             targets.add(readFromPipe());
@@ -229,24 +239,30 @@ public class Validator {
     }
 
     // sanitation is delegated to xml stack
-    private static SourceVInput readFromPipe() {
-        return VInputFactory.read(System.in, "stdin");
+    private static CTReadResource readFromPipe() throws IOException {
+        return ReadResource.inMemory(Resource.stdin());
     }
 
-    private static Collection<ResourceVInput> determineTestTarget(final Path d) {
+    private static Collection<CTReadResource> determineTestTarget(final Path d, final ResourceHelper resHelper) throws IOException {
         if (Files.isDirectory(d)) {
-            return listDirectoryTargets(d);
+            return listDirectoryTargets(d, resHelper);
         }
         if (Files.exists(d)) {
-            return Collections.singleton(VInputFactory.read(d));
+            return Collections.singleton(ReadResource.of(Resource.of(d), resHelper));
         }
         LOGGER.warn("The specified test target {} does not exist. Will be ignored", d);
         return Collections.emptyList();
     }
 
-    private static Collection<ResourceVInput> listDirectoryTargets(final Path d) {
+    private static Collection<CTReadResource> listDirectoryTargets(final Path d, final ResourceHelper resHelper) {
         try ( Stream<Path> stream = Files.list(d) ) {
-            return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(VInputFactory::read).toList();
+            return stream.filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".xml")).map(p -> {
+                try {
+                    return (CTReadResource) ReadResource.of(Resource.of(p), resHelper);
+                } catch (final IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }).toList();
         } catch (final IOException e) {
             throw new IllegalStateException("IOException while list directory content. Can not determine test targets.", e);
         }

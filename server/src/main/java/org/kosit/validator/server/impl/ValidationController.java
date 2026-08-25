@@ -4,13 +4,16 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 
-import org.kosit.validator.api.VInput;
-import org.kosit.validator.api.VInputFactory;
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationResource;
 import org.kosit.validator.api.compact.CompactXVRLReportSummary;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
+import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
 import org.kosit.xvrl.impl.XvrlConversionService;
 
@@ -26,12 +29,17 @@ public class ValidationController implements ValidationResource {
     @Context
     HttpHeaders headers;
 
-    public ValidationController(ValidationService service) {
+    public ValidationController(final ValidationService service) {
         this.service = service;
     }
 
-    public Response validate(File xmlFile) {
-        final VResult result = service.validate(VInputFactory.read(xmlFile));
+    public Response validate(final File xmlFile) {
+        VResult result;
+        try {
+            result = service.validate(ReadResource.inMemory(Resource.of(xmlFile)));
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
         final XvrlConversionService conversionService = new XvrlConversionService();
         final byte[] resultBytes = conversionService.writeXml(result.getReportSummary()).getBytes();
         return addHeaders(result, Response.ok(resultBytes).type(MediaType.APPLICATION_XML).header("Content-Disposition",
@@ -39,13 +47,18 @@ public class ValidationController implements ValidationResource {
     }
 
     @Override
-    public Response validateMinimal(File xmlFile) {
-        final VInput input = VInputFactory.read(xmlFile);
+    public Response validateMinimal(final File xmlFile) {
+        CTReadResource input;
+        try {
+            input = ReadResource.inMemory(Resource.of(xmlFile));
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
         final VResult result = service.validate(input);
 
         final CompactXVRLReportSummary compactReport = service.convertMinimalXvrl(input, result);
 
-        MediaType best = headers.getAcceptableMediaTypes().stream()
+        final MediaType best = headers.getAcceptableMediaTypes().stream()
                 .filter(mt -> mt.isCompatible(APPLICATION_JSON_TYPE) || mt.isCompatible(APPLICATION_XML_TYPE)).findFirst()
                 .orElse(APPLICATION_XML_TYPE); // Default: XML
 

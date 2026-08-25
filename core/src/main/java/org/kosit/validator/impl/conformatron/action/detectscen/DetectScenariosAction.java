@@ -121,14 +121,14 @@ public class DetectScenariosAction implements CTAction {
         final Scenario scenario = repository.getScenarios().stream().filter(s -> requestedScenarioId.equals(s.getName()) && !s.isFallback())
                 .findFirst().orElse(null);
         if (scenario == null) {
-            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_UNKNOWN_ID,
-                    DetectionLocation.of(resourceId), "Requested scenario '" + requestedScenarioId + "' is not configured");
+            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_UNKNOWN_ID, DetectionLocation.of(resourceId),
+                    "Requested scenario '" + requestedScenarioId + "' is not configured");
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
 
         final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource);
-        final CTDetection detection = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED,
-                DetectionLocation.of(resourceId), "Scenario '" + scenario.getName() + "' fixed by user input");
+        final CTDetection detection = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED, DetectionLocation.of(resourceId),
+                "Scenario '" + scenario.getName() + "' fixed by user input");
         return new DetectScenariosResult(CTStepResult.SUCCESS, List.of(match), DetectionList.of(detection));
     }
 
@@ -136,8 +136,8 @@ public class DetectScenariosAction implements CTAction {
         final String resourceId = parsedSource.getSource().getName();
         final List<Scenario> matching = repository.findMatches(document);
         if (matching.isEmpty()) {
-            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_NO_SCENARIO_MATCHED,
-                    DetectionLocation.of(resourceId), "None of the configured scenarios matches the document");
+            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_NO_SCENARIO_MATCHED, DetectionLocation.of(resourceId),
+                    "None of the configured scenarios matches the document");
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
 
