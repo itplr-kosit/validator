@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
+  <metadata>
+    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen (Session 25.08.2026) -->
+    <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+    <document href="business-cases/extension/04.04a-INVOICE_ubl.xml"/>
+  </metadata>
+  <report>
+    <metadata>
+      <!-- Offene Frage: how to deal with reports from other validator software (Session 25.08.2026) -->
+      <creator name="parse-document"/>
+      <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="none" code="document-parsed">
+      <message cvrl:algorithm="SHA-512">431927e2ae215f524277345be1f97c96fca85c9be43b8f7606aaa345bec71276bf894d90d5c1564730380499f489173c2f802889f9da9c8888a58bb183606277</message>
+      <message cvrl:mime-type="application/xml"><ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
+    <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0</cbc:CustomizationID>
+    <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+    <cbc:ID>17794</cbc:ID>
+    <cbc:IssueDate>2021-07-14</cbc:IssueDate>
+    <cbc:InvoiceTypeCode>877</cbc:InvoiceTypeCode>
+    <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>    
+    <cbc:BuyerReference>992-90009-96</cbc:BuyerReference>
+    <cac:AccountingSupplierParty>
+        <cac:Party>
+            <cbc:EndpointID schemeID="EM">seller@email.de</cbc:EndpointID>
+            <cac:PostalAddress>
+                <cbc:StreetName>Bahnhofstraße 46</cbc:StreetName>
+                <cbc:CityName>Gerüstbau Ort</cbc:CityName>
+                <cbc:PostalZone>12345</cbc:PostalZone>
+                <cac:Country>
+                    <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:PartyTaxScheme>
+                <cbc:CompanyID>DE814060619</cbc:CompanyID>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:PartyTaxScheme>
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>Test Gerüstbau GmbH</cbc:RegistrationName>                
+                <cbc:CompanyLegalForm>176/77/1508</cbc:CompanyLegalForm>
+            </cac:PartyLegalEntity>
+            <cac:Contact>
+                <cbc:Name>Frau Test</cbc:Name>
+                <cbc:Telephone>0123/456 78-0</cbc:Telephone>
+                <cbc:ElectronicMail>test@test.test</cbc:ElectronicMail>
+            </cac:Contact>
+        </cac:Party>
+    </cac:AccountingSupplierParty>
+    <cac:AccountingCustomerParty>
+        <cac:Party>
+            <cbc:EndpointID schemeID="EM">buyer@info.de</cbc:EndpointID>
+            <cac:PartyIdentification>
+                <cbc:ID>14217</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PostalAddress>
+                <cbc:StreetName>Am Mühlberg 4</cbc:StreetName>
+                <cbc:CityName>Gerüstbau Ort</cbc:CityName>
+                <cbc:PostalZone>12345</cbc:PostalZone>
+                <cac:Country>
+                    <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>Bau Auftraggeber</cbc:RegistrationName>
+            </cac:PartyLegalEntity>
+        </cac:Party>
+    </cac:AccountingCustomerParty>
+    <cac:PaymentMeans>
+        <cbc:PaymentMeansCode>58</cbc:PaymentMeansCode>
+        <cac:PayeeFinancialAccount>
+            <cbc:ID>DE63622515500220028855</cbc:ID>
+        </cac:PayeeFinancialAccount>
+    </cac:PaymentMeans>
+    <cac:PaymentTerms>
+        <cbc:Note>Zahlung ohne Abzug bis zum 13.08.2021 bei uns
+            eingehend.</cbc:Note>
+    </cac:PaymentTerms>
+    <cac:TaxTotal>
+        <cbc:TaxAmount currencyID="EUR">666.67</cbc:TaxAmount>
+        <cac:TaxSubtotal>
+            <cbc:TaxableAmount currencyID="EUR">3508.77</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID="EUR">666.67</cbc:TaxAmount>
+            <cac:TaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:TaxCategory>
+        </cac:TaxSubtotal>        
+    </cac:TaxTotal>
+    <cac:LegalMonetaryTotal>
+        <cbc:LineExtensionAmount currencyID="EUR">3508.77</cbc:LineExtensionAmount>
+        <cbc:TaxExclusiveAmount currencyID="EUR">3508.77</cbc:TaxExclusiveAmount>
+        <cbc:TaxInclusiveAmount currencyID="EUR">4175.44</cbc:TaxInclusiveAmount>
+        <cbc:PayableAmount currencyID="EUR">4175.44</cbc:PayableAmount>
+    </cac:LegalMonetaryTotal>
+    <cac:InvoiceLine>
+        <cbc:ID>1</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="EA">1</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">3508.77</cbc:LineExtensionAmount>
+        <cac:Item>
+            <cbc:Name>Arbeitsgerüst</cbc:Name>
+            <cac:ClassifiedTaxCategory>
+                <cbc:ID>S</cbc:ID>
+                <cbc:Percent>19.00</cbc:Percent>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="EUR">3508.77</cbc:PriceAmount>
+        </cac:Price>
+        <cac:SubInvoiceLine>
+            <cbc:ID>1.02</cbc:ID>
+            <cbc:InvoicedQuantity unitCode="EA">1</cbc:InvoicedQuantity>
+            <cbc:LineExtensionAmount currencyID="EUR">3508.77</cbc:LineExtensionAmount>
+            <cac:Item>
+                <cbc:Name>Zwischensumme</cbc:Name>
+                <cac:ClassifiedTaxCategory>
+                    <cbc:ID>S</cbc:ID>
+                    <cbc:Percent>19.00</cbc:Percent>
+                    <cac:TaxScheme>
+                        <cbc:ID>VAT</cbc:ID>
+                    </cac:TaxScheme>
+                </cac:ClassifiedTaxCategory>
+            </cac:Item>
+            <cac:SubInvoiceLine>
+                <cbc:ID>1.02.005</cbc:ID>
+                <cbc:InvoicedQuantity unitCode="MTK">277.290</cbc:InvoicedQuantity>
+                <cbc:LineExtensionAmount currencyID="EUR">2024.22</cbc:LineExtensionAmount>
+                <cac:Item>
+                    <cbc:Name>Fassadengerüst, Gr.3</cbc:Name>
+                    <cac:ClassifiedTaxCategory>
+                        <cbc:ID>S</cbc:ID>
+                        <cbc:Percent>19.00</cbc:Percent>
+                        <cac:TaxScheme>
+                            <cbc:ID>VAT</cbc:ID>
+                        </cac:TaxScheme>
+                    </cac:ClassifiedTaxCategory>
+                </cac:Item>
+                <cac:Price>
+                    <cbc:PriceAmount currencyID="EUR">7.30</cbc:PriceAmount>
+                </cac:Price>
+            </cac:SubInvoiceLine>
+            <cac:SubInvoiceLine>
+                <cbc:ID>1.02.006</cbc:ID>
+                <cbc:InvoicedQuantity unitCode="MKW">3882.083</cbc:InvoicedQuantity>
+                <cbc:LineExtensionAmount currencyID="EUR">465.85</cbc:LineExtensionAmount>
+                <cac:Item>
+                    <cbc:Name>Fassadengerüst, Gebrauchsüberlassung</cbc:Name>
+                    <cac:ClassifiedTaxCategory>
+                        <cbc:ID>S</cbc:ID>
+                        <cbc:Percent>19.00</cbc:Percent>
+                        <cac:TaxScheme>
+                            <cbc:ID>VAT</cbc:ID>
+                        </cac:TaxScheme>
+                    </cac:ClassifiedTaxCategory>
+                </cac:Item>
+                <cac:Price>
+                    <cbc:PriceAmount currencyID="EUR">0.12</cbc:PriceAmount>
+                </cac:Price>
+            </cac:SubInvoiceLine>
+            <cac:SubInvoiceLine>
+                <cbc:ID>1.02.007</cbc:ID>
+                <cbc:InvoicedQuantity unitCode="MTR">5.210</cbc:InvoicedQuantity>
+                <cbc:LineExtensionAmount currencyID="EUR">119.57</cbc:LineExtensionAmount>
+                <cac:Item>
+                    <cbc:Name>Gerüstträger für Durchfahrt einbauen</cbc:Name>
+                    <cac:ClassifiedTaxCategory>
+                        <cbc:ID>S</cbc:ID>
+                        <cbc:Percent>19.00</cbc:Percent>
+                        <cac:TaxScheme>
+                            <cbc:ID>VAT</cbc:ID>
+                        </cac:TaxScheme>
+                    </cac:ClassifiedTaxCategory>
+                </cac:Item>
+                <cac:Price>
+                    <cbc:PriceAmount currencyID="EUR">22.95</cbc:PriceAmount>
+                </cac:Price>
+            </cac:SubInvoiceLine>
+            <cac:SubInvoiceLine>
+                <cbc:ID>1.02.008</cbc:ID>
+                <cbc:InvoicedQuantity unitCode="MRW">72.932</cbc:InvoicedQuantity>
+                <cbc:LineExtensionAmount currencyID="EUR">32.09</cbc:LineExtensionAmount>
+                <cac:Item>
+                    <cbc:Name>Gerüstträger für Durchf., Gebrauchsüberl.</cbc:Name>
+                    <cac:ClassifiedTaxCategory>
+                        <cbc:ID>S</cbc:ID>
+                        <cbc:Percent>19.00</cbc:Percent>
+                        <cac:TaxScheme>
+                            <cbc:ID>VAT</cbc:ID>
+                        </cac:TaxScheme>
+                    </cac:ClassifiedTaxCategory>
+                </cac:Item>
+                <cac:Price>
+                    <cbc:PriceAmount currencyID="EUR">0.44</cbc:PriceAmount>
+                </cac:Price>
+            </cac:SubInvoiceLine>
+            <cac:SubInvoiceLine>
+                <cbc:ID>1.02.009</cbc:ID>
+                <cbc:InvoicedQuantity unitCode="EA">1.000</cbc:InvoicedQuantity>
+                <cbc:LineExtensionAmount currencyID="EUR">216.00</cbc:LineExtensionAmount>
+                <cac:Item>
+                    <cbc:Name>Treppenturm/Geschoss, Außengerüst</cbc:Name>
+                    <cac:ClassifiedTaxCategory>
+                        <cbc:ID>S</cbc:ID>
+                        <cbc:Percent>19.00</cbc:Percent>
+                        <cac:TaxScheme>
+                            <cbc:ID>VAT</cbc:ID>
+                        </cac:TaxScheme>
+                    </cac:ClassifiedTaxCategory>
+                </cac:Item>
+                <cac:Price>
+                    <cbc:PriceAmount currencyID="EUR">216.00</cbc:PriceAmount>
+                </cac:Price>
+            </cac:SubInvoiceLine>
+            <cac:SubInvoiceLine>
+                <cbc:ID>1.02.010</cbc:ID>
+                <cbc:InvoicedQuantity unitCode="HWE">18.000</cbc:InvoicedQuantity>
+                <cbc:LineExtensionAmount currencyID="EUR">72.00</cbc:LineExtensionAmount>
+                <cac:Item>
+                    <cbc:Name>Treppenturm Gebrauchsüberl.</cbc:Name>
+                    <cac:ClassifiedTaxCategory>
+                        <cbc:ID>S</cbc:ID>
+                        <cbc:Percent>19.00</cbc:Percent>
+                        <cac:TaxScheme>
+                            <cbc:ID>VAT</cbc:ID>
+                        </cac:TaxScheme>
+                    </cac:ClassifiedTaxCategory>
+                </cac:Item>
+                <cac:Price>
+                    <cbc:PriceAmount currencyID="EUR">4.00</cbc:PriceAmount>
+                </cac:Price>
+            </cac:SubInvoiceLine>
+            <cac:SubInvoiceLine>
+                <cbc:ID>1.02.011</cbc:ID>
+                <cbc:InvoicedQuantity unitCode="MTR">112.000</cbc:InvoicedQuantity>
+                <cbc:LineExtensionAmount currencyID="EUR">453.60</cbc:LineExtensionAmount>
+                <cac:Item>
+                    <cbc:Name>Systemkonsolbelag 0,30 m</cbc:Name>
+                    <cac:ClassifiedTaxCategory>
+                        <cbc:ID>S</cbc:ID>
+                        <cbc:Percent>19.00</cbc:Percent>
+                        <cac:TaxScheme>
+                            <cbc:ID>VAT</cbc:ID>
+                        </cac:TaxScheme>
+                    </cac:ClassifiedTaxCategory>
+                </cac:Item>
+                <cac:Price>
+                    <cbc:PriceAmount currencyID="EUR">4.05</cbc:PriceAmount>
+                </cac:Price>
+            </cac:SubInvoiceLine>
+            <cac:SubInvoiceLine>
+                <cbc:ID>1.02.012</cbc:ID>
+                <cbc:InvoicedQuantity unitCode="MRW">1568.000</cbc:InvoicedQuantity>
+                <cbc:LineExtensionAmount currencyID="EUR">125.44</cbc:LineExtensionAmount>
+                <cac:Item>
+                    <cbc:Name>Vorhaltung Konsolbelag 0,30</cbc:Name>
+                    <cac:ClassifiedTaxCategory>
+                        <cbc:ID>S</cbc:ID>
+                        <cbc:Percent>19.00</cbc:Percent>
+                        <cac:TaxScheme>
+                            <cbc:ID>VAT</cbc:ID>
+                        </cac:TaxScheme>
+                    </cac:ClassifiedTaxCategory>
+                </cac:Item>
+                <cac:Price>
+                    <cbc:PriceAmount currencyID="EUR">0.08</cbc:PriceAmount>
+                </cac:Price>
+            </cac:SubInvoiceLine>
+        </cac:SubInvoiceLine>
+    </cac:InvoiceLine>
+</ubl:Invoice></message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="detect-scenarios"/>
+      <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="none" code="scenario-matched">
+      <message>Scenario 'EN16931 XRechnung Extension (UBL Invoice)' matched</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="select-scenario"/>
+      <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="none" code="scenario-selected">
+      <message>Scenario 'EN16931 XRechnung Extension (UBL Invoice)' selected</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="retrieve-artifacts"/>
+      <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="none" code="artifacts-retrieved">
+      <message>Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' retrieved as xsd</message>
+    </detection>
+    <detection severity="none" code="artifacts-retrieved">
+      <message>Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' retrieved as schematron-xslt2</message>
+    </detection>
+    <detection severity="none" code="artifacts-retrieved">
+      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' retrieved as schematron-xslt2</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="prepare-rules"/>
+      <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="none" code="rule-compiled">
+      <message>Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' compiled (XML Schema)</message>
+    </detection>
+    <detection severity="none" code="rule-precompiled">
+      <message>Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' passed through (transpiled ahead of time)</message>
+    </detection>
+    <detection severity="none" code="rule-precompiled">
+      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' passed through (transpiled ahead of time)</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+      <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" language="XSD"/>
+    </metadata>
+    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="none" code="rules-applied">
+      <message>Rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' applied without findings</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+      <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
+    </metadata>
+    <digest valid="true" worst-severity="warn" fatal-error-count="0" error-count="0" warning-count="1" error-codes=""/>
+    <detection severity="warn" code="UBL-CR-646">
+      <message>[UBL-CR-646]-A UBL invoice should not include the InvoiceLine SubInvoiceLine (at /Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1])</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+      <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
+    </metadata>
+    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="none" code="BR-DE-TMP-32">
+      <message>[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 "Actual delivery date", BG-14 "Invoicing period" oder in jeder Rechnungsposition BG-26 "Invoice line period" enthalten. (at /Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1])</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="compute-conformance"/>
+      <timestamp>2026-08-25T14:16:23+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="none" code="target-conformant">
+      <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant (rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd')</message>
+    </detection>
+    <detection severity="none" code="target-conformant">
+      <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant (rule set 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl')</message>
+    </detection>
+    <detection severity="none" code="target-conformant">
+      <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant (rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl')</message>
+    </detection>
+  </report>
+</reports>

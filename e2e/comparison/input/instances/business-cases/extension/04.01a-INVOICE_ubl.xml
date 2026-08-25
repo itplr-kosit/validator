@@ -1,21 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
-  <metadata>
-    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen (Session 25.08.2026) -->
-    <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
-    <document href="business-cases/extension/04.01a-INVOICE_ubl.xml"/>
-  </metadata>
-  <report>
-    <metadata>
-      <!-- Offene Frage: how to deal with reports from other validator software (Session 25.08.2026) -->
-      <creator name="parse-document"/>
-      <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-    </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="document-parsed">
-      <message cvrl:algorithm="SHA-512">7f59f9d544f46a38e4feb3c6f9afe72f28233a12c31dda40abc24bfa25e96bdf25ab080445f9ffeff8d28e64507243c4065855fbec9804eb55153b5775c04c98</message>
-      <message cvrl:mime-type="application/xml"><ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+<ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
   <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0</cbc:CustomizationID>
   <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
   <cbc:ID>12345</cbc:ID>
@@ -149,7 +134,8 @@
       <cac:SubInvoiceLine>
         <cbc:ID>1 1 1</cbc:ID>
         <cbc:InvoicedQuantity unitCode="MTR">149</cbc:InvoicedQuantity>       
-        <cbc:LineExtensionAmount currencyID="EUR">193.70</cbc:LineExtensionAmount>
+        <cbc:LineExtensionAmount currencyID="EUR"
+          >193.70</cbc:LineExtensionAmount>
         <cac:Item>
           <cbc:Name>Demontage TW-Rohrleitung DN 12-25</cbc:Name>
           <cac:ClassifiedTaxCategory>
@@ -168,7 +154,8 @@
       <cac:SubInvoiceLine>
         <cbc:ID>1 1 2</cbc:ID>
         <cbc:InvoicedQuantity unitCode="MTR">32.50</cbc:InvoicedQuantity>     
-        <cbc:LineExtensionAmount currencyID="EUR">48.75</cbc:LineExtensionAmount>
+        <cbc:LineExtensionAmount currencyID="EUR"
+          >48.75</cbc:LineExtensionAmount>
         <cac:Item>
           <cbc:Name>Demontage SML DN 100</cbc:Name>
           <cac:ClassifiedTaxCategory>
@@ -187,7 +174,8 @@
       <cac:SubInvoiceLine>
         <cbc:ID>1 1 3</cbc:ID>
         <cbc:InvoicedQuantity unitCode="MTR">71.80</cbc:InvoicedQuantity>     
-        <cbc:LineExtensionAmount currencyID="EUR">93.34</cbc:LineExtensionAmount>
+        <cbc:LineExtensionAmount currencyID="EUR"
+          >93.34</cbc:LineExtensionAmount>
         <cac:Item>
           <cbc:Name>Demontage AW-Rohrleitungen Kunststoff PP bis DN100</cbc:Name>
           <cac:ClassifiedTaxCategory>
@@ -225,7 +213,8 @@
       <cac:SubInvoiceLine>
         <cbc:ID>1 2 1</cbc:ID>
         <cbc:InvoicedQuantity unitCode="MTR">9.5</cbc:InvoicedQuantity>
-        <cbc:LineExtensionAmount currencyID="EUR">99.75</cbc:LineExtensionAmount>
+        <cbc:LineExtensionAmount currencyID="EUR"
+          >99.75</cbc:LineExtensionAmount>
         <cac:Item>
           <cbc:Name>Abwasserleitung HT-PP DN 100</cbc:Name>
           <cac:ClassifiedTaxCategory>
@@ -244,7 +233,8 @@
       <cac:SubInvoiceLine>
         <cbc:ID>1 2 2</cbc:ID>
         <cbc:InvoicedQuantity unitCode="MTR">45.0</cbc:InvoicedQuantity>
-        <cbc:LineExtensionAmount currencyID="EUR">382.50</cbc:LineExtensionAmount>
+        <cbc:LineExtensionAmount currencyID="EUR"
+          >382.50</cbc:LineExtensionAmount>
         <cac:Item>
           <cbc:Name>Abwasserleitung HT-PP DN 50</cbc:Name>
           <cac:ClassifiedTaxCategory>
@@ -340,7 +330,8 @@
     <cac:SubInvoiceLine>
       <cbc:ID>2 2</cbc:ID>
       <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
-      <cbc:LineExtensionAmount currencyID="EUR">10394.8</cbc:LineExtensionAmount>
+      <cbc:LineExtensionAmount currencyID="EUR"
+        >10394.8</cbc:LineExtensionAmount>
       <cac:Item>
         <cbc:Name>Heizflächen und Zubehör</cbc:Name>
         <cac:ClassifiedTaxCategory>
@@ -358,7 +349,8 @@
       <cac:SubInvoiceLine>
         <cbc:ID>2 2 1</cbc:ID>
         <cbc:InvoicedQuantity unitCode="C62">52</cbc:InvoicedQuantity>
-        <cbc:LineExtensionAmount currencyID="EUR">10202.4</cbc:LineExtensionAmount>
+        <cbc:LineExtensionAmount currencyID="EUR"
+          >10202.4</cbc:LineExtensionAmount>
         <cac:Item>
           <cbc:Name>Flachheizkörper Stahl profiliert Seitent. H 300mm L -500mm Typ22</cbc:Name>
           <cac:ClassifiedTaxCategory>
@@ -377,7 +369,8 @@
       <cac:SubInvoiceLine>
         <cbc:ID>2 2 2</cbc:ID>
         <cbc:InvoicedQuantity unitCode="C62">104</cbc:InvoicedQuantity>
-        <cbc:LineExtensionAmount currencyID="EUR">192.4</cbc:LineExtensionAmount>
+        <cbc:LineExtensionAmount currencyID="EUR"
+          >192.4</cbc:LineExtensionAmount>
         <cac:Item>
           <cbc:Name>Einzelrosette aus Kunststoff, weiß</cbc:Name>
           <cac:ClassifiedTaxCategory>
@@ -395,108 +388,4 @@
       </cac:SubInvoiceLine>
     </cac:SubInvoiceLine>
   </cac:InvoiceLine>
-</ubl:Invoice></message>
-    </detection>
-  </report>
-  <report>
-    <metadata>
-      <creator name="detect-scenarios"/>
-      <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-    </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="scenario-matched">
-      <message>Scenario 'EN16931 XRechnung Extension (UBL Invoice)' matched</message>
-    </detection>
-  </report>
-  <report>
-    <metadata>
-      <creator name="select-scenario"/>
-      <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-    </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="scenario-selected">
-      <message>Scenario 'EN16931 XRechnung Extension (UBL Invoice)' selected</message>
-    </detection>
-  </report>
-  <report>
-    <metadata>
-      <creator name="retrieve-artifacts"/>
-      <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-    </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="artifacts-retrieved">
-      <message>Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' retrieved as xsd</message>
-    </detection>
-    <detection severity="none" code="artifacts-retrieved">
-      <message>Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' retrieved as schematron-xslt2</message>
-    </detection>
-    <detection severity="none" code="artifacts-retrieved">
-      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' retrieved as schematron-xslt2</message>
-    </detection>
-  </report>
-  <report>
-    <metadata>
-      <creator name="prepare-rules"/>
-      <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-    </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="rule-compiled">
-      <message>Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' compiled (XML Schema)</message>
-    </detection>
-    <detection severity="none" code="rule-precompiled">
-      <message>Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' passed through (transpiled ahead of time)</message>
-    </detection>
-    <detection severity="none" code="rule-precompiled">
-      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' passed through (transpiled ahead of time)</message>
-    </detection>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-      <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" language="XSD"/>
-    </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="rules-applied">
-      <message>Rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' applied without findings</message>
-    </detection>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-      <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
-    </metadata>
-    <digest valid="true" worst-severity="warn" fatal-error-count="0" error-count="0" warning-count="1" error-codes=""/>
-    <detection severity="warn" code="UBL-CR-646">
-      <message>[UBL-CR-646]-A UBL invoice should not include the InvoiceLine SubInvoiceLine (at /Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1])</message>
-    </detection>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-      <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
-    </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="rules-applied">
-      <message>Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' applied without findings</message>
-    </detection>
-  </report>
-  <report>
-    <metadata>
-      <creator name="compute-conformance"/>
-      <timestamp>2026-08-25T14:16:21+02:00</timestamp>
-    </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="target-conformant">
-      <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant (rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd')</message>
-    </detection>
-    <detection severity="none" code="target-conformant">
-      <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant (rule set 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl')</message>
-    </detection>
-    <detection severity="none" code="target-conformant">
-      <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant (rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl')</message>
-    </detection>
-  </report>
-</reports>
+</ubl:Invoice>

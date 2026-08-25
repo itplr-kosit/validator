@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                          xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+                          xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100"
+                          xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+    <rsm:ExchangedDocumentContext>
+        <ram:BusinessProcessSpecifiedDocumentContextParameter>
+            <ram:ID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</ram:ID>
+        </ram:BusinessProcessSpecifiedDocumentContextParameter>
+        <ram:GuidelineSpecifiedDocumentContextParameter>
+            <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</ram:ID>
+        </ram:GuidelineSpecifiedDocumentContextParameter>
+    </rsm:ExchangedDocumentContext>
+    <rsm:ExchangedDocument>
+        <ram:ID>123456</ram:ID>
+        <ram:TypeCode>380</ram:TypeCode>
+        <ram:IssueDateTime>
+            <udt:DateTimeString format="102">20160621</udt:DateTimeString>
+        </ram:IssueDateTime>
+        <ram:IncludedNote>
+            <ram:Content>Bei Fragen zu Ihrer Rechnung wenden Sie sich bitte an unseren Kundenserivce. Sie erreichen uns per Email: […], Tel.: […] oder Fax: […]</ram:Content>
+            <ram:SubjectCode>ADU</ram:SubjectCode>
+        </ram:IncludedNote>
+        <ram:IncludedNote>
+            <ram:Content>Die Lieferung erfolgt aufgrund der AGB […] erhältlich unter […]. Auf Wunsch senden wir sie auch zu.</ram:Content>
+            <ram:SubjectCode>ADU</ram:SubjectCode>
+        </ram:IncludedNote>
+        <ram:IncludedNote>
+            <ram:Content>Hinweis gemäß § 33 BDSG: Kundendaten werden gespeichert.</ram:Content>
+            <ram:SubjectCode>ADU</ram:SubjectCode>
+        </ram:IncludedNote>
+        <ram:IncludedNote>
+            <ram:Content>Beschädigt eingehende Sendungen bitte sofort beim Spediteur bzw. Paketdienstleister reklamieren. Genehmigte Rücksendungen schicken Sie bitte mit den Unterlagen an: […]</ram:Content>
+            <ram:SubjectCode>ADU</ram:SubjectCode>
+        </ram:IncludedNote>
+    </rsm:ExchangedDocument>
+    <rsm:SupplyChainTradeTransaction>
+        <ram:IncludedSupplyChainTradeLineItem>
+            <ram:AssociatedDocumentLineDocument>
+                <ram:LineID>SZ300540</ram:LineID>
+            </ram:AssociatedDocumentLineDocument>
+            <ram:SpecifiedTradeProduct>
+                <ram:SellerAssignedID>SZ300540</ram:SellerAssignedID>
+                <ram:Name>Denk doch, wie du willst</ram:Name>
+                <ram:Description>Einblicke v. Deutschlands wicht. Ökonomen</ram:Description>
+            </ram:SpecifiedTradeProduct>
+            <ram:SpecifiedLineTradeAgreement>
+                <ram:NetPriceProductTradePrice>
+                    <ram:ChargeAmount>11.78</ram:ChargeAmount>
+                </ram:NetPriceProductTradePrice>
+            </ram:SpecifiedLineTradeAgreement>
+            <ram:SpecifiedLineTradeDelivery>
+                <ram:BilledQuantity unitCode="XPP">1</ram:BilledQuantity>
+            </ram:SpecifiedLineTradeDelivery>
+            <ram:SpecifiedLineTradeSettlement>
+                <ram:ApplicableTradeTax>
+                    <ram:TypeCode>VAT</ram:TypeCode>
+                    <ram:CategoryCode>S</ram:CategoryCode>
+                    <ram:RateApplicablePercent>7</ram:RateApplicablePercent>
+                </ram:ApplicableTradeTax>
+                <ram:SpecifiedTradeSettlementLineMonetarySummation>
+                    <ram:LineTotalAmount>11.78</ram:LineTotalAmount>
+                </ram:SpecifiedTradeSettlementLineMonetarySummation>
+            </ram:SpecifiedLineTradeSettlement>
+        </ram:IncludedSupplyChainTradeLineItem>
+        <ram:ApplicableHeaderTradeAgreement>
+            <ram:BuyerReference>04011000-12346-97</ram:BuyerReference>
+            <ram:SellerTradeParty>
+                <ram:Name>[Seller name]</ram:Name>
+                <ram:Description>Geschäftsführer: […], Sitz der GmbH ist […], Amtsgericht […]</ram:Description>
+                <ram:SpecifiedLegalOrganization>
+                    <ram:ID>[HRB-Eintrag]</ram:ID>
+                    <ram:TradingBusinessName>[Seller trading name]</ram:TradingBusinessName>
+                </ram:SpecifiedLegalOrganization>
+                <ram:DefinedTradeContact>
+                    <ram:PersonName>-</ram:PersonName>
+                    <ram:TelephoneUniversalCommunication>
+                        <ram:CompleteNumber>[012-3456789]</ram:CompleteNumber>
+                    </ram:TelephoneUniversalCommunication>
+                    <ram:EmailURIUniversalCommunication>
+                        <ram:URIID>Seller@email.de</ram:URIID>
+                    </ram:EmailURIUniversalCommunication>
+                </ram:DefinedTradeContact>
+                <ram:PostalTradeAddress>
+                    <ram:PostcodeCode>12345</ram:PostcodeCode>
+                    <ram:LineOne>[Seller address line 1]</ram:LineOne>
+                    <ram:CityName>[Seller city]</ram:CityName>
+                    <ram:CountryID>DE</ram:CountryID>
+                </ram:PostalTradeAddress>
+                <ram:URIUniversalCommunication>
+                    <ram:URIID schemeID="EM">seller@email.de</ram:URIID>
+                </ram:URIUniversalCommunication>
+                <ram:SpecifiedTaxRegistration>
+                    <ram:ID schemeID="VA">DE123456789</ram:ID>
+                </ram:SpecifiedTaxRegistration>
+            </ram:SellerTradeParty>
+            <ram:BuyerTradeParty>
+                <ram:ID>BI12345678</ram:ID>
+                <ram:Name>[Buyer name]</ram:Name>
+                <ram:DefinedTradeContact>
+                    <ram:PersonName>[Buyer contact person]</ram:PersonName>
+                </ram:DefinedTradeContact>
+                <ram:PostalTradeAddress>
+                    <ram:PostcodeCode>12345</ram:PostcodeCode>
+                    <ram:LineOne>[Buyer address line 1]</ram:LineOne>
+                    <ram:CityName>[Buyer city]</ram:CityName>
+                    <ram:CountryID>DE</ram:CountryID>
+                </ram:PostalTradeAddress>
+                <ram:URIUniversalCommunication>
+                    <ram:URIID schemeID="EM">buyer@info.de</ram:URIID>
+                </ram:URIUniversalCommunication>
+            </ram:BuyerTradeParty>
+            <ram:SellerOrderReferencedDocument>
+                <ram:IssuerAssignedID>SO12345678</ram:IssuerAssignedID>
+            </ram:SellerOrderReferencedDocument>
+        </ram:ApplicableHeaderTradeAgreement>
+        <ram:ApplicableHeaderTradeDelivery>
+            <ram:ActualDeliverySupplyChainEvent>
+                <ram:OccurrenceDateTime>
+                    <udt:DateTimeString format="102">20160621</udt:DateTimeString>
+                </ram:OccurrenceDateTime>
+            </ram:ActualDeliverySupplyChainEvent>
+        </ram:ApplicableHeaderTradeDelivery>
+        <ram:ApplicableHeaderTradeSettlement>            
+            <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+            <ram:PayeeTradeParty>
+                <ram:Name>VSB - Verlagsservice Braunschweig GmbH</ram:Name>
+            </ram:PayeeTradeParty>
+            <ram:SpecifiedTradeSettlementPaymentMeans>
+                <ram:TypeCode>58</ram:TypeCode>
+                <ram:PayeePartyCreditorFinancialAccount>
+                    <!-- dies ist eine nicht existerende aber valide IBAN als test dummy -->
+                    <ram:IBANID>DE75512108001245126199</ram:IBANID>
+                </ram:PayeePartyCreditorFinancialAccount>
+            </ram:SpecifiedTradeSettlementPaymentMeans>
+            <ram:ApplicableTradeTax>
+                <ram:CalculatedAmount>0.82</ram:CalculatedAmount>
+                <ram:TypeCode>VAT</ram:TypeCode>
+                <ram:BasisAmount>11.78</ram:BasisAmount>
+                <ram:CategoryCode>S</ram:CategoryCode>
+                <ram:RateApplicablePercent>7</ram:RateApplicablePercent>
+            </ram:ApplicableTradeTax>
+            <ram:SpecifiedTradePaymentTerms>
+                <ram:Description>Bitte überweisen Sie den Betrag innerhalb von 14 Tagen auf unten stehendes Konto. Das Rechnungsdatum entspricht dem Versanddatum.</ram:Description>
+            </ram:SpecifiedTradePaymentTerms>
+            <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+                <ram:LineTotalAmount>11.78</ram:LineTotalAmount>
+                <ram:TaxBasisTotalAmount>11.78</ram:TaxBasisTotalAmount>
+                <ram:TaxTotalAmount currencyID="EUR">0.82</ram:TaxTotalAmount>
+                <ram:GrandTotalAmount>12.6</ram:GrandTotalAmount>
+                <ram:DuePayableAmount>12.6</ram:DuePayableAmount>
+            </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+        </ram:ApplicableHeaderTradeSettlement>
+    </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>

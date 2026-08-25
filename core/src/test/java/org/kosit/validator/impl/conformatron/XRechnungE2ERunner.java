@@ -54,8 +54,11 @@ import net.sf.saxon.s9api.Processor;
  *     -Dexec.classpathScope=test
  * </pre>
  * <p>
- * Paths are resolved relative to the module directory and can be overridden with the system properties
- * {@code e2e.scenarios}, {@code e2e.repository}, {@code e2e.instances}, {@code e2e.output}.
+ * All inputs and outputs live in the repository's own {@code e2e/} folder (self-contained since session 25.08.2026):
+ * scenarios, repository and instances are read from {@code e2e/comparison/input/}, per-instance reports and CVRLs are
+ * written to {@code e2e/comparison/v2_0/reports/}, the summary to {@code e2e/results/}. Every default can be overridden
+ * with the system properties {@code e2e.scenarios}, {@code e2e.repository}, {@code e2e.instances}, {@code e2e.output},
+ * {@code e2e.reports}.
  * </p>
  * <p>
  * <b>Known gap surfaced by this run</b> (list in the report header): scenario {@code customLevel} overrides are not yet
@@ -88,14 +91,13 @@ public final class XRechnungE2ERunner {
 
     public static void main(final String[] args) throws IOException {
         final Path moduleDir = Paths.get("").toAbsolutePath();
-        final Path root = moduleDir.endsWith("core") ? moduleDir.getParent().getParent().getParent() : moduleDir;
-        final Path scenarios = Paths.get(System.getProperty("e2e.scenarios",
-                root.resolve("validator_architecture/e2e/xrechnung-scenarios-framework2.xml").toString()));
-        final Path repository = Paths
-                .get(System.getProperty("e2e.repository", root.resolve("xrechnung/validator-configuration-xrechnung/build").toString()));
-        final Path instances = Paths
-                .get(System.getProperty("e2e.instances", root.resolve("xrechnung/xrechnung-testsuite/src/test").toString()));
-        final Path output = Paths.get(System.getProperty("e2e.output", root.resolve("validator_architecture/e2e/results").toString()));
+        // repo-local e2e folder: defaults work when started from the validator root or from the core module
+        final Path root = moduleDir.endsWith("core") ? moduleDir.getParent() : moduleDir;
+        final Path scenarios = Paths
+                .get(System.getProperty("e2e.scenarios", root.resolve("e2e/comparison/input/scenarios-v2.0-framework2.xml").toString()));
+        final Path repository = Paths.get(System.getProperty("e2e.repository", root.resolve("e2e/comparison/input/repository").toString()));
+        final Path instances = Paths.get(System.getProperty("e2e.instances", root.resolve("e2e/comparison/input/instances").toString()));
+        final Path output = Paths.get(System.getProperty("e2e.output", root.resolve("e2e/results").toString()));
 
         System.out.println("Scenarios : " + scenarios);
         System.out.println("Repository: " + repository);
@@ -113,8 +115,7 @@ public final class XRechnungE2ERunner {
         try ( Stream<Path> stream = Files.walk(instances) ) {
             files = stream.filter(p -> p.toString().endsWith(".xml")).filter(p -> !p.toString().contains(".idea")).sorted().toList();
         }
-        final String reportsProperty = System.getProperty("e2e.reports");
-        final Path reports = reportsProperty == null ? null : Paths.get(reportsProperty);
+        final Path reports = Paths.get(System.getProperty("e2e.reports", root.resolve("e2e/comparison/v2_0/reports").toString()));
         System.out.println("Running " + files.size() + " instances ...");
         final List<InstanceResult> results = new ArrayList<>();
         for (final Path file : files) {

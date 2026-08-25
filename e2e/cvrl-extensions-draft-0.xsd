@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- CVRL DRAFT 0 - extension attributes (decision D1: namespace is deliberately marked draft).
+     Companion of cvrl-draft-0.xsd; every attribute maps to a D-decision in
+     protokolle/cvrl_workshop_2026-08-21.md. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="urn:conformatron:cvrl:draft"
+           elementFormDefault="qualified"
+           attributeFormDefault="qualified"
+           version="0.1.0-DRAFT">
+
+    <!-- D5: overall verdict of the run -->
+    <xs:attribute name="conformant" type="xs:boolean"/>
+
+    <!-- D5: COMPLETED = all steps ran; CANCELLED = partial CVRL (ADR-004: unhappy paths serialize too) -->
+    <xs:attribute name="status">
+        <xs:simpleType>
+            <xs:restriction base="xs:token">
+                <xs:enumeration value="COMPLETED"/>
+                <xs:enumeration value="CANCELLED"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+
+    <!-- D6: document identity - hash value (hex, lower case) and algorithm name (ADR-003) -->
+    <xs:attribute name="checksum">
+        <xs:simpleType>
+            <xs:restriction base="xs:token">
+                <xs:pattern value="[0-9a-f]+"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="checksum-algorithm" type="xs:token"/>
+
+    <!-- D8: rule set provenance on APPLY_RULES reports -->
+    <xs:attribute name="engine-version" type="xs:token"/>
+    <xs:attribute name="phase" type="xs:token"/>
+
+    <!-- D9: text position of a detection when known (1-based) -->
+    <xs:attribute name="line" type="xs:positiveInteger"/>
+    <xs:attribute name="col" type="xs:positiveInteger"/>
+</xs:schema>
