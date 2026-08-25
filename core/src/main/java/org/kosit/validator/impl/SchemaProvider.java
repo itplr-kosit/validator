@@ -26,7 +26,7 @@ public class SchemaProvider {
     }
 
     /**
-     * Returns the defined schema for validating the {@link org.kosit.validator.model.xvrl.XVRLReportSummary}.
+     * Returns the defined schema for validating the an XVRL report.
      *
      * @return ReportInput schema
      */
@@ -52,7 +52,6 @@ public class SchemaProvider {
         return createSchema(sf, schemaSources, null);
     }
 
-    @SuppressWarnings("java:S2095") // xml stack requires not closing the resource here
     private static Source resolve(final URL resource) {
         try {
             final String rawPath = resource.toURI().getRawPath();

@@ -19,7 +19,7 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosRe
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
-import org.kosit.validator.impl.conformatron.model.XdmNodeValidationSource;
+import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.TestScenarioBuilder;
 import org.kosit.validator.impl.xml.ProcessorProvider;

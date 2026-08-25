@@ -2,7 +2,6 @@ package org.kosit.validator.impl.conformatron.action;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.kosit.validator.api.VInputFactory.read;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -13,6 +12,7 @@ import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.junit.jupiter.api.Test;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.TestHelper;
@@ -33,7 +33,7 @@ public class ApplyRulesActionTest {
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
     private static CTParsedValidationSource parse(final URI document) {
-        final ParseXMLResult parsed = new ParseXMLAction().execute(read(document));
+        final ParseXMLResult parsed = new ParseXMLAction().execute(VInputFactory.read(document));
         assertThat(parsed.isSuccess()).isTrue();
         return parsed.getParsedSource();
     }

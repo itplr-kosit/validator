@@ -8,6 +8,7 @@ import java.util.function.Function;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import org.jspecify.annotations.NonNull;
 import org.kosit.validator.api.SchematronCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
             this.dsdlInclude = c.compile(classpathXsl(CP_BASE + "iso_dsdl_include.xsl"));
             this.abstractExpand = c.compile(classpathXsl(CP_BASE + "iso_abstract_expand.xsl"));
             this.svrlForXslt2 = c.compile(classpathXsl(CP_BASE + "iso_svrl_for_xslt2.xsl"));
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             throw new IllegalStateException("Failed to compile ISO Schematron skeleton meta-stylesheets from classpath", e);
         }
     }
@@ -63,7 +64,7 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
         Objects.requireNonNull(rawResolver, "rawResolver");
         LOGGER.info("Trying to compile Schematron file {} using ISO Schematron skeleton (classpath-only)", schematronUri);
         try {
-            Source schSource = rawResolver.apply(schematronUri);
+            final Source schSource = rawResolver.apply(schematronUri);
             if (schSource == null) {
                 throw new IllegalStateException("No Schematron found for " + schematronUri);
             }
@@ -75,7 +76,7 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
             final XdmNode stage2 = transformToNode(abstractExpand, stage1);
             final XdmNode xsltStylesheet = transformToNode(svrlForXslt2, stage2);
             return xsltStylesheet.asSource();
-        } catch (SaxonApiException e) {
+        } catch (final SaxonApiException e) {
             throw new IllegalStateException("Error compiling ISO Schematron " + schematronUri, e);
         }
     }
@@ -89,7 +90,7 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
         return dest.getXdmNode();
     }
 
-    private static StreamSource classpathXsl(final String classpathLocation) {
+    private static @NonNull StreamSource classpathXsl(final String classpathLocation) {
         final InputStream in = IsoSchematronCompiler.class.getResourceAsStream(classpathLocation);
         if (in == null) {
             throw new IllegalStateException("Missing classpath resource: " + classpathLocation);

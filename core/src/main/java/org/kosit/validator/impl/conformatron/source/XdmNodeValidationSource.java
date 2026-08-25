@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kosit.validator.impl.conformatron.model;
+package org.kosit.validator.impl.conformatron.source;
 
-import org.conformatron.api.model.source.CTParsedValidationSource;
+import java.util.Objects;
+
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTValidationSource;
-import org.kosit.validator.impl.conformatron.util.SourceDigest;
+import org.jspecify.annotations.NonNull;
 import org.w3c.dom.Document;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
@@ -37,30 +38,18 @@ import net.sf.saxon.type.Type;
  * </p>
  *
  * @author Andreas Schmitz
+ * @author Philip Helger
  */
 public final class XdmNodeValidationSource implements CTParsedValidationSourceXML {
 
     private final CTValidationSource source;
 
-    private final byte[] sourceBytes;
-
-    private final byte[] hashBytes;
-
     private final XdmNode node;
 
-    public XdmNodeValidationSource(final CTValidationSource source, final byte[] sourceBytes, final XdmNode node) {
-        if (source == null) {
-            throw new IllegalArgumentException("source may not be null");
-        }
-        if (sourceBytes == null) {
-            throw new IllegalArgumentException("sourceBytes may not be null");
-        }
-        if (node == null) {
-            throw new IllegalArgumentException("node may not be null");
-        }
+    public XdmNodeValidationSource(final @NonNull CTValidationSource source, final @NonNull XdmNode node) {
+        Objects.requireNonNull(source);
+        Objects.requireNonNull(node);
         this.source = source;
-        this.sourceBytes = sourceBytes.clone();
-        this.hashBytes = SourceDigest.hashBytes(this.sourceBytes);
         this.node = node;
     }
 
@@ -69,21 +58,9 @@ public final class XdmNodeValidationSource implements CTParsedValidationSourceXM
         return this.source;
     }
 
-    @Override
-    public byte[] getSourceBytes() {
-        return this.sourceBytes.clone();
-    }
-
-    @Override
-    public String getHashAlgorithmName() {
-        return SourceDigest.getAlgorithmName();
-    }
-
-    @Override
-    public byte[] getHashBytes() {
-        return this.hashBytes.clone();
-    }
-
+    /**
+     * @return the Saxon node as used by the legacy pipeline steps
+     */
     @Override
     public XdmNode getParsedContent() {
         return this.node;
@@ -95,15 +72,8 @@ public final class XdmNodeValidationSource implements CTParsedValidationSourceXM
     public Document getAsDom() {
         final NodeInfo root = this.node.getUnderlyingNode().getRoot();
         if (root.getNodeKind() != Type.DOCUMENT) {
-            throw new IllegalStateException("Underlying Saxon tree has no document root node");
+            throw new IllegalStateException("Underlying Saxon tree has no document root node but a node of type " + root.getNodeKind());
         }
         return (Document) NodeOverNodeInfo.wrap(root);
-    }
-
-    /**
-     * @return the Saxon node as used by the legacy pipeline steps
-     */
-    public XdmNode getNode() {
-        return this.node;
     }
 }

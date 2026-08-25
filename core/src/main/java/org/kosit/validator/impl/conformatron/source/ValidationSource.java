@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kosit.validator.impl.conformatron.model;
+package org.kosit.validator.impl.conformatron.source;
 
 import java.util.Objects;
 
+import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.source.CTValidationSource;
-import org.conformatron.api.model.validation.CTValidationSyntax;
-import org.kosit.validator.api.VInput;
+import org.conformatron.api.model.validation.CTSyntax;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Validator implementation of {@link CTValidationSource}. Facade over the legacy {@link VInput} abstraction: the
@@ -27,43 +28,35 @@ import org.kosit.validator.api.VInput;
  * step.
  *
  * @author Andreas Schmitz
+ * @author Philip Helger
  */
 public final class ValidationSource implements CTValidationSource {
 
-    private final String name;
+    private final CTReadResource readResource;
 
-    private final CTValidationSyntax detectedSyntax;
+    private final CTSyntax detectedSyntax;
 
     private final boolean complete;
 
-    /**
-     * Wraps a legacy {@link VInput} as a complete XML source. The validator currently only feeds XML documents into the
-     * pipeline, so the detected syntax is fixed until DETECT_SYNTAX is implemented as its own action.
-     *
-     * @param input the legacy input
-     * @return a new source facade
-     */
-    public static CTValidationSource of(final VInput input) {
-        Objects.requireNonNull(input);
-        return new ValidationSource(input.getName(), CTValidationSyntax.XML, true);
+    public static final @NonNull ValidationSource completeXML(final @NonNull CTReadResource readResource) {
+        return new ValidationSource(readResource, CTSyntax.XML, false);
     }
 
-    public ValidationSource(final String name, final CTValidationSyntax detectedSyntax, final boolean complete) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("name may not be null or empty");
-        }
-        this.name = name;
+    public ValidationSource(final @NonNull CTReadResource readResource, final @NonNull CTSyntax detectedSyntax, final boolean complete) {
+        Objects.requireNonNull(readResource);
+        Objects.requireNonNull(detectedSyntax);
+        this.readResource = readResource;
         this.detectedSyntax = detectedSyntax;
         this.complete = complete;
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public CTReadResource getReadResource() {
+        return this.readResource;
     }
 
     @Override
-    public CTValidationSyntax getDetectedSyntax() {
+    public CTSyntax getDetectedSyntax() {
         return this.detectedSyntax;
     }
 

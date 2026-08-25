@@ -9,7 +9,6 @@ import java.util.Locale;
  * 
  * @author Andreas Penski
  */
-@SuppressWarnings("squid:S106")
 public class Printer {
 
     private static PrintWriter OUT = new PrintWriter(System.out, true);
@@ -23,7 +22,7 @@ public class Printer {
     /**
      * Overrides output writers e.g. for tests
      */
-    public static void configure(PrintWriter out, PrintWriter err) {
+    public static void configure(final PrintWriter out, final PrintWriter err) {
         OUT = out;
         ERR = err;
     }
@@ -71,7 +70,6 @@ public class Printer {
      * @param message the message with placeholders
      * @param params the params
      */
-    @SuppressWarnings("squid:S1148")
     public static void writeErr(final Exception ex, final String message, final Object... params) {
         writeErr(message, params);
         if (ex != null) {

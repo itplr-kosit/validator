@@ -27,6 +27,7 @@ public interface CheckTask {
      * Executes the check step and extends the collected information.
      *
      * @param results the information collection
+     * @return The step result
      */
     ProcessStepResult<?, ?> check(Process results);
 
@@ -45,7 +46,7 @@ public interface CheckTask {
     /**
      * Transport class for input and output objects for the individual check steps.
      */
-    class Process {
+    final class Process {
 
         private XVRLMetadata metadata;
 
@@ -124,7 +125,7 @@ public interface CheckTask {
             return FilenameUtils.getBaseName(fileName);
         }
 
-        public static class Key<T, E> {
+        public static final class Key<T, E> {
 
             private final Class<T> type;
 
@@ -161,7 +162,7 @@ public interface CheckTask {
         }
 
         /**
-         * Das zu prüfende Dokument
+         * @return The document to be checked
          */
         public VInput getInput() {
             return this.input;
@@ -184,14 +185,14 @@ public interface CheckTask {
         }
 
         /**
-         * Das zu prüfende Dokument
+         * @param input The input to be checked
          */
         public void setInput(final VInput input) {
             this.input = input;
         }
 
         /**
-         * The parsed document as conformatron handshake object; {@code null} until the parse step succeeded.
+         * @return The parsed document as conformatron handshake object; {@code null} until the parse step succeeded.
          */
         public CTParsedValidationSource getParsedSource() {
             return this.parsedSource;

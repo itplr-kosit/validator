@@ -14,9 +14,9 @@ import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
-import org.conformatron.api.model.source.CTResolvedValidationArtifact;
-import org.conformatron.api.model.source.CTValidationArtifactReference;
+import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.SchXsltCompiler;
 import org.kosit.validator.impl.conformatron.model.CompiledValidationArtifact;
@@ -127,7 +127,7 @@ public class PrepareRulesAction implements CTAction {
             throw new IllegalArgumentException("artifacts may not be null");
         }
         if (artifacts.isEmpty()) {
-            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
+            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.of(resourceId),
                     "No artifacts retrieved (reason: no-artifacts)");
             return new PrepareRulesResult(CTStepResult.SKIPPED, List.of(), DetectionList.of(skipped));
         }
@@ -172,7 +172,7 @@ public class PrepareRulesAction implements CTAction {
                     detections.add(passThrough(href, resourceId, "transpiled ahead of time"));
                 }
                 default -> {
-                    detections.add(Detection.of(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.ofResource(resourceId),
+                    detections.add(Detection.of(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.of(resourceId),
                             "Artifact '" + href + "' has unsupported validation type " + artifact.getValidationType().getID()));
                     return false;
                 }
@@ -180,7 +180,7 @@ public class PrepareRulesAction implements CTAction {
             return true;
         } catch (final RuntimeException e) {
             LOGGER.error("Could not prepare artifact {}", href, e);
-            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.ofResource(resourceId),
+            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.of(resourceId),
                     "Artifact '" + href + "' could not be prepared: " + e.getMessage(), e));
             return false;
         }
@@ -191,12 +191,12 @@ public class PrepareRulesAction implements CTAction {
     }
 
     private static CTDetection compiled(final String href, final String resourceId, final String what) {
-        return Detection.of(CTStandardSeverity.NONE, CODE_RULE_COMPILED, DetectionLocation.ofResource(resourceId),
+        return Detection.of(CTStandardSeverity.NONE, CODE_RULE_COMPILED, DetectionLocation.of(resourceId),
                 "Artifact '" + href + "' compiled (" + what + ")");
     }
 
     private static CTDetection passThrough(final String href, final String resourceId, final String why) {
-        return Detection.of(CTStandardSeverity.NONE, CODE_RULE_PRECOMPILED, DetectionLocation.ofResource(resourceId),
+        return Detection.of(CTStandardSeverity.NONE, CODE_RULE_PRECOMPILED, DetectionLocation.of(resourceId),
                 "Artifact '" + href + "' passed through (" + why + ")");
     }
 }

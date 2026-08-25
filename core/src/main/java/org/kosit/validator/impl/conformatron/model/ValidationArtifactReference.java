@@ -4,8 +4,7 @@ import java.net.URI;
 import java.util.Objects;
 
 import org.conformatron.api.annotation.Nonempty;
-import org.conformatron.api.model.source.CTValidationArtifactReference;
-import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 
 /**
  * Validator implementation of {@link CTValidationArtifactReference}: a pure carrier for the reference to a validation

@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 
@@ -97,6 +98,7 @@ public class CommandLine {
      */
     private static class ReplaceableOutputStream<O extends OutputStream> extends OutputStream {
 
+        @SuppressWarnings("hiding")
         private O out;
 
         @Override

@@ -1,12 +1,7 @@
 package org.kosit.validator.impl;
 
-import javax.xml.transform.dom.DOMSource;
-
-import org.kosit.validator.api.SchematronCompiler;
-
 import name.dmaus.schxslt.Compiler;
 import name.dmaus.schxslt.adapter.SchXslt;
-import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * {@link SchematronCompiler} implementation backed by the original SchXslt XSLT-based Schematron processor (library

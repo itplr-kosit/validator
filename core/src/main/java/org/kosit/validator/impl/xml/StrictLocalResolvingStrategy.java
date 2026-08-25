@@ -6,9 +6,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sf.saxon.lib.ResourceResolver;
 
 /**
@@ -19,8 +16,6 @@ import net.sf.saxon.lib.ResourceResolver;
  * @author Andreas Penski
  */
 public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrategy {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(StrictLocalResolvingStrategy.class);
 
     /**
      * Allow loading schema files from any local location.

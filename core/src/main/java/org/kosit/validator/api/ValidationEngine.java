@@ -1,5 +1,7 @@
 package org.kosit.validator.api;
 
+import org.conformatron.api.model.source.CTReadResource;
+
 /**
  * The validation engine contract of the validator (successor of the legacy {@link VCheck} interface, see ADR-008): an
  * engine validates a document and returns its engine-specific result. This interface is a <b>pure contract</b> —
@@ -31,5 +33,5 @@ public interface ValidationEngine<R> {
      * @param input the document to validate
      * @return the engine-specific result
      */
-    R validate(VInput input);
+    R validate(CTReadResource input);
 }

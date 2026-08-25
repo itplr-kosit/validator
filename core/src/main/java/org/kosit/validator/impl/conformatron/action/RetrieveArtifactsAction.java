@@ -13,9 +13,9 @@ import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
-import org.conformatron.api.model.source.CTResolvedValidationArtifact;
-import org.conformatron.api.model.source.CTValidationArtifactReference;
+import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.CTValidationType;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
@@ -146,23 +146,23 @@ public class RetrieveArtifactsAction implements CTAction {
             final CTValidationType validationType = determineValidationType(reference);
             final byte[] content = this.resolver.read(resolved);
             if (content.length == 0) {
-                detections.add(Detection.of(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.ofResource(resourceId),
+                detections.add(Detection.of(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.of(resourceId),
                         "Artifact '" + href + "' is empty"));
                 return;
             }
             artifacts.add(ResolvedValidationArtifact.loaded(reference, validationType, content));
-            detections.add(Detection.of(CTStandardSeverity.NONE, CODE_ARTIFACTS_RETRIEVED, DetectionLocation.ofResource(resourceId),
+            detections.add(Detection.of(CTStandardSeverity.NONE, CODE_ARTIFACTS_RETRIEVED, DetectionLocation.of(resourceId),
                     "Artifact '" + href + "' retrieved as " + validationType.getID()));
         } catch (final ArtifactResolver.AccessDeniedException e) {
             LOGGER.error("Rejected artifact reference {}", href, e);
-            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_ACCESS_DENIED, DetectionLocation.ofResource(resourceId),
+            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_ACCESS_DENIED, DetectionLocation.of(resourceId),
                     e.getMessage(), e));
         } catch (final IOException e) {
             LOGGER.error("Could not read artifact {}", href, e);
-            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_MISSING, DetectionLocation.ofResource(resourceId),
+            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_MISSING, DetectionLocation.of(resourceId),
                     "Artifact '" + href + "' could not be read: " + e.getMessage(), e));
         } catch (final IllegalArgumentException e) {
-            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.ofResource(resourceId),
+            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.of(resourceId),
                     "Artifact '" + href + "' is not usable: " + e.getMessage(), e));
         }
     }

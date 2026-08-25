@@ -6,7 +6,7 @@ import static org.kosit.validator.api.VInputFactory.read;
 
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
-import org.conformatron.api.model.validation.CTValidationSyntax;
+import org.conformatron.api.model.validation.CTValidationStandard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.TestHelper;
@@ -70,7 +70,7 @@ public class DocumentParseTaskTest {
         assertThat(parsedSource.getSourceBytes()).isNotEmpty();
         assertThat(parsedSource.getHashAlgorithmName()).isEqualTo(SourceDigest.getAlgorithmName());
         assertThat(parsedSource.getHashBytes()).isEqualTo(SourceDigest.hashBytes(parsedSource.getSourceBytes()));
-        assertThat(parsedSource.getSource().getDetectedSyntax()).isEqualTo(CTValidationSyntax.XML);
+        assertThat(parsedSource.getSource().getDetectedSyntax()).isEqualTo(CTValidationStandard.XML);
     }
 
     @Test

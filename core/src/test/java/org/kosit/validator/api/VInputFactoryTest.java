@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
 import javax.xml.transform.dom.DOMSource;
@@ -65,24 +66,24 @@ public class VInputFactoryTest {
 
     @Test
     public void testNullInputURL() {
-        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read((URL) null));
+        assertThrows(NullPointerException.class, () -> VInputFactory.read((URL) null));
     }
 
     @Test
     public void testInputByte() {
-        final VInput input = VInputFactory.read(SOME_VALUE.getBytes(), SOME_VALUE);
+        final VInput input = VInputFactory.read(SOME_VALUE.getBytes(StandardCharsets.UTF_8), SOME_VALUE);
         assertThat(input).isNotNull();
     }
 
     @Test
     public void testInputStream() {
-        final VInput input = VInputFactory.read(new ByteArrayInputStream(SOME_VALUE.getBytes()), SOME_VALUE);
+        final VInput input = VInputFactory.read(new ByteArrayInputStream(SOME_VALUE.getBytes(StandardCharsets.UTF_8)), SOME_VALUE);
         assertThat(input).isNotNull();
     }
 
     @Test
     public void testNullStream() {
-        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read((InputStream) null, SOME_VALUE));
+        assertThrows(NullPointerException.class, () -> VInputFactory.read((InputStream) null, SOME_VALUE));
     }
 
     @Test
@@ -99,18 +100,18 @@ public class VInputFactoryTest {
 
     @Test
     public void testNullInput() {
-        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read((byte[]) null, SOME_VALUE));
+        assertThrows(NullPointerException.class, () -> VInputFactory.read((byte[]) null, SOME_VALUE));
     }
 
     @Test
     public void testNullInputName() {
-        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read(SOME_VALUE.getBytes(), null));
+        assertThrows(IllegalArgumentException.class, () -> VInputFactory.read(SOME_VALUE.getBytes(StandardCharsets.UTF_8), null));
     }
 
     @Test
     public void testEmptyInputName() {
         assertThrows(IllegalArgumentException.class, () -> {
-            final VInput input = VInputFactory.read(SOME_VALUE.getBytes(), "");
+            final VInput input = VInputFactory.read(SOME_VALUE.getBytes(StandardCharsets.UTF_8), "");
             drain(input);
         });
     }
@@ -118,7 +119,7 @@ public class VInputFactoryTest {
     @Test
     public void testSourceInput() throws IOException {
         try ( final InputStream s = Simple.SIMPLE_VALID.toURL().openStream() ) {
-            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(s));
+            final SourceVInput input = VInputFactory.read(new StreamSource(s));
             assertThat(input.getSource()).isNotNull();
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
@@ -131,7 +132,7 @@ public class VInputFactoryTest {
     public void testSourceInputReader() throws IOException {
         try ( final InputStream s = Simple.SIMPLE_VALID.toURL().openStream();
               final InputStreamReader reader = new InputStreamReader(s) ) {
-            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(reader));
+            final SourceVInput input = VInputFactory.read(new StreamSource(reader));
             assertThat(input.getSource()).isNotNull();
             drain(input);
             assertThat(input.getHashCode()).isNotNull();
@@ -153,7 +154,7 @@ public class VInputFactoryTest {
         handler.startDocument();
         handler.startElement("http://some.ns", "mynode", "mynode", new AttributesImpl());
         final Document dom = NodeOverNodeInfo.wrap(handler.getDocumentNode().getUnderlyingNode()).getOwnerDocument();
-        final VInput domVInput = VInputFactory.read(new DOMSource(dom), "MD5", "id".getBytes());
+        final VInput domVInput = VInputFactory.read(new DOMSource(dom), "MD5", "id".getBytes(StandardCharsets.UTF_8));
         assertThat(domVInput).isNotNull();
         assertThat(domVInput.getSource()).isNotNull();
         final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(domVInput);

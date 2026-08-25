@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import org.conformatron.api.model.source.CTValidationArtifactReference;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 
 /**
  * Resolves {@link CTValidationArtifactReference}s against the artifact repository and loads their content

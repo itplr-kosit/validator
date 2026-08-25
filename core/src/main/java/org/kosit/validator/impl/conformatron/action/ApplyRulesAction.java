@@ -1,6 +1,5 @@
 package org.kosit.validator.impl.conformatron.action;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -8,7 +7,6 @@ import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
@@ -118,7 +116,7 @@ public class ApplyRulesAction implements CTAction {
         }
         final String documentName = parsedSource.getSource().getName();
         if (ruleSets.isEmpty()) {
-            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.ofResource(documentName),
+            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.of(documentName),
                     "No rule sets prepared (reason: no-rule-sets)");
             return new ApplyRulesActionResult(CTStepResult.SKIPPED, ApplyRulesResult.empty(parsedSource), DetectionList.of(skipped));
         }
@@ -128,9 +126,8 @@ public class ApplyRulesAction implements CTAction {
             if (failed) {
                 // fail-fast per spec: executions after an engine failure are skipped, but keep their key
                 results.put(ruleSet,
-                        DetectionList
-                                .of(Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.ofResource(documentName),
-                                        "Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)")));
+                        DetectionList.of(Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.of(documentName),
+                                "Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)")));
                 continue;
             }
             final CTDetectionList detections = applyOne(parsedSource, ruleSet, documentName);
@@ -146,33 +143,32 @@ public class ApplyRulesAction implements CTAction {
     private CTDetectionList applyOne(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
             final String documentName) {
         try {
-            final CTDetectionList findings = switch (ruleSet.getEngineType().getBaseType()) {
+            final CTDetectionList findings = switch (ruleSet.getEngineType().getStandard()) {
                 case SCHEMATRON -> applySchematron(parsedSource, ruleSet, documentName);
                 case XSD -> applySchema(parsedSource, ruleSet, documentName);
                 default -> throw new IllegalStateException(
                         "Unsupported engine type " + ruleSet.getEngineType().getID() + " for rule application");
             };
             if (findings.getCount() == 0) {
-                return DetectionList.of(Detection.of(CTStandardSeverity.NONE, CODE_RULES_APPLIED,
-                        DetectionLocation.ofResource(documentName), "Rule set '" + href(ruleSet) + "' applied without findings"));
+                return DetectionList.of(Detection.of(CTStandardSeverity.NONE, CODE_RULES_APPLIED, DetectionLocation.of(documentName),
+                        "Rule set '" + href(ruleSet) + "' applied without findings"));
             }
             return findings;
         } catch (final SaxonApiException | IOException | RuntimeException e) {
             LOGGER.error("Rule engine error applying {}", href(ruleSet), e);
-            return DetectionList
-                    .of(new Detection(CTStandardSeverity.ERROR, CODE_RULE_ENGINE_ERROR, DetectionLocation.ofResource(documentName),
-                            "Rule set '" + href(ruleSet) + "' could not be applied: " + e.getMessage(), e));
+            return DetectionList.of(new Detection(CTStandardSeverity.ERROR, CODE_RULE_ENGINE_ERROR, DetectionLocation.of(documentName),
+                    "Rule set '" + href(ruleSet) + "' could not be applied: " + e.getMessage(), e));
         }
     }
 
     private CTDetectionList applySchematron(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
-            final String documentName) throws SaxonApiException {
+            final String documentName) throws SaxonApiException, IOException {
         final XsltExecutable executable = (XsltExecutable) ruleSet.getCompiledArtifact().getCompilation();
         final XsltTransformer transformer = executable.load();
         final XdmDestination destination = new XdmDestination();
         transformer.setDestination(destination);
         // apply on the retained immutable byte array — no re-read of the original source
-        transformer.setSource(new StreamSource(new ByteArrayInputStream(parsedSource.getSourceBytes()), documentName));
+        transformer.setSource(parsedSource.getSource().getReadResource().getAsSource(documentName));
         transformer.transform();
         final SchematronOutputType svrl = this.conversionService.readXml(
                 new DOMSource(NodeOverNodeInfo.wrap(destination.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
@@ -188,7 +184,7 @@ public class ApplyRulesAction implements CTAction {
         final List<CTDetection> violations = new ArrayList<>();
         validator.setErrorHandler(new CollectingSchemaErrorHandler(violations, documentName));
         try {
-            validator.validate(new StreamSource(new ByteArrayInputStream(parsedSource.getSourceBytes()), documentName));
+            validator.validate(parsedSource.getSource().getReadResource().getAsSource(documentName));
         } catch (final SAXException e) {
             // a fatal violation aborts JAXP validation; it was already collected by the handler
             if (violations.isEmpty()) {

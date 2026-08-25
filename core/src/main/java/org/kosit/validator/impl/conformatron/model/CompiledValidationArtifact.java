@@ -1,6 +1,6 @@
 package org.kosit.validator.impl.conformatron.model;
 
-import org.conformatron.api.model.source.CTCompiledValidationArtifact;
+import org.conformatron.api.model.validation.CTCompiledValidationArtifact;
 import org.conformatron.api.model.validation.CTValidationType;
 
 /**

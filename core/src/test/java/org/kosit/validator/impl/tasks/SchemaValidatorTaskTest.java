@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -90,7 +91,7 @@ public class SchemaValidatorTaskTest {
     @Test
     public void testNoRepeatableReadBigFile() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
-            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(inputStream));
+            final SourceVInput input = VInputFactory.read(new StreamSource(inputStream));
             final Process process = TestProcessBuilder.create(input).build();
             // process.addStepResult(Helper.createParseResult(Simple.SIMPLE_VALID));
 
@@ -108,7 +109,7 @@ public class SchemaValidatorTaskTest {
     public void testNoRepeatableReaderInput() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
               final Reader reader = new InputStreamReader(inputStream) ) {
-            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(reader));
+            final SourceVInput input = VInputFactory.read(new StreamSource(reader));
             final Process process = TestProcessBuilder.create(input).build();
             this.service.check(process);
             final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
@@ -121,8 +122,8 @@ public class SchemaValidatorTaskTest {
     @Test
     public void testNoRepeatableReaderInputBigFile() throws Exception {
         try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
-              final Reader reader = new InputStreamReader(inputStream) ) {
-            final SourceVInput input = (SourceVInput) VInputFactory.read(new StreamSource(reader));
+              final Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8) ) {
+            final SourceVInput input = VInputFactory.read(new StreamSource(reader));
             final Process process = TestProcessBuilder.create(input).setParseResult(VInputFactory.read(Simple.SIMPLE_VALID)).build();
             // set limit and length for serialization to 5 bytes
             this.service.setInMemoryLimit(5L);

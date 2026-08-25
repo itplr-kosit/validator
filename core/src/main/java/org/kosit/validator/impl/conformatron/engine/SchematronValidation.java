@@ -6,7 +6,7 @@ import java.util.List;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.source.CTParsedValidationSource;
-import org.kosit.validator.api.VInput;
+import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
@@ -71,7 +71,7 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
      * @return the result including all detections
      */
     @Override
-    public AdHocValidationResult validate(final VInput input) {
+    public AdHocValidationResult validate(final CTReadResource input) {
         if (this.schematron == null) {
             throw new IllegalStateException("No schematron configured for this engine instance");
         }
@@ -107,7 +107,7 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
      *            against its parent directory
      * @return the result including all detections
      */
-    public AdHocValidationResult validate(final VInput document, final URI schematron) {
+    public AdHocValidationResult validate(final CTReadResource document, final URI schematron) {
         if (schematron == null) {
             throw new IllegalArgumentException("schematron may not be null");
         }

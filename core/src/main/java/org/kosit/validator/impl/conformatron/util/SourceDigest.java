@@ -66,7 +66,7 @@ public final class SourceDigest {
      * @param data the data to hash
      * @return the hash, hex-encoded (lower case)
      */
-    public static String hashHex(final byte[] data) {
+    public static String hashAndHex(final byte[] data) {
         return HexFormat.of().formatHex(hashBytes(data));
     }
 }

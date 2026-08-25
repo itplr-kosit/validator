@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.Scenario;
 
 /**

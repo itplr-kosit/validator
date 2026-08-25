@@ -73,12 +73,12 @@ public class SelectScenarioAction implements CTAction {
         if (detectedScenarios.size() > 1) {
             final String candidates = detectedScenarios.stream().map(CTScenarioMatch::getScenarioID).collect(Collectors.joining(", "));
             final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_AMBIGUOUS,
-                    DetectionLocation.ofResource(resourceId), "More than one scenario matches the document: " + candidates);
+                    DetectionLocation.of(resourceId), "More than one scenario matches the document: " + candidates);
             return new SelectScenarioResult(CTStepResult.FAILURE, null, DetectionList.of(detection));
         }
         final CTScenarioMatch selected = detectedScenarios.get(0);
         final CTDetection detection = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_SELECTED,
-                DetectionLocation.ofResource(resourceId), "Scenario '" + selected.getScenarioID() + "' selected");
+                DetectionLocation.of(resourceId), "Scenario '" + selected.getScenarioID() + "' selected");
         return new SelectScenarioResult(CTStepResult.SUCCESS, selected, DetectionList.of(detection));
     }
 }

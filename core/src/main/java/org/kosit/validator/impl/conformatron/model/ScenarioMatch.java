@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
-import org.conformatron.api.model.source.CTValidationArtifactReference;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.model.scenarios.ResourceType;
 import org.kosit.validator.model.scenarios.ScenarioType;

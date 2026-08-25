@@ -7,7 +7,7 @@ import java.util.List;
 import javax.xml.validation.Schema;
 
 import org.conformatron.api.model.action.CTStepResult;
-import org.conformatron.api.model.source.CTResolvedValidationArtifact;
+import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;

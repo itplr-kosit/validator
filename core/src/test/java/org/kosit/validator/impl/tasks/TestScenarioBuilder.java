@@ -31,6 +31,9 @@ public class TestScenarioBuilder {
     /**
      * Creates a {@link ScenarioRepository} around the given scenarios (match executables are compiled from the
      * configured match expressions) with a synthetic fallback scenario.
+     * 
+     * @param scenarios scenarios to create
+     * @return The scenario repository
      */
     public static ScenarioRepository createRepository(final Scenario... scenarios) {
         final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), new StrictRelativeResolvingStrategy(),

@@ -8,14 +8,16 @@ import static org.kosit.xvrl.model.XVRLDetection.Severity.INFO;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.jspecify.annotations.NonNull;
 import org.kosit.validator.api.VInput;
-import org.kosit.validator.impl.conformatron.model.ValidationSource;
-import org.kosit.validator.impl.conformatron.model.XdmNodeValidationSource;
+import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.validator.impl.conformatron.source.ValidationSource;
+import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
 import org.kosit.validator.impl.input.StreamHelper;
 import org.kosit.validator.impl.input.XdmNodeVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -90,16 +92,17 @@ public class DocumentParseTask implements CheckTask {
      * @return the legacy parse result plus the conformatron handshake object (if available)
      */
     public ParseOutcome parseRetaining(final @NonNull VInput content) {
-        if (content == null) {
-            throw new IllegalArgumentException("Input may not be null");
-        }
+        Objects.requireNonNull(content);
+
         try {
-            if (content instanceof XdmNodeVInput && hasCompatibleConfiguration((XdmNodeVInput) content)) {
+            if (content instanceof final XdmNodeVInput xdmInput && hasCompatibleConfiguration(xdmInput)) {
                 // parsing not necessary; no source bytes available for the conformatron handshake object
-                return new ParseOutcome(new Result<>(((XdmNodeVInput) content).getNode()), null);
+                return new ParseOutcome(new Result<>(xdmInput.getNode()), null);
             }
+
             final DocumentBuilder builder = this.processor.newDocumentBuilder();
             builder.setLineNumbering(true);
+
             final Source source = content.getSource();
             final byte[] bytes = StreamHelper.tryReadBytes(source);
             if (bytes == null) {
@@ -111,7 +114,8 @@ public class DocumentParseTask implements CheckTask {
                 return new ParseOutcome(new Result<>(builder.build(source)), null);
             }
             final XdmNode doc = builder.build(new StreamSource(new ByteArrayInputStream(bytes), content.getName()));
-            final XdmNodeValidationSource parsedSource = new XdmNodeValidationSource(ValidationSource.of(content), bytes, doc);
+            final XdmNodeValidationSource parsedSource = new XdmNodeValidationSource(
+                    ValidationSource.completeXML(Resource.of(Resource.of(content), null)), bytes, doc);
             return new ParseOutcome(new Result<>(doc), parsedSource);
         } catch (final SaxonApiException | IOException e) {
             if (LOGGER.isDebugEnabled())

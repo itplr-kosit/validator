@@ -185,8 +185,8 @@ public class SchemaValidationTask implements CheckTask {
             return new ByteArrayInputStream(this.bytes);
         }
 
-        public ByteArraySerializedDocument(final Processor processor) {
-            this.processor = processor;
+        public ByteArraySerializedDocument(final Processor saxonProcessor) {
+            this.processor = saxonProcessor;
         }
     }
 

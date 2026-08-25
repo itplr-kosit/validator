@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kosit.validator.impl.conformatron.model;
+package org.kosit.validator.impl.conformatron.source;
 
 import java.util.Objects;
 
-import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTValidationSource;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.kosit.validator.impl.conformatron.util.SourceDigest;
 import org.w3c.dom.Document;
 
 /**
@@ -36,14 +34,11 @@ import org.w3c.dom.Document;
  * </p>
  *
  * @author Andreas Schmitz
+ * @author Philip Helger
  */
 public final class DomValidationSource implements CTParsedValidationSourceXML {
 
     private final CTValidationSource source;
-
-    private final byte[] sourceBytes;
-
-    private final byte[] hashBytes;
 
     private final Document dom;
 
@@ -52,45 +47,21 @@ public final class DomValidationSource implements CTParsedValidationSourceXML {
      * retained for document identity in the partial CVRL, but no parsed content is available.
      *
      * @param source the validation source metadata
-     * @param sourceBytes the entire source document
      * @return a new source with {@link #isParsed()} {@code == false}
      */
-    public static DomValidationSource unparsed(final @NonNull CTValidationSource source, final byte @NonNull [] sourceBytes) {
-        return new DomValidationSource(source, sourceBytes, null);
+    public static DomValidationSource unparsed(final @NonNull CTValidationSource source) {
+        return new DomValidationSource(source, null);
     }
 
-    public DomValidationSource(final @NonNull CTValidationSource source, final byte @NonNull [] sourceBytes, final @Nullable Document dom) {
+    public DomValidationSource(final @NonNull CTValidationSource source, final @Nullable Document dom) {
         Objects.requireNonNull(source);
-        Objects.requireNonNull(sourceBytes);
         this.source = source;
-        this.sourceBytes = sourceBytes.clone();
-        this.hashBytes = SourceDigest.hashBytes(this.sourceBytes);
         this.dom = dom;
     }
 
     @Override
     public CTValidationSource getSource() {
         return this.source;
-    }
-
-    @Override
-    public byte[] getSourceBytes() {
-        return this.sourceBytes.clone();
-    }
-
-    @Override
-    public String getHashAlgorithmName() {
-        return SourceDigest.getAlgorithmName();
-    }
-
-    @Override
-    public byte[] getHashBytes() {
-        return this.hashBytes.clone();
-    }
-
-    @Override
-    public Object getParsedContent() {
-        return this.dom;
     }
 
     @Nullable

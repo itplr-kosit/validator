@@ -29,6 +29,7 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XMLDetection;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 
 /**
@@ -113,7 +114,7 @@ public class CanonicalPipelineTest {
 
         // the full audit trail across all steps, in pipeline order
         assertThat(trace).containsExactly(//
-                ParseXMLAction.CODE_DOCUMENT_PARSED, // step 2
+                XMLDetection.CODE_DOCUMENT_PARSED, // step 2
                 DetectScenariosAction.CODE_SCENARIO_MATCHED, // step 3
                 SelectScenarioAction.CODE_SCENARIO_SELECTED, // step 4
                 RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, // step

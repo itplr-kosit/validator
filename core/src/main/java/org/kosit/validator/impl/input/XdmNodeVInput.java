@@ -11,6 +11,7 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  * @author Andreas Penski
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class XdmNodeVInput implements VInput {
 
     private final XdmNode node;
@@ -21,12 +22,14 @@ public class XdmNodeVInput implements VInput {
 
     private final byte[] hashCode;
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public Source getSource() {
         // usually not necessary to be called.
         return this.node.getUnderlyingNode();
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public XdmNodeVInput(final XdmNode node, final String name, final String digestAlgorithm, final byte[] hashCode) {
         this.node = node;
         this.name = name;
@@ -34,18 +37,22 @@ public class XdmNodeVInput implements VInput {
         this.hashCode = hashCode;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public XdmNode getNode() {
         return this.node;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public String getName() {
         return this.name;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public String getDigestAlgorithm() {
         return this.digestAlgorithm;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public byte[] getHashCode() {
         return this.hashCode;
     }

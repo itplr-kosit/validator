@@ -7,7 +7,6 @@ import java.util.Locale;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTStandardSeverity;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
@@ -51,11 +50,11 @@ public final class SvrlDetections {
         for (final Object entry : svrl.getActivePatternOrActiveGroupAndFiredRule()) {
             if (entry instanceof final FailedAssert failedAssert) {
                 detections.add(Detection.of(severityOf(failedAssert.getRole(), failedAssert.getFlag()),
-                        code(failedAssert.getId(), CODE_FAILED_ASSERT), DetectionLocation.ofResource(documentName),
+                        code(failedAssert.getId(), CODE_FAILED_ASSERT), DetectionLocation.of(documentName),
                         message(failedAssert.getLocation(), textOf(failedAssert.getText()))));
             } else if (entry instanceof final SuccessfulReport report) {
                 detections.add(Detection.of(severityOf(report.getRole(), report.getFlag()), code(report.getId(), CODE_SUCCESSFUL_REPORT),
-                        DetectionLocation.ofResource(documentName), message(report.getLocation(), textOf(report.getText()))));
+                        DetectionLocation.of(documentName), message(report.getLocation(), textOf(report.getText()))));
             }
         }
         return new DetectionList(detections);

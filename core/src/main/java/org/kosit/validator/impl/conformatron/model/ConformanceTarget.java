@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.conformatron.api.model.scenario.CTConformanceTarget;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
-import org.conformatron.api.model.source.CTValidationArtifactReference;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 
 /**
  * Validator implementation of {@link CTConformanceTarget} (conformatron-api step 8, {@code COMPUTE_CONFORMANCE}): a

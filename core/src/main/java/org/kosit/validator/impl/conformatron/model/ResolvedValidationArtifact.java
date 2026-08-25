@@ -2,9 +2,9 @@ package org.kosit.validator.impl.conformatron.model;
 
 import java.util.Objects;
 
-import org.conformatron.api.model.source.CTCompiledValidationArtifact;
-import org.conformatron.api.model.source.CTResolvedValidationArtifact;
-import org.conformatron.api.model.source.CTValidationArtifactReference;
+import org.conformatron.api.model.validation.CTCompiledValidationArtifact;
+import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.CTValidationType;
 
 /**

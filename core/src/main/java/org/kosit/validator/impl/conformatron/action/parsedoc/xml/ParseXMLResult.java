@@ -8,7 +8,7 @@ import org.conformatron.api.model.detection.CTDetectionList;
 import org.jspecify.annotations.Nullable;
 import org.kosit.validator.impl.conformatron.action.parsedoc.ParseDocumentActionResult;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.DomValidationSource;
+import org.kosit.validator.impl.conformatron.source.DomValidationSource;
 
 /**
  * Single XML parsing result

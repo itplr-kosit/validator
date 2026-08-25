@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.kosit.svrl.impl.SvrlConversionService;
-import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
+import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
 import org.kosit.validator.impl.tasks.CheckTask;
@@ -36,6 +36,7 @@ import net.sf.saxon.s9api.Processor;
  *
  * @author Andreas Penski
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultVCheck.class);
@@ -54,6 +55,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
 
     private final ConformanceValidation conformanceValidation;
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public DefaultVCheck(final EngineInformation engineInformation, final VConfiguration... configuration) {
         this(engineInformation, ProcessorProvider.getProcessor(), configuration);
     }
@@ -65,7 +67,8 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
      * @param processor Saxon processor
      * @param configuration the Configuration
      */
-    public DefaultVCheck(EngineInformation engineInformation, final Processor processor, final VConfiguration... configuration) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public DefaultVCheck(final EngineInformation engineInformation, final Processor processor, final VConfiguration... configuration) {
         this.engineInformation = engineInformation;
         this.configuration = Arrays.asList(configuration);
         this.processor = processor;
@@ -82,14 +85,17 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
         this.conformanceValidation = new ConformanceValidation(engineInformation, this.checkSteps);
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     protected XVRLMetadata createXVRLMetadata() {
         return this.conformanceValidation.createMetadata();
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     protected boolean isSuccessful(final Map<String, VResult> results) {
         return results.entrySet().stream().allMatch(e -> e.getValue().isAcceptable());
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public VResult checkInput(final VInput input) {
         final Process checkProcess = new Process(input, createXVRLMetadata());
@@ -100,6 +106,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
      * Full conformance validation ({@link ValidationEngine} contract) — same run as the legacy
      * {@link #checkInput(VInput)}, executed by the {@link ConformanceValidation} mode class.
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public VResult validate(final VInput input) {
         return checkInput(input);
@@ -109,26 +116,32 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
      * Convenience for the ad-hoc mode: validates directly against the given Schematron using the
      * {@link SchematronValidation} engine (see {@link ValidationEngine}).
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public SchematronValidation.AdHocValidationResult validateAdHoc(final VInput input, final URI schematron) {
         return this.adHocValidation.validate(input, schematron);
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     protected VResult runCheckInternal(final Process checkProcess) {
         return this.conformanceValidation.run(checkProcess);
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public XvrlConversionService getXvrlConversionService() {
         return this.xvrlConversionService;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public List<VConfiguration> getConfiguration() {
         return this.configuration;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public List<CheckTask> getCheckSteps() {
         return this.checkSteps;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public Processor getProcessor() {
         return this.processor;
     }

@@ -14,8 +14,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.kosit.jaxb.JaxbConversionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kosit.jaxb.xml.XMLHelper;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -27,10 +26,6 @@ import jakarta.xml.bind.annotation.XmlRegistry;
  */
 public class XmlConversionService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XmlConversionService.class);
-
-    private static final int MAX_LOG_CONTENT = 50;
-
     // context setup
     private JAXBContext jaxbContext;
 
@@ -41,13 +36,13 @@ public class XmlConversionService {
         return this.jaxbContext;
     }
 
-    private void checkInputEmpty(final File xml) {
+    private static void checkInputEmpty(final File xml) {
         if (xml == null) {
             throw new JaxbConversionException("Can not unmarshal from empty input file");
         }
     }
 
-    private <T> void checkTypeEmpty(final Class<T> type) {
+    private static <T> void checkTypeEmpty(final Class<T> type) {
         if (type == null) {
             throw new JaxbConversionException("Can not unmarshal without type information. Need to specify a target type");
         }
@@ -97,10 +92,7 @@ public class XmlConversionService {
         checkInputEmpty(xml);
         checkTypeEmpty(type);
         try ( InputStream is = new FileInputStream(xml) ) {
-            final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
-            inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-            inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
-            inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+            final XMLInputFactory inputFactory = XMLHelper.createSafeXMLInputFactory();
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(is);
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
             return u.unmarshal(xsr, type).getValue();

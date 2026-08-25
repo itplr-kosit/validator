@@ -3,10 +3,10 @@ package org.kosit.validator.impl.tasks;
 import java.util.Collections;
 import java.util.List;
 
-import org.kosit.validator.api.*;
 import org.kosit.validator.api.VInput;
-import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
@@ -58,17 +58,6 @@ public class TestProcessBuilder {
     public static List<BusinessReport> createReport() {
         final XdmNode someXml = TestHelper.parseDocument(VInputFactory.read("<some>xml</some>".getBytes(), "someXml")).getObject();
         return createReport("report", someXml);
-    }
-
-    private static List<ValidationResultsSchematron> createSchematronError() {
-        final ValidationResultsSchematron v = new ValidationResultsSchematron();
-        final SchematronOutputType out = new SchematronOutputType();
-        final FailedAssert f = new FailedAssert();
-        out.getActivePatternOrActiveGroupAndFiredRule().add(f);
-        final Results r = new Results();
-        r.setSchematronOutput(out);
-        v.setResults(r);
-        return Collections.singletonList(v);
     }
 
     private static ProcessStepResult<XdmNode, XMLSyntaxError> parseInput(final VInput input) {

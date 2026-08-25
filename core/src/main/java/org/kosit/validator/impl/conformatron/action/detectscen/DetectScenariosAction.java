@@ -122,13 +122,13 @@ public class DetectScenariosAction implements CTAction {
                 .findFirst().orElse(null);
         if (scenario == null) {
             final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_UNKNOWN_ID,
-                    DetectionLocation.ofResource(resourceId), "Requested scenario '" + requestedScenarioId + "' is not configured");
+                    DetectionLocation.of(resourceId), "Requested scenario '" + requestedScenarioId + "' is not configured");
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
 
         final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource);
         final CTDetection detection = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED,
-                DetectionLocation.ofResource(resourceId), "Scenario '" + scenario.getName() + "' fixed by user input");
+                DetectionLocation.of(resourceId), "Scenario '" + scenario.getName() + "' fixed by user input");
         return new DetectScenariosResult(CTStepResult.SUCCESS, List.of(match), DetectionList.of(detection));
     }
 
@@ -137,7 +137,7 @@ public class DetectScenariosAction implements CTAction {
         final List<Scenario> matching = repository.findMatches(document);
         if (matching.isEmpty()) {
             final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_NO_SCENARIO_MATCHED,
-                    DetectionLocation.ofResource(resourceId), "None of the configured scenarios matches the document");
+                    DetectionLocation.of(resourceId), "None of the configured scenarios matches the document");
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
 
@@ -145,7 +145,7 @@ public class DetectScenariosAction implements CTAction {
         final List<ScenarioMatch> matches = matching.stream().map(scenario -> ScenarioMatch.of(scenario, parsedSource)).toList();
         final List<CTDetection> detections = new ArrayList<>();
         for (final CTScenarioMatch match : matches) {
-            detections.add(Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_MATCHED, DetectionLocation.ofResource(resourceId),
+            detections.add(Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_MATCHED, DetectionLocation.of(resourceId),
                     "Scenario '" + match.getScenarioName() + "' matched"));
         }
         return new DetectScenariosResult(CTStepResult.SUCCESS, List.copyOf(matches), new DetectionList(detections));

@@ -1,13 +1,10 @@
 package org.kosit.validator.impl.input;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 import javax.xml.transform.stream.StreamSource;
-
-import org.kosit.validator.api.VInput;
 
 /**
  * An {@link VInput} carries an {@link URL} which can be used for all 'locatable' inputs such as {@link File},
@@ -18,6 +15,7 @@ import org.kosit.validator.api.VInput;
  * 
  * @author Andreas Penski
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class ResourceVInput extends AbstractVInput {
 
     private final URL url;
@@ -26,6 +24,7 @@ public class ResourceVInput extends AbstractVInput {
 
     private final String digestAlgorithm;
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public StreamSource getSource() throws IOException {
         InputStream stream = this.url.openStream();
@@ -35,18 +34,22 @@ public class ResourceVInput extends AbstractVInput {
         return new StreamSource(stream, this.name);
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public URL getUrl() {
         return this.url;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public String getName() {
         return this.name;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public String getDigestAlgorithm() {
         return this.digestAlgorithm;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public ResourceVInput(final URL url, final String name, final String digestAlgorithm) {
         this.url = url;
         this.name = name;

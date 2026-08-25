@@ -99,7 +99,7 @@ public class ComputeConformanceAction implements CTAction {
         });
         final String resourceId = applyRulesResult.getParsedSource().getSource().getName();
         if (applyRulesResult.isEmpty()) {
-            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.ofResource(resourceId),
+            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.of(resourceId),
                     "No rule results to evaluate (reason: no-rule-results)");
             return new ComputeConformanceActionResult(CTStepResult.SKIPPED, ComputeConformanceResult.empty(applyRulesResult),
                     DetectionList.of(skipped));
@@ -147,10 +147,10 @@ public class ComputeConformanceAction implements CTAction {
         final String targetName = statement.getTarget().getTargetName();
         final String href = ruleSet.getArtifactReference().getValidationArtifactReference().toString();
         if (statement.getResult().isConformant()) {
-            return Detection.of(CTStandardSeverity.NONE, CODE_TARGET_CONFORMANT, DetectionLocation.ofResource(resourceId),
+            return Detection.of(CTStandardSeverity.NONE, CODE_TARGET_CONFORMANT, DetectionLocation.of(resourceId),
                     "Target '" + targetName + "' conformant (rule set '" + href + "')");
         }
-        return Detection.of(CTStandardSeverity.ERROR, CODE_TARGET_NON_CONFORMANT, DetectionLocation.ofResource(resourceId),
+        return Detection.of(CTStandardSeverity.ERROR, CODE_TARGET_NON_CONFORMANT, DetectionLocation.of(resourceId),
                 "Target '" + targetName + "' non-conformant: " + statement.getRationale());
     }
 }

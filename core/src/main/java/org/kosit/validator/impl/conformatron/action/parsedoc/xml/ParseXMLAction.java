@@ -15,31 +15,22 @@
  */
 package org.kosit.validator.impl.conformatron.action.parsedoc.xml;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.Source;
 
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
-import org.conformatron.api.model.detection.CTStandardSeverity;
+import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.source.CTValidationSource;
-import org.jspecify.annotations.NonNull;
 import org.kosit.jaxb.xml.XMLHelper;
-import org.kosit.validator.api.VInput;
 import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
-import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.DomValidationSource;
-import org.kosit.validator.impl.conformatron.model.ValidationSource;
-import org.kosit.validator.impl.conformatron.util.SourceDigest;
-import org.kosit.validator.impl.conformatron.xml.CollectingErrorHandler;
-import org.kosit.validator.impl.input.StreamHelper;
+import org.kosit.validator.impl.conformatron.source.DomValidationSource;
+import org.kosit.validator.impl.conformatron.source.ValidationSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -64,19 +55,11 @@ import org.xml.sax.SAXParseException;
  * </p>
  *
  * @author Andreas Schmitz
+ * @author Philip Helger
  */
 public class ParseXMLAction extends AbstractParseDocumentAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParseXMLAction.class);
-
-    /** Detection code on success. */
-    public static final String CODE_DOCUMENT_PARSED = "document-parsed";
-
-    /** Detection code for well-formedness errors. */
-    public static final String CODE_NOT_WELLFORMED = "not-wellformed";
-
-    /** Detection code for IO failures while reading the source. */
-    public static final String CODE_SOURCE_READ_ERROR = "source-read-error";
 
     @Override
     public String getName() {
@@ -89,77 +72,41 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
      * @param input the legacy input carrying the document
      * @return the result including the {@link DomValidationSource} on success and any detections
      */
-    public ParseXMLResult execute(final VInput input) {
+    public ParseXMLResult execute(final CTReadResource input) {
         Objects.requireNonNull(input);
-        final CTValidationSource source = ValidationSource.of(input);
-        final byte[] bytes;
-        try {
-            bytes = readBytes(input);
-        } catch (final IOException e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exception while reading {}", input.getName(), e);
-            }
-            final Detection detection = new Detection(CTStandardSeverity.ERROR, CODE_SOURCE_READ_ERROR,
-                    DetectionLocation.ofResource(input.getName()),
-                    "IOException while reading resource " + input.getName() + ": " + e.getMessage(), e);
-            return ParseXMLResult.failure(DetectionList.of(detection));
-        }
-        return parse(source, bytes);
-    }
 
-    /**
-     * Parses the given retained document bytes into a DOM without line numbering.
-     *
-     * @param source the validation source metadata (from step 1)
-     * @param bytes the entire source document; retained as immutable byte array
-     * @return the result including the {@link DomValidationSource} on success and any detections
-     */
-    // TODO replace bytes parameter with source.getInputStream usage
-    public ParseXMLResult parse(final CTValidationSource source, final byte[] bytes) {
+        final CTValidationSource validationSource = ValidationSource.completeXML(input);
         final List<CTDetection> errors = new ArrayList<>();
         try {
+            // Setup XML reader
             final DocumentBuilder builder = XMLHelper.createSafeDocumentBuilder();
-            builder.setErrorHandler(new CollectingErrorHandler(source.getName(), errors));
-            final Document dom = builder.parse(new ByteArrayInputStream(bytes), source.getName());
-            if (!errors.isEmpty()) {
-                return new ParseXMLResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
+            builder.setErrorHandler(new CollectingErrorHandler(validationSource.getName(), errors));
+
+            // Main reading
+            final Document document = builder.parse(input.getSourceStream(), validationSource.getName());
+            if (errors.isEmpty()) {
+                // Parsing succeeded
+                return new ParseXMLResult(CTStepResult.SUCCESS, DetectionList.of(XMLDetection.success(validationSource)),
+                        new DomValidationSource(validationSource, document));
             }
-            final DomValidationSource parsed = new DomValidationSource(source, bytes, dom);
-            final Detection info = Detection.of(CTStandardSeverity.NONE, CODE_DOCUMENT_PARSED,
-                    DetectionLocation.ofResource(source.getName()), parsed.getHashAlgorithmName() + "=" + SourceDigest.hashHex(bytes));
-            return new ParseXMLResult(CTStepResult.SUCCESS, DetectionList.of(info), parsed);
         } catch (final SAXParseException e) {
             // already collected by CollectingErrorHandler#fatalError unless thrown directly
             if (errors.stream().noneMatch(d -> d.getLinkedException() == e)) {
-                errors.add(errorNotWellformed(source.getName(), e));
+                errors.add(XMLDetection.errorNotWellformed(validationSource.getName(), e));
             }
-            return new ParseXMLResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
         } catch (final SAXException e) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exception while parsing {}", source.getName(), e);
+                LOGGER.debug("Exception while parsing {}", validationSource.getName(), e);
             }
-            errors.add(new Detection(CTStandardSeverity.ERROR, CODE_NOT_WELLFORMED, DetectionLocation.ofResource(source.getName()),
-                    e.getMessage(), e));
-            return new ParseXMLResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
+            errors.add(XMLDetection.errorNotWellformed(validationSource.getName(), e));
         } catch (final IOException e) {
-            // Should not occur, as we read via ByteArrayStream
-            errors.add(new Detection(CTStandardSeverity.ERROR, CODE_SOURCE_READ_ERROR, DetectionLocation.ofResource(source.getName()),
-                    e.getMessage(), e));
-            return new ParseXMLResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(source, bytes));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("IOException while parsing {}", validationSource.getName(), e);
+            }
+            errors.add(XMLDetection.ioError(validationSource.getName(), e));
         }
-    }
 
-    private static byte[] readBytes(final VInput input) throws IOException {
-        final Source source = input.getSource();
-        final byte[] bytes = StreamHelper.tryReadBytes(source);
-        if (bytes == null) {
-            throw new IOException("Unsupported source type " + source.getClass().getName() + " for input " + input.getName());
-        }
-        return bytes;
-    }
-
-    @NonNull
-    public static Detection errorNotWellformed(final String resourceId, final SAXParseException e) {
-        return new Detection(CTStandardSeverity.ERROR, CODE_NOT_WELLFORMED, DetectionLocation.of(resourceId, e), e.getMessage(), e);
+        // Parsing failed (for whatever reason)
+        return new ParseXMLResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(validationSource));
     }
 }

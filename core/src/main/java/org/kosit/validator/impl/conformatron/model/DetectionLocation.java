@@ -24,6 +24,7 @@ import org.xml.sax.SAXParseException;
  * Immutable implementation of {@link CTDetectionLocation}.
  *
  * @author Andreas Schmitz
+ * @author Philip Helger
  */
 public final class DetectionLocation implements CTDetectionLocation {
 
@@ -39,12 +40,12 @@ public final class DetectionLocation implements CTDetectionLocation {
      * @param resourceId the resource identifier, may be null
      * @return a new location
      */
-    public static DetectionLocation ofResource(final @Nullable String resourceId) {
+    public static DetectionLocation of(final @Nullable String resourceId) {
         return new DetectionLocation(resourceId, ILLEGAL_NUMBER, ILLEGAL_NUMBER);
     }
 
     @NonNull
-    public static DetectionLocation of(final @Nullable String resourceId, final SAXParseException e) {
+    public static DetectionLocation of(final @Nullable String resourceId, final @NonNull SAXParseException e) {
         return new DetectionLocation(resourceId, e.getLineNumber(), e.getColumnNumber());
     }
 

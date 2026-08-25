@@ -21,6 +21,7 @@ import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class DefaultResult implements VResult {
 
     /** The internal report 'preliminary stage' produced by the validator */
@@ -37,10 +38,12 @@ public class DefaultResult implements VResult {
 
     private boolean wellformed;
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public DefaultResult(final AcceptRecommendation recommendation) {
         this.acceptRecommendation = recommendation;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public XdmNode getReport() {
         final Marshaller marshaller;
@@ -56,6 +59,7 @@ public class DefaultResult implements VResult {
         return null;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public List<String> getProcessingErrors() {
         return reportSummary.getAllErrors();
@@ -66,6 +70,7 @@ public class DefaultResult implements VResult {
      *
      * @return the report
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public Document getReportDocument() {
         return (Document) NodeOverNodeInfo.wrap(getReport().getUnderlyingNode());
@@ -76,11 +81,13 @@ public class DefaultResult implements VResult {
      *
      * @return true if {@link AcceptRecommendation#ACCEPTABLE}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public boolean isAcceptable() {
         return isProcessingSuccessful() && AcceptRecommendation.ACCEPTABLE.equals(this.acceptRecommendation);
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public boolean isSchemaValid() {
         return getSchemaViolations() != null && getSchemaViolations().isEmpty();
@@ -91,6 +98,7 @@ public class DefaultResult implements VResult {
      *
      * @return the {@link FailedAssert}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public List<FailedAssert> getFailedAsserts() {
         return getSchematronResult() != null
@@ -104,6 +112,7 @@ public class DefaultResult implements VResult {
                 && getSchematronResult().stream().noneMatch(e -> e.getActivePatternOrActiveGroupAndFiredRule().isEmpty());
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public boolean isSchematronValid() {
         return isSchematronEvaluated() && getFailedAsserts().isEmpty();
@@ -112,10 +121,12 @@ public class DefaultResult implements VResult {
     /**
      * Die vom Validator erstelle interne Berichts-'Vorstufe'
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public XVRLReportSummary getReportSummary() {
         return this.reportSummary;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     /**
      * Die vom Validator erstelle interne Berichts-'Vorstufe'
      */
@@ -126,38 +137,47 @@ public class DefaultResult implements VResult {
     /**
      * Das evaluierte Ergebnis.
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public AcceptRecommendation getAcceptRecommendation() {
         return this.acceptRecommendation;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     void setSchemaViolations(final List<XmlError> schemaViolations) {
         this.schemaViolations = schemaViolations;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public List<XmlError> getSchemaViolations() {
         return this.schemaViolations;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public List<SchematronOutputType> getSchematronResult() {
         return this.schematronResult;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     void setSchematronResult(final List<SchematronOutputType> schematronResult) {
         this.schematronResult = schematronResult;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public boolean isProcessingSuccessful() {
         return this.processingSuccessful;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public void setProcessingSuccessful(final boolean processingSuccessful) {
         this.processingSuccessful = processingSuccessful;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public boolean isWellformed() {
         return this.wellformed;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public void setWellformed(final boolean wellformed) {
         this.wellformed = wellformed;
     }

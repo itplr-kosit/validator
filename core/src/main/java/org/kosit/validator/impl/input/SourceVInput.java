@@ -10,7 +10,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.ReaderInputStream;
-import org.kosit.validator.api.VInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +34,7 @@ import net.sf.saxon.om.TreeInfo;
  * 
  * @author Andreas Penski
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class SourceVInput extends AbstractVInput {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SourceVInput.class);
@@ -45,10 +45,12 @@ public class SourceVInput extends AbstractVInput {
 
     private final String digestAlgorithm;
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public SourceVInput(final StreamSource source, final String name, final String digestAlgorithm) {
         this(source, name, digestAlgorithm, null);
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public SourceVInput(final Source source, final String name, final String digestAlgorithm, final byte[] hashCode) {
         this.source = source;
         this.name = name;
@@ -57,6 +59,7 @@ public class SourceVInput extends AbstractVInput {
         validate();
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public String getName() {
         return defaultIfBlank(this.name, this.source.getClass().getSimpleName());
@@ -74,6 +77,7 @@ public class SourceVInput extends AbstractVInput {
         }
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public Source getSource() throws IOException {
         if (isConsumed()) {
@@ -86,7 +90,7 @@ public class SourceVInput extends AbstractVInput {
         return isStreamSource();
     }
 
-    private boolean isConsumed() throws IOException {
+    private boolean isConsumed() {
         if (isStreamSource()) {
             final StreamSource ss = (StreamSource) this.source;
             try {
@@ -108,6 +112,7 @@ public class SourceVInput extends AbstractVInput {
         return this.source instanceof DOMSource;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public boolean isTreeInfo() {
         return this.source instanceof TreeInfo;
     }
@@ -129,11 +134,13 @@ public class SourceVInput extends AbstractVInput {
         return result;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public boolean supportsMultipleReads() {
         return isDomSource() || isTreeInfo();
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public String getDigestAlgorithm() {
         return this.digestAlgorithm;
     }

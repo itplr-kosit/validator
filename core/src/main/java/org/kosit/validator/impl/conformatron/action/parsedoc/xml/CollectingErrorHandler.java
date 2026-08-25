@@ -1,9 +1,8 @@
-package org.kosit.validator.impl.conformatron.xml;
+package org.kosit.validator.impl.conformatron.action.parsedoc.xml;
 
 import java.util.List;
 
 import org.conformatron.api.model.detection.CTDetection;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -24,12 +23,12 @@ public record CollectingErrorHandler(String resourceId, List<CTDetection> errors
 
     @Override
     public void error(final SAXParseException e) {
-        this.errors.add(ParseXMLAction.errorNotWellformed(this.resourceId, e));
+        this.errors.add(XMLDetection.errorNotWellformed(this.resourceId, e));
     }
 
     @Override
     public void fatalError(final SAXParseException e) throws SAXException {
-        this.errors.add(ParseXMLAction.errorNotWellformed(this.resourceId, e));
+        this.errors.add(XMLDetection.errorNotWellformed(this.resourceId, e));
         throw e;
     }
 }

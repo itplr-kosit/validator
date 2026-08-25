@@ -22,15 +22,15 @@ import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
-import org.conformatron.api.model.validation.CTValidationSyntax;
+import org.conformatron.api.model.validation.CTValidationStandard;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XMLDetection;
 
 /**
  * <b>DRAFT intermediate format</b>: serializes a canonical pipeline run (steps 2–8) to a CVRL report — an XVRL profile
@@ -200,7 +200,7 @@ public final class CvrlWriter {
             newline(writer, 3);
             writer.writeEmptyElement(NS_XVRL, "schema");
             writer.writeAttribute("href", ruleSet.getArtifactReference().getValidationArtifactReference().toString());
-            writer.writeAttribute("language", ruleSet.getEngineType().getBaseType() == CTValidationSyntax.XSD ? "XSD" : "Schematron");
+            writer.writeAttribute("language", ruleSet.getEngineType().getStandard() == CTValidationStandard.XSD ? "XSD" : "Schematron");
             if (ruleSet.getEngineVersion() != null) {
                 writer.writeAttribute(NS_CVRL, "engine-version", ruleSet.getEngineVersion());
             }
@@ -248,7 +248,7 @@ public final class CvrlWriter {
         if (detection.getLocation().getColumnNumber() > 0) {
             writer.writeAttribute(NS_CVRL, "col", String.valueOf(detection.getLocation().getColumnNumber()));
         }
-        if (ParseXMLAction.CODE_DOCUMENT_PARSED.equals(detection.getCode()) && parseEvidence != null) {
+        if (XMLDetection.CODE_DOCUMENT_PARSED.equals(detection.getCode()) && parseEvidence != null) {
             writeParseEvidence(writer, parseEvidence);
         } else {
             newline(writer, 3);
@@ -270,8 +270,8 @@ public final class CvrlWriter {
     private static void writeParseEvidence(final XMLStreamWriter writer, final CTParsedValidationSource source) throws XMLStreamException {
         newline(writer, 3);
         writer.writeStartElement(NS_XVRL, "message");
-        writer.writeAttribute(NS_CVRL, "algorithm", source.getHashAlgorithmName());
-        writer.writeCharacters(HexFormat.of().formatHex(source.getHashBytes()));
+        writer.writeAttribute(NS_CVRL, "algorithm", source.getSource().getReadResource().getHashAlgorithmName());
+        writer.writeCharacters(HexFormat.of().formatHex(source.getSource().getReadResource().getHashBytes()));
         writer.writeEndElement();
         newline(writer, 3);
         writer.writeStartElement(NS_XVRL, "message");

@@ -1,9 +1,9 @@
 package org.kosit.validator.impl.conformatron.model;
 
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
-import org.conformatron.api.model.source.CTCompiledValidationArtifact;
-import org.conformatron.api.model.source.CTValidationArtifactReference;
+import org.conformatron.api.model.validation.CTCompiledValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.CTValidationType;
 
 /**

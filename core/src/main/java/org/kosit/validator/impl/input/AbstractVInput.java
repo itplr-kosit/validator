@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andreas Penski
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public abstract class AbstractVInput implements VInput, LazyReadInput {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractVInput.class);
@@ -22,6 +23,7 @@ public abstract class AbstractVInput implements VInput, LazyReadInput {
 
     private long length;
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public byte[] getHashCode() {
         if (this.hashCode == null) {
@@ -31,6 +33,7 @@ public abstract class AbstractVInput implements VInput, LazyReadInput {
         return this.hashCode;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     protected void computeHashcode() {
         try {
             drain(this);
@@ -39,6 +42,7 @@ public abstract class AbstractVInput implements VInput, LazyReadInput {
         }
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     protected InputStream wrap(final InputStream stream) {
         InputStream result = stream;
         if (!isHashcodeComputed()) {
@@ -50,24 +54,29 @@ public abstract class AbstractVInput implements VInput, LazyReadInput {
         return result;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public boolean isHashcodeComputed() {
         return this.hashCode != null;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public void setHashCode(final byte[] digest) {
         this.hashCode = digest;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public boolean supportsMultipleReads() {
         return true;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public long getLength() {
         return this.length;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public void setLength(final long length) {
         this.length = length;
     }

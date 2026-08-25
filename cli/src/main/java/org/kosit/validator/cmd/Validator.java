@@ -30,6 +30,8 @@ import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
 import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.input.ResourceVInput;
+import org.kosit.validator.impl.input.SourceVInput;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,6 @@ import net.sf.saxon.s9api.Processor;
  * 
  * @author Andreas Penski
  */
-@SuppressWarnings("squid:S3725")
 public class Validator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Validator.class);
@@ -223,18 +224,16 @@ public class Validator {
     }
 
     // sanitation is delegated to xml stack
-    @SuppressWarnings("java:S4829")
     private static boolean isPiped() throws IOException {
         return System.in.available() > 0;
     }
 
     // sanitation is delegated to xml stack
-    @SuppressWarnings("java:S4829")
-    private static VInput readFromPipe() {
+    private static SourceVInput readFromPipe() {
         return VInputFactory.read(System.in, "stdin");
     }
 
-    private static Collection<VInput> determineTestTarget(final Path d) {
+    private static Collection<ResourceVInput> determineTestTarget(final Path d) {
         if (Files.isDirectory(d)) {
             return listDirectoryTargets(d);
         }
@@ -245,7 +244,7 @@ public class Validator {
         return Collections.emptyList();
     }
 
-    private static Collection<VInput> listDirectoryTargets(final Path d) {
+    private static Collection<ResourceVInput> listDirectoryTargets(final Path d) {
         try ( Stream<Path> stream = Files.list(d) ) {
             return stream.filter(path -> path.toString().toLowerCase().endsWith(".xml")).map(VInputFactory::read).toList();
         } catch (final IOException e) {

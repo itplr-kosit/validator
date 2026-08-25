@@ -29,19 +29,21 @@ import net.sf.saxon.s9api.Processor;
  *
  * @author Andreas Penski
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 class InternalVCheck extends DefaultVCheck {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InternalVCheck.class);
 
-    private int checkAssertions = 0;
+    private final int checkAssertions = 0;
 
-    private int failedAssertions = 0;
+    private final int failedAssertions = 0;
 
     /**
      * Creates a new instance with the given configuration.
      *
      * @param configuration the configuration
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     InternalVCheck(final EngineInformation engineInformation, final Processor processor, final VConfiguration... configuration) {
         super(engineInformation, processor, configuration);
     }
@@ -96,12 +98,14 @@ class InternalVCheck extends DefaultVCheck {
      * @param input the test documents
      * @return false if there are assertion errors, otherwise true
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public VResult checkInput(final VInput input) {
         final CheckTask.Process process = new CheckTask.Process(input, createXVRLMetadata());
         return runCheckInternal(process);
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     void printResults(final Map<String, VResult> results) {
         final PrintWriter writer = new PrintWriter(System.out); // NOSONAR
         writer.write("Results:\n");
@@ -126,6 +130,7 @@ class InternalVCheck extends DefaultVCheck {
         return line.render(true, false);
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public boolean isSuccessful(final Map<String, VResult> results) {
         if (this.checkAssertions > 0) {
@@ -134,6 +139,7 @@ class InternalVCheck extends DefaultVCheck {
         return super.isSuccessful(results);
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public int getNotAcceptableCount(final Map<String, VResult> results) {
         return (int) (this.failedAssertions + results.values().stream().filter(e -> !e.isAcceptable()).count());
     }

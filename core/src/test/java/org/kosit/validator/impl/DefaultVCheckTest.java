@@ -25,6 +25,7 @@ import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.validator.impl.input.ResourceVInput;
 import org.kosit.validator.impl.tasks.XvrlSerializer;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.xvrl.impl.XvrlConversionService;
@@ -120,16 +121,16 @@ public class DefaultVCheckTest {
     @Test
     public void testMultipleCase() {
         @SuppressWarnings("unused")
-        final List<VInput> VInput = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
-        final List<VResult> docs = this.validCheck.checkInput(VInput);
+        final List<ResourceVInput> inputs = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
+        final List<VResult> docs = this.validCheck.checkInput(inputs);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
     @Test
     public void testMultipleCaseDocument() {
         @SuppressWarnings("unused")
-        final List<VInput> VInput = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
-        final List<Document> docs = this.validCheck.check(VInput);
+        final List<ResourceVInput> inputs = IntStream.range(0, MULTI_COUNT).mapToObj(i -> read(SIMPLE_VALID)).toList();
+        final List<Document> docs = this.validCheck.check(inputs);
         assertThat(docs).hasSize(MULTI_COUNT);
     }
 
