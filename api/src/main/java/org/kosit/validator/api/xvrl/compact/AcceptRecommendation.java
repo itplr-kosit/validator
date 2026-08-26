@@ -1,4 +1,4 @@
-package org.kosit.validator.api.compact;
+package org.kosit.validator.api.xvrl.compact;
 
 /**
  * Tri-state recommendation whether to accept the Input xml or not.

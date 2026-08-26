@@ -1,6 +1,6 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
+import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,10 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.xvrl.XVRLReportBuilder;
 import org.kosit.xvrl.model.XVRLReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
@@ -104,7 +104,7 @@ public class SchematronValidationTask implements CheckTask {
             transformer.setResourceResolver(scenario.getUriResolver());
 
             final CollectingErrorEventHandler collectingErrorEventHandler = new CollectingErrorEventHandler();
-            transformer.setMessageListener(collectingErrorEventHandler);
+            transformer.setMessageHandler(collectingErrorEventHandler);
 
             final XdmDestination result = new XdmDestination();
             transformer.setDestination(result);

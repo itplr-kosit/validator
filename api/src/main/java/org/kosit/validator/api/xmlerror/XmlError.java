@@ -31,13 +31,13 @@ public interface XmlError {
      *
      * @return The row number or <code>null</code>.
      */
-    Integer getRowNumber();
+    Long getRowNumber();
 
     /**
      * Optionally returns a column number from which the error originates.
      *
      * @return The column number or <code>null</code>.
      */
-    Integer getColumnNumber();
+    Long getColumnNumber();
 
 }

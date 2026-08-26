@@ -1,7 +1,6 @@
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
+import static org.kosit.validator.xvrl.XVRLReportBuilder.builder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,7 +10,8 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
+import org.kosit.validator.xvrl.XVRLReportBuilder;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.ObjectFactory;
 import org.kosit.xvrl.model.XVRLDetectionType;
@@ -38,10 +38,11 @@ class SerializeReportAction implements CheckTask {
 
     private static XVRLReportType generateXVRLReport(final SingleProcessingResult<Boolean, String> result) {
         if (result.isValid()) {
-            return builder(REPORT_NAME)
-                    .add(detectionBuilder().addMessage("Serialization successful").severity(XVRLDetectionType.Severity.INFO)).build();
+            return builder(REPORT_NAME).add(XvrlDetectionBuilder.detectionBuilder().addMessage("Serialization successful")
+                    .severity(XVRLDetectionType.Severity.INFO)).build();
         }
-        return XVRLReportBuilder.builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> detectionBuilder().addError(e))).build();
+        return XVRLReportBuilder.builder(REPORT_NAME)
+                .addAll(result.getErrors().stream().map(e -> XvrlDetectionBuilder.detectionBuilder().addError(e))).build();
     }
 
     public SerializeReportAction(final Path outputDirectory, final NamingStrategy namingStrategy) {

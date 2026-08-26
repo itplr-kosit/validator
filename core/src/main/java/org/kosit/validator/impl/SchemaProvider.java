@@ -5,7 +5,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.kosit.base.xml.SchemaResolver;
-import org.kosit.validator.impl.xml.ClassPathResourceResolver;
+import org.kosit.validator.xml.resolve.ClassPathResourceResolver;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;

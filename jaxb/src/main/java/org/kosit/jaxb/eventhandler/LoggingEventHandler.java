@@ -1,4 +1,4 @@
-package org.kosit.jaxb;
+package org.kosit.jaxb.eventhandler;
 
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.slf4j.Logger;

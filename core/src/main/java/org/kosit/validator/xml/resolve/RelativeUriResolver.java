@@ -1,4 +1,4 @@
-package org.kosit.validator.impl.xml;
+package org.kosit.validator.xml.resolve;
 
 import java.io.IOException;
 import java.io.Reader;

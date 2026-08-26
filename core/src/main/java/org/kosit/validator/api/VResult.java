@@ -2,8 +2,8 @@ package org.kosit.validator.api;
 
 import java.util.List;
 
-import org.kosit.validator.api.compact.AcceptRecommendation;
 import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.xvrl.model.XVRLReportsType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;

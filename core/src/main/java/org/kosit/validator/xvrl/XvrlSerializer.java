@@ -1,8 +1,8 @@
-package org.kosit.validator.impl.xvrl;
+package org.kosit.validator.xvrl;
 
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.xml.XMLReaderWrapper;
-import org.kosit.jaxb.LoggingEventHandler;
+import org.kosit.jaxb.eventhandler.LoggingEventHandler;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.ObjectFactory;

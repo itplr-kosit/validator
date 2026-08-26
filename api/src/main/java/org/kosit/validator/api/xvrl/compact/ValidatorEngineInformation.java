@@ -1,4 +1,4 @@
-package org.kosit.validator.api.compact;
+package org.kosit.validator.api.xvrl.compact;
 
 /**
  * Contains information about the validator used (name and version).

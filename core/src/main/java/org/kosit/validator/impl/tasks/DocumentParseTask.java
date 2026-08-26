@@ -1,7 +1,6 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemental;
+import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 import static org.kosit.xvrl.model.XVRLDetectionType.Severity.ERROR;
 import static org.kosit.xvrl.model.XVRLDetectionType.Severity.INFO;
 
@@ -16,10 +15,11 @@ import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
 import org.kosit.validator.impl.input.XdmNodeVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
-import org.kosit.validator.impl.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.XMLSyntaxErrorSeverity;
+import org.kosit.validator.xvrl.XVRLReportBuilder;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
+import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
 import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class DocumentParseTask implements CheckTask {
         final XVRLReportBuilder builder = XVRLReportBuilder.builder("Document wellformedness Validator");
         if (parserResult.isValid()) {
             final XvrlDetectionBuilder detection = detectionBuilder().severity(INFO)
-                    .add(supplemental().addContent(parserResult.getObject()));
+                    .add(XvrlSupplementalBuilder.supplemental().addContent(parserResult.getObject()));
             builder.add(detection);
         } else {
             final XvrlDetectionBuilder detection = detectionBuilder().severity(ERROR);

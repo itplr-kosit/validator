@@ -20,6 +20,7 @@ import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.xml.resolve.RelativeUriResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

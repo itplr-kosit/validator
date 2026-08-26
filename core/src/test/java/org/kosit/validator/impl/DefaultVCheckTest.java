@@ -30,13 +30,13 @@ import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.VInputResourceBridge;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.compact.AcceptRecommendation;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.helper.ResourceHelperExtension;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
-import org.kosit.validator.impl.xvrl.XvrlSerializer;
+import org.kosit.validator.xvrl.XvrlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -113,7 +113,7 @@ public class DefaultVCheckTest {
         assertThat(doc.isAcceptable()).isTrue();
         assertThat(doc.isSchematronValid()).isTrue();
         assertThat(doc.isSchemaValid()).isTrue();
-        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.compact.AcceptRecommendation.ACCEPTABLE);
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class DefaultVCheckTest {
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
-        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.compact.AcceptRecommendation.ACCEPTABLE);
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -173,7 +173,7 @@ public class DefaultVCheckTest {
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
         assertThat(result.isSchemaValid()).isFalse();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.compact.AcceptRecommendation.REJECT);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.REJECT);
         assertThat(result.isAcceptable()).isFalse();
     }
 
@@ -197,7 +197,7 @@ public class DefaultVCheckTest {
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.compact.AcceptRecommendation.REJECT);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.REJECT);
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
@@ -214,7 +214,7 @@ public class DefaultVCheckTest {
         assertThat(result.getSchematronResult().get(0).findFailedAssert("content-1")).isPresent();
         assertThat(result.isProcessingSuccessful()).isTrue();
         // acceptMatch overules schematron!!!
-        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.compact.AcceptRecommendation.ACCEPTABLE);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.ACCEPTABLE);
         assertThat(result.isAcceptable()).isTrue();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();

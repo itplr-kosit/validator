@@ -9,8 +9,8 @@ import java.nio.file.Path;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.compact.AcceptRecommendation;
-import org.kosit.validator.api.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
+import org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
 import org.kosit.xvrl.model.XVRLReportsType;
 

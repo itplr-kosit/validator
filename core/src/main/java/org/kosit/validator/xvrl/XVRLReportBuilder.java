@@ -1,4 +1,4 @@
-package org.kosit.validator.impl.xvrl;
+package org.kosit.validator.xvrl;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,39 +19,21 @@ public class XVRLReportBuilder {
 
     final XVRLReportType xvrlReport;
 
-    private XVRLReportBuilder() {
-        this.xvrlReport = new XVRLReportType();
-        this.xvrlReport.setDigest(new XVRLDigestType());
-        this.xvrlReport.setMetadata(new XVRLMetadataType());
-    }
-
     public static XVRLReportBuilder builder(final String name) {
         return builder(new ActionMetadata(name, name));
     }
 
     public static XVRLReportBuilder builder(final ActionMetadata metadata) {
         final XVRLReportBuilder builder = new XVRLReportBuilder();
-        builder.name(metadata.getName());
-        builder.id(metadata.getId());
+        builder.name(metadata.name());
+        builder.id(metadata.id());
         return builder;
     }
 
-    public static XvrlDetectionBuilder detectionBuilder() {
-        return new XvrlDetectionBuilder();
-    }
-
-    public static XvrlSupplementalBuilder supplemental() {
-        return new XvrlSupplementalBuilder();
-    }
-
-    public XVRLReportType build() {
-        final XVRLDigestType digest = new XVRLDigestType();
-        digest.setErrorCount(countDetections(XVRLDetectionType.Severity.ERROR));
-        digest.setFatalErrorCount(countDetections(XVRLDetectionType.Severity.FATAL_ERROR));
-        digest.setInfoCount(countDetections(XVRLDetectionType.Severity.INFO));
-        digest.setValid(calcValidity());
-        this.xvrlReport.setDigest(digest);
-        return this.xvrlReport;
+    private XVRLReportBuilder() {
+        this.xvrlReport = new XVRLReportType();
+        this.xvrlReport.setDigest(new XVRLDigestType());
+        this.xvrlReport.setMetadata(new XVRLMetadataType());
     }
 
     private String calcValidity() {
@@ -76,7 +58,6 @@ public class XVRLReportBuilder {
         if (this.xvrlReport.getMetadata().getValidators().isEmpty()) {
             final XVRLValidatorType validator = new XVRLValidatorType();
             this.xvrlReport.getMetadata().getValidators().add(validator);
-
         }
     }
 
@@ -150,5 +131,15 @@ public class XVRLReportBuilder {
 
     public XVRLReportBuilder addAll(final List<XvrlDetectionBuilder> collect) {
         return addAll(collect.stream());
+    }
+
+    public XVRLReportType build() {
+        final XVRLDigestType digest = new XVRLDigestType();
+        digest.setErrorCount(countDetections(XVRLDetectionType.Severity.ERROR));
+        digest.setFatalErrorCount(countDetections(XVRLDetectionType.Severity.FATAL_ERROR));
+        digest.setInfoCount(countDetections(XVRLDetectionType.Severity.INFO));
+        digest.setValid(calcValidity());
+        this.xvrlReport.setDigest(digest);
+        return this.xvrlReport;
     }
 }

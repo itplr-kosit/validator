@@ -1,7 +1,7 @@
-package org.kosit.validator.api.compact;
+package org.kosit.validator.api.xvrl.compact;
 
-import static org.kosit.validator.api.compact.CompactXVRLReportSummary.CVRL_NS;
-import static org.kosit.validator.api.compact.CompactXVRLReportSummary.CVRL_PREFIX;
+import static org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary.CVRL_NS;
+import static org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary.CVRL_PREFIX;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -229,10 +229,10 @@ public class CompactXVRLReport {
         if (error.getRowNumber() != null || error.getColumnNumber() != null) {
             final XVRLLocationType loc = new XVRLLocationType();
             if (error.getRowNumber() != null) {
-                loc.setLine(error.getRowNumber().longValue());
+                loc.setLine(Long.valueOf(error.getRowNumber().longValue()));
             }
             if (error.getColumnNumber() != null) {
-                loc.setColumn(error.getColumnNumber().longValue());
+                loc.setColumn(Long.valueOf(error.getColumnNumber().longValue()));
             }
             final XVRLProvenanceType prov = new XVRLProvenanceType();
             prov.getLocation().add(loc);
@@ -295,10 +295,10 @@ public class CompactXVRLReport {
         final XVRLDetectionType det = getSchemaViolation();
         final List<Violation> violations = new ArrayList<>();
         if (det != null) {
-            final long line = det.getProvenances().stream().flatMap(p -> p.getLocation().stream()).findFirst()
-                    .map(l -> l.getLine().intValue()).orElse(0);
-            final long col = det.getProvenances().stream().flatMap(p -> p.getLocation().stream()).findFirst()
-                    .map(l -> l.getColumn().intValue()).orElse(0);
+            final Long line = det.getProvenances().stream().flatMap(p -> p.getLocation().stream()).findFirst()
+                    .map(XVRLLocationType::getLine).orElse(null);
+            final Long col = det.getProvenances().stream().flatMap(p -> p.getLocation().stream()).findFirst()
+                    .map(XVRLLocationType::getColumn).orElse(null);
             violations.add(new Violation(det.getSeverity().value(), line, col, null,
                     det.getMessages().stream().map(m -> String.join(";", m.getMessageStrings())).collect(Collectors.joining(";"))));
         }

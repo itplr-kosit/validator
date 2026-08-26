@@ -75,8 +75,8 @@
         <xs:sequence>
             <xs:element name="message" type="xs:normalizedString"/>
             <xs:element name="severityCode" type="model:XMLSyntaxErrorSeverity" />
-            <xs:element name="rowNumber" type="xs:int" minOccurs="0"/>
-            <xs:element name="columnNumber" type="xs:int" minOccurs="0"/>
+            <xs:element name="rowNumber" type="xs:long" minOccurs="0"/>
+            <xs:element name="columnNumber" type="xs:long" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 

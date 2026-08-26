@@ -3,7 +3,7 @@ package org.kosit.validator.client;
 import java.io.File;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.kosit.validator.api.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary;
 import org.kosit.validator.client.api.ValidationApi;
 import org.kosit.validator.client.filter.ValidationRequestConfig;
 import org.kosit.validator.client.filter.ValidationResponseMetadata;

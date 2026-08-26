@@ -1,6 +1,6 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
+import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,9 +23,9 @@ import org.kosit.validator.impl.input.AbstractVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process.ProcessKey;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
 import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.xvrl.XVRLReportBuilder;
 import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

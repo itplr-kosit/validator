@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationResource;
-import org.kosit.validator.api.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
@@ -79,8 +79,8 @@ public class ValidationController implements ValidationResource {
     private Response.ResponseBuilder addHeaders(final VResult result, final Response.ResponseBuilder responseBuilder) {
         final String headerPrefix = "X-VALIDATOR-";
 
-        responseBuilder.header(headerPrefix + "Schema-Valid", result.isSchemaValid())
-                .header(headerPrefix + "Schematron-Valid", result.isSchematronValid())
+        responseBuilder.header(headerPrefix + "Schema-Valid", Boolean.valueOf(result.isSchemaValid()))
+                .header(headerPrefix + "Schematron-Valid", Boolean.valueOf(result.isSchematronValid()))
                 .header(headerPrefix + "Acceptance", result.getAcceptRecommendation());
         return responseBuilder;
     }

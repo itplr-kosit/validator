@@ -1,7 +1,7 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
+import static org.kosit.validator.xvrl.XVRLReportBuilder.builder;
+import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;

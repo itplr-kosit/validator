@@ -1,9 +1,5 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemental;
-
 import java.util.List;
 
 import org.kosit.validator.impl.ActionMetadata;
@@ -11,10 +7,12 @@ import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
-import org.kosit.validator.impl.xvrl.XvrlSerializer;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.xvrl.XVRLReportBuilder;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
+import org.kosit.validator.xvrl.XvrlSerializer;
+import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
 import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +51,12 @@ public class CreateReportsTask implements CheckTask {
     }
 
     private static XVRLReportType generateXVRLReport(final ResourceType resourceType, final XdmNode node) {
-        return XVRLReportBuilder.builder(METADATA)
-                .add(detectionBuilder().id(resourceType.getName()).add(supplemental().addContent(node).id(resourceType.getName()))).build();
+        return XVRLReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id(resourceType.getName())
+                .add(XvrlSupplementalBuilder.supplemental().addContent(node).id(resourceType.getName()))).build();
     }
 
     private static XVRLReportType createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {
-        return builder(METADATA).add(detectionBuilder().id("error").addError(error)).build();
+        return XVRLReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id("error").addError(error)).build();
     }
 
     @Override
@@ -80,10 +78,12 @@ public class CreateReportsTask implements CheckTask {
         r.setName(transformation.getResourceType().getName());
         try {
             final XdmNode root = this.xvrlSerializer.marshalToXdmNode(process.getXvrlReportSummary());
+
             final XsltTransformer transformer = transformation.getExecutable().load();
             transformer.setInitialContextNode(root);
+
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
-            transformer.setMessageListener(e);
+            transformer.setMessageHandler(e);
             transformer.setResourceResolver(scenario.getUriResolver());
             if (scenario.getUnparsedTextURIResolver() != null) {
                 transformer.getUnderlyingController().setUnparsedTextURIResolver(scenario.getUnparsedTextURIResolver());

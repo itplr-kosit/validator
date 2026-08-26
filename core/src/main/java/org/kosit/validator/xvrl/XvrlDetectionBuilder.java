@@ -1,4 +1,4 @@
-package org.kosit.validator.impl.xvrl;
+package org.kosit.validator.xvrl;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.kosit.validator.api.xmlerror.XmlError.Severity.SEVERITY_FATAL_ERROR;
@@ -18,6 +18,10 @@ public class XvrlDetectionBuilder {
 
     private final XVRLDetectionType detection = new XVRLDetectionType();
 
+    public static XvrlDetectionBuilder detectionBuilder() {
+        return new XvrlDetectionBuilder();
+    }
+
     private static XVRLDetectionType.Severity translate(final XmlError.Severity severity) {
         if (severity == SEVERITY_FATAL_ERROR) {
             return XVRLDetectionType.Severity.FATAL_ERROR;
@@ -26,10 +30,10 @@ public class XvrlDetectionBuilder {
 
     }
 
-    private static XVRLLocationType createLocation(final int line, final int row, final String xpath) {
+    private static XVRLLocationType createLocation(final Long line, final Long row, final String xpath) {
         final XVRLLocationType location = new XVRLLocationType();
-        location.setLine(Long.valueOf(line));
-        location.setColumn(Long.valueOf(row));
+        location.setLine(line);
+        location.setColumn(row);
         location.setXpath(xpath);
         return location;
     }

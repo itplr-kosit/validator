@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.compact.CompactXVRLReport;
-import org.kosit.validator.api.compact.CompactXVRLReportSummary;
-import org.kosit.validator.api.compact.ValidatorEngineInformation;
 import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.validator.api.xvrl.compact.CompactXVRLReport;
+import org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.ValidatorEngineInformation;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Scenario;
@@ -103,10 +103,9 @@ public class ValidationService {
     }
 
     private String detectSelectedScenario(final VResult defaultResult) {
-        return defaultResult.getReportSummary().getReports().stream()
-                .filter(rep -> rep.getId().equals(ScenarioSelectionTask.METADATA.getId())).findFirst()
-                .map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario")).findFirst()
-                        .map(XVRLDetectionType::getCode).orElse("null"))
+        return defaultResult.getReportSummary().getReports().stream().filter(rep -> rep.getId().equals(ScenarioSelectionTask.METADATA.id()))
+                .findFirst().map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario"))
+                        .findFirst().map(XVRLDetectionType::getCode).orElse("null"))
                 .orElse("null");
     }
 

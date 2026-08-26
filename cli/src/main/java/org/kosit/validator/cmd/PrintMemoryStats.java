@@ -3,7 +3,7 @@ package org.kosit.validator.cmd;
 import java.text.NumberFormat;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
+import org.kosit.validator.xvrl.XVRLReportBuilder;
 import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,13 +1,13 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
+import static org.kosit.validator.xvrl.XVRLReportBuilder.builder;
+import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.kosit.validator.api.compact.AcceptRecommendation;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;

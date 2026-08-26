@@ -9,6 +9,7 @@ import javax.xml.validation.SchemaFactory;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.TestHelper.Resolving;
+import org.kosit.validator.xml.resolve.StrictLocalResolvingStrategy;
 import org.xml.sax.SAXParseException;
 
 /**

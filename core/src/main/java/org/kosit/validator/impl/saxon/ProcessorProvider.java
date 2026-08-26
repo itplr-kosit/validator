@@ -6,7 +6,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
+import javax.xml.transform.Result;
+import javax.xml.transform.TransformerException;
 
 import org.kosit.base.xml.XMLHelper;
 
@@ -15,9 +16,8 @@ import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.CollectionFinder;
 import net.sf.saxon.lib.Feature;
 import net.sf.saxon.lib.FeatureKeys;
+import net.sf.saxon.lib.OutputURIResolver;
 import net.sf.saxon.lib.ResourceCollection;
-import net.sf.saxon.lib.ResourceRequest;
-import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.trans.XPathException;
@@ -27,14 +27,9 @@ import net.sf.saxon.trans.XPathException;
  */
 public class ProcessorProvider {
 
-    private static class SecureUriResolver implements CollectionFinder, ResourceResolver, UnparsedTextURIResolver {
+    private static class SecureUriResolver implements CollectionFinder, OutputURIResolver, UnparsedTextURIResolver {
 
         public static final String MESSAGE = "Configuration error. Resolving is not allowed";
-
-        @Override
-        public Source resolve(final ResourceRequest request) throws XPathException {
-            throw new IllegalStateException(MESSAGE);
-        }
 
         @Override
         public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
@@ -43,6 +38,18 @@ public class ProcessorProvider {
 
         @Override
         public ResourceCollection findCollection(final XPathContext context, final String collectionURI) {
+            throw new IllegalStateException(MESSAGE);
+        }
+
+        public OutputURIResolver newInstance() {
+            throw new IllegalStateException(MESSAGE);
+        }
+
+        public Result resolve(final String href, final String base) throws TransformerException {
+            throw new IllegalStateException(MESSAGE);
+        }
+
+        public void close(final Result result) throws TransformerException {
             throw new IllegalStateException(MESSAGE);
         }
     }
@@ -61,7 +68,8 @@ public class ProcessorProvider {
         // globally disable basically all resolving strategies
         final SecureUriResolver resolver = new SecureUriResolver();
         processor.getUnderlyingConfiguration().setCollectionFinder(resolver);
-        processor.getUnderlyingConfiguration().setResourceResolver(resolver);
+        // This cannot simply be replaced :( The resolver is only needed for outputs
+        processor.getUnderlyingConfiguration().setOutputURIResolver(resolver);
         processor.getUnderlyingConfiguration().setUnparsedTextURIResolver(resolver);
 
         // basic feature configuration:

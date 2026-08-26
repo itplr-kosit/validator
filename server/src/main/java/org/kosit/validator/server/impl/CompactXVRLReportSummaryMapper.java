@@ -7,9 +7,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.kosit.base.string.StringHelper;
-import org.kosit.validator.api.compact.CompactXVRLReport;
-import org.kosit.validator.api.compact.CompactXVRLReportSummary;
-import org.kosit.validator.api.compact.ValidatorEngineInformation;
+import org.kosit.validator.api.xvrl.compact.CompactXVRLReport;
+import org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.ValidatorEngineInformation;
 import org.kosit.validator.server.api.CompactResultDto;
 import org.kosit.validator.server.api.CompactResultLayerDto;
 import org.kosit.validator.server.api.CompactValidationResultsDto;

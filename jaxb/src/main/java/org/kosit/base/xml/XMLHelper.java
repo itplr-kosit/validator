@@ -104,7 +104,7 @@ public final class XMLHelper {
 
         final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         setProperty(factory, XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        setProperty(factory, XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        setProperty(factory, XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file");
         return factory;
     }
 

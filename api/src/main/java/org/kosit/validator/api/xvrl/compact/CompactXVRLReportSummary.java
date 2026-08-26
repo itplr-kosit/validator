@@ -1,4 +1,4 @@
-package org.kosit.validator.api.compact;
+package org.kosit.validator.api.xvrl.compact;
 
 import java.util.Collection;
 import java.util.List;

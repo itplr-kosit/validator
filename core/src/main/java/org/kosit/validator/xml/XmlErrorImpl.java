@@ -1,4 +1,4 @@
-package org.kosit.validator.impl.xvrl;
+package org.kosit.validator.xml;
 
 import org.kosit.validator.api.xmlerror.XmlError;
 import org.kosit.xvrl.model.XVRLDetectionType;
@@ -14,6 +14,14 @@ public class XmlErrorImpl implements XmlError {
 
     private Long columnNumber;
 
+    private static Severity getSeverityFromDetection(final XVRLDetectionType xvrlDetection) {
+        return switch (xvrlDetection.getSeverity()) {
+            case ERROR -> Severity.SEVERITY_ERROR;
+            case FATAL_ERROR -> Severity.SEVERITY_FATAL_ERROR;
+            default -> Severity.SEVERITY_WARNING;
+        };
+    }
+
     public XmlErrorImpl(final XVRLDetectionType xvrlDetection) {
         this.message = xvrlDetection.getErrorMessage();
         this.severity = getSeverityFromDetection(xvrlDetection);
@@ -22,14 +30,6 @@ public class XmlErrorImpl implements XmlError {
             this.rowNumber = location.getLine();
             this.columnNumber = location.getColumn();
         }
-    }
-
-    private static Severity getSeverityFromDetection(final XVRLDetectionType xvrlDetection) {
-        return switch (xvrlDetection.getSeverity()) {
-            case ERROR -> Severity.SEVERITY_ERROR;
-            case FATAL_ERROR -> Severity.SEVERITY_FATAL_ERROR;
-            default -> Severity.SEVERITY_WARNING;
-        };
     }
 
     @Override
@@ -43,12 +43,12 @@ public class XmlErrorImpl implements XmlError {
     }
 
     @Override
-    public Integer getRowNumber() {
-        return Math.toIntExact(this.rowNumber);
+    public Long getRowNumber() {
+        return this.rowNumber;
     }
 
     @Override
-    public Integer getColumnNumber() {
-        return Math.toIntExact(this.columnNumber);
+    public Long getColumnNumber() {
+        return this.columnNumber;
     }
 }
