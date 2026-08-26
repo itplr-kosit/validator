@@ -140,7 +140,7 @@ public class JaxbConversionServiceTest {
 
     @Test
     public void constructorRejectsNullContext() {
-        assertThatThrownBy(() -> new JaxbConversionService(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new JaxbConversionService(null)).isInstanceOf(NullPointerException.class);
     }
 
     // ---------- namespace prefix map ----------
