@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
+import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.ls.LSInput;
@@ -129,7 +129,8 @@ public class ClassPathResourceResolver implements LSResourceResolver {
      * @param basePath the base path
      */
     public ClassPathResourceResolver(final String basePath) {
-        if (!StringUtils.startsWith(basePath, "/")) {
+        Objects.requireNonNull(basePath);
+        if (!basePath.startsWith("/")) {
             throw new IllegalArgumentException("Base path must start with a slash");
         }
         this.base = URI.create(basePath + (basePath.endsWith("/") == basePath.length() > 1 ? "" : "/"));

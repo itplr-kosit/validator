@@ -25,8 +25,6 @@ import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.XVRLMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -39,8 +37,6 @@ import net.sf.saxon.s9api.Processor;
 @Deprecated(since = "2.0.0", forRemoval = true)
 public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultVCheck.class);
-
     private final XvrlConversionService xvrlConversionService;
 
     private final List<VConfiguration> configuration;
@@ -48,8 +44,6 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
     private final List<CheckTask> checkSteps;
 
     private final Processor processor;
-
-    private final EngineInformation engineInformation;
 
     private final SchematronValidation adHocValidation;
 
@@ -69,7 +63,6 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public DefaultVCheck(final EngineInformation engineInformation, final Processor processor, final VConfiguration... configuration) {
-        this.engineInformation = engineInformation;
         this.configuration = Arrays.asList(configuration);
         this.processor = processor;
         this.adHocValidation = new SchematronValidation(processor);

@@ -22,25 +22,6 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseResolvingStrategy.class);
 
-    private static final String ORACLE_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
-
-    public static void forceOpenJdkXmlImplementation() {
-        if (!isOpenJdkXmlImplementationAvailable()) {
-            throw new IllegalStateException("No OpenJDK version of XERCES found");
-        }
-    }
-
-    public static boolean isOpenJdkXmlImplementationAvailable() {
-        try {
-            Class.forName(ORACLE_XERCES_CLASS);
-            return true;
-        } catch (final ClassNotFoundException e) {
-            LOGGER.warn("No oracle JDK version of XERCES found. Configured security features may not have any effect.");
-            LOGGER.warn("Please take care of XML security while checking your xml contents");
-            return false;
-        }
-    }
-
     protected BaseResolvingStrategy() {
     }
 

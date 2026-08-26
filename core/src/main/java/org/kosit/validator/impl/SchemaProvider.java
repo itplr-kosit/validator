@@ -5,8 +5,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.kosit.jaxb.xml.SchemaResolver;
-import org.kosit.validator.api.xsd.ValidatorSchemas;
 import org.kosit.validator.impl.xml.ClassPathResourceResolver;
+import org.kosit.xvrl.impl.XvrlConversionService;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
@@ -28,8 +28,8 @@ public class SchemaProvider {
     public static Schema getXVRLSchema() {
         if (xvrlSchema == null) {
             final SchemaFactory sf = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
-            final Source source = SchemaResolver.resolve(SchemaProvider.class.getResource(ValidatorSchemas.XVRL_XSD_PATH));
-            xvrlSchema = createSchema(sf, new Source[] { source }, new ClassPathResourceResolver(ValidatorSchemas.XSD_PATH));
+            final Source source = SchemaResolver.resolve(XvrlConversionService.class.getResource(XvrlConversionService.XVRL_XSD_PATH));
+            xvrlSchema = createSchema(sf, new Source[] { source }, new ClassPathResourceResolver(XvrlConversionService.XSD_PATH));
         }
         return xvrlSchema;
     }

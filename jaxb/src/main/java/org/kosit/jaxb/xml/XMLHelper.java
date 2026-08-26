@@ -16,6 +16,25 @@ public final class XMLHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLHelper.class);
 
+    private static final String JDK_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
+
+    public static void forceOpenJdkXmlImplementation() {
+        if (!isOpenJdkXmlImplementationAvailable()) {
+            throw new IllegalStateException("No OpenJDK version of Xerces found");
+        }
+    }
+
+    public static boolean isOpenJdkXmlImplementationAvailable() {
+        try {
+            Class.forName(JDK_XERCES_CLASS);
+            return true;
+        } catch (final ClassNotFoundException e) {
+            LOGGER.warn("No OpenJDK version of Xerces found. Configured security features may not have any effect.");
+            LOGGER.warn("Please take care of XML security while checking your xml contents");
+            return false;
+        }
+    }
+
     /**
      * Set a feature on a {@link DocumentBuilderFactory}, logging a warning if the feature is not supported.
      *
@@ -78,6 +97,8 @@ public final class XMLHelper {
      * @throws IllegalStateException if one of the security properties can not be set
      */
     public static @NonNull SchemaFactory createSafeSchemaFactory() {
+        forceOpenJdkXmlImplementation();
+
         final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         setProperty(factory, XMLConstants.ACCESS_EXTERNAL_DTD, "");
         setProperty(factory, XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file");

@@ -15,10 +15,10 @@ public abstract class AbstractXVRLReport {
                 .toList();
     }
 
+    protected abstract XVRLDigest getDigest();
+
     @Override
     public String toString() {
         return "id=" + getDigest().getId() + ", errors=" + getDigest().getErrorCount() + ", valid=" + getDigest().getValid();
     }
-
-    protected abstract XVRLDigest getDigest();
 }

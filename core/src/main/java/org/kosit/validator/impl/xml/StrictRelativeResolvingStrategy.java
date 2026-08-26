@@ -22,8 +22,6 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
 
     @Override
     public SchemaFactory createSchemaFactory() {
-        forceOpenJdkXmlImplementation();
-
         return XMLHelper.createSafeSchemaFactory();
     }
 
@@ -40,7 +38,7 @@ public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
     @Override
     public Validator createValidator(final Schema schema) {
         Objects.requireNonNull(schema);
-        forceOpenJdkXmlImplementation();
+        XMLHelper.forceOpenJdkXmlImplementation();
 
         final Validator validator = schema.newValidator();
         disableExternalEntities(validator);
