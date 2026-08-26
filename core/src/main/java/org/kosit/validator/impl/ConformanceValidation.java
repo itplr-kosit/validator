@@ -18,9 +18,9 @@ import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLMetadataType;
-import org.kosit.xvrl.model.XVRLTimestampType;
-import org.kosit.xvrl.model.XVRLValidatorType;
+import org.kosit.xvrl.model.XvrlMetadataType;
+import org.kosit.xvrl.model.XvrlTimestampType;
+import org.kosit.xvrl.model.XvrlValidatorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,17 +73,17 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     }
 
     /**
-     * Creates the XVRL report metadata for a validation run (engine name, version, timestamp).
+     * Creates the Xvrl report metadata for a validation run (engine name, version, timestamp).
      *
      * @return the metadata
      */
-    public XVRLMetadataType createMetadata() {
-        final XVRLMetadataType metadata = new XVRLMetadataType();
-        final XVRLTimestampType timestamp = new XVRLTimestampType();
+    public XvrlMetadataType createMetadata() {
+        final XvrlMetadataType metadata = new XvrlMetadataType();
+        final XvrlTimestampType timestamp = new XvrlTimestampType();
         timestamp.setValue(JaxbHelper.createTimestamp());
         metadata.getTimestamps().add(timestamp);
 
-        final XVRLValidatorType validator = new XVRLValidatorType();
+        final XvrlValidatorType validator = new XvrlValidatorType();
         validator.setName(this.engineInformation.getName());
         validator.setVersion(this.engineInformation.getVersion());
         metadata.getValidators().add(validator);

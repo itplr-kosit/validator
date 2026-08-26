@@ -101,7 +101,7 @@ class InternalVCheck extends DefaultVCheck {
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public VResult checkInput(final CTReadResource input) {
-        final CheckTask.Process process = new CheckTask.Process(input, createXVRLMetadata());
+        final CheckTask.Process process = new CheckTask.Process(input, createXvrlMetadata());
         return runCheckInternal(process);
     }
 

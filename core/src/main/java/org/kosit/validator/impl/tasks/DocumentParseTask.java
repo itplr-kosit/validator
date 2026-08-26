@@ -1,8 +1,8 @@
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
-import static org.kosit.xvrl.model.XVRLDetectionType.Severity.ERROR;
-import static org.kosit.xvrl.model.XVRLDetectionType.Severity.INFO;
+import static org.kosit.xvrl.model.XvrlDetectionType.Severity.ERROR;
+import static org.kosit.xvrl.model.XvrlDetectionType.Severity.INFO;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -17,10 +17,10 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.model.XMLSyntaxErrorSeverity;
-import org.kosit.validator.xvrl.XVRLReportBuilder;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
+import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +42,8 @@ public class DocumentParseTask implements CheckTask {
 
     private final Processor processor;
 
-    private static XVRLReportType generateXVRLReport(final SingleProcessingResult<XdmNode, XMLSyntaxError> parserResult) {
-        final XVRLReportBuilder builder = XVRLReportBuilder.builder("Document wellformedness Validator");
+    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<XdmNode, XMLSyntaxError> parserResult) {
+        final XvrlReportBuilder builder = XvrlReportBuilder.builder("Document wellformedness Validator");
         if (parserResult.isValid()) {
             final XvrlDetectionBuilder detection = detectionBuilder().severity(INFO)
                     .add(XvrlSupplementalBuilder.supplemental().addContent(parserResult.getObject()));
@@ -127,7 +127,7 @@ public class DocumentParseTask implements CheckTask {
         if (parserResult.isInvalid()) {
             process.setStopped(true);
         }
-        result.setReport(generateXVRLReport(parserResult));
+        result.setReport(generateXvrlReport(parserResult));
         return result;
     }
 

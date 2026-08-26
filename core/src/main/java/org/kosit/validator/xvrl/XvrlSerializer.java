@@ -1,12 +1,12 @@
 package org.kosit.validator.xvrl;
 
 import org.jspecify.annotations.Nullable;
-import org.kosit.base.xml.XMLReaderWrapper;
+import org.kosit.base.xml.XmlReaderWrapper;
 import org.kosit.jaxb.eventhandler.LoggingEventHandler;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.ObjectFactory;
-import org.kosit.xvrl.model.XVRLReportsType;
+import org.kosit.xvrl.model.XvrlReportsType;
 
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -23,14 +23,14 @@ public class XvrlSerializer {
         this.processor = processor != null ? processor : ProcessorProvider.getProcessor();
     }
 
-    public @Nullable XdmNode marshalToXdmNode(final XVRLReportsType summary) throws JAXBException, SaxonApiException {
+    public @Nullable XdmNode marshalToXdmNode(final XvrlReportsType summary) throws JAXBException, SaxonApiException {
         if (false)
             new XvrlConversionService().withEventHandler(new LoggingEventHandler()).writeXml(summary);
 
         final Marshaller marshaller = XvrlConversionService.JAXB_CTX.createMarshaller();
         final JAXBSource source = new JAXBSource(marshaller, new ObjectFactory().createReports(summary));
         // wrap for security to circumvent inconsistency between sax and saxon
-        source.setXMLReader(new XMLReaderWrapper(source.getXMLReader()));
+        source.setXMLReader(new XmlReaderWrapper(source.getXMLReader()));
 
         return this.processor.newDocumentBuilder().build(source);
     }

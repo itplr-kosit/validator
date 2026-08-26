@@ -1,7 +1,7 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XVRLReportBuilder.builder;
 import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
+import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class ComputeAcceptanceTask implements CheckTask {
 
     private static final String REPORT_NAME = "Compute Acceptance Validator";
 
-    private static XVRLReportType generateXVRLReport(final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> currentResult) {
+    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> currentResult) {
         if (currentResult.isValid()) {
             return builder(REPORT_NAME).add(detectionBuilder().addMessage(currentResult.getObject().name())).build();
         }
@@ -108,7 +108,7 @@ public class ComputeAcceptanceTask implements CheckTask {
             }
         }
         stepResult.setResult(result);
-        stepResult.setReport(generateXVRLReport(result));
+        stepResult.setReport(generateXvrlReport(result));
         return stepResult;
     }
 

@@ -16,8 +16,8 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.xvrl.XVRLReportBuilder;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.validator.xvrl.XvrlReportBuilder;
+import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.oclc.purl.dsdl.svrl.Text;
@@ -70,9 +70,9 @@ public class SchematronValidationTask implements CheckTask {
         return object.getSchematronValidations().isEmpty();
     }
 
-    private static List<XVRLReportType> generateXVRLReport(final List<ValidationResultsSchematron> validationResult) {
+    private static List<XvrlReportType> generateXvrlReport(final List<ValidationResultsSchematron> validationResult) {
         return validationResult.stream().map(e -> {
-            final XVRLReportBuilder reportBuilder = XVRLReportBuilder.builder(REPORT_NAME);
+            final XvrlReportBuilder reportBuilder = XvrlReportBuilder.builder(REPORT_NAME);
             reportBuilder.addSchema(e.getResource());
 
             final SchematronOutputType schematronOutput = e.getResults().getSchematronOutput();
@@ -134,7 +134,7 @@ public class SchematronValidationTask implements CheckTask {
         final List<ValidationResultsSchematron> validationResult = validate(process, parseResult.getObject(), scenarioResult.getObject());
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = new ProcessStepResult<>(KEY);
         processStepResult.setResult(new SingleProcessingResult<>(validationResult, this.errorMessages));
-        processStepResult.addReports(generateXVRLReport(validationResult));
+        processStepResult.addReports(generateXvrlReport(validationResult));
         return processStepResult;
     }
 

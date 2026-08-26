@@ -11,13 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-public final class XMLHelper {
+public final class XmlHelper {
 
     public static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
 
     public static final String LOAD_EXTERNAL_DTD_FEATURE = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XMLHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlHelper.class);
 
     private static final String JDK_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
 
@@ -133,6 +133,6 @@ public final class XMLHelper {
         return factory;
     }
 
-    private XMLHelper() {
+    private XmlHelper() {
     }
 }

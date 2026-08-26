@@ -26,15 +26,15 @@
             <jaxb:package name="org.kosit.xvrl.model"/>
         </jaxb:schemaBindings>
 
-        <jaxb:bindings node="//xs:complexType[@name='XVRLReportType']">
-            <inheritance:extends>org.kosit.xvrl.impl.AbstractXVRLReport</inheritance:extends>
+        <jaxb:bindings node="//xs:complexType[@name='XvrlReportType']">
+            <inheritance:extends>org.kosit.xvrl.impl.AbstractXvrlReport</inheritance:extends>
         </jaxb:bindings>
 
-        <jaxb:bindings node="//xs:complexType[@name='XVRLReportsType']">
-            <inheritance:extends>org.kosit.xvrl.impl.AbstractXVRLReportSummary</inheritance:extends>
+        <jaxb:bindings node="//xs:complexType[@name='XvrlReportsType']">
+            <inheritance:extends>org.kosit.xvrl.impl.AbstractXvrlReportSummary</inheritance:extends>
         </jaxb:bindings>
 
-        <jaxb:bindings node="//xs:complexType[@name='XVRLDetectionType']">
+        <jaxb:bindings node="//xs:complexType[@name='XvrlDetectionType']">
             <inheritance:implements>org.kosit.xvrl.api.BaseDetection</inheritance:implements>
 
             <jaxb:bindings node="xs:choice">
@@ -42,13 +42,13 @@
             </jaxb:bindings>
         </jaxb:bindings>
 
-        <jaxb:bindings node="//xs:complexType[@name='XVRLMetadataType']">
+        <jaxb:bindings node="//xs:complexType[@name='XvrlMetadataType']">
             <jaxb:bindings node="xs:choice">
                 <simplify:as-element-property/>
             </jaxb:bindings>
         </jaxb:bindings>
 
-        <jaxb:bindings node="//xs:complexType[@name='XVRLMessageType']">
+        <jaxb:bindings node="//xs:complexType[@name='XvrlMessageType']">
             <inheritance:implements>org.kosit.xvrl.api.BaseMessage</inheritance:implements>
         </jaxb:bindings>
 

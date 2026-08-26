@@ -25,8 +25,8 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process.ProcessKey;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.xvrl.XVRLReportBuilder;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.validator.xvrl.XvrlReportBuilder;
+import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -63,8 +63,8 @@ public class SchemaValidationTask implements CheckTask {
 
     private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
 
-    private static XVRLReportType generateXVRLReport(final ValidationResultsXmlSchema result) {
-        final XVRLReportBuilder builder = XVRLReportBuilder.builder("Schema Validator").addSchemas(result.getResource());
+    private static XvrlReportType generateXvrlReport(final ValidationResultsXmlSchema result) {
+        final XvrlReportBuilder builder = XvrlReportBuilder.builder("Schema Validator").addSchemas(result.getResource());
         builder.addAll(result.getXmlSyntaxError().stream().map(e -> detectionBuilder().addError(e)).toList());
         return builder.build();
     }
@@ -104,7 +104,7 @@ public class SchemaValidationTask implements CheckTask {
         if (!validateResult.isValid()) {
             result.getXmlSyntaxError().addAll(validateResult.getErrors());
         }
-        stepResult.setReport(generateXVRLReport(result));
+        stepResult.setReport(generateXvrlReport(result));
         return stepResult;
     }
 

@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.xvrl.api.BaseDetection;
-import org.kosit.xvrl.model.XVRLDetectionType;
-import org.kosit.xvrl.model.XVRLDigestType;
+import org.kosit.xvrl.model.XvrlDetectionType;
+import org.kosit.xvrl.model.XvrlDigestType;
 
-public abstract class AbstractXVRLReport {
+public abstract class AbstractXvrlReport {
 
-    public abstract List<XVRLDetectionType> getDetection();
+    public abstract List<XvrlDetectionType> getDetection();
 
     @ReturnsImmutableObject
     public List<String> getAllErrors() {
@@ -17,7 +17,7 @@ public abstract class AbstractXVRLReport {
                 .toList();
     }
 
-    protected abstract XVRLDigestType getDigest();
+    protected abstract XvrlDigestType getDigest();
 
     @Override
     public String toString() {

@@ -13,7 +13,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.kosit.base.xml.XMLHelper;
+import org.kosit.base.xml.XmlHelper;
 import org.kosit.jaxb.JaxbConversionException;
 
 import jakarta.xml.bind.JAXBContext;
@@ -93,7 +93,7 @@ public class XmlConversionService {
         checkInputEmpty(xml);
         checkTypeEmpty(type);
         try ( InputStream is = new FileInputStream(xml) ) {
-            final XMLInputFactory inputFactory = XMLHelper.createSafeXMLInputFactory();
+            final XMLInputFactory inputFactory = XmlHelper.createSafeXMLInputFactory();
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(is);
             final Unmarshaller u = getJaxbContext().createUnmarshaller();
             return u.unmarshal(xsr, type).getValue();

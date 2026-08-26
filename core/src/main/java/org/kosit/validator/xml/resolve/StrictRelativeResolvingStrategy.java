@@ -7,7 +7,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.kosit.base.xml.XMLHelper;
+import org.kosit.base.xml.XmlHelper;
 
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;
@@ -22,7 +22,7 @@ public class StrictRelativeResolvingStrategy extends AbstractResolvingStrategy {
 
     @Override
     public SchemaFactory createSchemaFactory() {
-        return XMLHelper.createSafeSchemaFactory();
+        return XmlHelper.createSafeSchemaFactory();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class StrictRelativeResolvingStrategy extends AbstractResolvingStrategy {
     @Override
     public Validator createValidator(final Schema schema) {
         Objects.requireNonNull(schema);
-        XMLHelper.forceOpenJdkXmlImplementation();
+        XmlHelper.forceOpenJdkXmlImplementation();
 
         final Validator validator = schema.newValidator();
         disableExternalEntities(validator);

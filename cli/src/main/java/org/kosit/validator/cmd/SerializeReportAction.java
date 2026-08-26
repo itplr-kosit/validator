@@ -1,6 +1,6 @@
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.xvrl.XVRLReportBuilder.builder;
+import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,12 +10,12 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.xvrl.XVRLReportBuilder;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
+import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.ObjectFactory;
-import org.kosit.xvrl.model.XVRLDetectionType;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XvrlDetectionType;
+import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +36,12 @@ class SerializeReportAction implements CheckTask {
 
     private final NamingStrategy namingStrategy;
 
-    private static XVRLReportType generateXVRLReport(final SingleProcessingResult<Boolean, String> result) {
+    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
         if (result.isValid()) {
             return builder(REPORT_NAME).add(XvrlDetectionBuilder.detectionBuilder().addMessage("Serialization successful")
-                    .severity(XVRLDetectionType.Severity.INFO)).build();
+                    .severity(XvrlDetectionType.Severity.INFO)).build();
         }
-        return XVRLReportBuilder.builder(REPORT_NAME)
+        return XvrlReportBuilder.builder(REPORT_NAME)
                 .addAll(result.getErrors().stream().map(e -> XvrlDetectionBuilder.detectionBuilder().addError(e))).build();
     }
 
@@ -63,7 +63,7 @@ class SerializeReportAction implements CheckTask {
         final ProcessStepResult<Boolean, String> processStepResult = new ProcessStepResult<>(KEY);
         final SingleProcessingResult<Boolean, String> stepResult = new SingleProcessingResult<>(null, null);
         processStepResult.setResult(stepResult);
-        processStepResult.setReport(generateXVRLReport(stepResult));
+        processStepResult.setReport(generateXvrlReport(stepResult));
         return processStepResult;
     }
 

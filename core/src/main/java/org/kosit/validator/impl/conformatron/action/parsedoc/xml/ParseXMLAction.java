@@ -26,7 +26,7 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.source.CTValidationSource;
-import org.kosit.base.xml.XMLHelper;
+import org.kosit.base.xml.XmlHelper;
 import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.source.DomValidationSource;
@@ -79,7 +79,7 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
         final List<CTDetection> errors = new ArrayList<>();
         try {
             // Setup XML reader
-            final DocumentBuilder builder = XMLHelper.createSafeDocumentBuilder();
+            final DocumentBuilder builder = XmlHelper.createSafeDocumentBuilder();
             builder.setErrorHandler(new CollectingErrorHandler(validationSource.getName(), errors));
 
             // Main reading

@@ -1,16 +1,16 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XVRLReportBuilder.builder;
 import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
+import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.DocumentIdentificationType;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLDetectionType;
-import org.kosit.xvrl.model.XVRLDocumentType;
-import org.kosit.xvrl.model.XVRLMetadataType;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XvrlDetectionType;
+import org.kosit.xvrl.model.XvrlDocumentType;
+import org.kosit.xvrl.model.XvrlMetadataType;
+import org.kosit.xvrl.model.XvrlReportType;
 
 /**
  * Creates a document identification element for the report by using the generates hash.
@@ -24,20 +24,20 @@ public class CreateDocumentIdentificationTask implements CheckTask {
 
     private static final String REPORT_NAME = "CreateDocument Identification Validator";
 
-    private static XVRLReportType generateXVRLReport(
+    private static XvrlReportType generateXvrlReport(
             final SingleProcessingResult<DocumentIdentificationType, XMLSyntaxError> currentResult) {
         if (currentResult.isValid()) {
             final DocumentIdentificationType result = currentResult.getObject();
             return builder(REPORT_NAME)
-                    .add(detectionBuilder().addMessage(result.getDocumentReference()).severity(XVRLDetectionType.Severity.INFO)).build();
+                    .add(detectionBuilder().addMessage(result.getDocumentReference()).severity(XvrlDetectionType.Severity.INFO)).build();
         }
         return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detectionBuilder().addError(e)).toList()).build();
 
     }
 
     private static void addDocumentIdentification(final Process transporter) {
-        final XVRLMetadataType metadata = transporter.getXvrlReportSummary().getMetadata();
-        final XVRLDocumentType document = new XVRLDocumentType();
+        final XvrlMetadataType metadata = transporter.getXvrlReportSummary().getMetadata();
+        final XvrlDocumentType document = new XvrlDocumentType();
         document.setHref(transporter.getInput().getName());
         metadata.getDocuments().add(document);
     }
@@ -56,7 +56,7 @@ public class CreateDocumentIdentificationTask implements CheckTask {
         final SingleProcessingResult<DocumentIdentificationType, XMLSyntaxError> result = new SingleProcessingResult<>(
                 documentIdentificationType);
         processStepResult.setResult(result);
-        processStepResult.setReport(generateXVRLReport(result));
+        processStepResult.setReport(generateXvrlReport(result));
         return processStepResult;
     }
 }

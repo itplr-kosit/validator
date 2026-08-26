@@ -23,7 +23,7 @@ import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
-import org.kosit.xvrl.model.XVRLMetadataType;
+import org.kosit.xvrl.model.XvrlMetadataType;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -75,7 +75,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
-    protected XVRLMetadataType createXVRLMetadata() {
+    protected XvrlMetadataType createXvrlMetadata() {
         return this.conformanceValidation.createMetadata();
     }
 
@@ -87,7 +87,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public VResult checkInput(final CTReadResource input) {
-        final Process checkProcess = new Process(input, createXVRLMetadata());
+        final Process checkProcess = new Process(input, createXvrlMetadata());
         return runCheckInternal(checkProcess);
     }
 

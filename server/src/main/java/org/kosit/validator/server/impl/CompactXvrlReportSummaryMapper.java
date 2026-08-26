@@ -7,47 +7,47 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.kosit.base.string.StringHelper;
-import org.kosit.validator.api.xvrl.compact.CompactXVRLReport;
-import org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.CompactXvrlReport;
+import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
 import org.kosit.validator.api.xvrl.compact.ValidatorEngineInformation;
 import org.kosit.validator.server.api.CompactResultDto;
 import org.kosit.validator.server.api.CompactResultLayerDto;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
 import org.kosit.validator.server.api.CompactViolationDto;
 import org.kosit.validator.server.api.ValidatorEngineDto;
-import org.kosit.xvrl.model.XVRLDetectionType;
+import org.kosit.xvrl.model.XvrlDetectionType;
 
-public final class CompactXVRLReportSummaryMapper {
+public final class CompactXvrlReportSummaryMapper {
 
-    private CompactXVRLReportSummaryMapper() {
+    private CompactXvrlReportSummaryMapper() {
     }
 
-    public static CompactValidationResultsDto toDto(final CompactXVRLReportSummary report) {
+    public static CompactValidationResultsDto toDto(final CompactXvrlReportSummary report) {
         if (report == null) {
             return null;
         }
 
-        final List<CompactResultDto> results = report.getReports().stream().map(CompactXVRLReportSummaryMapper::toDto).toList();
+        final List<CompactResultDto> results = report.getReports().stream().map(CompactXvrlReportSummaryMapper::toDto).toList();
 
         return new CompactValidationResultsDto(StringHelper.nvl(report.getAcceptable()), StringHelper.nvl(report.getRejected()),
                 StringHelper.nvl(report.getProcessingErrors()), results, toDto(report.getValidatorInformation()));
     }
 
-    private static CompactResultDto toDto(final CompactXVRLReport r) {
+    private static CompactResultDto toDto(final CompactXvrlReport r) {
         final String ref = Optional.ofNullable(r.getFilename()).orElse("unknown");
 
         final List<CompactResultLayerDto> layers = new ArrayList<>();
 
         // Schema-Layer
-        final CompactXVRLReport.ValidationResult schValidation = r.getSchemaValidationResult();
+        final CompactXvrlReport.ValidationResult schValidation = r.getSchemaValidationResult();
         final List<CompactViolationDto> schemaViolations = r.getOriginal().getDetection().stream()
-                .filter(d -> "xsd-violation".equals(d.getCode())).map(CompactXVRLReportSummaryMapper::toViolationDto).toList();
+                .filter(d -> "xsd-violation".equals(d.getCode())).map(CompactXvrlReportSummaryMapper::toViolationDto).toList();
         layers.add(new CompactResultLayerDto("schema", r.isSchemaValid(), "XSD", schemaViolations));
 
         // group Schematron layers by schema (via Provenance/Location)
-        final List<CompactXVRLReport.ValidationResult> schematronValidations = r.getSchematronValidationResult();
+        final List<CompactXvrlReport.ValidationResult> schematronValidations = r.getSchematronValidationResult();
         schematronValidations.forEach(res -> {
-            final List<CompactViolationDto> violations = res.violations().stream().map(CompactXVRLReportSummaryMapper::toViolationDto)
+            final List<CompactViolationDto> violations = res.violations().stream().map(CompactXvrlReportSummaryMapper::toViolationDto)
                     .toList();
             layers.add(new CompactResultLayerDto(res.type(), violations.isEmpty(), res.name(), violations));
         });
@@ -58,7 +58,7 @@ public final class CompactXVRLReportSummaryMapper {
                 StringHelper.normalizeBlankToNull(r.getErrorSummary()), layers);
     }
 
-    private static CompactViolationDto toViolationDto(final XVRLDetectionType d) {
+    private static CompactViolationDto toViolationDto(final XvrlDetectionType d) {
         final String message = d.getMessages().stream().flatMap(m -> m.getMessageStrings().stream()).collect(Collectors.joining("; "));
 
         final String severity = d.getSeverity() != null ? d.getSeverity().value() : null;
@@ -76,7 +76,7 @@ public final class CompactXVRLReportSummaryMapper {
                 col.get(), StringHelper.normalizeBlankToNull(d.getId()));
     }
 
-    private static CompactViolationDto toViolationDto(final CompactXVRLReport.Violation v) {
+    private static CompactViolationDto toViolationDto(final CompactXvrlReport.Violation v) {
         return new CompactViolationDto(StringHelper.normalizeBlankToNull(v.message()), StringHelper.normalizeBlankToNull(v.severity()),
                 v.line(), v.row(), StringHelper.normalizeBlankToNull(v.id()));
     }

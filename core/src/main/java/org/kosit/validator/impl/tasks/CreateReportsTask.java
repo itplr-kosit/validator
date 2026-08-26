@@ -9,11 +9,11 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.validator.xvrl.XVRLReportBuilder;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
+import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.validator.xvrl.XvrlSerializer;
 import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,13 +50,13 @@ public class CreateReportsTask implements CheckTask {
         return scenarioSelection.getObject().getReportTransformations();
     }
 
-    private static XVRLReportType generateXVRLReport(final ResourceType resourceType, final XdmNode node) {
-        return XVRLReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id(resourceType.getName())
+    private static XvrlReportType generateXvrlReport(final ResourceType resourceType, final XdmNode node) {
+        return XvrlReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id(resourceType.getName())
                 .add(XvrlSupplementalBuilder.supplemental().addContent(node).id(resourceType.getName()))).build();
     }
 
-    private static XVRLReportType createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {
-        return XVRLReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id("error").addError(error)).build();
+    private static XvrlReportType createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {
+        return XvrlReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id("error").addError(error)).build();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class CreateReportsTask implements CheckTask {
             transformer.setDestination(destination);
             transformer.transform();
             r.setContent(destination.getXdmNode());
-            r.setReport(generateXVRLReport(transformation.getResourceType(), destination.getXdmNode()));
+            r.setReport(generateXvrlReport(transformation.getResourceType(), destination.getXdmNode()));
         } catch (final SaxonApiException | JAXBException e) {
             LOGGER.error("Error creating final report", e);
             process.setStopped(true);
