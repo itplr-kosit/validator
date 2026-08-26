@@ -16,8 +16,8 @@ import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
@@ -55,7 +55,7 @@ public class SelectScenarioActionTest {
     @Test
     public void testDetectAcceptsDomParsedContentViaWrapping() {
         // the step-2 reference action produces a DOM source; a configured processor wraps it for the XPath matching
-        final ParseXMLResult parsed = new ParseXMLAction().execute(TestHelper.read(Simple.SIMPLE_VALID));
+        final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(Simple.SIMPLE_VALID));
         final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
 
         final DetectScenariosResult result = new DetectScenariosAction(repository, ProcessorProvider.getProcessor())

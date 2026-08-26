@@ -31,8 +31,8 @@ import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XMLDetection;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
 
 /**
  * <b>DRAFT intermediate format</b>: serializes a canonical pipeline run (steps 2–8) to a CVRL report — an XVRL profile
@@ -78,7 +78,7 @@ public final class CvrlWriter {
      * The results of one canonical pipeline run. Fields from the cancellation point onwards are {@code null} — the
      * report then contains only the executed steps and {@code cvrl:status="CANCELLED"} (partial CVRL, ADR-004).
      */
-    public record PipelineResults(ParseXMLResult parse, DetectScenariosResult detect, SelectScenarioAction.SelectScenarioResult select,
+    public record PipelineResults(ParseXmlResult parse, DetectScenariosResult detect, SelectScenarioAction.SelectScenarioResult select,
             RetrieveArtifactsAction.RetrieveArtifactsResult retrieve, PrepareRulesAction.PrepareRulesResult prepare,
             ApplyRulesAction.ApplyRulesActionResult apply, ComputeConformanceAction.ComputeConformanceActionResult conformance) {
 
@@ -250,7 +250,7 @@ public final class CvrlWriter {
         if (detection.getLocation().getColumnNumber() > 0) {
             writer.writeAttribute(NS_CVRL, "col", String.valueOf(detection.getLocation().getColumnNumber()));
         }
-        if (XMLDetection.CODE_DOCUMENT_PARSED.equals(detection.getCode()) && parseEvidence != null) {
+        if (XmlDetection.CODE_DOCUMENT_PARSED.equals(detection.getCode()) && parseEvidence != null) {
             writeParseEvidence(writer, parseEvidence);
         } else {
             newline(writer, 3);

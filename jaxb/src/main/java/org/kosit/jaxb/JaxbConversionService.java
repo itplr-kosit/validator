@@ -588,7 +588,7 @@ public class JaxbConversionService {
     private <T> T readSecure(final StreamSource source, final Class<T> type, final String context) {
         requireType(type);
         try {
-            final XMLInputFactory inputFactory = XmlHelper.createSafeXMLInputFactory();
+            final XMLInputFactory inputFactory = XmlHelper.createSafeXmlInputFactory();
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(source);
             final Unmarshaller u = createUnmarshaller();
             return u.unmarshal(xsr, type).getValue();

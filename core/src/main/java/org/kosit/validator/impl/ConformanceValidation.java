@@ -17,7 +17,7 @@ import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.xvrl.model.XvrlMetadataType;
 import org.kosit.xvrl.model.XvrlTimestampType;
 import org.kosit.xvrl.model.XvrlValidatorType;
@@ -114,12 +114,12 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     }
 
     private static VResult createResult(final Process process) {
-        final org.kosit.validator.impl.model.SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> acceptStatusResult = process
                 .getResult(ComputeAcceptanceTask.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
         defaultResult.setWellformed(process.getResult(DocumentParseTask.KEY).isValid());
         defaultResult.setReportSummary(process.getXvrlReportSummary());
-        final org.kosit.validator.impl.model.SingleProcessingResult<Boolean, XMLSyntaxError> schemaValidationResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<Boolean, XmlSyntaxError> schemaValidationResult = process
                 .getResult(SchemaValidationTask.KEY);
         if (schemaValidationResult != null) {
             defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
@@ -134,7 +134,7 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
         return defaultResult;
     }
 
-    private static List<XmlError> convertErrors(final Collection<XMLSyntaxError> errors) {
+    private static List<XmlError> convertErrors(final Collection<XmlSyntaxError> errors) {
         // noinspection unchecked
         return (List<XmlError>) (List<?>) errors;
     }

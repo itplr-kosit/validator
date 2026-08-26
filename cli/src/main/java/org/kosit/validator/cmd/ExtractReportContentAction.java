@@ -10,7 +10,7 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ class ExtractReportContentAction implements CheckTask {
 
     @Override
     public ProcessStepResult<Boolean, String> check(final Process results) {
-        final SingleProcessingResult<List<BusinessReport>, XMLSyntaxError> reportReposts = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, XmlSyntaxError> reportReposts = results.getResult(CreateReportsTask.KEY);
         reportReposts.getObject().forEach(entry -> {
             print(entry.getName(), entry.getContent());
         });
@@ -80,7 +80,7 @@ class ExtractReportContentAction implements CheckTask {
 
     @Override
     public boolean isSkipped(final Process results) {
-        final SingleProcessingResult<List<BusinessReport>, XMLSyntaxError> createReportResult = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, XmlSyntaxError> createReportResult = results.getResult(CreateReportsTask.KEY);
         if (createReportResult == null || createReportResult.getObject() == null) {
             LOGGER.warn("Can not extract create-report content. No report document found");
             return true;

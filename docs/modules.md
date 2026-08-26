@@ -31,12 +31,12 @@ The `validator-api` module includes several model classes that are automatically
 - **Assertions** (`org.kosit.validator.cmd.assertions`): Model for defining validation assertions (from `assertions.xsd`).
 - **General Models** (`org.kosit.validator.model`): General data structures like XML syntax errors (from `model.xsd`).
 
-### Compact Model (`org.kosit.validator.api.compact`)
+### Compact Model (`org.kosit.validator.api.xvrl.compact`)
 
 For use cases requiring a simplified view of the complex XVRL results, the `compact` package offers wrapper classes:
 
-- `CompactXVRLReportSummary`: Summary of multiple validation results.
-- `CompactXVRLReport`: Detailed but essential information about an individual report. It provides direct access to:
+- `CompactXvrlReportSummary`: Summary of multiple validation results.
+- `CompactXvrlReport`: Detailed but essential information about an individual report. It provides direct access to:
   - Selected scenario
   - Acceptance recommendation (`AcceptRecommendation`)
   - Error summary

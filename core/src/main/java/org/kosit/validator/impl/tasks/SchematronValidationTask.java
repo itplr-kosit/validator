@@ -15,7 +15,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
-import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
@@ -62,7 +62,7 @@ public class SchematronValidationTask implements CheckTask {
     }
 
     private static boolean isSchemaInvalid(final Process results) {
-        final SingleProcessingResult<Boolean, XMLSyntaxError> result = results.getResult(SchemaValidationTask.KEY);
+        final SingleProcessingResult<Boolean, XmlSyntaxError> result = results.getResult(SchemaValidationTask.KEY);
         return result == null || result.isInvalid();
     }
 
@@ -129,7 +129,7 @@ public class SchematronValidationTask implements CheckTask {
 
     @Override
     public ProcessStepResult<List<ValidationResultsSchematron>, String> check(final Process process) {
-        final SingleProcessingResult<XdmNode, XMLSyntaxError> parseResult = process.getResult(DocumentParseTask.KEY);
+        final SingleProcessingResult<XdmNode, XmlSyntaxError> parseResult = process.getResult(DocumentParseTask.KEY);
         final SingleProcessingResult<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionTask.KEY);
         final List<ValidationResultsSchematron> validationResult = validate(process, parseResult.getObject(), scenarioResult.getObject());
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = new ProcessStepResult<>(KEY);

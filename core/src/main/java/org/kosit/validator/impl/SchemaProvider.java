@@ -25,7 +25,7 @@ public class SchemaProvider {
      *
      * @return ReportInput schema
      */
-    public static Schema getXVRLSchema() {
+    public static Schema getXvrlSchema() {
         if (xvrlSchema == null) {
             final SchemaFactory sf = ResolvingMode.STRICT_RELATIVE.getStrategy().createSchemaFactory();
             final Source source = SchemaResolver.resolve(XvrlConversionService.class.getResource(XvrlConversionService.XVRL_XSD_PATH));

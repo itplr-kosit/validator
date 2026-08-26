@@ -24,7 +24,7 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XmlSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -171,11 +171,11 @@ public class TestHelper {
         }
     }
 
-    public static SingleProcessingResult<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final CTReadResource input) {
+    public static SingleProcessingResult<XdmNode, XmlSyntaxError> parseDocument(final Processor processor, final CTReadResource input) {
         return new DocumentParseTask(processor).parseDocument(input);
     }
 
-    public static SingleProcessingResult<XdmNode, XMLSyntaxError> parseDocument(final CTReadResource input) {
+    public static SingleProcessingResult<XdmNode, XmlSyntaxError> parseDocument(final CTReadResource input) {
         return new DocumentParseTask(getTestProcessor()).parseDocument(input);
     }
 

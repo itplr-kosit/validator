@@ -24,8 +24,8 @@
         <jaxb:schemaBindings>
             <jaxb:package name="org.kosit.validator.model"/>
         </jaxb:schemaBindings>
-        <jaxb:bindings node="//xs:complexType[@name='XMLSyntaxError']">
-            <inheritance:extends>org.kosit.validator.api.xmlerror.AbstractXMLSyntaxError</inheritance:extends>
+        <jaxb:bindings node="//xs:complexType[@name='XmlSyntaxError']">
+            <inheritance:extends>org.kosit.validator.api.xmlerror.AbstractXmlSyntaxError</inheritance:extends>
         </jaxb:bindings>
     </jaxb:bindings>
 

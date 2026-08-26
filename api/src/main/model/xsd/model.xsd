@@ -19,7 +19,7 @@
     <xs:complexType name="ValidationResultsXmlSchema">
         <xs:sequence>
             <xs:element ref="s:resource" maxOccurs="unbounded"/>
-            <xs:element name="xmlSyntaxError" type="model:XMLSyntaxError" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="xmlSyntaxError" type="model:XmlSyntaxError" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -71,16 +71,16 @@
     </xs:complexType>
 
 
-    <xs:complexType name="XMLSyntaxError">
+    <xs:complexType name="XmlSyntaxError">
         <xs:sequence>
             <xs:element name="message" type="xs:normalizedString"/>
-            <xs:element name="severityCode" type="model:XMLSyntaxErrorSeverity" />
+            <xs:element name="severityCode" type="model:XmlSyntaxErrorSeverity" />
             <xs:element name="rowNumber" type="xs:long" minOccurs="0"/>
             <xs:element name="columnNumber" type="xs:long" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:simpleType name="XMLSyntaxErrorSeverity">
+    <xs:simpleType name="XmlSyntaxErrorSeverity">
         <xs:restriction base="xs:token">
             <xs:enumeration value="SEVERITY_WARNING"/>
             <xs:enumeration value="SEVERITY_ERROR"/>

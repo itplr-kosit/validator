@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.tasks.TestScenarioBuilder;
 
 /**
@@ -16,8 +16,8 @@ import org.kosit.validator.impl.tasks.TestScenarioBuilder;
  */
 public class ScenarioMatchTest {
 
-    private static ParseXMLResult parseSimple() {
-        return new ParseXMLAction().execute(TestHelper.read(Simple.SIMPLE_VALID));
+    private static ParseXmlResult parseSimple() {
+        return new ParseXmlAction().execute(TestHelper.read(Simple.SIMPLE_VALID));
     }
 
     private static Scenario createNamedScenario() {
@@ -29,7 +29,7 @@ public class ScenarioMatchTest {
 
     @Test
     public void testWrapsLegacyScenario() {
-        final ParseXMLResult parsed = parseSimple();
+        final ParseXmlResult parsed = parseSimple();
         final ScenarioMatch match = ScenarioMatch.of(createNamedScenario(), parsed.getParsedSource());
 
         assertThat(match.getScenarioID()).isEqualTo("simple");
@@ -46,13 +46,13 @@ public class ScenarioMatchTest {
     public void testRejectsFallbackScenario() {
         final Scenario fallback = createNamedScenario();
         fallback.setFallback(true);
-        final ParseXMLResult parsed = parseSimple();
+        final ParseXmlResult parsed = parseSimple();
         assertThrows(IllegalArgumentException.class, () -> ScenarioMatch.of(fallback, parsed.getParsedSource()));
     }
 
     @Test
     public void testRejectsNullArguments() {
-        final ParseXMLResult parsed = parseSimple();
+        final ParseXmlResult parsed = parseSimple();
         assertThrows(IllegalArgumentException.class, () -> ScenarioMatch.of(null, parsed.getParsedSource()));
         assertThrows(IllegalArgumentException.class, () -> ScenarioMatch.of(createNamedScenario(), null));
     }

@@ -10,7 +10,7 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlReportType;
@@ -55,7 +55,7 @@ public class ScenarioSelectionTask implements CheckTask {
     @Override
     public ProcessStepResult<Scenario, String> check(final Process results) {
         final SingleProcessingResult<Scenario, String> scenarioTypeResult;
-        final SingleProcessingResult<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
+        final SingleProcessingResult<XdmNode, XmlSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
         if (parseResult.isValid()) {
             scenarioTypeResult = determineScenario(parseResult.getObject());
         } else {

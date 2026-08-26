@@ -16,7 +16,7 @@ import org.xml.sax.SAXParseException;
  * @author Philip Helger
  *
  */
-public final class XMLDetection {
+public final class XmlDetection {
 
     /** Detection code on success. */
     public static final String CODE_DOCUMENT_PARSED = "document-parsed";
@@ -50,6 +50,6 @@ public final class XMLDetection {
         return new Detection(CTStandardSeverity.ERROR, CODE_SOURCE_READ_ERROR, DetectionLocation.of(resourceId), e.getMessage(), e);
     }
 
-    private XMLDetection() {
+    private XmlDetection() {
     }
 }
