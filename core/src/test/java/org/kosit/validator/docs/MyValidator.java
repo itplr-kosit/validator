@@ -13,7 +13,7 @@ import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.TestEngineInformation;
-import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
 
 /**
  * Example code that is used in the docs/api.md file

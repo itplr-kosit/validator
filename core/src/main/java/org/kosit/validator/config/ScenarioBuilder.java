@@ -32,7 +32,7 @@ import net.sf.saxon.s9api.XPathExecutable;
  * 
  * @author Andreas Penski
  */
-public class ScenarioBuilder implements Builder<Scenario> {
+public class ScenarioBuilder implements SingleProcessingResultBuilder<Scenario> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioBuilder.class);
 

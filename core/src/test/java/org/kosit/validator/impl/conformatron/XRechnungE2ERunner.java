@@ -38,7 +38,7 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.report.CvrlWriter;
-import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 

@@ -1,4 +1,4 @@
-package org.kosit.validator.impl;
+package org.kosit.jaxb;
 
 import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 

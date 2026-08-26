@@ -5,7 +5,7 @@ package org.kosit.validator.config;
  * 
  * @author Andreas Penski
  */
-public final class Keys {
+public final class ConfigurationKeys {
 
     /**
      * The actual scenarios file location as used with {@link ConfigurationLoader}.
@@ -16,9 +16,9 @@ public final class Keys {
      * The actual scenarios configuration represented as serializable tree. This either loaded from file or build
      * manually via {@link ConfigurationBuilder}
      */
-    public static final String SCENARIO_DEFINITION = "scenario_definition";
+    public static final String SCENARIOS_DEFINITION = "scenario_definition";
 
-    private Keys() {
+    private ConfigurationKeys() {
         // hide
     }
 }

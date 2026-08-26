@@ -20,9 +20,9 @@ import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.model.XMLSyntaxError;
 
 import net.sf.saxon.s9api.Processor;

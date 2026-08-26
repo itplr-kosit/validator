@@ -8,7 +8,7 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
  * 
  * @author Andreas Penski
  */
-interface Builder<T> {
+interface SingleProcessingResultBuilder<T> {
 
     /**
      * Creates an object based on artifacts provided via a defined {@link ContentRepository}.

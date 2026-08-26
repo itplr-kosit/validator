@@ -13,6 +13,10 @@ import org.xml.sax.SAXException;
 
 public final class XMLHelper {
 
+    public static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+
+    public static final String LOAD_EXTERNAL_DTD_FEATURE = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLHelper.class);
 
     private static final String JDK_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
@@ -53,10 +57,10 @@ public final class XMLHelper {
         try {
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             setFeature(factory, XMLConstants.FEATURE_SECURE_PROCESSING, true);
-            setFeature(factory, "http://apache.org/xml/features/disallow-doctype-decl", true);
+            setFeature(factory, DISALLOW_DOCTYPE_DECL_FEATURE, true);
             setFeature(factory, "http://xml.org/sax/features/external-general-entities", false);
             setFeature(factory, "http://xml.org/sax/features/external-parameter-entities", false);
-            setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            setFeature(factory, LOAD_EXTERNAL_DTD_FEATURE, false);
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file");
             factory.setNamespaceAware(true);
@@ -100,7 +104,7 @@ public final class XMLHelper {
 
         final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         setProperty(factory, XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        setProperty(factory, XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file");
+        setProperty(factory, XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         return factory;
     }
 

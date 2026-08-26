@@ -56,23 +56,27 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         return r.startsWith(base);
     }
 
+    /**
+     * Creates a new {@code RelativeUriResolver} instance.
+     *
+     * @param baseUri the base uri
+     */
+    public RelativeUriResolver(final URI baseUri) {
+        this.baseUri = baseUri;
+    }
+
     @Override
     public Source resolve(final String href, final String base) throws TransformerException {
         final URI resolved = resolve(URI.create(href), URI.create(base));
-        if (isUnderBaseUri(resolved)) {
+        if (isUnderBaseUri(resolved, this.baseUri)) {
             try {
                 return new StreamSource(resolved.toURL().openStream(), resolved.toASCIIString());
             } catch (final IOException e) {
-                throw new TransformerException("Can not resolve required  " + href, e);
+                throw new TransformerException("Can not resolve required '" + href + "'", e);
             }
-        } else {
-            throw new TransformerException(
-                    "The resolved transformation artifact " + resolved + " is not within the configured repository " + this.baseUri);
         }
-    }
-
-    private boolean isUnderBaseUri(final URI resolved) {
-        return isUnderBaseUri(resolved, this.baseUri);
+        throw new TransformerException(
+                "The resolved transformation artifact " + resolved + " is not within the configured repository " + this.baseUri);
     }
 
     // from UnparsedTextURIResolver
@@ -80,10 +84,9 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
     public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
         if (isUnderBaseUri(absoluteURI, this.baseUri)) {
             return new StandardUnparsedTextResolver().resolve(absoluteURI, encoding, config);
-        } else {
-            throw new XPathException(
-                    "The resolved transformation artifact " + absoluteURI + " is not within the configured repository " + this.baseUri);
         }
+        throw new XPathException(
+                "The resolved transformation artifact " + absoluteURI + " is not within the configured repository " + this.baseUri);
     }
 
     @Override
@@ -93,14 +96,5 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
         } catch (final TransformerException e) {
             throw new XPathException(e);
         }
-    }
-
-    /**
-     * Creates a new {@code RelativeUriResolver} instance.
-     *
-     * @param baseUri the base uri
-     */
-    public RelativeUriResolver(final URI baseUri) {
-        this.baseUri = baseUri;
     }
 }

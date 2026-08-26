@@ -22,7 +22,7 @@ import net.sf.saxon.s9api.XPathExecutable;
  * 
  * @author Andreas Penski
  */
-class XPathBuilder implements Builder<XPathExecutable> {
+class XPathBuilder implements SingleProcessingResultBuilder<XPathExecutable> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XPathBuilder.class);
 

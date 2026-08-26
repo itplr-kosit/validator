@@ -12,6 +12,14 @@ public final class StringHelper {
         return v == null ? 0L : v.longValue();
     }
 
+    public static boolean equalsNullable(final @Nullable String left, final @Nullable String right) {
+        return left == null ? right == null : left.equals(right);
+    }
+
+    public static @Nullable String emptyToNull(final @Nullable String value) {
+        return value == null || value.isEmpty() ? null : value;
+    }
+
     private StringHelper() {
     }
 

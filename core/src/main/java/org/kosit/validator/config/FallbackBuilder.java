@@ -13,7 +13,7 @@ import org.kosit.validator.scenario.v1.ScenarioType;
  * 
  * @author Andreas Penski
  */
-public class FallbackBuilder implements Builder<Scenario> {
+public class FallbackBuilder implements SingleProcessingResultBuilder<Scenario> {
 
     private final ReportBuilder internal = new ReportBuilder().name("fallback").id("fallback");
 

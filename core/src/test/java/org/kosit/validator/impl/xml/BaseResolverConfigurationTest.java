@@ -12,6 +12,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.xvrl.XvrlSerializer;
 import org.kosit.xvrl.model.XVRLDetectionType;
 import org.kosit.xvrl.model.XVRLReportType;

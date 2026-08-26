@@ -23,7 +23,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  * 
  * @author Andreas Penski
  */
-public class ReportBuilder implements Builder<Pair<CreateReportType, Transformation>> {
+public class ReportBuilder implements SingleProcessingResultBuilder<Pair<CreateReportType, Transformation>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportBuilder.class);
 

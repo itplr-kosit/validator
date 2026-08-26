@@ -9,7 +9,7 @@ import javax.xml.validation.Validator;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ResolvingMode;
-import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
 
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;

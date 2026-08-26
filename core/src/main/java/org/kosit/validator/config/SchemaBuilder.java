@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andreas Penski
  */
-public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema>> {
+public class SchemaBuilder implements SingleProcessingResultBuilder<Pair<ValidateWithXmlSchema, Schema>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemaBuilder.class);
 

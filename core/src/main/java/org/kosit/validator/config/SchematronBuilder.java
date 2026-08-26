@@ -23,7 +23,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  * 
  * @author Andreas Penski
  */
-public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, Transformation>> {
+public class SchematronBuilder implements SingleProcessingResultBuilder<Pair<ValidateWithSchematron, Transformation>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchematronBuilder.class);
 

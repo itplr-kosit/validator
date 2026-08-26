@@ -3,7 +3,7 @@ package org.kosit.validator.impl.xvrl;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.xml.XMLReaderWrapper;
 import org.kosit.jaxb.LoggingEventHandler;
-import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.ObjectFactory;
 import org.kosit.xvrl.model.XVRLReportsType;

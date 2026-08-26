@@ -35,7 +35,7 @@ import org.kosit.validator.helper.ResourceHelperExtension;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.xvrl.XvrlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

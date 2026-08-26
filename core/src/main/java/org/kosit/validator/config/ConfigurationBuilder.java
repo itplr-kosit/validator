@@ -269,7 +269,7 @@ public class ConfigurationBuilder {
         configuration.setDate(this.date);
         configuration.setName(this.name);
         configuration.setContentRepository(contentRepository);
-        configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, createDefinition(configuration));
+        configuration.getAdditionalParameters().put(ConfigurationKeys.SCENARIOS_DEFINITION, createDefinition(configuration));
         return (configuration);
     }
 
