@@ -3,6 +3,7 @@ package org.kosit.jaxb.xml;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -19,12 +20,14 @@ public final class SchemaResolver {
     private SchemaResolver() {
     }
 
-    private static @NonNull Source resolve(final @NonNull URL resource) {
+    public static @NonNull Source resolve(final @NonNull URL resource) {
+        Objects.requireNonNull(resource);
+
         try {
             final String rawPath = resource.toURI().getRawPath();
             return new StreamSource(resource.openStream(), rawPath);
         } catch (final IOException | URISyntaxException e) {
-            throw new IllegalStateException("Can not load schema for resource " + resource.getPath(), e);
+            throw new IllegalStateException("Can not load schema for resource '" + resource.getPath() + "'", e);
         }
     }
 
