@@ -125,7 +125,7 @@ public interface CheckTask {
             return FilenameUtils.getBaseName(fileName);
         }
 
-        public static final record ProcessKey<T, E>(Class<T> type, Class<E> other) {
+        public static final record ProcessKey<T, E> (Class<T> type, Class<E> other) {
         }
 
         public XvrlMetadataType getMetadata() {
