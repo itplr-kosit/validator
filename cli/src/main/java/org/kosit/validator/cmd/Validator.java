@@ -1,9 +1,5 @@
 package org.kosit.validator.cmd;
 
-import static org.apache.commons.lang3.ObjectUtils.getIfNull;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -18,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,6 +22,7 @@ import org.conformatron.api.annotation.Nonempty;
 import org.conformatron.api.model.source.CTReadResource;
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.jspecify.annotations.NonNull;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
@@ -92,7 +90,7 @@ public class Validator {
         final Processor processor = ProcessorProvider.getProcessor();
         final List<VConfiguration> config = getConfiguration(cmd);
         final InternalVCheck check = new InternalVCheck(cmd.getEngineInformation(), processor, config.toArray(new VConfiguration[0]));
-        final CommandLineOptions.CliOptions cliOptions = getIfNull(cmd.getCliOptions(), new CliOptions());
+        final CommandLineOptions.CliOptions cliOptions = Objects.requireNonNullElse(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
         if (cliOptions.isExtractReport()) {
             check.getCheckSteps().add(new ExtractReportContentAction(processor, outputDirectory));
@@ -132,11 +130,11 @@ public class Validator {
      * @return a list of configurations of the scenarios and repositories passed in cmd
      */
     private static List<VConfiguration> getConfiguration(final CommandLineOptions cmd) {
-        final List<ScenarioDefinition> scenarios = getIfNull(cmd.getScenarios(), Collections.emptyList());
+        final List<ScenarioDefinition> scenarios = Objects.requireNonNullElse(cmd.getScenarios(), Collections.emptyList());
         // Map from scenario name to scenario path
         final Map<String, Path> mappedScenarios = scenarios.stream()
                 .collect(Collectors.toMap(ScenarioDefinition::getName, ScenarioDefinition::getPath));
-        final List<RepositoryDefinition> repos = getIfNull(cmd.getRepositories(), Collections.emptyList());
+        final List<RepositoryDefinition> repos = Objects.requireNonNullElse(cmd.getRepositories(), Collections.emptyList());
         final Map<String, Path> mappedRepos = repos.stream()
                 .collect(Collectors.toMap(RepositoryDefinition::getName, RepositoryDefinition::getPath));
         checkUnused(mappedScenarios, mappedRepos);
@@ -176,7 +174,7 @@ public class Validator {
     private static void reportLoading(final URI scenarioLocation, final URI repositoryLocation) {
         Printer.writeOut("Loading scenarios from  {0}", scenarioLocation);
         Printer.writeOut("Using repository  {0}", repositoryLocation);
-        Printer.writeOut(EMPTY);
+        Printer.writeOut("");
     }
 
     private static void reportConfiguration(final VConfiguration configuration) {
@@ -187,15 +185,15 @@ public class Validator {
             line.add("  * " + e.getName());
             Printer.writeOut(line.render(false, false));
         });
-        Printer.writeOut(EMPTY);
+        Printer.writeOut("");
     }
 
     private static NamingStrategy determineNamingStrategy(final CommandLineOptions.CliOptions cmd) {
         final DefaultNamingStrategy namingStrategy = new DefaultNamingStrategy();
-        if (isNotEmpty(cmd.getReportPrefix())) {
+        if (StringHelper.isNotEmpty(cmd.getReportPrefix())) {
             namingStrategy.setPrefix(cmd.getReportPrefix());
         }
-        if (isNotEmpty(cmd.getReportPostfix())) {
+        if (StringHelper.isNotEmpty(cmd.getReportPostfix())) {
             namingStrategy.setPostfix(cmd.getReportPostfix());
         }
         return namingStrategy;

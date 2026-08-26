@@ -1,12 +1,11 @@
 package org.kosit.validator.cmd;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.cmd.CommandLineOptions.AbstractDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
@@ -59,7 +58,7 @@ class TypeConverter {
 
     private static <T extends AbstractDefinition> T convert(final Class<T> type, final String value) {
         final T def;
-        final String[] splitted = defaultIfBlank(value, "").split("=");
+        final String[] splitted = StringHelper.blankToDefault(value, "").split("=");
         if (splitted.length == 1) {
             def = createNewInstance(type);
             def.setName(getDefaultName(type));

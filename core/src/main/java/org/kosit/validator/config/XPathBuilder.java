@@ -1,15 +1,13 @@
 package org.kosit.validator.config;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.StreamSupport;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.slf4j.Logger;
@@ -26,7 +24,7 @@ class XPathBuilder implements SingleProcessingResultBuilder<XPathExecutable> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XPathBuilder.class);
 
-    private static final String[] IGNORED_PREFIXES = new String[] { "xsd", "saxon", "xsl", "xs", "xml" };
+    private static final Set<String> IGNORED_PREFIXES = Set.of("xsd", "saxon", "xsl", "xs", "xml");
 
     private final String name;
 
@@ -58,7 +56,7 @@ class XPathBuilder implements SingleProcessingResultBuilder<XPathExecutable> {
     }
 
     public boolean isAvailable() {
-        return this.executable != null || isNotEmpty(this.xpath);
+        return this.executable != null || StringHelper.isNotEmpty(this.xpath);
     }
 
     @Override
@@ -86,9 +84,9 @@ class XPathBuilder implements SingleProcessingResultBuilder<XPathExecutable> {
         final Iterator<String> iterator = this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext()
                 .iteratePrefixes();
         final Iterable<String> iterable = () -> iterator;
-        StreamSupport.stream(iterable.spliterator(), false).filter(e -> !ArrayUtils.contains(IGNORED_PREFIXES, e))
-                .filter(StringUtils::isNotBlank).forEach(e -> ns.put(e, this.executable.getUnderlyingExpression().getInternalExpression()
-                        .getRetainedStaticContext().getURIForPrefix(e, false).toString()));
+        StreamSupport.stream(iterable.spliterator(), false).filter(e -> !IGNORED_PREFIXES.contains(e)).filter(StringHelper::isNotBlank)
+                .forEach(e -> ns.put(e, this.executable.getUnderlyingExpression().getInternalExpression().getRetainedStaticContext()
+                        .getURIForPrefix(e, false).toString()));
         getNamespaces().putAll(ns);
     }
 

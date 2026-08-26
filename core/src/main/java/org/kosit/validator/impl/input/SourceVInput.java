@@ -1,7 +1,5 @@
 package org.kosit.validator.impl.input;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -10,6 +8,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.input.ReaderInputStream;
+import org.kosit.base.string.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +61,7 @@ public class SourceVInput extends AbstractVInput {
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public String getName() {
-        return defaultIfBlank(this.name, this.source.getClass().getSimpleName());
+        return StringHelper.blankToDefault(this.name, this.source.getClass().getSimpleName());
     }
 
     private void validate() {

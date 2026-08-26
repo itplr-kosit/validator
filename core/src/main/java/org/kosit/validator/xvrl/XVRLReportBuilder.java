@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.xvrl.model.XVRLDetectionType;
@@ -37,10 +36,8 @@ public class XVRLReportBuilder {
     }
 
     private String calcValidity() {
-        return this.xvrlReport.getDetection().stream()
-                .filter(e -> ArrayUtils.contains(
-                        new XVRLDetectionType.Severity[] { XVRLDetectionType.Severity.ERROR, XVRLDetectionType.Severity.FATAL_ERROR },
-                        e.getSeverity()))
+        return this.xvrlReport.getDetection().stream().filter(
+                e -> e.getSeverity() == XVRLDetectionType.Severity.ERROR || e.getSeverity() == XVRLDetectionType.Severity.FATAL_ERROR)
                 .findAny().map(e -> "false").orElse("true");
     }
 

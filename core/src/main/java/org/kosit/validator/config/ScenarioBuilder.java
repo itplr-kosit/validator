@@ -1,27 +1,18 @@
 package org.kosit.validator.config;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.validation.Schema;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.DescriptionType;
 import org.kosit.validator.scenario.v1.NamespaceType;
 import org.kosit.validator.scenario.v1.ObjectFactory;
 import org.kosit.validator.scenario.v1.ScenarioType;
-import org.kosit.validator.scenario.v1.ValidateWithSchematron;
-import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -224,10 +215,10 @@ public class ScenarioBuilder implements SingleProcessingResultBuilder<Scenario> 
         if (this.reportBuilder == null) {
             errors.add("Must supply report configuration");
         } else {
-            final SingleProcessingResult<Pair<CreateReportType, Transformation>, String> result = this.reportBuilder.build(repository);
+            final var result = this.reportBuilder.build(repository);
             if (result.isValid()) {
-                scenario.getReportTransformations().add(result.getObject().getRight());
-                scenario.getConfiguration().getCreateReport().add(result.getObject().getLeft());
+                scenario.getReportTransformations().add(result.getObject().transformation());
+                scenario.getConfiguration().getCreateReport().add(result.getObject().createReport());
             } else {
                 errors.addAll(result.getErrors());
             }
@@ -236,10 +227,10 @@ public class ScenarioBuilder implements SingleProcessingResultBuilder<Scenario> 
 
     private void buildSchematron(final ContentRepository repository, final List<String> errors, final Scenario scenario) {
         this.schematronBuilders.forEach(e -> {
-            final SingleProcessingResult<Pair<ValidateWithSchematron, Transformation>, String> result = e.build(repository);
+            final var result = e.build(repository);
             if (result.isValid()) {
-                scenario.getConfiguration().getValidateWithSchematron().add(result.getObject().getLeft());
-                scenario.getSchematronValidations().add(result.getObject().getRight());
+                scenario.getConfiguration().getValidateWithSchematron().add(result.getObject().validateResult());
+                scenario.getSchematronValidations().add(result.getObject().transformation());
             } else {
                 errors.addAll(result.getErrors());
             }
@@ -250,10 +241,10 @@ public class ScenarioBuilder implements SingleProcessingResultBuilder<Scenario> 
         if (this.schemaBuilder == null) {
             errors.add("Must supply schema for validation");
         } else {
-            final SingleProcessingResult<Pair<ValidateWithXmlSchema, Schema>, String> result = this.schemaBuilder.build(repository);
+            final var result = this.schemaBuilder.build(repository);
             if (result.isValid()) {
-                scenario.setSchema(result.getObject().getRight());
-                scenario.getConfiguration().setValidateWithXmlSchema(result.getObject().getLeft());
+                scenario.setSchema(result.getObject().schema());
+                scenario.getConfiguration().setValidateWithXmlSchema(result.getObject().validationResult());
             } else {
                 errors.addAll(result.getErrors());
             }
@@ -262,10 +253,10 @@ public class ScenarioBuilder implements SingleProcessingResultBuilder<Scenario> 
 
     private ScenarioType createType() {
         final ScenarioType type = new ScenarioType();
-        type.setName(isNotEmpty(this.name) ? this.name : generateName());
+        type.setName(StringHelper.isNotEmpty(this.name) ? this.name : generateName());
         final DescriptionType desc = new DescriptionType();
         desc.getPOrOlOrUl()
-                .add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, DEFAULT_DESCRIPTION)));
+                .add(new ObjectFactory().createDescriptionTypeP(StringHelper.blankToDefault(this.description, DEFAULT_DESCRIPTION)));
         type.setDescription(desc);
         return type;
     }

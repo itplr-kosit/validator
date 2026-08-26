@@ -1,7 +1,5 @@
 package org.kosit.validator.api;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +14,7 @@ import java.util.UUID;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.lang3.StringUtils;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.input.ByteArrayVInput;
 import org.kosit.validator.impl.input.ResourceVInput;
 import org.kosit.validator.impl.input.SourceVInput;
@@ -241,7 +239,7 @@ public class VInputFactory {
     }
 
     private static void checkNotEmpty(final String name) {
-        if (StringUtils.isBlank(name)) {
+        if (StringHelper.isBlank(name)) {
             throw new IllegalArgumentException("Input name can not be null");
         }
     }
@@ -293,7 +291,7 @@ public class VInputFactory {
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     VInputFactory(final String specifiedAlgorithm) {
-        this.algorithm = isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITHM;
+        this.algorithm = StringHelper.isNotEmpty(specifiedAlgorithm) ? specifiedAlgorithm : DEFAULT_ALGORITHM;
         // check validity
         StreamHelper.createDigest(this.algorithm);
     }

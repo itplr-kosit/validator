@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.Strings;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
@@ -85,7 +84,7 @@ public class ConfigurationLoader {
     private static boolean isSupportedDocument(final XdmNode doc) {
         final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
-        return Strings.CS.startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
+        return frameworkVersion != null && frameworkVersion.startsWith(SUPPORTED_MAJOR_VERSION)
                 && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
     }
 

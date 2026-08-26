@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestHelper.Simple;
@@ -140,7 +140,7 @@ public class ScenarioBuilderTest {
     @Test
     public void testBasicAttributes() {
         final ContentRepository repository = Simple.createContentRepository();
-        final String random = RandomStringUtils.secure().next(5);
+        final String random = StringHelper.randomString(5);
         final ScenarioBuilder builder = createScenario();
         builder.name(random).description(random);
         final SingleProcessingResult<Scenario, String> result = builder.build(repository);

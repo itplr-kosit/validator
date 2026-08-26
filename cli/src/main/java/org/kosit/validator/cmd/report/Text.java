@@ -1,6 +1,5 @@
 package org.kosit.validator.cmd.report;
 
-import java.util.Arrays;
 import org.fusesource.jansi.AnsiRenderer;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
@@ -41,8 +40,7 @@ public class Text {
     }
 
     public String render(final String text, final Format baseformat) {
-        return AnsiRenderer.render(text,
-                Arrays.stream(this.format.mergeCodes(baseformat.getCodes())).map(Code::name).toArray(String[]::new));
+        return AnsiRenderer.render(text, this.format.mergeCodes(baseformat.getCodes()).stream().map(Code::name).toArray(String[]::new));
     }
 
     public int getLength() {

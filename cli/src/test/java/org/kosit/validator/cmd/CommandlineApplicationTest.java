@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.Strings;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -152,7 +151,7 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testValidMultipleConfigurations() {
-        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS_WITH_MANY_CONFIGS).toString(), "-r",
+        final String[] args = { "-s", Paths.get(Simple.SCENARIOS_WITH_MANY_CONFIGS).toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
         assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
@@ -207,15 +206,14 @@ public class CommandlineApplicationTest {
                 this.output.toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
         assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(testWriter.getOutputLines()).haveAtLeastOne(new Condition<>(
-                s -> Strings.CS.contains(s, "<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
+        assertThat(testWriter.getOutputLines()).haveAtLeastOne(
+                new Condition<>(s -> s.contains("<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
     }
 
     @Test
     public void testExtraction() throws IOException {
-        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS).toString(), "-e", "-o",
-                this.output.toAbsolutePath().toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
-                Paths.get(Simple.SIMPLE_VALID).toString() };
+        final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-e", "-o", this.output.toAbsolutePath().toString(), "-r",
+                Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
         assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
         assertThat(Files.list(this.output).filter(f -> f.toString().endsWith(".xml")).count()).isPositive();
@@ -223,7 +221,7 @@ public class CommandlineApplicationTest {
 
     @Test
     public void testMultipleExtraction() throws IOException {
-        final String[] args = new String[] { "-s", Paths.get(Simple.SCENARIOS_WITH_MANY_CONFIGS).toString(), "-e", "-o",
+        final String[] args = { "-s", Paths.get(Simple.SCENARIOS_WITH_MANY_CONFIGS).toString(), "-e", "-o",
                 this.output.toAbsolutePath().toString(), "-r", Paths.get(Simple.REPOSITORY_URI).toString(),
                 Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);

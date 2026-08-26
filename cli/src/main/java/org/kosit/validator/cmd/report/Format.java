@@ -1,16 +1,16 @@
 package org.kosit.validator.cmd.report;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.SequencedSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.fusesource.jansi.AnsiRenderer.Code;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Simple value holder for ansi formatting codes.
@@ -23,22 +23,29 @@ public class Format {
 
     private Code background;
 
-    private final Set<Code> codes = new HashSet<>();
+    private final SequencedSet<Code> codes = new LinkedHashSet<>();
 
-    public Code[] mergeCodes(final Collection<Code> newCodes) {
-        return mergeCodes(newCodes.toArray(new Code[newCodes.size()]));
-    }
+    public @NonNull List<@NonNull Code> mergeCodes(final @NonNull Collection<@Nullable Code> newCodes) {
+        final List<Code> allCodes = new ArrayList<>(this.codes);
+        for (final Code c : newCodes)
+            if (c != null)
+                allCodes.add(c);
+        if (this.textColor != null)
+            allCodes.add(this.textColor);
+        if (this.background != null)
+            allCodes.add(this.background);
 
-    public Code[] mergeCodes(final Code... newCodes) {
-        final Code[] allCodes = ArrayUtils.addAll(ArrayUtils.addAll(this.codes.toArray(new Code[0]), newCodes), this.textColor,
-                this.background);
-        final Optional<Code> color = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isColor).findFirst();
-        final Optional<Code> bg = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isBackground).findFirst();
-        final List<Code> attributes = Arrays.stream(allCodes).filter(Objects::nonNull).filter(Code::isBackground).filter(Code::isColor)
-                .collect(Collectors.toList());
-        attributes.add(color.orElse(this.textColor));
-        attributes.add(bg.orElse(this.background));
-        return attributes.stream().filter(Objects::nonNull).toArray(Code[]::new);
+        final Code color = allCodes.stream().filter(c -> c.isColor() && !c.isBackground()).findFirst().orElse(this.textColor);
+        final Code bg = allCodes.stream().filter(Code::isBackground).findFirst().orElse(this.background);
+
+        // Everything that is neither a text color nor a background color. Note: Code.isColor() is true for the
+        // background colors as well, so they must not be selected here.
+        final List<Code> attributes = allCodes.stream().filter(Code::isAttribute).collect(Collectors.toList());
+        if (color != null)
+            attributes.add(color);
+        if (bg != null)
+            attributes.add(bg);
+        return attributes;
     }
 
     /**
@@ -48,7 +55,7 @@ public class Format {
      *
      * @return this {@link Format}
      */
-    public Format color(final Code textColor) {
+    public @NonNull Format color(final @Nullable Code textColor) {
         this.textColor = textColor;
         return this;
     }
@@ -60,7 +67,7 @@ public class Format {
      *
      * @return this {@link Format}
      */
-    public Format background(final Code color) {
+    public @NonNull Format background(final @Nullable Code color) {
         this.background = color;
         return this;
     }
@@ -72,20 +79,23 @@ public class Format {
      *
      * @return this {@link Format}
      */
-    public Format addCodes(final Code... codes) {
-        this.codes.addAll(Arrays.asList(codes));
+    public @NonNull Format addCodes(final @Nullable Code @Nullable... codes) {
+        if (codes != null)
+            for (final Code c : codes)
+                if (c != null)
+                    this.codes.add(c);
         return this;
     }
 
-    public Code getTextColor() {
+    public @Nullable Code getTextColor() {
         return this.textColor;
     }
 
-    public Code getBackground() {
+    public @Nullable Code getBackground() {
         return this.background;
     }
 
-    public Set<Code> getCodes() {
+    public @NonNull Set<@NonNull Code> getCodes() {
         return this.codes;
     }
 }

@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiRenderer.Code;
+import org.kosit.base.string.StringHelper;
 
 /**
  * An text based grid for cli based programs.
@@ -152,7 +152,7 @@ public class Grid {
             for (final Text t : this.text) {
                 final String part = t.getVisibleText(startSubstring, def.getLength());
                 currentVisibleLength += part.length();
-                if (StringUtils.isNotBlank(part)) {
+                if (StringHelper.isNotBlank(part)) {
                     line.add(part, t.getFormat());
                     if (currentVisibleLength >= def.getLength()) {
                         break;
@@ -221,7 +221,7 @@ public class Grid {
     }
 
     private String generateHeader() {
-        return "|" + this.definitions.stream().map(d -> StringUtils.rightPad(d.getName(), d.getLength())).collect(Collectors.joining("|"))
+        return "|" + this.definitions.stream().map(d -> StringHelper.rightPad(d.getName(), d.getLength())).collect(Collectors.joining("|"))
                 + "|\n";
     }
 

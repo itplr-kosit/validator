@@ -17,7 +17,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.lang3.StringUtils;
+import org.kosit.base.string.StringHelper;
 import org.kosit.base.xml.SchemaResolver;
 import org.kosit.jaxb.adapter.StringTrimAdapter;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
@@ -265,7 +265,7 @@ public class ContentRepository {
             return compiler.compile(expression);
         } catch (final SaxonApiException e) {
             throw new IllegalStateException("Can not compile xpath match expression '"
-                    + (StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION") + "'", e);
+                    + (StringHelper.isNotBlank(expression) ? expression : "EMPTY EXPRESSION") + "'", e);
         }
     }
 
@@ -319,7 +319,7 @@ public class ContentRepository {
         final ResourceType resource = validateWithSchematron.getResource();
         final URI uri = URI.create(resource.getLocation());
         final String path = uri.getPath();
-        final String compilerId = StringUtils.defaultIfBlank(validateWithSchematron.getCompiler(), SchXsltCompiler.COMPILER_ID);
+        final String compilerId = StringHelper.blankToDefault(validateWithSchematron.getCompiler(), SchXsltCompiler.COMPILER_ID);
         if (path != null && path.endsWith(".sch")) {
             final XsltExecutable executable = loadSchematronXslt(uri, compilerId);
             return new Transformation(executable, resource);

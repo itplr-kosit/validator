@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
@@ -61,7 +61,7 @@ public class SaxonSecurityTest {
                 transformer.transform();
 
                 // if this point is reached, the 'evil' element should at least not be filled with 'evil' content!
-                if (StringUtils.isNotBlank(result.getXdmNode().getStringValue())) {
+                if (StringHelper.isNotBlank(result.getXdmNode().getStringValue())) {
                     fail("Saxon configuration should prevent expansion within " + resource);
                 }
             } catch (final SaxonApiException | RuntimeException e) {

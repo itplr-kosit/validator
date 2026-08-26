@@ -12,8 +12,7 @@ import java.util.Map;
 
 import javax.xml.validation.Schema;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
+import org.kosit.base.string.StringHelper;
 import org.kosit.jaxb.JaxbHelper;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
@@ -76,7 +75,7 @@ public class ConfigurationBuilder {
      * @return a fallback configuration
      */
     public static FallbackBuilder defaultFallback() {
-        throw new NotImplementedException("Not yet defined");
+        throw new UnsupportedOperationException("Not yet defined");
     }
 
     /**
@@ -288,7 +287,7 @@ public class ConfigurationBuilder {
         s.setAuthor(configuration.getAuthor());
         s.setDate(JaxbHelper.createTimestamp());
         final DescriptionType d = new DescriptionType();
-        d.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, "")));
+        d.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringHelper.blankToDefault(this.description, "")));
         s.setDescription(d);
         s.setName(configuration.getName());
         s.getScenario().addAll(configuration.getScenarios().stream().map(Scenario::getConfiguration).toList());

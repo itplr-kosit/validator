@@ -1,10 +1,10 @@
 package org.kosit.validator.xvrl;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.kosit.validator.api.xmlerror.XmlError.Severity.SEVERITY_FATAL_ERROR;
 
 import java.util.stream.Collectors;
 
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.api.xmlerror.XmlError;
 import org.kosit.xvrl.model.XVRLDetectionType;
 import org.kosit.xvrl.model.XVRLLocationType;
@@ -70,7 +70,7 @@ public class XvrlDetectionBuilder {
     }
 
     public XvrlDetectionBuilder addMessage(final String message) {
-        if (isNotBlank(message)) {
+        if (StringHelper.isNotBlank(message)) {
             this.detection.getMessages().add(createMessage(message));
         }
         return this;
@@ -124,14 +124,14 @@ public class XvrlDetectionBuilder {
     }
 
     public XvrlDetectionBuilder code(final String code) {
-        if (isNotBlank(code)) {
+        if (StringHelper.isNotBlank(code)) {
             this.detection.setCode(code);
         }
         return this;
     }
 
     public XvrlDetectionBuilder id(final String id) {
-        if (isNotBlank(id)) {
+        if (StringHelper.isNotBlank(id)) {
             this.detection.setId(id);
         }
         return this;

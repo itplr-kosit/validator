@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - (BUILD) The `validator-api` module no longer emits stub `ObjectFactory` classes for the `svrl` and `scenario` packages, which shadowed the complete ones of the respective modules on the classpath
+- (CLI) `Format.mergeCodes` no longer discards the plain formatting codes like `BOLD` or `UNDERLINE` and no longer emits background colors twice. `Code.isColor()` is `true` for the background colors as well, so the previous filter combination only ever selected the `BG_*` codes
 
 ## 1.6.3 - 2026-08-20
 

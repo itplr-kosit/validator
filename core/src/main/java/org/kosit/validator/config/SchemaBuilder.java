@@ -1,15 +1,13 @@
 package org.kosit.validator.config;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
-
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collections;
 
 import javax.xml.validation.Schema;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.kosit.base.string.StringHelper;
+import org.kosit.validator.config.SchemaBuilder.SchemaParseResult;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ResourceType;
@@ -22,7 +20,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andreas Penski
  */
-public class SchemaBuilder implements SingleProcessingResultBuilder<Pair<ValidateWithXmlSchema, Schema>> {
+public class SchemaBuilder implements SingleProcessingResultBuilder<SchemaParseResult> {
+
+    public static record SchemaParseResult(ValidateWithXmlSchema validationResult, Schema schema) {
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemaBuilder.class);
 
@@ -34,7 +35,7 @@ public class SchemaBuilder implements SingleProcessingResultBuilder<Pair<Validat
 
     private String name;
 
-    private static SingleProcessingResult<Pair<ValidateWithXmlSchema, Schema>, String> createError(final String msg) {
+    private static SingleProcessingResult<SchemaParseResult, String> createError(final String msg) {
         return new SingleProcessingResult<>(null, Collections.singletonList(msg));
     }
 
@@ -42,17 +43,20 @@ public class SchemaBuilder implements SingleProcessingResultBuilder<Pair<Validat
         return new SchemaBuilder();
     }
 
+    SchemaBuilder() {
+    }
+
     @Override
-    public SingleProcessingResult<Pair<ValidateWithXmlSchema, Schema>, String> build(final ContentRepository repository) {
+    public SingleProcessingResult<SchemaParseResult, String> build(final ContentRepository repository) {
         if (this.schema == null && this.schemaLocation == null) {
             return createError("Must supply source location and/or executable for schema '" + this.name + "'");
         }
-        SingleProcessingResult<Pair<ValidateWithXmlSchema, Schema>, String> result;
+        SingleProcessingResult<SchemaParseResult, String> result;
         try {
             if (this.schema == null) {
                 this.schema = repository.createSchema(this.schemaLocation);
             }
-            result = new SingleProcessingResult<>(new ImmutablePair<>(createObject(), this.schema));
+            result = new SingleProcessingResult<>(new SchemaParseResult(createObject(), this.schema));
         } catch (final IllegalStateException e) {
             LOGGER.error(e.getMessage(), e);
             result = createError("Can not create schema based " + this.schemaLocation + ". Exception is " + e.getMessage());
@@ -63,8 +67,8 @@ public class SchemaBuilder implements SingleProcessingResultBuilder<Pair<Validat
     private ValidateWithXmlSchema createObject() {
         final ValidateWithXmlSchema o = new ValidateWithXmlSchema();
         final ResourceType r = new ResourceType();
-        r.setName(isNotEmpty(this.name) ? this.name : DEFAULT_NAME);
-        r.setLocation(this.schemaLocation != null ? this.schemaLocation.toASCIIString() : "manuelly configured");
+        r.setName(StringHelper.isNotEmpty(this.name) ? this.name : DEFAULT_NAME);
+        r.setLocation(this.schemaLocation != null ? this.schemaLocation.toASCIIString() : "manually configured");
         o.getResource().add(r);
         return o;
     }
@@ -132,8 +136,5 @@ public class SchemaBuilder implements SingleProcessingResultBuilder<Pair<Validat
 
     String getName() {
         return this.name;
-    }
-
-    SchemaBuilder() {
     }
 }
