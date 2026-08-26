@@ -1,8 +1,6 @@
-package org.kosit.validator.impl.model;
+package org.kosit.validator.api.xmlerror;
 
 import org.slf4j.Logger;
-
-import org.kosit.validator.api.XmlError;
 import org.kosit.validator.model.XMLSyntaxErrorSeverity;
 
 /**

@@ -1,4 +1,4 @@
-package org.kosit.validator.impl.xml;
+package org.kosit.base.xml;
 
 import java.io.IOException;
 
@@ -11,6 +11,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
+
+import jakarta.xml.bind.util.JAXBSource;
 
 /**
  * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect on
@@ -32,7 +34,8 @@ public class XMLReaderWrapper implements XMLReader {
     public boolean getFeature(final String name) {
         if (SAX_FEATURES_NAMESPACES.equals(name)) {
             return true;
-        } else if (SAX_FEATURES_NAMESPACE_PREFIXES.equals(name)) {
+        }
+        if (SAX_FEATURES_NAMESPACE_PREFIXES.equals(name)) {
             return false;
         }
         // just return false on unknown properties

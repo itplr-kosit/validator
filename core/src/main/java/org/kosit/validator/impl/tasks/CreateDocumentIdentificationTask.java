@@ -7,10 +7,10 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.DocumentIdentificationType;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.Document;
-import org.kosit.xvrl.model.XVRLDetection;
-import org.kosit.xvrl.model.XVRLMetadata;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLDetectionType;
+import org.kosit.xvrl.model.XVRLDocumentType;
+import org.kosit.xvrl.model.XVRLMetadataType;
+import org.kosit.xvrl.model.XVRLReportType;
 
 /**
  * Creates a document identification element for the report by using the generates hash.
@@ -24,19 +24,20 @@ public class CreateDocumentIdentificationTask implements CheckTask {
 
     private static final String REPORT_NAME = "CreateDocument Identification Validator";
 
-    private static XVRLReport generateXVRLReport(final SingleProcessingResult<DocumentIdentificationType, XMLSyntaxError> currentResult) {
+    private static XVRLReportType generateXVRLReport(
+            final SingleProcessingResult<DocumentIdentificationType, XMLSyntaxError> currentResult) {
         if (currentResult.isValid()) {
             final DocumentIdentificationType result = currentResult.getObject();
             return builder(REPORT_NAME)
-                    .add(detectionBuilder().addMessage(result.getDocumentReference()).severity(XVRLDetection.Severity.INFO)).build();
+                    .add(detectionBuilder().addMessage(result.getDocumentReference()).severity(XVRLDetectionType.Severity.INFO)).build();
         }
         return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detectionBuilder().addError(e)).toList()).build();
 
     }
 
     private static void addDocumentIdentification(final Process transporter) {
-        final XVRLMetadata metadata = transporter.getXvrlReportSummary().getMetadata();
-        final Document document = new Document();
+        final XVRLMetadataType metadata = transporter.getXvrlReportSummary().getMetadata();
+        final XVRLDocumentType document = new XVRLDocumentType();
         document.setHref(transporter.getInput().getName());
         metadata.getDocuments().add(document);
     }

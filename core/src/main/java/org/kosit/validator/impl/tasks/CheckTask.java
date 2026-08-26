@@ -10,9 +10,9 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.xvrl.model.XVRLMetadata;
-import org.kosit.xvrl.model.XVRLReport;
-import org.kosit.xvrl.model.XVRLReportSummary;
+import org.kosit.xvrl.model.XVRLMetadataType;
+import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XVRLReportsType;
 
 /**
  * Interface that is implemented by all check steps. The parameter of type {@link Process} serves both as a source for
@@ -48,7 +48,7 @@ public interface CheckTask {
      */
     final class Process {
 
-        private XVRLMetadata metadata;
+        private XVRLMetadataType metadata;
 
         private List<ProcessStepResult<?, ?>> processStepResults = new ArrayList<>();
 
@@ -81,10 +81,10 @@ public interface CheckTask {
         private CTScenarioMatch scenarioMatch;
 
         public Process(final CTReadResource input) {
-            this(input, new XVRLMetadata());
+            this(input, new XVRLMetadataType());
         }
 
-        public Process(final CTReadResource input, final XVRLMetadata xvrlMetadata) {
+        public Process(final CTReadResource input, final XVRLMetadataType xvrlMetadata) {
             this.input = input;
             this.metadata = xvrlMetadata;
         }
@@ -93,15 +93,15 @@ public interface CheckTask {
             this.processStepResults.add(result);
         }
 
-        public XVRLReportSummary getXvrlReportSummary() {
-            final XVRLReportSummary summary = new XVRLReportSummary();
+        public XVRLReportsType getXvrlReportSummary() {
+            final XVRLReportsType summary = new XVRLReportsType();
             summary.setMetadata(this.metadata);
-            summary.getReports()
+            summary.getReportOrReportsOrDigest()
                     .addAll(this.processStepResults.stream().flatMap(processStepResult -> processStepResult.getReport().stream()).toList());
             return summary;
         }
 
-        public <T, E> List<XVRLReport> getReports(final ProcessKey<T, E> key) {
+        public <T, E> List<XVRLReportType> getReports(final ProcessKey<T, E> key) {
             return getActionResult(key).map(ProcessStepResult::getReport).orElse(null);
         }
 
@@ -128,7 +128,7 @@ public interface CheckTask {
         public static final record ProcessKey<T, E> (Class<T> type, Class<E> other) {
         }
 
-        public XVRLMetadata getMetadata() {
+        public XVRLMetadataType getMetadata() {
             return this.metadata;
         }
 
@@ -151,7 +151,7 @@ public interface CheckTask {
             return this.input;
         }
 
-        public void setMetadata(final XVRLMetadata metadata) {
+        public void setMetadata(final XVRLMetadataType metadata) {
             this.metadata = metadata;
         }
 

@@ -6,10 +6,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.conformatron.api.model.source.CTReadResource;
-import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
-import org.kosit.validator.api.XmlError;
+import org.kosit.validator.api.compact.AcceptRecommendation;
+import org.kosit.validator.api.xmlerror.XmlError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
@@ -19,9 +19,9 @@ import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.Timestamp;
-import org.kosit.xvrl.model.Validator;
-import org.kosit.xvrl.model.XVRLMetadata;
+import org.kosit.xvrl.model.XVRLMetadataType;
+import org.kosit.xvrl.model.XVRLTimestampType;
+import org.kosit.xvrl.model.XVRLValidatorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,12 +78,13 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
      *
      * @return the metadata
      */
-    public XVRLMetadata createMetadata() {
-        final XVRLMetadata metadata = new XVRLMetadata();
-        final Timestamp timestamp = new Timestamp();
+    public XVRLMetadataType createMetadata() {
+        final XVRLMetadataType metadata = new XVRLMetadataType();
+        final XVRLTimestampType timestamp = new XVRLTimestampType();
         timestamp.setValue(createTimestamp());
         metadata.getTimestamps().add(timestamp);
-        final Validator validator = new Validator();
+
+        final XVRLValidatorType validator = new XVRLValidatorType();
         validator.setName(this.engineInformation.getName());
         validator.setVersion(this.engineInformation.getVersion());
         metadata.getValidators().add(validator);

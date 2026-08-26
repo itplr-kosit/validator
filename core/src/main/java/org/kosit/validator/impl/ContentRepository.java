@@ -18,8 +18,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kosit.base.xml.SchemaResolver;
 import org.kosit.jaxb.adapter.StringTrimAdapter;
-import org.kosit.jaxb.xml.SchemaResolver;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.SchematronCompiler;
 import org.kosit.validator.impl.Scenario.Transformation;

@@ -143,7 +143,7 @@ public class TestHelper {
      */
     public static XdmNode load(final URL url) {
         try ( final InputStream input = url.openStream() ) {
-            return TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(input));
+            return TestObjectFactory.getProcessor().newDocumentBuilder().build(new StreamSource(input));
         } catch (final SaxonApiException | IOException e) {
             throw new IllegalStateException("Error loading the XML file", e);
 

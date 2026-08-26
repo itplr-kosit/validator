@@ -1,4 +1,4 @@
-package org.kosit.jaxb.xml;
+package org.kosit.base.xml;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -7,7 +7,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.validation.SchemaFactory;
 
-import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -17,12 +16,6 @@ public final class XMLHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLHelper.class);
 
     private static final String JDK_XERCES_CLASS = "com.sun.org.apache.xerces.internal.impl.Constants";
-
-    public static void forceOpenJdkXmlImplementation() {
-        if (!isOpenJdkXmlImplementationAvailable()) {
-            throw new IllegalStateException("No OpenJDK version of Xerces found");
-        }
-    }
 
     public static boolean isOpenJdkXmlImplementationAvailable() {
         try {
@@ -35,6 +28,12 @@ public final class XMLHelper {
         }
     }
 
+    public static void forceOpenJdkXmlImplementation() {
+        if (!isOpenJdkXmlImplementationAvailable()) {
+            throw new IllegalStateException("No OpenJDK version of Xerces found");
+        }
+    }
+
     /**
      * Set a feature on a {@link DocumentBuilderFactory}, logging a warning if the feature is not supported.
      *
@@ -42,7 +41,7 @@ public final class XMLHelper {
      * @param feature The parser feature to set. May not be <code>null</code>.
      * @param bValue The value to set for the feature.
      */
-    public static void setFeature(@NonNull final DocumentBuilderFactory factory, @NonNull final String feature, final boolean bValue) {
+    public static void setFeature(final DocumentBuilderFactory factory, final String feature, final boolean bValue) {
         try {
             factory.setFeature(feature, bValue);
         } catch (final ParserConfigurationException ex) {
@@ -50,7 +49,7 @@ public final class XMLHelper {
         }
     }
 
-    public static @NonNull DocumentBuilder createSafeDocumentBuilder() {
+    public static DocumentBuilder createSafeDocumentBuilder() {
         try {
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             setFeature(factory, XMLConstants.FEATURE_SECURE_PROCESSING, true);
@@ -59,7 +58,7 @@ public final class XMLHelper {
             setFeature(factory, "http://xml.org/sax/features/external-parameter-entities", false);
             setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file");
             factory.setNamespaceAware(true);
             factory.setValidating(false);
             factory.setIgnoringElementContentWhitespace(false);
@@ -80,7 +79,7 @@ public final class XMLHelper {
      * @param value The value to set for the property.
      * @throws IllegalStateException if the property is not supported by the used JAXP implementation
      */
-    public static void setProperty(@NonNull final SchemaFactory factory, @NonNull final String property, final Object value) {
+    public static void setProperty(final SchemaFactory factory, final String property, final Object value) {
         try {
             factory.setProperty(property, value);
         } catch (final SAXException ex) {
@@ -96,7 +95,7 @@ public final class XMLHelper {
      * @return the created {@link SchemaFactory}. Never <code>null</code>.
      * @throws IllegalStateException if one of the security properties can not be set
      */
-    public static @NonNull SchemaFactory createSafeSchemaFactory() {
+    public static SchemaFactory createSafeSchemaFactory() {
         forceOpenJdkXmlImplementation();
 
         final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -113,7 +112,7 @@ public final class XMLHelper {
      * @param value The value to set for the property.
      * @throws IllegalStateException if the property is not supported by the used JAXP implementation
      */
-    public static void setProperty(@NonNull final XMLInputFactory factory, @NonNull final String property, final Object value) {
+    public static void setProperty(final XMLInputFactory factory, final String property, final Object value) {
         try {
             factory.setProperty(property, value);
         } catch (final IllegalArgumentException ex) {
@@ -122,7 +121,7 @@ public final class XMLHelper {
         }
     }
 
-    public static @NonNull XMLInputFactory createSafeXMLInputFactory() {
+    public static XMLInputFactory createSafeXMLInputFactory() {
         final XMLInputFactory factory = XMLInputFactory.newFactory();
         setProperty(factory, XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
         setProperty(factory, XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);

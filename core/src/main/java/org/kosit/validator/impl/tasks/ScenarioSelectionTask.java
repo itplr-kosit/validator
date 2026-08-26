@@ -12,8 +12,8 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLDetection;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLDetectionType;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,14 +39,14 @@ public class ScenarioSelectionTask implements CheckTask {
 
     private final SelectScenarioAction selectScenarioAction;
 
-    private static XVRLReport generateXVRLReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
+    private static XVRLReportType generateXVRLReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
         final XVRLReportBuilder builder = XVRLReportBuilder.builder(METADATA);
         if (scenarioTypeResult.getObject().isFallback()) {
             builder.add(detectionBuilder().addError("No valid scenario configuration found for '" + name + "'").code("fallback-match"));
         } else {
             builder.add(detectionBuilder()
                     .addMessage("Scenario '" + scenarioTypeResult.getObject().getName() + "' identified for '" + name + "'")
-                    .severity(XVRLDetection.Severity.INFO).code("scenario-matched"));
+                    .severity(XVRLDetectionType.Severity.INFO).code("scenario-matched"));
             builder.add(detectionBuilder().id("scenario").code(scenarioTypeResult.getObject().getName()));
         }
         return builder.build();

@@ -2,8 +2,8 @@ package org.kosit.validator.scenario.v1;
 
 import javax.xml.validation.Schema;
 
+import org.kosit.base.xml.SchemaResolver;
 import org.kosit.jaxb.JaxbConversionService;
-import org.kosit.jaxb.xml.SchemaResolver;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;

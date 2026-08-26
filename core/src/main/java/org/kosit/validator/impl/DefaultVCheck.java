@@ -23,8 +23,7 @@ import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.impl.xml.ProcessorProvider;
-import org.kosit.xvrl.impl.XvrlConversionService;
-import org.kosit.xvrl.model.XVRLMetadata;
+import org.kosit.xvrl.model.XVRLMetadataType;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -36,8 +35,6 @@ import net.sf.saxon.s9api.Processor;
  */
 @Deprecated(since = "2.0.0", forRemoval = true)
 public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
-
-    private final XvrlConversionService xvrlConversionService;
 
     private final List<VConfiguration> configuration;
 
@@ -66,20 +63,19 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
         this.configuration = Arrays.asList(configuration);
         this.processor = processor;
         this.adHocValidation = new SchematronValidation(processor);
-        this.xvrlConversionService = new XvrlConversionService();
         this.checkSteps = new ArrayList<>();
         this.checkSteps.add(new DocumentParseTask(processor));
         this.checkSteps.add(new CreateDocumentIdentificationTask());
         this.checkSteps.add(new ScenarioSelectionTask(new ScenarioRepository(configuration)));
         this.checkSteps.add(new SchemaValidationTask(processor));
         this.checkSteps.add(new SchematronValidationTask(new SvrlConversionService()));
-        this.checkSteps.add(new CreateReportsTask(processor, this.xvrlConversionService));
+        this.checkSteps.add(new CreateReportsTask(processor));
         this.checkSteps.add(new ComputeAcceptanceTask());
         this.conformanceValidation = new ConformanceValidation(engineInformation, this.checkSteps);
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
-    protected XVRLMetadata createXVRLMetadata() {
+    protected XVRLMetadataType createXVRLMetadata() {
         return this.conformanceValidation.createMetadata();
     }
 
@@ -117,11 +113,6 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
     @Deprecated(since = "2.0.0", forRemoval = true)
     protected VResult runCheckInternal(final Process checkProcess) {
         return this.conformanceValidation.run(checkProcess);
-    }
-
-    @Deprecated(since = "2.0.0", forRemoval = true)
-    public XvrlConversionService getXvrlConversionService() {
-        return this.xvrlConversionService;
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)

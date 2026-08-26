@@ -16,6 +16,7 @@ import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
 import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.xvrl.model.ObjectFactory;
 
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -41,7 +42,7 @@ public class ValidationController implements ValidationResource {
             throw new UncheckedIOException(e);
         }
         final XvrlConversionService conversionService = new XvrlConversionService();
-        final byte[] resultBytes = conversionService.writeXml(result.getReportSummary()).getBytes();
+        final byte[] resultBytes = conversionService.writeXml(new ObjectFactory().createReports(result.getReportSummary())).getBytes();
         return addHeaders(result, Response.ok(resultBytes).type(MediaType.APPLICATION_XML).header("Content-Disposition",
                 "attachment; filename=validation-result.xml")).build();
     }
@@ -69,7 +70,8 @@ public class ValidationController implements ValidationResource {
         }
 
         final XvrlConversionService conversionService = new XvrlConversionService();
-        final byte[] resultBytes = conversionService.writeXml(compactReport.getOriginal()).getBytes(StandardCharsets.UTF_8);
+        final byte[] resultBytes = conversionService.writeXml(new ObjectFactory().createReports(compactReport.getOriginal()))
+                .getBytes(StandardCharsets.UTF_8);
         return addHeaders(result, Response.ok(resultBytes).type(MediaType.APPLICATION_XML).header("Content-Disposition",
                 "attachment; filename=compact-validation-result.xml")).build();
     }

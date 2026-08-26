@@ -12,10 +12,10 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
+import org.kosit.validator.impl.xvrl.XvrlSerializer;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.xvrl.impl.XvrlConversionService;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +43,8 @@ public class CreateReportsTask implements CheckTask {
 
     private final XvrlSerializer xvrlSerializer;
 
-    public CreateReportsTask(final Processor processor, final XvrlConversionService xvrlConversionService) {
-        this.xvrlSerializer = new XvrlSerializer(xvrlConversionService, processor);
+    public CreateReportsTask(final Processor processor) {
+        this.xvrlSerializer = new XvrlSerializer(processor);
     }
 
     private static List<Scenario.Transformation> getTransformations(final Process results) {
@@ -52,12 +52,12 @@ public class CreateReportsTask implements CheckTask {
         return scenarioSelection.getObject().getReportTransformations();
     }
 
-    private static XVRLReport generateXVRLReport(final ResourceType resourceType, final XdmNode node) {
+    private static XVRLReportType generateXVRLReport(final ResourceType resourceType, final XdmNode node) {
         return XVRLReportBuilder.builder(METADATA)
                 .add(detectionBuilder().id(resourceType.getName()).add(supplemental().addContent(node).id(resourceType.getName()))).build();
     }
 
-    private static XVRLReport createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {
+    private static XVRLReportType createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {
         return builder(METADATA).add(detectionBuilder().id("error").addError(error)).build();
     }
 
@@ -79,7 +79,7 @@ public class CreateReportsTask implements CheckTask {
         final BusinessReport r = new BusinessReport();
         r.setName(transformation.getResourceType().getName());
         try {
-            final XdmNode root = this.xvrlSerializer.serialize(process.getXvrlReportSummary());
+            final XdmNode root = this.xvrlSerializer.marshalToXdmNode(process.getXvrlReportSummary());
             final XsltTransformer transformer = transformation.getExecutable().load();
             transformer.setInitialContextNode(root);
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();

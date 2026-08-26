@@ -1,4 +1,4 @@
-package org.kosit.validator.api;
+package org.kosit.validator.api.xmlerror;
 
 /**
  * Error object for providing errors from internal processing, e.g. schema validation errors.

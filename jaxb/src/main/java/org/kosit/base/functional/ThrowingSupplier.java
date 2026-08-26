@@ -1,4 +1,4 @@
-package org.kosit.validator.api.helper;
+package org.kosit.base.functional;
 
 /**
  * Special version of the Supplier interface for methods throwing an exception

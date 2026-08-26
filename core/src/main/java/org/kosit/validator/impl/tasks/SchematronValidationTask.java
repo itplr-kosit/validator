@@ -17,7 +17,7 @@ import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.oclc.purl.dsdl.svrl.Text;
@@ -70,7 +70,7 @@ public class SchematronValidationTask implements CheckTask {
         return object.getSchematronValidations().isEmpty();
     }
 
-    private static List<XVRLReport> generateXVRLReport(final List<ValidationResultsSchematron> validationResult) {
+    private static List<XVRLReportType> generateXVRLReport(final List<ValidationResultsSchematron> validationResult) {
         return validationResult.stream().map(e -> {
             final XVRLReportBuilder reportBuilder = XVRLReportBuilder.builder(REPORT_NAME);
             reportBuilder.addSchema(e.getResource());

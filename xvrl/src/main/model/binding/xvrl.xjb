@@ -26,39 +26,29 @@
             <jaxb:package name="org.kosit.xvrl.model"/>
         </jaxb:schemaBindings>
 
-        <jaxb:bindings node="//xs:element[@name='report']">
-            <jaxb:class name="XVRLReport"/>
+        <jaxb:bindings node="//xs:complexType[@name='XVRLReportType']">
             <inheritance:extends>org.kosit.xvrl.impl.AbstractXVRLReport</inheritance:extends>
         </jaxb:bindings>
 
-        <jaxb:bindings node="//xs:element[@name='reports']">
-            <jaxb:class name="XVRLReportSummary"/>
+        <jaxb:bindings node="//xs:complexType[@name='XVRLReportsType']">
             <inheritance:extends>org.kosit.xvrl.impl.AbstractXVRLReportSummary</inheritance:extends>
         </jaxb:bindings>
 
-        <jaxb:bindings node="//xs:element[@name='detection']">
-            <jaxb:class name="XVRLDetection"/>
+        <jaxb:bindings node="//xs:complexType[@name='XVRLDetectionType']">
             <inheritance:implements>org.kosit.xvrl.api.BaseDetection</inheritance:implements>
 
-            <jaxb:bindings node=".//xs:complexType/xs:choice">
+            <jaxb:bindings node="xs:choice">
                  <simplify:as-element-property/>
             </jaxb:bindings>
         </jaxb:bindings>
 
-        <jaxb:bindings node="//xs:element[@name='metadata']">
-            <jaxb:class name="XVRLMetadata"/>
-
-            <jaxb:bindings node=".//xs:complexType/xs:choice">
+        <jaxb:bindings node="//xs:complexType[@name='XVRLMetadataType']">
+            <jaxb:bindings node="xs:choice">
                 <simplify:as-element-property/>
             </jaxb:bindings>
         </jaxb:bindings>
 
-        <jaxb:bindings node="//xs:element[@name='digest']">
-            <jaxb:class name="XVRLDigest"/>
-        </jaxb:bindings>
-
-        <jaxb:bindings node="//xs:element[@name='message']">
-            <jaxb:class name="XVRLMessage"/>
+        <jaxb:bindings node="//xs:complexType[@name='XVRLMessageType']">
             <inheritance:implements>org.kosit.xvrl.api.BaseMessage</inheritance:implements>
         </jaxb:bindings>
 

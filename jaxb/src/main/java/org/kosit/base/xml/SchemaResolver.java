@@ -1,4 +1,4 @@
-package org.kosit.jaxb.xml;
+package org.kosit.base.xml;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -9,7 +9,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
-import org.jspecify.annotations.NonNull;
 import org.xml.sax.SAXException;
 
 /**
@@ -17,10 +16,7 @@ import org.xml.sax.SAXException;
  */
 public final class SchemaResolver {
 
-    private SchemaResolver() {
-    }
-
-    public static @NonNull Source resolve(final @NonNull URL resource) {
+    public static Source resolve(final URL resource) {
         Objects.requireNonNull(resource);
 
         try {
@@ -37,12 +33,15 @@ public final class SchemaResolver {
      * @param schemaUrl the schema URL to read
      * @return scenario schema
      */
-    public static @NonNull Schema createParsedSchema(final @NonNull URL schemaUrl) {
+    public static Schema createParsedSchema(final URL schemaUrl) {
         final Source source = resolve(schemaUrl);
         try {
             return XMLHelper.createSafeSchemaFactory().newSchema(source);
         } catch (final SAXException e) {
             throw new IllegalArgumentException("Can not load schema from source '" + source.getSystemId() + "'", e);
         }
+    }
+
+    private SchemaResolver() {
     }
 }

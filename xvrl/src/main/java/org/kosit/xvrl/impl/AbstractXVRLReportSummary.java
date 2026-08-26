@@ -2,11 +2,11 @@ package org.kosit.xvrl.impl;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.xvrl.api.BaseReportSummary;
-import org.kosit.xvrl.model.XVRLReport;
-import org.kosit.xvrl.model.XVRLReportSummary;
+import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XVRLReportsType;
 
 /**
  * Base class for XVRLReportSummary to overcome the issue that simplifying and pluralizing the choice elements of
@@ -19,16 +19,14 @@ public abstract class AbstractXVRLReportSummary implements BaseReportSummary, Se
     public abstract List<Serializable> getReportOrReportsOrDigest();
 
     @Override
-    public List<XVRLReport> getReports() {
-        // Must return a mutable list
-        return getReportOrReportsOrDigest().stream().filter(XVRLReport.class::isInstance).map(XVRLReport.class::cast)
-                .collect(Collectors.toList());
+    @ReturnsImmutableObject
+    public List<XVRLReportType> getReports() {
+        return getReportOrReportsOrDigest().stream().filter(XVRLReportType.class::isInstance).map(XVRLReportType.class::cast).toList();
     }
 
     @Override
-    public List<XVRLReportSummary> getReportSummaries() {
-        // Must return a mutable list
-        return getReportOrReportsOrDigest().stream().filter(XVRLReportSummary.class::isInstance).map(XVRLReportSummary.class::cast)
-                .collect(Collectors.toList());
+    @ReturnsImmutableObject
+    public List<XVRLReportsType> getReportSummaries() {
+        return getReportOrReportsOrDigest().stream().filter(XVRLReportsType.class::isInstance).map(XVRLReportsType.class::cast).toList();
     }
 }

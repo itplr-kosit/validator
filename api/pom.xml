@@ -28,10 +28,6 @@
             <artifactId>scenario</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.conformatron</groupId>
-            <artifactId>conformatron-api</artifactId>
-        </dependency>
     </dependencies>
     
     <build>

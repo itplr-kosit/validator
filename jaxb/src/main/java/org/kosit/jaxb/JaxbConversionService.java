@@ -33,7 +33,7 @@ import javax.xml.validation.Schema;
 
 import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 import org.jspecify.annotations.Nullable;
-import org.kosit.jaxb.xml.XMLHelper;
+import org.kosit.base.xml.XMLHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

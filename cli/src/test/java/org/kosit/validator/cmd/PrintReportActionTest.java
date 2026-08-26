@@ -21,7 +21,7 @@ public class PrintReportActionTest {
     @BeforeEach
     public void setup() {
         CommandLine.activate();
-        this.action = new PrintReportAction(TestObjectFactory.createProcessor());
+        this.action = new PrintReportAction(TestObjectFactory.getProcessor());
     }
 
     @AfterEach

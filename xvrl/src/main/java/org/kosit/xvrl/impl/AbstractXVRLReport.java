@@ -2,20 +2,22 @@ package org.kosit.xvrl.impl;
 
 import java.util.List;
 
+import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.xvrl.api.BaseDetection;
-import org.kosit.xvrl.model.XVRLDetection;
-import org.kosit.xvrl.model.XVRLDigest;
+import org.kosit.xvrl.model.XVRLDetectionType;
+import org.kosit.xvrl.model.XVRLDigestType;
 
 public abstract class AbstractXVRLReport {
 
-    public abstract List<XVRLDetection> getDetection();
+    public abstract List<XVRLDetectionType> getDetection();
 
+    @ReturnsImmutableObject
     public List<String> getAllErrors() {
         return getDetection().stream().filter(BaseDetection::hasErrors).flatMap(xvrlDetection -> xvrlDetection.getAllMessages().stream())
                 .toList();
     }
 
-    protected abstract XVRLDigest getDigest();
+    protected abstract XVRLDigestType getDigest();
 
     @Override
     public String toString() {

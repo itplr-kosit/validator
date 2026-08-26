@@ -1,8 +1,8 @@
 package org.kosit.validator.impl.xvrl;
 
-import org.kosit.validator.api.XmlError;
-import org.kosit.xvrl.model.Location;
-import org.kosit.xvrl.model.XVRLDetection;
+import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.xvrl.model.XVRLDetectionType;
+import org.kosit.xvrl.model.XVRLLocationType;
 
 public class XmlErrorImpl implements XmlError {
 
@@ -14,28 +14,22 @@ public class XmlErrorImpl implements XmlError {
 
     private Long columnNumber;
 
-    public XmlErrorImpl(final XVRLDetection xvrlDetection) {
+    public XmlErrorImpl(final XVRLDetectionType xvrlDetection) {
         this.message = xvrlDetection.getErrorMessage();
         this.severity = getSeverityFromDetection(xvrlDetection);
-        final Location location = xvrlDetection.getErrorLocation();
+        final XVRLLocationType location = xvrlDetection.getErrorLocation();
         if (location != null) {
             this.rowNumber = location.getLine();
             this.columnNumber = location.getColumn();
         }
     }
 
-    private static Severity getSeverityFromDetection(final XVRLDetection xvrlDetection) {
-        switch (xvrlDetection.getSeverity()) {
-            case ERROR: {
-                return Severity.SEVERITY_ERROR;
-            }
-            case FATAL_ERROR: {
-                return Severity.SEVERITY_FATAL_ERROR;
-            }
-            default: {
-                return Severity.SEVERITY_WARNING;
-            }
-        }
+    private static Severity getSeverityFromDetection(final XVRLDetectionType xvrlDetection) {
+        return switch (xvrlDetection.getSeverity()) {
+            case ERROR -> Severity.SEVERITY_ERROR;
+            case FATAL_ERROR -> Severity.SEVERITY_FATAL_ERROR;
+            default -> Severity.SEVERITY_WARNING;
+        };
     }
 
     @Override

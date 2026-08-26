@@ -13,8 +13,9 @@ import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.xvrl.impl.XvrlConversionService;
-import org.kosit.xvrl.model.XVRLDetection;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.ObjectFactory;
+import org.kosit.xvrl.model.XVRLDetectionType;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,16 +34,19 @@ class SerializeReportAction implements CheckTask {
 
     private final Path outputDirectory;
 
-    private final XvrlConversionService conversionService;
-
     private final NamingStrategy namingStrategy;
 
-    private static XVRLReport generateXVRLReport(final SingleProcessingResult<Boolean, String> result) {
+    private static XVRLReportType generateXVRLReport(final SingleProcessingResult<Boolean, String> result) {
         if (result.isValid()) {
-            return builder(REPORT_NAME).add(detectionBuilder().addMessage("Serialization successful").severity(XVRLDetection.Severity.INFO))
-                    .build();
+            return builder(REPORT_NAME)
+                    .add(detectionBuilder().addMessage("Serialization successful").severity(XVRLDetectionType.Severity.INFO)).build();
         }
         return XVRLReportBuilder.builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> detectionBuilder().addError(e))).build();
+    }
+
+    public SerializeReportAction(final Path outputDirectory, final NamingStrategy namingStrategy) {
+        this.outputDirectory = outputDirectory;
+        this.namingStrategy = namingStrategy;
     }
 
     @Override
@@ -50,7 +54,7 @@ class SerializeReportAction implements CheckTask {
         final Path file = this.outputDirectory.resolve(this.namingStrategy.createName(process.getName()));
         try {
             LOGGER.info("Serializing result to {}", file.toAbsolutePath());
-            final String xml = this.conversionService.writeXml(process.getXvrlReportSummary());
+            final String xml = new XvrlConversionService().writeXml(new ObjectFactory().createReports(process.getXvrlReportSummary()));
             Files.write(file, xml.getBytes());
         } catch (final IOException e) {
             LOGGER.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
@@ -69,12 +73,5 @@ class SerializeReportAction implements CheckTask {
             return true;
         }
         return false;
-    }
-
-    public SerializeReportAction(final Path outputDirectory, final XvrlConversionService conversionService,
-            final NamingStrategy namingStrategy) {
-        this.outputDirectory = outputDirectory;
-        this.conversionService = conversionService;
-        this.namingStrategy = namingStrategy;
     }
 }

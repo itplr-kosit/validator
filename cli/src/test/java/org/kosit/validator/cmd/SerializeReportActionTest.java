@@ -16,7 +16,6 @@ import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.TestProcessBuilder;
-import org.kosit.xvrl.impl.XvrlConversionService;
 
 /**
  * @author Andreas Penski
@@ -31,7 +30,7 @@ public class SerializeReportActionTest {
     public void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
         final DefaultNamingStrategy namingStrategy = new DefaultNamingStrategy();
-        this.action = new SerializeReportAction(this.tmpDirectory, new XvrlConversionService(), namingStrategy);
+        this.action = new SerializeReportAction(this.tmpDirectory, namingStrategy);
     }
 
     @AfterEach

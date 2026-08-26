@@ -150,7 +150,7 @@ public class VInputFactoryTest {
     @Test
     @Disabled("DOMSource currently not supported for v2")
     public void testDomSource() throws SaxonApiException, SAXException, IOException {
-        final DocumentBuilder builder = TestObjectFactory.createProcessor().newDocumentBuilder();
+        final DocumentBuilder builder = TestObjectFactory.getProcessor().newDocumentBuilder();
 
         final BuildingContentHandler handler = builder.newBuildingContentHandler();
         handler.startDocument();
@@ -169,7 +169,7 @@ public class VInputFactoryTest {
     @Test
     @Disabled("TinyDocumentImpl currently not supported for v2")
     public void testXdmNode() throws Exception {
-        final XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
+        final XdmNode node = TestObjectFactory.getProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         final VInput nodeVInput = VInputFactory.read(node, "node test");
         assertThat(nodeVInput).isNotNull();
         assertThat(nodeVInput.getSource()).isNotNull();

@@ -10,7 +10,7 @@ import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ class PrintReportAction implements CheckTask {
 
     private final Processor processor;
 
-    private static XVRLReport createReport() {
+    private static XVRLReportType createReport() {
         return XVRLReportBuilder.builder("Document wellformedness Validator").name("Print Report").setValid().build();
     }
 

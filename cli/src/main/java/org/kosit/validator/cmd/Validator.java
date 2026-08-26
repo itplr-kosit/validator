@@ -97,8 +97,7 @@ public class Validator {
         if (cliOptions.isExtractReport()) {
             check.getCheckSteps().add(new ExtractReportContentAction(processor, outputDirectory));
         }
-        check.getCheckSteps()
-                .add(new SerializeReportAction(outputDirectory, check.getXvrlConversionService(), determineNamingStrategy(cliOptions)));
+        check.getCheckSteps().add(new SerializeReportAction(outputDirectory, determineNamingStrategy(cliOptions)));
         if (cliOptions.isPrintReport()) {
             check.getCheckSteps().add(new PrintReportAction(processor));
         }

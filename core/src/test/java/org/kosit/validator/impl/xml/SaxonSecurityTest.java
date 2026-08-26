@@ -42,7 +42,7 @@ public class SaxonSecurityTest {
 
     @Test
     public void testEvilStylesheets() throws IOException {
-        final Processor p = TestObjectFactory.createProcessor();
+        final Processor p = TestObjectFactory.getProcessor();
         for (int i = 1; i <= 5; i++) {
             try {
                 final URL resource = SaxonSecurityTest.class.getResource("/evil/evil" + i + ".xsl");

@@ -6,10 +6,11 @@ import java.util.Optional;
 
 import javax.xml.namespace.QName;
 
-import org.kosit.xvrl.model.ObjectFactory;
-import org.kosit.xvrl.model.Validator;
-import org.kosit.xvrl.model.XVRLMetadata;
-import org.kosit.xvrl.model.XVRLReportSummary;
+import org.jspecify.annotations.Nullable;
+import org.kosit.base.annotation.ReturnsImmutableObject;
+import org.kosit.xvrl.model.XVRLMetadataType;
+import org.kosit.xvrl.model.XVRLReportsType;
+import org.kosit.xvrl.model.XVRLValidatorType;
 
 /**
  * Compact summary of the validation results using the existing XVRL. Provides convenience access to additive attributes
@@ -27,11 +28,7 @@ public class CompactXVRLReportSummary {
 
     private static final String ATTR_PROCESSING_ERRORS = "processing-errors";
 
-    private final XVRLReportSummary original;
-
-    public CompactXVRLReportSummary(XVRLReportSummary original) {
-        this.original = original;
-    }
+    private final XVRLReportsType original;
 
     /**
      * Creates a new instance with an empty underlying XVRLReportSummary.
@@ -39,7 +36,15 @@ public class CompactXVRLReportSummary {
      * @return new instance of {@link CompactXVRLReportSummary}
      */
     public static CompactXVRLReportSummary create() {
-        return new CompactXVRLReportSummary(new ObjectFactory().createXVRLReportSummary());
+        return new CompactXVRLReportSummary(new XVRLReportsType());
+    }
+
+    public CompactXVRLReportSummary(final XVRLReportsType original) {
+        this.original = original;
+    }
+
+    public XVRLReportsType getOriginal() {
+        return original;
     }
 
     /**
@@ -47,6 +52,7 @@ public class CompactXVRLReportSummary {
      *
      * @return list of {@link CompactXVRLReport}
      */
+    @ReturnsImmutableObject
     public List<CompactXVRLReport> getReports() {
         return original.getReports().stream().map(CompactXVRLReport::new).toList();
     }
@@ -56,8 +62,8 @@ public class CompactXVRLReportSummary {
      *
      * @param report the compact report
      */
-    public void addReport(CompactXVRLReport report) {
-        original.getReports().add(report.getOriginal());
+    public void addReport(final CompactXVRLReport report) {
+        original.getReportOrReportsOrDigest().add(report.getOriginal());
     }
 
     /**
@@ -65,8 +71,8 @@ public class CompactXVRLReportSummary {
      *
      * @param count number of acceptable results
      */
-    public void setAcceptable(long count) {
-        original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_ACCEPTABLE, CVRL_PREFIX), String.valueOf(count));
+    public void setAcceptable(final long count) {
+        original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_ACCEPTABLE, CVRL_PREFIX), Long.toString(count));
     }
 
     /**
@@ -75,7 +81,7 @@ public class CompactXVRLReportSummary {
      * @return number of acceptable results or null
      */
     public Long getAcceptable() {
-        String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_ACCEPTABLE));
+        final String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_ACCEPTABLE));
         return val != null ? Long.valueOf(val) : null;
     }
 
@@ -84,8 +90,8 @@ public class CompactXVRLReportSummary {
      *
      * @param count number of rejected results
      */
-    public void setRejected(long count) {
-        original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_REJECTED, CVRL_PREFIX), String.valueOf(count));
+    public void setRejected(final long count) {
+        original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_REJECTED, CVRL_PREFIX), Long.toString(count));
     }
 
     /**
@@ -94,7 +100,7 @@ public class CompactXVRLReportSummary {
      * @return number of rejected results or null
      */
     public Long getRejected() {
-        String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_REJECTED));
+        final String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_REJECTED));
         return val != null ? Long.valueOf(val) : null;
     }
 
@@ -103,8 +109,8 @@ public class CompactXVRLReportSummary {
      *
      * @param count number of processing errors
      */
-    public void setProcessingErrors(long count) {
-        original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_PROCESSING_ERRORS, CVRL_PREFIX), String.valueOf(count));
+    public void setProcessingErrors(final long count) {
+        original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_PROCESSING_ERRORS, CVRL_PREFIX), Long.toString(count));
     }
 
     /**
@@ -113,7 +119,7 @@ public class CompactXVRLReportSummary {
      * @return number of processing errors or null
      */
     public Long getProcessingErrors() {
-        String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_PROCESSING_ERRORS));
+        final String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_PROCESSING_ERRORS));
         return val != null ? Long.valueOf(val) : null;
     }
 
@@ -122,13 +128,14 @@ public class CompactXVRLReportSummary {
      *
      * @param info {@link ValidatorEngineInformation}
      */
-    public void setValidatorInformation(ValidatorEngineInformation info) {
+    public void setValidatorInformation(final ValidatorEngineInformation info) {
         if (original.getMetadata() == null) {
-            original.setMetadata(new ObjectFactory().createXVRLMetadata());
+            original.setMetadata(new XVRLMetadataType());
         }
-        Validator v = new ObjectFactory().createValidator();
-        v.setName(info.getName());
-        v.setVersion(info.getVersion());
+
+        final XVRLValidatorType v = new XVRLValidatorType();
+        v.setName(info.name());
+        v.setVersion(info.version());
         original.getMetadata().getValidators().clear();
         original.getMetadata().getValidators().add(v);
     }
@@ -138,12 +145,9 @@ public class CompactXVRLReportSummary {
      *
      * @return {@link ValidatorEngineInformation} or null
      */
+    @Nullable
     public ValidatorEngineInformation getValidatorInformation() {
-        return Optional.ofNullable(original.getMetadata()).map(XVRLMetadata::getValidators).stream().flatMap(Collection::stream).findFirst()
-                .map(v -> new ValidatorEngineInformation(v.getName(), v.getVersion())).orElse(null);
-    }
-
-    public XVRLReportSummary getOriginal() {
-        return original;
+        return Optional.ofNullable(original.getMetadata()).map(XVRLMetadataType::getValidators).stream().flatMap(Collection::stream)
+                .findFirst().map(v -> new ValidatorEngineInformation(v.getName(), v.getVersion())).orElse(null);
     }
 }

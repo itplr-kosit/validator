@@ -20,7 +20,7 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.source.CTResource;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.kosit.validator.api.helper.ThrowingSupplier;
+import org.kosit.base.functional.ThrowingSupplier;
 
 /**
  * Default implementation of {@link CTReadResource}

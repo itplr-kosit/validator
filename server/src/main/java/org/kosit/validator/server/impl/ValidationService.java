@@ -14,17 +14,17 @@ import java.util.stream.Collectors;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.XmlError;
 import org.kosit.validator.api.compact.CompactXVRLReport;
 import org.kosit.validator.api.compact.CompactXVRLReportSummary;
 import org.kosit.validator.api.compact.ValidatorEngineInformation;
+import org.kosit.validator.api.xmlerror.XmlError;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.server.config.ValidationConfig;
-import org.kosit.xvrl.model.XVRLDetection;
+import org.kosit.xvrl.model.XVRLDetectionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public class ValidationService {
     }
 
     public VResult validate(final CTReadResource input) {
-        long t0 = System.currentTimeMillis();
+        final long t0 = System.currentTimeMillis();
         final VResult result = check.checkInput(input);
         LOGGER.info("Validated {} input in {} ms", input.getName(), System.currentTimeMillis() - t0);
         return result;
@@ -102,11 +102,11 @@ public class ValidationService {
         return summary;
     }
 
-    private String detectSelectedScenario(VResult defaultResult) {
+    private String detectSelectedScenario(final VResult defaultResult) {
         return defaultResult.getReportSummary().getReports().stream()
                 .filter(rep -> rep.getId().equals(ScenarioSelectionTask.METADATA.getId())).findFirst()
                 .map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario")).findFirst()
-                        .map(XVRLDetection::getCode).orElse("null"))
+                        .map(XVRLDetectionType::getCode).orElse("null"))
                 .orElse("null");
     }
 
@@ -124,7 +124,7 @@ public class ValidationService {
         return b.toString();
     }
 
-    private static List<VConfiguration> getConfiguration(final ValidationConfig cfg, Processor processor) {
+    private static List<VConfiguration> getConfiguration(final ValidationConfig cfg, final Processor processor) {
         return cfg.scenarios().stream().map(scenarioBundle -> {
             assertFileExistance(scenarioBundle.scenarioPath(), "scenario");
             final URI scenarioLocation = scenarioBundle.scenarioPath().toUri();

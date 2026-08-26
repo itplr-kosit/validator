@@ -7,13 +7,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.kosit.validator.api.AcceptRecommendation;
+import org.kosit.validator.api.compact.AcceptRecommendation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class ComputeAcceptanceTask implements CheckTask {
 
     private static final String REPORT_NAME = "Compute Acceptance Validator";
 
-    private static XVRLReport generateXVRLReport(final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> currentResult) {
+    private static XVRLReportType generateXVRLReport(final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> currentResult) {
         if (currentResult.isValid()) {
             return builder(REPORT_NAME).add(detectionBuilder().addMessage(currentResult.getObject().name())).build();
         }
