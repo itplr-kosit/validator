@@ -1,1 +1,2 @@
 PUBLIC "http://purl.oclc.org/dsdl/svrl" "maven:org.kosit:svrl:jar::!/xsd/svrl-kosit.xsd"
+PUBLIC "http://www.xoev.de/de/validator/framework/2/scenarios" "maven:org.kosit:scenario:jar::!/xsd/scenarios-v1.xsd"

@@ -22,7 +22,7 @@
 
     <jaxb:bindings schemaLocation="../xsd/svrl-kosit.xsd">
         <jaxb:bindings node="//xs:complexType[@name='SchematronOutputType']">
-            <inheritance:extends>org.kosit.svrl.impl.SvrlBaseOutput</inheritance:extends>
+            <inheritance:extends>org.kosit.svrl.impl.AbstractSvrlOutput</inheritance:extends>
         </jaxb:bindings>
     </jaxb:bindings>
 

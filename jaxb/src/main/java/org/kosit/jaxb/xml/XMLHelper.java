@@ -5,10 +5,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.validation.SchemaFactory;
 
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 public final class XMLHelper {
 
@@ -51,15 +53,62 @@ public final class XMLHelper {
         }
     }
 
+    /**
+     * Set a property on a {@link SchemaFactory}, failing if the property is not supported.
+     *
+     * @param factory The schema factory to set the property on. May not be <code>null</code>.
+     * @param property The property name to set. May not be <code>null</code>.
+     * @param value The value to set for the property.
+     * @throws IllegalStateException if the property is not supported by the used JAXP implementation
+     */
+    public static void setProperty(@NonNull final SchemaFactory factory, @NonNull final String property, final Object value) {
+        try {
+            factory.setProperty(property, value);
+        } catch (final SAXException ex) {
+            throw new IllegalStateException("Failed to set property '" + property + "' to '" + value
+                    + "' on XML SchemaFactory. Maybe an unsupported JAXP implementation is used.", ex);
+        }
+    }
+
+    /**
+     * Creates a {@link SchemaFactory} for W3C XML Schema that is hardened against XXE style attacks: external DTD
+     * access is disabled and external schema access is limited to the <code>file</code> scheme.
+     *
+     * @return the created {@link SchemaFactory}. Never <code>null</code>.
+     * @throws IllegalStateException if one of the security properties can not be set
+     */
+    public static @NonNull SchemaFactory createSafeSchemaFactory() {
+        final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        setProperty(factory, XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        setProperty(factory, XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file");
+        return factory;
+    }
+
+    /**
+     * Set a property on a {@link XMLInputFactory}, failing if the property is not supported.
+     *
+     * @param factory The schema factory to set the property on. May not be <code>null</code>.
+     * @param property The property name to set. May not be <code>null</code>.
+     * @param value The value to set for the property.
+     * @throws IllegalStateException if the property is not supported by the used JAXP implementation
+     */
+    public static void setProperty(@NonNull final XMLInputFactory factory, @NonNull final String property, final Object value) {
+        try {
+            factory.setProperty(property, value);
+        } catch (final IllegalArgumentException ex) {
+            throw new IllegalStateException("Failed to set property '" + property + "' to '" + value
+                    + "' on XML InputFactory. Maybe an unsupported JAXP implementation is used.", ex);
+        }
+    }
+
     public static @NonNull XMLInputFactory createSafeXMLInputFactory() {
-        final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
-        inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-        inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
-        inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
-        return inputFactory;
+        final XMLInputFactory factory = XMLInputFactory.newFactory();
+        setProperty(factory, XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+        setProperty(factory, XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
+        setProperty(factory, XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+        return factory;
     }
 
     private XMLHelper() {
     }
-
 }

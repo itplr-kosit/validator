@@ -13,7 +13,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.scenarios.ResourceType;
+import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.xvrl.impl.XvrlConversionService;
 import org.kosit.xvrl.model.XVRLReport;
 import org.slf4j.Logger;

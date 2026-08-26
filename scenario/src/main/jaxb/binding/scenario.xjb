@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<jaxb:bindings
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+    xmlns:inheritance="urn:jaxb.jvnet.org:plugin:inheritance"
+    xmlns:simplify="urn:jaxb.jvnet.org:plugin:simplify"
+    jaxb:extensionBindingPrefixes="inheritance simplify xjc"
+    version="3.0">
+
+    <jaxb:globalBindings>
+        <xjc:serializable uid="-1"/>
+        <xjc:javaType
+                name="java.lang.String"
+                xmlType="xs:string"
+                adapter="org.kosit.jaxb.adapter.StringTrimAdapter"/>
+        <xjc:javaType
+                name="java.lang.Long"
+                xmlType="xs:integer" adapter="org.kosit.jaxb.adapter.LongAdapter"/>
+    </jaxb:globalBindings>
+
+    <jaxb:bindings schemaLocation="../../resources/xsd/scenarios-v1.xsd">
+        <jaxb:schemaBindings>
+            <jaxb:package name="org.kosit.validator.scenario.v1"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+</jaxb:bindings>

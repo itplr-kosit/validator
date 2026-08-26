@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.StringJoiner;
 
 import javax.xml.stream.XMLInputFactory;
@@ -52,10 +52,10 @@ public class XmlConversionService {
      * Initializes the default context; all packages with {@link XmlRegistry XmlRegistries}.
      */
     public void initialize() {
-        final Collection<Package> p = new ArrayList<>();
+        final List<Package> p = new ArrayList<>();
         p.add(org.kosit.validator.model.ObjectFactory.class.getPackage());
         p.add(org.kosit.xvrl.model.ObjectFactory.class.getPackage());
-        p.add(org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
+        p.add(org.kosit.validator.scenario.v1.ObjectFactory.class.getPackage());
         initialize(p);
     }
 
@@ -68,10 +68,11 @@ public class XmlConversionService {
      *
      * @param context packages for the JAXB context
      */
-    public void initialize(final Collection<Package> context) {
-        final String[] packages = context != null ? context.stream().map(Package::getName).toArray(String[]::new) : new String[0];
+    public void initialize(final List<Package> context) {
         final StringJoiner joiner = new StringJoiner(":");
-        Arrays.stream(packages).forEach(joiner::add);
+        if (context != null)
+            for (final var c : context)
+                joiner.add(c.getName());
         initialize(joiner.toString());
     }
 

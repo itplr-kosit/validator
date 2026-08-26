@@ -6,7 +6,7 @@
            targetNamespace="http://www.xoev.de/de/validator/framework/1/model" version="1.0.2"
            elementFormDefault="qualified">
 
-    <xs:import namespace="http://www.xoev.de/de/validator/framework/2/scenarios" schemaLocation="scenarios.xsd"/>
+    <xs:import namespace="http://www.xoev.de/de/validator/framework/2/scenarios" />
     <xs:import namespace="http://purl.oclc.org/dsdl/svrl" />
 
     <xs:annotation>

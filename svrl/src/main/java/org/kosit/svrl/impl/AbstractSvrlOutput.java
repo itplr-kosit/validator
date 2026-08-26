@@ -17,7 +17,7 @@ import org.oclc.purl.dsdl.svrl.SuccessfulReport;
  *
  * @author Andreas Penski
  */
-public abstract class SvrlBaseOutput {
+public abstract class AbstractSvrlOutput {
 
     public abstract List<Serializable> getActivePatternOrActiveGroupAndFiredRule();
 

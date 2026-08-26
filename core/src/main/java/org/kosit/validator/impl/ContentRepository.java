@@ -3,7 +3,6 @@ package org.kosit.validator.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,14 +19,15 @@ import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kosit.jaxb.adapter.StringTrimAdapter;
+import org.kosit.jaxb.xml.SchemaResolver;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.SchematronCompiler;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
-import org.kosit.validator.model.scenarios.NamespaceType;
-import org.kosit.validator.model.scenarios.ResourceType;
-import org.kosit.validator.model.scenarios.ScenarioType;
-import org.kosit.validator.model.scenarios.ValidateWithSchematron;
+import org.kosit.validator.scenario.v1.NamespaceType;
+import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v1.ValidateWithSchematron;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -141,14 +141,6 @@ public class ContentRepository {
         return new SchematronCompilerRegistry(List.of(new SchXsltCompiler(), new SchXslt2Compiler(), new IsoSchematronCompiler(processor)));
     }
 
-    private static Source resolve(final URL resource) {
-        try {
-            return new StreamSource(resource.openStream(), resource.toURI().getRawPath());
-        } catch (final IOException | URISyntaxException e) {
-            throw new IllegalStateException("Can not load schema for resource " + resource.getPath(), e);
-        }
-    }
-
     private Schema createSchema(final Source[] schemaSources) {
         try {
             this.schemaFactory.setResourceResolver(null);
@@ -206,7 +198,7 @@ public class ContentRepository {
      * @return the created schema
      */
     public Schema createSchema(final URL url) {
-        return createSchema(new Source[] { resolve(url) });
+        return createSchema(new Source[] { SchemaResolver.resolve(url) });
     }
 
     public Schema createSchema(final URI uri) {

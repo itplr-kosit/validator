@@ -6,7 +6,7 @@ import org.kosit.xvrl.api.BaseDetection;
 import org.kosit.xvrl.model.XVRLDetection;
 import org.kosit.xvrl.model.XVRLDigest;
 
-public abstract class BaseReport {
+public abstract class AbstractXVRLReport {
 
     public abstract List<XVRLDetection> getDetection();
 

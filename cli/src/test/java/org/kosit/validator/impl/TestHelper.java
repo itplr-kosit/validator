@@ -147,7 +147,7 @@ public class TestHelper {
 
     public static <T> T load(final URL url, final Class<T> type) throws URISyntaxException {
         final JaxbConversionService c = JaxbConversionService.forPackages(org.kosit.validator.model.ObjectFactory.class.getPackage(),
-                org.kosit.validator.model.scenarios.ObjectFactory.class.getPackage());
+                org.kosit.validator.scenario.v1.ObjectFactory.class.getPackage());
         return c.readXml(url.toURI(), type);
     }
 

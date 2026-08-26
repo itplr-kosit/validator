@@ -17,10 +17,10 @@ import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.xml.ProcessorProvider;
 import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
-import org.kosit.validator.model.scenarios.CreateReportType;
-import org.kosit.validator.model.scenarios.ResourceType;
-import org.kosit.validator.model.scenarios.ScenarioType;
-import org.kosit.validator.model.scenarios.ValidateWithXmlSchema;
+import org.kosit.validator.scenario.v1.CreateReportType;
+import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
 
 public class TestScenarioBuilder {
 
