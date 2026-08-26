@@ -32,7 +32,7 @@ public class JaxbConversionServiceTest {
 
     @BeforeEach
     public void setUp() {
-        this.service = JaxbConversionService.forClasses(Person.class);
+        this.service = JaxbConversionService.forClass(Person.class);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class JaxbConversionServiceTest {
 
     @Test
     public void defaultNamespaceMappingSuppressesRootPrefix() {
-        final JaxbConversionService s = JaxbConversionService.forClasses(Book.class).withNamespacePrefixMap(Map.of(Book.NS_BOOK, ""));
+        final JaxbConversionService s = JaxbConversionService.forClass(Book.class).withNamespacePrefixMap(Map.of(Book.NS_BOOK, ""));
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         // The root must be declared as xmlns="..." and the root element must not carry a prefix.
         assertThat(xml).contains("xmlns=\"" + Book.NS_BOOK + "\"");
@@ -161,7 +161,7 @@ public class JaxbConversionServiceTest {
         final Map<String, String> map = new LinkedHashMap<>();
         map.put(Book.NS_BOOK, "");
         map.put(Book.NS_AUTHOR, "auth");
-        final JaxbConversionService s = JaxbConversionService.forClasses(Book.class).withNamespacePrefixMap(map);
+        final JaxbConversionService s = JaxbConversionService.forClass(Book.class).withNamespacePrefixMap(map);
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         assertThat(xml).contains("xmlns:auth=\"" + Book.NS_AUTHOR + "\"");
         assertThat(xml).contains("<auth:author>Shakespeare</auth:author>");
@@ -171,7 +171,7 @@ public class JaxbConversionServiceTest {
     public void namespaceMapIsDefensivelyCopied() {
         final Map<String, String> map = new HashMap<>();
         map.put(Book.NS_BOOK, "");
-        final JaxbConversionService s = JaxbConversionService.forClasses(Book.class).withNamespacePrefixMap(map);
+        final JaxbConversionService s = JaxbConversionService.forClass(Book.class).withNamespacePrefixMap(map);
         // Mutate the original map AFTER configuring the service.
         map.put(Book.NS_AUTHOR, "REMOTECHANGE");
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
@@ -181,7 +181,7 @@ public class JaxbConversionServiceTest {
 
     @Test
     public void nullNamespaceMapResetsToDefault() {
-        final JaxbConversionService s = JaxbConversionService.forClasses(Book.class).withNamespacePrefixMap(Map.of(Book.NS_BOOK, "bk"))
+        final JaxbConversionService s = JaxbConversionService.forClass(Book.class).withNamespacePrefixMap(Map.of(Book.NS_BOOK, "bk"))
                 .withNamespacePrefixMap(null);
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         // After reset, JAXB picks its own prefixes — but it must not pick the configured "bk".

@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -129,19 +128,17 @@ public class JaxbConversionService {
     /**
      * Creates a service from a fixed set of JAXB-annotated classes.
      *
-     * @param classes JAXB-annotated classes to include in the JAXB context (at least one required)
+     * @param clazz JAXB-annotated class to include in the JAXB context
      * @return a new conversion service
      * @throws IllegalArgumentException if no classes are supplied
      * @throws JaxbConversionException if the JAXB context can not be created
      */
-    public static JaxbConversionService forClasses(final Class<?>... classes) {
-        if (classes.length == 0) {
-            throw new IllegalArgumentException("at least one class is required");
-        }
+    public static JaxbConversionService forClass(final Class<?> clazz) {
+        Objects.requireNonNull(clazz);
         try {
-            return new JaxbConversionService(JAXBContext.newInstance(classes));
+            return new JaxbConversionService(JAXBContext.newInstance(clazz));
         } catch (final JAXBException e) {
-            throw new JaxbConversionException("Can not create JAXB context for: " + Arrays.toString(classes), e);
+            throw new JaxbConversionException("Can not create JAXB context for: " + clazz, e);
         }
     }
 
