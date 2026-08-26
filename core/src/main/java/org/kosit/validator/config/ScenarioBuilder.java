@@ -14,7 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.DescriptionType;
 import org.kosit.validator.scenario.v1.NamespaceType;
@@ -57,7 +57,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     private String description;
 
     @Override
-    public Result<Scenario, String> build(final ContentRepository repository) {
+    public SingleProcessingResult<Scenario, String> build(final ContentRepository repository) {
         final List<String> errors = new ArrayList<>();
         final Scenario scenario = new Scenario(createType());
         buildMatch(repository, errors, scenario);
@@ -69,7 +69,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
         scenario.setFactory(repository.getResolvingConfigurationStrategy());
         scenario.setUriResolver(repository.getResolver());
         scenario.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
-        return new Result<>(scenario, errors);
+        return new SingleProcessingResult<>(scenario, errors);
     }
 
     /**
@@ -193,7 +193,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     private void buildMatch(final ContentRepository repository, final List<String> errors, final Scenario scenario) {
         this.matchConfig.setNamespaces(this.namespaces);
-        final Result<XPathExecutable, String> result = this.matchConfig.build(repository);
+        final SingleProcessingResult<XPathExecutable, String> result = this.matchConfig.build(repository);
         if (result.isValid()) {
             scenario.setMatchExecutable(result.getObject());
             scenario.getConfiguration().setMatch(this.matchConfig.getXPath());
@@ -206,7 +206,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     private void buildAccept(final ContentRepository repository, final List<String> errors, final Scenario scenario) {
         this.acceptConfig.setNamespaces(this.namespaces);
         if (this.acceptConfig.isAvailable()) {
-            final Result<XPathExecutable, String> result = this.acceptConfig.build(repository);
+            final SingleProcessingResult<XPathExecutable, String> result = this.acceptConfig.build(repository);
             if (result.isValid()) {
                 scenario.setAcceptExecutable(result.getObject());
                 scenario.getConfiguration().setAcceptMatch(this.acceptConfig.getXPath());
@@ -224,7 +224,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
         if (this.reportBuilder == null) {
             errors.add("Must supply report configuration");
         } else {
-            final Result<Pair<CreateReportType, Transformation>, String> result = this.reportBuilder.build(repository);
+            final SingleProcessingResult<Pair<CreateReportType, Transformation>, String> result = this.reportBuilder.build(repository);
             if (result.isValid()) {
                 scenario.getReportTransformations().add(result.getObject().getRight());
                 scenario.getConfiguration().getCreateReport().add(result.getObject().getLeft());
@@ -236,7 +236,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     private void buildSchematron(final ContentRepository repository, final List<String> errors, final Scenario scenario) {
         this.schematronBuilders.forEach(e -> {
-            final Result<Pair<ValidateWithSchematron, Transformation>, String> result = e.build(repository);
+            final SingleProcessingResult<Pair<ValidateWithSchematron, Transformation>, String> result = e.build(repository);
             if (result.isValid()) {
                 scenario.getConfiguration().getValidateWithSchematron().add(result.getObject().getLeft());
                 scenario.getSchematronValidations().add(result.getObject().getRight());
@@ -250,7 +250,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
         if (this.schemaBuilder == null) {
             errors.add("Must supply schema for validation");
         } else {
-            final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = this.schemaBuilder.build(repository);
+            final SingleProcessingResult<Pair<ValidateWithXmlSchema, Schema>, String> result = this.schemaBuilder.build(repository);
             if (result.isValid()) {
                 scenario.setSchema(result.getObject().getRight());
                 scenario.getConfiguration().setValidateWithXmlSchema(result.getObject().getLeft());

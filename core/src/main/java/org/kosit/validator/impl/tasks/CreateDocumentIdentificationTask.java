@@ -1,10 +1,10 @@
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.DocumentIdentificationType;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.xvrl.model.Document;
@@ -19,18 +19,18 @@ import org.kosit.xvrl.model.XVRLReport;
  */
 public class CreateDocumentIdentificationTask implements CheckTask {
 
-    public static final Process.Key<DocumentIdentificationType, XMLSyntaxError> KEY = new Process.Key<>(DocumentIdentificationType.class,
-            XMLSyntaxError.class);
+    public static final Process.ProcessKey<DocumentIdentificationType, XMLSyntaxError> KEY = new Process.ProcessKey<>(
+            DocumentIdentificationType.class, XMLSyntaxError.class);
 
     private static final String REPORT_NAME = "CreateDocument Identification Validator";
 
-    private static XVRLReport generateXVRLReport(final Result<DocumentIdentificationType, XMLSyntaxError> currentResult) {
+    private static XVRLReport generateXVRLReport(final SingleProcessingResult<DocumentIdentificationType, XMLSyntaxError> currentResult) {
         if (currentResult.isValid()) {
             final DocumentIdentificationType result = currentResult.getObject();
-            return builder(REPORT_NAME).add(detection().addMessage(result.getDocumentReference()).severity(XVRLDetection.Severity.INFO))
-                    .build();
+            return builder(REPORT_NAME)
+                    .add(detectionBuilder().addMessage(result.getDocumentReference()).severity(XVRLDetection.Severity.INFO)).build();
         }
-        return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).toList()).build();
+        return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detectionBuilder().addError(e)).toList()).build();
 
     }
 
@@ -52,7 +52,8 @@ public class CreateDocumentIdentificationTask implements CheckTask {
         addDocumentIdentification(process);
 
         final ProcessStepResult<DocumentIdentificationType, XMLSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
-        final Result<DocumentIdentificationType, XMLSyntaxError> result = new Result<>(documentIdentificationType);
+        final SingleProcessingResult<DocumentIdentificationType, XMLSyntaxError> result = new SingleProcessingResult<>(
+                documentIdentificationType);
         processStepResult.setResult(result);
         processStepResult.setReport(generateXVRLReport(result));
         return processStepResult;

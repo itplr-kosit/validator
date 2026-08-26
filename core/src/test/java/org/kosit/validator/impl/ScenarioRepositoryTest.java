@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.config.TestConfiguration;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ScenarioType;
 
 import net.sf.saxon.s9api.XPathExecutable;
@@ -49,7 +49,7 @@ public class ScenarioRepositoryTest {
 
     @Test
     public void testHappyCase() throws Exception {
-        final Result<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
+        final SingleProcessingResult<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isTrue();
     }
@@ -59,7 +59,7 @@ public class ScenarioRepositoryTest {
         this.configInstance.setScenarios(new ArrayList<>());
         final Scenario fallback = createFallback();
         this.configInstance.setFallbackScenario(fallback);
-        final Result<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
+        final SingleProcessingResult<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");
@@ -78,7 +78,7 @@ public class ScenarioRepositoryTest {
     public void testMultiMatch() throws Exception {
         this.configInstance.getScenarios().add(createScenario());
         this.configInstance.setFallbackScenario(createFallback());
-        final Result<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
+        final SingleProcessingResult<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");

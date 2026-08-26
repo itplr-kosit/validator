@@ -1,6 +1,6 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
 
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.Scenario;
@@ -9,7 +9,7 @@ import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.xvrl.model.XVRLDetection;
@@ -29,7 +29,7 @@ public class ScenarioSelectionTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioSelectionTask.class);
 
-    public static final Process.Key<Scenario, String> KEY = new Process.Key<>(Scenario.class, String.class);
+    public static final Process.ProcessKey<Scenario, String> KEY = new Process.ProcessKey<>(Scenario.class, String.class);
 
     public static final ActionMetadata METADATA = new ActionMetadata("Scenario Selection", "scenario_selection");
 
@@ -39,26 +39,27 @@ public class ScenarioSelectionTask implements CheckTask {
 
     private final SelectScenarioAction selectScenarioAction;
 
-    private static XVRLReport generateXVRLReport(final Result<Scenario, String> scenarioTypeResult, final String name) {
+    private static XVRLReport generateXVRLReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
         final XVRLReportBuilder builder = XVRLReportBuilder.builder(METADATA);
         if (scenarioTypeResult.getObject().isFallback()) {
-            builder.add(detection().addError("No valid scenario configuration found for '" + name + "'").code("fallback-match"));
+            builder.add(detectionBuilder().addError("No valid scenario configuration found for '" + name + "'").code("fallback-match"));
         } else {
-            builder.add(detection().addMessage("Scenario '" + scenarioTypeResult.getObject().getName() + "' identified for '" + name + "'")
+            builder.add(detectionBuilder()
+                    .addMessage("Scenario '" + scenarioTypeResult.getObject().getName() + "' identified for '" + name + "'")
                     .severity(XVRLDetection.Severity.INFO).code("scenario-matched"));
-            builder.add(detection().id("scenario").code(scenarioTypeResult.getObject().getName()));
+            builder.add(detectionBuilder().id("scenario").code(scenarioTypeResult.getObject().getName()));
         }
         return builder.build();
     }
 
     @Override
     public ProcessStepResult<Scenario, String> check(final Process results) {
-        final Result<Scenario, String> scenarioTypeResult;
-        final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioTypeResult;
+        final SingleProcessingResult<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
         if (parseResult.isValid()) {
             scenarioTypeResult = determineScenario(parseResult.getObject());
         } else {
-            scenarioTypeResult = new Result<>(this.repository.getFallbackScenario());
+            scenarioTypeResult = new SingleProcessingResult<>(this.repository.getFallbackScenario());
         }
         if (!scenarioTypeResult.getObject().isFallback()) {
             LOGGER.info("Scenario \'{}\' identified for \'{}\'", scenarioTypeResult.getObject().getName(), results.getInput().getName());
@@ -95,10 +96,10 @@ public class ScenarioSelectionTask implements CheckTask {
         }
     }
 
-    private Result<Scenario, String> determineScenario(final XdmNode document) {
-        final Result<Scenario, String> result = this.repository.selectScenario(document);
+    private SingleProcessingResult<Scenario, String> determineScenario(final XdmNode document) {
+        final SingleProcessingResult<Scenario, String> result = this.repository.selectScenario(document);
         if (result.isInvalid()) {
-            return new Result<>(this.repository.getFallbackScenario());
+            return new SingleProcessingResult<>(this.repository.getFallbackScenario());
         }
         return result;
     }

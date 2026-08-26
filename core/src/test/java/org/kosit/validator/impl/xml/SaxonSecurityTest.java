@@ -18,7 +18,7 @@ import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +72,7 @@ public class SaxonSecurityTest {
     @Test
     public void testXxe() throws URISyntaxException {
         final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
-        final Result<XdmNode, XMLSyntaxError> result = TestHelper.parseDocument(TestHelper.read(resource.toURI()));
+        final SingleProcessingResult<XdmNode, XMLSyntaxError> result = TestHelper.parseDocument(TestHelper.read(resource.toURI()));
         assertThat(result.isValid()).isFalse();
         assertThat(result.getObject()).isNull();
         assertThat(result.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining()))

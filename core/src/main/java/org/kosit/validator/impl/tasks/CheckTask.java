@@ -9,7 +9,7 @@ import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.xvrl.model.XVRLMetadata;
 import org.kosit.xvrl.model.XVRLReport;
 import org.kosit.xvrl.model.XVRLReportSummary;
@@ -101,17 +101,17 @@ public interface CheckTask {
             return summary;
         }
 
-        public <T, E> List<XVRLReport> getReports(final Key<T, E> key) {
+        public <T, E> List<XVRLReport> getReports(final ProcessKey<T, E> key) {
             return getActionResult(key).map(ProcessStepResult::getReport).orElse(null);
         }
 
-        public <T, E> Optional<ProcessStepResult<T, E>> getActionResult(final Key<T, E> key) {
+        public <T, E> Optional<ProcessStepResult<T, E>> getActionResult(final ProcessKey<T, E> key) {
             final ProcessStepResult<T, E> result = (ProcessStepResult<T, E>) this.processStepResults.stream().filter(b -> b.getKey() == key)
                     .findFirst().orElse(null);
             return Optional.ofNullable(result);
         }
 
-        public <T, E> Result<T, E> getResult(final Key<T, E> type) {
+        public <T, E> SingleProcessingResult<T, E> getResult(final ProcessKey<T, E> type) {
             return getActionResult(type).map(ProcessStepResult::getResult).orElse(null);
         }
 
@@ -125,24 +125,7 @@ public interface CheckTask {
             return FilenameUtils.getBaseName(fileName);
         }
 
-        public static final class Key<T, E> {
-
-            private final Class<T> type;
-
-            private final Class<E> other;
-
-            public Class<T> getType() {
-                return this.type;
-            }
-
-            public Class<E> getOther() {
-                return this.other;
-            }
-
-            public Key(final Class<T> type, final Class<E> other) {
-                this.type = type;
-                this.other = other;
-            }
+        public static final record ProcessKey<T, E> (Class<T> type, Class<E> other) {
         }
 
         public XVRLMetadata getMetadata() {

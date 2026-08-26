@@ -2,6 +2,7 @@ package org.kosit.xvrl.impl;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.kosit.xvrl.api.BaseReportSummary;
 import org.kosit.xvrl.model.XVRLReport;
@@ -19,12 +20,15 @@ public abstract class AbstractXVRLReportSummary implements BaseReportSummary, Se
 
     @Override
     public List<XVRLReport> getReports() {
-        return getReportOrReportsOrDigest().stream().filter(XVRLReport.class::isInstance).map(XVRLReport.class::cast).toList();
+        // Must return a mutable list
+        return getReportOrReportsOrDigest().stream().filter(XVRLReport.class::isInstance).map(XVRLReport.class::cast)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<XVRLReportSummary> getReportSummaries() {
+        // Must return a mutable list
         return getReportOrReportsOrDigest().stream().filter(XVRLReportSummary.class::isInstance).map(XVRLReportSummary.class::cast)
-                .toList();
+                .collect(Collectors.toList());
     }
 }

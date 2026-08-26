@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,16 +72,17 @@ public class ScenarioRepository {
      * @param document input document
      * @return a result object for further processing
      */
-    public Result<Scenario, String> selectScenario(final XdmNode document) {
-        final Result<Scenario, String> result;
+    public SingleProcessingResult<Scenario, String> selectScenario(final XdmNode document) {
+        final SingleProcessingResult<Scenario, String> result;
         final List<Scenario> collect = findMatches(document);
         if (collect.size() == 1) {
-            result = new Result<>(collect.get(0));
+            result = new SingleProcessingResult<>(collect.get(0));
         } else if (collect.isEmpty()) {
-            result = new Result<>(getFallbackScenario(),
+            result = new SingleProcessingResult<>(getFallbackScenario(),
                     Collections.singleton("None of the loaded scenarios matches the specified document"));
         } else {
-            result = new Result<>(getFallbackScenario(), Collections.singleton("More than one scenario matches the specified document"));
+            result = new SingleProcessingResult<>(getFallbackScenario(),
+                    Collections.singleton("More than one scenario matches the specified document"));
         }
         return result;
     }

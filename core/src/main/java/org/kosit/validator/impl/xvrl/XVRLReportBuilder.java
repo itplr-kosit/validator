@@ -1,36 +1,19 @@
 package org.kosit.validator.impl.xvrl;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.kosit.validator.api.XmlError.Severity.SEVERITY_FATAL_ERROR;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.kosit.validator.api.XmlError;
 import org.kosit.validator.impl.ActionMetadata;
-import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.model.XMLSyntaxErrorSeverity;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.xvrl.model.Document;
-import org.kosit.xvrl.model.Location;
 import org.kosit.xvrl.model.Schema;
-import org.kosit.xvrl.model.Supplemental;
 import org.kosit.xvrl.model.Validator;
 import org.kosit.xvrl.model.XVRLDetection;
 import org.kosit.xvrl.model.XVRLDigest;
-import org.kosit.xvrl.model.XVRLMessage;
 import org.kosit.xvrl.model.XVRLMetadata;
 import org.kosit.xvrl.model.XVRLReport;
-import org.oclc.purl.dsdl.svrl.ActivePattern;
-import org.oclc.purl.dsdl.svrl.FailedAssert;
-import org.oclc.purl.dsdl.svrl.FiredRule;
-import org.w3c.dom.Element;
-
-import net.sf.saxon.dom.NodeOverNodeInfo;
-import net.sf.saxon.s9api.XdmNode;
 
 public class XVRLReportBuilder {
 
@@ -53,20 +36,12 @@ public class XVRLReportBuilder {
         return builder;
     }
 
-    private static boolean isFatalError(final XMLSyntaxError xmlSyntaxError) {
-        return xmlSyntaxError.getSeverityCode() == XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR;
+    public static XvrlDetectionBuilder detectionBuilder() {
+        return new XvrlDetectionBuilder();
     }
 
-    private static boolean isError(final XMLSyntaxError xmlSyntaxError) {
-        return xmlSyntaxError.getSeverityCode() == XMLSyntaxErrorSeverity.SEVERITY_ERROR;
-    }
-
-    public static DetectionBuilder detection() {
-        return new DetectionBuilder();
-    }
-
-    public static SupplementalBuilder supplemental() {
-        return new SupplementalBuilder();
+    public static XvrlSupplementalBuilder supplemental() {
+        return new XvrlSupplementalBuilder();
     }
 
     public XVRLReport build() {
@@ -153,7 +128,7 @@ public class XVRLReportBuilder {
         return this;
     }
 
-    public XVRLReportBuilder add(final DetectionBuilder detection) {
+    public XVRLReportBuilder add(final XvrlDetectionBuilder detection) {
         if (detection != null) {
             add(detection.build());
         }
@@ -167,161 +142,12 @@ public class XVRLReportBuilder {
         return this;
     }
 
-    public XVRLReportBuilder addAll(final Stream<DetectionBuilder> collect) {
+    public XVRLReportBuilder addAll(final Stream<XvrlDetectionBuilder> collect) {
         collect.forEach(this::add);
         return this;
     }
 
-    public XVRLReportBuilder addAll(final List<DetectionBuilder> collect) {
+    public XVRLReportBuilder addAll(final List<XvrlDetectionBuilder> collect) {
         return addAll(collect.stream());
-    }
-
-    public static class DetectionBuilder {
-
-        private final XVRLDetection detection = new XVRLDetection();
-
-        private static XVRLDetection.Severity translate(final XmlError.Severity severity) {
-            if (severity == SEVERITY_FATAL_ERROR) {
-                return XVRLDetection.Severity.FATAL_ERROR;
-            }
-            return XVRLDetection.Severity.ERROR;
-
-        }
-
-        private static Location createLocation(final int line, final int row, final String xpath) {
-            final Location location = new Location();
-            location.setLine(Integer.valueOf(line).longValue());
-            location.setColumn(Integer.valueOf(row).longValue());
-            location.setXpath(xpath);
-            return location;
-        }
-
-        private static XVRLMessage createMessage(final String message) {
-            final XVRLMessage messageObject = new XVRLMessage();
-            messageObject.getContent().add(message);
-            return messageObject;
-        }
-
-        private static XVRLMessage getMessage(final FailedAssert failedAssert) {
-            final String string = failedAssert.getText().getContent().stream().map(Object::toString).collect(Collectors.joining());
-            return createMessage(string);
-        }
-
-        public DetectionBuilder add(final SupplementalBuilder addContent) {
-            if (addContent != null) {
-                add(addContent.build());
-            }
-            return this;
-        }
-
-        private DetectionBuilder add(final Supplemental build) {
-            if (build != null) {
-                this.detection.getSupplementals().add(build);
-            }
-            return this;
-        }
-
-        public DetectionBuilder addError(final String message) {
-            addMessage(message);
-            this.detection.setSeverity(XVRLDetection.Severity.ERROR);
-            return this;
-        }
-
-        public DetectionBuilder addMessage(final String message) {
-            if (isNotBlank(message)) {
-                this.detection.getMessages().add(createMessage(message));
-            }
-            return this;
-        }
-
-        public DetectionBuilder addError(final XmlError error) {
-            if (error == null) {
-                return this;
-            }
-            addMessage(error.getMessage());
-            this.detection.setSeverity(translate(error.getSeverity()));
-
-            if (error.getRowNumber() != null && error.getColumnNumber() != null) {
-                this.detection.getLocations().add(createLocation(error.getRowNumber(), error.getColumnNumber(), null));
-            }
-            return this;
-        }
-
-        public DetectionBuilder add(final ActivePattern activePattern) {
-            if (activePattern == null) {
-                return this;
-            }
-            this.detection.setSeverity(XVRLDetection.Severity.INFO);
-            this.detection.setCode(activePattern.getName());
-            return this;
-        }
-
-        public DetectionBuilder add(final FiredRule firedRule) {
-            if (firedRule == null) {
-                return this;
-            }
-            this.detection.setSeverity(XVRLDetection.Severity.INFO);
-            this.detection.setCode(firedRule.getName());
-            return this;
-        }
-
-        public DetectionBuilder add(final FailedAssert failedAssert) {
-            if (failedAssert == null) {
-                return this;
-            }
-
-            this.detection.setSeverity(XVRLDetection.Severity.ERROR);
-            this.detection.getMessages().add(getMessage(failedAssert));
-
-            return this;
-        }
-
-        public XVRLDetection build() {
-            if (this.detection.getSeverity() == null) {
-                this.detection.setSeverity(XVRLDetection.Severity.INFO);
-            }
-            return this.detection;
-        }
-
-        public DetectionBuilder severity(final XVRLDetection.Severity info) {
-            this.detection.setSeverity(info);
-            return this;
-        }
-
-        public DetectionBuilder code(final String code) {
-            if (isNotBlank(code)) {
-                this.detection.setCode(code);
-            }
-            return this;
-        }
-
-        public DetectionBuilder id(final String id) {
-            if (isNotBlank(id)) {
-                this.detection.setId(id);
-            }
-            return this;
-        }
-    }
-
-    public static class SupplementalBuilder {
-
-        private final Supplemental sup = new Supplemental();
-
-        public SupplementalBuilder id(final String id) {
-            this.sup.setId(id);
-            return this;
-        }
-
-        public SupplementalBuilder addContent(final XdmNode node) {
-            if (node != null) {
-                final Element node2element = NodeOverNodeInfo.wrap(node.getUnderlyingNode()).getOwnerDocument().getDocumentElement();
-                this.sup.getContent().add(node2element);
-            }
-            return this;
-        }
-
-        public Supplemental build() {
-            return this.sup;
-        }
     }
 }

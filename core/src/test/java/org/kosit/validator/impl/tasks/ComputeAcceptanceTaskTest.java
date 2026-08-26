@@ -12,7 +12,7 @@ import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
@@ -38,10 +38,10 @@ public class ComputeAcceptanceTaskTest {
     @Test
     public void simpleTest() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
-        final Result<AcceptRecommendation, XMLSyntaxError> result = process.getResult(ComputeAcceptanceTask.KEY);
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> result = process.getResult(ComputeAcceptanceTask.KEY);
         assertThat(result).isNull();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
@@ -49,7 +49,7 @@ public class ComputeAcceptanceTaskTest {
     public void testSchemaFailed() {
         final Process process = TestProcessBuilder.create().schemaInvalid().setDummyReport().build();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
@@ -57,47 +57,47 @@ public class ComputeAcceptanceTaskTest {
     public void testSchematronFailed() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronInvalid().setDummyReport().build();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
     @Test
     public void testValidAcceptMatch() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
-        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
     public void testAcceptMatchNotSatisfied() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().setDummyReport().build();
-        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath("count(//doesnotExist) = 1"));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
     @Test
     public void testAcceptMatchOverridesSchematronErrors() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronInvalid().setDummyReport().build();
-        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
     public void testValidAcceptMatchOnSchemaFailed() {
         final Process process = TestProcessBuilder.create().schemaInvalid().schematronValid().setDummyReport().build();
-        final Result<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioSelectionResult = process.getResult(ScenarioSelectionTask.KEY);
         scenarioSelectionResult.getObject().setAcceptExecutable(createXpath(DOESNOT_EXIST));
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
@@ -105,7 +105,7 @@ public class ComputeAcceptanceTaskTest {
     public void testMissingSchemaCheck() {
         final Process process = TestProcessBuilder.create().schematronValid().setDummyReport().build();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 
@@ -118,7 +118,7 @@ public class ComputeAcceptanceTaskTest {
 
         process.getProcessStepResults().remove(processStepResult);
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
     }
 
@@ -126,7 +126,7 @@ public class ComputeAcceptanceTaskTest {
     public void testMissingReport() {
         final Process process = TestProcessBuilder.create().schemaInvalid().schematronValid().build();
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = this.action.check(process);
-        final Result<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
+        final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> checkResult = stepResult.getResult();
         assertThat(checkResult.getObject()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
     }
 }

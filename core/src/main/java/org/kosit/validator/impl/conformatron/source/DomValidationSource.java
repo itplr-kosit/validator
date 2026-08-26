@@ -65,6 +65,11 @@ public final class DomValidationSource implements CTParsedValidationSourceXML {
     }
 
     @Nullable
+    public Document getParsedContent() {
+        return this.dom;
+    }
+
+    @Nullable
     public Document getAsDom() {
         return this.dom;
     }

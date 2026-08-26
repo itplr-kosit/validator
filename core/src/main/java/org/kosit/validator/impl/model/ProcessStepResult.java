@@ -9,9 +9,9 @@ import org.kosit.xvrl.model.XVRLReport;
 
 public class ProcessStepResult<T, E> {
 
-    private final CheckTask.Process.Key<T, E> key;
+    private final CheckTask.Process.ProcessKey<T, E> key;
 
-    private Result<T, E> result;
+    private SingleProcessingResult<T, E> result;
 
     private List<XVRLReport> report;
 
@@ -28,11 +28,11 @@ public class ProcessStepResult<T, E> {
         }
     }
 
-    public CheckTask.Process.Key<T, E> getKey() {
+    public CheckTask.Process.ProcessKey<T, E> getKey() {
         return this.key;
     }
 
-    public Result<T, E> getResult() {
+    public SingleProcessingResult<T, E> getResult() {
         return this.result;
     }
 
@@ -40,11 +40,11 @@ public class ProcessStepResult<T, E> {
         return this.report;
     }
 
-    public void setResult(final Result<T, E> result) {
+    public void setResult(final SingleProcessingResult<T, E> result) {
         this.result = result;
     }
 
-    public ProcessStepResult(final CheckTask.Process.Key<T, E> key) {
+    public ProcessStepResult(final CheckTask.Process.ProcessKey<T, E> key) {
         this.key = key;
     }
 }

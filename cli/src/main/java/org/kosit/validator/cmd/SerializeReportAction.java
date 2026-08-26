@@ -1,14 +1,14 @@
 package org.kosit.validator.cmd;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
@@ -27,7 +27,7 @@ class SerializeReportAction implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SerializeReportAction.class);
 
-    public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+    public static final Process.ProcessKey<Boolean, String> KEY = new Process.ProcessKey<>(Boolean.class, String.class);
 
     private static final String REPORT_NAME = "Serialize Report";
 
@@ -37,12 +37,12 @@ class SerializeReportAction implements CheckTask {
 
     private final NamingStrategy namingStrategy;
 
-    private static XVRLReport generateXVRLReport(final Result<Boolean, String> result) {
+    private static XVRLReport generateXVRLReport(final SingleProcessingResult<Boolean, String> result) {
         if (result.isValid()) {
-            return builder(REPORT_NAME).add(detection().addMessage("Serialization successful").severity(XVRLDetection.Severity.INFO))
+            return builder(REPORT_NAME).add(detectionBuilder().addMessage("Serialization successful").severity(XVRLDetection.Severity.INFO))
                     .build();
         }
-        return XVRLReportBuilder.builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> detection().addError(e))).build();
+        return XVRLReportBuilder.builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> detectionBuilder().addError(e))).build();
     }
 
     @Override
@@ -56,7 +56,7 @@ class SerializeReportAction implements CheckTask {
             LOGGER.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
         }
         final ProcessStepResult<Boolean, String> processStepResult = new ProcessStepResult<>(KEY);
-        final Result<Boolean, String> stepResult = new Result<>();
+        final SingleProcessingResult<Boolean, String> stepResult = new SingleProcessingResult<>(null, null);
         processStepResult.setResult(stepResult);
         processStepResult.setReport(generateXVRLReport(stepResult));
         return processStepResult;

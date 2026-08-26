@@ -6,6 +6,7 @@ import static org.kosit.validator.api.compact.CompactXVRLReportSummary.CVRL_PREF
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,9 +22,12 @@ import org.kosit.xvrl.model.Provenance;
 import org.kosit.xvrl.model.Schema;
 import org.kosit.xvrl.model.XVRLDetection;
 import org.kosit.xvrl.model.XVRLMessage;
+import org.kosit.xvrl.model.XVRLMetadata;
 import org.kosit.xvrl.model.XVRLReport;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Compact XVRL report with convenience access to additive attributes.
@@ -61,9 +65,11 @@ public class CompactXVRLReport {
 
     private static final String ATTR_LANGUAGE = "language";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompactXVRLReport.class);
+
     private final XVRLReport original;
 
-    public CompactXVRLReport(XVRLReport original) {
+    public CompactXVRLReport(final XVRLReport original) {
         this.original = original;
     }
 
@@ -81,18 +87,18 @@ public class CompactXVRLReport {
      *
      * @param href the file name or path
      */
-    public void setFilename(String href) {
+    public void setFilename(final String href) {
         if (original.getMetadata() == null) {
             original.setMetadata(new ObjectFactory().createXVRLMetadata());
         }
-        Document doc = new ObjectFactory().createDocument();
+        final Document doc = new ObjectFactory().createDocument();
         doc.setHref(href);
         original.getMetadata().getDocuments().clear();
         original.getMetadata().getDocuments().add(doc);
     }
 
     public String getFilename() {
-        return Optional.ofNullable(original.getMetadata()).map(m -> m.getDocuments()).stream().flatMap(Collection::stream)
+        return Optional.ofNullable(original.getMetadata()).map(XVRLMetadata::getDocuments).stream().flatMap(Collection::stream)
                 .map(Document::getHref).findFirst().orElse(null);
     }
 
@@ -101,11 +107,11 @@ public class CompactXVRLReport {
      *
      * @param name name of the creator
      */
-    public void setCreator(String name) {
+    public void setCreator(final String name) {
         if (original.getMetadata() == null) {
             original.setMetadata(new ObjectFactory().createXVRLMetadata());
         }
-        Creator creator = new ObjectFactory().createCreator();
+        final Creator creator = new ObjectFactory().createCreator();
         creator.setName(name);
         original.getMetadata().getCreators().clear();
         original.getMetadata().getCreators().add(creator);
@@ -116,8 +122,8 @@ public class CompactXVRLReport {
      *
      * @param scenario name of the scenario
      */
-    public void setScenario(String scenario) {
-        XVRLDetection d = new ObjectFactory().createXVRLDetection();
+    public void setScenario(final String scenario) {
+        final XVRLDetection d = new ObjectFactory().createXVRLDetection();
         d.setId(ID_SCENARIO);
         d.setCode(scenario);
         original.getDetection().removeIf(det -> ID_SCENARIO.equals(det.getId()));
@@ -140,7 +146,7 @@ public class CompactXVRLReport {
      *
      * @param recommendation acceptance recommendation
      */
-    public void setAcceptance(AcceptRecommendation recommendation) {
+    public void setAcceptance(final AcceptRecommendation recommendation) {
         original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_ACCEPTANCE, CVRL_PREFIX), recommendation.name());
     }
 
@@ -150,13 +156,15 @@ public class CompactXVRLReport {
      * @return acceptance recommendation or null
      */
     public AcceptRecommendation getAcceptance() {
-        String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_ACCEPTANCE));
+        final String val = original.getOtherAttributes().get(new QName(CVRL_NS, ATTR_ACCEPTANCE));
         if (val == null) {
             return AcceptRecommendation.UNDEFINED;
         }
+        final String ucVal = val.toUpperCase(Locale.ROOT);
         try {
-            return AcceptRecommendation.valueOf(val.toUpperCase());
-        } catch (IllegalArgumentException e) {
+            return AcceptRecommendation.valueOf(ucVal);
+        } catch (final IllegalArgumentException e) {
+            LOGGER.error("Failed to convert '" + ucVal + "' to an acceptance result");
             return AcceptRecommendation.UNDEFINED;
         }
     }
@@ -166,7 +174,7 @@ public class CompactXVRLReport {
      *
      * @param summary error summary
      */
-    public void setErrorSummary(String summary) {
+    public void setErrorSummary(final String summary) {
         original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_ERROR_SUMMARY, CVRL_PREFIX), summary);
     }
 
@@ -184,7 +192,7 @@ public class CompactXVRLReport {
      *
      * @param checksum checksum
      */
-    public void setChecksum(String checksum) {
+    public void setChecksum(final String checksum) {
         if (original.getMetadata() == null || original.getMetadata().getDocuments().isEmpty()) {
             setFilename(VAL_UNKNOWN); // Ensure that a document exists
         }
@@ -198,7 +206,7 @@ public class CompactXVRLReport {
      * @return checksum or null
      */
     public String getChecksum() {
-        return Optional.ofNullable(original.getMetadata()).map(m -> m.getDocuments()).stream().flatMap(Collection::stream)
+        return Optional.ofNullable(original.getMetadata()).map(XVRLMetadata::getDocuments).stream().flatMap(Collection::stream)
                 .map(d -> d.getOtherAttributes().get(new QName(CVRL_NS, ATTR_CHECKSUM))).filter(c -> c != null).findFirst().orElse(null);
     }
 
@@ -207,27 +215,27 @@ public class CompactXVRLReport {
      *
      * @param error the schema error object
      */
-    public void addSchemaViolation(XmlError error) {
-        ObjectFactory of = new ObjectFactory();
-        XVRLDetection d = of.createXVRLDetection();
+    public void addSchemaViolation(final XmlError error) {
+        final ObjectFactory of = new ObjectFactory();
+        final XVRLDetection d = of.createXVRLDetection();
         d.setCode(CODE_XSD_VIOLATION);
         d.setSeverity(mapSeverity(error.getSeverity()));
 
         // Message
-        XVRLMessage msg = of.createXVRLMessage();
+        final XVRLMessage msg = of.createXVRLMessage();
         msg.getContent().add(error.getMessage());
         d.getMessages().add(msg);
 
         // Location/Provenance
         if (error.getRowNumber() != null || error.getColumnNumber() != null) {
-            Location loc = of.createLocation();
+            final Location loc = of.createLocation();
             if (error.getRowNumber() != null) {
                 loc.setLine(error.getRowNumber().longValue());
             }
             if (error.getColumnNumber() != null) {
                 loc.setColumn(error.getColumnNumber().longValue());
             }
-            Provenance prov = of.createProvenance();
+            final Provenance prov = of.createProvenance();
             prov.getLocation().add(loc);
             d.getProvenances().add(prov);
         }
@@ -245,15 +253,15 @@ public class CompactXVRLReport {
      * @param failedAssert the Schematron failure message
      * @param schemaHref the reference to the schema used (e.g. href or title)
      */
-    public void addSchematronViolation(FailedAssert failedAssert, String schemaHref) {
-        ObjectFactory of = new ObjectFactory();
-        XVRLDetection d = of.createXVRLDetection();
+    public void addSchematronViolation(final FailedAssert failedAssert, final String schemaHref) {
+        final ObjectFactory of = new ObjectFactory();
+        final XVRLDetection d = of.createXVRLDetection();
         d.setCode(CODE_SCHEMATRON_VIOLATION);
         // In the target XML severity is often info, but we take the role value if present
         if (failedAssert.getRole() != null) {
             try {
                 d.setSeverity(XVRLDetection.Severity.fromValue(failedAssert.getRole().toLowerCase()));
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 d.setSeverity(XVRLDetection.Severity.INFO);
             }
         } else {
@@ -261,7 +269,7 @@ public class CompactXVRLReport {
         }
 
         // Message
-        XVRLMessage msg = of.createXVRLMessage();
+        final XVRLMessage msg = of.createXVRLMessage();
         if (failedAssert.getText() != null) {
             msg.getContent().addAll(failedAssert.getText().getContent());
         }
@@ -269,9 +277,9 @@ public class CompactXVRLReport {
 
         // Schema reference via provenance/location
         if (schemaHref != null) {
-            Location loc = of.createLocation();
+            final Location loc = of.createLocation();
             loc.setHref(schemaHref);
-            Provenance prov = of.createProvenance();
+            final Provenance prov = of.createProvenance();
             prov.getLocation().add(loc);
             d.getProvenances().add(prov);
         }
@@ -284,15 +292,15 @@ public class CompactXVRLReport {
     }
 
     public ValidationResult getSchemaValidationResult() {
-        Schema validationRef = getSchemaReferences(CODE_XSD_VALIDATION).stream().findFirst().orElse(null);
-        String type = validationRef.getOtherAttributes().get(new QName(CVRL_NS, ATTR_LANGUAGE));
-        XVRLDetection det = getSchemaViolation();
-        List<Violation> violations = new ArrayList<>();
+        final Schema validationRef = getSchemaReferences(CODE_XSD_VALIDATION).stream().findFirst().orElse(null);
+        final String type = validationRef.getOtherAttributes().get(new QName(CVRL_NS, ATTR_LANGUAGE));
+        final XVRLDetection det = getSchemaViolation();
+        final List<Violation> violations = new ArrayList<>();
         if (det != null) {
-            long line = det.getProvenances().stream().flatMap(p -> p.getLocation().stream()).findFirst().map(l -> l.getLine().intValue())
-                    .orElse(0);
-            long col = det.getProvenances().stream().flatMap(p -> p.getLocation().stream()).findFirst().map(l -> l.getColumn().intValue())
-                    .orElse(0);
+            final long line = det.getProvenances().stream().flatMap(p -> p.getLocation().stream()).findFirst()
+                    .map(l -> l.getLine().intValue()).orElse(0);
+            final long col = det.getProvenances().stream().flatMap(p -> p.getLocation().stream()).findFirst()
+                    .map(l -> l.getColumn().intValue()).orElse(0);
             violations.add(new Violation(det.getSeverity().value(), line, col, null,
                     det.getMessages().stream().map(m -> String.join(";", m.getMessageStrings())).collect(Collectors.joining(";"))));
         }
@@ -300,14 +308,14 @@ public class CompactXVRLReport {
     }
 
     public List<ValidationResult> getSchematronValidationResult() {
-        List<Schema> validationRef = getSchemaReferences(CODE_SCHEMATRON_VALIDATION);
-        List<XVRLDetection> dets = getSchematronViolations();
+        final List<Schema> validationRef = getSchemaReferences(CODE_SCHEMATRON_VALIDATION);
+        final List<XVRLDetection> dets = getSchematronViolations();
         return validationRef.stream().map(s -> {
-            String type = s.getOtherAttributes().get(new QName(CVRL_NS, ATTR_LANGUAGE));
-            XVRLDetection det = dets.stream().filter(
+            final String type = s.getOtherAttributes().get(new QName(CVRL_NS, ATTR_LANGUAGE));
+            final XVRLDetection det = dets.stream().filter(
                     d -> d.getProvenances().stream().anyMatch(p -> p.getLocation().stream().anyMatch(l -> l.getHref().equals(s.getHref()))))
                     .findFirst().orElse(null);
-            List<Violation> violations = new ArrayList<>();
+            final List<Violation> violations = new ArrayList<>();
             if (det != null) {
                 violations.add(new Violation(det.getSeverity().value(), null, null, det.getId(),
                         det.getMessages().stream().map(m -> String.join(";", m.getMessageStrings())).collect(Collectors.joining(";"))));
@@ -316,7 +324,7 @@ public class CompactXVRLReport {
         }).toList();
     }
 
-    private XVRLDetection.Severity mapSeverity(XmlError.Severity severity) {
+    private XVRLDetection.Severity mapSeverity(final XmlError.Severity severity) {
         if (severity == null)
             return XVRLDetection.Severity.INFO;
         return switch (severity) {
@@ -332,32 +340,32 @@ public class CompactXVRLReport {
      * @param href the URL or path to the schema
      * @param language the language of the schema (e.g. "XSD" or "Schematron")
      */
-    public void addSchemaReference(String href, String language) {
+    public void addSchemaReference(final String href, final String language) {
         if (original.getMetadata() == null) {
             original.setMetadata(new ObjectFactory().createXVRLMetadata());
         }
-        Schema s = new ObjectFactory().createSchema();
+        final Schema s = new ObjectFactory().createSchema();
         s.setHref(href);
         s.getOtherAttributes().put(new QName(CVRL_NS, ATTR_LANGUAGE, CVRL_PREFIX), language);
         original.getMetadata().getSchemas().add(s);
     }
 
-    public List<Schema> getSchemaReferences(String language) {
+    public List<Schema> getSchemaReferences(final String language) {
         return original.getMetadata().getSchemas().stream()
                 .filter(s -> language.equals(s.getOtherAttributes().get(new QName(CVRL_NS, ATTR_LANGUAGE)))).toList();
     }
 
-    public void addSchemaValidationResult(List<XmlError> violations) {
+    public void addSchemaValidationResult(final List<XmlError> violations) {
         addSchemaReference(CODE_XSD_VALIDATION, CODE_XSD_VALIDATION);
         Optional.ofNullable(violations).ifPresent(v -> v.forEach(this::addSchemaViolation));
     }
 
-    public void addSchematronValidationResults(List<SchematronOutputType> schematronOutputs) {
+    public void addSchematronValidationResults(final List<SchematronOutputType> schematronOutputs) {
         Optional.ofNullable(schematronOutputs).ifPresent(so -> so.forEach(this::addSchematronValidationResult));
     }
 
-    private void addSchematronValidationResult(SchematronOutputType schematronOutput) {
-        String title = schematronOutput.getTitle() != null ? schematronOutput.getTitle() : "Schematron";
+    private void addSchematronValidationResult(final SchematronOutputType schematronOutput) {
+        final String title = schematronOutput.getTitle() != null ? schematronOutput.getTitle() : "Schematron";
         addSchemaReference(title, CODE_SCHEMATRON_VALIDATION);
         schematronOutput.getFailedAsserts().forEach(fa -> addSchematronViolation(fa, title));
     }

@@ -15,7 +15,7 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
 /**
  * @author Andreas Penski
  */
-public class StrictRelativeResolvingStrategy extends BaseResolvingStrategy {
+public class StrictRelativeResolvingStrategy extends AbstractResolvingStrategy {
 
     public StrictRelativeResolvingStrategy() {
     }

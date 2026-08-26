@@ -20,7 +20,7 @@ import org.kosit.jaxb.JaxbConversionService;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.xml.ProcessorProvider;
@@ -171,11 +171,11 @@ public class TestHelper {
         }
     }
 
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final CTReadResource input) {
+    public static SingleProcessingResult<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final CTReadResource input) {
         return new DocumentParseTask(processor).parseDocument(input);
     }
 
-    public static Result<XdmNode, XMLSyntaxError> parseDocument(final CTReadResource input) {
+    public static SingleProcessingResult<XdmNode, XMLSyntaxError> parseDocument(final CTReadResource input) {
         return new DocumentParseTask(getTestProcessor()).parseDocument(input);
     }
 

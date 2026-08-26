@@ -11,7 +11,7 @@ import javax.xml.validation.Schema;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
 import org.slf4j.Logger;
@@ -34,8 +34,8 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
 
     private String name;
 
-    private static Result<Pair<ValidateWithXmlSchema, Schema>, String> createError(final String msg) {
-        return new Result<>(null, Collections.singletonList(msg));
+    private static SingleProcessingResult<Pair<ValidateWithXmlSchema, Schema>, String> createError(final String msg) {
+        return new SingleProcessingResult<>(null, Collections.singletonList(msg));
     }
 
     public static SchemaBuilder schema() {
@@ -43,16 +43,16 @@ public class SchemaBuilder implements Builder<Pair<ValidateWithXmlSchema, Schema
     }
 
     @Override
-    public Result<Pair<ValidateWithXmlSchema, Schema>, String> build(final ContentRepository repository) {
+    public SingleProcessingResult<Pair<ValidateWithXmlSchema, Schema>, String> build(final ContentRepository repository) {
         if (this.schema == null && this.schemaLocation == null) {
             return createError("Must supply source location and/or executable for schema '" + this.name + "'");
         }
-        Result<Pair<ValidateWithXmlSchema, Schema>, String> result;
+        SingleProcessingResult<Pair<ValidateWithXmlSchema, Schema>, String> result;
         try {
             if (this.schema == null) {
                 this.schema = repository.createSchema(this.schemaLocation);
             }
-            result = new Result<>(new ImmutablePair<>(createObject(), this.schema));
+            result = new SingleProcessingResult<>(new ImmutablePair<>(createObject(), this.schema));
         } catch (final IllegalStateException e) {
             LOGGER.error(e.getMessage(), e);
             result = createError("Can not create schema based " + this.schemaLocation + ". Exception is " + e.getMessage());

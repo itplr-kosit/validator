@@ -3,34 +3,41 @@ package org.kosit.validator.impl.model;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A result object that holds the actual result and optionally various error objects.
  *
  * @param <T> the type of the result object
  * @param <E> the type of the error object
  */
-public class Result<T, E> {
+public class SingleProcessingResult<T, E> {
 
     private T object;
 
     private Collection<E> errors;
 
     /**
-     * Creates a new result with errors.
-     *
-     * @param errors the errors
-     */
-    public Result(final Collection<E> errors) {
-        this(null, errors);
-    }
-
-    /**
      * Creates a new result with a result object.
      *
      * @param o
      */
-    public Result(final T o) {
+    public SingleProcessingResult(final @Nullable T o) {
         this(o, Collections.emptyList());
+    }
+
+    /**
+     * Creates a new result with errors.
+     *
+     * @param errors the errors
+     */
+    public SingleProcessingResult(final @Nullable Collection<E> errors) {
+        this(null, errors);
+    }
+
+    public SingleProcessingResult(final @Nullable T object, final @Nullable Collection<E> errors) {
+        this.object = object;
+        this.errors = errors;
     }
 
     /**
@@ -57,13 +64,5 @@ public class Result<T, E> {
 
     public T getObject() {
         return this.object;
-    }
-
-    public Result(final T object, final Collection<E> errors) {
-        this.object = object;
-        this.errors = errors;
-    }
-
-    public Result() {
     }
 }

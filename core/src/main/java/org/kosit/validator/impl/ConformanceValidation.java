@@ -114,17 +114,17 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     }
 
     private static VResult createResult(final Process process) {
-        final org.kosit.validator.impl.model.Result<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
                 .getResult(ComputeAcceptanceTask.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
         defaultResult.setWellformed(process.getResult(DocumentParseTask.KEY).isValid());
         defaultResult.setReportSummary(process.getXvrlReportSummary());
-        final org.kosit.validator.impl.model.Result<Boolean, XMLSyntaxError> schemaValidationResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<Boolean, XMLSyntaxError> schemaValidationResult = process
                 .getResult(SchemaValidationTask.KEY);
         if (schemaValidationResult != null) {
             defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
         }
-        final org.kosit.validator.impl.model.Result<List<ValidationResultsSchematron>, String> schematronValidationResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<List<ValidationResultsSchematron>, String> schematronValidationResult = process
                 .getResult(SchematronValidationTask.KEY);
         if (schematronValidationResult != null) {
             defaultResult.setSchematronResult(schematronValidationResult.getObject().stream()

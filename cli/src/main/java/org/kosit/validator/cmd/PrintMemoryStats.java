@@ -17,7 +17,7 @@ class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrintMemoryStats.class);
 
-    public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+    public static final Process.ProcessKey<Boolean, String> KEY = new Process.ProcessKey<>(Boolean.class, String.class);
 
     private static final int BYTES_PER_K = 1024;
 

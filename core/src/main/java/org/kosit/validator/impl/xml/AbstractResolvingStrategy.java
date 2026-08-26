@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Andreas Penski
  */
-public abstract class BaseResolvingStrategy implements ResolvingConfigurationStrategy {
+public abstract class AbstractResolvingStrategy implements ResolvingConfigurationStrategy {
 
     @FunctionalInterface
     private interface PropertySetter {
@@ -20,9 +20,9 @@ public abstract class BaseResolvingStrategy implements ResolvingConfigurationStr
         void apply() throws SAXException;
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseResolvingStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractResolvingStrategy.class);
 
-    protected BaseResolvingStrategy() {
+    protected AbstractResolvingStrategy() {
     }
 
     private void setProperty(final PropertySetter setter, final boolean lenient, final String errorMessage) {

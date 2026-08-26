@@ -23,7 +23,7 @@ import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.input.SourceVInput;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -159,7 +159,7 @@ public class VInputFactoryTest {
         final VInput domVInput = VInputFactory.read(new DOMSource(dom), "MD5", "id".getBytes(StandardCharsets.UTF_8));
         assertThat(domVInput).isNotNull();
         assertThat(domVInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(VInputResourceBridge.of(domVInput));
+        final SingleProcessingResult<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(VInputResourceBridge.of(domVInput));
         assertThat(parsed.isValid()).isTrue();
 
         // read twice
@@ -173,7 +173,7 @@ public class VInputFactoryTest {
         final VInput nodeVInput = VInputFactory.read(node, "node test");
         assertThat(nodeVInput).isNotNull();
         assertThat(nodeVInput.getSource()).isNotNull();
-        final Result<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(VInputResourceBridge.of(nodeVInput));
+        final SingleProcessingResult<XdmNode, XMLSyntaxError> parsed = TestHelper.parseDocument(VInputResourceBridge.of(nodeVInput));
         assertThat(parsed.isValid()).isTrue();
 
         // read twice

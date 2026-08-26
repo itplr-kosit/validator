@@ -101,9 +101,7 @@ public class DefaultResult implements VResult {
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public List<FailedAssert> getFailedAsserts() {
-        return getSchematronResult() != null
-                ? getSchematronResult().stream().flatMap(e -> e.getActivePatternOrActiveGroupAndFiredRule().stream())
-                        .filter(FailedAssert.class::isInstance).map(FailedAssert.class::cast).toList()
+        return getSchematronResult() != null ? getSchematronResult().stream().flatMap(e -> e.getFailedAsserts().stream()).toList()
                 : Collections.emptyList();
     }
 
@@ -119,7 +117,7 @@ public class DefaultResult implements VResult {
     }
 
     /**
-     * Die vom Validator erstelle interne Berichts-'Vorstufe'
+     * The reporting source
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public XVRLReportSummary getReportSummary() {
@@ -128,14 +126,14 @@ public class DefaultResult implements VResult {
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     /**
-     * Die vom Validator erstelle interne Berichts-'Vorstufe'
+     * @param reportSummary Report summary
      */
     void setReportSummary(final XVRLReportSummary reportSummary) {
         this.reportSummary = reportSummary;
     }
 
     /**
-     * Das evaluierte Ergebnis.
+     * The evaluated accept recommendation
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public AcceptRecommendation getAcceptRecommendation() {

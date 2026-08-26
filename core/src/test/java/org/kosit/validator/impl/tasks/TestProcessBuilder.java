@@ -11,7 +11,7 @@ import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
@@ -96,10 +96,10 @@ public class TestProcessBuilder {
     }
 
     public TestProcessBuilder setSchemaValidationResult(final boolean value, final List<XMLSyntaxError> errors) {
-        return setSchemaValidationResult(new Result<>(value, errors));
+        return setSchemaValidationResult(new SingleProcessingResult<>(value, errors));
     }
 
-    public TestProcessBuilder setSchemaValidationResult(final Result<Boolean, XMLSyntaxError> schemaResult) {
+    public TestProcessBuilder setSchemaValidationResult(final SingleProcessingResult<Boolean, XMLSyntaxError> schemaResult) {
         final ProcessStepResult<Boolean, XMLSyntaxError> stepResult = new ProcessStepResult<>(SchemaValidationTask.KEY);
         stepResult.setResult(schemaResult);
         stepResult.setReport(new XVRLReport());
@@ -108,10 +108,11 @@ public class TestProcessBuilder {
     }
 
     public TestProcessBuilder setSchematronResult(final List<ValidationResultsSchematron> result) {
-        return setSchematronResult(new Result<>(result, null));
+        return setSchematronResult(new SingleProcessingResult<>(result, null));
     }
 
-    public TestProcessBuilder setSchematronResult(final Result<List<ValidationResultsSchematron>, String> schematronResult) {
+    public TestProcessBuilder setSchematronResult(
+            final SingleProcessingResult<List<ValidationResultsSchematron>, String> schematronResult) {
         final ProcessStepResult<List<ValidationResultsSchematron>, String> stepResult = new ProcessStepResult<>(
                 SchematronValidationTask.KEY);
         stepResult.setResult(schematronResult);
@@ -130,7 +131,7 @@ public class TestProcessBuilder {
 
     public TestProcessBuilder setCreateReport(final List<BusinessReport> report) {
         final ProcessStepResult<List<BusinessReport>, XMLSyntaxError> stepResult = new ProcessStepResult<>(CreateReportsTask.KEY);
-        stepResult.setResult(new Result<>(report, Collections.emptyList()));
+        stepResult.setResult(new SingleProcessingResult<>(report, Collections.emptyList()));
         stepResult.setReport(new XVRLReport());
         this.process.addStepResult(stepResult);
         return this;
@@ -148,7 +149,7 @@ public class TestProcessBuilder {
 
     public TestProcessBuilder setScenario(final Scenario scenario) {
         final ProcessStepResult<Scenario, String> stepResult = new ProcessStepResult<>(ScenarioSelectionTask.KEY);
-        stepResult.setResult(new Result<>(scenario));
+        stepResult.setResult(new SingleProcessingResult<>(scenario));
         stepResult.setReport(new XVRLReport());
         process.getProcessStepResults().removeIf(r -> r.getKey().equals(ScenarioSelectionTask.KEY));
         this.process.addStepResult(stepResult);

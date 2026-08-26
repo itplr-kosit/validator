@@ -10,7 +10,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 
 import net.sf.saxon.s9api.XPathExecutable;
 
@@ -26,7 +26,7 @@ public class XPathBuilderTest {
         final String name = RandomStringUtils.secure().nextAlphanumeric(5);
         final XPathBuilder b = new XPathBuilder(name);
         b.setXpath("//*");
-        final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
         assertThat(b.getNamespaces()).isNotNull();
@@ -43,7 +43,7 @@ public class XPathBuilderTest {
         ns.put("p", "http://somens");
         b.setNamespaces(ns);
         b.setXpath("//p:*");
-        final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
         assertThat(b.getNamespaces()).isNotEmpty();
@@ -58,7 +58,7 @@ public class XPathBuilderTest {
         ns.put("p", "http://somens");
         b.setNamespaces(ns);
         b.setXpath("//u:*");
-        final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isFalse();
     }
@@ -70,7 +70,7 @@ public class XPathBuilderTest {
         final XPathExecutable xpath = repository.createXPath("//*", Collections.emptyMap());
         final XPathBuilder b = new XPathBuilder(name);
         b.setExecutable(xpath);
-        final Result<XPathExecutable, String> result = b.build(repository);
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(repository);
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
         assertThat(b.getNamespaces()).isEmpty();
@@ -86,7 +86,7 @@ public class XPathBuilderTest {
         final XPathExecutable xpath = repository.createXPath("//p:*", ns);
         final XPathBuilder b = new XPathBuilder(name);
         b.setExecutable(xpath);
-        final Result<XPathExecutable, String> result = b.build(repository);
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(repository);
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
         assertThat(b.getNamespaces()).isNotEmpty();
@@ -98,7 +98,7 @@ public class XPathBuilderTest {
     public void testNoName() {
         final XPathBuilder b = new XPathBuilder(null);
         b.setXpath("//*");
-        final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
         assertThat(b.getName()).isNull();
@@ -108,7 +108,7 @@ public class XPathBuilderTest {
     public void testNoConfig() {
         final String name = RandomStringUtils.secure().nextAlphanumeric(5);
         final XPathBuilder b = new XPathBuilder(name);
-        final Result<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isFalse();
     }

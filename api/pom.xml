@@ -28,6 +28,10 @@
             <artifactId>scenario</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.conformatron</groupId>
+            <artifactId>conformatron-api</artifactId>
+        </dependency>
     </dependencies>
     
     <build>
@@ -84,6 +88,10 @@
                     </plugins>
                 </configuration>
             </plugin>
+            <!-- For every element referenced from an imported schema, XJC emits a stub ObjectFactory into the
+                 owning package, even though that package is covered by an episode. Those stubs would shadow the
+                 complete ObjectFactory of the svrl and scenario modules on the classpath. They are not needed here,
+                 because -Xsimplify turns all element references into plain @XmlElement properties. -->
             <!-- Delete the directory with only ObjectFactory 
                  Source: http://stackoverflow.com/questions/32635137
             -->
@@ -103,20 +111,6 @@
                   </configuration>
                 </execution>
               </executions>
-            </plugin>
-            <!-- For every element referenced from an imported schema, XJC emits a stub ObjectFactory into the
-                 owning package, even though that package is covered by an episode. Those stubs would shadow the
-                 complete ObjectFactory of the svrl and scenario modules on the classpath. They are not needed here,
-                 because -Xsimplify turns all element references into plain @XmlElement properties. -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>org/oclc/purl/dsdl/svrl/ObjectFactory.java</exclude>
-                        <exclude>org/kosit/validator/scenario/model/ObjectFactory.java</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

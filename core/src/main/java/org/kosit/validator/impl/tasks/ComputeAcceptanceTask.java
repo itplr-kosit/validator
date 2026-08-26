@@ -1,7 +1,7 @@
 package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Optional;
 import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.xvrl.model.XVRLReport;
@@ -31,23 +31,23 @@ public class ComputeAcceptanceTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputeAcceptanceTask.class);
 
-    public static final Process.Key<AcceptRecommendation, XMLSyntaxError> KEY = new Process.Key<>(AcceptRecommendation.class,
+    public static final Process.ProcessKey<AcceptRecommendation, XMLSyntaxError> KEY = new Process.ProcessKey<>(AcceptRecommendation.class,
             XMLSyntaxError.class);
 
     private static final String REPORT_NAME = "Compute Acceptance Validator";
 
-    private static XVRLReport generateXVRLReport(final Result<AcceptRecommendation, XMLSyntaxError> currentResult) {
+    private static XVRLReport generateXVRLReport(final SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> currentResult) {
         if (currentResult.isValid()) {
-            return builder(REPORT_NAME).add(detection().addMessage(currentResult.getObject().name())).build();
+            return builder(REPORT_NAME).add(detectionBuilder().addMessage(currentResult.getObject().name())).build();
         }
-        return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detection().addError(e)).toList()).build();
+        return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detectionBuilder().addError(e)).toList()).build();
     }
 
-    private static Result<AcceptRecommendation, XMLSyntaxError> evaluateSchemaAndSchematron(final Process results) {
+    private static SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> evaluateSchemaAndSchematron(final Process results) {
         if (results.getResult(SchemaValidationTask.KEY).isValid() && isSchematronValid(results)) {
-            return new Result<>(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
+            return new SingleProcessingResult<>(AcceptRecommendation.ACCEPTABLE);
         }
-        return new Result<>(org.kosit.validator.api.AcceptRecommendation.REJECT);
+        return new SingleProcessingResult<>(AcceptRecommendation.REJECT);
     }
 
     private static boolean isSchematronValid(final Process results) {
@@ -55,7 +55,7 @@ public class ComputeAcceptanceTask implements CheckTask {
     }
 
     private static boolean hasSchematronErrors(final Process process) {
-        final Result<List<ValidationResultsSchematron>, String> result = process.getResult(SchematronValidationTask.KEY);
+        final SingleProcessingResult<List<ValidationResultsSchematron>, String> result = process.getResult(SchematronValidationTask.KEY);
         if (result != null && result.isValid()) {
             return result.getObject().stream().map(v -> v.getResults().getSchematronOutput())
                     .flatMap(s -> s.getActivePatternOrActiveGroupAndFiredRule().stream()).anyMatch(FailedAssert.class::isInstance);
@@ -63,39 +63,38 @@ public class ComputeAcceptanceTask implements CheckTask {
         return false;
     }
 
-    private static Result<AcceptRecommendation, XMLSyntaxError> evaluateAcceptanceMatch(final Process results,
+    private static SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> evaluateAcceptanceMatch(final Process results,
             final XPathSelector selector) {
         try {
-            final Result<List<BusinessReport>, XMLSyntaxError> reportResult = results.getResult(CreateReportsTask.KEY);
+            final SingleProcessingResult<List<BusinessReport>, XMLSyntaxError> reportResult = results.getResult(CreateReportsTask.KEY);
             boolean result = true;
             for (final BusinessReport report : reportResult.getObject()) {
                 selector.setContextItem(report.getContent());
                 result = result && selector.effectiveBooleanValue();
             }
-            final AcceptRecommendation effectiveBooleanValue = result ? org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE
-                    : org.kosit.validator.api.AcceptRecommendation.REJECT;
-            return new Result<>(effectiveBooleanValue);
+            final AcceptRecommendation effectiveBooleanValue = result ? AcceptRecommendation.ACCEPTABLE : AcceptRecommendation.REJECT;
+            return new SingleProcessingResult<>(effectiveBooleanValue);
         } catch (final SaxonApiException e) {
             final String msg = "Error evaluating accept recommendation: " + selector.getUnderlyingXPathContext().toString();
             LOGGER.error(msg, e);
             final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
             xmlSyntaxError.setMessage(msg);
-            return new Result<>(org.kosit.validator.api.AcceptRecommendation.REJECT, Collections.singletonList(xmlSyntaxError));
+            return new SingleProcessingResult<>(AcceptRecommendation.REJECT, Collections.singletonList(xmlSyntaxError));
         }
     }
 
     private static boolean preCondtionsMatch(final Process results) {
-        final Result<List<BusinessReport>, XMLSyntaxError> report = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, XMLSyntaxError> report = results.getResult(CreateReportsTask.KEY);
         return results.getResult(SchemaValidationTask.KEY) != null && results.getResult(ScenarioSelectionTask.KEY) != null;
     }
 
     @Override
     public ProcessStepResult<AcceptRecommendation, XMLSyntaxError> check(final Process process) {
         final ProcessStepResult<AcceptRecommendation, XMLSyntaxError> stepResult = new ProcessStepResult<>(KEY);
-        Result<AcceptRecommendation, XMLSyntaxError> result = new Result<>(org.kosit.validator.api.AcceptRecommendation.UNDEFINED);
+        SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> result = new SingleProcessingResult<>(AcceptRecommendation.UNDEFINED);
         if (!process.isStopped() && process.getResult(DocumentParseTask.KEY).isValid()) {
             if (preCondtionsMatch(process)) {
-                final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
+                final SingleProcessingResult<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
                 final Optional<XPathSelector> acceptMatch = scenarioSelection.getObject().getAcceptSelector();
                 if (process.getResult(SchemaValidationTask.KEY).isValid() && acceptMatch.isPresent()) {
                     result = evaluateAcceptanceMatch(process, acceptMatch.get());
@@ -105,7 +104,7 @@ public class ComputeAcceptanceTask implements CheckTask {
             } else {
                 final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
                 xmlSyntaxError.setMessage("Pre-Conditions not Matched");
-                result = new Result<>(org.kosit.validator.api.AcceptRecommendation.REJECT, Collections.singleton(xmlSyntaxError));
+                result = new SingleProcessingResult<>(AcceptRecommendation.REJECT, Collections.singleton(xmlSyntaxError));
             }
         }
         stepResult.setResult(result);

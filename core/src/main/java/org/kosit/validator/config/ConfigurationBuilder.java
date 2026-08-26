@@ -21,7 +21,7 @@ import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.DescriptionType;
 import org.kosit.validator.scenario.v1.ObjectFactory;
 import org.kosit.validator.scenario.v1.Scenarios;
@@ -300,7 +300,7 @@ public class ConfigurationBuilder {
         if (this.fallbackBuilder == null) {
             throw new IllegalStateException("No fallback configuration specified");
         }
-        final Result<Scenario, String> result = this.fallbackBuilder.build(contentRepository);
+        final SingleProcessingResult<Scenario, String> result = this.fallbackBuilder.build(contentRepository);
         if (result.isInvalid()) {
             throw new IllegalStateException("Invalid fallback configuration: " + String.join(",", result.getErrors()));
         }
@@ -312,7 +312,7 @@ public class ConfigurationBuilder {
             throw new IllegalStateException("No scenario specified");
         }
         return this.scenarios.stream().map(s -> {
-            final Result<Scenario, String> result = s.build(contentRepository);
+            final SingleProcessingResult<Scenario, String> result = s.build(contentRepository);
             if (result.isInvalid()) {
                 final String msg = String.join(",", result.getErrors());
                 throw new IllegalStateException("Invalid configuration for scenario " + s.getName() + " found: " + msg);

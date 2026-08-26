@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XMLSyntaxError;
 
 import net.sf.saxon.s9api.XdmNode;
@@ -31,7 +31,7 @@ public class DocumentParseTaskTest {
 
     @Test
     public void testSimple() {
-        final Result<XdmNode, XMLSyntaxError> result = this.action.parseDocument(TestHelper.read(Simple.SIMPLE_VALID));
+        final SingleProcessingResult<XdmNode, XMLSyntaxError> result = this.action.parseDocument(TestHelper.read(Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
         assertThat(result.getObject()).isNotNull();
         assertThat(result.getErrors()).isEmpty();
@@ -40,7 +40,7 @@ public class DocumentParseTaskTest {
 
     @Test
     public void testIllformed() {
-        final Result<XdmNode, XMLSyntaxError> result = this.action.parseDocument(TestHelper.read(Simple.NOT_WELLFORMED));
+        final SingleProcessingResult<XdmNode, XMLSyntaxError> result = this.action.parseDocument(TestHelper.read(Simple.NOT_WELLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
         assertThat(result.getObject()).isNull();

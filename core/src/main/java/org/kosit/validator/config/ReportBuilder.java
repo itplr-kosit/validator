@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario.Transformation;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.slf4j.Logger;
@@ -37,22 +37,22 @@ public class ReportBuilder implements Builder<Pair<CreateReportType, Transformat
 
     private String id;
 
-    private static Result<Pair<CreateReportType, Transformation>, String> createError(final String msg) {
-        return new Result<>(null, Collections.singletonList(msg));
+    private static SingleProcessingResult<Pair<CreateReportType, Transformation>, String> createError(final String msg) {
+        return new SingleProcessingResult<>(null, Collections.singletonList(msg));
     }
 
     @Override
-    public Result<Pair<CreateReportType, Transformation>, String> build(final ContentRepository repository) {
+    public SingleProcessingResult<Pair<CreateReportType, Transformation>, String> build(final ContentRepository repository) {
         if (this.executable == null && this.source == null) {
             return createError("Must supply source location and/or executable for report '" + this.name + "'");
         }
         final CreateReportType object = createObject();
-        Result<Pair<CreateReportType, Transformation>, String> result;
+        SingleProcessingResult<Pair<CreateReportType, Transformation>, String> result;
         try {
             if (this.executable == null) {
                 this.executable = repository.createTransformation(object.getResource()).getExecutable();
             }
-            result = new Result<>(new ImmutablePair<>(object, new Transformation(this.executable, object.getResource())));
+            result = new SingleProcessingResult<>(new ImmutablePair<>(object, new Transformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
             LOGGER.error(e.getMessage(), e);
             result = createError(" Can not create report configuration based on " + this.source + ". Exception is " + e.getMessage());

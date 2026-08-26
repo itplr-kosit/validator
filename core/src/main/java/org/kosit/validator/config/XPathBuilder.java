@@ -11,7 +11,7 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +36,8 @@ class XPathBuilder implements Builder<XPathExecutable> {
 
     private Map<String, String> namespaces;
 
-    private static Result<XPathExecutable, String> createError(final String msg) {
-        return new Result<>(null, Collections.singletonList(msg));
+    private static SingleProcessingResult<XPathExecutable, String> createError(final String msg) {
+        return new SingleProcessingResult<>(null, Collections.singletonList(msg));
     }
 
     Map<String, String> getNamespaces() {
@@ -62,7 +62,7 @@ class XPathBuilder implements Builder<XPathExecutable> {
     }
 
     @Override
-    public Result<XPathExecutable, String> build(final ContentRepository repository) {
+    public SingleProcessingResult<XPathExecutable, String> build(final ContentRepository repository) {
         if (!isAvailable()) {
             return createError("No configuration for " + this.name + " xpath  expression found");
         }
@@ -76,9 +76,9 @@ class XPathBuilder implements Builder<XPathExecutable> {
         } catch (final IllegalStateException e) {
             final String msg = "Error creating " + this.name + " xpath: " + e.getMessage();
             LOGGER.error(msg, e);
-            return new Result<>(Collections.singletonList(msg));
+            return new SingleProcessingResult<>(Collections.singletonList(msg));
         }
-        return new Result<>(this.executable);
+        return new SingleProcessingResult<>(this.executable);
     }
 
     private void extractNamespaces() {

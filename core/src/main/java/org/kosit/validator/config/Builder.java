@@ -1,7 +1,7 @@
 package org.kosit.validator.config;
 
 import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 
 /**
  * Internal interface for creating object builders.
@@ -16,5 +16,5 @@ interface Builder<T> {
      * @param repository the {@link ContentRepository}
      * @return the result of building the object
      */
-    Result<T, String> build(ContentRepository repository);
+    SingleProcessingResult<T, String> build(ContentRepository repository);
 }

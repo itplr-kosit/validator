@@ -4,7 +4,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
@@ -27,7 +27,7 @@ class PrintReportAction implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrintReportAction.class);
 
-    public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+    public static final Process.ProcessKey<Boolean, String> KEY = new Process.ProcessKey<>(Boolean.class, String.class);
 
     private final Processor processor;
 
@@ -40,7 +40,7 @@ class PrintReportAction implements CheckTask {
         try {
             final StringWriter writer = new StringWriter();
             final Serializer serializer = this.processor.newSerializer(writer);
-            final Result<List<BusinessReport>, XMLSyntaxError> result = results.getResult(CreateReportsTask.KEY);
+            final SingleProcessingResult<List<BusinessReport>, XMLSyntaxError> result = results.getResult(CreateReportsTask.KEY);
             for (final BusinessReport node : result.getObject()) {
                 serializer.serializeNode(node.getContent());
             }

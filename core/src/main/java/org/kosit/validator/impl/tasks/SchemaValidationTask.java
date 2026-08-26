@@ -1,6 +1,6 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detectionBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,8 +21,8 @@ import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.input.AbstractVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.tasks.CheckTask.Process.Key;
+import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.validator.impl.tasks.CheckTask.Process.ProcessKey;
 import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
 import org.kosit.validator.model.XMLSyntaxError;
@@ -53,7 +53,7 @@ public class SchemaValidationTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemaValidationTask.class);
 
-    public static final Key<Boolean, XMLSyntaxError> KEY = new Key<>(Boolean.class, XMLSyntaxError.class);
+    public static final ProcessKey<Boolean, XMLSyntaxError> KEY = new ProcessKey<>(Boolean.class, XMLSyntaxError.class);
 
     private static final Long BA_LIMIT = 10L;
 
@@ -65,16 +65,16 @@ public class SchemaValidationTask implements CheckTask {
 
     private static XVRLReport generateXVRLReport(final ValidationResultsXmlSchema result) {
         final XVRLReportBuilder builder = XVRLReportBuilder.builder("Schema Validator").addSchemas(result.getResource());
-        builder.addAll(result.getXmlSyntaxError().stream().map(e -> detection().addError(e)).toList());
+        builder.addAll(result.getXmlSyntaxError().stream().map(e -> detectionBuilder().addError(e)).toList());
         return builder.build();
     }
 
     private static boolean hasNoSchema(final Process results) {
-        final Result<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionTask.KEY);
         return scenarioSelection == null || scenarioSelection.getObject().getSchema() == null;
     }
 
-    private Result<Boolean, XMLSyntaxError> validate(final Process process, final Scenario scenario) {
+    private SingleProcessingResult<Boolean, XMLSyntaxError> validate(final Process process, final Scenario scenario) {
         if (LOGGER.isDebugEnabled())
             LOGGER.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();
@@ -82,22 +82,22 @@ public class SchemaValidationTask implements CheckTask {
             final Validator validator = scenario.getFactory().createValidator(scenario.getSchema());
             validator.setErrorHandler(errorHandler);
             validator.validate(validateInput.getSource());
-            return new Result<>(!errorHandler.hasErrors(), errorHandler.getErrors());
+            return new SingleProcessingResult<>(!errorHandler.hasErrors(), errorHandler.getErrors());
         } catch (final SAXException | SaxonApiException | IOException e) {
             final String msg = "Error processing schema validation for scenario " + scenario.getConfiguration().getName();
             LOGGER.error(msg, e);
             process.setStopped(true);
             final XMLSyntaxError error = new XMLSyntaxError();
             error.setMessage(msg);
-            return new Result<>(Boolean.FALSE, Collections.singletonList(error));
+            return new SingleProcessingResult<>(Boolean.FALSE, Collections.singletonList(error));
         }
     }
 
     @Override
     public ProcessStepResult<Boolean, XMLSyntaxError> check(final Process results) {
-        final Result<Scenario, String> scenarioResult = results.getResult(ScenarioSelectionTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioResult = results.getResult(ScenarioSelectionTask.KEY);
         final ProcessStepResult<Boolean, XMLSyntaxError> stepResult = new ProcessStepResult<>(KEY);
-        final Result<Boolean, XMLSyntaxError> validateResult = validate(results, scenarioResult.getObject());
+        final SingleProcessingResult<Boolean, XMLSyntaxError> validateResult = validate(results, scenarioResult.getObject());
         stepResult.setResult(validateResult);
         final ValidationResultsXmlSchema result = new ValidationResultsXmlSchema();
         result.getResource().addAll(scenarioResult.getObject().getConfiguration().getValidateWithXmlSchema().getResource());
@@ -113,7 +113,7 @@ public class SchemaValidationTask implements CheckTask {
         if (results.getInput() instanceof final AbstractVInput abstractInput && abstractInput.supportsMultipleReads()) {
             source = () -> results.getInput().getAsSource();
         } else {
-            final Result<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
+            final SingleProcessingResult<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
             source = serialize(results.getInput(), parseResult.getObject());
         }
         return source;
