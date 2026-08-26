@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -33,6 +32,7 @@ import javax.xml.validation.Schema;
 
 import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 import org.jspecify.annotations.Nullable;
+import org.kosit.base.ObjectHelper;
 import org.kosit.base.xml.XmlHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +65,32 @@ import jakarta.xml.bind.ValidationEventHandler;
  */
 public class JaxbConversionService {
 
+    /**
+     * {@link NamespacePrefixMapper} that delegates to a fixed namespace-URI-to-prefix map. A value of empty string
+     * marks a URI as the default namespace.
+     */
+    private static final class MappedNamespacePrefixMapper extends NamespacePrefixMapper {
+
+        private final Map<String, String> map;
+
+        MappedNamespacePrefixMapper(final Map<String, String> map) {
+            this.map = map;
+        }
+
+        @Override
+        public String getPreferredPrefix(final String namespaceUri, final String suggestion, final boolean requirePrefix) {
+            final String prefix = this.map.get(namespaceUri);
+            if (prefix == null) {
+                return suggestion;
+            }
+            // empty string means default namespace, but if JAXB requires a prefix here we must not return ""
+            if (prefix.isEmpty() && requirePrefix) {
+                return suggestion;
+            }
+            return prefix;
+        }
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JaxbConversionService.class);
 
     private static final String NAMESPACE_PREFIX_MAPPER_PROPERTY = "org.glassfish.jaxb.namespacePrefixMapper";
@@ -94,62 +120,11 @@ public class JaxbConversionService {
      * @throws IllegalArgumentException if {@code jaxbContext} is {@code null}
      */
     public JaxbConversionService(final JAXBContext jaxbContext) {
-        if (jaxbContext == null) {
-            throw new IllegalArgumentException("jaxbContext must not be null");
-        }
+        ObjectHelper.requireNonNull(jaxbContext, "jaxbContext");
         this.jaxbContext = jaxbContext;
     }
 
     // ---------- factories ----------
-
-    /**
-     * Creates a service from a colon-separated JAXB context path.
-     *
-     * @param contextPath one or more package names separated by colons, each containing JAXB-annotated types
-     * @return a new conversion service
-     * @throws IllegalArgumentException if {@code contextPath} is empty
-     * @throws JaxbConversionException if the JAXB context can not be created
-     */
-    public static JaxbConversionService forContextPath(final String contextPath) {
-        if (contextPath.isEmpty()) {
-            throw new IllegalArgumentException("contextPath must not be empty");
-        }
-        try {
-            return new JaxbConversionService(JAXBContext.newInstance(contextPath, JaxbConversionService.class.getClassLoader()));
-        } catch (final JAXBException e) {
-            throw new JaxbConversionException("Can not create JAXB context for: " + contextPath, e);
-        }
-    }
-
-    /**
-     * Creates a service from one or more Java packages containing JAXB-annotated types.
-     *
-     * @param packages packages to include in the JAXB context (at least one required)
-     * @return a new conversion service
-     * @throws IllegalArgumentException if no packages are supplied
-     * @throws JaxbConversionException if the JAXB context can not be created
-     */
-    public static JaxbConversionService forPackages(final Package... packages) {
-        if (packages.length == 0) {
-            throw new IllegalArgumentException("at least one package is required");
-        }
-        return forContextPath(Stream.of(packages).map(Package::getName).reduce((a, b) -> a + ":" + b).orElseThrow());
-    }
-
-    /**
-     * Creates a service from one or more package names.
-     *
-     * @param packageNames package names to include in the JAXB context (at least one required)
-     * @return a new conversion service
-     * @throws IllegalArgumentException if no package names are supplied
-     * @throws JaxbConversionException if the JAXB context can not be created
-     */
-    public static JaxbConversionService forPackageNames(final String... packageNames) {
-        if (packageNames.length == 0) {
-            throw new IllegalArgumentException("at least one package name is required");
-        }
-        return forContextPath(String.join(":", packageNames));
-    }
 
     /**
      * Creates a service from a fixed set of JAXB-annotated classes.
@@ -269,7 +244,7 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
     public <T> T readXml(final URI uri, final Class<T> type) {
-        requireNonNull(uri, "uri");
+        ObjectHelper.requireNonNull(uri, "uri");
         return readSecure(new StreamSource(uri.toASCIIString()), type, "URI " + uri);
     }
 
@@ -283,7 +258,7 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
     public <T> T readXml(final InputStream input, final Class<T> type) {
-        requireNonNull(input, "input");
+        ObjectHelper.requireNonNull(input, "input");
         return readSecure(new StreamSource(input), type, "InputStream");
     }
 
@@ -297,7 +272,7 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
     public <T> T readXml(final Reader reader, final Class<T> type) {
-        requireNonNull(reader, "reader");
+        ObjectHelper.requireNonNull(reader, "reader");
         return readSecure(new StreamSource(reader), type, "Reader");
     }
 
@@ -311,7 +286,7 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on parsing or binding errors
      */
     public <T> T readXml(final byte[] xml, final Class<T> type) {
-        requireNonNull(xml, "xml");
+        ObjectHelper.requireNonNull(xml, "xml");
         return readXml(new ByteArrayInputStream(xml), type);
     }
 
@@ -325,7 +300,7 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on parsing or binding errors
      */
     public <T> T readXml(final String xml, final Class<T> type) {
-        requireNonNull(xml, "xml");
+        ObjectHelper.requireNonNull(xml, "xml");
         return readXml(new StringReader(xml), type);
     }
 
@@ -339,7 +314,7 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
     public <T> T readXml(final Path path, final Class<T> type) {
-        requireNonNull(path, "path");
+        ObjectHelper.requireNonNull(path, "path");
         try ( InputStream in = Files.newInputStream(path) ) {
             return readSecure(new StreamSource(in, path.toUri().toASCIIString()), type, "Path " + path);
         } catch (final IOException e) {
@@ -357,7 +332,7 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
     public <T> T readXml(final File file, final Class<T> type) {
-        requireNonNull(file, "file");
+        ObjectHelper.requireNonNull(file, "file");
         return readXml(file.toPath(), type);
     }
 
@@ -374,8 +349,8 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on parsing or binding errors
      */
     public <T> T readXml(final Source source, final Class<T> type) {
-        requireNonNull(source, "source");
-        requireType(type);
+        ObjectHelper.requireNonNull(source, "source");
+        Objects.requireNonNull(type);
         try {
             final Unmarshaller u = createUnmarshaller();
             return u.unmarshal(source, type).getValue();
@@ -395,7 +370,7 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on marshalling errors
      */
     public <T> String writeXml(final T model) {
-        requireNonNull(model, "model");
+        ObjectHelper.requireNonNull(model, "model");
         try ( StringWriter sw = new StringWriter() ) {
             writeXml(model, sw);
             return sw.toString();
@@ -413,8 +388,8 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on marshalling errors
      */
     public <T> void writeXml(final T model, final OutputStream output) {
-        requireNonNull(model, "model");
-        requireNonNull(output, "output");
+        ObjectHelper.requireNonNull(model, "model");
+        ObjectHelper.requireNonNull(output, "output");
         writeStreaming(model, XMLOutputFactory.newFactory()::createXMLStreamWriter, output);
     }
 
@@ -427,8 +402,8 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on marshalling errors
      */
     public <T> void writeXml(final T model, final Writer writer) {
-        requireNonNull(model, "model");
-        requireNonNull(writer, "writer");
+        ObjectHelper.requireNonNull(model, "model");
+        ObjectHelper.requireNonNull(writer, "writer");
         writeStreaming(model, XMLOutputFactory.newFactory()::createXMLStreamWriter, writer);
     }
 
@@ -441,8 +416,8 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on marshalling errors
      */
     public <T> void writeXml(final T model, final Result result) {
-        requireNonNull(model, "model");
-        requireNonNull(result, "result");
+        ObjectHelper.requireNonNull(model, "model");
+        ObjectHelper.requireNonNull(result, "result");
         try {
             final Marshaller marshaller = createMarshaller();
             marshalWithIntrospection(model, marshaller, result);
@@ -460,8 +435,8 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on I/O or marshalling errors
      */
     public <T> void writeXml(final T model, final Path path) {
-        requireNonNull(model, "model");
-        requireNonNull(path, "path");
+        ObjectHelper.requireNonNull(model, "model");
+        ObjectHelper.requireNonNull(path, "path");
         try ( OutputStream out = Files.newOutputStream(path) ) {
             writeXml(model, out);
         } catch (final IOException e) {
@@ -478,8 +453,8 @@ public class JaxbConversionService {
      * @throws JaxbConversionException on I/O or marshalling errors
      */
     public <T> void writeXml(final T model, final File file) {
-        requireNonNull(model, "model");
-        requireNonNull(file, "file");
+        ObjectHelper.requireNonNull(model, "model");
+        ObjectHelper.requireNonNull(file, "file");
         writeXml(model, file.toPath());
     }
 
@@ -548,32 +523,6 @@ public class JaxbConversionService {
         return marshaller;
     }
 
-    /**
-     * {@link NamespacePrefixMapper} that delegates to a fixed namespace-URI-to-prefix map. A value of empty string
-     * marks a URI as the default namespace.
-     */
-    private static final class MappedNamespacePrefixMapper extends NamespacePrefixMapper {
-
-        private final Map<String, String> map;
-
-        MappedNamespacePrefixMapper(final Map<String, String> map) {
-            this.map = map;
-        }
-
-        @Override
-        public String getPreferredPrefix(final String namespaceUri, final String suggestion, final boolean requirePrefix) {
-            final String prefix = this.map.get(namespaceUri);
-            if (prefix == null) {
-                return suggestion;
-            }
-            // empty string means default namespace, but if JAXB requires a prefix here we must not return ""
-            if (prefix.isEmpty() && requirePrefix) {
-                return suggestion;
-            }
-            return prefix;
-        }
-    }
-
     private Unmarshaller createUnmarshaller() throws JAXBException {
         final Unmarshaller u = this.jaxbContext.createUnmarshaller();
         if (this.schema != null) {
@@ -586,22 +535,14 @@ public class JaxbConversionService {
     }
 
     private <T> T readSecure(final StreamSource source, final Class<T> type, final String context) {
-        requireType(type);
+        Objects.requireNonNull(type);
         try {
-            final XMLInputFactory inputFactory = XmlHelper.createSafeXmlInputFactory();
+            final XMLInputFactory inputFactory = XmlHelper.createSecureXmlInputFactory();
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(source);
             final Unmarshaller u = createUnmarshaller();
             return u.unmarshal(xsr, type).getValue();
         } catch (final JAXBException | XMLStreamException e) {
             throw new JaxbConversionException("Can not unmarshal to type " + type.getSimpleName() + " from " + context, e);
         }
-    }
-
-    private static void requireNonNull(final @Nullable Object value, final String name) {
-        Objects.requireNonNull(value, name + " must not be null");
-    }
-
-    private static <T> void requireType(final @Nullable Class<T> type) {
-        Objects.requireNonNull(type, "Target type must not be null");
     }
 }

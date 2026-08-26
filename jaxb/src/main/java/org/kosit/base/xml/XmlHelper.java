@@ -125,7 +125,7 @@ public final class XmlHelper {
         }
     }
 
-    public static XMLInputFactory createSafeXmlInputFactory() {
+    public static XMLInputFactory createSecureXmlInputFactory() {
         final XMLInputFactory factory = XMLInputFactory.newFactory();
         setProperty(factory, XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
         setProperty(factory, XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);

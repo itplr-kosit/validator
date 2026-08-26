@@ -115,27 +115,6 @@ public class JaxbConversionServiceTest {
     }
 
     @Test
-    public void forPackagesFactoryWorks() {
-        final JaxbConversionService s = JaxbConversionService.forPackages(Person.class.getPackage());
-        final Person p = s.readXml("<person name=\"x\" age=\"1\"/>", Person.class);
-        assertThat(p.getName()).isEqualTo("x");
-    }
-
-    @Test
-    public void forPackageNamesFactoryWorks() {
-        final JaxbConversionService s = JaxbConversionService.forPackageNames(Person.class.getPackage().getName());
-        final Person p = s.readXml("<person name=\"y\" age=\"2\"/>", Person.class);
-        assertThat(p.getName()).isEqualTo("y");
-    }
-
-    @Test
-    public void forContextPathFactoryWorks() {
-        final JaxbConversionService s = JaxbConversionService.forContextPath(Person.class.getPackage().getName());
-        final Person p = s.readXml("<person name=\"z\" age=\"3\"/>", Person.class);
-        assertThat(p.getName()).isEqualTo("z");
-    }
-
-    @Test
     public void disablesExternalEntities() {
         final String evil = "" + "<?xml version=\"1.0\"?>" + "<!DOCTYPE person [" + "  <!ELEMENT person ANY>"
                 + "  <!ENTITY xxe SYSTEM \"file:///etc/passwd\">" + "]>" + "<person name=\"&xxe;\" age=\"0\"/>";
