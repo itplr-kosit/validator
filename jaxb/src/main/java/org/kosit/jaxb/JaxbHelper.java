@@ -1,4 +1,4 @@
-package org.kosit.validator.impl;
+package org.kosit.jaxb;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -7,14 +7,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-/**
- * @author Andreas Penski
- */
-public class DateFactory {
-
-    private DateFactory() {
-        // hide
-    }
+public final class JaxbHelper {
 
     public static XMLGregorianCalendar createTimestamp() {
         try {
@@ -24,5 +17,8 @@ public class DateFactory {
         } catch (final DatatypeConfigurationException ex) {
             throw new IllegalStateException(ex);
         }
+    }
+
+    private JaxbHelper() {
     }
 }

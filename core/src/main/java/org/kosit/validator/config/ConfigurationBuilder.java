@@ -1,7 +1,5 @@
 package org.kosit.validator.config;
 
-import static org.kosit.validator.impl.DateFactory.createTimestamp;
-
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -16,6 +14,7 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
+import org.kosit.jaxb.JaxbHelper;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
@@ -287,7 +286,7 @@ public class ConfigurationBuilder {
     private Scenarios createDefinition(final DefaultConfiguration configuration) {
         final Scenarios s = new Scenarios();
         s.setAuthor(configuration.getAuthor());
-        s.setDate(createTimestamp());
+        s.setDate(JaxbHelper.createTimestamp());
         final DescriptionType d = new DescriptionType();
         d.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, "")));
         s.setDescription(d);

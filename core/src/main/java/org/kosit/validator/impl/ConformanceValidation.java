@@ -1,11 +1,10 @@
 package org.kosit.validator.impl;
 
-import static org.kosit.validator.impl.DateFactory.createTimestamp;
-
 import java.util.Collection;
 import java.util.List;
 
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.jaxb.JaxbHelper;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.api.compact.AcceptRecommendation;
@@ -81,7 +80,7 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     public XVRLMetadataType createMetadata() {
         final XVRLMetadataType metadata = new XVRLMetadataType();
         final XVRLTimestampType timestamp = new XVRLTimestampType();
-        timestamp.setValue(createTimestamp());
+        timestamp.setValue(JaxbHelper.createTimestamp());
         metadata.getTimestamps().add(timestamp);
 
         final XVRLValidatorType validator = new XVRLValidatorType();
