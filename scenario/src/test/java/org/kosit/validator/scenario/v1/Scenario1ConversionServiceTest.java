@@ -1,32 +1,30 @@
-package org.kosit.validator.scenario.impl;
+package org.kosit.validator.scenario.v1;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
-import org.kosit.validator.scenario.model.CreateReportType;
-import org.kosit.validator.scenario.model.ErrorLevelType;
-import org.kosit.validator.scenario.model.ScenarioType;
-import org.kosit.validator.scenario.model.Scenarios;
 
-public class ScenarioConversionServiceTest {
+public class Scenario1ConversionServiceTest {
 
-    private static final URL SAMPLE = ScenarioConversionServiceTest.class.getResource("/sample-scenarios.xml");
+    private static final URL SAMPLE = Scenario1ConversionServiceTest.class.getResource("/sample-scenarios.xml");
 
-    private ScenarioConversionService service;
+    private Scenario1ConversionService service;
 
     @BeforeEach
     public void setUp() {
-        this.service = new ScenarioConversionService();
+        this.service = new Scenario1ConversionService();
     }
 
-    private Scenarios readSample() throws URISyntaxException {
+    private @NonNull Scenarios readSample() throws URISyntaxException {
         return this.service.readXml(SAMPLE.toURI(), Scenarios.class);
     }
 
@@ -63,9 +61,8 @@ public class ScenarioConversionServiceTest {
     @Test
     public void writesScenariosToXml() throws URISyntaxException {
         final String xml = this.service.writeXml(readSample());
-        assertThat(xml).contains("http://www.xoev.de/de/validator/framework/2/scenarios");
-        assertThat(xml).contains("Sample-TestSuite");
-        assertThat(xml).contains("/test:simple");
+        assertThat(xml).contains("http://www.xoev.de/de/validator/framework/2/scenarios").contains("Sample-TestSuite")
+                .contains("/test:simple");
     }
 
     @Test
@@ -90,8 +87,8 @@ public class ScenarioConversionServiceTest {
     @Test
     public void schemaIsResolvableFromTheModuleItself() throws IOException {
         assertThat(SAMPLE).isNotNull();
-        try ( var in = ScenarioConversionServiceTest.class.getResourceAsStream("/xsd/scenarios.xsd") ) {
-            assertThat(in).isNotNull();
+        try ( var in = Scenario1ConversionServiceTest.class.getResourceAsStream("/xsd/scenarios-v1.xsd") ) {
+            assertNotNull(in);
         }
     }
 }

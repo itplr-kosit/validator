@@ -84,6 +84,26 @@
                     </plugins>
                 </configuration>
             </plugin>
+            <!-- Delete the directory with only ObjectFactory 
+                 Source: http://stackoverflow.com/questions/32635137
+            -->
+            <plugin>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <executions>
+                <execution>
+                  <phase>process-sources</phase>
+                  <goals>
+                    <goal>run</goal>
+                  </goals>
+                  <configuration>
+                    <target>
+                      <delete dir="${basedir}/target/generated-sources/xjc/org/oclc/" />
+                      <delete dir="${basedir}/target/generated-sources/xjc/org/kosit/validator/scenario/" />
+                    </target>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
             <!-- For every element referenced from an imported schema, XJC emits a stub ObjectFactory into the
                  owning package, even though that package is covered by an episode. Those stubs would shadow the
                  complete ObjectFactory of the svrl and scenario modules on the classpath. They are not needed here,

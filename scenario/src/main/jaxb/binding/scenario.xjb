@@ -20,9 +20,9 @@
                 xmlType="xs:integer" adapter="org.kosit.jaxb.adapter.LongAdapter"/>
     </jaxb:globalBindings>
 
-    <jaxb:bindings schemaLocation="../xsd/scenarios.xsd">
+    <jaxb:bindings schemaLocation="../../resources/xsd/scenarios-v1.xsd">
         <jaxb:schemaBindings>
-            <jaxb:package name="org.kosit.validator.scenario.model"/>
+            <jaxb:package name="org.kosit.validator.scenario.v1"/>
         </jaxb:schemaBindings>
     </jaxb:bindings>
 

@@ -12,8 +12,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.scenario.model.ResourceType;
-import org.kosit.validator.scenario.model.ValidateWithXmlSchema;
+import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,12 +1,12 @@
 /**
  * Hand-written implementation classes for the JAXB-generated scenario model: the scenario-specific
- * {@link org.kosit.validator.scenario.impl.ScenarioConversionService} facade.
+ * {@link org.kosit.validator.scenario.v1.Scenario1ConversionService} facade.
  *
  * <p>
  * All types in this package follow the {@link org.jspecify.annotations.NullMarked} contract: members are non-null
  * unless explicitly annotated {@link org.jspecify.annotations.Nullable}.
  */
 @NullMarked
-package org.kosit.validator.scenario.impl;
+package org.kosit.validator.scenario.v1;
 
 import org.jspecify.annotations.NullMarked;

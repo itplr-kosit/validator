@@ -1,21 +1,22 @@
 package org.kosit.validator.impl.tasks;
 
-import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.ResolvingMode;
-import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.xml.ProcessorProvider;
-import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
-import org.kosit.validator.scenario.model.CreateReportType;
-import org.kosit.validator.scenario.model.ResourceType;
-import org.kosit.validator.scenario.model.ScenarioType;
-import org.kosit.validator.scenario.model.ValidateWithXmlSchema;
-
-import javax.xml.validation.Schema;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+
+import javax.xml.validation.Schema;
+
+import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.impl.ContentRepository;
+import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.impl.xml.ProcessorProvider;
+import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
+import org.kosit.validator.scenario.v1.CreateReportType;
+import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
 
 public class TestScenarioBuilder {
 

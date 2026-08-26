@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.validation.Schema;
-
 import org.apache.commons.lang3.Strings;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
@@ -21,10 +19,9 @@ import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.scenario.impl.ScenarioConversionService;
-import org.kosit.validator.scenario.model.ScenarioType;
-import org.kosit.validator.scenario.model.Scenarios;
-import org.kosit.validator.scenario.xsd.ScenarioSchemaProvider;
+import org.kosit.validator.scenario.v1.Scenario1ConversionService;
+import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v1.Scenarios;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,7 +124,7 @@ public class ConfigurationLoader {
     public VConfiguration build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
-        final Scenarios def = loadScenarios(ScenarioSchemaProvider.getScenarioSchema(), processor);
+        final Scenarios def = loadScenarios(processor);
         final List<Scenario> scenarios = initializeScenarios(def, contentRepository);
         final Scenario fallbackScenario = createFallback(def, contentRepository);
         final DefaultConfiguration configuration = new DefaultConfiguration(scenarios, fallbackScenario);
@@ -150,13 +147,12 @@ public class ConfigurationLoader {
         return this.resolvingMode.getStrategy();
     }
 
-    private Scenarios loadScenarios(final Schema scenarioSchema, final Processor processor) {
+    private Scenarios loadScenarios(final Processor processor) {
         checkVersion(this.scenarioDefinition, processor);
         LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        final ScenarioConversionService conversionService = new ScenarioConversionService();
-        final Scenarios scenarios = conversionService.withSchema(scenarioSchema).withEventHandler(handler).readXml(this.scenarioDefinition,
-                Scenarios.class);
+        final Scenario1ConversionService conversionService = new Scenario1ConversionService();
+        final Scenarios scenarios = conversionService.withEventHandler(handler).readXml(this.scenarioDefinition, Scenarios.class);
         if (handler.hasErrors()) {
             throw new IllegalStateException(
                     "Can not load scenarios from " + getScenarioDefinition() + " due to " + handler.getErrorDescription());

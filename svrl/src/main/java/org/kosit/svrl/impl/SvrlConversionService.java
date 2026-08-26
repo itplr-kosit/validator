@@ -29,5 +29,6 @@ public class SvrlConversionService extends JaxbConversionService {
      */
     public SvrlConversionService() {
         super(JAXB_CTX);
+        // Don't use XML Schema to read SVRL - the created outcomes are very different
     }
 }

@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
 import org.kosit.validator.impl.TestHelper.Invalid;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.scenario.impl.ScenarioConversionService;
-import org.kosit.validator.scenario.model.Scenarios;
-import org.kosit.validator.scenario.xsd.ScenarioSchemas;
+import org.kosit.validator.scenario.v1.Scenario1ConversionService;
+import org.kosit.validator.scenario.v1.ScenarioSchemas;
+import org.kosit.validator.scenario.v1.Scenarios;
 
 /**
  * Simple test for testing the jaxb conversion service.
@@ -23,15 +23,15 @@ import org.kosit.validator.scenario.xsd.ScenarioSchemas;
  */
 public class ConversionServiceTest {
 
-    private static final URI SCHEMA = URI.create(ScenarioSchemas.class.getResource(ScenarioSchemas.SCENARIOS_XSD_PATH).toExternalForm());
+    private static final URI SCHEMA = URI.create(ScenarioSchemas.class.getResource(ScenarioSchemas.SCENARIOS_V1_XSD_PATH).toExternalForm());
 
-    private ScenarioConversionService service;
+    private Scenario1ConversionService service;
 
     private ContentRepository repository;
 
     @BeforeEach
     public void setup() {
-        this.service = new ScenarioConversionService();
+        this.service = new Scenario1ConversionService();
         this.repository = Simple.createContentRepository();
     }
 
@@ -82,7 +82,7 @@ public class ConversionServiceTest {
 
     @Test
     public void testUnmarshalUnknownType() {
-        assertThrows(JaxbConversionException.class, () -> this.service.readXml(Simple.SCENARIOS, ScenarioConversionService.class));
+        assertThrows(JaxbConversionException.class, () -> this.service.readXml(Simple.SCENARIOS, Scenario1ConversionService.class));
     }
 
     @Test

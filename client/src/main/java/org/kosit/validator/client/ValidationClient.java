@@ -11,7 +11,6 @@ import org.kosit.xvrl.model.XVRLReportSummary;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.xml.bind.JAXBException;
 
 @ApplicationScoped
 public class ValidationClient {
@@ -24,65 +23,65 @@ public class ValidationClient {
 
     private final XmlConversionService xmlConversionService;
 
-    public ValidationClient(@RestClient ValidationApi api, ValidationResponseMetadata metadata, ValidationRequestConfig requestConfig)
-            throws JAXBException {
+    public ValidationClient(@RestClient final ValidationApi api, final ValidationResponseMetadata metadata,
+            final ValidationRequestConfig requestConfig) {
         this.api = api;
         this.metadata = metadata;
         this.requestConfig = requestConfig;
         this.xmlConversionService = new XmlConversionService();
     }
 
-    public File validateRaw(File input) {
+    public File validateRaw(final File input) {
         return api.validate(input);
     }
 
-    public File validateMinimalRaw(File input) {
+    public File validateMinimalRaw(final File input) {
         return api.validateMinimal(input);
     }
 
-    public File validateMinimalRawAsJson(File input) {
+    public File validateMinimalRawAsJson(final File input) {
         requestConfig.setAcceptType(MediaType.APPLICATION_JSON_TYPE);
         return api.validateMinimal(input);
     }
 
-    public XVRLReportSummary validate(File input) {
+    public XVRLReportSummary validate(final File input) {
         return unmarshal(api.validate(input), XVRLReportSummary.class);
     }
 
-    public CompactXVRLReportSummary validateMinimal(File input) {
+    public CompactXVRLReportSummary validateMinimal(final File input) {
         return new CompactXVRLReportSummary(unmarshal(api.validateMinimal(input), XVRLReportSummary.class));
     }
 
-    public ValidationResponse<File> validateRawWithMetadata(File input) {
-        File result = api.validate(input);
+    public ValidationResponse<File> validateRawWithMetadata(final File input) {
+        final File result = api.validate(input);
         return toResponse(result);
     }
 
-    public ValidationResponse<File> validateMinimalRawWithMetadata(File input) {
-        File result = api.validate(input);
+    public ValidationResponse<File> validateMinimalRawWithMetadata(final File input) {
+        final File result = api.validate(input);
         return toResponse(result);
     }
 
-    public ValidationResponse<File> validateMinimalRawAsJsonWithMetadata(File input) {
+    public ValidationResponse<File> validateMinimalRawAsJsonWithMetadata(final File input) {
         requestConfig.setAcceptType(MediaType.APPLICATION_JSON_TYPE);
         return toResponse(api.validateMinimal(input));
     }
 
-    public ValidationResponse<XVRLReportSummary> validateWithMetadata(File input) {
-        File result = api.validate(input);
+    public ValidationResponse<XVRLReportSummary> validateWithMetadata(final File input) {
+        final File result = api.validate(input);
         return toResponse(unmarshal(result, XVRLReportSummary.class));
     }
 
-    public ValidationResponse<CompactXVRLReportSummary> validateMinimalWithMetadata(File input) {
-        File result = api.validateMinimal(input);
+    public ValidationResponse<CompactXVRLReportSummary> validateMinimalWithMetadata(final File input) {
+        final File result = api.validateMinimal(input);
         return toResponse(new CompactXVRLReportSummary(unmarshal(api.validateMinimal(input), XVRLReportSummary.class)));
     }
 
-    private <T> ValidationResponse<T> toResponse(T body) {
+    private <T> ValidationResponse<T> toResponse(final T body) {
         return new ValidationResponse<>(body, metadata.getStatusCode(), metadata.getContentType());
     }
 
-    private <T> T unmarshal(File file, Class<T> type) {
+    private <T> T unmarshal(final File file, final Class<T> type) {
         return xmlConversionService.readXml(file, type);
     }
 

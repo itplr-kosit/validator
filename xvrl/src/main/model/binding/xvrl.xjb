@@ -28,7 +28,7 @@
 
         <jaxb:bindings node="//xs:element[@name='report']">
             <jaxb:class name="XVRLReport"/>
-            <inheritance:extends>org.kosit.xvrl.impl.BaseReport</inheritance:extends>
+            <inheritance:extends>org.kosit.xvrl.impl.AbstractXVRLReport</inheritance:extends>
         </jaxb:bindings>
 
         <jaxb:bindings node="//xs:element[@name='reports']">

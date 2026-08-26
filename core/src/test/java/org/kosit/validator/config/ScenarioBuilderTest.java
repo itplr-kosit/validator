@@ -13,8 +13,8 @@ import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.scenario.model.NamespaceType;
-import org.kosit.validator.scenario.model.ScenarioType;
+import org.kosit.validator.scenario.v1.NamespaceType;
+import org.kosit.validator.scenario.v1.ScenarioType;
 
 import net.sf.saxon.s9api.XPathExecutable;
 

@@ -21,8 +21,8 @@ import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.Result;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.scenario.model.ResourceType;
-import org.kosit.validator.scenario.model.ValidateWithSchematron;
+import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v1.ValidateWithSchematron;
 
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
