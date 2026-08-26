@@ -3,8 +3,9 @@ package org.kosit.validator.cmd.report;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+
 import org.fusesource.jansi.AnsiRenderer.Code;
+import org.kosit.base.string.StringHelper;
 
 /**
  * Helper for printing a colored lines (with newline at the end) to the console.
@@ -71,7 +72,7 @@ public class Line {
         for (final Text t : reversed) {
             if (replace > 0) {
                 final String render = t.render(t.getVisibleText(0, t.getVisibleLength() - replace), this.baseFormat);
-                if (StringUtils.isNotEmpty(render)) {
+                if (StringHelper.isNotEmpty(render)) {
                     joins.add(render);
                 }
                 replace = replace - t.getVisibleLength();

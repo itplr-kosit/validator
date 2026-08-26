@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.Strings;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
@@ -15,13 +14,13 @@ import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.scenario.v1.Scenario1ConversionService;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;
+import org.kosit.validator.xml.resolve.RelativeUriResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +61,7 @@ public class ConfigurationLoader {
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
-            final Result<XdmNode, XMLSyntaxError> result = new DocumentParseTask(processor)
+            final SingleProcessingResult<XdmNode, XMLSyntaxError> result = new DocumentParseTask(processor)
                     .parseDocument(ReadResource.inMemory(Resource.of(scenarioDefinition.toURL())));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition
@@ -85,11 +84,11 @@ public class ConfigurationLoader {
     private static boolean isSupportedDocument(final XdmNode doc) {
         final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
-        return Strings.CS.startsWith(frameworkVersion, SUPPORTED_MAJOR_VERSION)
+        return frameworkVersion != null && frameworkVersion.startsWith(SUPPORTED_MAJOR_VERSION)
                 && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
     }
 
-    private static Scenario createFallback(final Scenarios scenarios, final ContentRepository repository) {
+    private static Scenario createFallback(final ContentRepository repository) {
         LOGGER.info("create Fallback: ");
         return new FallbackBuilder().build(repository).getObject();
     }
@@ -113,11 +112,22 @@ public class ConfigurationLoader {
         return s;
     }
 
-    URI getScenarioRepository() {
-        if (this.scenarioRepository == null) {
+    /**
+     * Creates a new {@code ConfigurationLoader} instance.
+     *
+     * @param scenarioDefinition URL pointing to scenario.xml
+     * @param scenarioRepository root folder with the scenario specific files
+     */
+    public ConfigurationLoader(final URI scenarioDefinition, final URI scenarioRepository) {
+        if (scenarioRepository == null) {
             LOGGER.info("Creating default scenario repository (alongside scenario definition)");
-            return RelativeUriResolver.resolve(URI.create("."), this.scenarioDefinition);
-        }
+            this.scenarioDefinition = RelativeUriResolver.resolve(URI.create("."), null);
+        } else
+            this.scenarioDefinition = scenarioDefinition;
+        this.scenarioRepository = scenarioRepository;
+    }
+
+    URI getScenarioRepository() {
         return this.scenarioRepository;
     }
 
@@ -126,15 +136,15 @@ public class ConfigurationLoader {
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
         final Scenarios def = loadScenarios(processor);
         final List<Scenario> scenarios = initializeScenarios(def, contentRepository);
-        final Scenario fallbackScenario = createFallback(def, contentRepository);
+        final Scenario fallbackScenario = createFallback(contentRepository);
         final DefaultConfiguration configuration = new DefaultConfiguration(scenarios, fallbackScenario);
         configuration.setAdditionalParameters(this.parameters);
         configuration.setAuthor(def.getAuthor());
         configuration.setDate(def.getDate().toString());
         configuration.setName(def.getName());
         configuration.setContentRepository(contentRepository);
-        configuration.getAdditionalParameters().put(Keys.SCENARIOS_FILE, this.scenarioDefinition);
-        configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, def);
+        configuration.getAdditionalParameters().put(ConfigurationKeys.SCENARIOS_FILE, this.scenarioDefinition);
+        configuration.getAdditionalParameters().put(ConfigurationKeys.SCENARIOS_DEFINITION, def);
         return (configuration);
     }
 
@@ -155,7 +165,7 @@ public class ConfigurationLoader {
         final Scenarios scenarios = conversionService.withEventHandler(handler).readXml(this.scenarioDefinition, Scenarios.class);
         if (handler.hasErrors()) {
             throw new IllegalStateException(
-                    "Can not load scenarios from " + getScenarioDefinition() + " due to " + handler.getErrorDescription());
+                    "Can not load scenarios from " + this.scenarioDefinition + " due to " + handler.getErrorDescription());
         }
         LOGGER.info("Loading scenario content from {}", this.getScenarioRepository());
         return scenarios;
@@ -190,23 +200,5 @@ public class ConfigurationLoader {
     public ConfigurationLoader addParameter(final String name, final Object value) {
         this.parameters.put(name, value);
         return this;
-    }
-
-    /**
-     * Creates a new {@code ConfigurationLoader} instance.
-     *
-     * @param scenarioDefinition URL, die auf die scenerio.xml Datei zeigt.
-     * @param scenarioRepository Root-Ordner mit den von den einzelnen Szenarien benötigten Dateien
-     */
-    public ConfigurationLoader(final URI scenarioDefinition, final URI scenarioRepository) {
-        this.scenarioDefinition = scenarioDefinition;
-        this.scenarioRepository = scenarioRepository;
-    }
-
-    /**
-     * URL, die auf die scenerio.xml Datei zeigt.
-     */
-    URI getScenarioDefinition() {
-        return this.scenarioDefinition;
     }
 }

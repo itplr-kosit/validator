@@ -15,7 +15,11 @@ import jakarta.xml.bind.JAXBException;
  */
 public class XvrlConversionService extends JaxbConversionService {
 
-    private static final JAXBContext JAXB_CTX;
+    public static final String XSD_PATH = "/xsd";
+
+    public static final String XVRL_XSD_PATH = XSD_PATH + "/xvrl-1.0.xsd";
+
+    public static final JAXBContext JAXB_CTX;
 
     private static final Map<String, String> NS_PREFIX = new HashMap<>();
 

@@ -2,6 +2,7 @@ package org.kosit.validator.impl;
 
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kosit.validator.impl.TestHelper.Simple.FOO_SCHEMATRON_INVALID;
 import static org.kosit.validator.impl.TestHelper.Simple.GARBAGE;
 import static org.kosit.validator.impl.TestHelper.Simple.NOT_WELLFORMED;
@@ -24,19 +25,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VInput;
 import org.kosit.validator.api.VInputFactory;
 import org.kosit.validator.api.VInputResourceBridge;
 import org.kosit.validator.api.VResult;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.helper.ResourceHelperExtension;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.impl.tasks.XvrlSerializer;
-import org.kosit.validator.impl.xml.ProcessorProvider;
-import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
+import org.kosit.validator.xvrl.XvrlSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import net.sf.saxon.s9api.XdmNode;
@@ -49,6 +51,8 @@ import net.sf.saxon.s9api.XdmNode;
 public class DefaultVCheckTest {
 
     public static final int MULTI_COUNT = 5;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultVCheckTest.class);
 
     @RegisterExtension
     private final ResourceHelperExtension resHelper = new ResourceHelperExtension();
@@ -80,14 +84,6 @@ public class DefaultVCheckTest {
         this.jarScenarioCheck = new DefaultVCheck(this.engineInformation, jarConfig);
     }
 
-    private CTReadResource read(final URI simpleValid) {
-        try {
-            return ReadResource.of(Resource.of(simpleValid), resHelper.get());
-        } catch (final IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
     @Test
     public void testHappyCase() throws Exception {
         final VResult doc = this.validCheck.checkInput(read(SIMPLE_VALID));
@@ -104,9 +100,9 @@ public class DefaultVCheckTest {
         assertThat(doc.getSchematronResult().get(0).hasFailedAsserts()).isFalse();
         assertThat(doc.getSchematronResult().get(0).getFailedAsserts()).isEmpty();
         assertThat(doc.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.ACCEPTABLE);
-        final XvrlSerializer s = new XvrlSerializer(new XvrlConversionService(), ProcessorProvider.getProcessor());
-        final XdmNode blub = s.serialize(doc.getReportSummary());
-        System.out.println(blub);
+        final XvrlSerializer s = new XvrlSerializer(ProcessorProvider.getProcessor());
+        final XdmNode blub = s.marshalToXdmNode(doc.getReportSummary());
+        LOGGER.info(blub.toString());
     }
 
     @Test
@@ -117,7 +113,7 @@ public class DefaultVCheckTest {
         assertThat(doc.isAcceptable()).isTrue();
         assertThat(doc.isSchematronValid()).isTrue();
         assertThat(doc.isSchemaValid()).isTrue();
-        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -126,7 +122,7 @@ public class DefaultVCheckTest {
         assertThat(doc).isNotNull();
         assertThat(doc.getReport()).isNotNull();
         assertThat(doc.isAcceptable()).isTrue();
-        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
+        assertThat(doc.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.ACCEPTABLE);
     }
 
     @Test
@@ -177,7 +173,7 @@ public class DefaultVCheckTest {
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
         assertThat(result.isSchemaValid()).isFalse();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.REJECT);
         assertThat(result.isAcceptable()).isFalse();
     }
 
@@ -201,7 +197,7 @@ public class DefaultVCheckTest {
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
         assertThat(result.isProcessingSuccessful()).isTrue();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.REJECT);
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
@@ -218,7 +214,7 @@ public class DefaultVCheckTest {
         assertThat(result.getSchematronResult().get(0).findFailedAssert("content-1")).isPresent();
         assertThat(result.isProcessingSuccessful()).isTrue();
         // acceptMatch overules schematron!!!
-        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.ACCEPTABLE);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.xvrl.compact.AcceptRecommendation.ACCEPTABLE);
         assertThat(result.isAcceptable()).isTrue();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
@@ -231,11 +227,11 @@ public class DefaultVCheckTest {
         assertThat(result).isNotNull();
         assertThat(result.isWellformed()).isTrue();
         assertThat(result.isSchemaValid()).isTrue();
-        result.getFailedAsserts();
+        assertEquals(1, result.getFailedAsserts().size());
         assertThat(result.isSchematronValid()).isFalse();
         assertThat(result.getFailedAsserts()).isNotEmpty();
         assertThat(result.isProcessingSuccessful()).isTrue();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.REJECT);
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.REJECT);
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getReportDocument()).isNotNull();
@@ -246,9 +242,10 @@ public class DefaultVCheckTest {
         final VResult result = this.errorCheck.checkInput(read(SIMPLE_VALID));
         assertThat(result).isNotNull();
         assertThat(result.isProcessingSuccessful()).isFalse();
-        assertThat(result.isSchematronValid()).isFalse();
         assertThat(result.isSchemaValid()).isTrue();
-        assertThat(result.getAcceptRecommendation()).isEqualTo(org.kosit.validator.api.AcceptRecommendation.UNDEFINED);
+        assertThat(result.isSchematronValid()).isFalse();
+        assertEquals(1, result.getFailedAsserts().size());
+        assertThat(result.getAcceptRecommendation()).isEqualTo(AcceptRecommendation.UNDEFINED);
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getProcessingErrors()).hasSize(1);
@@ -258,7 +255,7 @@ public class DefaultVCheckTest {
     @Test
     @Disabled("TinyDocumentImpl currently not supported for v2")
     public void testXdmNode() throws Exception {
-        XdmNode node = TestObjectFactory.createProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
+        XdmNode node = TestObjectFactory.getProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
         VInput domVInput = VInputFactory.read(node, "node test");
         VResult result = this.validCheck.checkInput(VInputResourceBridge.of(domVInput));
         assertThat(result.isProcessingSuccessful()).isTrue();
@@ -268,5 +265,13 @@ public class DefaultVCheckTest {
         domVInput = VInputFactory.read(node, "node test");
         result = this.validCheck.checkInput(VInputResourceBridge.of(domVInput));
         assertThat(result.isProcessingSuccessful()).isTrue();
+    }
+
+    private CTReadResource read(final URI simpleValid) {
+        try {
+            return ReadResource.of(Resource.of(simpleValid), resHelper.get());
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

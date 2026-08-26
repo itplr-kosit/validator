@@ -2,7 +2,9 @@ package org.kosit.validator.api;
 
 import java.util.List;
 
-import org.kosit.xvrl.model.XVRLReportSummary;
+import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
+import org.kosit.xvrl.model.XVRLReportsType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.w3c.dom.Document;
@@ -42,7 +44,7 @@ public interface VResult {
     XdmNode getReport();
 
     @Deprecated(since = "2.0.0")
-    XVRLReportSummary getReportSummary();
+    XVRLReportsType getReportSummary();
 
     /**
      * The Recommendation based on the evaluation of this Result.

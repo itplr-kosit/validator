@@ -1,7 +1,5 @@
 package org.kosit.validator.config;
 
-import static org.kosit.validator.impl.DateFactory.createTimestamp;
-
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -14,14 +12,14 @@ import java.util.Map;
 
 import javax.xml.validation.Schema;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
+import org.kosit.base.string.StringHelper;
+import org.kosit.jaxb.JaxbHelper;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.DescriptionType;
 import org.kosit.validator.scenario.v1.ObjectFactory;
 import org.kosit.validator.scenario.v1.Scenarios;
@@ -77,7 +75,7 @@ public class ConfigurationBuilder {
      * @return a fallback configuration
      */
     public static FallbackBuilder defaultFallback() {
-        throw new NotImplementedException("Not yet defined");
+        throw new UnsupportedOperationException("Not yet defined");
     }
 
     /**
@@ -270,7 +268,7 @@ public class ConfigurationBuilder {
         configuration.setDate(this.date);
         configuration.setName(this.name);
         configuration.setContentRepository(contentRepository);
-        configuration.getAdditionalParameters().put(Keys.SCENARIO_DEFINITION, createDefinition(configuration));
+        configuration.getAdditionalParameters().put(ConfigurationKeys.SCENARIOS_DEFINITION, createDefinition(configuration));
         return (configuration);
     }
 
@@ -287,9 +285,9 @@ public class ConfigurationBuilder {
     private Scenarios createDefinition(final DefaultConfiguration configuration) {
         final Scenarios s = new Scenarios();
         s.setAuthor(configuration.getAuthor());
-        s.setDate(createTimestamp());
+        s.setDate(JaxbHelper.createTimestamp());
         final DescriptionType d = new DescriptionType();
-        d.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, "")));
+        d.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringHelper.blankToDefault(this.description, "")));
         s.setDescription(d);
         s.setName(configuration.getName());
         s.getScenario().addAll(configuration.getScenarios().stream().map(Scenario::getConfiguration).toList());
@@ -300,7 +298,7 @@ public class ConfigurationBuilder {
         if (this.fallbackBuilder == null) {
             throw new IllegalStateException("No fallback configuration specified");
         }
-        final Result<Scenario, String> result = this.fallbackBuilder.build(contentRepository);
+        final SingleProcessingResult<Scenario, String> result = this.fallbackBuilder.build(contentRepository);
         if (result.isInvalid()) {
             throw new IllegalStateException("Invalid fallback configuration: " + String.join(",", result.getErrors()));
         }
@@ -312,7 +310,7 @@ public class ConfigurationBuilder {
             throw new IllegalStateException("No scenario specified");
         }
         return this.scenarios.stream().map(s -> {
-            final Result<Scenario, String> result = s.build(contentRepository);
+            final SingleProcessingResult<Scenario, String> result = s.build(contentRepository);
             if (result.isInvalid()) {
                 final String msg = String.join(",", result.getErrors());
                 throw new IllegalStateException("Invalid configuration for scenario " + s.getName() + " found: " + msg);

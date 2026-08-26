@@ -1,5 +1,5 @@
 /**
- * JAXB adapeter classes.
+ * JAXB adapter classes.
  *
  * <p>
  * All types in this package follow the {@link org.jspecify.annotations.NullMarked} contract: members are non-null

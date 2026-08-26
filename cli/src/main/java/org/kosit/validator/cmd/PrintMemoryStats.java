@@ -3,8 +3,8 @@ package org.kosit.validator.cmd;
 import java.text.NumberFormat;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.validator.xvrl.XVRLReportBuilder;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,11 +17,11 @@ class PrintMemoryStats implements org.kosit.validator.impl.tasks.CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrintMemoryStats.class);
 
-    public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+    public static final Process.ProcessKey<Boolean, String> KEY = new Process.ProcessKey<>(Boolean.class, String.class);
 
     private static final int BYTES_PER_K = 1024;
 
-    private static XVRLReport createReport() {
+    private static XVRLReportType createReport() {
         return XVRLReportBuilder.builder("Document wellformedness Validator").name("Print Memory Stats").setValid().build();
     }
 

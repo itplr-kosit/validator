@@ -1,15 +1,14 @@
 package org.kosit.validator.impl;
 
-import static org.kosit.validator.impl.DateFactory.createTimestamp;
-
 import java.util.Collection;
 import java.util.List;
 
 import org.conformatron.api.model.source.CTReadResource;
-import org.kosit.validator.api.AcceptRecommendation;
+import org.kosit.jaxb.JaxbHelper;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
-import org.kosit.validator.api.XmlError;
+import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
@@ -19,9 +18,9 @@ import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.Timestamp;
-import org.kosit.xvrl.model.Validator;
-import org.kosit.xvrl.model.XVRLMetadata;
+import org.kosit.xvrl.model.XVRLMetadataType;
+import org.kosit.xvrl.model.XVRLTimestampType;
+import org.kosit.xvrl.model.XVRLValidatorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,12 +77,13 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
      *
      * @return the metadata
      */
-    public XVRLMetadata createMetadata() {
-        final XVRLMetadata metadata = new XVRLMetadata();
-        final Timestamp timestamp = new Timestamp();
-        timestamp.setValue(createTimestamp());
+    public XVRLMetadataType createMetadata() {
+        final XVRLMetadataType metadata = new XVRLMetadataType();
+        final XVRLTimestampType timestamp = new XVRLTimestampType();
+        timestamp.setValue(JaxbHelper.createTimestamp());
         metadata.getTimestamps().add(timestamp);
-        final Validator validator = new Validator();
+
+        final XVRLValidatorType validator = new XVRLValidatorType();
         validator.setName(this.engineInformation.getName());
         validator.setVersion(this.engineInformation.getVersion());
         metadata.getValidators().add(validator);
@@ -114,17 +114,17 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     }
 
     private static VResult createResult(final Process process) {
-        final org.kosit.validator.impl.model.Result<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
                 .getResult(ComputeAcceptanceTask.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
         defaultResult.setWellformed(process.getResult(DocumentParseTask.KEY).isValid());
         defaultResult.setReportSummary(process.getXvrlReportSummary());
-        final org.kosit.validator.impl.model.Result<Boolean, XMLSyntaxError> schemaValidationResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<Boolean, XMLSyntaxError> schemaValidationResult = process
                 .getResult(SchemaValidationTask.KEY);
         if (schemaValidationResult != null) {
             defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
         }
-        final org.kosit.validator.impl.model.Result<List<ValidationResultsSchematron>, String> schematronValidationResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<List<ValidationResultsSchematron>, String> schematronValidationResult = process
                 .getResult(SchematronValidationTask.KEY);
         if (schematronValidationResult != null) {
             defaultResult.setSchematronResult(schematronValidationResult.getObject().stream()

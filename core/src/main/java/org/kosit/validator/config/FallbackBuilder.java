@@ -5,7 +5,7 @@ import java.nio.file.Path;
 
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ScenarioType;
 
 /**
@@ -13,7 +13,7 @@ import org.kosit.validator.scenario.v1.ScenarioType;
  * 
  * @author Andreas Penski
  */
-public class FallbackBuilder implements Builder<Scenario> {
+public class FallbackBuilder implements SingleProcessingResultBuilder<Scenario> {
 
     private final ReportBuilder internal = new ReportBuilder().name("fallback").id("fallback");
 
@@ -27,10 +27,10 @@ public class FallbackBuilder implements Builder<Scenario> {
     }
 
     @Override
-    public Result<Scenario, String> build(final ContentRepository repository) {
+    public SingleProcessingResult<Scenario, String> build(final ContentRepository repository) {
         final ScenarioType object = createObject();
         // final Result<Pair<CreateReportType, Transformation>, String> build = this.internal.build(repository);
-        final Result<Scenario, String> result;
+        final SingleProcessingResult<Scenario, String> result;
         // if (build.isValid()) {
         // object.getCreateReport().add(build.getObject().getLeft());
         final Scenario scenario = new Scenario(object);
@@ -39,7 +39,7 @@ public class FallbackBuilder implements Builder<Scenario> {
         scenario.setUriResolver(repository.getResolver());
         scenario.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
         // scenario.getReportTransformations().add(build.getObject().getRight());
-        result = new Result<>(scenario);
+        result = new SingleProcessingResult<>(scenario);
         // } else {
         // result = new Result<>(build.getErrors());
         // }

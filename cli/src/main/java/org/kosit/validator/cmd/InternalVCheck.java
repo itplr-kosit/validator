@@ -10,7 +10,7 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.XmlError;
+import org.kosit.validator.api.xmlerror.XmlError;
 import org.kosit.validator.cmd.report.Grid;
 import org.kosit.validator.cmd.report.Grid.ColumnDefinition;
 import org.kosit.validator.cmd.report.Justify;

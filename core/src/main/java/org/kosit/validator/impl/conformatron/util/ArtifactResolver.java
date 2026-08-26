@@ -3,8 +3,10 @@ package org.kosit.validator.impl.conformatron.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Objects;
 
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
+import org.kosit.base.string.StringHelper;
 
 /**
  * Resolves {@link CTValidationArtifactReference}s against the artifact repository and loads their content
@@ -23,8 +25,6 @@ public final class ArtifactResolver {
     /** Thrown when a reference resolves outside the configured repository. */
     public static class AccessDeniedException extends Exception {
 
-        private static final long serialVersionUID = 1L;
-
         public AccessDeniedException(final String message) {
             super(message);
         }
@@ -36,11 +36,9 @@ public final class ArtifactResolver {
      * @param repository base URI of the artifact repository; resolution is confined to this location
      */
     public ArtifactResolver(final URI repository) {
-        if (repository == null) {
-            throw new IllegalArgumentException("repository may not be null");
-        }
+        Objects.requireNonNull(repository);
         if (!repository.isAbsolute()) {
-            throw new IllegalArgumentException("repository must be an absolute URI, but was " + repository);
+            throw new IllegalArgumentException("repository must be an absolute URI, but was '" + repository + "'");
         }
         this.repository = normalizeBase(repository);
     }
@@ -53,9 +51,8 @@ public final class ArtifactResolver {
      * @throws AccessDeniedException if the reference resolves outside the repository
      */
     public URI resolve(final CTValidationArtifactReference reference) throws AccessDeniedException {
-        if (reference == null) {
-            throw new IllegalArgumentException("reference may not be null");
-        }
+        Objects.requireNonNull(reference);
+
         final URI resolved = this.repository.resolve(reference.getValidationArtifactReference()).normalize();
         // component-based containment check: java.net.URI#resolve drops an *empty* authority (file:///C:/... becomes
         // file:/C:/...), so a plain string prefix comparison rejects valid references on Windows-style file URIs
@@ -67,17 +64,10 @@ public final class ArtifactResolver {
     }
 
     private boolean isInsideRepository(final URI resolved) {
-        return equalsNullable(resolved.getScheme(), this.repository.getScheme())
-                && equalsNullable(emptyToNull(resolved.getAuthority()), emptyToNull(this.repository.getAuthority()))
+        return StringHelper.equalsNullable(resolved.getScheme(), this.repository.getScheme())
+                && StringHelper.equalsNullable(StringHelper.emptyToNull(resolved.getAuthority()),
+                        StringHelper.emptyToNull(this.repository.getAuthority()))
                 && resolved.getPath() != null && resolved.getPath().startsWith(this.repository.getPath());
-    }
-
-    private static boolean equalsNullable(final String left, final String right) {
-        return left == null ? right == null : left.equals(right);
-    }
-
-    private static String emptyToNull(final String value) {
-        return value == null || value.isEmpty() ? null : value;
     }
 
     /**

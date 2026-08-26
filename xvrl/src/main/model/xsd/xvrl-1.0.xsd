@@ -5,8 +5,13 @@
   by Matthieu Ricaud incorporating some suggestions by Gerrit Imsieke
   See https://github.com/xproc/3.0-steps/issues/15
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.xproc.org/ns/xvrl" xmlns:xvrl="http://www.xproc.org/ns/xvrl">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           elementFormDefault="qualified" 
+           targetNamespace="http://www.xproc.org/ns/xvrl" 
+           xmlns:xvrl="http://www.xproc.org/ns/xvrl">
+  
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  
   <xs:attributeGroup name="xmllang.attr">
     <xs:attribute ref="xml:lang" use="required"/>
   </xs:attributeGroup>
@@ -39,167 +44,155 @@
   <xs:attributeGroup name="href.attr">
     <xs:attribute name="href" use="required" type="xs:anyURI"/>
   </xs:attributeGroup>
+  
   <xs:group name="any.element">
     <xs:choice>
       <xs:any namespace="##other" processContents="skip"/>
       <xs:any namespace="##local" processContents="skip"/>
     </xs:choice>
   </xs:group>
-  <xs:element name="reports">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="xvrl:metadata"/>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element ref="xvrl:report"/>
-          <xs:element ref="xvrl:reports"/>
-          <xs:element ref="xvrl:digest"/>
-        </xs:choice>
-      </xs:sequence>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="report">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="xvrl:metadata"/>
-        <xs:element ref="xvrl:detection" maxOccurs="unbounded" />
-        <xs:element ref="xvrl:digest"/>
-      </xs:sequence>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="digest">
-    <xs:complexType>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-      <xs:attribute name="valid">
-        <xs:simpleType>
-          <xs:restriction base="xs:token">
-            <xs:enumeration value="true"/>
-            <xs:enumeration value="false"/>
-            <xs:enumeration value="partial"/>
-            <xs:enumeration value="undetermined"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="fatal-error-count" type="xs:integer"/>
-      <xs:attribute name="error-count" type="xs:integer"/>
-      <xs:attribute name="warning-count" type="xs:integer"/>
-      <xs:attribute name="info-count" type="xs:integer"/>
-      <xs:attribute name="unspecified-count" type="xs:integer"/>
-      <xs:attribute name="fatal-error-codes">
-        <xs:simpleType>
-          <xs:list itemType="xs:token"/>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="error-codes">
-        <xs:simpleType>
-          <xs:list itemType="xs:token"/>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="warning-codes">
-        <xs:simpleType>
-          <xs:list itemType="xs:token"/>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="info-codes">
-        <xs:simpleType>
-          <xs:list itemType="xs:token"/>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="unspecified-codes">
-        <xs:simpleType>
-          <xs:list itemType="xs:token"/>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="worst">
-        <xs:simpleType>
-          <xs:restriction base="xs:token">
-            <xs:enumeration value="fatal-error"/>
-            <xs:enumeration value="error"/>
-            <xs:enumeration value="warning"/>
-            <xs:enumeration value="info"/>
-            <xs:enumeration value="nothing"/>
-            <xs:enumeration value="unspecified"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="metadata">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="xvrl:timestamp"/>
-        <xs:element ref="xvrl:validator"/>
-        <xs:element ref="xvrl:creator"/>
-        <xs:element ref="xvrl:document"/>
-        <xs:element ref="xvrl:title"/>
-        <xs:element ref="xvrl:summary"/>
-        <xs:element ref="xvrl:category"/>
-        <xs:element ref="xvrl:schema"/>
-        <xs:element ref="xvrl:supplemental"/>
-      </xs:choice>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="document">
-    <xs:complexType mixed="true">
-      <xs:group minOccurs="0" ref="xvrl:any.element"/>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-      <xs:attribute name="href" type="xs:anyURI"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="detection">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="xvrl:location"/>
-        <xs:element ref="xvrl:provenance"/>
-        <xs:element ref="xvrl:title"/>
-        <xs:element ref="xvrl:summary"/>
-        <xs:element ref="xvrl:category"/>
-        <xs:choice>
-          <xs:element ref="xvrl:let"/>
-          <xs:element ref="xvrl:message"/>
-        </xs:choice>
-        <xs:element ref="xvrl:supplemental"/>
-        <xs:element ref="xvrl:context"/>
-      </xs:choice>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-      <xs:attribute name="severity">
-        <xs:simpleType>
-          <xs:restriction base="xs:token">
-            <xs:enumeration value="info"/>
-            <xs:enumeration value="warning"/>
-            <xs:enumeration value="error"/>
-            <xs:enumeration value="fatal-error"/>
-            <xs:enumeration value="unspecified"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="code"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="let">
-    <xs:complexType mixed="true">
-      <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-      <xs:attribute name="name" use="required" type="xs:QName"/>
-      <xs:attribute name="value" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:group name="value-of">
+  
+  <xs:complexType name="XVRLReportsType">
     <xs:sequence>
-      <xs:element name="value-of">
-        <xs:complexType>
-          <xs:attribute name="name" use="required" type="xs:QName"/>
-        </xs:complexType>
-      </xs:element>
+      <xs:element ref="xvrl:metadata"/>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="xvrl:report"/>
+        <xs:element ref="xvrl:reports"/>
+        <xs:element ref="xvrl:digest"/>
+      </xs:choice>
     </xs:sequence>
-  </xs:group>
-  <xs:element name="location">
-    <xs:complexType>
-      <xs:attributeGroup ref="xvrl:location.model"/>
-    </xs:complexType>
-  </xs:element>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+  </xs:complexType>
+  <xs:element name="reports" type="xvrl:XVRLReportsType" />
+
+  <xs:complexType name="XVRLReportType">
+    <xs:sequence>
+      <xs:element ref="xvrl:metadata"/>
+      <xs:element ref="xvrl:detection" maxOccurs="unbounded" />
+      <xs:element ref="xvrl:digest"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+  </xs:complexType>
+  <xs:element name="report" type="xvrl:XVRLReportType" />
+  
+  <xs:complexType name="XVRLDigestType">
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+    <xs:attribute name="valid">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="true"/>
+          <xs:enumeration value="false"/>
+          <xs:enumeration value="partial"/>
+          <xs:enumeration value="undetermined"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="fatal-error-count" type="xs:integer"/>
+    <xs:attribute name="error-count" type="xs:integer"/>
+    <xs:attribute name="warning-count" type="xs:integer"/>
+    <xs:attribute name="info-count" type="xs:integer"/>
+    <xs:attribute name="unspecified-count" type="xs:integer"/>
+    <xs:attribute name="fatal-error-codes">
+      <xs:simpleType>
+        <xs:list itemType="xs:token"/>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="error-codes">
+      <xs:simpleType>
+        <xs:list itemType="xs:token"/>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="warning-codes">
+      <xs:simpleType>
+        <xs:list itemType="xs:token"/>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="info-codes">
+      <xs:simpleType>
+        <xs:list itemType="xs:token"/>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="unspecified-codes">
+      <xs:simpleType>
+        <xs:list itemType="xs:token"/>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="worst">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="fatal-error"/>
+          <xs:enumeration value="error"/>
+          <xs:enumeration value="warning"/>
+          <xs:enumeration value="info"/>
+          <xs:enumeration value="nothing"/>
+          <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:element name="digest" type="xvrl:XVRLDigestType" />
+  
+  <xs:complexType name="XVRLMetadataType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="xvrl:timestamp"/>
+      <xs:element ref="xvrl:validator"/>
+      <xs:element ref="xvrl:creator"/>
+      <xs:element ref="xvrl:document"/>
+      <xs:element ref="xvrl:title"/>
+      <xs:element ref="xvrl:summary"/>
+      <xs:element ref="xvrl:category"/>
+      <xs:element ref="xvrl:schema"/>
+      <xs:element ref="xvrl:supplemental"/>
+    </xs:choice>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+  </xs:complexType>
+  <xs:element name="metadata" type="xvrl:XVRLMetadataType" />
+  
+  <xs:complexType mixed="true" name="XVRLDocumentType">
+    <xs:group minOccurs="0" ref="xvrl:any.element"/>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+    <xs:attribute name="href" type="xs:anyURI"/>
+  </xs:complexType>
+  <xs:element name="document" type="xvrl:XVRLDocumentType" />
+  
+  <xs:complexType name="XVRLDetectionType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="xvrl:location"/>
+      <xs:element ref="xvrl:provenance"/>
+      <xs:element ref="xvrl:title"/>
+      <xs:element ref="xvrl:summary"/>
+      <xs:element ref="xvrl:category"/>
+      <xs:choice>
+        <xs:element ref="xvrl:let"/>
+        <xs:element ref="xvrl:message"/>
+      </xs:choice>
+      <xs:element ref="xvrl:supplemental"/>
+      <xs:element ref="xvrl:context"/>
+    </xs:choice>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+    <xs:attribute name="severity">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="info"/>
+          <xs:enumeration value="warning"/>
+          <xs:enumeration value="error"/>
+          <xs:enumeration value="fatal-error"/>
+          <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="code"/>
+  </xs:complexType>
+  <xs:element name="detection" type="xvrl:XVRLDetectionType" />
+  
+  <xs:complexType mixed="true" name="XVRLLetType">
+    <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+    <xs:attribute name="name" use="required" type="xs:QName"/>
+    <xs:attribute name="value" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="let" type="xvrl:XVRLLetType" />
+  
   <xs:attributeGroup name="location.model">
     <xs:attribute name="xpath-default-namespace" type="xs:anyURI"/>
     <xs:attribute name="xpath"/>
@@ -211,19 +204,29 @@
     <xs:attribute name="octet-position" type="xs:positiveInteger"/>
     <xs:attributeGroup ref="xvrl:anyother.attr"/>
   </xs:attributeGroup>
-  <xs:element name="provenance">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="xvrl:location"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="message">
-    <xs:complexType mixed="true">
-      <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:message.element"/>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-    </xs:complexType>
-  </xs:element>
+  
+  <xs:complexType name="XVRLLocationType">
+    <xs:attributeGroup ref="xvrl:location.model"/>
+  </xs:complexType>
+  <xs:element name="location" type="xvrl:XVRLLocationType" />
+  
+  <xs:complexType name="XVRLProvenanceType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="xvrl:location"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="provenance" type="xvrl:XVRLProvenanceType" />
+  
+  <xs:group name="value-of">
+    <xs:sequence>
+      <xs:element name="value-of">
+        <xs:complexType>
+          <xs:attribute name="name" use="required" type="xs:QName"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  
   <xs:group name="message.element">
     <xs:choice>
       <xs:element name="value-of">
@@ -238,75 +241,82 @@
       <xs:any namespace="##local" processContents="skip"/>
     </xs:choice>
   </xs:group>
-  <xs:element name="supplemental">
-    <xs:complexType mixed="true">
+
+  <xs:complexType mixed="true" name="XVRLMessageType">
+    <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:message.element"/>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+  </xs:complexType>
+  <xs:element name="message" type="xvrl:XVRLMessageType" />
+  
+  <xs:complexType mixed="true" name="XVRLSupplementalType">
+    <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+  </xs:complexType>
+  <xs:element name="supplemental" type="xvrl:XVRLSupplementalType" />
+
+  <xs:complexType mixed="true" name="XVRLContextType">
+    <xs:sequence>
+      <xs:element minOccurs="0" ref="xvrl:location"/>
       <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="context">
-    <xs:complexType mixed="true">
-      <xs:sequence>
-        <xs:element minOccurs="0" ref="xvrl:location"/>
-        <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
-      </xs:sequence>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="validator">
-    <xs:complexType mixed="true">
-      <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-      <xs:attribute name="name" use="required"/>
-      <xs:attribute name="version"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="creator">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" ref="xvrl:invocation"/>
-      </xs:sequence>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-      <xs:attribute name="name" use="required"/>
-      <xs:attribute name="version"/>
-    </xs:complexType>
-  </xs:element>
+    </xs:sequence>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+  </xs:complexType>
+  <xs:element name="context" type="xvrl:XVRLContextType" />
+  
+  <xs:complexType mixed="true" name="XVRLValidatorType">
+    <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+    <xs:attribute name="name" use="required"/>
+    <xs:attribute name="version"/>
+  </xs:complexType>
+  <xs:element name="validator" type="xvrl:XVRLValidatorType" />
+  
+  <xs:complexType name="XVRLCreatorType">
+    <xs:sequence>
+      <xs:element minOccurs="0" ref="xvrl:invocation"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+    <xs:attribute name="name" use="required"/>
+    <xs:attribute name="version"/>
+  </xs:complexType>
+  <xs:element name="creator" type="xvrl:XVRLCreatorType" />
+  
   <xs:element name="invocation" type="xs:string"/>
-  <xs:element name="schema">
-    <xs:complexType mixed="true">
-      <xs:group minOccurs="0" ref="xvrl:any.element"/>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-      <xs:attribute name="href" type="xs:anyURI"/>
-      <xs:attribute name="schematypens" use="required" type="xs:anyURI"/>
-      <xs:attribute name="version"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="title">
-    <xs:complexType mixed="true">
-      <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="summary">
-    <xs:complexType mixed="true">
-      <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="category">
-    <xs:complexType mixed="true">
-      <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
-      <xs:attributeGroup ref="xvrl:common.attr"/>
-      <xs:attribute name="vocabulary" type="xs:token"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="timestamp">
-    <xs:complexType>
-      <xs:simpleContent>
-        <xs:extension base="xs:dateTime">
-          <xs:attributeGroup ref="xvrl:common.attr"/>
-        </xs:extension>
-      </xs:simpleContent>
-    </xs:complexType>
-  </xs:element>
+  
+  <xs:complexType name="XVRLSchemaType" mixed="true">
+    <xs:group minOccurs="0" ref="xvrl:any.element"/>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+    <xs:attribute name="href" type="xs:anyURI"/>
+    <xs:attribute name="schematypens" use="required" type="xs:anyURI"/>
+    <xs:attribute name="version"/>
+  </xs:complexType>
+  <xs:element name="schema" type="xvrl:XVRLSchemaType" />
+  
+  <xs:complexType mixed="true" name="XVRLTitleType">
+    <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+  </xs:complexType>
+  <xs:element name="title" type="xvrl:XVRLTitleType" />
+  
+  <xs:complexType mixed="true" name="XVRLSummaryType">
+    <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+  </xs:complexType>
+  <xs:element name="summary" type="xvrl:XVRLSummaryType" />
+  
+  <xs:complexType mixed="true" name="XVRLCategoryType">
+    <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
+    <xs:attributeGroup ref="xvrl:common.attr"/>
+    <xs:attribute name="vocabulary" type="xs:token"/>
+  </xs:complexType>
+  <xs:element name="category" type="xvrl:XVRLCategoryType" />
+  
+  <xs:complexType name="XVRLTimestampType">
+    <xs:simpleContent>
+      <xs:extension base="xs:dateTime">
+        <xs:attributeGroup ref="xvrl:common.attr"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:element name="timestamp" type="xvrl:XVRLTimestampType" />
 </xs:schema>

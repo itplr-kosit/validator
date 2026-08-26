@@ -9,10 +9,10 @@ import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
-import org.kosit.xvrl.model.XVRLMetadata;
-import org.kosit.xvrl.model.XVRLReport;
-import org.kosit.xvrl.model.XVRLReportSummary;
+import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.xvrl.model.XVRLMetadataType;
+import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XVRLReportsType;
 
 /**
  * Interface that is implemented by all check steps. The parameter of type {@link Process} serves both as a source for
@@ -48,7 +48,7 @@ public interface CheckTask {
      */
     final class Process {
 
-        private XVRLMetadata metadata;
+        private XVRLMetadataType metadata;
 
         private List<ProcessStepResult<?, ?>> processStepResults = new ArrayList<>();
 
@@ -81,10 +81,10 @@ public interface CheckTask {
         private CTScenarioMatch scenarioMatch;
 
         public Process(final CTReadResource input) {
-            this(input, new XVRLMetadata());
+            this(input, new XVRLMetadataType());
         }
 
-        public Process(final CTReadResource input, final XVRLMetadata xvrlMetadata) {
+        public Process(final CTReadResource input, final XVRLMetadataType xvrlMetadata) {
             this.input = input;
             this.metadata = xvrlMetadata;
         }
@@ -93,25 +93,25 @@ public interface CheckTask {
             this.processStepResults.add(result);
         }
 
-        public XVRLReportSummary getXvrlReportSummary() {
-            final XVRLReportSummary summary = new XVRLReportSummary();
+        public XVRLReportsType getXvrlReportSummary() {
+            final XVRLReportsType summary = new XVRLReportsType();
             summary.setMetadata(this.metadata);
-            summary.getReports()
+            summary.getReportOrReportsOrDigest()
                     .addAll(this.processStepResults.stream().flatMap(processStepResult -> processStepResult.getReport().stream()).toList());
             return summary;
         }
 
-        public <T, E> List<XVRLReport> getReports(final Key<T, E> key) {
+        public <T, E> List<XVRLReportType> getReports(final ProcessKey<T, E> key) {
             return getActionResult(key).map(ProcessStepResult::getReport).orElse(null);
         }
 
-        public <T, E> Optional<ProcessStepResult<T, E>> getActionResult(final Key<T, E> key) {
+        public <T, E> Optional<ProcessStepResult<T, E>> getActionResult(final ProcessKey<T, E> key) {
             final ProcessStepResult<T, E> result = (ProcessStepResult<T, E>) this.processStepResults.stream().filter(b -> b.getKey() == key)
                     .findFirst().orElse(null);
             return Optional.ofNullable(result);
         }
 
-        public <T, E> Result<T, E> getResult(final Key<T, E> type) {
+        public <T, E> SingleProcessingResult<T, E> getResult(final ProcessKey<T, E> type) {
             return getActionResult(type).map(ProcessStepResult::getResult).orElse(null);
         }
 
@@ -125,27 +125,10 @@ public interface CheckTask {
             return FilenameUtils.getBaseName(fileName);
         }
 
-        public static final class Key<T, E> {
-
-            private final Class<T> type;
-
-            private final Class<E> other;
-
-            public Class<T> getType() {
-                return this.type;
-            }
-
-            public Class<E> getOther() {
-                return this.other;
-            }
-
-            public Key(final Class<T> type, final Class<E> other) {
-                this.type = type;
-                this.other = other;
-            }
+        public static final record ProcessKey<T, E> (Class<T> type, Class<E> other) {
         }
 
-        public XVRLMetadata getMetadata() {
+        public XVRLMetadataType getMetadata() {
             return this.metadata;
         }
 
@@ -168,7 +151,7 @@ public interface CheckTask {
             return this.input;
         }
 
-        public void setMetadata(final XVRLMetadata metadata) {
+        public void setMetadata(final XVRLMetadataType metadata) {
             this.metadata = metadata;
         }
 

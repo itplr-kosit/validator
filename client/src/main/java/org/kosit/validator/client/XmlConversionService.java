@@ -13,8 +13,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.kosit.base.xml.XMLHelper;
 import org.kosit.jaxb.JaxbConversionException;
-import org.kosit.jaxb.xml.XMLHelper;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;

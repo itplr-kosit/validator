@@ -1,27 +1,18 @@
 package org.kosit.validator.config;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.validation.Schema;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.Scenario.Transformation;
-import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.scenario.v1.CreateReportType;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.DescriptionType;
 import org.kosit.validator.scenario.v1.NamespaceType;
 import org.kosit.validator.scenario.v1.ObjectFactory;
 import org.kosit.validator.scenario.v1.ScenarioType;
-import org.kosit.validator.scenario.v1.ValidateWithSchematron;
-import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +23,7 @@ import net.sf.saxon.s9api.XPathExecutable;
  * 
  * @author Andreas Penski
  */
-public class ScenarioBuilder implements Builder<Scenario> {
+public class ScenarioBuilder implements SingleProcessingResultBuilder<Scenario> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioBuilder.class);
 
@@ -57,7 +48,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     private String description;
 
     @Override
-    public Result<Scenario, String> build(final ContentRepository repository) {
+    public SingleProcessingResult<Scenario, String> build(final ContentRepository repository) {
         final List<String> errors = new ArrayList<>();
         final Scenario scenario = new Scenario(createType());
         buildMatch(repository, errors, scenario);
@@ -69,7 +60,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
         scenario.setFactory(repository.getResolvingConfigurationStrategy());
         scenario.setUriResolver(repository.getResolver());
         scenario.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
-        return new Result<>(scenario, errors);
+        return new SingleProcessingResult<>(scenario, errors);
     }
 
     /**
@@ -193,7 +184,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     private void buildMatch(final ContentRepository repository, final List<String> errors, final Scenario scenario) {
         this.matchConfig.setNamespaces(this.namespaces);
-        final Result<XPathExecutable, String> result = this.matchConfig.build(repository);
+        final SingleProcessingResult<XPathExecutable, String> result = this.matchConfig.build(repository);
         if (result.isValid()) {
             scenario.setMatchExecutable(result.getObject());
             scenario.getConfiguration().setMatch(this.matchConfig.getXPath());
@@ -206,7 +197,7 @@ public class ScenarioBuilder implements Builder<Scenario> {
     private void buildAccept(final ContentRepository repository, final List<String> errors, final Scenario scenario) {
         this.acceptConfig.setNamespaces(this.namespaces);
         if (this.acceptConfig.isAvailable()) {
-            final Result<XPathExecutable, String> result = this.acceptConfig.build(repository);
+            final SingleProcessingResult<XPathExecutable, String> result = this.acceptConfig.build(repository);
             if (result.isValid()) {
                 scenario.setAcceptExecutable(result.getObject());
                 scenario.getConfiguration().setAcceptMatch(this.acceptConfig.getXPath());
@@ -224,10 +215,10 @@ public class ScenarioBuilder implements Builder<Scenario> {
         if (this.reportBuilder == null) {
             errors.add("Must supply report configuration");
         } else {
-            final Result<Pair<CreateReportType, Transformation>, String> result = this.reportBuilder.build(repository);
+            final var result = this.reportBuilder.build(repository);
             if (result.isValid()) {
-                scenario.getReportTransformations().add(result.getObject().getRight());
-                scenario.getConfiguration().getCreateReport().add(result.getObject().getLeft());
+                scenario.getReportTransformations().add(result.getObject().transformation());
+                scenario.getConfiguration().getCreateReport().add(result.getObject().createReport());
             } else {
                 errors.addAll(result.getErrors());
             }
@@ -236,10 +227,10 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     private void buildSchematron(final ContentRepository repository, final List<String> errors, final Scenario scenario) {
         this.schematronBuilders.forEach(e -> {
-            final Result<Pair<ValidateWithSchematron, Transformation>, String> result = e.build(repository);
+            final var result = e.build(repository);
             if (result.isValid()) {
-                scenario.getConfiguration().getValidateWithSchematron().add(result.getObject().getLeft());
-                scenario.getSchematronValidations().add(result.getObject().getRight());
+                scenario.getConfiguration().getValidateWithSchematron().add(result.getObject().validateResult());
+                scenario.getSchematronValidations().add(result.getObject().transformation());
             } else {
                 errors.addAll(result.getErrors());
             }
@@ -250,10 +241,10 @@ public class ScenarioBuilder implements Builder<Scenario> {
         if (this.schemaBuilder == null) {
             errors.add("Must supply schema for validation");
         } else {
-            final Result<Pair<ValidateWithXmlSchema, Schema>, String> result = this.schemaBuilder.build(repository);
+            final var result = this.schemaBuilder.build(repository);
             if (result.isValid()) {
-                scenario.setSchema(result.getObject().getRight());
-                scenario.getConfiguration().setValidateWithXmlSchema(result.getObject().getLeft());
+                scenario.setSchema(result.getObject().schema());
+                scenario.getConfiguration().setValidateWithXmlSchema(result.getObject().validationResult());
             } else {
                 errors.addAll(result.getErrors());
             }
@@ -262,10 +253,10 @@ public class ScenarioBuilder implements Builder<Scenario> {
 
     private ScenarioType createType() {
         final ScenarioType type = new ScenarioType();
-        type.setName(isNotEmpty(this.name) ? this.name : generateName());
+        type.setName(StringHelper.isNotEmpty(this.name) ? this.name : generateName());
         final DescriptionType desc = new DescriptionType();
         desc.getPOrOlOrUl()
-                .add(new ObjectFactory().createDescriptionTypeP(StringUtils.defaultIfBlank(this.description, DEFAULT_DESCRIPTION)));
+                .add(new ObjectFactory().createDescriptionTypeP(StringHelper.blankToDefault(this.description, DEFAULT_DESCRIPTION)));
         type.setDescription(desc);
         return type;
     }

@@ -9,7 +9,7 @@ public class TestObjectFactory {
 
     private static Processor processor;
 
-    public static Processor createProcessor() {
+    public static Processor getProcessor() {
         if (processor == null) {
             processor = TestHelper.getTestProcessor();
         }

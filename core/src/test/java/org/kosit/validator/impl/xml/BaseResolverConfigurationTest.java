@@ -12,12 +12,13 @@ import javax.xml.validation.SchemaFactory;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.tasks.XvrlSerializer;
-import org.kosit.xvrl.impl.XvrlConversionService;
-import org.kosit.xvrl.model.Supplemental;
-import org.kosit.xvrl.model.XVRLDetection;
-import org.kosit.xvrl.model.XVRLReport;
-import org.kosit.xvrl.model.XVRLReportSummary;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
+import org.kosit.validator.xml.resolve.StrictRelativeResolvingStrategy;
+import org.kosit.validator.xvrl.XvrlSerializer;
+import org.kosit.xvrl.model.XVRLDetectionType;
+import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XVRLReportsType;
+import org.kosit.xvrl.model.XVRLSupplementalType;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
@@ -37,18 +38,18 @@ public class BaseResolverConfigurationTest {
     public static final String NOT_EXISTING_SCHEME = "not-existing-scheme";
 
     public static void main(final String[] args) throws JAXBException, SaxonApiException {
-        final XVRLReportSummary report = new XVRLReportSummary();
-        final XVRLReport r = new XVRLReport();
-        final XVRLDetection d = new XVRLDetection();
-        final Supplemental s = new Supplemental();
+        final XVRLReportsType report = new XVRLReportsType();
+        final XVRLReportType r = new XVRLReportType();
+        final XVRLDetectionType d = new XVRLDetectionType();
+        final XVRLSupplementalType s = new XVRLSupplementalType();
         s.setId("bla");
         final XdmNode node = TestHelper.load(TestHelper.Simple.SIMPLE_VALID);
         s.getContent().add(NodeOverNodeInfo.wrap(node.getUnderlyingNode()).getOwnerDocument().getDocumentElement());
         d.getSupplementals().add(s);
         r.getDetection().add(d);
-        report.getReports().add(r);
-        final XvrlSerializer ser = new XvrlSerializer(new XvrlConversionService(), ProcessorProvider.getProcessor());
-        final XdmNode result = ser.serialize(report);
+        report.getReportOrReportsOrDigest().add(r);
+        final XvrlSerializer ser = new XvrlSerializer(ProcessorProvider.getProcessor());
+        final XdmNode result = ser.marshalToXdmNode(report);
         final Serializer serialize = ProcessorProvider.getProcessor().newSerializer();
         final String string = serialize.serializeNodeToString(result);
         System.out.println(string);

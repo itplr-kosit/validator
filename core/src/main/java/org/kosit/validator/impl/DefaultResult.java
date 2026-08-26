@@ -3,29 +3,30 @@ package org.kosit.validator.impl;
 import java.util.Collections;
 import java.util.List;
 
-import org.kosit.validator.api.AcceptRecommendation;
+import org.jspecify.annotations.Nullable;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.XmlError;
-import org.kosit.validator.impl.xml.XMLReaderWrapper;
-import org.kosit.xvrl.impl.XvrlConversionService;
-import org.kosit.xvrl.model.XVRLReportSummary;
+import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
+import org.kosit.validator.xvrl.XvrlSerializer;
+import org.kosit.xvrl.model.XVRLReportsType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.util.JAXBSource;
 import net.sf.saxon.dom.NodeOverNodeInfo;
-import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
 @Deprecated(since = "2.0.0", forRemoval = true)
 public class DefaultResult implements VResult {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultResult.class);
+
     /** The internal report 'preliminary stage' produced by the validator */
-    private XVRLReportSummary reportSummary;
+    private XVRLReportsType reportSummary;
 
     /** The evaluated result. */
     private final AcceptRecommendation acceptRecommendation;
@@ -45,18 +46,14 @@ public class DefaultResult implements VResult {
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
+    @Nullable
     public XdmNode getReport() {
-        final Marshaller marshaller;
         try {
-            marshaller = new XvrlConversionService().getJaxbContext().createMarshaller();
-            final JAXBSource source = new JAXBSource(marshaller, getReportSummary());
-            // wrap to circumvent inconsistency between sax and saxon
-            source.setXMLReader(new XMLReaderWrapper(source.getXMLReader()));
-            return new Processor(false).newDocumentBuilder().build(source);
+            return new XvrlSerializer(null).marshalToXdmNode(getReportSummary());
         } catch (JAXBException | SaxonApiException e) {
-            e.printStackTrace();
+            LOGGER.error("Error serializing XVRL Report", e);
+            return null;
         }
-        return null;
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
@@ -73,7 +70,8 @@ public class DefaultResult implements VResult {
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public Document getReportDocument() {
-        return (Document) NodeOverNodeInfo.wrap(getReport().getUnderlyingNode());
+        final var report = getReport();
+        return report == null ? null : (Document) NodeOverNodeInfo.wrap(report.getUnderlyingNode());
     }
 
     /**
@@ -101,9 +99,7 @@ public class DefaultResult implements VResult {
     @Deprecated(since = "2.0.0", forRemoval = true)
     @Override
     public List<FailedAssert> getFailedAsserts() {
-        return getSchematronResult() != null
-                ? getSchematronResult().stream().flatMap(e -> e.getActivePatternOrActiveGroupAndFiredRule().stream())
-                        .filter(FailedAssert.class::isInstance).map(FailedAssert.class::cast).toList()
+        return getSchematronResult() != null ? getSchematronResult().stream().flatMap(e -> e.getFailedAsserts().stream()).toList()
                 : Collections.emptyList();
     }
 
@@ -119,23 +115,23 @@ public class DefaultResult implements VResult {
     }
 
     /**
-     * Die vom Validator erstelle interne Berichts-'Vorstufe'
+     * The reporting source
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    public XVRLReportSummary getReportSummary() {
+    public XVRLReportsType getReportSummary() {
         return this.reportSummary;
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     /**
-     * Die vom Validator erstelle interne Berichts-'Vorstufe'
+     * @param reportSummary Report summary
      */
-    void setReportSummary(final XVRLReportSummary reportSummary) {
+    void setReportSummary(final XVRLReportsType reportSummary) {
         this.reportSummary = reportSummary;
     }
 
     /**
-     * Das evaluierte Ergebnis.
+     * The evaluated accept recommendation
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public AcceptRecommendation getAcceptRecommendation() {

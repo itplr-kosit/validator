@@ -95,7 +95,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
      *
      * @author Andreas Penski
      */
-    public static abstract class Definition {
+    public static abstract class AbstractDefinition {
 
         String name;
 
@@ -123,7 +123,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
      *
      * @author Andreas Penski
      */
-    public static class RepositoryDefinition extends Definition {
+    public static class RepositoryDefinition extends AbstractDefinition {
         // just for type safety
     }
 
@@ -132,7 +132,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
      *
      * @author Andreas Penski
      */
-    public static class ScenarioDefinition extends Definition {
+    public static class ScenarioDefinition extends AbstractDefinition {
         // just for type safety
     }
 

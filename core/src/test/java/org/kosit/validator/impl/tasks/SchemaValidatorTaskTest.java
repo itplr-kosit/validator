@@ -17,7 +17,7 @@ import org.apache.commons.io.input.BoundedInputStream;
 import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.XmlError.Severity;
+import org.kosit.validator.api.xmlerror.XmlError.Severity;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.TestHelper;
@@ -26,7 +26,7 @@ import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.xml.sax.SAXException;
@@ -42,14 +42,14 @@ public class SchemaValidatorTaskTest {
 
     @BeforeEach
     public void setup() {
-        this.service = new SchemaValidationTask(TestObjectFactory.createProcessor());
+        this.service = new SchemaValidationTask(TestObjectFactory.getProcessor());
     }
 
     @Test
     public void testSimple() throws MalformedURLException {
         final Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
         final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
-        final Result<?, ?> result = processStepResult.getResult();
+        final SingleProcessingResult<?, ?> result = processStepResult.getResult();
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
     }
@@ -59,7 +59,7 @@ public class SchemaValidatorTaskTest {
         final CTReadResource input = TestHelper.read(Simple.SCHEMA_INVALID);
         final Process process = TestProcessBuilder.create(input).build();
         final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
-        final Result<Boolean, XMLSyntaxError> result = processStepResult.getResult();
+        final SingleProcessingResult<Boolean, XMLSyntaxError> result = processStepResult.getResult();
         assertThat(result.isValid()).isFalse();
         result.getErrors().forEach(e -> {
             assertThat(e.getRowNumber()).isPositive();
@@ -81,7 +81,7 @@ public class SchemaValidatorTaskTest {
             final Process process = TestProcessBuilder
                     .create(ReadResource.inMemory(Resource.of(Simple.SIMPLE_VALID.toASCIIString(), inputStream)), false)
                     .setParseResult(TestHelper.read(Simple.SIMPLE_VALID)).build();
-            final Result<Boolean, XMLSyntaxError> result = this.service.check(process).getResult();
+            final SingleProcessingResult<Boolean, XMLSyntaxError> result = this.service.check(process).getResult();
             assertThat(result).isNotNull();
             assertThat(result.isValid()).isTrue();
         }
@@ -98,7 +98,7 @@ public class SchemaValidatorTaskTest {
             // set limit and length for serialization to 5 bytes
             this.service.setInMemoryLimit(5L);
 
-            final Result<Boolean, XMLSyntaxError> result = this.service.check(process).getResult();
+            final SingleProcessingResult<Boolean, XMLSyntaxError> result = this.service.check(process).getResult();
             assertThat(result).isNotNull();
             assertThat(result.isValid()).isTrue();
         }
@@ -107,7 +107,7 @@ public class SchemaValidatorTaskTest {
     @Test
     public void testProcessingError() throws IOException, SAXException {
         final Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
-        final Result<Scenario, String> scenarioCheckResult = process.getResult(ScenarioSelectionTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioCheckResult = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioCheckResult.getObject();
         final Schema schema = mock(Schema.class);
         final Validator validator = mock(Validator.class);
@@ -115,7 +115,7 @@ public class SchemaValidatorTaskTest {
         doThrow(SAXException.class).when(validator).validate(any());
         scenario.setSchema(schema);
         final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
-        final Result<Boolean, XMLSyntaxError> result = processStepResult.getResult();
+        final SingleProcessingResult<Boolean, XMLSyntaxError> result = processStepResult.getResult();
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
     }

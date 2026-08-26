@@ -1,16 +1,14 @@
 package org.kosit.validator.config;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
-
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collections;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.kosit.base.string.StringHelper;
+import org.kosit.validator.config.SchematronBuilder.SchematronBuilderResult;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario.Transformation;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ValidateWithSchematron;
 import org.slf4j.Logger;
@@ -23,7 +21,10 @@ import net.sf.saxon.s9api.XsltExecutable;
  * 
  * @author Andreas Penski
  */
-public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, Transformation>> {
+public class SchematronBuilder implements SingleProcessingResultBuilder<SchematronBuilderResult> {
+
+    public static record SchematronBuilderResult(ValidateWithSchematron validateResult, Transformation transformation) {
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchematronBuilder.class);
 
@@ -35,22 +36,23 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
 
     private String name;
 
-    private static Result<Pair<ValidateWithSchematron, Transformation>, String> createError(final String msg) {
-        return new Result<>(null, Collections.singletonList(msg));
+    private static SingleProcessingResult<SchematronBuilderResult, String> createError(final String msg) {
+        return new SingleProcessingResult<>(null, Collections.singletonList(msg));
     }
 
     @Override
-    public Result<Pair<ValidateWithSchematron, Transformation>, String> build(final ContentRepository repository) {
+    public SingleProcessingResult<SchematronBuilderResult, String> build(final ContentRepository repository) {
         if (this.executable == null && this.source == null) {
             return createError("Must supply source location and/or executable for schematron '" + this.name + "'");
         }
         final ValidateWithSchematron object = createObject();
-        Result<Pair<ValidateWithSchematron, Transformation>, String> result;
+        SingleProcessingResult<SchematronBuilderResult, String> result;
         try {
             if (this.executable == null) {
                 this.executable = repository.createSchematronTransformation(object).getExecutable();
             }
-            result = new Result<>(new ImmutablePair<>(object, new Transformation(this.executable, object.getResource())));
+            result = new SingleProcessingResult<>(
+                    new SchematronBuilderResult(object, new Transformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
             LOGGER.error(e.getMessage(), e);
             result = createError("Can not create schematron configuration based  on " + this.source + ". Exception is " + e.getMessage());
@@ -62,7 +64,7 @@ public class SchematronBuilder implements Builder<Pair<ValidateWithSchematron, T
         final ValidateWithSchematron o = new ValidateWithSchematron();
         final ResourceType r = new ResourceType();
         r.setLocation(this.source.toASCIIString());
-        r.setName(isNotEmpty(this.name) ? this.name : DEFAULT_NAME);
+        r.setName(StringHelper.isNotEmpty(this.name) ? this.name : DEFAULT_NAME);
         o.setResource(r);
         return o;
     }

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.xml.validation.Schema;
 
-import org.apache.commons.lang3.StringUtils;
 import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.action.CTStepResult;
@@ -17,6 +16,7 @@ import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.SchXsltCompiler;
 import org.kosit.validator.impl.conformatron.model.CompiledValidationArtifact;
@@ -88,7 +88,7 @@ public class PrepareRulesAction implements CTAction {
             throw new IllegalArgumentException("repository may not be null");
         }
         this.repository = repository;
-        this.compilerId = StringUtils.defaultIfBlank(compilerId, SchXsltCompiler.COMPILER_ID);
+        this.compilerId = StringHelper.blankToDefault(compilerId, SchXsltCompiler.COMPILER_ID);
     }
 
     /**

@@ -17,17 +17,17 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.lang3.StringUtils;
+import org.kosit.base.string.StringHelper;
+import org.kosit.base.xml.SchemaResolver;
 import org.kosit.jaxb.adapter.StringTrimAdapter;
-import org.kosit.jaxb.xml.SchemaResolver;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.SchematronCompiler;
 import org.kosit.validator.impl.Scenario.Transformation;
-import org.kosit.validator.impl.xml.RelativeUriResolver;
 import org.kosit.validator.scenario.v1.NamespaceType;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithSchematron;
+import org.kosit.validator.xml.resolve.RelativeUriResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -265,7 +265,7 @@ public class ContentRepository {
             return compiler.compile(expression);
         } catch (final SaxonApiException e) {
             throw new IllegalStateException("Can not compile xpath match expression '"
-                    + (StringUtils.isNotBlank(expression) ? expression : "EMPTY EXPRESSION") + "'", e);
+                    + (StringHelper.isNotBlank(expression) ? expression : "EMPTY EXPRESSION") + "'", e);
         }
     }
 
@@ -319,7 +319,7 @@ public class ContentRepository {
         final ResourceType resource = validateWithSchematron.getResource();
         final URI uri = URI.create(resource.getLocation());
         final String path = uri.getPath();
-        final String compilerId = StringUtils.defaultIfBlank(validateWithSchematron.getCompiler(), SchXsltCompiler.COMPILER_ID);
+        final String compilerId = StringHelper.blankToDefault(validateWithSchematron.getCompiler(), SchXsltCompiler.COMPILER_ID);
         if (path != null && path.endsWith(".sch")) {
             final XsltExecutable executable = loadSchematronXslt(uri, compilerId);
             return new Transformation(executable, resource);

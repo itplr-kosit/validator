@@ -1,11 +1,12 @@
 package org.kosit.validator.cmd;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.kosit.validator.cmd.Printer.writeErr;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
+
 import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.AnsiRenderer.Code;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.cmd.report.Line;
 
 import picocli.CommandLine;
@@ -55,7 +56,7 @@ public class CommandLineApplication {
             if (commandLine.isUsageHelpRequested() || cmdlineRetVal == CommandLine.ExitCode.USAGE) {
                 resultStatus = ReturnValue.HELP_REQUEST;
             } else {
-                resultStatus = ObjectUtils.getIfNull(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
+                resultStatus = Objects.requireNonNullElse(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
                 if (resultStatus.isError()) {
                     commandLine.usage(System.out);
                 }
@@ -83,7 +84,7 @@ public class CommandLineApplication {
     }
 
     private static int logExecutionException(final Exception ex, final CommandLine cli, final ParseResult parseResult) {
-        final String message = isNotEmpty(ex.getMessage()) ? ex.getMessage() : "An error occurred";
+        final String message = StringHelper.isNotEmpty(ex.getMessage()) ? ex.getMessage() : "An error occurred";
         Printer.writeErr(ex, message);
         return 1;
     }

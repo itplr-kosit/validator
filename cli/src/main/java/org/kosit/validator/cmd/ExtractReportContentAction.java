@@ -1,19 +1,18 @@
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
+import static org.kosit.validator.xvrl.XVRLReportBuilder.builder;
 
 import java.nio.file.Path;
 import java.util.List;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +31,7 @@ class ExtractReportContentAction implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtractReportContentAction.class);
 
-    public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+    public static final Process.ProcessKey<Boolean, String> KEY = new Process.ProcessKey<>(Boolean.class, String.class);
 
     private static final String REPORT_NAME = "Extract Create Report Content";
 
@@ -45,21 +44,22 @@ class ExtractReportContentAction implements CheckTask {
         this.processor = processor;
     }
 
-    private static XVRLReport generateXVRLReport(final Result<Boolean, String> result) {
+    private static XVRLReportType generateXVRLReport(final SingleProcessingResult<Boolean, String> result) {
         if (result.isValid()) {
-            return builder(REPORT_NAME).add(XVRLReportBuilder.detection().addMessage("Extraction successful")).build();
+            return builder(REPORT_NAME).add(XvrlDetectionBuilder.detectionBuilder().addMessage("Extraction successful")).build();
         }
-        return builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> detection().addError(e))).build();
+        return builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> XvrlDetectionBuilder.detectionBuilder().addError(e)))
+                .build();
     }
 
     @Override
     public ProcessStepResult<Boolean, String> check(final Process results) {
-        final Result<List<BusinessReport>, XMLSyntaxError> reportReposts = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, XMLSyntaxError> reportReposts = results.getResult(CreateReportsTask.KEY);
         reportReposts.getObject().forEach(entry -> {
             print(entry.getName(), entry.getContent());
         });
         final ProcessStepResult<Boolean, String> processStepResult = new ProcessStepResult<>(KEY);
-        final Result<Boolean, String> stepResult = new Result<>(true);
+        final SingleProcessingResult<Boolean, String> stepResult = new SingleProcessingResult<>(true);
         processStepResult.setResult(stepResult);
         processStepResult.setReport(generateXVRLReport(stepResult));
         return processStepResult;
@@ -80,7 +80,7 @@ class ExtractReportContentAction implements CheckTask {
 
     @Override
     public boolean isSkipped(final Process results) {
-        final Result<List<BusinessReport>, XMLSyntaxError> createReportResult = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, XMLSyntaxError> createReportResult = results.getResult(CreateReportsTask.KEY);
         if (createReportResult == null || createReportResult.getObject() == null) {
             LOGGER.warn("Can not extract create-report content. No report document found");
             return true;

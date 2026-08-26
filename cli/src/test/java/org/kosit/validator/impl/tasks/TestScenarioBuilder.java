@@ -11,12 +11,12 @@ import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.xml.ProcessorProvider;
-import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
+import org.kosit.validator.xml.resolve.StrictRelativeResolvingStrategy;
 
 public class TestScenarioBuilder {
 

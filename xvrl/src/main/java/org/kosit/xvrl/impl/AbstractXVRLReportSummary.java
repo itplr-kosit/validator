@@ -1,12 +1,12 @@
 package org.kosit.xvrl.impl;
 
 import java.io.Serializable;
-import java.util.AbstractList;
 import java.util.List;
 
+import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.xvrl.api.BaseReportSummary;
-import org.kosit.xvrl.model.XVRLReport;
-import org.kosit.xvrl.model.XVRLReportSummary;
+import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XVRLReportsType;
 
 /**
  * Base class for XVRLReportSummary to overcome the issue that simplifying and pluralizing the choice elements of
@@ -16,42 +16,17 @@ import org.kosit.xvrl.model.XVRLReportSummary;
  */
 public abstract class AbstractXVRLReportSummary implements BaseReportSummary, Serializable {
 
-    static class FilteredList<T extends Serializable> extends AbstractList<T> {
-
-        private final List<Serializable> unfiltered;
-
-        private final Class<T> type;
-
-        public FilteredList(final List<Serializable> unfiltered, final Class<T> type) {
-            this.unfiltered = unfiltered;
-            this.type = type;
-        }
-
-        @Override
-        public T get(final int index) {
-            return type.cast(unfiltered.stream().filter(type::isInstance).toList().get(index));
-        }
-
-        @Override
-        public int size() {
-            return (int) unfiltered.stream().filter(type::isInstance).count();
-        }
-
-        @Override
-        public boolean add(final T element) {
-            return unfiltered.add(element);
-        }
-    }
-
     public abstract List<Serializable> getReportOrReportsOrDigest();
 
     @Override
-    public List<XVRLReport> getReports() {
-        return new FilteredList<>(getReportOrReportsOrDigest(), XVRLReport.class);
+    @ReturnsImmutableObject
+    public List<XVRLReportType> getReports() {
+        return getReportOrReportsOrDigest().stream().filter(XVRLReportType.class::isInstance).map(XVRLReportType.class::cast).toList();
     }
 
     @Override
-    public List<XVRLReportSummary> getReportSummaries() {
-        return new FilteredList<>(getReportOrReportsOrDigest(), XVRLReportSummary.class);
+    @ReturnsImmutableObject
+    public List<XVRLReportsType> getReportSummaries() {
+        return getReportOrReportsOrDigest().stream().filter(XVRLReportsType.class::isInstance).map(XVRLReportsType.class::cast).toList();
     }
 }

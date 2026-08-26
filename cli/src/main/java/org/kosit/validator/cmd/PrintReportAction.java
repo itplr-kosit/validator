@@ -4,13 +4,13 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
 import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.validator.xvrl.XVRLReportBuilder;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +27,11 @@ class PrintReportAction implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrintReportAction.class);
 
-    public static final Process.Key<Boolean, String> KEY = new Process.Key<>(Boolean.class, String.class);
+    public static final Process.ProcessKey<Boolean, String> KEY = new Process.ProcessKey<>(Boolean.class, String.class);
 
     private final Processor processor;
 
-    private static XVRLReport createReport() {
+    private static XVRLReportType createReport() {
         return XVRLReportBuilder.builder("Document wellformedness Validator").name("Print Report").setValid().build();
     }
 
@@ -40,7 +40,7 @@ class PrintReportAction implements CheckTask {
         try {
             final StringWriter writer = new StringWriter();
             final Serializer serializer = this.processor.newSerializer(writer);
-            final Result<List<BusinessReport>, XMLSyntaxError> result = results.getResult(CreateReportsTask.KEY);
+            final SingleProcessingResult<List<BusinessReport>, XMLSyntaxError> result = results.getResult(CreateReportsTask.KEY);
             for (final BusinessReport node : result.getObject()) {
                 serializer.serializeNode(node.getContent());
             }

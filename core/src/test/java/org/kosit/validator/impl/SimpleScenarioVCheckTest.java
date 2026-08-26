@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.AcceptRecommendation;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.TestHelper.Simple;
 
 /**

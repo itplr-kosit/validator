@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.xml.RemoteResolvingStrategy;
-import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
+import org.kosit.validator.xml.resolve.RemoteResolvingStrategy;
+import org.kosit.validator.xml.resolve.StrictRelativeResolvingStrategy;
 
 /**
  * @author Andreas Penski

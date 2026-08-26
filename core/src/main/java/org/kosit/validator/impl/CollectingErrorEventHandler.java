@@ -3,9 +3,9 @@ package org.kosit.validator.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 import javax.xml.transform.ErrorListener;
-import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.kosit.validator.model.XMLSyntaxError;
@@ -16,16 +16,14 @@ import org.xml.sax.SAXParseException;
 
 import jakarta.xml.bind.ValidationEvent;
 import jakarta.xml.bind.ValidationEventHandler;
-import net.sf.saxon.s9api.MessageListener2;
-import net.sf.saxon.s9api.QName;
-import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.Message;
 
 /**
  * Collects error event information during schema validation and other XML-based actions.
  *
  * @author Andreas Penski
  */
-public class CollectingErrorEventHandler implements ValidationEventHandler, ErrorHandler, MessageListener2, ErrorListener {
+public class CollectingErrorEventHandler implements ValidationEventHandler, ErrorHandler, ErrorListener, Consumer<Message> {
 
     private static final int DEFAULT_ABORT_COUNT = 50;
 
@@ -42,38 +40,34 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static XMLSyntaxError createError(final XMLSyntaxErrorSeverity severity, final SAXParseException exception) {
         final XMLSyntaxError e = createError(severity, exception.getMessage());
-        e.setRowNumber(exception.getLineNumber());
-        e.setColumnNumber(exception.getColumnNumber());
+        e.setRowNumber(Long.valueOf(exception.getLineNumber()));
+        e.setColumnNumber(Long.valueOf(exception.getColumnNumber()));
         return e;
     }
 
     private static XMLSyntaxError createError(final XMLSyntaxErrorSeverity severity, final TransformerException exception) {
         final XMLSyntaxError e = createError(severity, exception.getMessage());
         if (exception.getLocator() != null) {
-            e.setRowNumber(exception.getLocator().getLineNumber());
-            e.setColumnNumber(exception.getLocator().getColumnNumber());
+            e.setRowNumber(Long.valueOf(exception.getLocator().getLineNumber()));
+            e.setColumnNumber(Long.valueOf(exception.getLocator().getColumnNumber()));
         }
         return e;
     }
 
     private static XMLSyntaxErrorSeverity translateSeverity(final int severity) {
-        switch (severity) {
-            case ValidationEvent.WARNING:
-                return XMLSyntaxErrorSeverity.SEVERITY_WARNING;
-            case ValidationEvent.ERROR:
-                return XMLSyntaxErrorSeverity.SEVERITY_ERROR;
-            case ValidationEvent.FATAL_ERROR:
-                return XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR;
-            default:
-                throw new IllegalArgumentException("Unknown severity level " + severity);
-        }
+        return switch (severity) {
+            case ValidationEvent.WARNING -> XMLSyntaxErrorSeverity.SEVERITY_WARNING;
+            case ValidationEvent.ERROR -> XMLSyntaxErrorSeverity.SEVERITY_ERROR;
+            case ValidationEvent.FATAL_ERROR -> XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR;
+            default -> throw new IllegalArgumentException("Unknown severity level " + severity);
+        };
     }
 
     @Override
     public boolean handleEvent(final ValidationEvent event) {
         final XMLSyntaxError e = createError(translateSeverity(event.getSeverity()), event.getMessage());
-        e.setColumnNumber(event.getLocator().getColumnNumber());
-        e.setRowNumber(event.getLocator().getLineNumber());
+        e.setColumnNumber(Long.valueOf(event.getLocator().getColumnNumber()));
+        e.setRowNumber(Long.valueOf(event.getLocator().getLineNumber()));
         this.errors.add(e);
         return STOP_PROCESS_COUNT != this.errors.size();
     }
@@ -112,14 +106,19 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     @Override
-    public void message(final XdmNode content, final QName errorCode, final boolean terminate, final SourceLocator locator) {
+    public void accept(final Message saxonMsg) {
+        // public void message(final XdmNode content, final QName errorCode, final boolean terminate, final
+        // SourceLocator locator) {
         final XMLSyntaxError e = new XMLSyntaxError();
-        if (locator != null) {
-            e.setColumnNumber(locator.getColumnNumber());
-            e.setRowNumber(locator.getLineNumber());
+        final var loc = saxonMsg.getLocation();
+        if (loc != null) {
+            if (loc.getLineNumber() >= 0)
+                e.setRowNumber(Long.valueOf(loc.getLineNumber()));
+            if (loc.getColumnNumber() >= 0)
+                e.setColumnNumber(Long.valueOf(loc.getColumnNumber()));
         }
-        e.setMessage("Error processing " + content.getStringValue());
-        e.setSeverityCode(terminate ? XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR : XMLSyntaxErrorSeverity.SEVERITY_WARNING);
+        e.setMessage("Error processing " + saxonMsg.getContent().getStringValue());
+        e.setSeverityCode(saxonMsg.isTerminate() ? XMLSyntaxErrorSeverity.SEVERITY_FATAL_ERROR : XMLSyntaxErrorSeverity.SEVERITY_WARNING);
         this.errors.add(e);
     }
 

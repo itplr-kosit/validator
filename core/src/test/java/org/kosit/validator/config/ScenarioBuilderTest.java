@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.NamespaceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 
@@ -27,7 +27,7 @@ public class ScenarioBuilderTest {
 
     @Test
     public void simpleValid() {
-        final Result<Scenario, String> result = createScenario().build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = createScenario().build(Simple.createContentRepository());
         assertThat(result.isValid()).isTrue();
         assertThat(result.getObject().getConfiguration()).isNotNull();
     }
@@ -36,7 +36,7 @@ public class ScenarioBuilderTest {
     public void testNoSchema() {
         final ScenarioBuilder builder = createScenario();
         builder.validate((SchemaBuilder) null);
-        final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isFalse();
         assertThat(result.getErrors()).anyMatch(e -> e.contains("schema"));
     }
@@ -45,7 +45,7 @@ public class ScenarioBuilderTest {
     public void testNoMatch() {
         final ScenarioBuilder builder = createScenario();
         builder.match((String) null);
-        final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isFalse();
         assertThat(result.getErrors()).anyMatch(e -> e.contains("match"));
     }
@@ -54,7 +54,7 @@ public class ScenarioBuilderTest {
     public void testInvalidMatch() {
         final ScenarioBuilder builder = createScenario();
         builder.match("/////");
-        final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isFalse();
         assertThat(result.getErrors()).anyMatch(e -> e.contains("match"));
     }
@@ -63,7 +63,7 @@ public class ScenarioBuilderTest {
     public void testNoAccept() {
         final ScenarioBuilder builder = createScenario();
         builder.acceptWith((String) null);
-        final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isTrue();
     }
 
@@ -71,7 +71,7 @@ public class ScenarioBuilderTest {
     public void testInvalidAccept() {
         final ScenarioBuilder builder = createScenario();
         builder.acceptWith("/////");
-        final Result<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
         assertThat(result.isValid()).isFalse();
         assertThat(result.getErrors()).anyMatch(e -> e.contains("accept"));
     }
@@ -91,7 +91,7 @@ public class ScenarioBuilderTest {
         builder.getNamespaces().clear();
 
         builder.match(match).acceptWith(accept).declareNamespace("n3", "http://n3.org");
-        final Result<Scenario, String> result = builder.build(repository);
+        final SingleProcessingResult<Scenario, String> result = builder.build(repository);
 
         assertThat(result.isValid()).isTrue();
         final Scenario scenario = result.getObject();
@@ -110,7 +110,7 @@ public class ScenarioBuilderTest {
 
         builder.match(match);
         builder.acceptWith(accept);
-        final Result<Scenario, String> result = builder.build(repository);
+        final SingleProcessingResult<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();
         final ScenarioType configuration = result.getObject().getConfiguration();
         assertThat(configuration.getMatch()).isNotEmpty();
@@ -128,7 +128,7 @@ public class ScenarioBuilderTest {
 
         builder.match(match);
         builder.acceptWith(accept);
-        final Result<Scenario, String> result = builder.build(repository);
+        final SingleProcessingResult<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();
         final ScenarioType configuration = result.getObject().getConfiguration();
         assertThat(configuration.getMatch()).isNotEmpty();
@@ -140,10 +140,10 @@ public class ScenarioBuilderTest {
     @Test
     public void testBasicAttributes() {
         final ContentRepository repository = Simple.createContentRepository();
-        final String random = RandomStringUtils.secure().next(5);
+        final String random = StringHelper.randomString(5);
         final ScenarioBuilder builder = createScenario();
         builder.name(random).description(random);
-        final Result<Scenario, String> result = builder.build(repository);
+        final SingleProcessingResult<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();
         final ScenarioType config = result.getObject().getConfiguration();
         assertThat(config.getName()).isEqualTo(random);
@@ -156,7 +156,7 @@ public class ScenarioBuilderTest {
         final ContentRepository repository = Simple.createContentRepository();
         final ScenarioBuilder builder = createScenario();
         builder.name(null);
-        final Result<Scenario, String> result = builder.build(repository);
+        final SingleProcessingResult<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();
         final ScenarioType config = result.getObject().getConfiguration();
         assertThat(config.getName()).contains("manually");

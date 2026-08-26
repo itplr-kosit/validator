@@ -11,15 +11,16 @@ import java.util.stream.Collectors;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.impl.model.Result;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.xml.resolve.RelativeUriResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class SaxonSecurityTest {
 
     @Test
     public void testEvilStylesheets() throws IOException {
-        final Processor p = TestObjectFactory.createProcessor();
+        final Processor p = TestObjectFactory.getProcessor();
         for (int i = 1; i <= 5; i++) {
             try {
                 final URL resource = SaxonSecurityTest.class.getResource("/evil/evil" + i + ".xsl");
@@ -60,7 +61,7 @@ public class SaxonSecurityTest {
                 transformer.transform();
 
                 // if this point is reached, the 'evil' element should at least not be filled with 'evil' content!
-                if (StringUtils.isNotBlank(result.getXdmNode().getStringValue())) {
+                if (StringHelper.isNotBlank(result.getXdmNode().getStringValue())) {
                     fail("Saxon configuration should prevent expansion within " + resource);
                 }
             } catch (final SaxonApiException | RuntimeException e) {
@@ -72,7 +73,7 @@ public class SaxonSecurityTest {
     @Test
     public void testXxe() throws URISyntaxException {
         final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
-        final Result<XdmNode, XMLSyntaxError> result = TestHelper.parseDocument(TestHelper.read(resource.toURI()));
+        final SingleProcessingResult<XdmNode, XMLSyntaxError> result = TestHelper.parseDocument(TestHelper.read(resource.toURI()));
         assertThat(result.isValid()).isFalse();
         assertThat(result.getObject()).isNull();
         assertThat(result.getErrors().stream().map(XMLSyntaxError::getMessage).collect(Collectors.joining()))

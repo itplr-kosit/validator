@@ -1,21 +1,19 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.builder;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.detection;
-import static org.kosit.validator.impl.xvrl.XVRLReportBuilder.supplemental;
-
 import java.util.List;
 
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
-import org.kosit.validator.impl.model.Result;
-import org.kosit.validator.impl.xvrl.XVRLReportBuilder;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XMLSyntaxError;
 import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.xvrl.impl.XvrlConversionService;
-import org.kosit.xvrl.model.XVRLReport;
+import org.kosit.validator.xvrl.XVRLReportBuilder;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
+import org.kosit.validator.xvrl.XvrlSerializer;
+import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
+import org.kosit.xvrl.model.XVRLReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,39 +35,39 @@ public class CreateReportsTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReportsTask.class);
 
-    public static final Process.Key<List<BusinessReport>, XMLSyntaxError> KEY = new Process.Key<>(null, XMLSyntaxError.class);
+    public static final Process.ProcessKey<List<BusinessReport>, XMLSyntaxError> KEY = new Process.ProcessKey<>(null, XMLSyntaxError.class);
 
     public static final ActionMetadata METADATA = new ActionMetadata("Create report", "create_report");
 
     private final XvrlSerializer xvrlSerializer;
 
-    public CreateReportsTask(final Processor processor, final XvrlConversionService xvrlConversionService) {
-        this.xvrlSerializer = new XvrlSerializer(xvrlConversionService, processor);
+    public CreateReportsTask(final Processor processor) {
+        this.xvrlSerializer = new XvrlSerializer(processor);
     }
 
     private static List<Scenario.Transformation> getTransformations(final Process results) {
-        final Result<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionTask.KEY);
         return scenarioSelection.getObject().getReportTransformations();
     }
 
-    private static XVRLReport generateXVRLReport(final ResourceType resourceType, final XdmNode node) {
-        return XVRLReportBuilder.builder(METADATA)
-                .add(detection().id(resourceType.getName()).add(supplemental().addContent(node).id(resourceType.getName()))).build();
+    private static XVRLReportType generateXVRLReport(final ResourceType resourceType, final XdmNode node) {
+        return XVRLReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id(resourceType.getName())
+                .add(XvrlSupplementalBuilder.supplemental().addContent(node).id(resourceType.getName()))).build();
     }
 
-    private static XVRLReport createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {
-        return builder(METADATA).add(detection().id("error").addError(error)).build();
+    private static XVRLReportType createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {
+        return XVRLReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id("error").addError(error)).build();
     }
 
     @Override
     public ProcessStepResult<List<BusinessReport>, XMLSyntaxError> check(final Process process) {
         final ProcessStepResult<List<BusinessReport>, XMLSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
-        final Result<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
+        final SingleProcessingResult<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioSelection.getObject();
         final XdmNode parsedDocument = process.getResult(DocumentParseTask.KEY).getObject();
         final List<BusinessReport> reports = getTransformations(process).stream()
                 .map(t -> createReport(t, process, scenario, parsedDocument)).toList();
-        processStepResult.setResult(new Result<>(reports, null));
+        processStepResult.setResult(new SingleProcessingResult<>(reports, null));
         processStepResult.addReports(reports.stream().map(BusinessReport::getReport).toList());
         return processStepResult;
     }
@@ -79,11 +77,13 @@ public class CreateReportsTask implements CheckTask {
         final BusinessReport r = new BusinessReport();
         r.setName(transformation.getResourceType().getName());
         try {
-            final XdmNode root = this.xvrlSerializer.serialize(process.getXvrlReportSummary());
+            final XdmNode root = this.xvrlSerializer.marshalToXdmNode(process.getXvrlReportSummary());
+
             final XsltTransformer transformer = transformation.getExecutable().load();
             transformer.setInitialContextNode(root);
+
             final CollectingErrorEventHandler e = new CollectingErrorEventHandler();
-            transformer.setMessageListener(e);
+            transformer.setMessageHandler(e);
             transformer.setResourceResolver(scenario.getUriResolver());
             if (scenario.getUnparsedTextURIResolver() != null) {
                 transformer.getUnderlyingController().setUnparsedTextURIResolver(scenario.getUnparsedTextURIResolver());

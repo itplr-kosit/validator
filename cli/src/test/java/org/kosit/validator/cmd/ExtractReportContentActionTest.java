@@ -30,7 +30,7 @@ public class ExtractReportContentActionTest {
     @BeforeEach
     public void setup() throws IOException {
         this.tmpDirectory = Files.createTempDirectory("checktool");
-        this.action = new ExtractReportContentAction(TestObjectFactory.createProcessor(), this.tmpDirectory);
+        this.action = new ExtractReportContentAction(TestObjectFactory.getProcessor(), this.tmpDirectory);
     }
 
     @AfterEach

@@ -1,13 +1,12 @@
 package org.kosit.validator.cmd;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.kosit.validator.cmd.CommandLineOptions.Definition;
+import org.kosit.base.string.StringHelper;
+import org.kosit.validator.cmd.CommandLineOptions.AbstractDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -57,9 +56,9 @@ class TypeConverter {
         return ScenarioRepository.DEFAULT + "_" + current.getAndIncrement();
     }
 
-    private static <T extends Definition> T convert(final Class<T> type, final String value) {
+    private static <T extends AbstractDefinition> T convert(final Class<T> type, final String value) {
         final T def;
-        final String[] splitted = defaultIfBlank(value, "").split("=");
+        final String[] splitted = StringHelper.blankToDefault(value, "").split("=");
         if (splitted.length == 1) {
             def = createNewInstance(type);
             def.setName(getDefaultName(type));
@@ -74,7 +73,7 @@ class TypeConverter {
         return def;
     }
 
-    private static <T extends Definition> T createNewInstance(final Class<T> type) {
+    private static <T extends AbstractDefinition> T createNewInstance(final Class<T> type) {
         try {
             return type.getConstructor().newInstance();
         } catch (final ReflectiveOperationException e) {

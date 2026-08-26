@@ -12,7 +12,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.xml.RelativeUriResolver;
+import org.kosit.validator.xml.resolve.RelativeUriResolver;
 
 /**
  * Tests the URI resolver that should resolve relatively.

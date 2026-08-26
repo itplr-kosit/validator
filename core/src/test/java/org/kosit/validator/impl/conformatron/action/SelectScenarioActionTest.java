@@ -20,9 +20,9 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
+import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.TestScenarioBuilder;
-import org.kosit.validator.impl.xml.ProcessorProvider;
 
 /**
  * Tests {@link DetectScenariosAction} (step 3) and {@link SelectScenarioAction} (step 4) against the legacy scenario

@@ -37,10 +37,6 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
 
     private final XsltExecutable svrlForXslt2;
 
-    public IsoSchematronCompiler() {
-        this(new Processor(false));
-    }
-
     public IsoSchematronCompiler(final Processor processor) {
         this.processor = Objects.requireNonNull(processor, "processor");
         try {

@@ -1,9 +1,10 @@
 package org.kosit.validator.impl;
 
+import org.jspecify.annotations.Nullable;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.impl.xml.RemoteResolvingStrategy;
-import org.kosit.validator.impl.xml.StrictLocalResolvingStrategy;
-import org.kosit.validator.impl.xml.StrictRelativeResolvingStrategy;
+import org.kosit.validator.xml.resolve.RemoteResolvingStrategy;
+import org.kosit.validator.xml.resolve.StrictLocalResolvingStrategy;
+import org.kosit.validator.xml.resolve.StrictRelativeResolvingStrategy;
 
 /**
  * Defines how artefacts are resolved internally.
@@ -17,11 +18,11 @@ public enum ResolvingMode {
 
     private final ResolvingConfigurationStrategy strategy;
 
-    private ResolvingMode(final ResolvingConfigurationStrategy strategy) {
+    private ResolvingMode(final @Nullable ResolvingConfigurationStrategy strategy) {
         this.strategy = strategy;
     }
 
-    public ResolvingConfigurationStrategy getStrategy() {
+    public @Nullable ResolvingConfigurationStrategy getStrategy() {
         return this.strategy;
     }
 }

@@ -1,6 +1,6 @@
 package org.kosit.validator.cmd.report;
 
-import org.apache.commons.lang3.StringUtils;
+import org.kosit.base.string.StringHelper;
 
 /**
  * Justification modes for the text in grid columns.
@@ -13,21 +13,21 @@ public enum Justify {
 
         @Override
         public String apply(final String string, final int length) {
-            return StringUtils.rightPad(string, length);
+            return StringHelper.rightPad(string, length);
         }
     },
     CENTER {
 
         @Override
         public String apply(final String string, final int length) {
-            return StringUtils.center(string, length);
+            return StringHelper.center(string, length);
         }
     },
     RIGHT {
 
         @Override
         public String apply(final String string, final int length) {
-            return StringUtils.leftPad(string, length);
+            return StringHelper.leftPad(string, length);
         }
     };
 
