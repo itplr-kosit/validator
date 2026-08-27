@@ -36,23 +36,23 @@ public class VersioningTest {
 
     @Test
     public void testBase() throws URISyntaxException {
-        final Scenarios result = this.service.readXml(BASE.toURI(), Scenarios.class);
+        final Scenarios result = this.service.readXml(BASE.toURI());
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testFrameworkIncrement() throws URISyntaxException {
-        final Scenarios result = this.service.readXml(INCREMENT.toURI(), Scenarios.class);
+        final Scenarios result = this.service.readXml(INCREMENT.toURI());
         assertThat(result).isNotNull();
     }
 
     @Test
     public void testNewFeature() {
-        assertThrows(JaxbConversionException.class, () -> this.service.readXml(NEW_FEATURE.toURI(), Scenarios.class));
+        assertThrows(JaxbConversionException.class, () -> this.service.readXml(NEW_FEATURE.toURI()));
     }
 
     @Test
     public void testNewVersion() {
-        assertThrows(JaxbConversionException.class, () -> this.service.readXml(NEW_VERSION.toURI(), Scenarios.class));
+        assertThrows(JaxbConversionException.class, () -> this.service.readXml(NEW_VERSION.toURI()));
     }
 }

@@ -43,11 +43,11 @@ public class ValidationClient {
     }
 
     public XvrlReportsType validate(final File input) {
-        return new XvrlConversionService().readXml(api.validate(input), XvrlReportsType.class);
+        return new XvrlConversionService().readXml(api.validate(input));
     }
 
     public CompactXvrlReportSummary validateMinimal(final File input) {
-        return new CompactXvrlReportSummary(new XvrlConversionService().readXml(api.validateMinimal(input), XvrlReportsType.class));
+        return new CompactXvrlReportSummary(new XvrlConversionService().readXml(api.validateMinimal(input)));
     }
 
     public ValidationResponse<File> validateRawWithMetadata(final File input) {
@@ -67,12 +67,12 @@ public class ValidationClient {
 
     public ValidationResponse<XvrlReportsType> validateWithMetadata(final File input) {
         final File result = api.validate(input);
-        return toResponse(new XvrlConversionService().readXml(result, XvrlReportsType.class));
+        return toResponse(new XvrlConversionService().readXml(result));
     }
 
     public ValidationResponse<CompactXvrlReportSummary> validateMinimalWithMetadata(final File input) {
         final File result = api.validateMinimal(input);
-        return toResponse(new CompactXvrlReportSummary(new XvrlConversionService().readXml(result, XvrlReportsType.class)));
+        return toResponse(new CompactXvrlReportSummary(new XvrlConversionService().readXml(result)));
     }
 
     private <T> ValidationResponse<T> toResponse(final T body) {

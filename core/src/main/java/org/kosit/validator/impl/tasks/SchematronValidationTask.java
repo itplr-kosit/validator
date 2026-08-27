@@ -112,9 +112,8 @@ public class SchematronValidationTask implements CheckTask {
             transformer.transform();
 
             final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
-            r.setSchematronOutput(this.conversionService.readXml(
-                    new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
-                    SchematronOutputType.class));
+            r.setSchematronOutput(this.conversionService
+                    .readXml(new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument())));
             validationResultsSchematron.setResults(r);
         } catch (final SaxonApiException e) {
             final String msg = "Error processing schematron validation '" + validation.getResourceType().getName() + "'. Error is '"

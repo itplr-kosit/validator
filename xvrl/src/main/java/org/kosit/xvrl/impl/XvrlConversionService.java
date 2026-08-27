@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.kosit.jaxb.JaxbConversionService;
 import org.kosit.xvrl.model.ObjectFactory;
+import org.kosit.xvrl.model.XvrlReportsType;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -13,7 +14,7 @@ import jakarta.xml.bind.JAXBException;
  * Convenience {@link JaxbConversionService} preconfigured for the XVRL JAXB model package
  * ({@code org.kosit.xvrl.model}).
  */
-public class XvrlConversionService extends JaxbConversionService {
+public class XvrlConversionService extends JaxbConversionService<XvrlReportsType> {
 
     public static final String XSD_PATH = "/xsd";
 
@@ -38,7 +39,7 @@ public class XvrlConversionService extends JaxbConversionService {
      * @throws IllegalStateException if the JAXB context for the XVRL model package can not be created
      */
     public XvrlConversionService() {
-        super(JAXB_CTX);
+        super(JAXB_CTX, XvrlReportsType.class, new ObjectFactory()::createReports);
         withNamespacePrefixMap(NS_PREFIX);
     }
 }

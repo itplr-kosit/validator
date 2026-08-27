@@ -3,14 +3,15 @@ package org.kosit.xvrl.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.xvrl.model.ObjectFactory;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.kosit.xvrl.model.XvrlReportsType;
@@ -47,7 +48,7 @@ public class XvrlConversionServiceTest {
     @Test
     public void writesXvrlReportToXml() {
         final XvrlReportsType summary = readSample();
-        final String xml = this.service.writeXml(new ObjectFactory().createReports(summary));
+        final String xml = this.service.writeXml(summary);
         assertThat(xml).contains("<reports xmlns=\"http://www.xproc.org/ns/xvrl\">");
         assertThat(xml).contains("xvrl-sample-validator");
         assertThat(xml).contains("Required element 'missing' is not present.");
@@ -56,11 +57,11 @@ public class XvrlConversionServiceTest {
     @Test
     public void roundTripsViaXml() {
         final XvrlReportsType original = readSample();
-        final String xml = this.service.writeXml(new ObjectFactory().createReports(original));
+        final String xml = this.service.writeXml(original);
 
         final XvrlReportsType parsed;
-        try ( InputStream in = new java.io.ByteArrayInputStream(xml.getBytes(java.nio.charset.StandardCharsets.UTF_8)) ) {
-            parsed = this.service.readXml(in, XvrlReportsType.class);
+        try ( InputStream in = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)) ) {
+            parsed = this.service.readXml(in);
         } catch (final IOException e) {
             throw new AssertionError(e);
         }
@@ -77,20 +78,12 @@ public class XvrlConversionServiceTest {
 
     @Test
     public void readNullUriThrows() {
-        assertThatThrownBy(() -> this.service.readXml((URI) null, XvrlReportsType.class)).isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    public void readNullTypeThrows() {
-        final URL url = getClass().getResource(SAMPLE);
-        assertThat(url).as("sample-report.xml must be on the test classpath").isNotNull();
-        final URI sampleUri = URI.create(url.toString());
-        assertThatThrownBy(() -> this.service.readXml(sampleUri, null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> this.service.readXml((URI) null)).isInstanceOf(NullPointerException.class);
     }
 
     private XvrlReportsType readSample() {
         final URL url = getClass().getResource(SAMPLE);
         assertThat(url).as("sample-report.xml must be on the test classpath").isNotNull();
-        return this.service.readXml(URI.create(url.toString()), XvrlReportsType.class);
+        return this.service.readXml(URI.create(url.toString()));
     }
 }

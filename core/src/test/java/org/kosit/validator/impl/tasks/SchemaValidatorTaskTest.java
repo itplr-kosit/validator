@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
@@ -46,7 +45,7 @@ public class SchemaValidatorTaskTest {
     }
 
     @Test
-    public void testSimple() throws MalformedURLException {
+    public void testSimple() {
         final Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
         final ProcessStepResult<Boolean, XmlSyntaxError> processStepResult = this.service.check(process);
         final SingleProcessingResult<?, ?> result = processStepResult.getResult();
@@ -55,7 +54,7 @@ public class SchemaValidatorTaskTest {
     }
 
     @Test
-    public void testValidationFailure() throws MalformedURLException {
+    public void testValidationFailure() {
         final CTReadResource input = TestHelper.read(Simple.SCHEMA_INVALID);
         final Process process = TestProcessBuilder.create(input).build();
         final ProcessStepResult<Boolean, XmlSyntaxError> processStepResult = this.service.check(process);

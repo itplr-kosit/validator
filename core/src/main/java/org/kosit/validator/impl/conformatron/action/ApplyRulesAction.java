@@ -170,9 +170,8 @@ public class ApplyRulesAction implements CTAction {
         // apply on the retained immutable byte array — no re-read of the original source
         transformer.setSource(parsedSource.getSource().getReadResource().getAsSource(documentName));
         transformer.transform();
-        final SchematronOutputType svrl = this.conversionService.readXml(
-                new DOMSource(NodeOverNodeInfo.wrap(destination.getXdmNode().getUnderlyingNode()).getOwnerDocument()),
-                SchematronOutputType.class);
+        final SchematronOutputType svrl = this.conversionService
+                .readXml(new DOMSource(NodeOverNodeInfo.wrap(destination.getXdmNode().getUnderlyingNode()).getOwnerDocument()));
         return SvrlDetections.toDetections(svrl, documentName);
     }
 

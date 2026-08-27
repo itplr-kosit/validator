@@ -1,18 +1,20 @@
 package org.kosit.validator.scenario.v1;
 
+import javax.xml.namespace.QName;
 import javax.xml.validation.Schema;
 
 import org.kosit.base.xml.SchemaResolver;
 import org.kosit.jaxb.JaxbConversionService;
 
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 
 /**
  * Convenience {@link JaxbConversionService} preconfigured for the scenario JAXB model package
  * ({@code org.kosit.validator.scenario.model}).
  */
-public class Scenario1ConversionService extends JaxbConversionService {
+public class Scenario1ConversionService extends JaxbConversionService<Scenarios> {
 
     private static final JAXBContext JAXB_CTX;
 
@@ -35,7 +37,9 @@ public class Scenario1ConversionService extends JaxbConversionService {
      * @throws IllegalStateException if the JAXB context for the scenario model package can not be created
      */
     public Scenario1ConversionService() {
-        super(JAXB_CTX);
+        super(JAXB_CTX, Scenarios.class,
+                x -> new JAXBElement<>(new QName("http://www.xoev.de/de/validator/framework/2/scenarios", "scenarios"), Scenarios.class,
+                        x));
         withSchema(SCHEMA);
     }
 }

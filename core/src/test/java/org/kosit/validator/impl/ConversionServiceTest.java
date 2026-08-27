@@ -3,7 +3,6 @@ package org.kosit.validator.impl;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 
@@ -41,14 +40,8 @@ public class ConversionServiceTest {
     }
 
     @Test
-    public void testMarshalUnknown() {
-        assertThrows(JaxbConversionException.class, () -> this.service.writeXml(new Serializable() {
-        }));
-    }
-
-    @Test
     public void testUnmarshal() {
-        final Scenarios s = this.service.readXml(Simple.SCENARIOS, Scenarios.class);
+        final Scenarios s = this.service.readXml(Simple.SCENARIOS);
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
@@ -57,8 +50,7 @@ public class ConversionServiceTest {
     public void testUnmarshalWithSchema() throws MalformedURLException {
         // since repository.createSchema(URI) forcibly resolves uri in repository path only, conversion to url is
         // neccesary
-        final Scenarios s = this.service.withSchema(this.repository.createSchema(SCHEMA.toURL())).readXml(Simple.SCENARIOS,
-                Scenarios.class);
+        final Scenarios s = this.service.withSchema(this.repository.createSchema(SCHEMA.toURL())).readXml(Simple.SCENARIOS);
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
@@ -66,28 +58,17 @@ public class ConversionServiceTest {
     @Test
     public void testUnmarshalInvalidXml() {
         assertThrows(JaxbConversionException.class,
-                () -> this.service.withSchema(this.repository.createSchema(SCHEMA.toURL())).readXml(Invalid.SCENARIOS, Scenarios.class));
+                () -> this.service.withSchema(this.repository.createSchema(SCHEMA.toURL())).readXml(Invalid.SCENARIOS));
     }
 
     @Test
     public void testUnmarshalIllFormed() {
-        assertThrows(JaxbConversionException.class, () -> this.service.withSchema(this.repository.createSchema(SCHEMA.toURL()))
-                .readXml(Invalid.SCENARIOS_ILLFORMED, Scenarios.class));
+        assertThrows(JaxbConversionException.class,
+                () -> this.service.withSchema(this.repository.createSchema(SCHEMA.toURL())).readXml(Invalid.SCENARIOS_ILLFORMED));
     }
 
     @Test
     public void testUnmarshalEmpty() {
-        assertThrows(NullPointerException.class, () -> this.service.readXml((URI) null, Scenarios.class));
+        assertThrows(NullPointerException.class, () -> this.service.readXml((URI) null));
     }
-
-    @Test
-    public void testUnmarshalUnknownType() {
-        assertThrows(JaxbConversionException.class, () -> this.service.readXml(Simple.SCENARIOS, Scenario1ConversionService.class));
-    }
-
-    @Test
-    public void testUnmarshalWithoutType() {
-        assertThrows(NullPointerException.class, () -> this.service.readXml(Simple.SCENARIOS, null));
-    }
-
 }

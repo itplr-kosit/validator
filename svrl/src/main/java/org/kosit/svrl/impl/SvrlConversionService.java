@@ -2,6 +2,7 @@ package org.kosit.svrl.impl;
 
 import org.kosit.jaxb.JaxbConversionService;
 import org.oclc.purl.dsdl.svrl.ObjectFactory;
+import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -10,7 +11,7 @@ import jakarta.xml.bind.JAXBException;
  * Convenience {@link JaxbConversionService} preconfigured for the SVRL JAXB model package
  * ({@code org.oclc.purl.dsdl.svrl}).
  */
-public class SvrlConversionService extends JaxbConversionService {
+public class SvrlConversionService extends JaxbConversionService<SchematronOutputType> {
 
     private static final JAXBContext JAXB_CTX;
 
@@ -28,7 +29,7 @@ public class SvrlConversionService extends JaxbConversionService {
      * @throws IllegalStateException if the JAXB context for the SVRL model package can not be created
      */
     public SvrlConversionService() {
-        super(JAXB_CTX);
+        super(JAXB_CTX, SchematronOutputType.class, new ObjectFactory()::createSchematronOutput);
         // Don't use XML Schema to read SVRL - the created outcomes are very different
     }
 }
