@@ -13,6 +13,8 @@ import jakarta.xml.bind.JAXBException;
 /**
  * Convenience {@link AbstractJaxbConverter} preconfigured for the XVRL JAXB model package
  * ({@code org.kosit.xvrl.model}).
+ * 
+ * @author Philip Helger
  */
 public final class XvrlConverter extends AbstractJaxbConverter<XvrlReportsType> {
 

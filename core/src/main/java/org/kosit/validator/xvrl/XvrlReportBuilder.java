@@ -1,20 +1,21 @@
 package org.kosit.validator.xvrl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.xvrl.api.XvrlHelper;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlDigestType;
 import org.kosit.xvrl.model.XvrlDocumentType;
 import org.kosit.xvrl.model.XvrlMetadataType;
 import org.kosit.xvrl.model.XvrlReportType;
-import org.kosit.xvrl.model.XvrlSchemaType;
 import org.kosit.xvrl.model.XvrlSeverityType;
 import org.kosit.xvrl.model.XvrlValidatorType;
+import org.kosit.xvrl.model.XvrlValidityType;
 
 public class XvrlReportBuilder {
 
@@ -37,106 +38,95 @@ public class XvrlReportBuilder {
         this.xvrlReport.setMetadata(new XvrlMetadataType());
     }
 
-    private @NonNull Boolean calcValidity() {
-        return this.xvrlReport.getDetection().stream().filter(XvrlDetectionType::hasErrors).findAny().map(e -> Boolean.FALSE).orElse(Boolean.TRUE);
+    private @NonNull XvrlValidityType calcValidity() {
+        return this.xvrlReport.getDetection().stream().filter(XvrlDetectionType::hasErrors).findAny().map(e -> XvrlValidityType.FALSE)
+                .orElse(XvrlValidityType.TRUE);
     }
 
-    private long countDetections(final @NonNull XvrlSeverityType severity) {
-        return this.xvrlReport.getDetection().stream().filter(e -> e.getSeverity() == severity).count();
+    @Nullable
+    private Long countDetections(final @NonNull XvrlSeverityType severity) {
+        // Only values > 0 are emitted
+        final long count = this.xvrlReport.getDetection().stream().filter(e -> e.getSeverity() == severity).count();
+        return count == 0 ? null : Long.valueOf(count);
+    }
+
+    private XvrlValidatorType assertValidatorExistance() {
+        final var vals = this.xvrlReport.getMetadata().getValidators();
+        if (vals.isEmpty()) {
+            vals.add(new XvrlValidatorType());
+        }
+        return vals.getFirst();
     }
 
     public XvrlReportBuilder name(final String name) {
-        assertValidatorExistance();
-        this.xvrlReport.getMetadata().getValidators().get(0).setName(name);
+        assertValidatorExistance().setName(name);
         return this;
     }
 
-    private void assertValidatorExistance() {
-        if (this.xvrlReport.getMetadata().getValidators().isEmpty()) {
-            final XvrlValidatorType validator = new XvrlValidatorType();
-            this.xvrlReport.getMetadata().getValidators().add(validator);
-        }
-    }
-
     private XvrlReportBuilder id(final String id) {
-        assertValidatorExistance();
-        this.xvrlReport.getMetadata().getValidators().get(0).setId(id);
+        assertValidatorExistance().setId(id);
         this.xvrlReport.setId(id);
         return this;
     }
 
     public XvrlReportBuilder setValid() {
-        setValid("true");
-        return this;
+        return setValid(XvrlValidityType.TRUE);
     }
 
-    public XvrlReportBuilder setValid(final String isValid) {
+    public XvrlReportBuilder setValid(final XvrlValidityType isValid) {
         this.xvrlReport.getDigest().setValid(isValid);
         return this;
     }
 
     public XvrlReportBuilder addSchema(final ResourceType schema) {
-        return addSchemas(Collections.singletonList(schema));
+        xvrlReport.getMetadata().getSchemas().add(XvrlHelper.createSchema(schema.getLocation(), schema.getName()));
+        return this;
     }
 
     public XvrlReportBuilder addSchemas(final List<ResourceType> resources) {
-        final List<XvrlSchemaType> schemas = resources.stream().map(resourceType -> {
-            final XvrlSchemaType schema = new XvrlSchemaType();
-            schema.setHref(resourceType.getLocation());
-            schema.setSchematypens(resourceType.getName());
-            return schema;
-        }).toList();
-        this.xvrlReport.getMetadata().getSchemas().addAll(schemas);
-        return this;
-    }
-
-    public XvrlReportBuilder setErrorCount(final long errorCount) {
-        this.xvrlReport.getDigest().setErrorCount(errorCount);
-        return this;
-    }
-
-    public XvrlReportBuilder setFatalErrorCount(final long errorCount) {
-        this.xvrlReport.getDigest().setFatalErrorCount(errorCount);
+        for (final var resource : resources)
+            addSchema(resource);
         return this;
     }
 
     public XvrlReportBuilder addDocumentIdentification(final String documentReference) {
         final XvrlDocumentType document = new XvrlDocumentType();
         document.setHref(documentReference);
-        this.xvrlReport.getMetadata().getDocuments().add(document);
+        xvrlReport.getMetadata().getDocuments().add(document);
         return this;
     }
 
-    public XvrlReportBuilder add(final XvrlDetectionBuilder detection) {
+    public XvrlReportBuilder addDetections(final Stream<XvrlDetectionBuilder> collect) {
+        collect.forEach(this::addDetection);
+        return this;
+    }
+
+    public XvrlReportBuilder addDetection(final XvrlDetectionBuilder detection) {
         if (detection != null) {
-            add(detection.build());
+            addDetection(detection.build());
         }
         return this;
     }
 
-    private XvrlReportBuilder add(final XvrlDetectionType build) {
+    private XvrlReportBuilder addDetection(final XvrlDetectionType build) {
         if (build != null) {
             this.xvrlReport.getDetection().add(build);
         }
         return this;
     }
 
-    public XvrlReportBuilder addAll(final Stream<XvrlDetectionBuilder> collect) {
-        collect.forEach(this::add);
-        return this;
-    }
-
-    public XvrlReportBuilder addAll(final List<XvrlDetectionBuilder> collect) {
-        return addAll(collect.stream());
-    }
-
     public XvrlReportType build() {
-        final XvrlDigestType digest = new XvrlDigestType();
-        digest.setErrorCount(countDetections(XvrlSeverityType.ERROR));
+        final XvrlDigestType digest = xvrlReport.getDigest();
         digest.setFatalErrorCount(countDetections(XvrlSeverityType.FATAL_ERROR));
+        digest.setErrorCount(countDetections(XvrlSeverityType.ERROR));
+        digest.setWarningCount(countDetections(XvrlSeverityType.WARNING));
         digest.setInfoCount(countDetections(XvrlSeverityType.INFO));
-        digest.setValid(calcValidity().toString());
-        this.xvrlReport.setDigest(digest);
+        digest.setUnspecifiedCount(countDetections(XvrlSeverityType.UNSPECIFIED));
+
+        // Don't overwrite manual validity state
+        if (digest.getValid() == null)
+            digest.setValid(calcValidity());
+
         return this.xvrlReport;
     }
 }

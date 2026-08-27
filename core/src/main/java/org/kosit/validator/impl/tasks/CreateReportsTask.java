@@ -52,12 +52,12 @@ public class CreateReportsTask implements CheckTask {
     }
 
     private static XvrlReportType generateXvrlReport(final ResourceType resourceType, final XdmNode node) {
-        return XvrlReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id(resourceType.getName())
-                .add(XvrlSupplementalBuilder.supplemental().addContent(node).id(resourceType.getName()))).build();
+        return XvrlReportBuilder.builder(METADATA).addDetection(XvrlDetectionBuilder.builder().id(resourceType.getName())
+                .supplemental(XvrlSupplementalBuilder.builder().addContent(node).id(resourceType.getName()))).build();
     }
 
     private static XvrlReportType createErrorInformation(final ResourceType resourceType, final SimpleError error) {
-        return XvrlReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id("error").addError(error)).build();
+        return XvrlReportBuilder.builder(METADATA).addDetection(XvrlDetectionBuilder.builder().id("error").addError(error)).build();
     }
 
     @Override

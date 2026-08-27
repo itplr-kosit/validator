@@ -1,7 +1,5 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
@@ -18,7 +16,6 @@ import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
-import org.kosit.xvrl.model.XvrlSeverityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,11 +40,11 @@ public class DocumentParseTask implements CheckTask {
     private static XvrlReportType generateXvrlReport(final SingleProcessingResult<XdmNode, SimpleError> parserResult) {
         final XvrlReportBuilder builder = XvrlReportBuilder.builder("Document wellformedness Validator");
         if (parserResult.isValid()) {
-            final XvrlDetectionBuilder detection = detectionBuilder().severity(XvrlSeverityType.INFO)
-                    .add(XvrlSupplementalBuilder.supplemental().addContent(parserResult.getObject()));
-            builder.add(detection);
+            final XvrlDetectionBuilder detection = XvrlDetectionBuilder.builderInfo()
+                    .supplemental(XvrlSupplementalBuilder.builder().addContent(parserResult.getObject()));
+            builder.addDetection(detection);
         } else {
-            final XvrlDetectionBuilder detection = detectionBuilder().severity(XvrlSeverityType.ERROR);
+            final XvrlDetectionBuilder detection = XvrlDetectionBuilder.builder();
             parserResult.getErrors().forEach(detection::addError);
         }
         return builder.build();

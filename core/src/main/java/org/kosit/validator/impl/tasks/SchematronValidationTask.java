@@ -1,7 +1,5 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +13,7 @@ import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
@@ -72,11 +71,11 @@ public class SchematronValidationTask implements CheckTask {
 
             final SchematronOutputType schematronOutput = e.getResults();
             for (final var f : schematronOutput.getFailedAsserts())
-                reportBuilder.add(detectionBuilder().add(f));
+                reportBuilder.addDetection(XvrlDetectionBuilder.builder().add(f));
             for (final var f : schematronOutput.getActivePatterns())
-                reportBuilder.add(detectionBuilder().add(f));
+                reportBuilder.addDetection(XvrlDetectionBuilder.builder().add(f));
             for (final var f : schematronOutput.getFiredRules())
-                reportBuilder.add(detectionBuilder().add(f));
+                reportBuilder.addDetection(XvrlDetectionBuilder.builder().add(f));
             return reportBuilder.build();
         }).toList();
     }

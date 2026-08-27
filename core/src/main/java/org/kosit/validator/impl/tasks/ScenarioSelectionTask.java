@@ -1,7 +1,5 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
-
 import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.Scenario;
@@ -11,9 +9,9 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
-import org.kosit.xvrl.model.XvrlSeverityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,12 +40,13 @@ public class ScenarioSelectionTask implements CheckTask {
     private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
         final XvrlReportBuilder builder = XvrlReportBuilder.builder(METADATA);
         if (scenarioTypeResult.getObject().isFallback()) {
-            builder.add(detectionBuilder().addError("No valid scenario configuration found for '" + name + "'").code("fallback-match"));
+            builder.addDetection(XvrlDetectionBuilder.builderError().addMessage("No valid scenario configuration found for '" + name + "'")
+                    .code("fallback-match"));
         } else {
-            builder.add(detectionBuilder()
+            builder.addDetection(XvrlDetectionBuilder.builderInfo()
                     .addMessage("Scenario '" + scenarioTypeResult.getObject().getName() + "' identified for '" + name + "'")
-                    .severity(XvrlSeverityType.INFO).code("scenario-matched"));
-            builder.add(detectionBuilder().id("scenario").code(scenarioTypeResult.getObject().getName()));
+                    .code("scenario-matched"));
+            builder.addDetection(XvrlDetectionBuilder.builder().id("scenario").code(scenarioTypeResult.getObject().getName()));
         }
         return builder.build();
     }

@@ -1,6 +1,5 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 
 import java.util.Collections;
@@ -14,6 +13,7 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.slf4j.Logger;
@@ -39,9 +39,10 @@ public class ComputeAcceptanceTask implements CheckTask {
 
     private static XvrlReportType generateXvrlReport(final SingleProcessingResult<AcceptRecommendation, SimpleError> currentResult) {
         if (currentResult.isValid()) {
-            return builder(REPORT_NAME).add(detectionBuilder().addMessage(currentResult.getObject().getID())).build();
+            return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builder().addMessage(currentResult.getObject().getID())).build();
         }
-        return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detectionBuilder().addError(e)).toList()).build();
+        return builder(REPORT_NAME)
+                .addDetections(currentResult.getErrors().stream().map(e -> XvrlDetectionBuilder.builderError().addError(e))).build();
     }
 
     private static SingleProcessingResult<AcceptRecommendation, SimpleError> evaluateSchemaAndSchematron(final Process results) {

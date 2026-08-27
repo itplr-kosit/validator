@@ -10,6 +10,8 @@ import jakarta.xml.bind.JAXBException;
 /**
  * Convenience {@link AbstractJaxbConverter} preconfigured for the SVRL JAXB model package
  * ({@code org.oclc.purl.dsdl.svrl}).
+ * 
+ * @author Philip Helger
  */
 public final class SvrlConverter extends AbstractJaxbConverter<SchematronOutputType> {
 

@@ -16,6 +16,7 @@ import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.kosit.xvrl.model.XvrlReportsType;
 import org.kosit.xvrl.model.XvrlSeverityType;
+import org.kosit.xvrl.model.XvrlValidityType;
 
 public class XvrlConversionServiceTest {
 
@@ -36,7 +37,7 @@ public class XvrlConversionServiceTest {
         assertThat(summary.getReports()).hasSize(2);
 
         final XvrlReportType schemaReport = summary.getReports().get(0);
-        assertThat(schemaReport.getDigest().getValid()).isEqualTo("false");
+        assertThat(schemaReport.getDigest().getValid()).isEqualTo(XvrlValidityType.FALSE);
         assertThat(schemaReport.getDigest().getErrorCount()).isEqualTo(1L);
         assertThat(schemaReport.getDetection()).hasSize(2);
 

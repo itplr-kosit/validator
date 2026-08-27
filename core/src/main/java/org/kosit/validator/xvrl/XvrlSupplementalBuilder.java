@@ -10,8 +10,11 @@ public class XvrlSupplementalBuilder {
 
     private final XvrlSupplementalType sup = new XvrlSupplementalType();
 
-    public static XvrlSupplementalBuilder supplemental() {
+    public static XvrlSupplementalBuilder builder() {
         return new XvrlSupplementalBuilder();
+    }
+
+    private XvrlSupplementalBuilder() {
     }
 
     public XvrlSupplementalBuilder id(final String id) {

@@ -16,6 +16,7 @@ import org.oclc.purl.dsdl.svrl.SuccessfulReport;
  * {@link org.oclc.purl.dsdl.svrl.SchematronOutput}.
  *
  * @author Andreas Penski
+ * @author Philip Helger
  */
 public abstract class AbstractSvrlOutput {
 

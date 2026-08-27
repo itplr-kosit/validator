@@ -161,9 +161,9 @@ public class TestProcessBuilder {
     }
 
     public TestProcessBuilder schematronInvalid() {
-        final ValidationResultsSchematron v = new ValidationResultsSchematron();
         final var so = new SchematronOutputType();
         so.getActivePatternOrActiveGroupAndFiredRule().add(new FailedAssert());
+        final ValidationResultsSchematron v = new ValidationResultsSchematron();
         v.setResults(so);
         return setSchematronResult(Collections.singletonList(v));
     }

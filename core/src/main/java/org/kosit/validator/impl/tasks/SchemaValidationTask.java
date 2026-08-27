@@ -1,7 +1,5 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,6 +23,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process.ProcessKey;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
@@ -55,7 +54,7 @@ public class SchemaValidationTask implements CheckTask {
 
     public static final ProcessKey<Boolean, SimpleError> KEY = new ProcessKey<>(Boolean.class, SimpleError.class);
 
-    private static final Long BA_LIMIT = 10L;
+    private static final Long BA_LIMIT = Long.valueOf(10L);
 
     private static final String LIMIT_PARAMETER = "schema.validation.inmem.limit";
 
@@ -65,7 +64,7 @@ public class SchemaValidationTask implements CheckTask {
 
     private static XvrlReportType generateXvrlReport(final ValidationResultsXmlSchema result) {
         final XvrlReportBuilder builder = XvrlReportBuilder.builder("Schema Validator").addSchemas(result.getResource());
-        builder.addAll(result.getXmlSyntaxError().stream().map(e -> detectionBuilder().addError(e)).toList());
+        builder.addDetections(result.getXmlSyntaxError().stream().map(e -> XvrlDetectionBuilder.builder().addError(e)));
         return builder.build();
     }
 

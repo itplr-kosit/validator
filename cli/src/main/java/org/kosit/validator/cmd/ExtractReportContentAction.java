@@ -46,9 +46,9 @@ class ExtractReportContentAction implements CheckTask {
 
     private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
         if (result.isValid()) {
-            return builder(REPORT_NAME).add(XvrlDetectionBuilder.detectionBuilder().addMessage("Extraction successful")).build();
+            return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builder().addMessage("Extraction successful")).build();
         }
-        return builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> XvrlDetectionBuilder.detectionBuilder().addError(e)))
+        return builder(REPORT_NAME).addDetections(result.getErrors().stream().map(e -> XvrlDetectionBuilder.builderError().addMessage(e)))
                 .build();
     }
 

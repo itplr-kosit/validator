@@ -1,6 +1,5 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 
 import org.kosit.base.error.SimpleError;
@@ -8,10 +7,10 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.DocumentHash;
 import org.kosit.validator.model.DocumentIdentificationType;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.xvrl.model.XvrlDocumentType;
 import org.kosit.xvrl.model.XvrlMetadataType;
 import org.kosit.xvrl.model.XvrlReportType;
-import org.kosit.xvrl.model.XvrlSeverityType;
 
 /**
  * Creates a document identification element for the report by using the generates hash.
@@ -28,10 +27,10 @@ public class CreateDocumentIdentificationTask implements CheckTask {
     private static XvrlReportType generateXvrlReport(final SingleProcessingResult<DocumentIdentificationType, SimpleError> currentResult) {
         if (currentResult.isValid()) {
             final DocumentIdentificationType result = currentResult.getObject();
-            return builder(REPORT_NAME).add(detectionBuilder().addMessage(result.documentReference()).severity(XvrlSeverityType.INFO))
-                    .build();
+            return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builderInfo().addMessage(result.documentReference())).build();
         }
-        return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detectionBuilder().addError(e)).toList()).build();
+        return builder(REPORT_NAME).addDetections(currentResult.getErrors().stream().map(e -> XvrlDetectionBuilder.builder().addError(e)))
+                .build();
 
     }
 
