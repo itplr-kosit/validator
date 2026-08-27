@@ -52,8 +52,8 @@
             <inheritance:implements>org.kosit.xvrl.api.BaseMessage</inheritance:implements>
         </jaxb:bindings>
 
-        <jaxb:bindings node="//xs:attribute[@name='severity']/xs:simpleType">
-            <jaxb:typesafeEnumClass name="Severity" />
+        <jaxb:bindings node="//xs:simpleType[@name='XvrlSeverityType']">
+            <jaxb:typesafeEnumClass />
         </jaxb:bindings>
     </jaxb:bindings>
 

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.kosit.xvrl.model.XvrlReportsType;
+import org.kosit.xvrl.model.XvrlSeverityType;
 
 public class XvrlConversionServiceTest {
 
@@ -40,7 +41,7 @@ public class XvrlConversionServiceTest {
         assertThat(schemaReport.getDetection()).hasSize(2);
 
         final XvrlDetectionType firstDetection = schemaReport.getDetection().get(0);
-        assertThat(firstDetection.getSeverity()).isEqualTo(XvrlDetectionType.Severity.ERROR);
+        assertThat(firstDetection.getSeverity()).isEqualTo(XvrlSeverityType.ERROR);
         assertThat(firstDetection.getCode()).isEqualTo("cvc-complex-type.2.4.a");
         assertThat(schemaReport.getAllErrors()).contains("Required element 'missing' is not present.");
     }

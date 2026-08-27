@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kosit.base.annotation.ReturnsImmutableObject;
-import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlLocationType;
 import org.kosit.xvrl.model.XvrlMessageType;
+import org.kosit.xvrl.model.XvrlSeverityType;
 
 public interface BaseDetection {
 
@@ -14,9 +14,9 @@ public interface BaseDetection {
 
     List<XvrlLocationType> getLocations();
 
-    XvrlDetectionType.Severity getSeverity();
+    XvrlSeverityType getSeverity();
 
-    void setSeverity(XvrlDetectionType.Severity value);
+    void setSeverity(XvrlSeverityType value);
 
     @ReturnsImmutableObject
     default List<String> getAllMessages() {
@@ -38,6 +38,6 @@ public interface BaseDetection {
     }
 
     default boolean hasErrors() {
-        return getSeverity() == XvrlDetectionType.Severity.ERROR || getSeverity() == XvrlDetectionType.Severity.FATAL_ERROR;
+        return getSeverity() == XvrlSeverityType.ERROR || getSeverity() == XvrlSeverityType.FATAL_ERROR;
     }
 }

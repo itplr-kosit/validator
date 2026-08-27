@@ -12,6 +12,7 @@ import org.kosit.xvrl.model.XvrlDocumentType;
 import org.kosit.xvrl.model.XvrlMetadataType;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.kosit.xvrl.model.XvrlSchemaType;
+import org.kosit.xvrl.model.XvrlSeverityType;
 import org.kosit.xvrl.model.XvrlValidatorType;
 
 public class XvrlReportBuilder {
@@ -36,12 +37,12 @@ public class XvrlReportBuilder {
     }
 
     private String calcValidity() {
-        return this.xvrlReport.getDetection().stream().filter(
-                e -> e.getSeverity() == XvrlDetectionType.Severity.ERROR || e.getSeverity() == XvrlDetectionType.Severity.FATAL_ERROR)
-                .findAny().map(e -> "false").orElse("true");
+        return this.xvrlReport.getDetection().stream()
+                .filter(e -> e.getSeverity() == XvrlSeverityType.ERROR || e.getSeverity() == XvrlSeverityType.FATAL_ERROR).findAny()
+                .map(e -> "false").orElse("true");
     }
 
-    private long countDetections(final XvrlDetectionType.Severity severity) {
+    private long countDetections(final XvrlSeverityType severity) {
         return this.xvrlReport.getDetection().stream().filter(e -> e.getSeverity() == severity).count();
     }
 
@@ -132,9 +133,9 @@ public class XvrlReportBuilder {
 
     public XvrlReportType build() {
         final XvrlDigestType digest = new XvrlDigestType();
-        digest.setErrorCount(countDetections(XvrlDetectionType.Severity.ERROR));
-        digest.setFatalErrorCount(countDetections(XvrlDetectionType.Severity.FATAL_ERROR));
-        digest.setInfoCount(countDetections(XvrlDetectionType.Severity.INFO));
+        digest.setErrorCount(countDetections(XvrlSeverityType.ERROR));
+        digest.setFatalErrorCount(countDetections(XvrlSeverityType.FATAL_ERROR));
+        digest.setInfoCount(countDetections(XvrlSeverityType.INFO));
         digest.setValid(calcValidity());
         this.xvrlReport.setDigest(digest);
         return this.xvrlReport;
