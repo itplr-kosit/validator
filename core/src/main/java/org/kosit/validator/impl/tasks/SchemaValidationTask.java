@@ -19,7 +19,6 @@ import org.apache.commons.io.FileUtils;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.input.AbstractVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process.ProcessKey;
@@ -110,23 +109,15 @@ public class SchemaValidationTask implements CheckTask {
 
     private SourceProvider resolveSource(final Process results) throws IOException, SaxonApiException {
         final SourceProvider source;
-        if (results.getInput() instanceof final AbstractVInput abstractInput && abstractInput.supportsMultipleReads()) {
-            source = () -> results.getInput().getAsSource();
-        } else {
-            final SingleProcessingResult<XdmNode, XmlSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
-            source = serialize(results.getInput(), parseResult.getObject());
-        }
+        final SingleProcessingResult<XdmNode, XmlSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
+        source = serialize(results.getInput(), parseResult.getObject());
         return source;
     }
 
     // intentionally return open stream/autoclosable here
     private SerializedDocument serialize(final CTReadResource input, final XdmNode object) throws IOException, SaxonApiException {
         final SerializedDocument doc;
-        if (input instanceof final AbstractVInput abstractInput && abstractInput.getLength() < getInMemoryLimit()) {
-            doc = new ByteArraySerializedDocument(this.processor);
-        } else {
-            doc = new FileSerializedDocument(this.processor);
-        }
+        doc = new FileSerializedDocument(this.processor);
         doc.serialize(object);
         return doc;
     }

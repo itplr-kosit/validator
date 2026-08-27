@@ -12,7 +12,6 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
 import org.kosit.validator.impl.conformatron.source.ValidationSource;
 import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
-import org.kosit.validator.impl.input.XdmNodeVInput;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XmlSyntaxError;
@@ -90,11 +89,6 @@ public class DocumentParseTask implements CheckTask {
         Objects.requireNonNull(content);
 
         try {
-            if (content instanceof final XdmNodeVInput xdmInput && hasCompatibleConfiguration(xdmInput)) {
-                // parsing not necessary; no source bytes available for the conformatron handshake object
-                return new ParseOutcome(new SingleProcessingResult<>(xdmInput.getNode()), null);
-            }
-
             final DocumentBuilder builder = this.processor.newDocumentBuilder();
             builder.setLineNumbering(true);
 
@@ -109,10 +103,6 @@ public class DocumentParseTask implements CheckTask {
             error.setMessage("IOException while reading resource " + content.getName() + ": " + e.getMessage());
             return new ParseOutcome(new SingleProcessingResult<>(Collections.singleton(error)), null);
         }
-    }
-
-    private boolean hasCompatibleConfiguration(final XdmNodeVInput content) {
-        return content.getNode().getProcessor().getUnderlyingConfiguration().isCompatible(this.processor.getUnderlyingConfiguration());
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.kosit.validator.impl.input.StreamHelper;
+import org.kosit.base.io.StreamHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
