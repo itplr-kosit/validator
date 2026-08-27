@@ -29,7 +29,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
-import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.ObjectHelper;
 import org.kosit.base.xml.XmlHelper;
@@ -65,39 +64,11 @@ import jakarta.xml.bind.ValidationEventHandler;
  */
 public abstract class AbstractJaxbConversionService<T> {
 
-    /**
-     * {@link NamespacePrefixMapper} that delegates to a fixed namespace-URI-to-prefix map. A value of empty string
-     * marks a URI as the default namespace.
-     */
-    private static final class MappedNamespacePrefixMapper extends NamespacePrefixMapper {
-
-        private final Map<String, String> map;
-
-        MappedNamespacePrefixMapper(final Map<String, String> map) {
-            this.map = map;
-        }
-
-        @Override
-        public String getPreferredPrefix(final String namespaceUri, final String suggestion, final boolean requirePrefix) {
-            final String prefix = this.map.get(namespaceUri);
-            if (prefix == null) {
-                return suggestion;
-            }
-            // empty string means default namespace, but if JAXB requires a prefix here we must not return ""
-            if (prefix.isEmpty() && requirePrefix) {
-                return suggestion;
-            }
-            return prefix;
-        }
-    }
+    public static final boolean DEFAULT_FORMATTED = true;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJaxbConversionService.class);
 
     private static final String NAMESPACE_PREFIX_MAPPER_PROPERTY = "org.glassfish.jaxb.namespacePrefixMapper";
-
-    public static final boolean DEFAULT_FORMATTED = true;
-
-    public static final boolean DEFAULT_FRAGMENT = false;
 
     private final JAXBContext jaxbContext;
 
@@ -110,8 +81,6 @@ public abstract class AbstractJaxbConversionService<T> {
     private @Nullable ValidationEventHandler eventHandler;
 
     private boolean formattedOutput = DEFAULT_FORMATTED;
-
-    private boolean fragment = DEFAULT_FRAGMENT;
 
     private Charset encoding = StandardCharsets.UTF_8;
 
@@ -166,17 +135,6 @@ public abstract class AbstractJaxbConversionService<T> {
      */
     public AbstractJaxbConversionService<T> withFormattedOutput(final boolean formattedOutput) {
         this.formattedOutput = formattedOutput;
-        return this;
-    }
-
-    /**
-     * Enables or disables fragment marshalling (omitting the XML declaration). Default is {@code true}.
-     *
-     * @param fragment whether to omit the XML declaration on write
-     * @return this instance for chaining
-     */
-    public AbstractJaxbConversionService<T> withFragment(final boolean fragment) {
-        this.fragment = fragment;
         return this;
     }
 
@@ -462,7 +420,6 @@ public abstract class AbstractJaxbConversionService<T> {
     private Marshaller createMarshaller() throws JAXBException {
         final Marshaller marshaller = this.jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.valueOf(this.formattedOutput));
-        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.valueOf(this.fragment));
         marshaller.setProperty(Marshaller.JAXB_ENCODING, this.encoding.name());
         if (this.schema != null) {
             marshaller.setSchema(this.schema);
