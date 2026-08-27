@@ -14,7 +14,7 @@ import org.jspecify.annotations.Nullable;
  */
 public final class DefaultSimpleError implements SimpleError {
 
-    private final @Nullable String errorSource;
+    private final @Nullable String systemId;
 
     private final long lineNumber;
 
@@ -29,16 +29,16 @@ public final class DefaultSimpleError implements SimpleError {
     /**
      * Constructor.
      *
-     * @param errorSource the object in which the error was found. May be <code>null</code>.
+     * @param systemId the object in which the error was found. May be <code>null</code>.
      * @param lineNumber the line number. Values &le; 0 mean none available.
      * @param columnNumber the column number. Values &le; 0 mean none available.
      * @param severity the severity of the error. May not be <code>null</code>.
      * @param message the main error message. May not be <code>null</code>.
      * @param linkedException the exception that caused this error. May be <code>null</code>.
      */
-    public DefaultSimpleError(final @Nullable String errorSource, final long lineNumber, final long columnNumber,
+    public DefaultSimpleError(final @Nullable String systemId, final long lineNumber, final long columnNumber,
             @NonNull final CTStandardSeverity severity, @NonNull final String message, final @Nullable Exception linkedException) {
-        this.errorSource = errorSource;
+        this.systemId = systemId;
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
         this.severity = Objects.requireNonNull(severity, "Severity must not be null");
@@ -46,8 +46,8 @@ public final class DefaultSimpleError implements SimpleError {
         this.linkedException = linkedException;
     }
 
-    public @Nullable String getErrorSource() {
-        return this.errorSource;
+    public @Nullable String getSystemID() {
+        return this.systemId;
     }
 
     public long getLineNumber() {
@@ -96,23 +96,22 @@ public final class DefaultSimpleError implements SimpleError {
         if (!(o instanceof final DefaultSimpleError rhs)) {
             return false;
         }
-        return Objects.equals(this.errorSource, rhs.errorSource) && this.lineNumber == rhs.lineNumber
-                && this.columnNumber == rhs.columnNumber && this.severity == rhs.severity && this.message.equals(rhs.message)
+        return Objects.equals(this.systemId, rhs.systemId) && this.lineNumber == rhs.lineNumber && this.columnNumber == rhs.columnNumber
+                && this.severity == rhs.severity && this.message.equals(rhs.message)
                 && equalsException(this.linkedException, rhs.linkedException);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.errorSource, Long.valueOf(this.lineNumber), Long.valueOf(this.columnNumber), this.severity, this.message,
+        return Objects.hash(this.systemId, Long.valueOf(this.lineNumber), Long.valueOf(this.columnNumber), this.severity, this.message,
                 this.linkedException == null ? null : this.linkedException.getClass(),
                 this.linkedException == null ? null : this.linkedException.getMessage());
     }
 
     @Override
     public String toString() {
-        return "DefaultSimpleError(errorSource=" + this.errorSource + ", lineNumber=" + this.lineNumber + ", columnNumber="
-                + this.columnNumber + ", severity=" + this.severity + ", message=" + this.message + ", linkedException="
-                + this.linkedException + ")";
+        return "DefaultSimpleError(systemId=" + this.systemId + ", lineNumber=" + this.lineNumber + ", columnNumber=" + this.columnNumber
+                + ", severity=" + this.severity + ", message=" + this.message + ", linkedException=" + this.linkedException + ")";
     }
 
     /**

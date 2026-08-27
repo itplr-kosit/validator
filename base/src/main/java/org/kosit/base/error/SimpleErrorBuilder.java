@@ -20,7 +20,7 @@ public class SimpleErrorBuilder {
     /** The severity that is used, if none is provided explicitly */
     public static final CTStandardSeverity DEFAULT_SEVERITY = CTStandardSeverity.ERROR;
 
-    private @Nullable String errorSource;
+    private @Nullable String systemId;
 
     private long lineNumber;
 
@@ -45,7 +45,7 @@ public class SimpleErrorBuilder {
      */
     public SimpleErrorBuilder(@NonNull final SimpleError error) {
         Objects.requireNonNull(error, "Error must not be null");
-        errorSource(error.getErrorSource());
+        systemId(error.getSystemID());
         lineNumber(error.getLineNumber());
         columnNumber(error.getColumnNumber());
         severity(error.getSeverity());
@@ -56,12 +56,12 @@ public class SimpleErrorBuilder {
     /**
      * Set the object in which the error was found.
      *
-     * @param errorSource the error source. May be <code>null</code>.
+     * @param systemId the error source. May be <code>null</code>.
      * @return this for chaining
      */
     @NonNull
-    public SimpleErrorBuilder errorSource(final @Nullable String errorSource) {
-        this.errorSource = errorSource;
+    public SimpleErrorBuilder systemId(final @Nullable String systemId) {
+        this.systemId = systemId;
         return this;
     }
 
@@ -126,14 +126,14 @@ public class SimpleErrorBuilder {
     /**
      * Set the error source, the line number and the column number at once.
      *
-     * @param errorSource the error source. May be <code>null</code>.
+     * @param systemId the error source. May be <code>null</code>.
      * @param lineNumber the line number. Values &le; 0 mean none available.
      * @param columnNumber the column number. Values &le; 0 mean none available.
      * @return this for chaining
      */
     @NonNull
-    public SimpleErrorBuilder location(final @Nullable String errorSource, final long lineNumber, final long columnNumber) {
-        return errorSource(errorSource).lineNumber(lineNumber).columnNumber(columnNumber);
+    public SimpleErrorBuilder location(final @Nullable String systemId, final long lineNumber, final long columnNumber) {
+        return systemId(systemId).lineNumber(lineNumber).columnNumber(columnNumber);
     }
 
     /**
@@ -183,7 +183,7 @@ public class SimpleErrorBuilder {
         if (this.message == null) {
             throw new IllegalStateException("The message must be provided");
         }
-        return new DefaultSimpleError(this.errorSource, this.lineNumber, this.columnNumber, this.severity, this.message,
+        return new DefaultSimpleError(this.systemId, this.lineNumber, this.columnNumber, this.severity, this.message,
                 this.linkedException);
     }
 }

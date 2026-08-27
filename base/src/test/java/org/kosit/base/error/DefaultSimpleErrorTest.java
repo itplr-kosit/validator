@@ -14,7 +14,7 @@ public class DefaultSimpleErrorTest {
     @Test
     public void buildMinimum() {
         final DefaultSimpleError error = DefaultSimpleError.builder().message("Something went wrong").build();
-        assertThat(error.getErrorSource()).isNull();
+        assertThat(error.getSystemID()).isNull();
         assertThat(error.getLineNumber()).isZero();
         assertThat(error.hasLineNumber()).isFalse();
         assertThat(error.getColumnNumber()).isZero();
@@ -30,7 +30,7 @@ public class DefaultSimpleErrorTest {
         final IOException ex = new IOException("boom");
         final DefaultSimpleError error = DefaultSimpleError.builderWarning().location("file.xml", 12, 34).message("Attribute is missing")
                 .linkedException(ex).build();
-        assertThat(error.getErrorSource()).isEqualTo("file.xml");
+        assertThat(error.getSystemID()).isEqualTo("file.xml");
         assertThat(error.getLineNumber()).isEqualTo(12);
         assertThat(error.hasLineNumber()).isTrue();
         assertThat(error.getColumnNumber()).isEqualTo(34);
@@ -45,7 +45,7 @@ public class DefaultSimpleErrorTest {
     public void locationFromSAXParseException() {
         final SAXParseException ex = new SAXParseException("Invalid content", null, "file.xml", 7, 3);
         final DefaultSimpleError error = DefaultSimpleError.builderError().location(ex).message(ex.getMessage()).build();
-        assertThat(error.getErrorSource()).isEqualTo("file.xml");
+        assertThat(error.getSystemID()).isEqualTo("file.xml");
         assertThat(error.getLineNumber()).isEqualTo(7);
         assertThat(error.getColumnNumber()).isEqualTo(3);
         assertThat(error.getSeverity()).isEqualTo(CTStandardSeverity.ERROR);

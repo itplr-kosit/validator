@@ -16,7 +16,7 @@ public interface SimpleError {
      * @return The object in which the error was found
      */
     @Nullable
-    String getErrorSource();
+    String getSystemID();
 
     /**
      * Returns a line number from which the error originates.

@@ -2,6 +2,8 @@ package org.kosit.base.string;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Objects;
+
 import org.junit.jupiter.api.Test;
 
 public class StringHelperTest {
@@ -62,13 +64,13 @@ public class StringHelperTest {
 
     @Test
     public void equalsNullable() {
-        assertThat(StringHelper.equalsNullable(null, null)).isTrue();
-        assertThat(StringHelper.equalsNullable(null, "a")).isFalse();
-        assertThat(StringHelper.equalsNullable("a", null)).isFalse();
-        assertThat(StringHelper.equalsNullable("a", "a")).isTrue();
-        assertThat(StringHelper.equalsNullable("a", new String("a"))).isTrue();
-        assertThat(StringHelper.equalsNullable("a", "A")).isFalse();
-        assertThat(StringHelper.equalsNullable("", "")).isTrue();
+        assertThat(Objects.equals(null, null)).isTrue();
+        assertThat(Objects.equals(null, "a")).isFalse();
+        assertThat(Objects.equals("a", null)).isFalse();
+        assertThat(Objects.equals("a", "a")).isTrue();
+        assertThat(Objects.equals("a", new String("a"))).isTrue();
+        assertThat(Objects.equals("a", "A")).isFalse();
+        assertThat(Objects.equals("", "")).isTrue();
     }
 
     @Test
