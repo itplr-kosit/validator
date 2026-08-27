@@ -155,33 +155,31 @@
   </xs:complexType>
   <xs:element name="document" type="xvrl:XvrlDocumentType" />
   
+  <xs:simpleType name="SeverityType">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="info"/>
+      <xs:enumeration value="warning"/>
+      <xs:enumeration value="error"/>
+      <xs:enumeration value="fatal-error"/>
+      <xs:enumeration value="unspecified"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="XvrlDetectionType">
+    <!-- The specific let/message order is not part of the XSD -->
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element ref="xvrl:location"/>
       <xs:element ref="xvrl:provenance"/>
       <xs:element ref="xvrl:title"/>
       <xs:element ref="xvrl:summary"/>
       <xs:element ref="xvrl:category"/>
-      <xs:choice>
-        <xs:element ref="xvrl:let"/>
-        <xs:element ref="xvrl:message"/>
-      </xs:choice>
+      <xs:element ref="xvrl:let" />
+      <xs:element ref="xvrl:message" />
       <xs:element ref="xvrl:supplemental"/>
       <xs:element ref="xvrl:context"/>
     </xs:choice>
-    <xs:attributeGroup ref="xvrl:common.attr"/>
-    <xs:attribute name="severity">
-      <xs:simpleType>
-        <xs:restriction base="xs:token">
-          <xs:enumeration value="info"/>
-          <xs:enumeration value="warning"/>
-          <xs:enumeration value="error"/>
-          <xs:enumeration value="fatal-error"/>
-          <xs:enumeration value="unspecified"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
-    <xs:attribute name="code"/>
+    <xs:attributeGroup ref="xvrl:common.attr" />
+    <xs:attribute name="severity" type="xvrl:SeverityType" />
+    <xs:attribute name="code" type="xs:string" />
   </xs:complexType>
   <xs:element name="detection" type="xvrl:XvrlDetectionType" />
   
