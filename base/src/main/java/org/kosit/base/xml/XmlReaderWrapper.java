@@ -12,11 +12,10 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 
-import jakarta.xml.bind.util.JAXBSource;
-
 /**
  * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect on
- * {@link JAXBSource}'s XMLReader, but it throws exceptions on unknown properties. This just drops this exceptions.
+ * {@code jakarta.xml.bind.util.JAXBSource}'s XMLReader, but it throws exceptions on unknown properties. This just drops
+ * this exceptions.
  */
 public class XmlReaderWrapper implements XMLReader {
 

@@ -1,6 +1,7 @@
 package org.kosit.jaxb;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -330,6 +331,23 @@ public abstract class AbstractJaxbConversionService<T> {
     }
 
     // ---------- write ----------
+
+    /**
+     * Serializes {@code model} to an XML byte array using the configured encoding.
+     *
+     * @param model the object to serialize
+     * @return the serialized XML bytes
+     * @throws JaxbConversionException on marshalling errors
+     */
+    public byte[] writeXmlBytes(final T model) {
+        ObjectHelper.requireNonNull(model, "model");
+        try ( ByteArrayOutputStream baos = new ByteArrayOutputStream() ) {
+            writeXml(model, baos);
+            return baos.toByteArray();
+        } catch (final IOException e) {
+            throw new JaxbConversionException("Error serializing object " + model.getClass().getName(), e);
+        }
+    }
 
     /**
      * Serializes {@code model} to an XML string using the configured encoding.

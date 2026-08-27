@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (BUILD) [#185](https://projekte.kosit.org/kosit/validator/-/work_items/185) The minimum Java version is now 25
 - (CORE) [#198](https://projekte.kosit.org/kosit/validator/-/work_items/198) Replaced all `String.format` calls with native inline String concatenation
 - (BUILD) Extracted the scenario XSD and its JAXB binding into the new submodule `scenario`, built as the fourth module and depending on `jaxb` only
+- (BUILD) Extracted the generic helper classes of package `org.kosit.base` from the submodule `jaxb` into the new submodule `base`, built as the first module and depending on no other module. The submodule `jaxb` now depends on `base`
 - (API) The generated scenario model moved from package `org.kosit.validator.model.scenarios` to `org.kosit.validator.scenario.model`
 - (API) `org.kosit.validator.impl.ScenariosConversionService` moved and renamed to `org.kosit.validator.scenario.impl.ScenarioConversionService`
 - (API) `ValidatorSchemas.SCENARIOS_XSD_PATH` was replaced by `org.kosit.validator.scenario.xsd.ScenarioSchemas.SCENARIOS_XSD_PATH`
