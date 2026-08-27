@@ -1,7 +1,5 @@
 package org.kosit.validator.xvrl;
 
-import static org.kosit.validator.api.xmlerror.XmlError.XmlSeverity.SEVERITY_FATAL_ERROR;
-
 import java.util.stream.Collectors;
 
 import org.kosit.base.string.StringHelper;
@@ -25,7 +23,7 @@ public class XvrlDetectionBuilder {
     }
 
     private static XvrlSeverityType translate(final XmlSeverity severity) {
-        if (severity == SEVERITY_FATAL_ERROR) {
+        if (severity == XmlSeverity.SEVERITY_FATAL_ERROR) {
             return XvrlSeverityType.FATAL_ERROR;
         }
         return XvrlSeverityType.ERROR;

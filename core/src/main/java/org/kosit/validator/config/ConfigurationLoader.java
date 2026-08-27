@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
@@ -16,7 +17,6 @@ import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.scenario.v1.Scenario1ConversionService;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;

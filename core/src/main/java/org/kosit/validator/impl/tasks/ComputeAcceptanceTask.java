@@ -7,12 +7,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.slf4j.Logger;

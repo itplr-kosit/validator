@@ -8,6 +8,7 @@ import java.util.List;
 import javax.xml.transform.dom.DOMSource;
 
 import org.kosit.svrl.impl.SvrlConversionService;
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
@@ -15,7 +16,6 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;

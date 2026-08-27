@@ -17,13 +17,13 @@ import javax.xml.validation.Validator;
 
 import org.apache.commons.io.FileUtils;
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process.ProcessKey;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;

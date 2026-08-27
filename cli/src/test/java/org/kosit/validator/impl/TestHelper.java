@@ -15,13 +15,13 @@ import javax.xml.transform.stream.StreamSource;
 import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.model.XmlSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;

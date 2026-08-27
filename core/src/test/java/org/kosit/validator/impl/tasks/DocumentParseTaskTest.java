@@ -8,10 +8,10 @@ import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.validation.CTSyntax;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.model.XmlSyntaxError;
 
 import net.sf.saxon.s9api.XdmNode;
 

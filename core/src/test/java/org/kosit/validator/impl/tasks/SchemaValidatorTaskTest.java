@@ -17,6 +17,7 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.xmlerror.XmlSeverity;
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.TestHelper;
@@ -27,7 +28,6 @@ import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.xml.sax.SAXException;
 
 /**

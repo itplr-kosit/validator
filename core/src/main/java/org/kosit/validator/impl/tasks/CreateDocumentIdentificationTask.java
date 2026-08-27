@@ -3,10 +3,10 @@ package org.kosit.validator.impl.tasks;
 import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.DocumentIdentificationType;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.xvrl.model.XvrlDocumentType;
 import org.kosit.xvrl.model.XvrlMetadataType;
 import org.kosit.xvrl.model.XvrlReportType;

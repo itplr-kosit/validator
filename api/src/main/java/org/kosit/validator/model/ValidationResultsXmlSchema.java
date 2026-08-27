@@ -14,6 +14,8 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
+
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.scenario.v1.ResourceType;
 
 

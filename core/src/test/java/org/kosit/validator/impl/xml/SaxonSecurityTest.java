@@ -13,13 +13,13 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.base.string.StringHelper;
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.xml.resolve.RelativeUriResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

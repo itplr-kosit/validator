@@ -5,12 +5,12 @@ import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;

@@ -8,12 +8,12 @@ import java.util.Objects;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
+import org.kosit.validator.api.xmlerror.XmlSeverity;
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.conformatron.source.ValidationSource;
 import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.model.XmlSyntaxError;
-import org.kosit.validator.model.XmlSyntaxErrorSeverity;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
@@ -98,7 +98,7 @@ public class DocumentParseTask implements CheckTask {
             if (LOGGER.isDebugEnabled())
                 LOGGER.debug("Exception while parsing {}", content.getName(), e);
             final XmlSyntaxError error = new XmlSyntaxError();
-            error.setSeverityCode(XmlSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
+            error.setSeverity(XmlSeverity.SEVERITY_FATAL_ERROR);
             error.setMessage("IOException while reading resource " + content.getName() + ": " + e.getMessage());
             return new ParseOutcome(new SingleProcessingResult<>(Collections.singleton(error)), null);
         }

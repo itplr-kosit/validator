@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
@@ -15,7 +16,6 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.model.ValidationResultsSchematron.Results;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.xvrl.model.XvrlMetadataType;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
