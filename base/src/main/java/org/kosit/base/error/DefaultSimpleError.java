@@ -24,7 +24,7 @@ public final class DefaultSimpleError implements SimpleError {
 
     private final String message;
 
-    private final @Nullable Exception linkedException;
+    private final @Nullable Throwable linkedException;
 
     /**
      * Constructor.
@@ -37,7 +37,7 @@ public final class DefaultSimpleError implements SimpleError {
      * @param linkedException the exception that caused this error. May be <code>null</code>.
      */
     public DefaultSimpleError(final @Nullable String systemId, final long lineNumber, final long columnNumber,
-            @NonNull final CTStandardSeverity severity, @NonNull final String message, final @Nullable Exception linkedException) {
+            @NonNull final CTStandardSeverity severity, @NonNull final String message, final @Nullable Throwable linkedException) {
         this.systemId = systemId;
         // Unify negative values for safe comparison
         this.lineNumber = lineNumber > 0 ? lineNumber : -1;
@@ -67,7 +67,7 @@ public final class DefaultSimpleError implements SimpleError {
         return this.message;
     }
 
-    public @Nullable Exception getLinkedException() {
+    public @Nullable Throwable getLinkedException() {
         return this.linkedException;
     }
 
@@ -79,7 +79,7 @@ public final class DefaultSimpleError implements SimpleError {
      * @param right the second exception. May be <code>null</code>.
      * @return <code>true</code> if both are <code>null</code> or considered equal
      */
-    private static boolean equalsException(final @Nullable Exception left, final @Nullable Exception right) {
+    private static boolean equalsException(final @Nullable Throwable left, final @Nullable Throwable right) {
         if (left == right) {
             return true;
         }

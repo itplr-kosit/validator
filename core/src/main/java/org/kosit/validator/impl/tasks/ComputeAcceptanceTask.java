@@ -7,7 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
+import org.kosit.base.error.DefaultSimpleError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -31,19 +32,19 @@ public class ComputeAcceptanceTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputeAcceptanceTask.class);
 
-    public static final Process.ProcessKey<AcceptRecommendation, XmlSyntaxError> KEY = new Process.ProcessKey<>(AcceptRecommendation.class,
-            XmlSyntaxError.class);
+    public static final Process.ProcessKey<AcceptRecommendation, SimpleError> KEY = new Process.ProcessKey<>(AcceptRecommendation.class,
+            SimpleError.class);
 
     private static final String REPORT_NAME = "Compute Acceptance Validator";
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> currentResult) {
+    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<AcceptRecommendation, SimpleError> currentResult) {
         if (currentResult.isValid()) {
             return builder(REPORT_NAME).add(detectionBuilder().addMessage(currentResult.getObject().getID())).build();
         }
         return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detectionBuilder().addError(e)).toList()).build();
     }
 
-    private static SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> evaluateSchemaAndSchematron(final Process results) {
+    private static SingleProcessingResult<AcceptRecommendation, SimpleError> evaluateSchemaAndSchematron(final Process results) {
         if (results.getResult(SchemaValidationTask.KEY).isValid() && isSchematronValid(results)) {
             return new SingleProcessingResult<>(AcceptRecommendation.ACCEPTABLE);
         }
@@ -63,10 +64,10 @@ public class ComputeAcceptanceTask implements CheckTask {
         return false;
     }
 
-    private static SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> evaluateAcceptanceMatch(final Process results,
+    private static SingleProcessingResult<AcceptRecommendation, SimpleError> evaluateAcceptanceMatch(final Process results,
             final XPathSelector selector) {
         try {
-            final SingleProcessingResult<List<BusinessReport>, XmlSyntaxError> reportResult = results.getResult(CreateReportsTask.KEY);
+            final SingleProcessingResult<List<BusinessReport>, SimpleError> reportResult = results.getResult(CreateReportsTask.KEY);
             boolean result = true;
             for (final BusinessReport report : reportResult.getObject()) {
                 selector.setContextItem(report.getContent());
@@ -77,21 +78,21 @@ public class ComputeAcceptanceTask implements CheckTask {
         } catch (final SaxonApiException e) {
             final String msg = "Error evaluating accept recommendation: " + selector.getUnderlyingXPathContext().toString();
             LOGGER.error(msg, e);
-            final XmlSyntaxError xmlSyntaxError = new XmlSyntaxError();
-            xmlSyntaxError.setMessage(msg);
+            final SimpleError xmlSyntaxError = DefaultSimpleError.builderError().message(msg)
+                    .location(e.getSystemId(), e.getLineNumber(), 0).linkedException(e).build();
             return new SingleProcessingResult<>(AcceptRecommendation.REJECT, Collections.singletonList(xmlSyntaxError));
         }
     }
 
     private static boolean preCondtionsMatch(final Process results) {
-        final SingleProcessingResult<List<BusinessReport>, XmlSyntaxError> report = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, SimpleError> report = results.getResult(CreateReportsTask.KEY);
         return results.getResult(SchemaValidationTask.KEY) != null && results.getResult(ScenarioSelectionTask.KEY) != null;
     }
 
     @Override
-    public ProcessStepResult<AcceptRecommendation, XmlSyntaxError> check(final Process process) {
-        final ProcessStepResult<AcceptRecommendation, XmlSyntaxError> stepResult = new ProcessStepResult<>(KEY);
-        SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> result = new SingleProcessingResult<>(AcceptRecommendation.UNDEFINED);
+    public ProcessStepResult<AcceptRecommendation, SimpleError> check(final Process process) {
+        final ProcessStepResult<AcceptRecommendation, SimpleError> stepResult = new ProcessStepResult<>(KEY);
+        SingleProcessingResult<AcceptRecommendation, SimpleError> result = new SingleProcessingResult<>(AcceptRecommendation.UNDEFINED);
         if (!process.isStopped() && process.getResult(DocumentParseTask.KEY).isValid()) {
             if (preCondtionsMatch(process)) {
                 final SingleProcessingResult<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
@@ -102,7 +103,7 @@ public class ComputeAcceptanceTask implements CheckTask {
                     result = evaluateSchemaAndSchematron(process);
                 }
             } else {
-                final XmlSyntaxError xmlSyntaxError = new XmlSyntaxError();
+                final SimpleError xmlSyntaxError = new SimpleError();
                 xmlSyntaxError.setMessage("Pre-Conditions not Matched");
                 result = new SingleProcessingResult<>(AcceptRecommendation.REJECT, Collections.singleton(xmlSyntaxError));
             }

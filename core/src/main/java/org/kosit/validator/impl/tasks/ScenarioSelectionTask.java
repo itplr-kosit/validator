@@ -2,7 +2,7 @@ package org.kosit.validator.impl.tasks;
 
 import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -55,7 +55,7 @@ public class ScenarioSelectionTask implements CheckTask {
     @Override
     public ProcessStepResult<Scenario, String> check(final Process results) {
         final SingleProcessingResult<Scenario, String> scenarioTypeResult;
-        final SingleProcessingResult<XdmNode, XmlSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
+        final SingleProcessingResult<XdmNode, SimpleError> parseResult = results.getResult(DocumentParseTask.KEY);
         if (parseResult.isValid()) {
             scenarioTypeResult = determineScenario(parseResult.getObject());
         } else {

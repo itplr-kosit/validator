@@ -2,7 +2,7 @@ package org.kosit.validator.api;
 
 import java.util.List;
 
-import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.xvrl.model.XvrlReportsType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
@@ -74,7 +74,7 @@ public interface VResult {
      * Returns a list of schema validation errors found. This list is empty if no errors were found.
      */
     @Deprecated(since = "2.0.0")
-    List<XmlError> getSchemaViolations();
+    List<SimpleError> getSchemaViolations();
 
     /**
      * Returns the results of the Schematron validations, in the order of the scenario configuration.

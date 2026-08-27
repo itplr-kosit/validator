@@ -17,6 +17,7 @@ import javax.xml.validation.Validator;
 
 import org.apache.commons.io.FileUtils;
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
@@ -52,7 +53,7 @@ public class SchemaValidationTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemaValidationTask.class);
 
-    public static final ProcessKey<Boolean, XmlSyntaxError> KEY = new ProcessKey<>(Boolean.class, XmlSyntaxError.class);
+    public static final ProcessKey<Boolean, SimpleError> KEY = new ProcessKey<>(Boolean.class, SimpleError.class);
 
     private static final Long BA_LIMIT = 10L;
 
@@ -73,7 +74,7 @@ public class SchemaValidationTask implements CheckTask {
         return scenarioSelection == null || scenarioSelection.getObject().getSchema() == null;
     }
 
-    private SingleProcessingResult<Boolean, XmlSyntaxError> validate(final Process process, final Scenario scenario) {
+    private SingleProcessingResult<Boolean, SimpleError> validate(final Process process, final Scenario scenario) {
         if (LOGGER.isDebugEnabled())
             LOGGER.debug("Validating document using scenario {}", scenario.getConfiguration().getName());
         final CollectingErrorEventHandler errorHandler = new CollectingErrorEventHandler();

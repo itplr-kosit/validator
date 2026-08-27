@@ -1,8 +1,10 @@
 package org.kosit.base.error;
 
+import java.net.URL;
 import java.util.Objects;
 
 import javax.xml.stream.Location;
+import javax.xml.transform.SourceLocator;
 
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.jspecify.annotations.NonNull;
@@ -30,7 +32,7 @@ public class SimpleErrorBuilder {
 
     private @Nullable String message;
 
-    private @Nullable Exception linkedException;
+    private @Nullable Throwable linkedException;
 
     /**
      * Default constructor using the default severity {@link #DEFAULT_SEVERITY}.
@@ -51,6 +53,17 @@ public class SimpleErrorBuilder {
         severity(error.getSeverity());
         message(error.getMessage());
         linkedException(error.getLinkedException());
+    }
+
+    /**
+     * Set the object in which the error was found.
+     *
+     * @param systemId the error source. May be <code>null</code>.
+     * @return this for chaining
+     */
+    @NonNull
+    public SimpleErrorBuilder systemId(final @Nullable URL systemId) {
+        return systemId(systemId == null ? null : systemId.toExternalForm());
     }
 
     /**
@@ -97,7 +110,20 @@ public class SimpleErrorBuilder {
      */
     @NonNull
     public SimpleErrorBuilder location(final @Nullable Locator locator) {
-        return locator == null ? location(null, 0, 0) : location(locator.getSystemId(), locator.getLineNumber(), locator.getColumnNumber());
+        return locator == null ? location((String) null, 0, 0)
+                : location(locator.getSystemId(), locator.getLineNumber(), locator.getColumnNumber());
+    }
+
+    /**
+     * Set the error source, the line number and the column number from a transform locator.
+     *
+     * @param locator the transform locator to use. May be <code>null</code>.
+     * @return this for chaining
+     */
+    @NonNull
+    public SimpleErrorBuilder location(final @Nullable SourceLocator locator) {
+        return locator == null ? location((String) null, 0, 0)
+                : location(locator.getSystemId(), locator.getLineNumber(), locator.getColumnNumber());
     }
 
     /**
@@ -108,7 +134,7 @@ public class SimpleErrorBuilder {
      */
     @NonNull
     public SimpleErrorBuilder location(final @Nullable SAXParseException ex) {
-        return ex == null ? location(null, 0, 0) : location(ex.getSystemId(), ex.getLineNumber(), ex.getColumnNumber());
+        return ex == null ? location((String) null, 0, 0) : location(ex.getSystemId(), ex.getLineNumber(), ex.getColumnNumber());
     }
 
     /**
@@ -119,8 +145,21 @@ public class SimpleErrorBuilder {
      */
     @NonNull
     public SimpleErrorBuilder location(final @Nullable Location location) {
-        return location == null ? location(null, 0, 0)
+        return location == null ? location((String) null, 0, 0)
                 : location(location.getSystemId(), location.getLineNumber(), location.getColumnNumber());
+    }
+
+    /**
+     * Set the error source, the line number and the column number at once.
+     *
+     * @param systemId the error source. May be <code>null</code>.
+     * @param lineNumber the line number. Values &le; 0 mean none available.
+     * @param columnNumber the column number. Values &le; 0 mean none available.
+     * @return this for chaining
+     */
+    @NonNull
+    public SimpleErrorBuilder location(final @Nullable URL systemId, final long lineNumber, final long columnNumber) {
+        return systemId(systemId).lineNumber(lineNumber).columnNumber(columnNumber);
     }
 
     /**
@@ -167,7 +206,7 @@ public class SimpleErrorBuilder {
      * @return this for chaining
      */
     @NonNull
-    public SimpleErrorBuilder linkedException(final @Nullable Exception linkedException) {
+    public SimpleErrorBuilder linkedException(final @Nullable Throwable linkedException) {
         this.linkedException = linkedException;
         return this;
     }
@@ -183,7 +222,6 @@ public class SimpleErrorBuilder {
         if (this.message == null) {
             throw new IllegalStateException("The message must be provided");
         }
-        return new DefaultSimpleError(this.systemId, this.lineNumber, this.columnNumber, this.severity, this.message,
-                this.linkedException);
+        return new DefaultSimpleError(this.systemId, this.lineNumber, this.columnNumber, this.severity, this.message, this.linkedException);
     }
 }

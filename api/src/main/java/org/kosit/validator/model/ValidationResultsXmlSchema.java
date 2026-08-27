@@ -3,14 +3,14 @@ package org.kosit.validator.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.scenario.v1.ResourceType;
 
 public class ValidationResultsXmlSchema {
 
     protected List<ResourceType> resource;
 
-    protected List<XmlSyntaxError> xmlSyntaxError;
+    protected List<SimpleError> xmlSyntaxError;
 
     /**
      * Gets the value of the resource property.
@@ -69,7 +69,7 @@ public class ValidationResultsXmlSchema {
      * 
      * @return The value of the xmlSyntaxError property.
      */
-    public List<XmlSyntaxError> getXmlSyntaxError() {
+    public List<SimpleError> getXmlSyntaxError() {
         if (xmlSyntaxError == null) {
             xmlSyntaxError = new ArrayList<>();
         }

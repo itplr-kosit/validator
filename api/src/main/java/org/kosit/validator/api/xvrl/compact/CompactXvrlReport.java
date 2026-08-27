@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.kosit.base.annotation.ReturnsImmutableObject;
-import org.kosit.validator.api.xmlerror.XmlError;
-import org.kosit.validator.api.xmlerror.XmlSeverity;
+import org.kosit.base.error.SimpleError;
 import org.kosit.xvrl.model.XvrlCreatorType;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlDocumentType;
@@ -35,6 +35,10 @@ import org.slf4j.LoggerFactory;
  */
 public class CompactXvrlReport {
 
+    // TODO change severity type
+    public record Violation(String severity, Long line, Long row, String id, String message) {
+    }
+
     public record ValidationResult(String type, String name, List<Violation> violations) {
 
         @Override
@@ -42,9 +46,6 @@ public class CompactXvrlReport {
         public List<Violation> violations() {
             return Optional.ofNullable(violations).orElse(List.of());
         }
-    }
-
-    public record Violation(String severity, Long line, Long row, String id, String message) {
     }
 
     private static final String ID_SCENARIO = "scenario";
@@ -217,7 +218,7 @@ public class CompactXvrlReport {
      *
      * @param error the schema error object
      */
-    public void addSchemaViolation(final XmlError error) {
+    public void addSchemaViolation(final SimpleError error) {
         final XvrlDetectionType d = new XvrlDetectionType();
         d.setCode(CODE_XSD_VIOLATION);
         d.setSeverity(mapSeverity(error.getSeverity()));
@@ -228,15 +229,11 @@ public class CompactXvrlReport {
         d.getMessages().add(msg);
 
         // Location/Provenance
-        if (error.getRowNumber() != null || error.getColumnNumber() != null) {
-            final XvrlLocationType loc = new XvrlLocationType();
-            if (error.getRowNumber() != null) {
-                loc.setLine(Long.valueOf(error.getRowNumber().longValue()));
-            }
-            if (error.getColumnNumber() != null) {
-                loc.setColumn(Long.valueOf(error.getColumnNumber().longValue()));
-            }
+        if (error.hasLineOrColumnNumber()) {
             final XvrlProvenanceType prov = new XvrlProvenanceType();
+            final XvrlLocationType loc = new XvrlLocationType();
+            loc.setLine(error.getLineNumberObj());
+            loc.setColumn(error.getColumnNumberObj());
             prov.getLocation().add(loc);
             d.getProvenances().add(prov);
         }
@@ -324,13 +321,14 @@ public class CompactXvrlReport {
         }).toList();
     }
 
-    private XvrlSeverityType mapSeverity(final XmlSeverity severity) {
+    private XvrlSeverityType mapSeverity(final CTStandardSeverity severity) {
         if (severity == null)
-            return XvrlSeverityType.INFO;
+            return XvrlSeverityType.UNSPECIFIED;
+
         return switch (severity) {
+            case NONE -> XvrlSeverityType.UNSPECIFIED;
             case WARNING -> XvrlSeverityType.WARNING;
             case ERROR -> XvrlSeverityType.ERROR;
-            case FATAL_ERROR -> XvrlSeverityType.FATAL_ERROR;
         };
     }
 
@@ -355,7 +353,7 @@ public class CompactXvrlReport {
                 .filter(s -> language.equals(s.getOtherAttributes().get(new QName(CVRL_NS, ATTR_LANGUAGE)))).toList();
     }
 
-    public void addSchemaValidationResult(final List<XmlError> violations) {
+    public void addSchemaValidationResult(final List<SimpleError> violations) {
         addSchemaReference(CODE_XSD_VALIDATION, CODE_XSD_VALIDATION);
         Optional.ofNullable(violations).ifPresent(v -> v.forEach(this::addSchemaViolation));
     }

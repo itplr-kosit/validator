@@ -2,9 +2,9 @@ package org.kosit.validator.xvrl;
 
 import java.util.stream.Collectors;
 
+import org.conformatron.api.model.detection.CTStandardSeverity;
+import org.kosit.base.error.SimpleError;
 import org.kosit.base.string.StringHelper;
-import org.kosit.validator.api.xmlerror.XmlError;
-import org.kosit.validator.api.xmlerror.XmlSeverity;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlLocationType;
 import org.kosit.xvrl.model.XvrlMessageType;
@@ -22,11 +22,12 @@ public class XvrlDetectionBuilder {
         return new XvrlDetectionBuilder();
     }
 
-    private static XvrlSeverityType translate(final XmlSeverity severity) {
-        if (severity == XmlSeverity.FATAL_ERROR) {
-            return XvrlSeverityType.FATAL_ERROR;
+    // TODO handle this centrally
+    private static XvrlSeverityType translate(final CTStandardSeverity severity) {
+        if (severity.isError()) {
+            return XvrlSeverityType.ERROR;
         }
-        return XvrlSeverityType.ERROR;
+        return XvrlSeverityType.WARNING;
 
     }
 
@@ -76,15 +77,15 @@ public class XvrlDetectionBuilder {
         return this;
     }
 
-    public XvrlDetectionBuilder addError(final XmlError error) {
+    public XvrlDetectionBuilder addError(final SimpleError error) {
         if (error == null) {
             return this;
         }
         addMessage(error.getMessage());
         this.detection.setSeverity(translate(error.getSeverity()));
 
-        if (error.getRowNumber() != null && error.getColumnNumber() != null) {
-            this.detection.getLocations().add(createLocation(error.getRowNumber(), error.getColumnNumber(), null));
+        if (error.hasLineOrColumnNumber()) {
+            this.detection.getLocations().add(createLocation(error.getLineNumberObj(), error.getColumnNumberObj(), null));
         }
         return this;
     }

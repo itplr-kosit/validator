@@ -5,6 +5,7 @@ import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
@@ -54,7 +55,7 @@ class ExtractReportContentAction implements CheckTask {
 
     @Override
     public ProcessStepResult<Boolean, String> check(final Process results) {
-        final SingleProcessingResult<List<BusinessReport>, XmlSyntaxError> reportReposts = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, SimpleError> reportReposts = results.getResult(CreateReportsTask.KEY);
         reportReposts.getObject().forEach(entry -> {
             print(entry.getName(), entry.getContent());
         });

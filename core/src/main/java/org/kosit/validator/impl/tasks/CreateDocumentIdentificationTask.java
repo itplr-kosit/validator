@@ -3,7 +3,7 @@ package org.kosit.validator.impl.tasks;
 import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
 import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.DocumentHash;
@@ -20,13 +20,12 @@ import org.kosit.xvrl.model.XvrlSeverityType;
  */
 public class CreateDocumentIdentificationTask implements CheckTask {
 
-    public static final Process.ProcessKey<DocumentIdentificationType, XmlSyntaxError> KEY = new Process.ProcessKey<>(
-            DocumentIdentificationType.class, XmlSyntaxError.class);
+    public static final Process.ProcessKey<DocumentIdentificationType, SimpleError> KEY = new Process.ProcessKey<>(
+            DocumentIdentificationType.class, SimpleError.class);
 
     private static final String REPORT_NAME = "CreateDocument Identification Validator";
 
-    private static XvrlReportType generateXvrlReport(
-            final SingleProcessingResult<DocumentIdentificationType, XmlSyntaxError> currentResult) {
+    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<DocumentIdentificationType, SimpleError> currentResult) {
         if (currentResult.isValid()) {
             final DocumentIdentificationType result = currentResult.getObject();
             return builder(REPORT_NAME).add(detectionBuilder().addMessage(result.documentReference()).severity(XvrlSeverityType.INFO))
@@ -44,14 +43,14 @@ public class CreateDocumentIdentificationTask implements CheckTask {
     }
 
     @Override
-    public ProcessStepResult<DocumentIdentificationType, XmlSyntaxError> check(final Process process) {
+    public ProcessStepResult<DocumentIdentificationType, SimpleError> check(final Process process) {
         addDocumentIdentification(process);
 
-        final ProcessStepResult<DocumentIdentificationType, XmlSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
+        final ProcessStepResult<DocumentIdentificationType, SimpleError> processStepResult = new ProcessStepResult<>(KEY);
         final DocumentIdentificationType documentIdentificationType = new DocumentIdentificationType(
                 new DocumentHash(process.getInput().getHashAlgorithmName(), process.getInput().getHashBytes()),
                 process.getInput().getName());
-        final SingleProcessingResult<DocumentIdentificationType, XmlSyntaxError> result = new SingleProcessingResult<>(
+        final SingleProcessingResult<DocumentIdentificationType, SimpleError> result = new SingleProcessingResult<>(
                 documentIdentificationType);
         processStepResult.setResult(result);
         processStepResult.setReport(generateXvrlReport(result));

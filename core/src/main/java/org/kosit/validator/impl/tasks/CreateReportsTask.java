@@ -2,6 +2,7 @@ package org.kosit.validator.impl.tasks;
 
 import java.util.List;
 
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
@@ -35,7 +36,7 @@ public class CreateReportsTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReportsTask.class);
 
-    public static final Process.ProcessKey<List<BusinessReport>, XmlSyntaxError> KEY = new Process.ProcessKey<>(null, XmlSyntaxError.class);
+    public static final Process.ProcessKey<List<BusinessReport>, SimpleError> KEY = new Process.ProcessKey<>(null, SimpleError.class);
 
     public static final ActionMetadata METADATA = new ActionMetadata("Create report", "create_report");
 
@@ -55,13 +56,13 @@ public class CreateReportsTask implements CheckTask {
                 .add(XvrlSupplementalBuilder.supplemental().addContent(node).id(resourceType.getName()))).build();
     }
 
-    private static XvrlReportType createErrorInformation(final ResourceType resourceType, final XmlSyntaxError error) {
+    private static XvrlReportType createErrorInformation(final ResourceType resourceType, final SimpleError error) {
         return XvrlReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id("error").addError(error)).build();
     }
 
     @Override
-    public ProcessStepResult<List<BusinessReport>, XmlSyntaxError> check(final Process process) {
-        final ProcessStepResult<List<BusinessReport>, XmlSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
+    public ProcessStepResult<List<BusinessReport>, SimpleError> check(final Process process) {
+        final ProcessStepResult<List<BusinessReport>, SimpleError> processStepResult = new ProcessStepResult<>(KEY);
         final SingleProcessingResult<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioSelection.getObject();
         final XdmNode parsedDocument = process.getResult(DocumentParseTask.KEY).getObject();

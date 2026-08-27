@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.xml.transform.dom.DOMSource;
 
+import org.kosit.base.error.SimpleError;
 import org.kosit.svrl.impl.SvrlConverter;
 import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
@@ -57,7 +58,7 @@ public class SchematronValidationTask implements CheckTask {
     }
 
     private static boolean isSchemaInvalid(final Process results) {
-        final SingleProcessingResult<Boolean, XmlSyntaxError> result = results.getResult(SchemaValidationTask.KEY);
+        final SingleProcessingResult<Boolean, SimpleError> result = results.getResult(SchemaValidationTask.KEY);
         return result == null || result.isInvalid();
     }
 

@@ -1,7 +1,7 @@
 package org.kosit.validator.impl.model;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
@@ -15,7 +15,7 @@ public class SingleProcessingResult<T, E> {
 
     private T object;
 
-    private Collection<E> errors;
+    private List<E> errors;
 
     /**
      * Creates a new result with a result object.
@@ -31,11 +31,11 @@ public class SingleProcessingResult<T, E> {
      *
      * @param errors the errors
      */
-    public SingleProcessingResult(final @Nullable Collection<E> errors) {
+    public SingleProcessingResult(final @Nullable List<E> errors) {
         this(null, errors);
     }
 
-    public SingleProcessingResult(final @Nullable T object, final @Nullable Collection<E> errors) {
+    public SingleProcessingResult(final @Nullable T object, final @Nullable List<E> errors) {
         this.object = object;
         this.errors = errors;
     }
@@ -49,7 +49,7 @@ public class SingleProcessingResult<T, E> {
         return this.object != null && getErrors().isEmpty();
     }
 
-    public Collection<E> getErrors() {
+    public List<E> getErrors() {
         return this.errors == null ? Collections.emptyList() : this.errors;
     }
 

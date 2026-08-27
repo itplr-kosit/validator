@@ -1,14 +1,12 @@
 package org.kosit.validator.impl;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.base.error.SimpleError;
 import org.kosit.jaxb.JaxbHelper;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
-import org.kosit.validator.api.xmlerror.XmlError;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
@@ -115,14 +113,13 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     }
 
     private static VResult createResult(final Process process) {
-        final SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> acceptStatusResult = process
-                .getResult(ComputeAcceptanceTask.KEY);
+        final SingleProcessingResult<AcceptRecommendation, SimpleError> acceptStatusResult = process.getResult(ComputeAcceptanceTask.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
         defaultResult.setWellformed(process.getResult(DocumentParseTask.KEY).isValid());
         defaultResult.setReportSummary(process.getXvrlReportSummary());
-        final SingleProcessingResult<Boolean, XmlSyntaxError> schemaValidationResult = process.getResult(SchemaValidationTask.KEY);
+        final SingleProcessingResult<Boolean, SimpleError> schemaValidationResult = process.getResult(SchemaValidationTask.KEY);
         if (schemaValidationResult != null) {
-            defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
+            defaultResult.setSchemaViolations(schemaValidationResult.getErrors());
         }
         final SingleProcessingResult<List<ValidationResultsSchematron>, String> schematronValidationResult = process
                 .getResult(SchematronValidationTask.KEY);
@@ -132,10 +129,5 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
         }
         defaultResult.setProcessingSuccessful(!process.isStopped() && process.isFinished());
         return defaultResult;
-    }
-
-    private static List<XmlError> convertErrors(final Collection<XmlSyntaxError> errors) {
-        // noinspection unchecked
-        return (List<XmlError>) (List<?>) errors;
     }
 }

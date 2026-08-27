@@ -29,6 +29,10 @@ public interface SimpleError {
         return getLineNumber() > 0;
     }
 
+    default @Nullable Long getLineNumberObj() {
+        return hasLineNumber() ? Long.valueOf(getLineNumber()) : null;
+    }
+
     /**
      * Returns a column number from which the error originates.
      *
@@ -38,6 +42,14 @@ public interface SimpleError {
 
     default boolean hasColumnNumber() {
         return getColumnNumber() > 0;
+    }
+
+    default @Nullable Long getColumnNumberObj() {
+        return hasColumnNumber() ? Long.valueOf(getColumnNumber()) : null;
+    }
+
+    default boolean hasLineOrColumnNumber() {
+        return hasLineNumber() || hasColumnNumber();
     }
 
     /**
@@ -59,7 +71,7 @@ public interface SimpleError {
      * @return Optional exception linked to the error.
      */
     @Nullable
-    Exception getLinkedException();
+    Throwable getLinkedException();
 
     /**
      * 
