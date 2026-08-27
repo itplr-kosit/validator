@@ -39,12 +39,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/model</directory>
-            </resource>
-        </resources>
-
         <plugins>
             <!-- Generate XVRL JAXB model from xvrl-1.0.xsd -->
             <plugin>
@@ -61,8 +55,8 @@
                 </executions>
                 <configuration>
                     <extension>true</extension>
-                    <schemaDirectory>src/main/model/xsd</schemaDirectory>
-                    <bindingDirectory>src/main/model/binding</bindingDirectory>
+                    <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+                    <bindingDirectory>src/main/jaxb/binding</bindingDirectory>
                     <packageLevelAnnotations>false</packageLevelAnnotations>
                     <args>
                         <arg>-Xinheritance</arg>
