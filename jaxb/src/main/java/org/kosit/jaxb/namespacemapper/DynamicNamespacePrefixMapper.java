@@ -1,4 +1,4 @@
-package org.kosit.jaxb;
+package org.kosit.jaxb.namespacemapper;
 
 import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 

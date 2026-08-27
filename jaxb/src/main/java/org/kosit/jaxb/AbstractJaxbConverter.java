@@ -32,6 +32,7 @@ import javax.xml.validation.Schema;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.ObjectHelper;
 import org.kosit.base.xml.XmlHelper;
+import org.kosit.jaxb.namespacemapper.MappedNamespacePrefixMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,11 +63,11 @@ import jakarta.xml.bind.ValidationEventHandler;
  * 
  * @param <T> Type of class to read and write
  */
-public abstract class AbstractJaxbConversionService<T> {
+public abstract class AbstractJaxbConverter<T> {
 
     public static final boolean DEFAULT_FORMATTED = true;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJaxbConversionService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJaxbConverter.class);
 
     private static final String NAMESPACE_PREFIX_MAPPER_PROPERTY = "org.glassfish.jaxb.namespacePrefixMapper";
 
@@ -94,7 +95,7 @@ public abstract class AbstractJaxbConversionService<T> {
      * @param jaxbMapper Mapper from object to element
      * @throws IllegalArgumentException if {@code jaxbContext} is {@code null}
      */
-    public AbstractJaxbConversionService(final JAXBContext jaxbContext, final Class<T> type, final Function<T, JAXBElement<T>> jaxbMapper) {
+    public AbstractJaxbConverter(final JAXBContext jaxbContext, final Class<T> type, final Function<T, JAXBElement<T>> jaxbMapper) {
         ObjectHelper.requireNonNull(jaxbContext, "jaxbContext");
         ObjectHelper.requireNonNull(type, "type");
         ObjectHelper.requireNonNull(jaxbMapper, "jaxbMapper");
@@ -111,7 +112,7 @@ public abstract class AbstractJaxbConversionService<T> {
      * @param schema schema to apply, or {@code null} to disable schema validation
      * @return this instance for chaining
      */
-    public AbstractJaxbConversionService<T> withSchema(final @Nullable Schema schema) {
+    public AbstractJaxbConverter<T> withSchema(final @Nullable Schema schema) {
         this.schema = schema;
         return this;
     }
@@ -122,7 +123,7 @@ public abstract class AbstractJaxbConversionService<T> {
      * @param handler handler to apply, or {@code null} to fall back to JAXB defaults
      * @return this instance for chaining
      */
-    public AbstractJaxbConversionService<T> withEventHandler(final @Nullable ValidationEventHandler handler) {
+    public AbstractJaxbConverter<T> withEventHandler(final @Nullable ValidationEventHandler handler) {
         this.eventHandler = handler;
         return this;
     }
@@ -133,7 +134,7 @@ public abstract class AbstractJaxbConversionService<T> {
      * @param formattedOutput whether output should be indented
      * @return this instance for chaining
      */
-    public AbstractJaxbConversionService<T> withFormattedOutput(final boolean formattedOutput) {
+    public AbstractJaxbConverter<T> withFormattedOutput(final boolean formattedOutput) {
         this.formattedOutput = formattedOutput;
         return this;
     }
@@ -144,7 +145,7 @@ public abstract class AbstractJaxbConversionService<T> {
      * @param encoding character encoding to use
      * @return this instance for chaining
      */
-    public AbstractJaxbConversionService<T> withEncoding(final Charset encoding) {
+    public AbstractJaxbConverter<T> withEncoding(final Charset encoding) {
         ObjectHelper.requireNonNull(encoding, "encoding");
         this.encoding = encoding;
         return this;
@@ -163,7 +164,7 @@ public abstract class AbstractJaxbConversionService<T> {
      * @param map namespace URI &rarr; preferred prefix mapping, or {@code null} to reset
      * @return this instance for chaining
      */
-    public AbstractJaxbConversionService<T> withNamespacePrefixMap(final @Nullable Map<String, String> map) {
+    public AbstractJaxbConverter<T> withNamespacePrefixMap(final @Nullable Map<String, String> map) {
         this.namespacePrefixMap = map == null ? Map.of() : Map.copyOf(map);
         return this;
     }

@@ -3,7 +3,7 @@ package org.kosit.xvrl.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kosit.jaxb.AbstractJaxbConversionService;
+import org.kosit.jaxb.AbstractJaxbConverter;
 import org.kosit.xvrl.model.ObjectFactory;
 import org.kosit.xvrl.model.XvrlReportsType;
 
@@ -11,10 +11,10 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 
 /**
- * Convenience {@link AbstractJaxbConversionService} preconfigured for the XVRL JAXB model package
+ * Convenience {@link AbstractJaxbConverter} preconfigured for the XVRL JAXB model package
  * ({@code org.kosit.xvrl.model}).
  */
-public final class XvrlConversionService extends AbstractJaxbConversionService<XvrlReportsType> {
+public final class XvrlConversionService extends AbstractJaxbConverter<XvrlReportsType> {
 
     public static final String XSD_PATH = "/xsd";
 

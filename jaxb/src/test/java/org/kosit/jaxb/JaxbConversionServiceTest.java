@@ -35,7 +35,7 @@ import jakarta.xml.bind.JAXBException;
 
 public class JaxbConversionServiceTest {
 
-    private AbstractJaxbConversionService<Person> service;
+    private AbstractJaxbConverter<Person> service;
 
     /**
      * Creates a service from a fixed set of JAXB-annotated classes. For testing only
@@ -46,10 +46,10 @@ public class JaxbConversionServiceTest {
      * @throws IllegalArgumentException if no classes are supplied
      * @throws JaxbConversionException if the JAXB context can not be created
      */
-    private static <T> AbstractJaxbConversionService<T> createJaxbSvc(final Class<T> clazz, final Function<T, JAXBElement<T>> jaxbMapper) {
+    private static <T> AbstractJaxbConverter<T> createJaxbSvc(final Class<T> clazz, final Function<T, JAXBElement<T>> jaxbMapper) {
         Objects.requireNonNull(clazz);
         try {
-            return new AbstractJaxbConversionService<>(JAXBContext.newInstance(clazz), clazz, jaxbMapper) {
+            return new AbstractJaxbConverter<>(JAXBContext.newInstance(clazz), clazz, jaxbMapper) {
             };
         } catch (final JAXBException e) {
             throw new JaxbConversionException("Can not create JAXB context for: " + clazz, e);
@@ -161,19 +161,19 @@ public class JaxbConversionServiceTest {
 
     @Test
     public void constructorRejectsNullContext() {
-        assertThatThrownBy(() -> new AbstractJaxbConversionService<>(null, Person.class, null) {
+        assertThatThrownBy(() -> new AbstractJaxbConverter<>(null, Person.class, null) {
         }).isInstanceOf(NullPointerException.class);
     }
 
     // ---------- namespace prefix map ----------
 
-    private static AbstractJaxbConversionService<Book> bookSvc() {
+    private static AbstractJaxbConverter<Book> bookSvc() {
         return createJaxbSvc(Book.class, x -> new JAXBElement<>(new QName(Book.NS_BOOK, "book"), Book.class, x));
     }
 
     @Test
     public void defaultNamespaceMappingSuppressesRootPrefix() {
-        final AbstractJaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, ""));
+        final AbstractJaxbConverter<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, ""));
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         // The root must be declared as xmlns="..." and the root element must not carry a prefix.
         assertThat(xml).contains("xmlns=\"" + Book.NS_BOOK + "\"");
@@ -187,7 +187,7 @@ public class JaxbConversionServiceTest {
         final Map<String, String> map = new LinkedHashMap<>();
         map.put(Book.NS_BOOK, "");
         map.put(Book.NS_AUTHOR, "auth");
-        final AbstractJaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(map);
+        final AbstractJaxbConverter<Book> s = bookSvc().withNamespacePrefixMap(map);
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         assertThat(xml).contains("xmlns:auth=\"" + Book.NS_AUTHOR + "\"");
         assertThat(xml).contains("<auth:author>Shakespeare</auth:author>");
@@ -197,7 +197,7 @@ public class JaxbConversionServiceTest {
     public void namespaceMapIsDefensivelyCopied() {
         final Map<String, String> map = new HashMap<>();
         map.put(Book.NS_BOOK, "");
-        final AbstractJaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(map);
+        final AbstractJaxbConverter<Book> s = bookSvc().withNamespacePrefixMap(map);
         // Mutate the original map AFTER configuring the service.
         map.put(Book.NS_AUTHOR, "REMOTECHANGE");
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
@@ -207,7 +207,7 @@ public class JaxbConversionServiceTest {
 
     @Test
     public void nullNamespaceMapResetsToDefault() {
-        final AbstractJaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, "bk"))
+        final AbstractJaxbConverter<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, "bk"))
                 .withNamespacePrefixMap(null);
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         // After reset, JAXB picks its own prefixes — but it must not pick the configured "bk".

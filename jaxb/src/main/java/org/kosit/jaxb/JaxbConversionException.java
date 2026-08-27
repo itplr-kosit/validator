@@ -3,7 +3,7 @@ package org.kosit.jaxb;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Thrown when {@link AbstractJaxbConversionService} fails to marshal or unmarshal a JAXB object.
+ * Thrown when {@link AbstractJaxbConverter} fails to marshal or unmarshal a JAXB object.
  */
 public class JaxbConversionException extends RuntimeException {
 

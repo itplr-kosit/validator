@@ -7,9 +7,11 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.jspecify.annotations.NonNull;
+
 public final class JaxbHelper {
 
-    public static XMLGregorianCalendar createTimestamp() {
+    public static @NonNull XMLGregorianCalendar createTimestamp() {
         try {
             final GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(new Date());

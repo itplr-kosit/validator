@@ -1,18 +1,20 @@
-package org.kosit.jaxb;
+package org.kosit.jaxb.namespacemapper;
 
 import java.util.Map;
 
 import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
+import org.kosit.base.ObjectHelper;
 
 /**
- * {@link NamespacePrefixMapper} that delegates to a fixed namespace-URI-to-prefix map. A value of empty string
- * marks a URI as the default namespace.
+ * {@link NamespacePrefixMapper} that delegates to a fixed namespace-URI-to-prefix map. A value of empty string marks a
+ * URI as the default namespace.
  */
 public final class MappedNamespacePrefixMapper extends NamespacePrefixMapper {
 
     private final Map<String, String> map;
 
-    MappedNamespacePrefixMapper(final Map<String, String> map) {
+    public MappedNamespacePrefixMapper(final Map<String, String> map) {
+        ObjectHelper.requireNonNull(map, "map");
         this.map = map;
     }
 

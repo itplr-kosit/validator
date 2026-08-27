@@ -1,6 +1,6 @@
 package org.kosit.svrl.impl;
 
-import org.kosit.jaxb.AbstractJaxbConversionService;
+import org.kosit.jaxb.AbstractJaxbConverter;
 import org.oclc.purl.dsdl.svrl.ObjectFactory;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 
@@ -8,10 +8,10 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 
 /**
- * Convenience {@link AbstractJaxbConversionService} preconfigured for the SVRL JAXB model package
+ * Convenience {@link AbstractJaxbConverter} preconfigured for the SVRL JAXB model package
  * ({@code org.oclc.purl.dsdl.svrl}).
  */
-public final class SvrlConversionService extends AbstractJaxbConversionService<SchematronOutputType> {
+public final class SvrlConversionService extends AbstractJaxbConverter<SchematronOutputType> {
 
     private static final JAXBContext JAXB_CTX;
 

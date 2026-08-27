@@ -4,17 +4,17 @@ import javax.xml.namespace.QName;
 import javax.xml.validation.Schema;
 
 import org.kosit.base.xml.SchemaResolver;
-import org.kosit.jaxb.AbstractJaxbConversionService;
+import org.kosit.jaxb.AbstractJaxbConverter;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 
 /**
- * Convenience {@link AbstractJaxbConversionService} preconfigured for the scenario JAXB model package
+ * Convenience {@link AbstractJaxbConverter} preconfigured for the scenario JAXB model package
  * ({@code org.kosit.validator.scenario.model}).
  */
-public final class Scenario1ConversionService extends AbstractJaxbConversionService<Scenarios> {
+public final class Scenario1ConversionService extends AbstractJaxbConverter<Scenarios> {
 
     private static final JAXBContext JAXB_CTX;
 
