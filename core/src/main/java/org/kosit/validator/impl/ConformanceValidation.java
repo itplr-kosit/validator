@@ -1,15 +1,15 @@
 package org.kosit.validator.impl;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.base.error.SimpleError;
 import org.kosit.jaxb.JaxbHelper;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
-import org.kosit.validator.api.xmlerror.XmlError;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.model.ProcessStepResult;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.impl.tasks.ComputeAcceptanceTask;
@@ -17,7 +17,6 @@ import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.xvrl.model.XvrlMetadataType;
 import org.kosit.xvrl.model.XvrlTimestampType;
 import org.kosit.xvrl.model.XvrlValidatorType;
@@ -114,28 +113,21 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     }
 
     private static VResult createResult(final Process process) {
-        final org.kosit.validator.impl.model.SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> acceptStatusResult = process
-                .getResult(ComputeAcceptanceTask.KEY);
+        final SingleProcessingResult<AcceptRecommendation, SimpleError> acceptStatusResult = process.getResult(ComputeAcceptanceTask.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
         defaultResult.setWellformed(process.getResult(DocumentParseTask.KEY).isValid());
         defaultResult.setReportSummary(process.getXvrlReportSummary());
-        final org.kosit.validator.impl.model.SingleProcessingResult<Boolean, XmlSyntaxError> schemaValidationResult = process
-                .getResult(SchemaValidationTask.KEY);
+        final SingleProcessingResult<Boolean, SimpleError> schemaValidationResult = process.getResult(SchemaValidationTask.KEY);
         if (schemaValidationResult != null) {
-            defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
+            defaultResult.setSchemaViolations(schemaValidationResult.getErrors());
         }
-        final org.kosit.validator.impl.model.SingleProcessingResult<List<ValidationResultsSchematron>, String> schematronValidationResult = process
+        final SingleProcessingResult<List<ValidationResultsSchematron>, String> schematronValidationResult = process
                 .getResult(SchematronValidationTask.KEY);
         if (schematronValidationResult != null) {
-            defaultResult.setSchematronResult(schematronValidationResult.getObject().stream()
-                    .map(schematronResult -> schematronResult.getResults().getSchematronOutput()).toList());
+            defaultResult.setSchematronResult(
+                    schematronValidationResult.getObject().stream().map(ValidationResultsSchematron::getResults).toList());
         }
         defaultResult.setProcessingSuccessful(!process.isStopped() && process.isFinished());
         return defaultResult;
-    }
-
-    private static List<XmlError> convertErrors(final Collection<XmlSyntaxError> errors) {
-        // noinspection unchecked
-        return (List<XmlError>) (List<?>) errors;
     }
 }

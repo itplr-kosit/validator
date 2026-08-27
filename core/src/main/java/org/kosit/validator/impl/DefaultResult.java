@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.xmlerror.XmlError;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.xvrl.XvrlSerializer;
 import org.kosit.xvrl.model.XvrlReportsType;
@@ -31,7 +31,7 @@ public class DefaultResult implements VResult {
     /** The evaluated result. */
     private final AcceptRecommendation acceptRecommendation;
 
-    private List<XmlError> schemaViolations;
+    private List<SimpleError> schemaViolations;
 
     private List<SchematronOutputType> schematronResult;
 
@@ -139,12 +139,12 @@ public class DefaultResult implements VResult {
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
-    void setSchemaViolations(final List<XmlError> schemaViolations) {
+    void setSchemaViolations(final List<SimpleError> schemaViolations) {
         this.schemaViolations = schemaViolations;
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
-    public List<XmlError> getSchemaViolations() {
+    public List<SimpleError> getSchemaViolations() {
         return this.schemaViolations;
     }
 

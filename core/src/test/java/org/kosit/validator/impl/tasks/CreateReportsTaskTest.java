@@ -11,12 +11,12 @@ import javax.xml.transform.Source;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
-import org.kosit.validator.model.XmlSyntaxError;
 
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
@@ -42,7 +42,7 @@ public class CreateReportsTaskTest {
     @Test
     public void testSimpleCreate() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().build();
-        final ProcessStepResult<List<BusinessReport>, XmlSyntaxError> result = this.action.check(process);
+        final ProcessStepResult<List<BusinessReport>, SimpleError> result = this.action.check(process);
         assertThat(result).isNotNull();
     }
 

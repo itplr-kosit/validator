@@ -17,15 +17,15 @@ public class Scenario1ConversionServiceTest {
 
     private static final URL SAMPLE = Scenario1ConversionServiceTest.class.getResource("/sample-scenarios.xml");
 
-    private Scenario1ConversionService service;
+    private Scenario1Converter converter;
 
     @BeforeEach
     public void setUp() {
-        this.service = new Scenario1ConversionService();
+        this.converter = new Scenario1Converter();
     }
 
     private @NonNull Scenarios readSample() throws URISyntaxException {
-        return this.service.readXml(SAMPLE.toURI());
+        return this.converter.readXml(SAMPLE.toURI());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class Scenario1ConversionServiceTest {
 
     @Test
     public void writesScenariosToXml() throws URISyntaxException {
-        final String xml = this.service.writeXml(readSample());
+        final String xml = this.converter.writeXml(readSample());
         assertThat(xml).contains("http://www.xoev.de/de/validator/framework/2/scenarios").contains("Sample-TestSuite")
                 .contains("/test:simple");
     }
@@ -68,9 +68,9 @@ public class Scenario1ConversionServiceTest {
     @Test
     public void roundTripsViaXml() throws URISyntaxException {
         final Scenarios original = readSample();
-        final String xml = this.service.writeXml(original);
+        final String xml = this.converter.writeXml(original);
 
-        final Scenarios parsed = this.service.readXml(xml);
+        final Scenarios parsed = this.converter.readXml(xml);
         assertThat(parsed.getName()).isEqualTo(original.getName());
         assertThat(parsed.getFrameworkVersion()).isEqualTo(original.getFrameworkVersion());
         assertThat(parsed.getScenario()).hasSameSizeAs(original.getScenario());
@@ -79,7 +79,7 @@ public class Scenario1ConversionServiceTest {
 
     @Test
     public void rejectsDocumentViolatingTheSchema() {
-        assertThatThrownBy(() -> this.service.readXml("<scenarios xmlns=\"http://www.xoev.de/de/validator/framework/2/scenarios\"/>"))
+        assertThatThrownBy(() -> this.converter.readXml("<scenarios xmlns=\"http://www.xoev.de/de/validator/framework/2/scenarios\"/>"))
                 .isInstanceOf(JaxbConversionException.class);
     }
 

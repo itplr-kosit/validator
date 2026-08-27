@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
@@ -16,8 +17,7 @@ import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.model.XmlSyntaxError;
-import org.kosit.validator.scenario.v1.Scenario1ConversionService;
+import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;
 import org.kosit.validator.xml.resolve.RelativeUriResolver;
@@ -61,7 +61,7 @@ public class ConfigurationLoader {
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
-            final SingleProcessingResult<XdmNode, XmlSyntaxError> result = new DocumentParseTask(processor)
+            final SingleProcessingResult<XdmNode, SimpleError> result = new DocumentParseTask(processor)
                     .parseDocument(ReadResource.inMemory(Resource.of(scenarioDefinition.toURL())));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition
@@ -161,7 +161,7 @@ public class ConfigurationLoader {
         checkVersion(this.scenarioDefinition, processor);
         LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        final Scenario1ConversionService conversionService = new Scenario1ConversionService();
+        final Scenario1Converter conversionService = new Scenario1Converter();
         final Scenarios scenarios = conversionService.withEventHandler(handler).readXml(this.scenarioDefinition);
         if (handler.hasErrors()) {
             throw new IllegalStateException(

@@ -171,7 +171,7 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         if (cmd.isDebugLog()) {
             System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
         } else {
-            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().name());
+            System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, cmd.getLogLevel().getID());
         }
     }
 

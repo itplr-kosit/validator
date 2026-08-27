@@ -24,20 +24,17 @@ public interface BaseDetection {
     }
 
     default String getErrorMessage() {
-        if (getMessages().isEmpty()) {
-            return null;
-        }
-        return getMessages().get(0).getContent().stream().map(Object::toString).collect(Collectors.joining());
+        final var msgs = getMessages();
+        return msgs.isEmpty() ? null : msgs.getFirst().getContent().stream().map(Object::toString).collect(Collectors.joining());
     }
 
     default XvrlLocationType getErrorLocation() {
-        if (getLocations().isEmpty()) {
-            return null;
-        }
-        return getLocations().get(0);
+        final var locs = getLocations();
+        return locs.isEmpty() ? null : locs.getFirst();
     }
 
     default boolean hasErrors() {
-        return getSeverity() == XvrlSeverityType.ERROR || getSeverity() == XvrlSeverityType.FATAL_ERROR;
+        final var sev = getSeverity();
+        return sev == XvrlSeverityType.ERROR || sev == XvrlSeverityType.FATAL_ERROR;
     }
 }

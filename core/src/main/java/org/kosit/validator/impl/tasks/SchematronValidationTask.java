@@ -1,21 +1,19 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.dom.DOMSource;
 
-import org.kosit.svrl.impl.SvrlConversionService;
+import org.kosit.base.error.SimpleError;
+import org.kosit.svrl.impl.SvrlConverter;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.model.ValidationResultsSchematron.Results;
-import org.kosit.validator.model.XmlSyntaxError;
+import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
@@ -43,12 +41,9 @@ public class SchematronValidationTask implements CheckTask {
 
     private static final String REPORT_NAME = "Schematron Validator";
 
-    private final SvrlConversionService conversionService;
-
     private final List<String> errorMessages = new ArrayList<>();
 
-    private static Results createErrorResult(final String msg) {
-        final Results results = new Results();
+    private static SchematronOutputType createErrorResult(final String msg) {
         final SchematronOutputType schematronOutput = new SchematronOutputType();
         final FailedAssert failedAssert = new FailedAssert();
 
@@ -57,12 +52,11 @@ public class SchematronValidationTask implements CheckTask {
         failedAssert.setText(errorText);
 
         schematronOutput.getActivePatternOrActiveGroupAndFiredRule().add(failedAssert);
-        results.setSchematronOutput(schematronOutput);
-        return results;
+        return schematronOutput;
     }
 
     private static boolean isSchemaInvalid(final Process results) {
-        final SingleProcessingResult<Boolean, XmlSyntaxError> result = results.getResult(SchemaValidationTask.KEY);
+        final SingleProcessingResult<Boolean, SimpleError> result = results.getResult(SchemaValidationTask.KEY);
         return result == null || result.isInvalid();
     }
 
@@ -75,19 +69,18 @@ public class SchematronValidationTask implements CheckTask {
             final XvrlReportBuilder reportBuilder = XvrlReportBuilder.builder(REPORT_NAME);
             reportBuilder.addSchema(e.getResource());
 
-            final SchematronOutputType schematronOutput = e.getResults().getSchematronOutput();
+            final SchematronOutputType schematronOutput = e.getResults();
             for (final var f : schematronOutput.getFailedAsserts())
-                reportBuilder.add(detectionBuilder().add(f));
+                reportBuilder.addDetection(XvrlDetectionBuilder.builder().add(f));
             for (final var f : schematronOutput.getActivePatterns())
-                reportBuilder.add(detectionBuilder().add(f));
+                reportBuilder.addDetection(XvrlDetectionBuilder.builder().add(f));
             for (final var f : schematronOutput.getFiredRules())
-                reportBuilder.add(detectionBuilder().add(f));
+                reportBuilder.addDetection(XvrlDetectionBuilder.builder().add(f));
             return reportBuilder.build();
         }).toList();
     }
 
-    public SchematronValidationTask(final SvrlConversionService conversionService) {
-        this.conversionService = conversionService;
+    public SchematronValidationTask() {
     }
 
     private List<ValidationResultsSchematron> validate(final Process results, final XdmNode document, final Scenario scenario) {
@@ -111,10 +104,9 @@ public class SchematronValidationTask implements CheckTask {
             transformer.setInitialContextNode(document);
             transformer.transform();
 
-            final ValidationResultsSchematron.Results r = new ValidationResultsSchematron.Results();
-            r.setSchematronOutput(this.conversionService
-                    .readXml(new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument())));
-            validationResultsSchematron.setResults(r);
+            final var so = new SvrlConverter()
+                    .readXml(new DOMSource(NodeOverNodeInfo.wrap(result.getXdmNode().getUnderlyingNode()).getOwnerDocument()));
+            validationResultsSchematron.setResults(so);
         } catch (final SaxonApiException e) {
             final String msg = "Error processing schematron validation '" + validation.getResourceType().getName() + "'. Error is '"
                     + e.getMessage() + "'";
@@ -128,7 +120,7 @@ public class SchematronValidationTask implements CheckTask {
 
     @Override
     public ProcessStepResult<List<ValidationResultsSchematron>, String> check(final Process process) {
-        final SingleProcessingResult<XdmNode, XmlSyntaxError> parseResult = process.getResult(DocumentParseTask.KEY);
+        final SingleProcessingResult<XdmNode, SimpleError> parseResult = process.getResult(DocumentParseTask.KEY);
         final SingleProcessingResult<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionTask.KEY);
         final List<ValidationResultsSchematron> validationResult = validate(process, parseResult.getObject(), scenarioResult.getObject());
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = new ProcessStepResult<>(KEY);

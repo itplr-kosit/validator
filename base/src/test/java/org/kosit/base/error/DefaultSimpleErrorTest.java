@@ -14,11 +14,16 @@ public class DefaultSimpleErrorTest {
     @Test
     public void buildMinimum() {
         final DefaultSimpleError error = DefaultSimpleError.builder().message("Something went wrong").build();
-        assertThat(error.getErrorSource()).isNull();
-        assertThat(error.getLineNumber()).isZero();
+        assertThat(error.getErrorCode()).isNull();
+        assertThat(error.hasErrorCode()).isFalse();
+        assertThat(error.getSystemID()).isNull();
+        assertThat(error.getLineNumber()).isEqualTo(-1);
         assertThat(error.hasLineNumber()).isFalse();
-        assertThat(error.getColumnNumber()).isZero();
+        assertThat(error.getLineNumberObj()).isNull();
+        assertThat(error.getColumnNumber()).isEqualTo(-1);
         assertThat(error.hasColumnNumber()).isFalse();
+        assertThat(error.getColumnNumberObj()).isNull();
+        assertThat(error.hasLineOrColumnNumber()).isFalse();
         assertThat(error.getSeverity()).isEqualTo(SimpleErrorBuilder.DEFAULT_SEVERITY);
         assertThat(error.getMessage()).isEqualTo("Something went wrong");
         assertThat(error.getLinkedException()).isNull();
@@ -28,13 +33,18 @@ public class DefaultSimpleErrorTest {
     @Test
     public void buildAllFields() {
         final IOException ex = new IOException("boom");
-        final DefaultSimpleError error = DefaultSimpleError.builderWarning().location("file.xml", 12, 34).message("Attribute is missing")
-                .linkedException(ex).build();
-        assertThat(error.getErrorSource()).isEqualTo("file.xml");
+        final DefaultSimpleError error = DefaultSimpleError.builderWarning().errorCode("cvc-complex-type.2.4.b")
+                .location("file.xml", 12, 34).message("Attribute is missing").linkedException(ex).build();
+        assertThat(error.getErrorCode()).isEqualTo("cvc-complex-type.2.4.b");
+        assertThat(error.hasErrorCode()).isTrue();
+        assertThat(error.getSystemID()).isEqualTo("file.xml");
         assertThat(error.getLineNumber()).isEqualTo(12);
         assertThat(error.hasLineNumber()).isTrue();
+        assertThat(error.getLineNumberObj()).isEqualTo(Long.valueOf(12));
         assertThat(error.getColumnNumber()).isEqualTo(34);
         assertThat(error.hasColumnNumber()).isTrue();
+        assertThat(error.getColumnNumberObj()).isEqualTo(Long.valueOf(34));
+        assertThat(error.hasLineOrColumnNumber()).isTrue();
         assertThat(error.getSeverity()).isEqualTo(CTStandardSeverity.WARNING);
         assertThat(error.getMessage()).isEqualTo("Attribute is missing");
         assertThat(error.getLinkedException()).isSameAs(ex);
@@ -45,16 +55,31 @@ public class DefaultSimpleErrorTest {
     public void locationFromSAXParseException() {
         final SAXParseException ex = new SAXParseException("Invalid content", null, "file.xml", 7, 3);
         final DefaultSimpleError error = DefaultSimpleError.builderError().location(ex).message(ex.getMessage()).build();
-        assertThat(error.getErrorSource()).isEqualTo("file.xml");
+        assertThat(error.getSystemID()).isEqualTo("file.xml");
         assertThat(error.getLineNumber()).isEqualTo(7);
         assertThat(error.getColumnNumber()).isEqualTo(3);
         assertThat(error.getSeverity()).isEqualTo(CTStandardSeverity.ERROR);
     }
 
     @Test
+    public void getAsString() {
+        assertThat(DefaultSimpleError.builder().message("Something went wrong").build().getAsString()).isEqualTo("Something went wrong");
+        assertThat(DefaultSimpleError.builderError().location("file.xml", 7, 3).message("Invalid content").build().getAsString())
+                .isEqualTo("Invalid content at line 7 at pos 3");
+    }
+
+    @Test
+    public void emptyErrorCodeIsTreatedAsNone() {
+        final DefaultSimpleError error = DefaultSimpleError.builder().errorCode("").message("msg").build();
+        assertThat(error.getErrorCode()).isNull();
+        assertThat(error.hasErrorCode()).isFalse();
+        assertThat(error).isEqualTo(DefaultSimpleError.builder().message("msg").build());
+    }
+
+    @Test
     public void copyBuilderCreatesEqualObject() {
-        final DefaultSimpleError error = DefaultSimpleError.builderNone().location("file.xml", 1, 2).message("Just a note")
-                .linkedException(new IOException("boom")).build();
+        final DefaultSimpleError error = DefaultSimpleError.builderNone().errorCode("NOTE-1").location("file.xml", 1, 2)
+                .message("Just a note").linkedException(new IOException("boom")).build();
         final DefaultSimpleError copy = DefaultSimpleError.builder(error).build();
         assertThat(copy).isNotSameAs(error).isEqualTo(error).hasSameHashCodeAs(error);
         assertThat(copy.toString()).isEqualTo(error.toString());
@@ -68,6 +93,7 @@ public class DefaultSimpleErrorTest {
         assertThat(DefaultSimpleError.builder().message("other").build()).isNotEqualTo(error);
         assertThat(DefaultSimpleError.builderWarning().message("msg").build()).isNotEqualTo(error);
         assertThat(DefaultSimpleError.builder().message("msg").lineNumber(1).build()).isNotEqualTo(error);
+        assertThat(DefaultSimpleError.builder().message("msg").errorCode("E-1").build()).isNotEqualTo(error);
     }
 
     @Test

@@ -7,7 +7,7 @@ import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
 import org.kosit.validator.client.api.ValidationApi;
 import org.kosit.validator.client.filter.ValidationRequestConfig;
 import org.kosit.validator.client.filter.ValidationResponseMetadata;
-import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.xvrl.impl.XvrlConverter;
 import org.kosit.xvrl.model.XvrlReportsType;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -43,11 +43,11 @@ public class ValidationClient {
     }
 
     public XvrlReportsType validate(final File input) {
-        return new XvrlConversionService().readXml(api.validate(input));
+        return new XvrlConverter().readXml(api.validate(input));
     }
 
     public CompactXvrlReportSummary validateMinimal(final File input) {
-        return new CompactXvrlReportSummary(new XvrlConversionService().readXml(api.validateMinimal(input)));
+        return new CompactXvrlReportSummary(new XvrlConverter().readXml(api.validateMinimal(input)));
     }
 
     public ValidationResponse<File> validateRawWithMetadata(final File input) {
@@ -67,12 +67,12 @@ public class ValidationClient {
 
     public ValidationResponse<XvrlReportsType> validateWithMetadata(final File input) {
         final File result = api.validate(input);
-        return toResponse(new XvrlConversionService().readXml(result));
+        return toResponse(new XvrlConverter().readXml(result));
     }
 
     public ValidationResponse<CompactXvrlReportSummary> validateMinimalWithMetadata(final File input) {
         final File result = api.validateMinimal(input);
-        return toResponse(new CompactXvrlReportSummary(new XvrlConversionService().readXml(result)));
+        return toResponse(new CompactXvrlReportSummary(new XvrlConverter().readXml(result)));
     }
 
     private <T> ValidationResponse<T> toResponse(final T body) {

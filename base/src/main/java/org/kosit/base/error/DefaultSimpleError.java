@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.kosit.base.string.StringHelper;
 
 /**
  * Default immutable implementation of the {@link SimpleError} interface. Use {@link SimpleErrorBuilder} to create
@@ -14,7 +15,9 @@ import org.jspecify.annotations.Nullable;
  */
 public final class DefaultSimpleError implements SimpleError {
 
-    private final @Nullable String errorSource;
+    private final @Nullable String errorCode;
+
+    private final @Nullable String systemId;
 
     private final long lineNumber;
 
@@ -24,30 +27,39 @@ public final class DefaultSimpleError implements SimpleError {
 
     private final String message;
 
-    private final @Nullable Exception linkedException;
+    private final @Nullable Throwable linkedException;
 
     /**
      * Constructor.
      *
-     * @param errorSource the object in which the error was found. May be <code>null</code>.
+     * @param errorCode the error code. May be <code>null</code>.
+     * @param systemId the object in which the error was found. May be <code>null</code>.
      * @param lineNumber the line number. Values &le; 0 mean none available.
      * @param columnNumber the column number. Values &le; 0 mean none available.
      * @param severity the severity of the error. May not be <code>null</code>.
      * @param message the main error message. May not be <code>null</code>.
      * @param linkedException the exception that caused this error. May be <code>null</code>.
      */
-    public DefaultSimpleError(final @Nullable String errorSource, final long lineNumber, final long columnNumber,
-            @NonNull final CTStandardSeverity severity, @NonNull final String message, final @Nullable Exception linkedException) {
-        this.errorSource = errorSource;
-        this.lineNumber = lineNumber;
-        this.columnNumber = columnNumber;
+    public DefaultSimpleError(final @Nullable String errorCode, final @Nullable String systemId, final long lineNumber,
+            final long columnNumber, @NonNull final CTStandardSeverity severity, @NonNull final String message,
+            final @Nullable Throwable linkedException) {
+        // Unify empty values for safe comparison
+        this.errorCode = StringHelper.emptyToNull(errorCode);
+        this.systemId = systemId;
+        // Unify negative values for safe comparison
+        this.lineNumber = lineNumber > 0 ? lineNumber : -1;
+        this.columnNumber = columnNumber > 0 ? columnNumber : -1;
         this.severity = Objects.requireNonNull(severity, "Severity must not be null");
         this.message = Objects.requireNonNull(message, "Message must not be null");
         this.linkedException = linkedException;
     }
 
-    public @Nullable String getErrorSource() {
-        return this.errorSource;
+    public @Nullable String getErrorCode() {
+        return this.errorCode;
+    }
+
+    public @Nullable String getSystemID() {
+        return this.systemId;
     }
 
     public long getLineNumber() {
@@ -66,7 +78,7 @@ public final class DefaultSimpleError implements SimpleError {
         return this.message;
     }
 
-    public @Nullable Exception getLinkedException() {
+    public @Nullable Throwable getLinkedException() {
         return this.linkedException;
     }
 
@@ -78,7 +90,7 @@ public final class DefaultSimpleError implements SimpleError {
      * @param right the second exception. May be <code>null</code>.
      * @return <code>true</code> if both are <code>null</code> or considered equal
      */
-    private static boolean equalsException(final @Nullable Exception left, final @Nullable Exception right) {
+    private static boolean equalsException(final @Nullable Throwable left, final @Nullable Throwable right) {
         if (left == right) {
             return true;
         }
@@ -96,22 +108,22 @@ public final class DefaultSimpleError implements SimpleError {
         if (!(o instanceof final DefaultSimpleError rhs)) {
             return false;
         }
-        return Objects.equals(this.errorSource, rhs.errorSource) && this.lineNumber == rhs.lineNumber
-                && this.columnNumber == rhs.columnNumber && this.severity == rhs.severity && this.message.equals(rhs.message)
-                && equalsException(this.linkedException, rhs.linkedException);
+        return Objects.equals(this.errorCode, rhs.errorCode) && Objects.equals(this.systemId, rhs.systemId)
+                && this.lineNumber == rhs.lineNumber && this.columnNumber == rhs.columnNumber && this.severity == rhs.severity
+                && this.message.equals(rhs.message) && equalsException(this.linkedException, rhs.linkedException);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.errorSource, Long.valueOf(this.lineNumber), Long.valueOf(this.columnNumber), this.severity, this.message,
-                this.linkedException == null ? null : this.linkedException.getClass(),
+        return Objects.hash(this.errorCode, this.systemId, Long.valueOf(this.lineNumber), Long.valueOf(this.columnNumber), this.severity,
+                this.message, this.linkedException == null ? null : this.linkedException.getClass(),
                 this.linkedException == null ? null : this.linkedException.getMessage());
     }
 
     @Override
     public String toString() {
-        return "DefaultSimpleError(errorSource=" + this.errorSource + ", lineNumber=" + this.lineNumber + ", columnNumber="
-                + this.columnNumber + ", severity=" + this.severity + ", message=" + this.message + ", linkedException="
+        return "DefaultSimpleError(errorCode=" + this.errorCode + ", systemId=" + this.systemId + ", lineNumber=" + this.lineNumber
+                + ", columnNumber=" + this.columnNumber + ", severity=" + this.severity + ", message=" + this.message + ", linkedException="
                 + this.linkedException + ")";
     }
 

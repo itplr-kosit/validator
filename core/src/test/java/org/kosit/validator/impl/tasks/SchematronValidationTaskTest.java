@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.svrl.impl.SvrlConversionService;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
@@ -39,7 +38,7 @@ public class SchematronValidationTaskTest {
 
     @BeforeEach
     public void setup() {
-        this.action = new SchematronValidationTask(new SvrlConversionService());
+        this.action = new SchematronValidationTask();
     }
 
     @Test

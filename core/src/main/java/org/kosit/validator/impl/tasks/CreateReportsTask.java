@@ -2,12 +2,13 @@ package org.kosit.validator.impl.tasks;
 
 import java.util.List;
 
+import org.kosit.base.error.DefaultSimpleError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
@@ -35,7 +36,7 @@ public class CreateReportsTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReportsTask.class);
 
-    public static final Process.ProcessKey<List<BusinessReport>, XmlSyntaxError> KEY = new Process.ProcessKey<>(null, XmlSyntaxError.class);
+    public static final Process.ProcessKey<List<BusinessReport>, SimpleError> KEY = new Process.ProcessKey<>(null, SimpleError.class);
 
     public static final ActionMetadata METADATA = new ActionMetadata("Create report", "create_report");
 
@@ -51,17 +52,17 @@ public class CreateReportsTask implements CheckTask {
     }
 
     private static XvrlReportType generateXvrlReport(final ResourceType resourceType, final XdmNode node) {
-        return XvrlReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id(resourceType.getName())
-                .add(XvrlSupplementalBuilder.supplemental().addContent(node).id(resourceType.getName()))).build();
+        return XvrlReportBuilder.builder(METADATA).addDetection(XvrlDetectionBuilder.builder().id(resourceType.getName())
+                .supplemental(XvrlSupplementalBuilder.builder().addContent(node).id(resourceType.getName()))).build();
     }
 
-    private static XvrlReportType createErrorInformation(final ResourceType resourceType, final XmlSyntaxError error) {
-        return XvrlReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id("error").addError(error)).build();
+    private static XvrlReportType createErrorInformation(final ResourceType resourceType, final SimpleError error) {
+        return XvrlReportBuilder.builder(METADATA).addDetection(XvrlDetectionBuilder.builder().id("error").addError(error)).build();
     }
 
     @Override
-    public ProcessStepResult<List<BusinessReport>, XmlSyntaxError> check(final Process process) {
-        final ProcessStepResult<List<BusinessReport>, XmlSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
+    public ProcessStepResult<List<BusinessReport>, SimpleError> check(final Process process) {
+        final ProcessStepResult<List<BusinessReport>, SimpleError> processStepResult = new ProcessStepResult<>(KEY);
         final SingleProcessingResult<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioSelection.getObject();
         final XdmNode parsedDocument = process.getResult(DocumentParseTask.KEY).getObject();
@@ -94,14 +95,19 @@ public class CreateReportsTask implements CheckTask {
             final XdmDestination destination = new XdmDestination();
             transformer.setDestination(destination);
             transformer.transform();
+
             r.setContent(destination.getXdmNode());
             r.setReport(generateXvrlReport(transformation.getResourceType(), destination.getXdmNode()));
         } catch (final SaxonApiException | JAXBException e) {
             LOGGER.error("Error creating final report", e);
             process.setStopped(true);
-            final XmlSyntaxError xmlSyntaxError = new XmlSyntaxError();
-            xmlSyntaxError.setMessage("Can not create final report: " + e.getMessage());
-            r.setReport(createErrorInformation(transformation.getResourceType(), xmlSyntaxError));
+
+            final var errorBuilder = DefaultSimpleError.builderError().message("Can not create final report: " + e.getMessage())
+                    .linkedException(e);
+            if (e instanceof final SaxonApiException saxonApiEx)
+                errorBuilder.location(saxonApiEx.getSystemId(), saxonApiEx.getLineNumber(), 0);
+
+            r.setReport(createErrorInformation(transformation.getResourceType(), errorBuilder.build()));
         }
         return r;
     }

@@ -1,24 +1,21 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlDetectionBuilder.detectionBuilder;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
+import org.kosit.base.error.DefaultSimpleError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.conformatron.source.ValidationSource;
 import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.model.XmlSyntaxError;
-import org.kosit.validator.model.XmlSyntaxErrorSeverity;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
-import org.kosit.xvrl.model.XvrlSeverityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,18 +33,18 @@ public class DocumentParseTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DocumentParseTask.class);
 
-    public static final Process.ProcessKey<XdmNode, XmlSyntaxError> KEY = new Process.ProcessKey<>(XdmNode.class, XmlSyntaxError.class);
+    public static final Process.ProcessKey<XdmNode, SimpleError> KEY = new Process.ProcessKey<>(XdmNode.class, SimpleError.class);
 
     private final Processor processor;
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<XdmNode, XmlSyntaxError> parserResult) {
+    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<XdmNode, SimpleError> parserResult) {
         final XvrlReportBuilder builder = XvrlReportBuilder.builder("Document wellformedness Validator");
         if (parserResult.isValid()) {
-            final XvrlDetectionBuilder detection = detectionBuilder().severity(XvrlSeverityType.INFO)
-                    .add(XvrlSupplementalBuilder.supplemental().addContent(parserResult.getObject()));
-            builder.add(detection);
+            final XvrlDetectionBuilder detection = XvrlDetectionBuilder.builderInfo()
+                    .supplemental(XvrlSupplementalBuilder.builder().addContent(parserResult.getObject()));
+            builder.addDetection(detection);
         } else {
-            final XvrlDetectionBuilder detection = detectionBuilder().severity(XvrlSeverityType.ERROR);
+            final XvrlDetectionBuilder detection = XvrlDetectionBuilder.builder();
             parserResult.getErrors().forEach(detection::addError);
         }
         return builder.build();
@@ -61,7 +58,7 @@ public class DocumentParseTask implements CheckTask {
      * @param parsedSource the conformatron handshake object; {@code null} on parse failure or when the source bytes
      *            could not be retained (e.g. {@link XdmNodeVInput} shortcut)
      */
-    public record ParseOutcome(SingleProcessingResult<XdmNode, XmlSyntaxError> result, XdmNodeValidationSource parsedSource) {
+    public record ParseOutcome(SingleProcessingResult<XdmNode, SimpleError> result, XdmNodeValidationSource parsedSource) {
     }
 
     /**
@@ -71,7 +68,7 @@ public class DocumentParseTask implements CheckTask {
      * @param content a document
      * @return result of the parsing including any errors
      */
-    public SingleProcessingResult<XdmNode, XmlSyntaxError> parseDocument(final CTReadResource content) {
+    public SingleProcessingResult<XdmNode, SimpleError> parseDocument(final CTReadResource content) {
         return parseRetaining(content).result();
     }
 
@@ -97,18 +94,17 @@ public class DocumentParseTask implements CheckTask {
         } catch (final SaxonApiException | IOException e) {
             if (LOGGER.isDebugEnabled())
                 LOGGER.debug("Exception while parsing {}", content.getName(), e);
-            final XmlSyntaxError error = new XmlSyntaxError();
-            error.setSeverityCode(XmlSyntaxErrorSeverity.SEVERITY_FATAL_ERROR);
-            error.setMessage("IOException while reading resource " + content.getName() + ": " + e.getMessage());
-            return new ParseOutcome(new SingleProcessingResult<>(Collections.singleton(error)), null);
+            final SimpleError error = DefaultSimpleError.builderError()
+                    .message("IOException while reading resource " + content.getName() + ": " + e.getMessage()).linkedException(e).build();
+            return new ParseOutcome(new SingleProcessingResult<>(Collections.singletonList(error)), null);
         }
     }
 
     @Override
-    public ProcessStepResult<XdmNode, XmlSyntaxError> check(final Process process) {
-        final ProcessStepResult<XdmNode, XmlSyntaxError> result = new ProcessStepResult<>(KEY);
+    public ProcessStepResult<XdmNode, SimpleError> check(final Process process) {
+        final ProcessStepResult<XdmNode, SimpleError> result = new ProcessStepResult<>(KEY);
         final ParseOutcome outcome = parseRetaining(process.getInput());
-        final SingleProcessingResult<XdmNode, XmlSyntaxError> parserResult = outcome.result();
+        final SingleProcessingResult<XdmNode, SimpleError> parserResult = outcome.result();
         if (outcome.parsedSource() != null) {
             process.setParsedSource(outcome.parsedSource());
         }

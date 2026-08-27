@@ -20,7 +20,7 @@
                 xmlType="xs:integer" adapter="org.kosit.jaxb.adapter.LongAdapter"/>
     </jaxb:globalBindings>
 
-    <jaxb:bindings schemaLocation="../xsd/xvrl-1.0.xsd">
+    <jaxb:bindings schemaLocation="../../resources/xsd/xvrl-1.0.xsd">
 
         <jaxb:schemaBindings>
             <jaxb:package name="org.kosit.xvrl.model"/>

@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.fusesource.jansi.AnsiRenderer.Code;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.xmlerror.XmlError;
 import org.kosit.validator.cmd.report.Grid;
 import org.kosit.validator.cmd.report.Grid.ColumnDefinition;
 import org.kosit.validator.cmd.report.Justify;
@@ -83,7 +83,7 @@ class InternalVCheck extends DefaultVCheck {
         b.append(String.join(";", value.getProcessingErrors()));
         if (value.getSchemaViolations() != null && !value.getSchemaViolations().isEmpty()) {
             b.append(b.length() > 0 ? ";" : "");
-            b.append(value.getSchemaViolations().stream().map(XmlError::getMessage).collect(Collectors.joining(";")));
+            b.append(value.getSchemaViolations().stream().map(SimpleError::getMessage).collect(Collectors.joining(";")));
         }
         if (value.getSchematronResult() != null && !value.getSchematronResult().isEmpty()) {
             b.append(b.length() > 0 ? ";" : "");

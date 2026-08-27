@@ -5,12 +5,12 @@ import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
@@ -46,15 +46,15 @@ class ExtractReportContentAction implements CheckTask {
 
     private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
         if (result.isValid()) {
-            return builder(REPORT_NAME).add(XvrlDetectionBuilder.detectionBuilder().addMessage("Extraction successful")).build();
+            return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builder().addMessage("Extraction successful")).build();
         }
-        return builder(REPORT_NAME).addAll(result.getErrors().stream().map(e -> XvrlDetectionBuilder.detectionBuilder().addError(e)))
+        return builder(REPORT_NAME).addDetections(result.getErrors().stream().map(e -> XvrlDetectionBuilder.builderError().addMessage(e)))
                 .build();
     }
 
     @Override
     public ProcessStepResult<Boolean, String> check(final Process results) {
-        final SingleProcessingResult<List<BusinessReport>, XmlSyntaxError> reportReposts = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, SimpleError> reportReposts = results.getResult(CreateReportsTask.KEY);
         reportReposts.getObject().forEach(entry -> {
             print(entry.getName(), entry.getContent());
         });
@@ -80,7 +80,7 @@ class ExtractReportContentAction implements CheckTask {
 
     @Override
     public boolean isSkipped(final Process results) {
-        final SingleProcessingResult<List<BusinessReport>, XmlSyntaxError> createReportResult = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, SimpleError> createReportResult = results.getResult(CreateReportsTask.KEY);
         if (createReportResult == null || createReportResult.getObject() == null) {
             LOGGER.warn("Can not extract create-report content. No report document found");
             return true;

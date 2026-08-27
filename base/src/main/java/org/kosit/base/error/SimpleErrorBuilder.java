@@ -1,8 +1,10 @@
 package org.kosit.base.error;
 
+import java.net.URL;
 import java.util.Objects;
 
 import javax.xml.stream.Location;
+import javax.xml.transform.SourceLocator;
 
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.jspecify.annotations.NonNull;
@@ -20,7 +22,9 @@ public class SimpleErrorBuilder {
     /** The severity that is used, if none is provided explicitly */
     public static final CTStandardSeverity DEFAULT_SEVERITY = CTStandardSeverity.ERROR;
 
-    private @Nullable String errorSource;
+    private @Nullable String errorCode;
+
+    private @Nullable String systemId;
 
     private long lineNumber;
 
@@ -30,7 +34,7 @@ public class SimpleErrorBuilder {
 
     private @Nullable String message;
 
-    private @Nullable Exception linkedException;
+    private @Nullable Throwable linkedException;
 
     /**
      * Default constructor using the default severity {@link #DEFAULT_SEVERITY}.
@@ -45,7 +49,8 @@ public class SimpleErrorBuilder {
      */
     public SimpleErrorBuilder(@NonNull final SimpleError error) {
         Objects.requireNonNull(error, "Error must not be null");
-        errorSource(error.getErrorSource());
+        errorCode(error.getErrorCode());
+        systemId(error.getSystemID());
         lineNumber(error.getLineNumber());
         columnNumber(error.getColumnNumber());
         severity(error.getSeverity());
@@ -54,14 +59,37 @@ public class SimpleErrorBuilder {
     }
 
     /**
-     * Set the object in which the error was found.
+     * Set the error code.
      *
-     * @param errorSource the error source. May be <code>null</code>.
+     * @param errorCode the error code. May be <code>null</code>.
      * @return this for chaining
      */
     @NonNull
-    public SimpleErrorBuilder errorSource(final @Nullable String errorSource) {
-        this.errorSource = errorSource;
+    public SimpleErrorBuilder errorCode(final @Nullable String errorCode) {
+        this.errorCode = errorCode;
+        return this;
+    }
+
+    /**
+     * Set the object in which the error was found.
+     *
+     * @param systemId the error source. May be <code>null</code>.
+     * @return this for chaining
+     */
+    @NonNull
+    public SimpleErrorBuilder systemId(final @Nullable URL systemId) {
+        return systemId(systemId == null ? null : systemId.toExternalForm());
+    }
+
+    /**
+     * Set the object in which the error was found.
+     *
+     * @param systemId the error source. May be <code>null</code>.
+     * @return this for chaining
+     */
+    @NonNull
+    public SimpleErrorBuilder systemId(final @Nullable String systemId) {
+        this.systemId = systemId;
         return this;
     }
 
@@ -97,7 +125,20 @@ public class SimpleErrorBuilder {
      */
     @NonNull
     public SimpleErrorBuilder location(final @Nullable Locator locator) {
-        return locator == null ? location(null, 0, 0) : location(locator.getSystemId(), locator.getLineNumber(), locator.getColumnNumber());
+        return locator == null ? location((String) null, 0, 0)
+                : location(locator.getSystemId(), locator.getLineNumber(), locator.getColumnNumber());
+    }
+
+    /**
+     * Set the error source, the line number and the column number from a transform locator.
+     *
+     * @param locator the transform locator to use. May be <code>null</code>.
+     * @return this for chaining
+     */
+    @NonNull
+    public SimpleErrorBuilder location(final @Nullable SourceLocator locator) {
+        return locator == null ? location((String) null, 0, 0)
+                : location(locator.getSystemId(), locator.getLineNumber(), locator.getColumnNumber());
     }
 
     /**
@@ -108,7 +149,7 @@ public class SimpleErrorBuilder {
      */
     @NonNull
     public SimpleErrorBuilder location(final @Nullable SAXParseException ex) {
-        return ex == null ? location(null, 0, 0) : location(ex.getSystemId(), ex.getLineNumber(), ex.getColumnNumber());
+        return ex == null ? location((String) null, 0, 0) : location(ex.getSystemId(), ex.getLineNumber(), ex.getColumnNumber());
     }
 
     /**
@@ -119,21 +160,34 @@ public class SimpleErrorBuilder {
      */
     @NonNull
     public SimpleErrorBuilder location(final @Nullable Location location) {
-        return location == null ? location(null, 0, 0)
+        return location == null ? location((String) null, 0, 0)
                 : location(location.getSystemId(), location.getLineNumber(), location.getColumnNumber());
     }
 
     /**
      * Set the error source, the line number and the column number at once.
      *
-     * @param errorSource the error source. May be <code>null</code>.
+     * @param systemId the error source. May be <code>null</code>.
      * @param lineNumber the line number. Values &le; 0 mean none available.
      * @param columnNumber the column number. Values &le; 0 mean none available.
      * @return this for chaining
      */
     @NonNull
-    public SimpleErrorBuilder location(final @Nullable String errorSource, final long lineNumber, final long columnNumber) {
-        return errorSource(errorSource).lineNumber(lineNumber).columnNumber(columnNumber);
+    public SimpleErrorBuilder location(final @Nullable URL systemId, final long lineNumber, final long columnNumber) {
+        return systemId(systemId).lineNumber(lineNumber).columnNumber(columnNumber);
+    }
+
+    /**
+     * Set the error source, the line number and the column number at once.
+     *
+     * @param systemId the error source. May be <code>null</code>.
+     * @param lineNumber the line number. Values &le; 0 mean none available.
+     * @param columnNumber the column number. Values &le; 0 mean none available.
+     * @return this for chaining
+     */
+    @NonNull
+    public SimpleErrorBuilder location(final @Nullable String systemId, final long lineNumber, final long columnNumber) {
+        return systemId(systemId).lineNumber(lineNumber).columnNumber(columnNumber);
     }
 
     /**
@@ -167,7 +221,7 @@ public class SimpleErrorBuilder {
      * @return this for chaining
      */
     @NonNull
-    public SimpleErrorBuilder linkedException(final @Nullable Exception linkedException) {
+    public SimpleErrorBuilder linkedException(final @Nullable Throwable linkedException) {
         this.linkedException = linkedException;
         return this;
     }
@@ -183,7 +237,7 @@ public class SimpleErrorBuilder {
         if (this.message == null) {
             throw new IllegalStateException("The message must be provided");
         }
-        return new DefaultSimpleError(this.errorSource, this.lineNumber, this.columnNumber, this.severity, this.message,
+        return new DefaultSimpleError(this.errorCode, this.systemId, this.lineNumber, this.columnNumber, this.severity, this.message,
                 this.linkedException);
     }
 }

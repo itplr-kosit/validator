@@ -7,7 +7,7 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
- * Minimal JAXB-annotated test type used by {@link org.kosit.jaxb.JaxbConversionServiceTest}.
+ * Minimal JAXB-annotated test type used by {@link org.kosit.jaxb.JaxbConverterTest}.
  */
 @XmlRootElement(name = "person")
 @XmlAccessorType(XmlAccessType.FIELD)

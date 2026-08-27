@@ -18,5 +18,9 @@ public enum AcceptRecommendation {
     /**
      * Recommendation is to reject Input xml based on the evaluation of the overall validation.
      */
-    REJECT
+    REJECT;
+
+    public String getID() {
+        return name();
+    }
 }

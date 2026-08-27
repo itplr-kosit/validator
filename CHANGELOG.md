@@ -24,11 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (API) `SchemaProvider.getScenarioSchema()` was replaced by `org.kosit.validator.scenario.xsd.ScenarioSchemaProvider.getScenarioSchema()`
 - (API) Applied the Google Camel Case rules to all acronyms in type and method names, so `XML` became `Xml` and `XVRL` became `Xvrl`. This affects e.g. `XMLHelper` (now `XmlHelper`), `XMLReaderWrapper` (now `XmlReaderWrapper`), `AbstractXMLSyntaxError` (now `AbstractXmlSyntaxError`), `CompactXVRLReport` (now `CompactXvrlReport`), `CompactXVRLReportSummary` (now `CompactXvrlReportSummary`), `XVRLReportBuilder` (now `XvrlReportBuilder`), `XmlHelper.createSafeXMLInputFactory()` (now `createSafeXmlInputFactory()`) and `SchemaProvider.getXVRLSchema()` (now `getXvrlSchema()`)
 - (API) The generated model types were renamed accordingly, because the underlying XSD type names changed: `XMLSyntaxError` is now `XmlSyntaxError`, `XMLSyntaxErrorSeverity` is now `XmlSyntaxErrorSeverity` and all `XVRL*Type` classes are now `Xvrl*Type`
+- (API) All internal error handling was unified on `org.kosit.base.error.SimpleError`. The types `XmlError`, `XmlSyntaxError`, `XmlSeverity` and `XmlErrorImpl` were removed, and `VResult.getSchemaViolations()` now returns `List<SimpleError>`. The severity `FATAL_ERROR` no longer exists - it is mapped to `CTStandardSeverity.ERROR`
+- (API) `SingleProcessingResult` takes and returns a `List` instead of a `Collection` of errors
 
 ### Added
 
 - (API) Added `XmlHelper.createSafeSchemaFactory()` providing the hardened `SchemaFactory` that is now shared by the resolving strategies and the scenario schema provider
 - (API) Added `DefaultSimpleError` as the default immutable implementation of `SimpleError`, to be created via the new fluent `SimpleErrorBuilder`
+- (API) Added `SimpleError.getAsString()` and `SimpleError.log(Logger)` replacing the removed `XmlSyntaxError.log(Logger)`
+- (API) Added the optional `SimpleError.getErrorCode()` including `hasErrorCode()` and the `SimpleErrorBuilder.errorCode(String)` setter. An empty error code is treated like none at all
 
 ### Fixed
 
