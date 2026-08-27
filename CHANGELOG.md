@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (API) Added `DefaultSimpleError` as the default immutable implementation of `SimpleError`, to be created via the new fluent `SimpleErrorBuilder`
 - (API) Added `SimpleError.getAsString()` and `SimpleError.log(Logger)` replacing the removed `XmlSyntaxError.log(Logger)`
 - (API) Added the optional `SimpleError.getErrorCode()` including `hasErrorCode()` and the `SimpleErrorBuilder.errorCode(String)` setter. An empty error code is treated like none at all
+- (API) Added a dependency free replica of the ph-diver DVR Coordinate and version handling to the submodule `base`: `org.kosit.base.dvr.coord` (`DVRCoordinate`, `IDVRCoordinate`, `DVRCoordinateException`), `org.kosit.base.dvr.version` (`DVRVersion`, `DVRVersionException`, `EDVRPreReleaseQualifier`, `DVRPseudoVersion`, `DVRPseudoVersionRegistry` and the pseudo version interfaces), `org.kosit.base.dvr.version.spi` (`IDVRPseudoVersionRegistrarSPI` plus the default registrar registered via `META-INF/services`) and `org.kosit.base.dvr.settings` (`DVRGlobalCoordinateSettings`, `DVRValidityHelper`)
+- (API) Added `org.kosit.base.version.Version` as the generic 4 part version type (major, minor, micro, qualifier) backing the static DVR versions
+- (API) Added `ObjectHelper.compare(T, T)` for `null`-safe comparisons, plus `StringHelper.getLength(CharSequence)`, `StringHelper.getExplodedArray(char, String[, int])`, `StringHelper.getExploded(char, String)`, `StringHelper.isInt(String)`, `StringHelper.parseInt(String, int)` and `StringHelper.parseIntObj(String)`
 
 ### Fixed
 
