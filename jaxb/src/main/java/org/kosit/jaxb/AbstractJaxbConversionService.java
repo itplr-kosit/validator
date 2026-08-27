@@ -14,11 +14,10 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -39,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.JAXBIntrospector;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.PropertyException;
 import jakarta.xml.bind.Unmarshaller;
@@ -61,8 +59,10 @@ import jakarta.xml.bind.ValidationEventHandler;
  * configuration.
  * <p>
  * Instances are not thread-safe with respect to configuration setters. The JAXB context is created once and reused.
+ * 
+ * @param <T> Type of class to read and write
  */
-public class JaxbConversionService {
+public abstract class AbstractJaxbConversionService<T> {
 
     /**
      * {@link NamespacePrefixMapper} that delegates to a fixed namespace-URI-to-prefix map. A value of empty string
@@ -90,7 +90,7 @@ public class JaxbConversionService {
         }
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JaxbConversionService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJaxbConversionService.class);
 
     private static final String NAMESPACE_PREFIX_MAPPER_PROPERTY = "org.glassfish.jaxb.namespacePrefixMapper";
 
@@ -99,6 +99,10 @@ public class JaxbConversionService {
     public static final boolean DEFAULT_FRAGMENT = false;
 
     private final JAXBContext jaxbContext;
+
+    private final Class<T> type;
+
+    private final Function<T, JAXBElement<T>> jaxbMapper;
 
     private @Nullable Schema schema;
 
@@ -116,30 +120,17 @@ public class JaxbConversionService {
      * Creates a service backed by the given JAXB context.
      *
      * @param jaxbContext the JAXB context to use for all read/write operations
+     * @param type Type of object to be marshalled
+     * @param jaxbMapper Mapper from object to element
      * @throws IllegalArgumentException if {@code jaxbContext} is {@code null}
      */
-    public JaxbConversionService(final JAXBContext jaxbContext) {
+    public AbstractJaxbConversionService(final JAXBContext jaxbContext, final Class<T> type, final Function<T, JAXBElement<T>> jaxbMapper) {
         ObjectHelper.requireNonNull(jaxbContext, "jaxbContext");
+        ObjectHelper.requireNonNull(type, "type");
+        ObjectHelper.requireNonNull(jaxbMapper, "jaxbMapper");
         this.jaxbContext = jaxbContext;
-    }
-
-    // ---------- factories ----------
-
-    /**
-     * Creates a service from a fixed set of JAXB-annotated classes.
-     *
-     * @param clazz JAXB-annotated class to include in the JAXB context
-     * @return a new conversion service
-     * @throws IllegalArgumentException if no classes are supplied
-     * @throws JaxbConversionException if the JAXB context can not be created
-     */
-    public static JaxbConversionService forClass(final Class<?> clazz) {
-        Objects.requireNonNull(clazz);
-        try {
-            return new JaxbConversionService(JAXBContext.newInstance(clazz));
-        } catch (final JAXBException e) {
-            throw new JaxbConversionException("Can not create JAXB context for: " + clazz, e);
-        }
+        this.type = type;
+        this.jaxbMapper = jaxbMapper;
     }
 
     // ---------- configuration (fluent) ----------
@@ -150,7 +141,7 @@ public class JaxbConversionService {
      * @param schema schema to apply, or {@code null} to disable schema validation
      * @return this instance for chaining
      */
-    public JaxbConversionService withSchema(final @Nullable Schema schema) {
+    public AbstractJaxbConversionService<T> withSchema(final @Nullable Schema schema) {
         this.schema = schema;
         return this;
     }
@@ -161,7 +152,7 @@ public class JaxbConversionService {
      * @param handler handler to apply, or {@code null} to fall back to JAXB defaults
      * @return this instance for chaining
      */
-    public JaxbConversionService withEventHandler(final @Nullable ValidationEventHandler handler) {
+    public AbstractJaxbConversionService<T> withEventHandler(final @Nullable ValidationEventHandler handler) {
         this.eventHandler = handler;
         return this;
     }
@@ -172,7 +163,7 @@ public class JaxbConversionService {
      * @param formattedOutput whether output should be indented
      * @return this instance for chaining
      */
-    public JaxbConversionService withFormattedOutput(final boolean formattedOutput) {
+    public AbstractJaxbConversionService<T> withFormattedOutput(final boolean formattedOutput) {
         this.formattedOutput = formattedOutput;
         return this;
     }
@@ -183,7 +174,7 @@ public class JaxbConversionService {
      * @param fragment whether to omit the XML declaration on write
      * @return this instance for chaining
      */
-    public JaxbConversionService withFragment(final boolean fragment) {
+    public AbstractJaxbConversionService<T> withFragment(final boolean fragment) {
         this.fragment = fragment;
         return this;
     }
@@ -194,10 +185,8 @@ public class JaxbConversionService {
      * @param encoding character encoding to use
      * @return this instance for chaining
      */
-    public JaxbConversionService withEncoding(final Charset encoding) {
-        if (encoding == null) {
-            throw new IllegalArgumentException("Encoding must not be null");
-        }
+    public AbstractJaxbConversionService<T> withEncoding(final Charset encoding) {
+        ObjectHelper.requireNonNull(encoding, "encoding");
         this.encoding = encoding;
         return this;
     }
@@ -215,7 +204,7 @@ public class JaxbConversionService {
      * @param map namespace URI &rarr; preferred prefix mapping, or {@code null} to reset
      * @return this instance for chaining
      */
-    public JaxbConversionService withNamespacePrefixMap(final @Nullable Map<String, String> map) {
+    public AbstractJaxbConversionService<T> withNamespacePrefixMap(final @Nullable Map<String, String> map) {
         this.namespacePrefixMap = map == null ? Map.of() : Map.copyOf(map);
         return this;
     }
@@ -235,85 +224,73 @@ public class JaxbConversionService {
      * Unmarshals XML from a URI.
      *
      * @param uri location of the XML document
-     * @param type expected target type
-     * @param <T> target type
      * @return the unmarshalled object
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
-    public <T> T readXml(final URI uri, final Class<T> type) {
+    public T readXml(final URI uri) {
         ObjectHelper.requireNonNull(uri, "uri");
-        return readSecure(new StreamSource(uri.toASCIIString()), type, "URI " + uri);
+        return readSecure(new StreamSource(uri.toASCIIString()), "URI " + uri);
     }
 
     /**
      * Unmarshals XML from an input stream. The stream is not closed by this method.
      *
      * @param input stream to read from
-     * @param type expected target type
-     * @param <T> target type
      * @return the unmarshalled object
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
-    public <T> T readXml(final InputStream input, final Class<T> type) {
+    public T readXml(final InputStream input) {
         ObjectHelper.requireNonNull(input, "input");
-        return readSecure(new StreamSource(input), type, "InputStream");
+        return readSecure(new StreamSource(input), "InputStream");
     }
 
     /**
      * Unmarshals XML from a character reader. The reader is not closed by this method.
      *
      * @param reader reader to read from
-     * @param type expected target type
-     * @param <T> target type
      * @return the unmarshalled object
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
-    public <T> T readXml(final Reader reader, final Class<T> type) {
+    public T readXml(final Reader reader) {
         ObjectHelper.requireNonNull(reader, "reader");
-        return readSecure(new StreamSource(reader), type, "Reader");
+        return readSecure(new StreamSource(reader), "Reader");
     }
 
     /**
      * Unmarshals XML from a byte array.
      *
      * @param xml XML bytes to parse
-     * @param type expected target type
-     * @param <T> target type
      * @return the unmarshalled object
      * @throws JaxbConversionException on parsing or binding errors
      */
-    public <T> T readXml(final byte[] xml, final Class<T> type) {
+    public T readXml(final byte[] xml) {
         ObjectHelper.requireNonNull(xml, "xml");
-        return readXml(new ByteArrayInputStream(xml), type);
+        return readXml(new ByteArrayInputStream(xml));
     }
 
     /**
      * Unmarshals XML from a string.
      *
      * @param xml XML content to parse
-     * @param type expected target type
-     * @param <T> target type
      * @return the unmarshalled object
      * @throws JaxbConversionException on parsing or binding errors
      */
-    public <T> T readXml(final String xml, final Class<T> type) {
+    public T readXml(final String xml) {
         ObjectHelper.requireNonNull(xml, "xml");
-        return readXml(new StringReader(xml), type);
+        return readXml(new StringReader(xml));
     }
 
     /**
      * Unmarshals XML from a file path.
      *
      * @param path file to read
-     * @param type expected target type
-     * @param <T> target type
      * @return the unmarshalled object
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
-    public <T> T readXml(final Path path, final Class<T> type) {
+    public T readXml(final Path path) {
         ObjectHelper.requireNonNull(path, "path");
         try ( InputStream in = Files.newInputStream(path) ) {
-            return readSecure(new StreamSource(in, path.toUri().toASCIIString()), type, "Path " + path);
+            return readSecure(new StreamSource(in, path.toUri().toASCIIString()), "Path " + path);
         } catch (final IOException e) {
             throw new JaxbConversionException("Can not read from path " + path, e);
         }
@@ -323,14 +300,12 @@ public class JaxbConversionService {
      * Unmarshals XML from a file.
      *
      * @param file file to read
-     * @param type expected target type
-     * @param <T> target type
      * @return the unmarshalled object
      * @throws JaxbConversionException on I/O, parsing, or binding errors
      */
-    public <T> T readXml(final File file, final Class<T> type) {
+    public T readXml(final File file) {
         ObjectHelper.requireNonNull(file, "file");
-        return readXml(file.toPath(), type);
+        return readXml(file.toPath());
     }
 
     /**
@@ -340,12 +315,10 @@ public class JaxbConversionService {
      * configuration; callers are responsible for the source's parser settings.
      *
      * @param source XML source
-     * @param type expected target type
-     * @param <T> target type
      * @return the unmarshalled object
      * @throws JaxbConversionException on parsing or binding errors
      */
-    public <T> T readXml(final Source source, final Class<T> type) {
+    public T readXml(final Source source) {
         ObjectHelper.requireNonNull(source, "source");
         Objects.requireNonNull(type);
         try {
@@ -362,11 +335,10 @@ public class JaxbConversionService {
      * Serializes {@code model} to an XML string using the configured encoding.
      *
      * @param model the object to serialize
-     * @param <T> type of the object
      * @return the serialized XML
      * @throws JaxbConversionException on marshalling errors
      */
-    public <T> String writeXml(final T model) {
+    public String writeXml(final T model) {
         ObjectHelper.requireNonNull(model, "model");
         try ( StringWriter sw = new StringWriter() ) {
             writeXml(model, sw);
@@ -381,13 +353,12 @@ public class JaxbConversionService {
      *
      * @param model the object to serialize
      * @param output destination stream
-     * @param <T> type of the object
      * @throws JaxbConversionException on marshalling errors
      */
-    public <T> void writeXml(final T model, final OutputStream output) {
+    public void writeXml(final T model, final OutputStream output) {
         ObjectHelper.requireNonNull(model, "model");
         ObjectHelper.requireNonNull(output, "output");
-        writeStreaming(model, XMLOutputFactory.newFactory()::createXMLStreamWriter, output);
+        writeStreamingWithIntrospection(model, XMLOutputFactory.newFactory()::createXMLStreamWriter, output);
     }
 
     /**
@@ -395,13 +366,12 @@ public class JaxbConversionService {
      *
      * @param model the object to serialize
      * @param writer destination writer
-     * @param <T> type of the object
      * @throws JaxbConversionException on marshalling errors
      */
-    public <T> void writeXml(final T model, final Writer writer) {
+    public void writeXml(final T model, final Writer writer) {
         ObjectHelper.requireNonNull(model, "model");
         ObjectHelper.requireNonNull(writer, "writer");
-        writeStreaming(model, XMLOutputFactory.newFactory()::createXMLStreamWriter, writer);
+        writeStreamingWithIntrospection(model, XMLOutputFactory.newFactory()::createXMLStreamWriter, writer);
     }
 
     /**
@@ -409,15 +379,14 @@ public class JaxbConversionService {
      *
      * @param model the object to serialize
      * @param result destination result
-     * @param <T> type of the object
      * @throws JaxbConversionException on marshalling errors
      */
-    public <T> void writeXml(final T model, final Result result) {
+    public void writeXml(final T model, final Result result) {
         ObjectHelper.requireNonNull(model, "model");
         ObjectHelper.requireNonNull(result, "result");
         try {
             final Marshaller marshaller = createMarshaller();
-            marshalWithIntrospection(model, marshaller, result);
+            marshaller.marshal(this.jaxbMapper.apply(model), result);
         } catch (final JAXBException e) {
             throw new JaxbConversionException("Error serializing object " + model.getClass().getName(), e);
         }
@@ -428,10 +397,9 @@ public class JaxbConversionService {
      *
      * @param model the object to serialize
      * @param path destination path
-     * @param <T> type of the object
      * @throws JaxbConversionException on I/O or marshalling errors
      */
-    public <T> void writeXml(final T model, final Path path) {
+    public void writeXml(final T model, final Path path) {
         ObjectHelper.requireNonNull(model, "model");
         ObjectHelper.requireNonNull(path, "path");
         try ( OutputStream out = Files.newOutputStream(path) ) {
@@ -446,10 +414,9 @@ public class JaxbConversionService {
      *
      * @param model the object to serialize
      * @param file destination file
-     * @param <T> type of the object
      * @throws JaxbConversionException on I/O or marshalling errors
      */
-    public <T> void writeXml(final T model, final File file) {
+    public void writeXml(final T model, final File file) {
         ObjectHelper.requireNonNull(model, "model");
         ObjectHelper.requireNonNull(file, "file");
         writeXml(model, file.toPath());
@@ -463,37 +430,15 @@ public class JaxbConversionService {
         XMLStreamWriter create(O output) throws XMLStreamException;
     }
 
-    private <T, O> void writeStreaming(final T model, final XmlStreamWriterFactory<O> factory, final O output) {
+    private <O> void writeStreamingWithIntrospection(final T model, final XmlStreamWriterFactory<O> factory, final O output) {
         try {
             final XMLStreamWriter xmlStreamWriter = factory.create(output);
             final Marshaller marshaller = createMarshaller();
-            final JAXBIntrospector introspector = this.jaxbContext.createJAXBIntrospector();
-            final QName qname = introspector.getElementName(model);
-            if (qname == null) {
-                marshaller.marshal(wrapAsJAXBElement(model), xmlStreamWriter);
-            } else {
-                marshaller.marshal(model, xmlStreamWriter);
-            }
+            marshaller.marshal(this.jaxbMapper.apply(model), xmlStreamWriter);
             xmlStreamWriter.flush();
         } catch (final JAXBException | XMLStreamException e) {
             throw new JaxbConversionException("Error serializing object " + model.getClass().getName(), e);
         }
-    }
-
-    private <T> void marshalWithIntrospection(final T model, final Marshaller marshaller, final Result result) throws JAXBException {
-        final JAXBIntrospector introspector = this.jaxbContext.createJAXBIntrospector();
-        final QName qname = introspector.getElementName(model);
-        if (qname == null) {
-            marshaller.marshal(wrapAsJAXBElement(model), result);
-        } else {
-            marshaller.marshal(model, result);
-        }
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    private static <T> JAXBElement<T> wrapAsJAXBElement(final T model) {
-        final QName fallback = new QName(model.getClass().getSimpleName().toLowerCase(Locale.ROOT));
-        return new JAXBElement<>(fallback, (Class<T>) model.getClass(), model);
     }
 
     private Marshaller createMarshaller() throws JAXBException {
@@ -531,8 +476,7 @@ public class JaxbConversionService {
         return u;
     }
 
-    private <T> T readSecure(final StreamSource source, final Class<T> type, final String context) {
-        Objects.requireNonNull(type);
+    private T readSecure(final StreamSource source, final String context) {
         try {
             final XMLInputFactory inputFactory = XmlHelper.createSecureXmlInputFactory();
             final XMLStreamReader xsr = inputFactory.createXMLStreamReader(source);

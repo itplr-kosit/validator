@@ -13,7 +13,6 @@ import org.kosit.validator.impl.tasks.CreateReportsTask;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.impl.XvrlConversionService;
-import org.kosit.xvrl.model.ObjectFactory;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
@@ -55,7 +54,7 @@ class SerializeReportAction implements CheckTask {
         final Path file = this.outputDirectory.resolve(this.namingStrategy.createName(process.getName()));
         try {
             LOGGER.info("Serializing result to {}", file.toAbsolutePath());
-            final String xml = new XvrlConversionService().writeXml(new ObjectFactory().createReports(process.getXvrlReportSummary()));
+            final String xml = new XvrlConversionService().writeXml(process.getXvrlReportSummary());
             Files.write(file, xml.getBytes());
         } catch (final IOException e) {
             LOGGER.error("Can not serialize result report to {}", file.toAbsolutePath(), e);

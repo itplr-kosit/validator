@@ -162,7 +162,7 @@ public class ConfigurationLoader {
         LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
         final Scenario1ConversionService conversionService = new Scenario1ConversionService();
-        final Scenarios scenarios = conversionService.withEventHandler(handler).readXml(this.scenarioDefinition, Scenarios.class);
+        final Scenarios scenarios = conversionService.withEventHandler(handler).readXml(this.scenarioDefinition);
         if (handler.hasErrors()) {
             throw new IllegalStateException(
                     "Can not load scenarios from " + this.scenarioDefinition + " due to " + handler.getErrorDescription());

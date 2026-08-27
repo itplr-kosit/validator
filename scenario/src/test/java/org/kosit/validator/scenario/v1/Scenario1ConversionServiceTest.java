@@ -25,7 +25,7 @@ public class Scenario1ConversionServiceTest {
     }
 
     private @NonNull Scenarios readSample() throws URISyntaxException {
-        return this.service.readXml(SAMPLE.toURI(), Scenarios.class);
+        return this.service.readXml(SAMPLE.toURI());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class Scenario1ConversionServiceTest {
         final Scenarios original = readSample();
         final String xml = this.service.writeXml(original);
 
-        final Scenarios parsed = this.service.readXml(xml, Scenarios.class);
+        final Scenarios parsed = this.service.readXml(xml);
         assertThat(parsed.getName()).isEqualTo(original.getName());
         assertThat(parsed.getFrameworkVersion()).isEqualTo(original.getFrameworkVersion());
         assertThat(parsed.getScenario()).hasSameSizeAs(original.getScenario());
@@ -79,9 +79,8 @@ public class Scenario1ConversionServiceTest {
 
     @Test
     public void rejectsDocumentViolatingTheSchema() {
-        assertThatThrownBy(
-                () -> this.service.readXml("<scenarios xmlns=\"http://www.xoev.de/de/validator/framework/2/scenarios\"/>", Scenarios.class))
-                        .isInstanceOf(JaxbConversionException.class);
+        assertThatThrownBy(() -> this.service.readXml("<scenarios xmlns=\"http://www.xoev.de/de/validator/framework/2/scenarios\"/>"))
+                .isInstanceOf(JaxbConversionException.class);
     }
 
     @Test
