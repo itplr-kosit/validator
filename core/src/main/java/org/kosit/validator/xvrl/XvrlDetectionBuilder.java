@@ -1,11 +1,12 @@
 package org.kosit.validator.xvrl;
 
-import static org.kosit.validator.api.xmlerror.XmlError.Severity.SEVERITY_FATAL_ERROR;
+import static org.kosit.validator.api.xmlerror.XmlError.XmlSeverity.SEVERITY_FATAL_ERROR;
 
 import java.util.stream.Collectors;
 
 import org.kosit.base.string.StringHelper;
 import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.validator.api.xmlerror.XmlSeverity;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlLocationType;
 import org.kosit.xvrl.model.XvrlMessageType;
@@ -23,7 +24,7 @@ public class XvrlDetectionBuilder {
         return new XvrlDetectionBuilder();
     }
 
-    private static XvrlSeverityType translate(final XmlError.Severity severity) {
+    private static XvrlSeverityType translate(final XmlSeverity severity) {
         if (severity == SEVERITY_FATAL_ERROR) {
             return XvrlSeverityType.FATAL_ERROR;
         }

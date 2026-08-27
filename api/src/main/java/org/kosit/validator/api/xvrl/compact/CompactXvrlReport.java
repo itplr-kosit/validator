@@ -14,6 +14,7 @@ import javax.xml.namespace.QName;
 
 import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.validator.api.xmlerror.XmlSeverity;
 import org.kosit.xvrl.model.XvrlCreatorType;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlDocumentType;
@@ -323,7 +324,7 @@ public class CompactXvrlReport {
         }).toList();
     }
 
-    private XvrlSeverityType mapSeverity(final XmlError.Severity severity) {
+    private XvrlSeverityType mapSeverity(final XmlSeverity severity) {
         if (severity == null)
             return XvrlSeverityType.INFO;
         return switch (severity) {

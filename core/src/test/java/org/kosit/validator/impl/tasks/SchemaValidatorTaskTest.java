@@ -16,7 +16,7 @@ import org.apache.commons.io.input.BoundedInputStream;
 import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.xmlerror.XmlError.Severity;
+import org.kosit.validator.api.xmlerror.XmlSeverity;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.TestHelper;
@@ -63,7 +63,7 @@ public class SchemaValidatorTaskTest {
         result.getErrors().forEach(e -> {
             assertThat(e.getRowNumber()).isPositive();
             assertThat(e.getColumnNumber()).isPositive();
-            assertThat(e.getSeverity()).isEqualTo(Severity.SEVERITY_ERROR);
+            assertThat(e.getSeverity()).isEqualTo(XmlSeverity.SEVERITY_ERROR);
         });
     }
 

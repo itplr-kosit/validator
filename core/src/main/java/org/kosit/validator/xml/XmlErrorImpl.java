@@ -1,6 +1,7 @@
 package org.kosit.validator.xml;
 
 import org.kosit.validator.api.xmlerror.XmlError;
+import org.kosit.validator.api.xmlerror.XmlSeverity;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlLocationType;
 
@@ -8,17 +9,17 @@ public class XmlErrorImpl implements XmlError {
 
     private final String message;
 
-    private final Severity severity;
+    private final XmlSeverity severity;
 
     private Long rowNumber;
 
     private Long columnNumber;
 
-    private static Severity getSeverityFromDetection(final XvrlDetectionType xvrlDetection) {
+    private static XmlSeverity getSeverityFromDetection(final XvrlDetectionType xvrlDetection) {
         return switch (xvrlDetection.getSeverity()) {
-            case ERROR -> Severity.SEVERITY_ERROR;
-            case FATAL_ERROR -> Severity.SEVERITY_FATAL_ERROR;
-            default -> Severity.SEVERITY_WARNING;
+            case ERROR -> XmlSeverity.SEVERITY_ERROR;
+            case FATAL_ERROR -> XmlSeverity.SEVERITY_FATAL_ERROR;
+            default -> XmlSeverity.SEVERITY_WARNING;
         };
     }
 
@@ -38,7 +39,7 @@ public class XmlErrorImpl implements XmlError {
     }
 
     @Override
-    public Severity getSeverity() {
+    public XmlSeverity getSeverity() {
         return this.severity;
     }
 

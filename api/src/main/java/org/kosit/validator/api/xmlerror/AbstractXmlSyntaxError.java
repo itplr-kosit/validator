@@ -38,9 +38,9 @@ public abstract class AbstractXmlSyntaxError implements XmlError {
      * @return the severity
      */
     @Override
-    public XmlError.Severity getSeverity() {
+    public XmlSeverity getSeverity() {
         final XmlSyntaxErrorSeverity code = getSeverityCode();
-        return code != null ? Severity.valueOf(code.name()) : null;
+        return code != null ? XmlSeverity.valueOf(code.name()) : null;
     }
 
     @Override

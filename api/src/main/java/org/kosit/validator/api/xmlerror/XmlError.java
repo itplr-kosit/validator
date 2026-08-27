@@ -7,10 +7,6 @@ package org.kosit.validator.api.xmlerror;
  */
 public interface XmlError {
 
-    enum Severity {
-        SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL_ERROR;
-    }
-
     /**
      * Returns the error message.
      *
@@ -22,9 +18,9 @@ public interface XmlError {
      * Indicates the severity of the error message.
      *
      * @return The severity of the error.
-     * @see Severity
+     * @see XmlSeverity
      */
-    Severity getSeverity();
+    XmlSeverity getSeverity();
 
     /**
      * Optionally returns a row number from which the error originates.
