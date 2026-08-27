@@ -14,7 +14,7 @@ import jakarta.xml.bind.JAXBException;
  * Convenience {@link AbstractJaxbConversionService} preconfigured for the scenario JAXB model package
  * ({@code org.kosit.validator.scenario.model}).
  */
-public class Scenario1ConversionService extends AbstractJaxbConversionService<Scenarios> {
+public final class Scenario1ConversionService extends AbstractJaxbConversionService<Scenarios> {
 
     private static final JAXBContext JAXB_CTX;
 

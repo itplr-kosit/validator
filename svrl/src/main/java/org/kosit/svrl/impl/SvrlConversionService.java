@@ -11,7 +11,7 @@ import jakarta.xml.bind.JAXBException;
  * Convenience {@link AbstractJaxbConversionService} preconfigured for the SVRL JAXB model package
  * ({@code org.oclc.purl.dsdl.svrl}).
  */
-public class SvrlConversionService extends AbstractJaxbConversionService<SchematronOutputType> {
+public final class SvrlConversionService extends AbstractJaxbConversionService<SchematronOutputType> {
 
     private static final JAXBContext JAXB_CTX;
 

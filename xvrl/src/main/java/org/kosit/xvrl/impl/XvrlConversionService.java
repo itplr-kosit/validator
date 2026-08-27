@@ -14,13 +14,15 @@ import jakarta.xml.bind.JAXBException;
  * Convenience {@link AbstractJaxbConversionService} preconfigured for the XVRL JAXB model package
  * ({@code org.kosit.xvrl.model}).
  */
-public class XvrlConversionService extends AbstractJaxbConversionService<XvrlReportsType> {
+public final class XvrlConversionService extends AbstractJaxbConversionService<XvrlReportsType> {
 
     public static final String XSD_PATH = "/xsd";
 
     public static final String XVRL_XSD_PATH = XSD_PATH + "/xvrl-1.0.xsd";
 
     public static final JAXBContext JAXB_CTX;
+
+    public static final String NS_URI = "http://www.xproc.org/ns/xvrl";
 
     private static final Map<String, String> NS_PREFIX = new HashMap<>();
 
@@ -30,7 +32,7 @@ public class XvrlConversionService extends AbstractJaxbConversionService<XvrlRep
         } catch (final JAXBException e) {
             throw new IllegalStateException("Can not create XVRL JAXB context", e);
         }
-        NS_PREFIX.put("http://www.xproc.org/ns/xvrl", "");
+        NS_PREFIX.put(NS_URI, "");
     }
 
     /**

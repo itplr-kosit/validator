@@ -14,12 +14,10 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -40,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.JAXBIntrospector;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.PropertyException;
 import jakarta.xml.bind.Unmarshaller;
@@ -389,7 +386,7 @@ public abstract class AbstractJaxbConversionService<T> {
         ObjectHelper.requireNonNull(result, "result");
         try {
             final Marshaller marshaller = createMarshaller();
-            marshalWithIntrospection(model, marshaller, result);
+            marshaller.marshal(this.jaxbMapper.apply(model), result);
         } catch (final JAXBException e) {
             throw new JaxbConversionException("Error serializing object " + model.getClass().getName(), e);
         }
@@ -437,33 +434,11 @@ public abstract class AbstractJaxbConversionService<T> {
         try {
             final XMLStreamWriter xmlStreamWriter = factory.create(output);
             final Marshaller marshaller = createMarshaller();
-            final JAXBIntrospector introspector = this.jaxbContext.createJAXBIntrospector();
-            final QName qname = introspector.getElementName(model);
-            if (qname == null) {
-                marshaller.marshal(wrapAsJAXBElement(model), xmlStreamWriter);
-            } else {
-                marshaller.marshal(model, xmlStreamWriter);
-            }
+            marshaller.marshal(this.jaxbMapper.apply(model), xmlStreamWriter);
             xmlStreamWriter.flush();
         } catch (final JAXBException | XMLStreamException e) {
             throw new JaxbConversionException("Error serializing object " + model.getClass().getName(), e);
         }
-    }
-
-    private void marshalWithIntrospection(final T model, final Marshaller marshaller, final Result result) throws JAXBException {
-        final JAXBIntrospector introspector = this.jaxbContext.createJAXBIntrospector();
-        final QName qname = introspector.getElementName(model);
-        if (qname == null) {
-            marshaller.marshal(wrapAsJAXBElement(model), result);
-        } else {
-            marshaller.marshal(model, result);
-        }
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    private static <T> JAXBElement<T> wrapAsJAXBElement(final T model) {
-        final QName fallback = new QName(model.getClass().getSimpleName().toLowerCase(Locale.ROOT));
-        return new JAXBElement<>(fallback, (Class<T>) model.getClass(), model);
     }
 
     private Marshaller createMarshaller() throws JAXBException {
