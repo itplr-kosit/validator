@@ -39,8 +39,9 @@ public final class DefaultSimpleError implements SimpleError {
     public DefaultSimpleError(final @Nullable String systemId, final long lineNumber, final long columnNumber,
             @NonNull final CTStandardSeverity severity, @NonNull final String message, final @Nullable Exception linkedException) {
         this.systemId = systemId;
-        this.lineNumber = lineNumber;
-        this.columnNumber = columnNumber;
+        // Unify negative values for safe comparison
+        this.lineNumber = lineNumber > 0 ? lineNumber : -1;
+        this.columnNumber = columnNumber > 0 ? columnNumber : -1;
         this.severity = Objects.requireNonNull(severity, "Severity must not be null");
         this.message = Objects.requireNonNull(message, "Message must not be null");
         this.linkedException = linkedException;

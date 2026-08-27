@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
 public interface SimpleError {
 
     /**
-     * @return The object in which the error was found
+     * @return The system ID of the object that contains the error
      */
     @Nullable
     String getSystemID();
@@ -42,21 +42,29 @@ public interface SimpleError {
 
     /**
      * 
-     * @return The mandatory severity. May not be <code>null</code>.
+     * @return The severity. May not be <code>null</code>.
      */
     @NonNull
     CTStandardSeverity getSeverity();
 
     /**
      * 
-     * @return The main error message. May not be <code>null</code>.
+     * @return The error message. May not be <code>null</code>.
      */
     @NonNull
     String getMessage();
 
+    /**
+     * 
+     * @return Optional exception linked to the error.
+     */
     @Nullable
     Exception getLinkedException();
 
+    /**
+     * 
+     * @return <code>true</code> if a linked exception is present, <code>false</code> if not.
+     */
     default boolean hasLinkedException() {
         return getLinkedException() != null;
     }
