@@ -1,27 +1,26 @@
 # XRechnung E2E — kanonische Pipeline Steps 2–8
 
-Erzeugt: 2026-08-25T14:17:27.938667800 · Instanzen: 86
+Erzeugt: 2026-08-27T08:05:38.603094300 · Instanzen: 86
 
 **Bekannte Lücken dieses Laufs** (bei der Bewertung berücksichtigen):
-- `customLevel`-Overrides der Szenarien werden von Step 7 noch nicht angewandt — Severities wie in den Regeln deklariert (offene Frage step-07).
+- `customLevel`-Overrides werden von Step 7 angewandt (effektive Severity; Original als `cvrl:original-severity`).
 - `acceptMatch` der Szenarien wird nicht ausgewertet (läuft auf dem Report; ADR-004 Follow-up) — Verdikt ist rein detection-basiert.
 - Step 8 nutzt ein szenarioweites Default-Target (`ConformanceTarget.ofScenario`).
 
 ## Ergebnisverteilung
 
-- **CONFORMANT**: 82
-- **NON_CONFORMANT**: 4
+- **CONFORMANT**: 86
 
 ## Übersicht
 
 | Instanz | Ergebnis | Szenario | RuleSets | INFO | WARN | ERROR+ | Conformance je RuleSet |
 |---|---|---|---|---|---|---|---|
-| business-cases/extension/04.01a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 2 | 1 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
-| business-cases/extension/04.02a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 2 | 1 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
-| business-cases/extension/04.03a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 2 | 1 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
-| business-cases/extension/04.04a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 2 | 1 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
-| business-cases/extension/04.05a-INVOICE_uncefact.xml | NON_CONFORMANT | EN16931 XRechnung Extension (CII) | 3 | 2 | 0 | 4 | CrossIndustryInvoice_100pD16B.xsd → CONFORMANT<br>EN16931-CII-validation.xsl → NON_CONFORMANT<br>XRechnung-CII-validation.xsl → CONFORMANT |
-| business-cases/extension/05.01a-INVOICE_ubl.xml | NON_CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 2 | 1 | 1 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → NON_CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
+| business-cases/extension/04.01a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 3 | 0 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
+| business-cases/extension/04.02a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 3 | 0 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
+| business-cases/extension/04.03a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 3 | 0 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
+| business-cases/extension/04.04a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 3 | 0 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
+| business-cases/extension/04.05a-INVOICE_uncefact.xml | CONFORMANT | EN16931 XRechnung Extension (CII) | 3 | 6 | 0 | 0 | CrossIndustryInvoice_100pD16B.xsd → CONFORMANT<br>EN16931-CII-validation.xsl → CONFORMANT<br>XRechnung-CII-validation.xsl → CONFORMANT |
+| business-cases/extension/05.01a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung Extension (UBL Invoice) | 3 | 4 | 0 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
 | business-cases/standard/01.01a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung (UBL Invoice) | 3 | 3 | 0 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
 | business-cases/standard/01.01a-INVOICE_uncefact.xml | CONFORMANT | EN16931 XRechnung (CII) | 3 | 3 | 0 | 0 | CrossIndustryInvoice_100pD16B.xsd → CONFORMANT<br>EN16931-CII-validation.xsl → CONFORMANT<br>XRechnung-CII-validation.xsl → CONFORMANT |
 | business-cases/standard/01.02a-INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung (UBL Invoice) | 3 | 3 | 0 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
@@ -100,5 +99,5 @@ Erzeugt: 2026-08-25T14:17:27.938667800 · Instanzen: 86
 | technical-cases/cius/01.05_minimal_test_uncefact.xml | CONFORMANT | EN16931 XRechnung (CII) | 3 | 3 | 0 | 0 | CrossIndustryInvoice_100pD16B.xsd → CONFORMANT<br>EN16931-CII-validation.xsl → CONFORMANT<br>XRechnung-CII-validation.xsl → CONFORMANT |
 | technical-cases/cius/01.06_minimal_test_ubl.xml | CONFORMANT | EN16931 XRechnung (UBL Invoice) | 3 | 3 | 0 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
 | technical-cases/cius/01.06_minimal_test_uncefact.xml | CONFORMANT | EN16931 XRechnung (CII) | 3 | 3 | 0 | 0 | CrossIndustryInvoice_100pD16B.xsd → CONFORMANT<br>EN16931-CII-validation.xsl → CONFORMANT<br>XRechnung-CII-validation.xsl → CONFORMANT |
-| technical-cases/cvd/02.01a-cvd_INVOICE_ubl.xml | NON_CONFORMANT | EN16931 XRechnung CVD (UBL Invoice) | 3 | 2 | 0 | 1 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → NON_CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
-| technical-cases/cvd/02.01a-cvd_INVOICE_uncefact.xml | NON_CONFORMANT | EN16931 XRechnung CVD (CII) | 3 | 2 | 0 | 1 | CrossIndustryInvoice_100pD16B.xsd → CONFORMANT<br>EN16931-CII-validation.xsl → NON_CONFORMANT<br>XRechnung-CII-validation.xsl → CONFORMANT |
+| technical-cases/cvd/02.01a-cvd_INVOICE_ubl.xml | CONFORMANT | EN16931 XRechnung CVD (UBL Invoice) | 3 | 3 | 0 | 0 | UBL-Invoice-2.1.xsd → CONFORMANT<br>EN16931-UBL-validation.xsl → CONFORMANT<br>XRechnung-UBL-validation.xsl → CONFORMANT |
+| technical-cases/cvd/02.01a-cvd_INVOICE_uncefact.xml | CONFORMANT | EN16931 XRechnung CVD (CII) | 3 | 3 | 0 | 0 | CrossIndustryInvoice_100pD16B.xsd → CONFORMANT<br>EN16931-CII-validation.xsl → CONFORMANT<br>XRechnung-CII-validation.xsl → CONFORMANT |

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
   <metadata>
-    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen (Session 25.08.2026) -->
-    <timestamp>2026-08-25T14:17:03+02:00</timestamp>
+    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
+    <timestamp>2026-08-27T08:05:16+02:00</timestamp>
     <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
     <document href="business-cases/standard/03.02a-INVOICE_uncefact.xml"/>
   </metadata>
   <report>
     <metadata>
-      <!-- Offene Frage: how to deal with reports from other validator software (Session 25.08.2026) -->
+      <!-- Offene Frage: how to deal with reports from other validator software -->
       <creator name="parse-document"/>
-      <timestamp>2026-08-25T14:17:03+02:00</timestamp>
+      <timestamp>2026-08-27T08:05:16+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="document-parsed">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="document-parsed">
       <message cvrl:algorithm="SHA-512">bd6b2a0baa4faccbfbca44841204bf8d81f86286b1482743ec51e1489066c2390d56a897e485828350e0e1f26973980ef69f3f770562d10cb1e37f8308b5d040</message>
       <message cvrl:mime-type="application/xml"><rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
     <rsm:ExchangedDocumentContext>
@@ -253,101 +253,101 @@
   <report>
     <metadata>
       <creator name="detect-scenarios"/>
-      <timestamp>2026-08-25T14:17:04+02:00</timestamp>
+      <timestamp>2026-08-27T08:05:17+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="scenario-matched">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="scenario-matched">
       <message>Scenario 'EN16931 XRechnung (CII)' matched</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="select-scenario"/>
-      <timestamp>2026-08-25T14:17:04+02:00</timestamp>
+      <timestamp>2026-08-27T08:05:17+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="scenario-selected">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="scenario-selected">
       <message>Scenario 'EN16931 XRechnung (CII)' selected</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="retrieve-artifacts"/>
-      <timestamp>2026-08-25T14:17:04+02:00</timestamp>
+      <timestamp>2026-08-27T08:05:17+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="artifacts-retrieved">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="artifacts-retrieved">
       <message>Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' retrieved as xsd</message>
     </detection>
-    <detection severity="none" code="artifacts-retrieved">
+    <detection severity="info" code="artifacts-retrieved">
       <message>Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' retrieved as schematron-xslt2</message>
     </detection>
-    <detection severity="none" code="artifacts-retrieved">
+    <detection severity="info" code="artifacts-retrieved">
       <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' retrieved as schematron-xslt2</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="prepare-rules"/>
-      <timestamp>2026-08-25T14:17:05+02:00</timestamp>
+      <timestamp>2026-08-27T08:05:17+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="rule-compiled">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rule-compiled">
       <message>Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' compiled (XML Schema)</message>
     </detection>
-    <detection severity="none" code="rule-precompiled">
+    <detection severity="info" code="rule-precompiled">
       <message>Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' passed through (transpiled ahead of time)</message>
     </detection>
-    <detection severity="none" code="rule-precompiled">
+    <detection severity="info" code="rule-precompiled">
       <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' passed through (transpiled ahead of time)</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="apply-rules"/>
-      <timestamp>2026-08-25T14:17:05+02:00</timestamp>
+      <timestamp>2026-08-27T08:05:17+02:00</timestamp>
       <schema href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" language="XSD"/>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="rules-applied">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rules-applied">
       <message>Rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' applied without findings</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="apply-rules"/>
-      <timestamp>2026-08-25T14:17:05+02:00</timestamp>
+      <timestamp>2026-08-27T08:05:17+02:00</timestamp>
       <schema href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="rules-applied">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rules-applied">
       <message>Rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' applied without findings</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="apply-rules"/>
-      <timestamp>2026-08-25T14:17:05+02:00</timestamp>
+      <timestamp>2026-08-27T08:05:17+02:00</timestamp>
       <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="BR-DE-TMP-32">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="BR-DE-TMP-32">
       <message>[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 "Actual delivery date", BG-14 "Invoicing period" oder in jeder Rechnungsposition BG-26 "Invoice line period" enthalten. (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1])</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="compute-conformance"/>
-      <timestamp>2026-08-25T14:17:05+02:00</timestamp>
+      <timestamp>2026-08-27T08:05:17+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="target-conformant">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="target-conformant">
       <message>Target 'EN16931 XRechnung (CII)' conformant (rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd')</message>
     </detection>
-    <detection severity="none" code="target-conformant">
+    <detection severity="info" code="target-conformant">
       <message>Target 'EN16931 XRechnung (CII)' conformant (rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl')</message>
     </detection>
-    <detection severity="none" code="target-conformant">
+    <detection severity="info" code="target-conformant">
       <message>Target 'EN16931 XRechnung (CII)' conformant (rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl')</message>
     </detection>
   </report>

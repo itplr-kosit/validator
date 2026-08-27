@@ -100,11 +100,11 @@ public class CvrlWriterTest {
         assertThat(root.getLocalName()).isEqualTo("reports");
         assertThat(root.getAttributeNS(NS_CVRL, "conformant")).isEqualTo("true");
         assertThat(root.getAttributeNS(NS_CVRL, "status")).isEqualTo("COMPLETED");
-        // session 25.08.2026: document by reference only — no checksum attributes in the root metadata anymore
+        // document by reference only — no checksum attributes in the root metadata
         final Element document = (Element) root.getElementsByTagNameNS(NS, "document").item(0);
         assertThat(document.getAttribute("href")).isEqualTo("test-document.xml");
         assertThat(document.getAttributeNS(NS_CVRL, "checksum")).isEmpty();
-        // session 25.08.2026, variant B: document-parsed carries two messages — hash first, then the embedded payload
+        // document-parsed carries two messages — hash first, then the embedded payload
         final Element parseReport = reports(cvrl).get(0);
         final NodeList messages = parseReport.getElementsByTagNameNS(NS, "message");
         assertThat(messages.getLength()).isEqualTo(2);
@@ -149,7 +149,7 @@ public class CvrlWriterTest {
         assertThat(root.getAttributeNS(NS_CVRL, "conformant")).isEqualTo("false");
         // only the executed step is reported
         assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly("parse-document");
-        // session 25.08.2026 (P8): failed content is never echoed into the report
+        // failed content is never echoed into the report (injection safety)
         final NodeList messages = cvrl.getElementsByTagNameNS(NS, "message");
         for (int i = 0; i < messages.getLength(); i++) {
             assertThat(((Element) messages.item(i)).getAttributeNS(NS_CVRL, "mime-type")).isEmpty();

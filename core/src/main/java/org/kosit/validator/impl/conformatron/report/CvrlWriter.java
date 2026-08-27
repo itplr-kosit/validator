@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTSeverity;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
@@ -33,11 +34,12 @@ import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
+import org.kosit.validator.impl.conformatron.model.Detection;
 
 /**
  * <b>DRAFT intermediate format</b>: serializes a canonical pipeline run (steps 2–8) to a CVRL report — an XVRL profile
  * per {@code conformance-validation-report-spec.md}. Every opinionated default is tagged {@code D<n>} and listed as an
- * explicit decision point in the CVRL workshop document; nothing here is final until the team confirms.
+ * explicit decision point; nothing here is final until the team confirms.
  *
  * <ul>
  * <li><b>D1</b> extension namespace: {@code urn:conformatron:cvrl:draft} (spec placeholder was
@@ -50,12 +52,11 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
  * {@code error-count}, {@code warning-count}, {@code error-codes} (distinct, space-separated)</li>
  * <li><b>D5</b> root carries {@code cvrl:conformant} and {@code cvrl:status} (COMPLETED | CANCELLED); a cancelled run
  * still serializes — partial CVRL per ADR-004</li>
- * <li><b>D6</b> verbosity: full only. Per session 25.08.2026: document by reference in the root metadata; hash and
- * parsed document are <b>output</b> of the parse step and travel as two messages of the {@code document-parsed}
- * detection — message 1 carries the hash (algorithm as {@code cvrl:algorithm}, hash over the retained source bytes),
- * message 2 embeds the parsed document ({@code cvrl:mime-type}). The payload is only written on parse success — failed
- * content is never echoed (injection safety). Open point: a failed parse currently loses the document hash in the
- * report.</li>
+ * <li><b>D6</b> verbosity: full only. Document by reference in the root metadata; hash and parsed document are
+ * <b>output</b> of the parse step and travel as two messages of the {@code document-parsed} detection — message 1
+ * carries the hash (algorithm as {@code cvrl:algorithm}, hash over the retained source bytes), message 2 embeds the
+ * parsed document ({@code cvrl:mime-type}). The payload is only written on parse success — failed content is never
+ * echoed (injection safety). Open point: a failed parse currently loses the document hash in the report.</li>
  * <li><b>D7</b> scenario identity travels as detections (no {@code metadata/document} scenario embedding)</li>
  * <li><b>D8</b> APPLY_RULES reports carry {@code <schema href language>} plus {@code cvrl:engine-version} /
  * {@code cvrl:phase} from the prepared rule set</li>
@@ -160,8 +161,8 @@ public final class CvrlWriter {
         newline(writer, 1);
         writer.writeStartElement(NS_XVRL, "metadata");
         newline(writer, 2);
-        // session 25.08.2026 (B7): make runs distinguishable beyond the timestamp
-        writer.writeComment(" TODO: ggf. UUID pro Validierungslauf ergaenzen (Session 25.08.2026) ");
+        // open point: make runs distinguishable beyond the timestamp
+        writer.writeComment(" TODO: ggf. UUID pro Validierungslauf ergaenzen ");
         newline(writer, 2);
         writer.writeStartElement(NS_XVRL, "timestamp");
         writer.writeCharacters(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString());
@@ -171,7 +172,7 @@ public final class CvrlWriter {
         writer.writeAttribute("name", this.validatorName);
         writer.writeAttribute("version", this.validatorVersion);
         newline(writer, 2);
-        // D6 (session 25.08.2026): reference only — hash and parsed payload are output of the parse step
+        // D6: reference only — hash and parsed payload are output of the parse step
         writer.writeEmptyElement(NS_XVRL, "document");
         writer.writeAttribute("href", documentName);
         newline(writer, 1);
@@ -186,7 +187,7 @@ public final class CvrlWriter {
         writer.writeStartElement(NS_XVRL, "metadata");
         newline(writer, 3);
         if (action == CTActionType.PARSE_DOCUMENT) {
-            writer.writeComment(" Offene Frage: how to deal with reports from other validator software (Session 25.08.2026) ");
+            writer.writeComment(" Offene Frage: how to deal with reports from other validator software ");
             newline(writer, 3);
         }
         writer.writeEmptyElement(NS_XVRL, "creator");
@@ -241,7 +242,7 @@ public final class CvrlWriter {
             final CTParsedValidationSource parseEvidence) throws XMLStreamException, IOException {
         newline(writer, 2);
         writer.writeStartElement(NS_XVRL, "detection");
-        writer.writeAttribute("severity", detection.getSeverity().getID());
+        writer.writeAttribute("severity", xvrlSeverity(detection.getSeverity()));
         writer.writeAttribute("code", detection.getCode());
         // D9: line/col as extension attributes when known; the XPath location stays in the message
         if (detection.getLocation().getLineNumber() > 0) {
@@ -249,6 +250,10 @@ public final class CvrlWriter {
         }
         if (detection.getLocation().getColumnNumber() > 0) {
             writer.writeAttribute(NS_CVRL, "col", String.valueOf(detection.getLocation().getColumnNumber()));
+        }
+        // customLevel: severity is the effective one; the declared severity stays auditable
+        if (detection instanceof final Detection impl && impl.getOriginalSeverity() != null) {
+            writer.writeAttribute(NS_CVRL, "original-severity", xvrlSeverity(impl.getOriginalSeverity()));
         }
         if (XmlDetection.CODE_DOCUMENT_PARSED.equals(detection.getCode()) && parseEvidence != null) {
             writeParseEvidence(writer, parseEvidence);
@@ -263,10 +268,10 @@ public final class CvrlWriter {
     }
 
     /**
-     * Session 25.08.2026, variant B: the {@code document-parsed} detection carries two messages — first the document
-     * hash (over the retained source bytes, algorithm as {@code cvrl:algorithm}), then the parsed document embedded as
-     * evidence ({@code cvrl:mime-type}). Separate elements so a streaming consumer can skip the payload. The payload is
-     * only ever written for a successfully parsed document — failed content is not echoed (injection safety); non-XML
+     * The {@code document-parsed} detection carries two messages — first the document hash (over the retained source
+     * bytes, algorithm as {@code cvrl:algorithm}), then the parsed document embedded as evidence
+     * ({@code cvrl:mime-type}). Separate elements so a streaming consumer can skip the payload. The payload is only
+     * ever written for a successfully parsed document — failed content is not echoed (injection safety); non-XML
      * sources would be base64 with their own mime type (not applicable to the XML facade).
      */
     private static void writeParseEvidence(final XMLStreamWriter writer, final CTParsedValidationSource source)
@@ -330,7 +335,25 @@ public final class CvrlWriter {
     }
 
     private static String severityId(final CTDetectionList detections) {
-        return detections.getCount() == 0 ? "info" : detections.getWorstSeverity().getID();
+        return detections.getCount() == 0 ? "info" : xvrlSeverity(detections.getWorstSeverity());
+    }
+
+    /**
+     * Maps the model severity onto the XVRL severity vocabulary ({@code info | warning | error | fatal-error |
+     * unspecified}) — CVRL is an XVRL profile, so the report never emits raw model IDs (the API currently returns
+     * non-XVRL IDs such as {@code warn} and {@code none}; flagged upstream).
+     */
+    private static String xvrlSeverity(final CTSeverity severity) {
+        if (severity == CTStandardSeverity.ERROR) {
+            return "error";
+        }
+        if (severity == CTStandardSeverity.WARNING) {
+            return "warning";
+        }
+        if (severity == CTStandardSeverity.NONE) {
+            return "info";
+        }
+        return "unspecified";
     }
 
     private static void newline(final XMLStreamWriter writer, final int indent) throws XMLStreamException {

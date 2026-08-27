@@ -30,6 +30,7 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
+import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
 
 /**
  * <b>End-to-end walkthrough of the canonical pipeline, steps 2–8</b>, composed exclusively from the new-API actions —
@@ -86,8 +87,9 @@ public class CanonicalPipelineTest {
         assertThat(prepared.isSuccess()).isTrue();
         trace.addAll(codes(prepared.detections().getAll()));
 
-        // step 7: APPLY_RULES — on the retained bytes; findings do not fail the step
-        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets());
+        // step 7: APPLY_RULES — on the retained bytes; findings do not fail the step; scenario overrides applied
+        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets(),
+                SeverityOverrides.of(selected.selected()));
         assertThat(applied.isSuccess()).isTrue();
         trace.addAll(codes(applied.detections().getAll()));
 
