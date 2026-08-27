@@ -38,7 +38,7 @@ public class ComputeAcceptanceTask implements CheckTask {
 
     private static XvrlReportType generateXvrlReport(final SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> currentResult) {
         if (currentResult.isValid()) {
-            return builder(REPORT_NAME).add(detectionBuilder().addMessage(currentResult.getObject().name())).build();
+            return builder(REPORT_NAME).add(detectionBuilder().addMessage(currentResult.getObject().getID())).build();
         }
         return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detectionBuilder().addError(e)).toList()).build();
     }
@@ -57,8 +57,8 @@ public class ComputeAcceptanceTask implements CheckTask {
     private static boolean hasSchematronErrors(final Process process) {
         final SingleProcessingResult<List<ValidationResultsSchematron>, String> result = process.getResult(SchematronValidationTask.KEY);
         if (result != null && result.isValid()) {
-            return result.getObject().stream().map(ValidationResultsSchematron::getResults).flatMap(s -> s.getActivePatternOrActiveGroupAndFiredRule().stream())
-                    .anyMatch(FailedAssert.class::isInstance);
+            return result.getObject().stream().map(ValidationResultsSchematron::getResults)
+                    .flatMap(s -> s.getActivePatternOrActiveGroupAndFiredRule().stream()).anyMatch(FailedAssert.class::isInstance);
         }
         return false;
     }

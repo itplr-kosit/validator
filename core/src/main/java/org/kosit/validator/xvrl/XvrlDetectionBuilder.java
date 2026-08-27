@@ -23,7 +23,7 @@ public class XvrlDetectionBuilder {
     }
 
     private static XvrlSeverityType translate(final XmlSeverity severity) {
-        if (severity == XmlSeverity.SEVERITY_FATAL_ERROR) {
+        if (severity == XmlSeverity.FATAL_ERROR) {
             return XvrlSeverityType.FATAL_ERROR;
         }
         return XvrlSeverityType.ERROR;

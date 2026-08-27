@@ -98,7 +98,7 @@ public class DocumentParseTask implements CheckTask {
             if (LOGGER.isDebugEnabled())
                 LOGGER.debug("Exception while parsing {}", content.getName(), e);
             final XmlSyntaxError error = new XmlSyntaxError();
-            error.setSeverity(XmlSeverity.SEVERITY_FATAL_ERROR);
+            error.setSeverity(XmlSeverity.FATAL_ERROR);
             error.setMessage("IOException while reading resource " + content.getName() + ": " + e.getMessage());
             return new ParseOutcome(new SingleProcessingResult<>(Collections.singleton(error)), null);
         }

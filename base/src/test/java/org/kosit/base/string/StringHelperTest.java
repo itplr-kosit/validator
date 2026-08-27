@@ -73,10 +73,10 @@ public class StringHelperTest {
 
     @Test
     public void normalizeBlankToNull() {
-        assertThat(StringHelper.normalizeBlankToNull(null)).isNull();
-        assertThat(StringHelper.normalizeBlankToNull("")).isNull();
-        assertThat(StringHelper.normalizeBlankToNull(" \t\n")).isNull();
-        assertThat(StringHelper.normalizeBlankToNull(" a ")).isEqualTo(" a ");
+        assertThat(StringHelper.blankToNull(null)).isNull();
+        assertThat(StringHelper.blankToNull("")).isNull();
+        assertThat(StringHelper.blankToNull(" \t\n")).isNull();
+        assertThat(StringHelper.blankToNull(" a ")).isEqualTo(" a ");
     }
 
     @Test

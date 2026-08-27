@@ -94,7 +94,7 @@ class ValidationClientIT {
         final CompactValidationResultsDto dto = new ObjectMapper().readValue(report, CompactValidationResultsDto.class);
 
         assertThat(dto.results()).isNotEmpty();
-        assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE.name());
+        assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE.getID());
         assertThat(dto.acceptable()).isEqualTo(1);
     }
 
@@ -149,7 +149,7 @@ class ValidationClientIT {
         final CompactValidationResultsDto dto = new ObjectMapper().readValue(result, CompactValidationResultsDto.class);
 
         assertThat(dto.results()).isNotEmpty();
-        assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE.name());
+        assertThat(dto.results().get(0).acceptance()).isEqualTo(AcceptRecommendation.ACCEPTABLE.getID());
         assertThat(dto.acceptable()).isEqualTo(1);
     }
 

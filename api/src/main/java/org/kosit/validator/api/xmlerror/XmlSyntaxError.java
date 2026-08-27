@@ -107,7 +107,7 @@ public class XmlSyntaxError implements XmlError {
     public void log(final Logger logger) {
         final String msgTemplate = "{} At row {} at pos {}";
         final Object[] params = { getMessage(), getRowNumber(), getColumnNumber() };
-        if (getSeverity() == XmlSeverity.SEVERITY_WARNING) {
+        if (getSeverity() == XmlSeverity.WARNING) {
             logger.warn(msgTemplate, params);
         } else {
             logger.error(msgTemplate, params);

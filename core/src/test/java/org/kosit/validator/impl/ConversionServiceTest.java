@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
 import org.kosit.validator.impl.TestHelper.Invalid;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.scenario.v1.Scenario1ConversionService;
+import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.ScenarioSchemas;
 import org.kosit.validator.scenario.v1.Scenarios;
 
@@ -24,13 +24,13 @@ public class ConversionServiceTest {
 
     private static final URI SCHEMA = URI.create(ScenarioSchemas.class.getResource(ScenarioSchemas.SCENARIOS_V1_XSD_PATH).toExternalForm());
 
-    private Scenario1ConversionService service;
+    private Scenario1Converter service;
 
     private ContentRepository repository;
 
     @BeforeEach
     public void setup() {
-        this.service = new Scenario1ConversionService();
+        this.service = new Scenario1Converter();
         this.repository = Simple.createContentRepository();
     }
 

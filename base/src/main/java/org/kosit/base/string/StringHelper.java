@@ -45,10 +45,6 @@ public final class StringHelper {
         return left == null ? right == null : left.equals(right);
     }
 
-    public static String normalizeBlankToNull(final @Nullable String s) {
-        return s == null || s.isBlank() ? null : s;
-    }
-
     public static long nvl(final @Nullable Long v) {
         return v == null ? 0L : v.longValue();
     }

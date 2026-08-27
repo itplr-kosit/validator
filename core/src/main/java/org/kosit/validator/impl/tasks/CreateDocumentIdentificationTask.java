@@ -29,7 +29,7 @@ public class CreateDocumentIdentificationTask implements CheckTask {
             final SingleProcessingResult<DocumentIdentificationType, XmlSyntaxError> currentResult) {
         if (currentResult.isValid()) {
             final DocumentIdentificationType result = currentResult.getObject();
-            return builder(REPORT_NAME).add(detectionBuilder().addMessage(result.getDocumentReference()).severity(XvrlSeverityType.INFO))
+            return builder(REPORT_NAME).add(detectionBuilder().addMessage(result.documentReference()).severity(XvrlSeverityType.INFO))
                     .build();
         }
         return builder(REPORT_NAME).addAll(currentResult.getErrors().stream().map(e -> detectionBuilder().addError(e)).toList()).build();
@@ -45,15 +45,12 @@ public class CreateDocumentIdentificationTask implements CheckTask {
 
     @Override
     public ProcessStepResult<DocumentIdentificationType, XmlSyntaxError> check(final Process process) {
-        final DocumentIdentificationType documentIdentificationType = new DocumentIdentificationType();
-        final DocumentHash documentHash = new DocumentHash();
-        documentHash.setHashAlgorithm(process.getInput().getHashAlgorithmName());
-        documentHash.setHashValue(process.getInput().getHashBytes());
-        documentIdentificationType.setDocumentHash(documentHash);
-        documentIdentificationType.setDocumentReference(process.getInput().getName());
         addDocumentIdentification(process);
 
         final ProcessStepResult<DocumentIdentificationType, XmlSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
+        final DocumentIdentificationType documentIdentificationType = new DocumentIdentificationType(
+                new DocumentHash(process.getInput().getHashAlgorithmName(), process.getInput().getHashBytes()),
+                process.getInput().getName());
         final SingleProcessingResult<DocumentIdentificationType, XmlSyntaxError> result = new SingleProcessingResult<>(
                 documentIdentificationType);
         processStepResult.setResult(result);

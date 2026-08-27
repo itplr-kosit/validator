@@ -56,9 +56,9 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static XmlSeverity translateSeverity(final int severity) {
         return switch (severity) {
-            case ValidationEvent.WARNING -> XmlSeverity.SEVERITY_WARNING;
-            case ValidationEvent.ERROR -> XmlSeverity.SEVERITY_ERROR;
-            case ValidationEvent.FATAL_ERROR -> XmlSeverity.SEVERITY_FATAL_ERROR;
+            case ValidationEvent.WARNING -> XmlSeverity.WARNING;
+            case ValidationEvent.ERROR -> XmlSeverity.ERROR;
+            case ValidationEvent.FATAL_ERROR -> XmlSeverity.FATAL_ERROR;
             default -> throw new IllegalArgumentException("Unknown severity level " + severity);
         };
     }
@@ -92,17 +92,17 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     @Override
     public void warning(final SAXParseException exception) throws SAXException {
-        this.errors.add(createError(XmlSeverity.SEVERITY_WARNING, exception));
+        this.errors.add(createError(XmlSeverity.WARNING, exception));
     }
 
     @Override
     public void error(final SAXParseException exception) throws SAXException {
-        this.errors.add(createError(XmlSeverity.SEVERITY_ERROR, exception));
+        this.errors.add(createError(XmlSeverity.ERROR, exception));
     }
 
     @Override
     public void fatalError(final SAXParseException exception) throws SAXException {
-        this.errors.add(createError(XmlSeverity.SEVERITY_FATAL_ERROR, exception));
+        this.errors.add(createError(XmlSeverity.FATAL_ERROR, exception));
     }
 
     @Override
@@ -118,23 +118,23 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
                 e.setColumnNumber(Long.valueOf(loc.getColumnNumber()));
         }
         e.setMessage("Error processing " + saxonMsg.getContent().getStringValue());
-        e.setSeverity(saxonMsg.isTerminate() ? XmlSeverity.SEVERITY_FATAL_ERROR : XmlSeverity.SEVERITY_WARNING);
+        e.setSeverity(saxonMsg.isTerminate() ? XmlSeverity.FATAL_ERROR : XmlSeverity.WARNING);
         this.errors.add(e);
     }
 
     @Override
     public void warning(final TransformerException exception) throws TransformerException {
-        this.errors.add(createError(XmlSeverity.SEVERITY_WARNING, exception));
+        this.errors.add(createError(XmlSeverity.WARNING, exception));
     }
 
     @Override
     public void error(final TransformerException exception) throws TransformerException {
-        this.errors.add(createError(XmlSeverity.SEVERITY_ERROR, exception));
+        this.errors.add(createError(XmlSeverity.ERROR, exception));
     }
 
     @Override
     public void fatalError(final TransformerException exception) throws TransformerException {
-        this.errors.add(createError(XmlSeverity.SEVERITY_FATAL_ERROR, exception));
+        this.errors.add(createError(XmlSeverity.FATAL_ERROR, exception));
     }
 
     public String getErrorDescription() {

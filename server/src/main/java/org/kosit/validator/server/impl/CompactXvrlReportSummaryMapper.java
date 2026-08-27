@@ -53,9 +53,9 @@ public final class CompactXvrlReportSummaryMapper {
         });
 
         // processingError is often omitted in the compact format or integrated into errorSummary
-        return new CompactResultDto(ref, StringHelper.normalizeBlankToNull(r.getChecksum()), null,
-                StringHelper.normalizeBlankToNull(r.getScenario()), r.getAcceptance() != null ? r.getAcceptance().name() : null,
-                StringHelper.normalizeBlankToNull(r.getErrorSummary()), layers);
+        return new CompactResultDto(ref, StringHelper.blankToNull(r.getChecksum()), null,
+                StringHelper.blankToNull(r.getScenario()), r.getAcceptance() != null ? r.getAcceptance().getID() : null,
+                StringHelper.blankToNull(r.getErrorSummary()), layers);
     }
 
     private static CompactViolationDto toViolationDto(final XvrlDetectionType d) {
@@ -72,20 +72,20 @@ public final class CompactXvrlReportSummaryMapper {
             return null;
         }).filter(s -> s != null).findFirst().orElse(null);
 
-        return new CompactViolationDto(StringHelper.normalizeBlankToNull(message), StringHelper.normalizeBlankToNull(severity), line.get(),
-                col.get(), StringHelper.normalizeBlankToNull(d.getId()));
+        return new CompactViolationDto(StringHelper.blankToNull(message), StringHelper.blankToNull(severity), line.get(),
+                col.get(), StringHelper.blankToNull(d.getId()));
     }
 
     private static CompactViolationDto toViolationDto(final CompactXvrlReport.Violation v) {
-        return new CompactViolationDto(StringHelper.normalizeBlankToNull(v.message()), StringHelper.normalizeBlankToNull(v.severity()),
-                v.line(), v.row(), StringHelper.normalizeBlankToNull(v.id()));
+        return new CompactViolationDto(StringHelper.blankToNull(v.message()), StringHelper.blankToNull(v.severity()),
+                v.line(), v.row(), StringHelper.blankToNull(v.id()));
     }
 
     private static ValidatorEngineDto toDto(final ValidatorEngineInformation info) {
         if (info == null) {
             return null;
         }
-        return new ValidatorEngineDto(StringHelper.normalizeBlankToNull(info.name()), StringHelper.normalizeBlankToNull(info.version()), "",
+        return new ValidatorEngineDto(StringHelper.blankToNull(info.name()), StringHelper.blankToNull(info.version()), "",
                 "");
     }
 

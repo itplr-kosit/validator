@@ -149,7 +149,7 @@ public class CompactXvrlReport {
      * @param recommendation acceptance recommendation
      */
     public void setAcceptance(final AcceptRecommendation recommendation) {
-        original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_ACCEPTANCE, CVRL_PREFIX), recommendation.name());
+        original.getOtherAttributes().put(new QName(CVRL_NS, ATTR_ACCEPTANCE, CVRL_PREFIX), recommendation.getID());
     }
 
     /**
@@ -328,9 +328,9 @@ public class CompactXvrlReport {
         if (severity == null)
             return XvrlSeverityType.INFO;
         return switch (severity) {
-            case SEVERITY_WARNING -> XvrlSeverityType.WARNING;
-            case SEVERITY_ERROR -> XvrlSeverityType.ERROR;
-            case SEVERITY_FATAL_ERROR -> XvrlSeverityType.FATAL_ERROR;
+            case WARNING -> XvrlSeverityType.WARNING;
+            case ERROR -> XvrlSeverityType.ERROR;
+            case FATAL_ERROR -> XvrlSeverityType.FATAL_ERROR;
         };
     }
 

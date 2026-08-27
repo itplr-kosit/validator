@@ -17,9 +17,9 @@ public class XmlErrorImpl implements XmlError {
 
     private static XmlSeverity getSeverityFromDetection(final XvrlDetectionType xvrlDetection) {
         return switch (xvrlDetection.getSeverity()) {
-            case ERROR -> XmlSeverity.SEVERITY_ERROR;
-            case FATAL_ERROR -> XmlSeverity.SEVERITY_FATAL_ERROR;
-            default -> XmlSeverity.SEVERITY_WARNING;
+            case ERROR -> XmlSeverity.ERROR;
+            case FATAL_ERROR -> XmlSeverity.FATAL_ERROR;
+            default -> XmlSeverity.WARNING;
         };
     }
 

@@ -63,7 +63,7 @@ public class SchemaValidatorTaskTest {
         result.getErrors().forEach(e -> {
             assertThat(e.getRowNumber()).isPositive();
             assertThat(e.getColumnNumber()).isPositive();
-            assertThat(e.getSeverity()).isEqualTo(XmlSeverity.SEVERITY_ERROR);
+            assertThat(e.getSeverity()).isEqualTo(XmlSeverity.ERROR);
         });
     }
 
