@@ -38,7 +38,7 @@ public final class ValidationSource implements CTValidationSource {
 
     private final boolean complete;
 
-    public static final @NonNull ValidationSource completeXML(final @NonNull CTReadResource readResource) {
+    public static final @NonNull ValidationSource completeXml(final @NonNull CTReadResource readResource) {
         return new ValidationSource(readResource, CTSyntax.XML, false);
     }
 

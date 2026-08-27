@@ -28,7 +28,7 @@ import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
-import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XmlSyntaxError;
 import org.xml.sax.SAXException;
 
 /**
@@ -48,7 +48,7 @@ public class SchemaValidatorTaskTest {
     @Test
     public void testSimple() throws MalformedURLException {
         final Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
-        final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
+        final ProcessStepResult<Boolean, XmlSyntaxError> processStepResult = this.service.check(process);
         final SingleProcessingResult<?, ?> result = processStepResult.getResult();
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
@@ -58,8 +58,8 @@ public class SchemaValidatorTaskTest {
     public void testValidationFailure() throws MalformedURLException {
         final CTReadResource input = TestHelper.read(Simple.SCHEMA_INVALID);
         final Process process = TestProcessBuilder.create(input).build();
-        final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
-        final SingleProcessingResult<Boolean, XMLSyntaxError> result = processStepResult.getResult();
+        final ProcessStepResult<Boolean, XmlSyntaxError> processStepResult = this.service.check(process);
+        final SingleProcessingResult<Boolean, XmlSyntaxError> result = processStepResult.getResult();
         assertThat(result.isValid()).isFalse();
         result.getErrors().forEach(e -> {
             assertThat(e.getRowNumber()).isPositive();
@@ -70,7 +70,7 @@ public class SchemaValidatorTaskTest {
 
     @Test
     public void testSchemaReferences() {
-        final Schema reportInputSchema = SchemaProvider.getXVRLSchema();
+        final Schema reportInputSchema = SchemaProvider.getXvrlSchema();
         assertThat(reportInputSchema).isNotNull();
     }
 
@@ -81,7 +81,7 @@ public class SchemaValidatorTaskTest {
             final Process process = TestProcessBuilder
                     .create(ReadResource.inMemory(Resource.of(Simple.SIMPLE_VALID.toASCIIString(), inputStream)), false)
                     .setParseResult(TestHelper.read(Simple.SIMPLE_VALID)).build();
-            final SingleProcessingResult<Boolean, XMLSyntaxError> result = this.service.check(process).getResult();
+            final SingleProcessingResult<Boolean, XmlSyntaxError> result = this.service.check(process).getResult();
             assertThat(result).isNotNull();
             assertThat(result.isValid()).isTrue();
         }
@@ -98,7 +98,7 @@ public class SchemaValidatorTaskTest {
             // set limit and length for serialization to 5 bytes
             this.service.setInMemoryLimit(5L);
 
-            final SingleProcessingResult<Boolean, XMLSyntaxError> result = this.service.check(process).getResult();
+            final SingleProcessingResult<Boolean, XmlSyntaxError> result = this.service.check(process).getResult();
             assertThat(result).isNotNull();
             assertThat(result.isValid()).isTrue();
         }
@@ -114,8 +114,8 @@ public class SchemaValidatorTaskTest {
         when(schema.newValidator()).thenReturn(validator);
         doThrow(SAXException.class).when(validator).validate(any());
         scenario.setSchema(schema);
-        final ProcessStepResult<Boolean, XMLSyntaxError> processStepResult = this.service.check(process);
-        final SingleProcessingResult<Boolean, XMLSyntaxError> result = processStepResult.getResult();
+        final ProcessStepResult<Boolean, XmlSyntaxError> processStepResult = this.service.check(process);
+        final SingleProcessingResult<Boolean, XmlSyntaxError> result = processStepResult.getResult();
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
     }

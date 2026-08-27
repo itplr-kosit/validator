@@ -30,9 +30,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kosit.validator.helper.ResourceHelperExtension;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XMLDetection;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 
@@ -41,7 +41,7 @@ import org.kosit.validator.impl.conformatron.source.Resource;
  *
  * @author Andreas Schmitz
  */
-public class ParseXMLActionTest {
+public class ParseXmlActionTest {
 
     private static final String WELLFORMED = "<?xml version=\"1.0\"?><doc><child>content</child></doc>";
 
@@ -50,11 +50,11 @@ public class ParseXMLActionTest {
     @RegisterExtension
     private final ResourceHelperExtension resHelper = new ResourceHelperExtension();
 
-    private ParseXMLAction action;
+    private ParseXmlAction action;
 
     @BeforeEach
     public void setup() {
-        this.action = new ParseXMLAction();
+        this.action = new ParseXmlAction();
     }
 
     @Test
@@ -71,7 +71,7 @@ public class ParseXMLActionTest {
         final ReadResource readRes = ReadResource.of(res, resHelper.get());
         assertNotNull(readRes);
 
-        final ParseXMLResult result = this.action.execute(readRes);
+        final ParseXmlResult result = this.action.execute(readRes);
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getResult()).isSameAs(CTStepResult.SUCCESS);
@@ -84,7 +84,7 @@ public class ParseXMLActionTest {
         assertThat(result.getParsedSource().getSource().getDetectedSyntax()).isEqualTo(CTSyntax.XML);
         assertThat(result.getDetectionList().getCount()).isEqualTo(1);
         assertThat(result.getDetectionList().getWorstSeverity()).isEqualTo(CTStandardSeverity.NONE);
-        assertThat(result.getDetectionList().getAll().get(0).getCode()).isEqualTo(XMLDetection.CODE_DOCUMENT_PARSED);
+        assertThat(result.getDetectionList().getAll().get(0).getCode()).isEqualTo(XmlDetection.CODE_DOCUMENT_PARSED);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ParseXMLActionTest {
         final ReadResource readRes = ReadResource.of(res, resHelper.get());
         assertNotNull(readRes);
 
-        final ParseXMLResult result = this.action.execute(readRes);
+        final ParseXmlResult result = this.action.execute(readRes);
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.getResult()).isEqualTo(CTStepResult.FAILURE);
@@ -106,7 +106,7 @@ public class ParseXMLActionTest {
         assertThat(result.getDetectionList().containsAtLeastOneError()).isTrue();
         assertThat(result.getDetectionList().getWorstSeverity()).isEqualTo(CTStandardSeverity.ERROR);
         assertThat(result.getDetectionList().getAll()).allSatisfy(detection -> {
-            assertThat(detection.getCode()).isEqualTo(XMLDetection.CODE_NOT_WELLFORMED);
+            assertThat(detection.getCode()).isEqualTo(XmlDetection.CODE_NOT_WELLFORMED);
             assertThat(detection.getLocation().getResourceId()).isEqualTo("broken.xml");
             assertThat(detection.getLocation().hasLineNumber()).isTrue();
         });

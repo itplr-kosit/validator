@@ -9,7 +9,7 @@ import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XMLDetection;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.engine.SchematronValidation.AdHocValidationResult;
 
 /**
@@ -72,6 +72,6 @@ public class SchematronValidationTest {
                 Simple.REPOSITORY_URI.resolve("simple.sch"));
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.detections().getAll()).extracting("code").contains(XMLDetection.CODE_NOT_WELLFORMED);
+        assertThat(result.detections().getAll()).extracting("code").contains(XmlDetection.CODE_NOT_WELLFORMED);
     }
 }

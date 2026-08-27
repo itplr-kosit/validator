@@ -26,9 +26,9 @@ import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XMLDetection;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 
 /**
@@ -60,7 +60,7 @@ public class CanonicalPipelineTest {
     /** Runs the full chain 2–8 and returns the step-8 result; asserts every intermediate step succeeded. */
     private ComputeConformanceActionResult runPipeline(final URI document, final List<String> trace) {
         // step 2: PARSE_DOCUMENT — DOM-based reference action, retains bytes + hash
-        final ParseXMLResult parsed = new ParseXMLAction().execute(TestHelper.read(document));
+        final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
         trace.addAll(codes(parsed.getDetectionList().getAll()));
 
@@ -113,7 +113,7 @@ public class CanonicalPipelineTest {
 
         // the full audit trail across all steps, in pipeline order
         assertThat(trace).containsExactly(//
-                XMLDetection.CODE_DOCUMENT_PARSED, // step 2
+                XmlDetection.CODE_DOCUMENT_PARSED, // step 2
                 DetectScenariosAction.CODE_SCENARIO_MATCHED, // step 3
                 SelectScenarioAction.CODE_SCENARIO_SELECTED, // step 4
                 RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, // step

@@ -16,7 +16,7 @@ import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.scenario.v1.Scenario1ConversionService;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;
@@ -61,7 +61,7 @@ public class ConfigurationLoader {
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
-            final SingleProcessingResult<XdmNode, XMLSyntaxError> result = new DocumentParseTask(processor)
+            final SingleProcessingResult<XdmNode, XmlSyntaxError> result = new DocumentParseTask(processor)
                     .parseDocument(ReadResource.inMemory(Resource.of(scenarioDefinition.toURL())));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition

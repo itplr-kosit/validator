@@ -15,10 +15,10 @@ import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.xml.resolve.StrictRelativeResolvingStrategy;
 import org.kosit.validator.xvrl.XvrlSerializer;
-import org.kosit.xvrl.model.XVRLDetectionType;
-import org.kosit.xvrl.model.XVRLReportType;
-import org.kosit.xvrl.model.XVRLReportsType;
-import org.kosit.xvrl.model.XVRLSupplementalType;
+import org.kosit.xvrl.model.XvrlDetectionType;
+import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlReportsType;
+import org.kosit.xvrl.model.XvrlSupplementalType;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
@@ -38,10 +38,10 @@ public class BaseResolverConfigurationTest {
     public static final String NOT_EXISTING_SCHEME = "not-existing-scheme";
 
     public static void main(final String[] args) throws JAXBException, SaxonApiException {
-        final XVRLReportsType report = new XVRLReportsType();
-        final XVRLReportType r = new XVRLReportType();
-        final XVRLDetectionType d = new XVRLDetectionType();
-        final XVRLSupplementalType s = new XVRLSupplementalType();
+        final XvrlReportsType report = new XvrlReportsType();
+        final XvrlReportType r = new XvrlReportType();
+        final XvrlDetectionType d = new XvrlDetectionType();
+        final XvrlSupplementalType s = new XvrlSupplementalType();
         s.setId("bla");
         final XdmNode node = TestHelper.load(TestHelper.Simple.SIMPLE_VALID);
         s.getContent().add(NodeOverNodeInfo.wrap(node.getUnderlyingNode()).getOwnerDocument().getDocumentElement());

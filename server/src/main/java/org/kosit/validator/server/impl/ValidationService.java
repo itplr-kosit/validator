@@ -15,8 +15,8 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.xmlerror.XmlError;
-import org.kosit.validator.api.xvrl.compact.CompactXVRLReport;
-import org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.CompactXvrlReport;
+import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
 import org.kosit.validator.api.xvrl.compact.ValidatorEngineInformation;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.EngineInformation;
@@ -24,7 +24,7 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.server.config.ValidationConfig;
-import org.kosit.xvrl.model.XVRLDetectionType;
+import org.kosit.xvrl.model.XvrlDetectionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,14 +66,14 @@ public class ValidationService {
         return result;
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final CTReadResource input, final VResult defaultResult) {
+    public CompactXvrlReportSummary convertMinimalXvrl(final CTReadResource input, final VResult defaultResult) {
         return convertMinimalXvrl(Map.of(input, defaultResult));
     }
 
-    public CompactXVRLReportSummary convertMinimalXvrl(final Map<CTReadResource, VResult> defaultResults) {
-        final CompactXVRLReportSummary summary = CompactXVRLReportSummary.create();
+    public CompactXvrlReportSummary convertMinimalXvrl(final Map<CTReadResource, VResult> defaultResults) {
+        final CompactXvrlReportSummary summary = CompactXvrlReportSummary.create();
         defaultResults.forEach((input, result) -> {
-            final CompactXVRLReport report = CompactXVRLReport.create();
+            final CompactXvrlReport report = CompactXvrlReport.create();
             report.setFilename(input.getName());
             report.setCreator("compact-report");
             report.setScenario(detectSelectedScenario(result));
@@ -105,7 +105,7 @@ public class ValidationService {
     private String detectSelectedScenario(final VResult defaultResult) {
         return defaultResult.getReportSummary().getReports().stream().filter(rep -> rep.getId().equals(ScenarioSelectionTask.METADATA.id()))
                 .findFirst().map(rep -> rep.getDetection().stream().filter(d -> d.getId() != null && d.getId().equals("scenario"))
-                        .findFirst().map(XVRLDetectionType::getCode).orElse("null"))
+                        .findFirst().map(XvrlDetectionType::getCode).orElse("null"))
                 .orElse("null");
     }
 

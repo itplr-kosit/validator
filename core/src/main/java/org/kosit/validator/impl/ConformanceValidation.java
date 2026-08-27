@@ -17,10 +17,10 @@ import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.xvrl.model.XVRLMetadataType;
-import org.kosit.xvrl.model.XVRLTimestampType;
-import org.kosit.xvrl.model.XVRLValidatorType;
+import org.kosit.validator.model.XmlSyntaxError;
+import org.kosit.xvrl.model.XvrlMetadataType;
+import org.kosit.xvrl.model.XvrlTimestampType;
+import org.kosit.xvrl.model.XvrlValidatorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,17 +73,17 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     }
 
     /**
-     * Creates the XVRL report metadata for a validation run (engine name, version, timestamp).
+     * Creates the Xvrl report metadata for a validation run (engine name, version, timestamp).
      *
      * @return the metadata
      */
-    public XVRLMetadataType createMetadata() {
-        final XVRLMetadataType metadata = new XVRLMetadataType();
-        final XVRLTimestampType timestamp = new XVRLTimestampType();
+    public XvrlMetadataType createMetadata() {
+        final XvrlMetadataType metadata = new XvrlMetadataType();
+        final XvrlTimestampType timestamp = new XvrlTimestampType();
         timestamp.setValue(JaxbHelper.createTimestamp());
         metadata.getTimestamps().add(timestamp);
 
-        final XVRLValidatorType validator = new XVRLValidatorType();
+        final XvrlValidatorType validator = new XvrlValidatorType();
         validator.setName(this.engineInformation.getName());
         validator.setVersion(this.engineInformation.getVersion());
         metadata.getValidators().add(validator);
@@ -114,12 +114,12 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     }
 
     private static VResult createResult(final Process process) {
-        final org.kosit.validator.impl.model.SingleProcessingResult<AcceptRecommendation, XMLSyntaxError> acceptStatusResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> acceptStatusResult = process
                 .getResult(ComputeAcceptanceTask.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
         defaultResult.setWellformed(process.getResult(DocumentParseTask.KEY).isValid());
         defaultResult.setReportSummary(process.getXvrlReportSummary());
-        final org.kosit.validator.impl.model.SingleProcessingResult<Boolean, XMLSyntaxError> schemaValidationResult = process
+        final org.kosit.validator.impl.model.SingleProcessingResult<Boolean, XmlSyntaxError> schemaValidationResult = process
                 .getResult(SchemaValidationTask.KEY);
         if (schemaValidationResult != null) {
             defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
@@ -134,7 +134,7 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
         return defaultResult;
     }
 
-    private static List<XmlError> convertErrors(final Collection<XMLSyntaxError> errors) {
+    private static List<XmlError> convertErrors(final Collection<XmlSyntaxError> errors) {
         // noinspection unchecked
         return (List<XmlError>) (List<?>) errors;
     }

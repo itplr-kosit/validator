@@ -10,9 +10,9 @@ import java.nio.file.Path;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
-import org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
-import org.kosit.xvrl.model.XVRLReportsType;
+import org.kosit.xvrl.model.XvrlReportsType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -52,7 +52,7 @@ class ValidationClientIT {
     void shouldValidateXml() {
         final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
 
-        final XVRLReportsType result = validationClient.validate(input);
+        final XvrlReportsType result = validationClient.validate(input);
 
         assertThat(result).isNotNull();
         assertThat(result.getReports().isEmpty()).isFalse();
@@ -62,7 +62,7 @@ class ValidationClientIT {
     void shouldValidateMinimalXml() {
         final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
 
-        final CompactXVRLReportSummary result = validationClient.validateMinimal(input);
+        final CompactXvrlReportSummary result = validationClient.validateMinimal(input);
 
         assertThat(result.getReports()).isNotNull();
         assertThat(result.getReports().isEmpty()).isFalse();
@@ -102,8 +102,8 @@ class ValidationClientIT {
     void shouldValidateXmlWithMetadata() {
         final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
 
-        final ValidationResponse<XVRLReportsType> result = validationClient.validateWithMetadata(input);
-        final XVRLReportsType report = result.getBody();
+        final ValidationResponse<XvrlReportsType> result = validationClient.validateWithMetadata(input);
+        final XvrlReportsType report = result.getBody();
 
         assertThat(report).isNotNull();
         assertThat(report.getReports().isEmpty()).isFalse();
@@ -126,8 +126,8 @@ class ValidationClientIT {
     void shouldValidateMinimalXmlWithMetadata() {
         final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
 
-        final ValidationResponse<CompactXVRLReportSummary> result = validationClient.validateMinimalWithMetadata(input);
-        final CompactXVRLReportSummary report = result.getBody();
+        final ValidationResponse<CompactXvrlReportSummary> result = validationClient.validateMinimalWithMetadata(input);
+        final CompactXvrlReportSummary report = result.getBody();
 
         assertThat(report.getReports()).isNotNull();
         assertThat(report.getReports().isEmpty()).isFalse();

@@ -26,7 +26,7 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.source.CTValidationSource;
-import org.kosit.base.xml.XMLHelper;
+import org.kosit.base.xml.XmlHelper;
 import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.source.DomValidationSource;
@@ -57,9 +57,9 @@ import org.xml.sax.SAXParseException;
  * @author Andreas Schmitz
  * @author Philip Helger
  */
-public class ParseXMLAction extends AbstractParseDocumentAction {
+public class ParseXmlAction extends AbstractParseDocumentAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParseXMLAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParseXmlAction.class);
 
     @Override
     public String getName() {
@@ -72,41 +72,41 @@ public class ParseXMLAction extends AbstractParseDocumentAction {
      * @param input the legacy input carrying the document
      * @return the result including the {@link DomValidationSource} on success and any detections
      */
-    public ParseXMLResult execute(final CTReadResource input) {
+    public ParseXmlResult execute(final CTReadResource input) {
         Objects.requireNonNull(input);
 
-        final CTValidationSource validationSource = ValidationSource.completeXML(input);
+        final CTValidationSource validationSource = ValidationSource.completeXml(input);
         final List<CTDetection> errors = new ArrayList<>();
         try {
             // Setup XML reader
-            final DocumentBuilder builder = XMLHelper.createSafeDocumentBuilder();
+            final DocumentBuilder builder = XmlHelper.createSafeDocumentBuilder();
             builder.setErrorHandler(new CollectingErrorHandler(validationSource.getName(), errors));
 
             // Main reading
             final Document document = builder.parse(input.getSourceStream(), validationSource.getName());
             if (errors.isEmpty()) {
                 // Parsing succeeded
-                return new ParseXMLResult(CTStepResult.SUCCESS, DetectionList.of(XMLDetection.success(validationSource)),
+                return new ParseXmlResult(CTStepResult.SUCCESS, DetectionList.of(XmlDetection.success(validationSource)),
                         new DomValidationSource(validationSource, document));
             }
         } catch (final SAXParseException e) {
             // already collected by CollectingErrorHandler#fatalError unless thrown directly
             if (errors.stream().noneMatch(d -> d.getLinkedException() == e)) {
-                errors.add(XMLDetection.errorNotWellformed(validationSource.getName(), e));
+                errors.add(XmlDetection.errorNotWellformed(validationSource.getName(), e));
             }
         } catch (final SAXException e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exception while parsing {}", validationSource.getName(), e);
             }
-            errors.add(XMLDetection.errorNotWellformed(validationSource.getName(), e));
+            errors.add(XmlDetection.errorNotWellformed(validationSource.getName(), e));
         } catch (final IOException e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("IOException while parsing {}", validationSource.getName(), e);
             }
-            errors.add(XMLDetection.ioError(validationSource.getName(), e));
+            errors.add(XmlDetection.ioError(validationSource.getName(), e));
         }
 
         // Parsing failed (for whatever reason)
-        return new ParseXMLResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(validationSource));
+        return new ParseXmlResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(validationSource));
     }
 }

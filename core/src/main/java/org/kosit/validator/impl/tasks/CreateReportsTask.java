@@ -7,13 +7,13 @@ import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.validator.xvrl.XVRLReportBuilder;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
+import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.validator.xvrl.XvrlSerializer;
 import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class CreateReportsTask implements CheckTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReportsTask.class);
 
-    public static final Process.ProcessKey<List<BusinessReport>, XMLSyntaxError> KEY = new Process.ProcessKey<>(null, XMLSyntaxError.class);
+    public static final Process.ProcessKey<List<BusinessReport>, XmlSyntaxError> KEY = new Process.ProcessKey<>(null, XmlSyntaxError.class);
 
     public static final ActionMetadata METADATA = new ActionMetadata("Create report", "create_report");
 
@@ -50,18 +50,18 @@ public class CreateReportsTask implements CheckTask {
         return scenarioSelection.getObject().getReportTransformations();
     }
 
-    private static XVRLReportType generateXVRLReport(final ResourceType resourceType, final XdmNode node) {
-        return XVRLReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id(resourceType.getName())
+    private static XvrlReportType generateXvrlReport(final ResourceType resourceType, final XdmNode node) {
+        return XvrlReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id(resourceType.getName())
                 .add(XvrlSupplementalBuilder.supplemental().addContent(node).id(resourceType.getName()))).build();
     }
 
-    private static XVRLReportType createErrorInformation(final ResourceType resourceType, final XMLSyntaxError error) {
-        return XVRLReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id("error").addError(error)).build();
+    private static XvrlReportType createErrorInformation(final ResourceType resourceType, final XmlSyntaxError error) {
+        return XvrlReportBuilder.builder(METADATA).add(XvrlDetectionBuilder.detectionBuilder().id("error").addError(error)).build();
     }
 
     @Override
-    public ProcessStepResult<List<BusinessReport>, XMLSyntaxError> check(final Process process) {
-        final ProcessStepResult<List<BusinessReport>, XMLSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
+    public ProcessStepResult<List<BusinessReport>, XmlSyntaxError> check(final Process process) {
+        final ProcessStepResult<List<BusinessReport>, XmlSyntaxError> processStepResult = new ProcessStepResult<>(KEY);
         final SingleProcessingResult<Scenario, String> scenarioSelection = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioSelection.getObject();
         final XdmNode parsedDocument = process.getResult(DocumentParseTask.KEY).getObject();
@@ -95,11 +95,11 @@ public class CreateReportsTask implements CheckTask {
             transformer.setDestination(destination);
             transformer.transform();
             r.setContent(destination.getXdmNode());
-            r.setReport(generateXVRLReport(transformation.getResourceType(), destination.getXdmNode()));
+            r.setReport(generateXvrlReport(transformation.getResourceType(), destination.getXdmNode()));
         } catch (final SaxonApiException | JAXBException e) {
             LOGGER.error("Error creating final report", e);
             process.setStopped(true);
-            final XMLSyntaxError xmlSyntaxError = new XMLSyntaxError();
+            final XmlSyntaxError xmlSyntaxError = new XmlSyntaxError();
             xmlSyntaxError.setMessage("Can not create final report: " + e.getMessage());
             r.setReport(createErrorInformation(transformation.getResourceType(), xmlSyntaxError));
         }

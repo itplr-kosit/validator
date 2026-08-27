@@ -6,7 +6,6 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
@@ -15,7 +14,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
-import org.kosit.jaxb.JaxbConversionService;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
@@ -23,7 +21,7 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.model.XMLSyntaxError;
+import org.kosit.validator.model.XmlSyntaxError;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -145,12 +143,6 @@ public class TestHelper {
 
     }
 
-    public static <T> T load(final URL url, final Class<T> type) throws URISyntaxException {
-        final JaxbConversionService c = JaxbConversionService.forPackages(org.kosit.validator.model.ObjectFactory.class.getPackage(),
-                org.kosit.validator.scenario.v1.ObjectFactory.class.getPackage());
-        return c.readXml(url.toURI(), type);
-    }
-
     public static String serialize(final List<BusinessReport> reports) {
         try ( final StringWriter writer = new StringWriter() ) {
             final Processor processor = TestHelper.getTestProcessor();
@@ -165,11 +157,11 @@ public class TestHelper {
         }
     }
 
-    public static SingleProcessingResult<XdmNode, XMLSyntaxError> parseDocument(final Processor processor, final CTReadResource input) {
+    public static SingleProcessingResult<XdmNode, XmlSyntaxError> parseDocument(final Processor processor, final CTReadResource input) {
         return new DocumentParseTask(processor).parseDocument(input);
     }
 
-    public static SingleProcessingResult<XdmNode, XMLSyntaxError> parseDocument(final CTReadResource input) {
+    public static SingleProcessingResult<XdmNode, XmlSyntaxError> parseDocument(final CTReadResource input) {
         return new DocumentParseTask(getTestProcessor()).parseDocument(input);
     }
 

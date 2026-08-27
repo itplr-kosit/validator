@@ -1,21 +1,21 @@
 package org.kosit.validator.api.xmlerror;
 
 import org.slf4j.Logger;
-import org.kosit.validator.model.XMLSyntaxErrorSeverity;
+import org.kosit.validator.model.XmlSyntaxErrorSeverity;
 
 /**
- * Base class for syntax errors. Extended via the JAXB-generated class {@link org.kosit.validator.model.XMLSyntaxError}.
+ * Base class for syntax errors. Extended via the JAXB-generated class {@link org.kosit.validator.model.XmlSyntaxError}.
  *
  * @author Andreas Penski
  */
-public abstract class AbstractXMLSyntaxError implements XmlError {
+public abstract class AbstractXmlSyntaxError implements XmlError {
 
     /**
      * Getter from the schema
      *
      * @return severity
      */
-    public abstract XMLSyntaxErrorSeverity getSeverityCode();
+    public abstract XmlSyntaxErrorSeverity getSeverityCode();
 
     /**
      * Logs the syntax error via a defined logger.
@@ -25,7 +25,7 @@ public abstract class AbstractXMLSyntaxError implements XmlError {
     public void log(final Logger logger) {
         final String msgTemplate = "{} At row {} at pos {}";
         final Object[] params = { getMessage(), getRowNumber(), getColumnNumber() };
-        if (getSeverityCode() == XMLSyntaxErrorSeverity.SEVERITY_WARNING) {
+        if (getSeverityCode() == XmlSyntaxErrorSeverity.SEVERITY_WARNING) {
             logger.warn(msgTemplate, params);
         } else {
             logger.error(msgTemplate, params);
@@ -39,7 +39,7 @@ public abstract class AbstractXMLSyntaxError implements XmlError {
      */
     @Override
     public XmlError.Severity getSeverity() {
-        final XMLSyntaxErrorSeverity code = getSeverityCode();
+        final XmlSyntaxErrorSeverity code = getSeverityCode();
         return code != null ? Severity.valueOf(code.name()) : null;
     }
 

@@ -21,10 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (API) `org.kosit.validator.impl.ScenariosConversionService` moved and renamed to `org.kosit.validator.scenario.impl.ScenarioConversionService`
 - (API) `ValidatorSchemas.SCENARIOS_XSD_PATH` was replaced by `org.kosit.validator.scenario.xsd.ScenarioSchemas.SCENARIOS_XSD_PATH`
 - (API) `SchemaProvider.getScenarioSchema()` was replaced by `org.kosit.validator.scenario.xsd.ScenarioSchemaProvider.getScenarioSchema()`
+- (API) Applied the Google Camel Case rules to all acronyms in type and method names, so `XML` became `Xml` and `XVRL` became `Xvrl`. This affects e.g. `XMLHelper` (now `XmlHelper`), `XMLReaderWrapper` (now `XmlReaderWrapper`), `AbstractXMLSyntaxError` (now `AbstractXmlSyntaxError`), `CompactXVRLReport` (now `CompactXvrlReport`), `CompactXVRLReportSummary` (now `CompactXvrlReportSummary`), `XVRLReportBuilder` (now `XvrlReportBuilder`), `XmlHelper.createSafeXMLInputFactory()` (now `createSafeXmlInputFactory()`) and `SchemaProvider.getXVRLSchema()` (now `getXvrlSchema()`)
+- (API) The generated model types were renamed accordingly, because the underlying XSD type names changed: `XMLSyntaxError` is now `XmlSyntaxError`, `XMLSyntaxErrorSeverity` is now `XmlSyntaxErrorSeverity` and all `XVRL*Type` classes are now `Xvrl*Type`
 
 ### Added
 
-- (API) Added `XMLHelper.createSafeSchemaFactory()` providing the hardened `SchemaFactory` that is now shared by the resolving strategies and the scenario schema provider
+- (API) Added `XmlHelper.createSafeSchemaFactory()` providing the hardened `SchemaFactory` that is now shared by the resolving strategies and the scenario schema provider
 - (API) Added `DefaultSimpleError` as the default immutable implementation of `SimpleError`, to be created via the new fluent `SimpleErrorBuilder`
 
 ### Fixed

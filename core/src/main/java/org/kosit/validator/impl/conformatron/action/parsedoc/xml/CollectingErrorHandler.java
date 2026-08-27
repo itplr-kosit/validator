@@ -23,12 +23,12 @@ public record CollectingErrorHandler(String resourceId, List<CTDetection> errors
 
     @Override
     public void error(final SAXParseException e) {
-        this.errors.add(XMLDetection.errorNotWellformed(this.resourceId, e));
+        this.errors.add(XmlDetection.errorNotWellformed(this.resourceId, e));
     }
 
     @Override
     public void fatalError(final SAXParseException e) throws SAXException {
-        this.errors.add(XMLDetection.errorNotWellformed(this.resourceId, e));
+        this.errors.add(XmlDetection.errorNotWellformed(this.resourceId, e));
         throw e;
     }
 }

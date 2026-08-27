@@ -4,19 +4,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kosit.base.annotation.ReturnsImmutableObject;
-import org.kosit.xvrl.model.XVRLDetectionType;
-import org.kosit.xvrl.model.XVRLLocationType;
-import org.kosit.xvrl.model.XVRLMessageType;
+import org.kosit.xvrl.model.XvrlDetectionType;
+import org.kosit.xvrl.model.XvrlLocationType;
+import org.kosit.xvrl.model.XvrlMessageType;
 
 public interface BaseDetection {
 
-    List<XVRLMessageType> getMessages();
+    List<XvrlMessageType> getMessages();
 
-    List<XVRLLocationType> getLocations();
+    List<XvrlLocationType> getLocations();
 
-    XVRLDetectionType.Severity getSeverity();
+    XvrlDetectionType.Severity getSeverity();
 
-    void setSeverity(XVRLDetectionType.Severity value);
+    void setSeverity(XvrlDetectionType.Severity value);
 
     @ReturnsImmutableObject
     default List<String> getAllMessages() {
@@ -30,7 +30,7 @@ public interface BaseDetection {
         return getMessages().get(0).getContent().stream().map(Object::toString).collect(Collectors.joining());
     }
 
-    default XVRLLocationType getErrorLocation() {
+    default XvrlLocationType getErrorLocation() {
         if (getLocations().isEmpty()) {
             return null;
         }
@@ -38,6 +38,6 @@ public interface BaseDetection {
     }
 
     default boolean hasErrors() {
-        return getSeverity() == XVRLDetectionType.Severity.ERROR || getSeverity() == XVRLDetectionType.Severity.FATAL_ERROR;
+        return getSeverity() == XvrlDetectionType.Severity.ERROR || getSeverity() == XvrlDetectionType.Severity.FATAL_ERROR;
     }
 }

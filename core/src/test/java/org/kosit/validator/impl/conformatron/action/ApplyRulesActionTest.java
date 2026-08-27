@@ -22,8 +22,8 @@ import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
@@ -42,7 +42,7 @@ public class ApplyRulesActionTest {
             ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
 
     private @NonNull CTParsedValidationSource parse(final @NonNull URI document) throws IOException {
-        final ParseXMLResult parsed = new ParseXMLAction().execute(ReadResource.of(Resource.of(document), resHelper.get()));
+        final ParseXmlResult parsed = new ParseXmlAction().execute(ReadResource.of(Resource.of(document), resHelper.get()));
         assertNotNull(parsed);
         assertTrue(parsed.isSuccess());
         assertNotNull(parsed.getParsedSource());

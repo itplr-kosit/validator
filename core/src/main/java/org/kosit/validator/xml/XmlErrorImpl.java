@@ -1,8 +1,8 @@
 package org.kosit.validator.xml;
 
 import org.kosit.validator.api.xmlerror.XmlError;
-import org.kosit.xvrl.model.XVRLDetectionType;
-import org.kosit.xvrl.model.XVRLLocationType;
+import org.kosit.xvrl.model.XvrlDetectionType;
+import org.kosit.xvrl.model.XvrlLocationType;
 
 public class XmlErrorImpl implements XmlError {
 
@@ -14,7 +14,7 @@ public class XmlErrorImpl implements XmlError {
 
     private Long columnNumber;
 
-    private static Severity getSeverityFromDetection(final XVRLDetectionType xvrlDetection) {
+    private static Severity getSeverityFromDetection(final XvrlDetectionType xvrlDetection) {
         return switch (xvrlDetection.getSeverity()) {
             case ERROR -> Severity.SEVERITY_ERROR;
             case FATAL_ERROR -> Severity.SEVERITY_FATAL_ERROR;
@@ -22,10 +22,10 @@ public class XmlErrorImpl implements XmlError {
         };
     }
 
-    public XmlErrorImpl(final XVRLDetectionType xvrlDetection) {
+    public XmlErrorImpl(final XvrlDetectionType xvrlDetection) {
         this.message = xvrlDetection.getErrorMessage();
         this.severity = getSeverityFromDetection(xvrlDetection);
-        final XVRLLocationType location = xvrlDetection.getErrorLocation();
+        final XvrlLocationType location = xvrlDetection.getErrorLocation();
         if (location != null) {
             this.rowNumber = location.getLine();
             this.columnNumber = location.getColumn();

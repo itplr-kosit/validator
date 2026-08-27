@@ -18,7 +18,7 @@ import jakarta.xml.bind.util.JAXBSource;
  * Wrapper to fix some inconsistencies between sax and saxon. Saxon tries to set some properties which has no effect on
  * {@link JAXBSource}'s XMLReader, but it throws exceptions on unknown properties. This just drops this exceptions.
  */
-public class XMLReaderWrapper implements XMLReader {
+public class XmlReaderWrapper implements XMLReader {
 
     private static final String SAX_FEATURES_NAMESPACE_PREFIXES = "http://xml.org/sax/features/namespace-prefixes";
 
@@ -26,7 +26,7 @@ public class XMLReaderWrapper implements XMLReader {
 
     private final XMLReader delegate;
 
-    public XMLReaderWrapper(final XMLReader xmlReader) {
+    public XmlReaderWrapper(final XMLReader xmlReader) {
         this.delegate = xmlReader;
     }
 

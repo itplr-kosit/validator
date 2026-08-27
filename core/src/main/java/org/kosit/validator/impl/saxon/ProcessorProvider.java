@@ -9,7 +9,7 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.Result;
 import javax.xml.transform.TransformerException;
 
-import org.kosit.base.xml.XMLHelper;
+import org.kosit.base.xml.XmlHelper;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.XPathContext;
@@ -80,8 +80,8 @@ public class ProcessorProvider {
 
         // configuration of the parser to be used when Saxon itself has to create one, e.g. when parsing XSL
         processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.FEATURE_SECURE_PROCESSING), true);
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLHelper.DISALLOW_DOCTYPE_DECL_FEATURE), true);
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLHelper.LOAD_EXTERNAL_DTD_FEATURE), false);
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XmlHelper.DISALLOW_DOCTYPE_DECL_FEATURE), true);
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XmlHelper.LOAD_EXTERNAL_DTD_FEATURE), false);
         processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.ACCESS_EXTERNAL_DTD), false);
         return processor;
     }

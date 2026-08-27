@@ -13,8 +13,8 @@ import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 
 import net.sf.saxon.s9api.Processor;
@@ -23,7 +23,7 @@ import net.sf.saxon.s9api.Processor;
  * <b>Prototype</b>: validates a document directly against a single Schematron — no scenario configuration, no
  * repository setup, no report transformation required. The Schematron URI is the only configuration.
  * <p>
- * The engine is a pure composition of canonical actions: {@link ParseXMLAction} (step 2),
+ * The engine is a pure composition of canonical actions: {@link ParseXmlAction} (step 2),
  * {@link RetrieveArtifactsAction} (step 5, with the Schematron's parent directory as the artifact repository),
  * {@link PrepareRulesAction} (step 6) and {@link ApplyRulesAction} (step 7). Scenario detection/selection (steps 3+4)
  * is deliberately bypassed — the caller fixes the rule set explicitly, which is the ad-hoc equivalent of a
@@ -112,7 +112,7 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
             throw new IllegalArgumentException("schematron may not be null");
         }
         // step 2 (PARSE_DOCUMENT): reference action, retains bytes + hash
-        final ParseXMLResult parsed = new ParseXMLAction().execute(document);
+        final ParseXmlResult parsed = new ParseXmlAction().execute(document);
         if (parsed.isFailure()) {
             return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(), parsed.getDetectionList());
         }

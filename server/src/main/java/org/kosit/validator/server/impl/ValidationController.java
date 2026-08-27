@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationResource;
-import org.kosit.validator.api.xvrl.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
@@ -57,14 +57,14 @@ public class ValidationController implements ValidationResource {
         }
         final VResult result = service.validate(input);
 
-        final CompactXVRLReportSummary compactReport = service.convertMinimalXvrl(input, result);
+        final CompactXvrlReportSummary compactReport = service.convertMinimalXvrl(input, result);
 
         final MediaType best = headers.getAcceptableMediaTypes().stream()
                 .filter(mt -> mt.isCompatible(APPLICATION_JSON_TYPE) || mt.isCompatible(APPLICATION_XML_TYPE)).findFirst()
                 .orElse(APPLICATION_XML_TYPE); // Default: XML
 
         if (best.isCompatible(APPLICATION_JSON_TYPE)) {
-            final CompactValidationResultsDto compactJson = CompactXVRLReportSummaryMapper.toDto(compactReport);
+            final CompactValidationResultsDto compactJson = CompactXvrlReportSummaryMapper.toDto(compactReport);
             return addHeaders(result, Response.ok(compactJson).type(MediaType.APPLICATION_JSON).header("Content-Disposition",
                     "attachment; filename=compact-validation-result.json")).build();
         }

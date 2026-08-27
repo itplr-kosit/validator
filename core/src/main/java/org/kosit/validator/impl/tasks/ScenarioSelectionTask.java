@@ -10,10 +10,10 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.model.XMLSyntaxError;
-import org.kosit.validator.xvrl.XVRLReportBuilder;
-import org.kosit.xvrl.model.XVRLDetectionType;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.validator.model.XmlSyntaxError;
+import org.kosit.validator.xvrl.XvrlReportBuilder;
+import org.kosit.xvrl.model.XvrlDetectionType;
+import org.kosit.xvrl.model.XvrlReportType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,14 +39,14 @@ public class ScenarioSelectionTask implements CheckTask {
 
     private final SelectScenarioAction selectScenarioAction;
 
-    private static XVRLReportType generateXVRLReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
-        final XVRLReportBuilder builder = XVRLReportBuilder.builder(METADATA);
+    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
+        final XvrlReportBuilder builder = XvrlReportBuilder.builder(METADATA);
         if (scenarioTypeResult.getObject().isFallback()) {
             builder.add(detectionBuilder().addError("No valid scenario configuration found for '" + name + "'").code("fallback-match"));
         } else {
             builder.add(detectionBuilder()
                     .addMessage("Scenario '" + scenarioTypeResult.getObject().getName() + "' identified for '" + name + "'")
-                    .severity(XVRLDetectionType.Severity.INFO).code("scenario-matched"));
+                    .severity(XvrlDetectionType.Severity.INFO).code("scenario-matched"));
             builder.add(detectionBuilder().id("scenario").code(scenarioTypeResult.getObject().getName()));
         }
         return builder.build();
@@ -55,7 +55,7 @@ public class ScenarioSelectionTask implements CheckTask {
     @Override
     public ProcessStepResult<Scenario, String> check(final Process results) {
         final SingleProcessingResult<Scenario, String> scenarioTypeResult;
-        final SingleProcessingResult<XdmNode, XMLSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
+        final SingleProcessingResult<XdmNode, XmlSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
         if (parseResult.isValid()) {
             scenarioTypeResult = determineScenario(parseResult.getObject());
         } else {
@@ -69,7 +69,7 @@ public class ScenarioSelectionTask implements CheckTask {
         runConformatronScenarioSteps(results);
         final ProcessStepResult<Scenario, String> result = new ProcessStepResult<>(ScenarioSelectionTask.KEY);
         result.setResult(scenarioTypeResult);
-        result.setReport(generateXVRLReport(scenarioTypeResult, results.getInput().getName()));
+        result.setReport(generateXvrlReport(scenarioTypeResult, results.getInput().getName()));
         return result;
     }
 

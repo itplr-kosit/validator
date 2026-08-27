@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kosit.validator.impl.tasks.CheckTask;
-import org.kosit.xvrl.model.XVRLReportType;
+import org.kosit.xvrl.model.XvrlReportType;
 
 public class ProcessStepResult<T, E> {
 
@@ -13,7 +13,7 @@ public class ProcessStepResult<T, E> {
 
     private SingleProcessingResult<T, E> result;
 
-    private List<XVRLReportType> report;
+    private List<XvrlReportType> report;
 
     public ProcessStepResult(final CheckTask.Process.ProcessKey<T, E> key) {
         this.key = key;
@@ -23,11 +23,11 @@ public class ProcessStepResult<T, E> {
         return this.key;
     }
 
-    public List<XVRLReportType> getReport() {
+    public List<XvrlReportType> getReport() {
         return this.report;
     }
 
-    public void addReports(final List<XVRLReportType> collect) {
+    public void addReports(final List<XvrlReportType> collect) {
         if (collect != null) {
             if (this.report == null) {
                 this.report = new ArrayList<>();
@@ -36,7 +36,7 @@ public class ProcessStepResult<T, E> {
         }
     }
 
-    public void setReport(final XVRLReportType singleReport) {
+    public void setReport(final XvrlReportType singleReport) {
         this.report = Collections.singletonList(singleReport);
     }
 

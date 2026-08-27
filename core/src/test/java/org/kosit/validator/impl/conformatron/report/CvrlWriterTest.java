@@ -25,8 +25,8 @@ import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,7 +55,7 @@ public class CvrlWriterTest {
     }
 
     private CvrlWriter.PipelineResults runPipeline(final URI document) {
-        final ParseXMLResult parsed = new ParseXMLAction().execute(TestHelper.read(document));
+        final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         if (!parsed.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
         }

@@ -13,7 +13,7 @@ import org.kosit.validator.impl.conformatron.source.DomValidationSource;
 /**
  * Single XML parsing result
  */
-public class ParseXMLResult implements ParseDocumentActionResult<DomValidationSource> {
+public class ParseXmlResult implements ParseDocumentActionResult<DomValidationSource> {
 
     private CTStepResult result;
 
@@ -21,12 +21,12 @@ public class ParseXMLResult implements ParseDocumentActionResult<DomValidationSo
 
     private DomValidationSource parsedSource;
 
-    public static ParseXMLResult failure(List<CTDetection> detections) {
+    public static ParseXmlResult failure(List<CTDetection> detections) {
         return failure(new DetectionList(detections));
     }
 
-    public static ParseXMLResult failure(CTDetectionList detections) {
-        return new ParseXMLResult(CTStepResult.FAILURE, detections, null);
+    public static ParseXmlResult failure(CTDetectionList detections) {
+        return new ParseXmlResult(CTStepResult.FAILURE, detections, null);
     }
 
     /**
@@ -36,7 +36,7 @@ public class ParseXMLResult implements ParseDocumentActionResult<DomValidationSo
      *            SHA-512 hash for document identity in the partial CVRL — only without parsed content
      *            ({@code isParsed() == false}). {@code null} only when the source could not be read at all.
      */
-    public ParseXMLResult(CTStepResult result, CTDetectionList detections, @Nullable DomValidationSource parsedSource) {
+    public ParseXmlResult(CTStepResult result, CTDetectionList detections, @Nullable DomValidationSource parsedSource) {
         this.result = result;
         this.detections = detections;
         this.parsedSource = parsedSource;

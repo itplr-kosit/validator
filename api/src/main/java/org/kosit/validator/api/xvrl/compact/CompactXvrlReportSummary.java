@@ -8,15 +8,15 @@ import javax.xml.namespace.QName;
 
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.annotation.ReturnsImmutableObject;
-import org.kosit.xvrl.model.XVRLMetadataType;
-import org.kosit.xvrl.model.XVRLReportsType;
-import org.kosit.xvrl.model.XVRLValidatorType;
+import org.kosit.xvrl.model.XvrlMetadataType;
+import org.kosit.xvrl.model.XvrlReportsType;
+import org.kosit.xvrl.model.XvrlValidatorType;
 
 /**
- * Compact summary of the validation results using the existing XVRL. Provides convenience access to additive attributes
+ * Compact summary of the validation results using the existing Xvrl. Provides convenience access to additive attributes
  * via the CVRL namespace.
  */
-public class CompactXVRLReportSummary {
+public class CompactXvrlReportSummary {
 
     public static final String CVRL_NS = "http://www.xoev.de/de/validator/framework/2/compact-format";
 
@@ -28,33 +28,33 @@ public class CompactXVRLReportSummary {
 
     private static final String ATTR_PROCESSING_ERRORS = "processing-errors";
 
-    private final XVRLReportsType original;
+    private final XvrlReportsType original;
 
     /**
-     * Creates a new instance with an empty underlying XVRLReportSummary.
+     * Creates a new instance with an empty underlying XvrlReportSummary.
      *
-     * @return new instance of {@link CompactXVRLReportSummary}
+     * @return new instance of {@link CompactXvrlReportSummary}
      */
-    public static CompactXVRLReportSummary create() {
-        return new CompactXVRLReportSummary(new XVRLReportsType());
+    public static CompactXvrlReportSummary create() {
+        return new CompactXvrlReportSummary(new XvrlReportsType());
     }
 
-    public CompactXVRLReportSummary(final XVRLReportsType original) {
+    public CompactXvrlReportSummary(final XvrlReportsType original) {
         this.original = original;
     }
 
-    public XVRLReportsType getOriginal() {
+    public XvrlReportsType getOriginal() {
         return original;
     }
 
     /**
      * Returns the list of compact reports.
      *
-     * @return list of {@link CompactXVRLReport}
+     * @return list of {@link CompactXvrlReport}
      */
     @ReturnsImmutableObject
-    public List<CompactXVRLReport> getReports() {
-        return original.getReports().stream().map(CompactXVRLReport::new).toList();
+    public List<CompactXvrlReport> getReports() {
+        return original.getReports().stream().map(CompactXvrlReport::new).toList();
     }
 
     /**
@@ -62,7 +62,7 @@ public class CompactXVRLReportSummary {
      *
      * @param report the compact report
      */
-    public void addReport(final CompactXVRLReport report) {
+    public void addReport(final CompactXvrlReport report) {
         original.getReportOrReportsOrDigest().add(report.getOriginal());
     }
 
@@ -130,10 +130,10 @@ public class CompactXVRLReportSummary {
      */
     public void setValidatorInformation(final ValidatorEngineInformation info) {
         if (original.getMetadata() == null) {
-            original.setMetadata(new XVRLMetadataType());
+            original.setMetadata(new XvrlMetadataType());
         }
 
-        final XVRLValidatorType v = new XVRLValidatorType();
+        final XvrlValidatorType v = new XvrlValidatorType();
         v.setName(info.name());
         v.setVersion(info.version());
         original.getMetadata().getValidators().clear();
@@ -147,7 +147,7 @@ public class CompactXVRLReportSummary {
      */
     @Nullable
     public ValidatorEngineInformation getValidatorInformation() {
-        return Optional.ofNullable(original.getMetadata()).map(XVRLMetadataType::getValidators).stream().flatMap(Collection::stream)
+        return Optional.ofNullable(original.getMetadata()).map(XvrlMetadataType::getValidators).stream().flatMap(Collection::stream)
                 .findFirst().map(v -> new ValidatorEngineInformation(v.getName(), v.getVersion())).orElse(null);
     }
 }

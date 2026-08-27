@@ -3,14 +3,14 @@ package org.kosit.xvrl.api;
 import java.util.List;
 
 import org.kosit.base.annotation.ReturnsImmutableObject;
-import org.kosit.xvrl.model.XVRLReportType;
-import org.kosit.xvrl.model.XVRLReportsType;
+import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlReportsType;
 
 public interface BaseReportSummary {
 
-    List<XVRLReportType> getReports();
+    List<XvrlReportType> getReports();
 
-    List<XVRLReportsType> getReportSummaries();
+    List<XvrlReportsType> getReportSummaries();
 
     @ReturnsImmutableObject
     default List<String> getAllErrors() {

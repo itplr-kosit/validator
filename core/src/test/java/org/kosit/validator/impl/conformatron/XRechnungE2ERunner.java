@@ -34,8 +34,8 @@ import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXMLResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.report.CvrlWriter;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
@@ -180,7 +180,7 @@ public final class XRechnungE2ERunner {
     /** Executes the pipeline; fields from the cancellation point onwards stay {@code null} (partial CVRL). */
     private CvrlWriter.PipelineResults runSteps(final Path file, final String name) {
         // step 2: PARSE_DOCUMENT
-        final ParseXMLResult parsed = new ParseXMLAction().execute(TestHelper.read(file.toFile()));
+        final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(file.toFile()));
         if (!parsed.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
         }
@@ -250,7 +250,7 @@ public final class XRechnungE2ERunner {
         if (r.apply() != null && !r.apply().isSuccess()) {
             return failed(name, "APPLY_RULES", r.apply().detections().getAll());
         }
-        final ParseXMLResult parsed = r.parse();
+        final ParseXmlResult parsed = r.parse();
         final SelectScenarioResult selected = r.select();
         final PrepareRulesResult prepared = r.prepare();
         final ApplyRulesActionResult applied = r.apply();

@@ -40,7 +40,7 @@ quarkus.rest-client.validator.url=http://localhost:8080
 
 ```java
 import org.kosit.validator.client.ValidationClient;
-import org.kosit.validator.api.compact.CompactXVRLReportSummary;
+import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
 import jakarta.inject.Inject;
 import java.io.File;
 
@@ -51,7 +51,7 @@ public class MyService {
 
     public void validateDocument(File xmlFile) {
         // Minimal/Compact validation
-        CompactXVRLReportSummary result = client.validateMinimal(xmlFile);
+        CompactXvrlReportSummary result = client.validateMinimal(xmlFile);
         
         System.out.println("Acceptable: " + result.getAcceptable());
         System.out.println("Scenario: " + result.getReports().get(0).getScenario());
@@ -77,8 +77,8 @@ These methods unmarshal the server response directly into Java objects from the 
 
 | Method | Description | Return Type |
 | :--- | :--- | :--- |
-| `validate(File)` | Performs a full validation and returns the XVRL report. | `XVRLReportSummary` |
-| `validateMinimal(File)` | Performs a minimal validation and returns the compact report. | `CompactXVRLReportSummary` |
+| `validate(File)` | Performs a full validation and returns the XVRL report. | `XvrlReportsType` |
+| `validateMinimal(File)` | Performs a minimal validation and returns the compact report. | `CompactXvrlReportSummary` |
 
 #### 2. Raw Methods (File Return)
 
@@ -96,8 +96,8 @@ These methods return a `ValidationResponse<T>`, which contains HTTP metadata suc
 
 | Method | Description | Return Type |
 | :--- | :--- | :--- |
-| `validateWithMetadata(File)` | Full validation with metadata. | `ValidationResponse<XVRLReportSummary>` |
-| `validateMinimalWithMetadata(File)` | Minimal validation with metadata. | `ValidationResponse<CompactXVRLReportSummary>` |
+| `validateWithMetadata(File)` | Full validation with metadata. | `ValidationResponse<XvrlReportsType>` |
+| `validateMinimalWithMetadata(File)` | Minimal validation with metadata. | `ValidationResponse<CompactXvrlReportSummary>` |
 | `validateRawWithMetadata(File)` | Full validation (Raw XML) with metadata. | `ValidationResponse<File>` |
 | `validateMinimalRawWithMetadata(File)` | Minimal validation (Raw XML) with metadata. | `ValidationResponse<File>` |
 | `validateMinimalRawAsJsonWithMetadata(File)` | Minimal validation (Raw JSON) with metadata. | `ValidationResponse<File>` |
@@ -105,7 +105,7 @@ These methods return a `ValidationResponse<T>`, which contains HTTP metadata suc
 ### The `ValidationResponse<T>` Class
 
 The `ValidationResponse` encapsulates the result and provides access to HTTP information:
-- `getBody()`: The actual result (e.g., `XVRLReportSummary` or `File`).
+- `getBody()`: The actual result (e.g., `XvrlReportsType` or `File`).
 - `getStatusCode()`: The HTTP status code of the server response.
 - `getContentType()`: The `MediaType` of the response.
 
@@ -114,7 +114,7 @@ The `ValidationResponse` encapsulates the result and provides access to HTTP inf
 The client uses the models from `validator-api`, which allow easy access to the validation status:
 
 ```java
-XVRLReportSummary summary = client.validate(xmlFile);
+XvrlReportsType summary = client.validate(xmlFile);
 
 // Check if there are errors in the full report
 List<String> allErrors = summary.getAllErrors();
@@ -123,8 +123,8 @@ if (allErrors.isEmpty()) {
 }
 ```
 ```java
-CompactXVRLReportSummary summary = client.validateMinimal(xmlFile);
-CompactXVRLReport report = summary.getReports().get(0);
+CompactXvrlReportSummary summary = client.validateMinimal(xmlFile);
+CompactXvrlReport report = summary.getReports().get(0);
 
 if (report.isAcceptable()) {
     System.out.println("The document is acceptable!");
@@ -138,6 +138,6 @@ if (report.isSchemaValid() && report.isSchematronValid()) {
 ## Supported Output Formats
 
 The client handles the unmarshalling of server responses:
-- **XML (XVRL)**: Automatically converted into JAXB objects (`XVRLReportSummary` or `CompactXVRLReportSummary`).
+- **XML (XVRL)**: Automatically converted into JAXB objects (`XvrlReportsType` or `CompactXvrlReportSummary`).
 - **JSON (Compact)**: Supported via raw methods or by manual processing of the JSON file.
-- **Compact Report**: Encapsulated in `CompactXVRLReportSummary` to allow easier access to attributes. It facilitates the xvrl-schema as xml marshalling format. Elements are used as a subset arranged in a more compact form. Ist is enriched by custom attributes using the `compactvrl` namespace-refix.
+- **Compact Report**: Encapsulated in `CompactXvrlReportSummary` to allow easier access to attributes. It facilitates the xvrl-schema as xml marshalling format. Elements are used as a subset arranged in a more compact form. Ist is enriched by custom attributes using the `compactvrl` namespace-refix.
