@@ -14,7 +14,7 @@ import jakarta.xml.bind.JAXBException;
  * Convenience {@link AbstractJaxbConverter} preconfigured for the XVRL JAXB model package
  * ({@code org.kosit.xvrl.model}).
  */
-public final class XvrlConversionService extends AbstractJaxbConverter<XvrlReportsType> {
+public final class XvrlConverter extends AbstractJaxbConverter<XvrlReportsType> {
 
     public static final String XSD_PATH = "/xsd";
 
@@ -28,7 +28,7 @@ public final class XvrlConversionService extends AbstractJaxbConverter<XvrlRepor
 
     static {
         try {
-            JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(), XvrlConversionService.class.getClassLoader());
+            JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(), XvrlConverter.class.getClassLoader());
         } catch (final JAXBException e) {
             throw new IllegalStateException("Can not create XVRL JAXB context", e);
         }
@@ -40,7 +40,7 @@ public final class XvrlConversionService extends AbstractJaxbConverter<XvrlRepor
      *
      * @throws IllegalStateException if the JAXB context for the XVRL model package can not be created
      */
-    public XvrlConversionService() {
+    public XvrlConverter() {
         super(JAXB_CTX, XvrlReportsType.class, new ObjectFactory()::createReports);
         withNamespacePrefixMap(NS_PREFIX);
     }

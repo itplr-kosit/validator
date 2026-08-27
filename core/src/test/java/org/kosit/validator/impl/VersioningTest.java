@@ -9,7 +9,7 @@ import java.net.URL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
-import org.kosit.validator.scenario.v1.Scenario1ConversionService;
+import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.Scenarios;
 
 /**
@@ -27,11 +27,11 @@ public class VersioningTest {
 
     private static final URL NEW_VERSION = VersioningTest.class.getResource("/examples/versioning/scenarios-newversion.xml");
 
-    private Scenario1ConversionService service;
+    private Scenario1Converter service;
 
     @BeforeEach
     public void setup() {
-        this.service = new Scenario1ConversionService();
+        this.service = new Scenario1Converter();
     }
 
     @Test

@@ -15,7 +15,6 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.model.ValidationResultsSchematron.Results;
 import org.kosit.xvrl.model.XvrlMetadataType;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
@@ -157,18 +156,15 @@ public class TestProcessBuilder {
 
     public TestProcessBuilder schematronValid() {
         final ValidationResultsSchematron v = new ValidationResultsSchematron();
-        final Results results = new Results();
-        results.setSchematronOutput(new SchematronOutputType());
-        v.setResults(results);
+        v.setResults(new SchematronOutputType());
         return setSchematronResult(Collections.singletonList(v));
     }
 
     public TestProcessBuilder schematronInvalid() {
         final ValidationResultsSchematron v = new ValidationResultsSchematron();
-        final Results results = new Results();
-        results.setSchematronOutput(new SchematronOutputType());
-        results.getSchematronOutput().getActivePatternOrActiveGroupAndFiredRule().add(new FailedAssert());
-        v.setResults(results);
+        final var so = new SchematronOutputType();
+        so.getActivePatternOrActiveGroupAndFiredRule().add(new FailedAssert());
+        v.setResults(so);
         return setSchematronResult(Collections.singletonList(v));
     }
 

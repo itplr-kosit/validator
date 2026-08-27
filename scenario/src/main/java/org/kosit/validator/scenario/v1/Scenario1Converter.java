@@ -14,7 +14,7 @@ import jakarta.xml.bind.JAXBException;
  * Convenience {@link AbstractJaxbConverter} preconfigured for the scenario JAXB model package
  * ({@code org.kosit.validator.scenario.model}).
  */
-public final class Scenario1ConversionService extends AbstractJaxbConverter<Scenarios> {
+public final class Scenario1Converter extends AbstractJaxbConverter<Scenarios> {
 
     private static final JAXBContext JAXB_CTX;
 
@@ -23,12 +23,12 @@ public final class Scenario1ConversionService extends AbstractJaxbConverter<Scen
     static {
         try {
             JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(),
-                    Scenario1ConversionService.class.getClassLoader());
+                    Scenario1Converter.class.getClassLoader());
         } catch (final JAXBException e) {
             throw new IllegalStateException("Can not create scenario JAXB context", e);
         }
 
-        SCHEMA = SchemaResolver.createParsedSchema(Scenario1ConversionService.class.getResource(ScenarioSchemas.SCENARIOS_V1_XSD_PATH));
+        SCHEMA = SchemaResolver.createParsedSchema(Scenario1Converter.class.getResource(ScenarioSchemas.SCENARIOS_V1_XSD_PATH));
     }
 
     /**
@@ -36,7 +36,7 @@ public final class Scenario1ConversionService extends AbstractJaxbConverter<Scen
      *
      * @throws IllegalStateException if the JAXB context for the scenario model package can not be created
      */
-    public Scenario1ConversionService() {
+    public Scenario1Converter() {
         super(JAXB_CTX, Scenarios.class,
                 x -> new JAXBElement<>(new QName("http://www.xoev.de/de/validator/framework/2/scenarios", "scenarios"), Scenarios.class,
                         x));

@@ -6,6 +6,7 @@ import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
 import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.validator.model.DocumentHash;
 import org.kosit.validator.model.DocumentIdentificationType;
 import org.kosit.xvrl.model.XvrlDocumentType;
 import org.kosit.xvrl.model.XvrlMetadataType;
@@ -45,7 +46,7 @@ public class CreateDocumentIdentificationTask implements CheckTask {
     @Override
     public ProcessStepResult<DocumentIdentificationType, XmlSyntaxError> check(final Process process) {
         final DocumentIdentificationType documentIdentificationType = new DocumentIdentificationType();
-        final DocumentIdentificationType.DocumentHash documentHash = new DocumentIdentificationType.DocumentHash();
+        final DocumentHash documentHash = new DocumentHash();
         documentHash.setHashAlgorithm(process.getInput().getHashAlgorithmName());
         documentHash.setHashValue(process.getInput().getHashBytes());
         documentIdentificationType.setDocumentHash(documentHash);

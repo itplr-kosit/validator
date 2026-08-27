@@ -19,7 +19,7 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTApplyRulesResult;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
-import org.kosit.svrl.impl.SvrlConversionService;
+import org.kosit.svrl.impl.SvrlConverter;
 import org.kosit.validator.impl.conformatron.model.ApplyRulesResult;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
@@ -71,8 +71,6 @@ public class ApplyRulesAction implements CTAction {
 
     /** Detection code for skipped executions (no rule sets, or a previous execution failed). */
     public static final String CODE_STEP_SKIPPED = "step-skipped";
-
-    private final SvrlConversionService conversionService = new SvrlConversionService();
 
     /**
      * Result of a single execution of this action.
@@ -170,7 +168,7 @@ public class ApplyRulesAction implements CTAction {
         // apply on the retained immutable byte array — no re-read of the original source
         transformer.setSource(parsedSource.getSource().getReadResource().getAsSource(documentName));
         transformer.transform();
-        final SchematronOutputType svrl = this.conversionService
+        final SchematronOutputType svrl = new SvrlConverter()
                 .readXml(new DOMSource(NodeOverNodeInfo.wrap(destination.getXdmNode().getUnderlyingNode()).getOwnerDocument()));
         return SvrlDetections.toDetections(svrl, documentName);
     }

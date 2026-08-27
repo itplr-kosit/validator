@@ -17,11 +17,11 @@ public class Scenario1ConversionServiceTest {
 
     private static final URL SAMPLE = Scenario1ConversionServiceTest.class.getResource("/sample-scenarios.xml");
 
-    private Scenario1ConversionService service;
+    private Scenario1Converter service;
 
     @BeforeEach
     public void setUp() {
-        this.service = new Scenario1ConversionService();
+        this.service = new Scenario1Converter();
     }
 
     private @NonNull Scenarios readSample() throws URISyntaxException {

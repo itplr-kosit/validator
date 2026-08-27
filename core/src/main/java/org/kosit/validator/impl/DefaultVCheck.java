@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.conformatron.api.model.source.CTReadResource;
-import org.kosit.svrl.impl.SvrlConversionService;
 import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
@@ -68,7 +67,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
         this.checkSteps.add(new CreateDocumentIdentificationTask());
         this.checkSteps.add(new ScenarioSelectionTask(new ScenarioRepository(configuration)));
         this.checkSteps.add(new SchemaValidationTask(processor));
-        this.checkSteps.add(new SchematronValidationTask(new SvrlConversionService()));
+        this.checkSteps.add(new SchematronValidationTask());
         this.checkSteps.add(new CreateReportsTask(processor));
         this.checkSteps.add(new ComputeAcceptanceTask());
         this.conformanceValidation = new ConformanceValidation(engineInformation, this.checkSteps);

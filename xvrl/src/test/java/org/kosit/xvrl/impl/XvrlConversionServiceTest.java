@@ -21,11 +21,11 @@ public class XvrlConversionServiceTest {
 
     private static final String SAMPLE = "/sample-report.xml";
 
-    private XvrlConversionService service;
+    private XvrlConverter service;
 
     @BeforeEach
     public void setUp() {
-        this.service = new XvrlConversionService();
+        this.service = new XvrlConverter();
     }
 
     @Test

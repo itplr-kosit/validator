@@ -11,6 +11,7 @@ import org.kosit.validator.api.xmlerror.XmlError;
 import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.model.ProcessStepResult;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.impl.tasks.ComputeAcceptanceTask;
@@ -114,21 +115,20 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
     }
 
     private static VResult createResult(final Process process) {
-        final org.kosit.validator.impl.model.SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> acceptStatusResult = process
+        final SingleProcessingResult<AcceptRecommendation, XmlSyntaxError> acceptStatusResult = process
                 .getResult(ComputeAcceptanceTask.KEY);
         final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
         defaultResult.setWellformed(process.getResult(DocumentParseTask.KEY).isValid());
         defaultResult.setReportSummary(process.getXvrlReportSummary());
-        final org.kosit.validator.impl.model.SingleProcessingResult<Boolean, XmlSyntaxError> schemaValidationResult = process
-                .getResult(SchemaValidationTask.KEY);
+        final SingleProcessingResult<Boolean, XmlSyntaxError> schemaValidationResult = process.getResult(SchemaValidationTask.KEY);
         if (schemaValidationResult != null) {
             defaultResult.setSchemaViolations(convertErrors(schemaValidationResult.getErrors()));
         }
-        final org.kosit.validator.impl.model.SingleProcessingResult<List<ValidationResultsSchematron>, String> schematronValidationResult = process
+        final SingleProcessingResult<List<ValidationResultsSchematron>, String> schematronValidationResult = process
                 .getResult(SchematronValidationTask.KEY);
         if (schematronValidationResult != null) {
-            defaultResult.setSchematronResult(schematronValidationResult.getObject().stream()
-                    .map(schematronResult -> schematronResult.getResults().getSchematronOutput()).toList());
+            defaultResult.setSchematronResult(
+                    schematronValidationResult.getObject().stream().map(ValidationResultsSchematron::getResults).toList());
         }
         defaultResult.setProcessingSuccessful(!process.isStopped() && process.isFinished());
         return defaultResult;

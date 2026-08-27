@@ -17,7 +17,7 @@ import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.scenario.v1.Scenario1ConversionService;
+import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;
 import org.kosit.validator.xml.resolve.RelativeUriResolver;
@@ -161,7 +161,7 @@ public class ConfigurationLoader {
         checkVersion(this.scenarioDefinition, processor);
         LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        final Scenario1ConversionService conversionService = new Scenario1ConversionService();
+        final Scenario1Converter conversionService = new Scenario1Converter();
         final Scenarios scenarios = conversionService.withEventHandler(handler).readXml(this.scenarioDefinition);
         if (handler.hasErrors()) {
             throw new IllegalStateException(

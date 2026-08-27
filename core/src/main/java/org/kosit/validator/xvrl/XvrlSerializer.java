@@ -4,7 +4,7 @@ import org.jspecify.annotations.Nullable;
 import org.kosit.base.xml.XmlReaderWrapper;
 import org.kosit.jaxb.eventhandler.LoggingEventHandler;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
-import org.kosit.xvrl.impl.XvrlConversionService;
+import org.kosit.xvrl.impl.XvrlConverter;
 import org.kosit.xvrl.model.ObjectFactory;
 import org.kosit.xvrl.model.XvrlReportsType;
 
@@ -25,9 +25,9 @@ public class XvrlSerializer {
 
     public @Nullable XdmNode marshalToXdmNode(final XvrlReportsType summary) throws JAXBException, SaxonApiException {
         if (false)
-            new XvrlConversionService().withEventHandler(new LoggingEventHandler()).writeXml(summary);
+            new XvrlConverter().withEventHandler(new LoggingEventHandler()).writeXml(summary);
 
-        final Marshaller marshaller = XvrlConversionService.JAXB_CTX.createMarshaller();
+        final Marshaller marshaller = XvrlConverter.JAXB_CTX.createMarshaller();
         final JAXBSource source = new JAXBSource(marshaller, new ObjectFactory().createReports(summary));
         // wrap for security to circumvent inconsistency between sax and saxon
         source.setXMLReader(new XmlReaderWrapper(source.getXMLReader()));

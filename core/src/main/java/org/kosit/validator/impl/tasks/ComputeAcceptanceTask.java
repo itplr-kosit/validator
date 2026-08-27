@@ -57,8 +57,8 @@ public class ComputeAcceptanceTask implements CheckTask {
     private static boolean hasSchematronErrors(final Process process) {
         final SingleProcessingResult<List<ValidationResultsSchematron>, String> result = process.getResult(SchematronValidationTask.KEY);
         if (result != null && result.isValid()) {
-            return result.getObject().stream().map(v -> v.getResults().getSchematronOutput())
-                    .flatMap(s -> s.getActivePatternOrActiveGroupAndFiredRule().stream()).anyMatch(FailedAssert.class::isInstance);
+            return result.getObject().stream().map(ValidationResultsSchematron::getResults).flatMap(s -> s.getActivePatternOrActiveGroupAndFiredRule().stream())
+                    .anyMatch(FailedAssert.class::isInstance);
         }
         return false;
     }
