@@ -1,6 +1,8 @@
 package org.kosit.base.string;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.conformatron.api.annotation.Nonnegative;
@@ -8,6 +10,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public final class StringHelper {
+
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     public static boolean isEmpty(final String s) {
         return s == null || s.isEmpty();
@@ -262,6 +266,128 @@ public final class StringHelper {
             }
         }
         return new String(c);
+    }
+
+    /**
+     * @param cs the character sequence to check. May be <code>null</code>.
+     * @return the length of the passed character sequence. 0 if it is <code>null</code>.
+     */
+    public static @Nonnegative int getLength(final @Nullable CharSequence cs) {
+        return cs == null ? 0 : cs.length();
+    }
+
+    /**
+     * Take a concatenated String and return an array of all elements of the passed string, using the specified
+     * separator char.
+     *
+     * @param sep the separator to use.
+     * @param elements the concatenated String to convert. May be <code>null</code> or empty.
+     * @return the exploded array. Never <code>null</code>. Empty if the passed string is <code>null</code> or empty.
+     */
+    public static @NonNull String[] getExplodedArray(final char sep, final @Nullable String elements) {
+        return getExplodedArray(sep, elements, -1);
+    }
+
+    /**
+     * Take a concatenated String and return an array of all elements of the passed string, using the specified
+     * separator char.
+     *
+     * @param sep the separator to use.
+     * @param elements the concatenated String to convert. May be <code>null</code> or empty.
+     * @param maxItems the maximum number of items to explode. If the passed value is &le; 0 all items are used. If max
+     *            items is 1, the passed string is returned as is. If max items is larger than the number of elements
+     *            found, it has no effect.
+     * @return the exploded array. Never <code>null</code>. Empty if the passed string is <code>null</code> or empty.
+     */
+    public static @NonNull String[] getExplodedArray(final char sep, final @Nullable String elements, final int maxItems) {
+        if (maxItems == 1) {
+            return new String[] { elements };
+        }
+        if (isEmpty(elements)) {
+            return EMPTY_STRING_ARRAY;
+        }
+
+        int sepCount = 0;
+        for (int i = 0; i < elements.length(); ++i) {
+            if (elements.charAt(i) == sep) {
+                ++sepCount;
+            }
+        }
+        if (sepCount == 0) {
+            // Separator not found
+            return new String[] { elements };
+        }
+
+        final int maxResultElements = 1 + sepCount;
+        final String[] ret = new String[maxItems < 1 ? maxResultElements : Math.min(maxResultElements, maxItems)];
+
+        // Do not use String.split because it trims empty tokens from the end
+        int startIndex = 0;
+        int itemsAdded = 0;
+        while (true) {
+            final int matchIndex = elements.indexOf(sep, startIndex);
+            if (matchIndex < 0) {
+                break;
+            }
+            ret[itemsAdded++] = elements.substring(startIndex, matchIndex);
+            // 1 == length of separator char
+            startIndex = matchIndex + 1;
+            if (maxItems > 0 && itemsAdded == maxItems - 1) {
+                // Exactly one item is left: the rest of the string
+                break;
+            }
+        }
+        ret[itemsAdded] = elements.substring(startIndex);
+        return ret;
+    }
+
+    /**
+     * Take a concatenated String and return a {@link List} of all elements of the passed string, using the specified
+     * separator char.
+     *
+     * @param sep the separator to use.
+     * @param elements the concatenated String to convert. May be <code>null</code> or empty.
+     * @return the exploded list. Never <code>null</code>. Empty if the passed string is <code>null</code> or empty.
+     */
+    public static @NonNull List<String> getExploded(final char sep, final @Nullable String elements) {
+        return new ArrayList<>(Arrays.asList(getExplodedArray(sep, elements)));
+    }
+
+    /**
+     * @param str the String to check. May be <code>null</code>.
+     * @return <code>true</code> if the passed String can be parsed to an <code>int</code>.
+     */
+    public static boolean isInt(final @Nullable String str) {
+        return parseIntObj(str) != null;
+    }
+
+    /**
+     * Parse the given String as an <code>int</code>, without throwing an exception on invalid input.
+     *
+     * @param str the String to parse. May be <code>null</code>.
+     * @param defaultValue the value to be returned if the String cannot be converted to a valid value.
+     * @return the passed default value if the String does not represent a valid <code>int</code>.
+     */
+    public static int parseInt(final @Nullable String str, final int defaultValue) {
+        final Integer ret = parseIntObj(str);
+        return ret == null ? defaultValue : ret.intValue();
+    }
+
+    /**
+     * Parse the given String as an {@link Integer}, without throwing an exception on invalid input.
+     *
+     * @param str the String to parse. May be <code>null</code>.
+     * @return <code>null</code> if the String does not represent a valid <code>int</code>.
+     */
+    public static @Nullable Integer parseIntObj(final @Nullable String str) {
+        if (isNotEmpty(str)) {
+            try {
+                return Integer.valueOf(str);
+            } catch (final NumberFormatException ex) {
+                // Fall through
+            }
+        }
+        return null;
     }
 
     private StringHelper() {
