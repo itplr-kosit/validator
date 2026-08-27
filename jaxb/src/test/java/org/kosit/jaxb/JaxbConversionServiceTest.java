@@ -16,6 +16,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamResult;
@@ -27,15 +29,36 @@ import org.junit.jupiter.api.io.TempDir;
 import org.kosit.jaxb.testtypes.Book;
 import org.kosit.jaxb.testtypes.Person;
 
+import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
 
 public class JaxbConversionServiceTest {
 
-    private JaxbConversionService<Person> service;
+    private AbstractJaxbConversionService<Person> service;
+
+    /**
+     * Creates a service from a fixed set of JAXB-annotated classes. For testing only
+     *
+     * @param clazz JAXB-annotated class to include in the JAXB context
+     * @param jaxbMapper JAXB mapper
+     * @return a new conversion service
+     * @throws IllegalArgumentException if no classes are supplied
+     * @throws JaxbConversionException if the JAXB context can not be created
+     */
+    private static <T> AbstractJaxbConversionService<T> createJaxbSvc(final Class<T> clazz, final Function<T, JAXBElement<T>> jaxbMapper) {
+        Objects.requireNonNull(clazz);
+        try {
+            return new AbstractJaxbConversionService<>(JAXBContext.newInstance(clazz), clazz, jaxbMapper) {
+            };
+        } catch (final JAXBException e) {
+            throw new JaxbConversionException("Can not create JAXB context for: " + clazz, e);
+        }
+    }
 
     @BeforeEach
     public void setUp() {
-        this.service = JaxbConversionService.forClass(Person.class, x -> new JAXBElement<>(new QName(null, "person"), Person.class, x));
+        this.service = createJaxbSvc(Person.class, x -> new JAXBElement<>(new QName(null, "person"), Person.class, x));
     }
 
     @Test
@@ -138,18 +161,19 @@ public class JaxbConversionServiceTest {
 
     @Test
     public void constructorRejectsNullContext() {
-        assertThatThrownBy(() -> new JaxbConversionService<>(null, Person.class, null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> new AbstractJaxbConversionService<>(null, Person.class, null) {
+        }).isInstanceOf(NullPointerException.class);
     }
 
     // ---------- namespace prefix map ----------
 
-    private static JaxbConversionService<Book> bookSvc() {
-        return JaxbConversionService.forClass(Book.class, x -> new JAXBElement<>(new QName(Book.NS_BOOK, "book"), Book.class, x));
+    private static AbstractJaxbConversionService<Book> bookSvc() {
+        return createJaxbSvc(Book.class, x -> new JAXBElement<>(new QName(Book.NS_BOOK, "book"), Book.class, x));
     }
 
     @Test
     public void defaultNamespaceMappingSuppressesRootPrefix() {
-        final JaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, ""));
+        final AbstractJaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, ""));
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         // The root must be declared as xmlns="..." and the root element must not carry a prefix.
         assertThat(xml).contains("xmlns=\"" + Book.NS_BOOK + "\"");
@@ -163,7 +187,7 @@ public class JaxbConversionServiceTest {
         final Map<String, String> map = new LinkedHashMap<>();
         map.put(Book.NS_BOOK, "");
         map.put(Book.NS_AUTHOR, "auth");
-        final JaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(map);
+        final AbstractJaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(map);
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         assertThat(xml).contains("xmlns:auth=\"" + Book.NS_AUTHOR + "\"");
         assertThat(xml).contains("<auth:author>Shakespeare</auth:author>");
@@ -173,7 +197,7 @@ public class JaxbConversionServiceTest {
     public void namespaceMapIsDefensivelyCopied() {
         final Map<String, String> map = new HashMap<>();
         map.put(Book.NS_BOOK, "");
-        final JaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(map);
+        final AbstractJaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(map);
         // Mutate the original map AFTER configuring the service.
         map.put(Book.NS_AUTHOR, "REMOTECHANGE");
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
@@ -183,7 +207,8 @@ public class JaxbConversionServiceTest {
 
     @Test
     public void nullNamespaceMapResetsToDefault() {
-        final JaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, "bk")).withNamespacePrefixMap(null);
+        final AbstractJaxbConversionService<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, "bk"))
+                .withNamespacePrefixMap(null);
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         // After reset, JAXB picks its own prefixes — but it must not pick the configured "bk".
         assertThat(xml).doesNotContain("xmlns:bk=");

@@ -63,9 +63,9 @@ import jakarta.xml.bind.ValidationEventHandler;
  * <p>
  * Instances are not thread-safe with respect to configuration setters. The JAXB context is created once and reused.
  * 
- * @param <T> Type of class to read
+ * @param <T> Type of class to read and write
  */
-public class JaxbConversionService<T> {
+public abstract class AbstractJaxbConversionService<T> {
 
     /**
      * {@link NamespacePrefixMapper} that delegates to a fixed namespace-URI-to-prefix map. A value of empty string
@@ -93,7 +93,7 @@ public class JaxbConversionService<T> {
         }
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JaxbConversionService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJaxbConversionService.class);
 
     private static final String NAMESPACE_PREFIX_MAPPER_PROPERTY = "org.glassfish.jaxb.namespacePrefixMapper";
 
@@ -127,33 +127,13 @@ public class JaxbConversionService<T> {
      * @param jaxbMapper Mapper from object to element
      * @throws IllegalArgumentException if {@code jaxbContext} is {@code null}
      */
-    public JaxbConversionService(final JAXBContext jaxbContext, final Class<T> type, final Function<T, JAXBElement<T>> jaxbMapper) {
+    public AbstractJaxbConversionService(final JAXBContext jaxbContext, final Class<T> type, final Function<T, JAXBElement<T>> jaxbMapper) {
         ObjectHelper.requireNonNull(jaxbContext, "jaxbContext");
         ObjectHelper.requireNonNull(type, "type");
         ObjectHelper.requireNonNull(jaxbMapper, "jaxbMapper");
         this.jaxbContext = jaxbContext;
         this.type = type;
         this.jaxbMapper = jaxbMapper;
-    }
-
-    // ---------- factories ----------
-
-    /**
-     * Creates a service from a fixed set of JAXB-annotated classes.
-     *
-     * @param clazz JAXB-annotated class to include in the JAXB context
-     * @param jaxbMapper JAXB mapper
-     * @return a new conversion service
-     * @throws IllegalArgumentException if no classes are supplied
-     * @throws JaxbConversionException if the JAXB context can not be created
-     */
-    static <T> JaxbConversionService<T> forClass(final Class<T> clazz, final Function<T, JAXBElement<T>> jaxbMapper) {
-        Objects.requireNonNull(clazz);
-        try {
-            return new JaxbConversionService<>(JAXBContext.newInstance(clazz), clazz, jaxbMapper);
-        } catch (final JAXBException e) {
-            throw new JaxbConversionException("Can not create JAXB context for: " + clazz, e);
-        }
     }
 
     // ---------- configuration (fluent) ----------
@@ -164,7 +144,7 @@ public class JaxbConversionService<T> {
      * @param schema schema to apply, or {@code null} to disable schema validation
      * @return this instance for chaining
      */
-    public JaxbConversionService<T> withSchema(final @Nullable Schema schema) {
+    public AbstractJaxbConversionService<T> withSchema(final @Nullable Schema schema) {
         this.schema = schema;
         return this;
     }
@@ -175,7 +155,7 @@ public class JaxbConversionService<T> {
      * @param handler handler to apply, or {@code null} to fall back to JAXB defaults
      * @return this instance for chaining
      */
-    public JaxbConversionService<T> withEventHandler(final @Nullable ValidationEventHandler handler) {
+    public AbstractJaxbConversionService<T> withEventHandler(final @Nullable ValidationEventHandler handler) {
         this.eventHandler = handler;
         return this;
     }
@@ -186,7 +166,7 @@ public class JaxbConversionService<T> {
      * @param formattedOutput whether output should be indented
      * @return this instance for chaining
      */
-    public JaxbConversionService<T> withFormattedOutput(final boolean formattedOutput) {
+    public AbstractJaxbConversionService<T> withFormattedOutput(final boolean formattedOutput) {
         this.formattedOutput = formattedOutput;
         return this;
     }
@@ -197,7 +177,7 @@ public class JaxbConversionService<T> {
      * @param fragment whether to omit the XML declaration on write
      * @return this instance for chaining
      */
-    public JaxbConversionService<T> withFragment(final boolean fragment) {
+    public AbstractJaxbConversionService<T> withFragment(final boolean fragment) {
         this.fragment = fragment;
         return this;
     }
@@ -208,7 +188,7 @@ public class JaxbConversionService<T> {
      * @param encoding character encoding to use
      * @return this instance for chaining
      */
-    public JaxbConversionService<T> withEncoding(final Charset encoding) {
+    public AbstractJaxbConversionService<T> withEncoding(final Charset encoding) {
         ObjectHelper.requireNonNull(encoding, "encoding");
         this.encoding = encoding;
         return this;
@@ -227,7 +207,7 @@ public class JaxbConversionService<T> {
      * @param map namespace URI &rarr; preferred prefix mapping, or {@code null} to reset
      * @return this instance for chaining
      */
-    public JaxbConversionService<T> withNamespacePrefixMap(final @Nullable Map<String, String> map) {
+    public AbstractJaxbConversionService<T> withNamespacePrefixMap(final @Nullable Map<String, String> map) {
         this.namespacePrefixMap = map == null ? Map.of() : Map.copyOf(map);
         return this;
     }

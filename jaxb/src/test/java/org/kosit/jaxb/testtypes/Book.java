@@ -7,7 +7,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Namespaced JAXB-annotated test type exercising the namespace-prefix-mapping support of
- * {@link org.kosit.jaxb.JaxbConversionService}. The root element lives in {@code urn:example:book}; the {@code author}
+ * {@link org.kosit.jaxb.AbstractJaxbConversionService}. The root element lives in {@code urn:example:book}; the {@code author}
  * child lives in {@code urn:example:author}.
  */
 @XmlRootElement(name = "book", namespace = Book.NS_BOOK)
