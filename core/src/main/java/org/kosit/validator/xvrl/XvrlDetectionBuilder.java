@@ -2,9 +2,9 @@ package org.kosit.validator.xvrl;
 
 import java.util.stream.Collectors;
 
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.kosit.base.error.SimpleError;
 import org.kosit.base.string.StringHelper;
+import org.kosit.xvrl.api.XvrlHelper;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlLocationType;
 import org.kosit.xvrl.model.XvrlMessageType;
@@ -22,15 +22,6 @@ public class XvrlDetectionBuilder {
         return new XvrlDetectionBuilder();
     }
 
-    // TODO handle this centrally
-    private static XvrlSeverityType translate(final CTStandardSeverity severity) {
-        if (severity.isError()) {
-            return XvrlSeverityType.ERROR;
-        }
-        return XvrlSeverityType.WARNING;
-
-    }
-
     private static XvrlLocationType createLocation(final Long line, final Long row, final String xpath) {
         final XvrlLocationType location = new XvrlLocationType();
         location.setLine(line);
@@ -45,7 +36,7 @@ public class XvrlDetectionBuilder {
         return messageObject;
     }
 
-    private static XvrlMessageType getMessage(final FailedAssert failedAssert) {
+    private static XvrlMessageType createMessage(final FailedAssert failedAssert) {
         final String string = failedAssert.getText().getContent().stream().map(Object::toString).collect(Collectors.joining());
         return createMessage(string);
     }
@@ -78,14 +69,13 @@ public class XvrlDetectionBuilder {
     }
 
     public XvrlDetectionBuilder addError(final SimpleError error) {
-        if (error == null) {
-            return this;
-        }
-        addMessage(error.getMessage());
-        this.detection.setSeverity(translate(error.getSeverity()));
+        if (error != null) {
+            addMessage(error.getMessage());
+            this.detection.setSeverity(XvrlHelper.translate(error.getSeverity()));
 
-        if (error.hasLineOrColumnNumber()) {
-            this.detection.getLocations().add(createLocation(error.getLineNumberObj(), error.getColumnNumberObj(), null));
+            if (error.hasLineOrColumnNumber()) {
+                this.detection.getLocations().add(createLocation(error.getLineNumberObj(), error.getColumnNumberObj(), null));
+            }
         }
         return this;
     }
@@ -114,7 +104,7 @@ public class XvrlDetectionBuilder {
         }
 
         this.detection.setSeverity(XvrlSeverityType.ERROR);
-        this.detection.getMessages().add(getMessage(failedAssert));
+        this.detection.getMessages().add(createMessage(failedAssert));
 
         return this;
     }
@@ -139,9 +129,6 @@ public class XvrlDetectionBuilder {
     }
 
     public XvrlDetectionType build() {
-        if (this.detection.getSeverity() == null) {
-            this.detection.setSeverity(XvrlSeverityType.INFO);
-        }
         return this.detection;
     }
 }

@@ -9,7 +9,6 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.kosit.base.error.SimpleError;
 import org.kosit.svrl.impl.SvrlConverter;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
@@ -122,7 +121,7 @@ public class SchematronValidationTask implements CheckTask {
 
     @Override
     public ProcessStepResult<List<ValidationResultsSchematron>, String> check(final Process process) {
-        final SingleProcessingResult<XdmNode, XmlSyntaxError> parseResult = process.getResult(DocumentParseTask.KEY);
+        final SingleProcessingResult<XdmNode, SimpleError> parseResult = process.getResult(DocumentParseTask.KEY);
         final SingleProcessingResult<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionTask.KEY);
         final List<ValidationResultsSchematron> validationResult = validate(process, parseResult.getObject(), scenarioResult.getObject());
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = new ProcessStepResult<>(KEY);

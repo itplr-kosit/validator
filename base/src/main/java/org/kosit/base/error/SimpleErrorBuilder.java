@@ -22,6 +22,8 @@ public class SimpleErrorBuilder {
     /** The severity that is used, if none is provided explicitly */
     public static final CTStandardSeverity DEFAULT_SEVERITY = CTStandardSeverity.ERROR;
 
+    private @Nullable String errorCode;
+
     private @Nullable String systemId;
 
     private long lineNumber;
@@ -47,12 +49,25 @@ public class SimpleErrorBuilder {
      */
     public SimpleErrorBuilder(@NonNull final SimpleError error) {
         Objects.requireNonNull(error, "Error must not be null");
+        errorCode(error.getErrorCode());
         systemId(error.getSystemID());
         lineNumber(error.getLineNumber());
         columnNumber(error.getColumnNumber());
         severity(error.getSeverity());
         message(error.getMessage());
         linkedException(error.getLinkedException());
+    }
+
+    /**
+     * Set the error code.
+     *
+     * @param errorCode the error code. May be <code>null</code>.
+     * @return this for chaining
+     */
+    @NonNull
+    public SimpleErrorBuilder errorCode(final @Nullable String errorCode) {
+        this.errorCode = errorCode;
+        return this;
     }
 
     /**
@@ -222,6 +237,7 @@ public class SimpleErrorBuilder {
         if (this.message == null) {
             throw new IllegalStateException("The message must be provided");
         }
-        return new DefaultSimpleError(this.systemId, this.lineNumber, this.columnNumber, this.severity, this.message, this.linkedException);
+        return new DefaultSimpleError(this.errorCode, this.systemId, this.lineNumber, this.columnNumber, this.severity, this.message,
+                this.linkedException);
     }
 }

@@ -79,10 +79,10 @@ public class ScenarioRepository {
             result = new SingleProcessingResult<>(collect.get(0));
         } else if (collect.isEmpty()) {
             result = new SingleProcessingResult<>(getFallbackScenario(),
-                    Collections.singleton("None of the loaded scenarios matches the specified document"));
+                    Collections.singletonList("None of the loaded scenarios matches the specified document"));
         } else {
             result = new SingleProcessingResult<>(getFallbackScenario(),
-                    Collections.singleton("More than one scenario matches the specified document"));
+                    Collections.singletonList("More than one scenario matches the specified document"));
         }
         return result;
     }

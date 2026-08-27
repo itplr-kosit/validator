@@ -3,7 +3,7 @@ package org.kosit.validator.cmd;
 import java.io.StringWriter;
 import java.util.List;
 
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
@@ -40,7 +40,7 @@ class PrintReportAction implements CheckTask {
         try {
             final StringWriter writer = new StringWriter();
             final Serializer serializer = this.processor.newSerializer(writer);
-            final SingleProcessingResult<List<BusinessReport>, XmlSyntaxError> result = results.getResult(CreateReportsTask.KEY);
+            final SingleProcessingResult<List<BusinessReport>, SimpleError> result = results.getResult(CreateReportsTask.KEY);
             for (final BusinessReport node : result.getObject()) {
                 serializer.serializeNode(node.getContent());
             }

@@ -3,6 +3,7 @@ package org.kosit.base.error;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.kosit.base.string.StringHelper;
 import org.slf4j.Logger;
 
 /**
@@ -12,6 +13,20 @@ import org.slf4j.Logger;
  *
  */
 public interface SimpleError {
+
+    /**
+     * @return The optional error code of this error. May be <code>null</code>.
+     */
+    @Nullable
+    String getErrorCode();
+
+    /**
+     * 
+     * @return <code>true</code> if an error code is present, <code>false</code> if not.
+     */
+    default boolean hasErrorCode() {
+        return StringHelper.isNotEmpty(getErrorCode());
+    }
 
     /**
      * @return The system ID of the object that contains the error

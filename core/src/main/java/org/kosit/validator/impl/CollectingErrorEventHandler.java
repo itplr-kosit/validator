@@ -1,7 +1,7 @@
 package org.kosit.validator.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 
@@ -31,7 +31,7 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
 
     private static final int STOP_PROCESS_COUNT = DEFAULT_ABORT_COUNT;
 
-    private final Collection<SimpleError> errors = new ArrayList<>();
+    private final List<SimpleError> errors = new ArrayList<>();
 
     private static SimpleError createSaxError(final CTStandardSeverity severity, final SAXParseException exception) {
         return DefaultSimpleError.builder().severity(severity).message(exception.getMessage()).location(exception)
@@ -121,14 +121,13 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     }
 
     public String getErrorDescription() {
-
         final StringJoiner joiner = new StringJoiner("\n");
-        this.errors.forEach(e -> joiner.add((e.getSeverity().isError() ? "[ERROR] " : e.getSeverity().isWarning() ? "[WARN] " : "")
-                + e.getMessage() + " At line " + e.getLineNumber() + " at pos " + e.getColumnNumber()));
+        this.errors.forEach(
+                e -> joiner.add((e.getSeverity().isError() ? "[ERROR] " : e.getSeverity().isWarning() ? "[WARN] " : "") + e.getAsString()));
         return joiner.toString();
     }
 
-    public Collection<SimpleError> getErrors() {
+    public List<SimpleError> getErrors() {
         return this.errors;
     }
 }

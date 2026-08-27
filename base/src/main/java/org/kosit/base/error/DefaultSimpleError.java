@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.kosit.base.string.StringHelper;
 
 /**
  * Default immutable implementation of the {@link SimpleError} interface. Use {@link SimpleErrorBuilder} to create
@@ -13,6 +14,8 @@ import org.jspecify.annotations.Nullable;
  * @author Philip Helger
  */
 public final class DefaultSimpleError implements SimpleError {
+
+    private final @Nullable String errorCode;
 
     private final @Nullable String systemId;
 
@@ -29,6 +32,7 @@ public final class DefaultSimpleError implements SimpleError {
     /**
      * Constructor.
      *
+     * @param errorCode the error code. May be <code>null</code>.
      * @param systemId the object in which the error was found. May be <code>null</code>.
      * @param lineNumber the line number. Values &le; 0 mean none available.
      * @param columnNumber the column number. Values &le; 0 mean none available.
@@ -36,8 +40,11 @@ public final class DefaultSimpleError implements SimpleError {
      * @param message the main error message. May not be <code>null</code>.
      * @param linkedException the exception that caused this error. May be <code>null</code>.
      */
-    public DefaultSimpleError(final @Nullable String systemId, final long lineNumber, final long columnNumber,
-            @NonNull final CTStandardSeverity severity, @NonNull final String message, final @Nullable Throwable linkedException) {
+    public DefaultSimpleError(final @Nullable String errorCode, final @Nullable String systemId, final long lineNumber,
+            final long columnNumber, @NonNull final CTStandardSeverity severity, @NonNull final String message,
+            final @Nullable Throwable linkedException) {
+        // Unify empty values for safe comparison
+        this.errorCode = StringHelper.emptyToNull(errorCode);
         this.systemId = systemId;
         // Unify negative values for safe comparison
         this.lineNumber = lineNumber > 0 ? lineNumber : -1;
@@ -45,6 +52,10 @@ public final class DefaultSimpleError implements SimpleError {
         this.severity = Objects.requireNonNull(severity, "Severity must not be null");
         this.message = Objects.requireNonNull(message, "Message must not be null");
         this.linkedException = linkedException;
+    }
+
+    public @Nullable String getErrorCode() {
+        return this.errorCode;
     }
 
     public @Nullable String getSystemID() {
@@ -97,22 +108,23 @@ public final class DefaultSimpleError implements SimpleError {
         if (!(o instanceof final DefaultSimpleError rhs)) {
             return false;
         }
-        return Objects.equals(this.systemId, rhs.systemId) && this.lineNumber == rhs.lineNumber && this.columnNumber == rhs.columnNumber
-                && this.severity == rhs.severity && this.message.equals(rhs.message)
-                && equalsException(this.linkedException, rhs.linkedException);
+        return Objects.equals(this.errorCode, rhs.errorCode) && Objects.equals(this.systemId, rhs.systemId)
+                && this.lineNumber == rhs.lineNumber && this.columnNumber == rhs.columnNumber && this.severity == rhs.severity
+                && this.message.equals(rhs.message) && equalsException(this.linkedException, rhs.linkedException);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.systemId, Long.valueOf(this.lineNumber), Long.valueOf(this.columnNumber), this.severity, this.message,
-                this.linkedException == null ? null : this.linkedException.getClass(),
+        return Objects.hash(this.errorCode, this.systemId, Long.valueOf(this.lineNumber), Long.valueOf(this.columnNumber), this.severity,
+                this.message, this.linkedException == null ? null : this.linkedException.getClass(),
                 this.linkedException == null ? null : this.linkedException.getMessage());
     }
 
     @Override
     public String toString() {
-        return "DefaultSimpleError(systemId=" + this.systemId + ", lineNumber=" + this.lineNumber + ", columnNumber=" + this.columnNumber
-                + ", severity=" + this.severity + ", message=" + this.message + ", linkedException=" + this.linkedException + ")";
+        return "DefaultSimpleError(errorCode=" + this.errorCode + ", systemId=" + this.systemId + ", lineNumber=" + this.lineNumber
+                + ", columnNumber=" + this.columnNumber + ", severity=" + this.severity + ", message=" + this.message + ", linkedException="
+                + this.linkedException + ")";
     }
 
     /**

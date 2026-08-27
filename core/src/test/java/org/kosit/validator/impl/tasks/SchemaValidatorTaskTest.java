@@ -13,11 +13,11 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.io.input.BoundedInputStream;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.xmlerror.XmlSeverity;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.SchemaProvider;
 import org.kosit.validator.impl.TestHelper;
@@ -47,7 +47,7 @@ public class SchemaValidatorTaskTest {
     @Test
     public void testSimple() {
         final Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
-        final ProcessStepResult<Boolean, XmlSyntaxError> processStepResult = this.service.check(process);
+        final ProcessStepResult<Boolean, SimpleError> processStepResult = this.service.check(process);
         final SingleProcessingResult<?, ?> result = processStepResult.getResult();
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
@@ -57,13 +57,13 @@ public class SchemaValidatorTaskTest {
     public void testValidationFailure() {
         final CTReadResource input = TestHelper.read(Simple.SCHEMA_INVALID);
         final Process process = TestProcessBuilder.create(input).build();
-        final ProcessStepResult<Boolean, XmlSyntaxError> processStepResult = this.service.check(process);
-        final SingleProcessingResult<Boolean, XmlSyntaxError> result = processStepResult.getResult();
+        final ProcessStepResult<Boolean, SimpleError> processStepResult = this.service.check(process);
+        final SingleProcessingResult<Boolean, SimpleError> result = processStepResult.getResult();
         assertThat(result.isValid()).isFalse();
         result.getErrors().forEach(e -> {
-            assertThat(e.getRowNumber()).isPositive();
+            assertThat(e.getLineNumber()).isPositive();
             assertThat(e.getColumnNumber()).isPositive();
-            assertThat(e.getSeverity()).isEqualTo(XmlSeverity.ERROR);
+            assertThat(e.getSeverity()).isEqualTo(CTStandardSeverity.ERROR);
         });
     }
 
@@ -80,7 +80,7 @@ public class SchemaValidatorTaskTest {
             final Process process = TestProcessBuilder
                     .create(ReadResource.inMemory(Resource.of(Simple.SIMPLE_VALID.toASCIIString(), inputStream)), false)
                     .setParseResult(TestHelper.read(Simple.SIMPLE_VALID)).build();
-            final SingleProcessingResult<Boolean, XmlSyntaxError> result = this.service.check(process).getResult();
+            final SingleProcessingResult<Boolean, SimpleError> result = this.service.check(process).getResult();
             assertThat(result).isNotNull();
             assertThat(result.isValid()).isTrue();
         }
@@ -97,7 +97,7 @@ public class SchemaValidatorTaskTest {
             // set limit and length for serialization to 5 bytes
             this.service.setInMemoryLimit(5L);
 
-            final SingleProcessingResult<Boolean, XmlSyntaxError> result = this.service.check(process).getResult();
+            final SingleProcessingResult<Boolean, SimpleError> result = this.service.check(process).getResult();
             assertThat(result).isNotNull();
             assertThat(result.isValid()).isTrue();
         }
@@ -113,8 +113,8 @@ public class SchemaValidatorTaskTest {
         when(schema.newValidator()).thenReturn(validator);
         doThrow(SAXException.class).when(validator).validate(any());
         scenario.setSchema(schema);
-        final ProcessStepResult<Boolean, XmlSyntaxError> processStepResult = this.service.check(process);
-        final SingleProcessingResult<Boolean, XmlSyntaxError> result = processStepResult.getResult();
+        final ProcessStepResult<Boolean, SimpleError> processStepResult = this.service.check(process);
+        final SingleProcessingResult<Boolean, SimpleError> result = processStepResult.getResult();
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
     }

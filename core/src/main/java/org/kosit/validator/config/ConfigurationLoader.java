@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
@@ -61,7 +61,7 @@ public class ConfigurationLoader {
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
-            final SingleProcessingResult<XdmNode, XmlSyntaxError> result = new DocumentParseTask(processor)
+            final SingleProcessingResult<XdmNode, SimpleError> result = new DocumentParseTask(processor)
                     .parseDocument(ReadResource.inMemory(Resource.of(scenarioDefinition.toURL())));
             if (result.isValid() && !isSupportedDocument(result.getObject())) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition

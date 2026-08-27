@@ -14,7 +14,7 @@ import org.kosit.xvrl.model.XvrlReportsType;
  * attributes. during JAXB generation of the XvrlReportSummary class simplifying/pluralizing and renaming of the element
  * node is not able to being executed together.
  */
-public abstract class AbstractXvrlReportSummary implements BaseReportSummary, Serializable {
+public abstract class AbstractXvrlReportSummary implements BaseReportSummary {
 
     public abstract List<Serializable> getReportOrReportsOrDigest();
 

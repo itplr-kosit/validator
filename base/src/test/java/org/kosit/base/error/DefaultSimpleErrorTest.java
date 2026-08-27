@@ -14,6 +14,8 @@ public class DefaultSimpleErrorTest {
     @Test
     public void buildMinimum() {
         final DefaultSimpleError error = DefaultSimpleError.builder().message("Something went wrong").build();
+        assertThat(error.getErrorCode()).isNull();
+        assertThat(error.hasErrorCode()).isFalse();
         assertThat(error.getSystemID()).isNull();
         assertThat(error.getLineNumber()).isEqualTo(-1);
         assertThat(error.hasLineNumber()).isFalse();
@@ -31,8 +33,10 @@ public class DefaultSimpleErrorTest {
     @Test
     public void buildAllFields() {
         final IOException ex = new IOException("boom");
-        final DefaultSimpleError error = DefaultSimpleError.builderWarning().location("file.xml", 12, 34).message("Attribute is missing")
-                .linkedException(ex).build();
+        final DefaultSimpleError error = DefaultSimpleError.builderWarning().errorCode("cvc-complex-type.2.4.b")
+                .location("file.xml", 12, 34).message("Attribute is missing").linkedException(ex).build();
+        assertThat(error.getErrorCode()).isEqualTo("cvc-complex-type.2.4.b");
+        assertThat(error.hasErrorCode()).isTrue();
         assertThat(error.getSystemID()).isEqualTo("file.xml");
         assertThat(error.getLineNumber()).isEqualTo(12);
         assertThat(error.hasLineNumber()).isTrue();
@@ -65,9 +69,17 @@ public class DefaultSimpleErrorTest {
     }
 
     @Test
+    public void emptyErrorCodeIsTreatedAsNone() {
+        final DefaultSimpleError error = DefaultSimpleError.builder().errorCode("").message("msg").build();
+        assertThat(error.getErrorCode()).isNull();
+        assertThat(error.hasErrorCode()).isFalse();
+        assertThat(error).isEqualTo(DefaultSimpleError.builder().message("msg").build());
+    }
+
+    @Test
     public void copyBuilderCreatesEqualObject() {
-        final DefaultSimpleError error = DefaultSimpleError.builderNone().location("file.xml", 1, 2).message("Just a note")
-                .linkedException(new IOException("boom")).build();
+        final DefaultSimpleError error = DefaultSimpleError.builderNone().errorCode("NOTE-1").location("file.xml", 1, 2)
+                .message("Just a note").linkedException(new IOException("boom")).build();
         final DefaultSimpleError copy = DefaultSimpleError.builder(error).build();
         assertThat(copy).isNotSameAs(error).isEqualTo(error).hasSameHashCodeAs(error);
         assertThat(copy.toString()).isEqualTo(error.toString());
@@ -81,6 +93,7 @@ public class DefaultSimpleErrorTest {
         assertThat(DefaultSimpleError.builder().message("other").build()).isNotEqualTo(error);
         assertThat(DefaultSimpleError.builderWarning().message("msg").build()).isNotEqualTo(error);
         assertThat(DefaultSimpleError.builder().message("msg").lineNumber(1).build()).isNotEqualTo(error);
+        assertThat(DefaultSimpleError.builder().message("msg").errorCode("E-1").build()).isNotEqualTo(error);
     }
 
     @Test

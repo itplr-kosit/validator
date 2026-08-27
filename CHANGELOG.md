@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (API) Added `XmlHelper.createSafeSchemaFactory()` providing the hardened `SchemaFactory` that is now shared by the resolving strategies and the scenario schema provider
 - (API) Added `DefaultSimpleError` as the default immutable implementation of `SimpleError`, to be created via the new fluent `SimpleErrorBuilder`
 - (API) Added `SimpleError.getAsString()` and `SimpleError.log(Logger)` replacing the removed `XmlSyntaxError.log(Logger)`
+- (API) Added the optional `SimpleError.getErrorCode()` including `hasErrorCode()` and the `SimpleErrorBuilder.errorCode(String)` setter. An empty error code is treated like none at all
 
 ### Fixed
 

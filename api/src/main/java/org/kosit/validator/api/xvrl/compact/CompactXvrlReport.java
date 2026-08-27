@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.base.error.SimpleError;
+import org.kosit.xvrl.api.XvrlHelper;
 import org.kosit.xvrl.model.XvrlCreatorType;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlDocumentType;
@@ -221,7 +221,7 @@ public class CompactXvrlReport {
     public void addSchemaViolation(final SimpleError error) {
         final XvrlDetectionType d = new XvrlDetectionType();
         d.setCode(CODE_XSD_VIOLATION);
-        d.setSeverity(mapSeverity(error.getSeverity()));
+        d.setSeverity(XvrlHelper.translate(error.getSeverity()));
 
         // Message
         final XvrlMessageType msg = new XvrlMessageType();
@@ -257,7 +257,7 @@ public class CompactXvrlReport {
         // In the target XML severity is often info, but we take the role value if present
         if (failedAssert.getRole() != null) {
             try {
-                d.setSeverity(XvrlSeverityType.fromValue(failedAssert.getRole().toLowerCase()));
+                d.setSeverity(XvrlSeverityType.fromValue(failedAssert.getRole().toLowerCase(Locale.ROOT)));
             } catch (final IllegalArgumentException e) {
                 d.setSeverity(XvrlSeverityType.INFO);
             }
@@ -319,17 +319,6 @@ public class CompactXvrlReport {
             }
             return new ValidationResult(type, s.getHref(), violations);
         }).toList();
-    }
-
-    private XvrlSeverityType mapSeverity(final CTStandardSeverity severity) {
-        if (severity == null)
-            return XvrlSeverityType.UNSPECIFIED;
-
-        return switch (severity) {
-            case NONE -> XvrlSeverityType.UNSPECIFIED;
-            case WARNING -> XvrlSeverityType.WARNING;
-            case ERROR -> XvrlSeverityType.ERROR;
-        };
     }
 
     /**

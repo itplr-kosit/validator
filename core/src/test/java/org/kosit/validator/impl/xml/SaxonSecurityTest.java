@@ -13,7 +13,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.base.string.StringHelper;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
@@ -73,10 +73,10 @@ public class SaxonSecurityTest {
     @Test
     public void testXxe() throws URISyntaxException {
         final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
-        final SingleProcessingResult<XdmNode, XmlSyntaxError> result = TestHelper.parseDocument(TestHelper.read(resource.toURI()));
+        final SingleProcessingResult<XdmNode, SimpleError> result = TestHelper.parseDocument(TestHelper.read(resource.toURI()));
         assertThat(result.isValid()).isFalse();
         assertThat(result.getObject()).isNull();
-        assertThat(result.getErrors().stream().map(XmlSyntaxError::getMessage).collect(Collectors.joining()))
+        assertThat(result.getErrors().stream().map(SimpleError::getMessage).collect(Collectors.joining()))
                 .contains("http://apache.org/xml/features/disallow-doctype-dec");
     }
 }

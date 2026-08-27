@@ -14,8 +14,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
@@ -157,11 +157,11 @@ public class TestHelper {
         }
     }
 
-    public static SingleProcessingResult<XdmNode, XmlSyntaxError> parseDocument(final Processor processor, final CTReadResource input) {
+    public static SingleProcessingResult<XdmNode, SimpleError> parseDocument(final Processor processor, final CTReadResource input) {
         return new DocumentParseTask(processor).parseDocument(input);
     }
 
-    public static SingleProcessingResult<XdmNode, XmlSyntaxError> parseDocument(final CTReadResource input) {
+    public static SingleProcessingResult<XdmNode, SimpleError> parseDocument(final CTReadResource input) {
         return new DocumentParseTask(getTestProcessor()).parseDocument(input);
     }
 

@@ -11,7 +11,7 @@ import javax.xml.transform.Source;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
+import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
@@ -42,7 +42,7 @@ public class CreateReportsTaskTest {
     @Test
     public void testSimpleCreate() {
         final Process process = TestProcessBuilder.create().schemaValid().schematronValid().build();
-        final ProcessStepResult<List<BusinessReport>, XmlSyntaxError> result = this.action.check(process);
+        final ProcessStepResult<List<BusinessReport>, SimpleError> result = this.action.check(process);
         assertThat(result).isNotNull();
     }
 

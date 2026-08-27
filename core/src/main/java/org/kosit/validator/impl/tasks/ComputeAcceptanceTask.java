@@ -78,9 +78,9 @@ public class ComputeAcceptanceTask implements CheckTask {
         } catch (final SaxonApiException e) {
             final String msg = "Error evaluating accept recommendation: " + selector.getUnderlyingXPathContext().toString();
             LOGGER.error(msg, e);
-            final SimpleError xmlSyntaxError = DefaultSimpleError.builderError().message(msg)
-                    .location(e.getSystemId(), e.getLineNumber(), 0).linkedException(e).build();
-            return new SingleProcessingResult<>(AcceptRecommendation.REJECT, Collections.singletonList(xmlSyntaxError));
+            final SimpleError error = DefaultSimpleError.builderError().message(msg).location(e.getSystemId(), e.getLineNumber(), 0)
+                    .linkedException(e).build();
+            return new SingleProcessingResult<>(AcceptRecommendation.REJECT, Collections.singletonList(error));
         }
     }
 
@@ -103,9 +103,8 @@ public class ComputeAcceptanceTask implements CheckTask {
                     result = evaluateSchemaAndSchematron(process);
                 }
             } else {
-                final SimpleError xmlSyntaxError = new SimpleError();
-                xmlSyntaxError.setMessage("Pre-Conditions not Matched");
-                result = new SingleProcessingResult<>(AcceptRecommendation.REJECT, Collections.singleton(xmlSyntaxError));
+                final SimpleError error = DefaultSimpleError.builderError().message("Pre-Conditions not Matched").build();
+                result = new SingleProcessingResult<>(AcceptRecommendation.REJECT, Collections.singletonList(error));
             }
         }
         stepResult.setResult(result);

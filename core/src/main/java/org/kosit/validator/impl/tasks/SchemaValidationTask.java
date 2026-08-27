@@ -17,8 +17,8 @@ import javax.xml.validation.Validator;
 
 import org.apache.commons.io.FileUtils;
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -87,17 +87,16 @@ public class SchemaValidationTask implements CheckTask {
             final String msg = "Error processing schema validation for scenario " + scenario.getConfiguration().getName();
             LOGGER.error(msg, e);
             process.setStopped(true);
-            final XmlSyntaxError error = new XmlSyntaxError();
-            error.setMessage(msg);
+            final SimpleError error = DefaultSimpleError.builderError().message(msg).linkedException(e).build();
             return new SingleProcessingResult<>(Boolean.FALSE, Collections.singletonList(error));
         }
     }
 
     @Override
-    public ProcessStepResult<Boolean, XmlSyntaxError> check(final Process results) {
+    public ProcessStepResult<Boolean, SimpleError> check(final Process results) {
         final SingleProcessingResult<Scenario, String> scenarioResult = results.getResult(ScenarioSelectionTask.KEY);
-        final ProcessStepResult<Boolean, XmlSyntaxError> stepResult = new ProcessStepResult<>(KEY);
-        final SingleProcessingResult<Boolean, XmlSyntaxError> validateResult = validate(results, scenarioResult.getObject());
+        final ProcessStepResult<Boolean, SimpleError> stepResult = new ProcessStepResult<>(KEY);
+        final SingleProcessingResult<Boolean, SimpleError> validateResult = validate(results, scenarioResult.getObject());
         stepResult.setResult(validateResult);
         final ValidationResultsXmlSchema result = new ValidationResultsXmlSchema();
         result.getResource().addAll(scenarioResult.getObject().getConfiguration().getValidateWithXmlSchema().getResource());
@@ -110,7 +109,7 @@ public class SchemaValidationTask implements CheckTask {
 
     private SourceProvider resolveSource(final Process results) throws IOException, SaxonApiException {
         final SourceProvider source;
-        final SingleProcessingResult<XdmNode, XmlSyntaxError> parseResult = results.getResult(DocumentParseTask.KEY);
+        final SingleProcessingResult<XdmNode, SimpleError> parseResult = results.getResult(DocumentParseTask.KEY);
         source = serialize(results.getInput(), parseResult.getObject());
         return source;
     }

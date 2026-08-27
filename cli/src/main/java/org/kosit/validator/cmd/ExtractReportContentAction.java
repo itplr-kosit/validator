@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
@@ -81,7 +80,7 @@ class ExtractReportContentAction implements CheckTask {
 
     @Override
     public boolean isSkipped(final Process results) {
-        final SingleProcessingResult<List<BusinessReport>, XmlSyntaxError> createReportResult = results.getResult(CreateReportsTask.KEY);
+        final SingleProcessingResult<List<BusinessReport>, SimpleError> createReportResult = results.getResult(CreateReportsTask.KEY);
         if (createReportResult == null || createReportResult.getObject() == null) {
             LOGGER.warn("Can not extract create-report content. No report document found");
             return true;

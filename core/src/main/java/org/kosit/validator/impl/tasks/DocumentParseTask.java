@@ -97,9 +97,9 @@ public class DocumentParseTask implements CheckTask {
         } catch (final SaxonApiException | IOException e) {
             if (LOGGER.isDebugEnabled())
                 LOGGER.debug("Exception while parsing {}", content.getName(), e);
-            final SimpleError error = DefaultSimpleError.builderError().message("IOException while reading resource " + content.getName())
-                    .linkedException(e).build();
-            return new ParseOutcome(new SingleProcessingResult<>(Collections.singleton(error)), null);
+            final SimpleError error = DefaultSimpleError.builderError()
+                    .message("IOException while reading resource " + content.getName() + ": " + e.getMessage()).linkedException(e).build();
+            return new ParseOutcome(new SingleProcessingResult<>(Collections.singletonList(error)), null);
         }
     }
 

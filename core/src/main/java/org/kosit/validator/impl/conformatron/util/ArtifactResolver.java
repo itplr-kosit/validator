@@ -65,7 +65,8 @@ public final class ArtifactResolver {
 
     private boolean isInsideRepository(final URI resolved) {
         return Objects.equals(resolved.getScheme(), this.repository.getScheme())
-                && Objects.equals(StringHelper.emptyToNull(resolved.getAuthority()), StringHelper.emptyToNull(this.repository.getAuthority()))
+                && Objects.equals(StringHelper.emptyToNull(resolved.getAuthority()),
+                        StringHelper.emptyToNull(this.repository.getAuthority()))
                 && resolved.getPath() != null && resolved.getPath().startsWith(this.repository.getPath());
     }
 

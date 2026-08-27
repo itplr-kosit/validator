@@ -2,8 +2,8 @@ package org.kosit.validator.impl.tasks;
 
 import java.util.List;
 
+import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.api.xmlerror.XmlSyntaxError;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
@@ -95,14 +95,19 @@ public class CreateReportsTask implements CheckTask {
             final XdmDestination destination = new XdmDestination();
             transformer.setDestination(destination);
             transformer.transform();
+
             r.setContent(destination.getXdmNode());
             r.setReport(generateXvrlReport(transformation.getResourceType(), destination.getXdmNode()));
         } catch (final SaxonApiException | JAXBException e) {
             LOGGER.error("Error creating final report", e);
             process.setStopped(true);
-            final XmlSyntaxError xmlSyntaxError = new XmlSyntaxError();
-            xmlSyntaxError.setMessage("Can not create final report: " + e.getMessage());
-            r.setReport(createErrorInformation(transformation.getResourceType(), xmlSyntaxError));
+
+            final var errorBuilder = DefaultSimpleError.builderError().message("Can not create final report: " + e.getMessage())
+                    .linkedException(e);
+            if (e instanceof final SaxonApiException saxonApiEx)
+                errorBuilder.location(saxonApiEx.getSystemId(), saxonApiEx.getLineNumber(), 0);
+
+            r.setReport(createErrorInformation(transformation.getResourceType(), errorBuilder.build()));
         }
         return r;
     }
