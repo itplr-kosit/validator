@@ -3,6 +3,7 @@ package org.kosit.base.error;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 /**
  * Base interface for a single error
@@ -79,5 +80,38 @@ public interface SimpleError {
      */
     default boolean hasLinkedException() {
         return getLinkedException() != null;
+    }
+
+    /**
+     * 
+     * @return The error message including the location information as a single line. Never <code>null</code>.
+     */
+    @NonNull
+    default String getAsString() {
+        final StringBuilder ret = new StringBuilder(getMessage());
+        if (hasLineNumber()) {
+            if (hasColumnNumber())
+                ret.append(" at line ").append(getLineNumber()).append(" at pos ").append(getColumnNumber());
+            else
+                ret.append(" at line ").append(getLineNumber());
+        } else {
+            if (hasColumnNumber())
+                ret.append(" at line ? at pos ").append(getColumnNumber());
+            // else: neither nor
+        }
+        return ret.toString();
+    }
+
+    /**
+     * Log this error to the provided logger. Errors are logged on error level, everything else on warning level.
+     *
+     * @param logger the logger to log to. May not be <code>null</code>.
+     */
+    default void log(@NonNull final Logger logger) {
+        if (getSeverity().isError()) {
+            logger.error(getAsString());
+        } else {
+            logger.warn(getAsString());
+        }
     }
 }

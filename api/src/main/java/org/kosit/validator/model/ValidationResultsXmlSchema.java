@@ -63,7 +63,7 @@ public class ValidationResultsXmlSchema {
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list {@link XmlSyntaxError }
+     * Objects of the following type(s) are allowed in the list {@link SimpleError }
      * </p>
      * 
      * 

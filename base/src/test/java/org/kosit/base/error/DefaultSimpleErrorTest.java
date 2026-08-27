@@ -15,10 +15,13 @@ public class DefaultSimpleErrorTest {
     public void buildMinimum() {
         final DefaultSimpleError error = DefaultSimpleError.builder().message("Something went wrong").build();
         assertThat(error.getSystemID()).isNull();
-        assertThat(error.getLineNumber()).isZero();
+        assertThat(error.getLineNumber()).isEqualTo(-1);
         assertThat(error.hasLineNumber()).isFalse();
-        assertThat(error.getColumnNumber()).isZero();
+        assertThat(error.getLineNumberObj()).isNull();
+        assertThat(error.getColumnNumber()).isEqualTo(-1);
         assertThat(error.hasColumnNumber()).isFalse();
+        assertThat(error.getColumnNumberObj()).isNull();
+        assertThat(error.hasLineOrColumnNumber()).isFalse();
         assertThat(error.getSeverity()).isEqualTo(SimpleErrorBuilder.DEFAULT_SEVERITY);
         assertThat(error.getMessage()).isEqualTo("Something went wrong");
         assertThat(error.getLinkedException()).isNull();
@@ -33,8 +36,11 @@ public class DefaultSimpleErrorTest {
         assertThat(error.getSystemID()).isEqualTo("file.xml");
         assertThat(error.getLineNumber()).isEqualTo(12);
         assertThat(error.hasLineNumber()).isTrue();
+        assertThat(error.getLineNumberObj()).isEqualTo(Long.valueOf(12));
         assertThat(error.getColumnNumber()).isEqualTo(34);
         assertThat(error.hasColumnNumber()).isTrue();
+        assertThat(error.getColumnNumberObj()).isEqualTo(Long.valueOf(34));
+        assertThat(error.hasLineOrColumnNumber()).isTrue();
         assertThat(error.getSeverity()).isEqualTo(CTStandardSeverity.WARNING);
         assertThat(error.getMessage()).isEqualTo("Attribute is missing");
         assertThat(error.getLinkedException()).isSameAs(ex);
@@ -49,6 +55,13 @@ public class DefaultSimpleErrorTest {
         assertThat(error.getLineNumber()).isEqualTo(7);
         assertThat(error.getColumnNumber()).isEqualTo(3);
         assertThat(error.getSeverity()).isEqualTo(CTStandardSeverity.ERROR);
+    }
+
+    @Test
+    public void getAsString() {
+        assertThat(DefaultSimpleError.builder().message("Something went wrong").build().getAsString()).isEqualTo("Something went wrong");
+        assertThat(DefaultSimpleError.builderError().location("file.xml", 7, 3).message("Invalid content").build().getAsString())
+                .isEqualTo("Invalid content at line 7 at pos 3");
     }
 
     @Test
