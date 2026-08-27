@@ -16,16 +16,20 @@ import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
- * Dient der eindeutigen Identifikation des geprüften Dokuments anhand seines Hashwertes, der durch eine Dokumentenreferenz
- *                 ergänzt werden kann.
+ * Dient der eindeutigen Identifikation des geprüften Dokuments anhand seines Hashwertes, der durch eine
+ * Dokumentenreferenz ergänzt werden kann.
  * 
- * <p>Java-Klasse für DocumentIdentificationType complex type.</p>
+ * <p>
+ * Java-Klasse für DocumentIdentificationType complex type.
+ * </p>
  * 
- * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.</p>
+ * <p>
+ * Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * </p>
  * 
- * <pre>{@code
+ * <pre>
+ * {@code
  * <complexType name="DocumentIdentificationType">
  *   <complexContent>
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -47,29 +51,27 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *     </restriction>
  *   </complexContent>
  * </complexType>
- * }</pre>
+ * }
+ * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DocumentIdentificationType", namespace = "http://www.xoev.de/de/validator/framework/1/model", propOrder = {
-    "documentHash",
-    "documentReference"
-})
-public class DocumentIdentificationType
-    implements Serializable
-{
+@XmlType(name = "DocumentIdentificationType", namespace = "http://www.xoev.de/de/validator/framework/1/model",
+         propOrder = { "documentHash", "documentReference" })
+public class DocumentIdentificationType implements Serializable {
 
     private static final long serialVersionUID = -1L;
+
     /**
      * Angaben zum Hashwert des geprüften Dokuments.
      * 
      */
     @XmlElement(namespace = "http://www.xoev.de/de/validator/framework/1/model", required = true)
     protected DocumentIdentificationType.DocumentHash documentHash;
+
     /**
-     * Eine von der prüfenden Organisationseinheit festgelegte, möglichst eindeutige Referenz des geprüften
-     *                         Dokuments.
+     * Eine von der prüfenden Organisationseinheit festgelegte, möglichst eindeutige Referenz des geprüften Dokuments.
      * 
      */
     @XmlElement(namespace = "http://www.xoev.de/de/validator/framework/1/model", required = true)
@@ -80,10 +82,8 @@ public class DocumentIdentificationType
     /**
      * Angaben zum Hashwert des geprüften Dokuments.
      * 
-     * @return
-     *     possible object is
-     *     {@link DocumentIdentificationType.DocumentHash }
-     *     
+     * @return possible object is {@link DocumentIdentificationType.DocumentHash }
+     * 
      */
     public DocumentIdentificationType.DocumentHash getDocumentHash() {
         return documentHash;
@@ -92,10 +92,8 @@ public class DocumentIdentificationType
     /**
      * Legt den Wert der documentHash-Eigenschaft fest.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link DocumentIdentificationType.DocumentHash }
-     *     
+     * @param value allowed object is {@link DocumentIdentificationType.DocumentHash }
+     * 
      * @see #getDocumentHash()
      */
     public void setDocumentHash(DocumentIdentificationType.DocumentHash value) {
@@ -103,13 +101,10 @@ public class DocumentIdentificationType
     }
 
     /**
-     * Eine von der prüfenden Organisationseinheit festgelegte, möglichst eindeutige Referenz des geprüften
-     *                         Dokuments.
+     * Eine von der prüfenden Organisationseinheit festgelegte, möglichst eindeutige Referenz des geprüften Dokuments.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getDocumentReference() {
         return documentReference;
@@ -118,23 +113,25 @@ public class DocumentIdentificationType
     /**
      * Legt den Wert der documentReference-Eigenschaft fest.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      * @see #getDocumentReference()
      */
     public void setDocumentReference(String value) {
         this.documentReference = value;
     }
 
-
     /**
-     * <p>Java-Klasse für anonymous complex type.</p>
+     * <p>
+     * Java-Klasse für anonymous complex type.
+     * </p>
      * 
-     * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.</p>
+     * <p>
+     * Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+     * </p>
      * 
-     * <pre>{@code
+     * <pre>
+     * {@code
      * <complexType>
      *   <complexContent>
      *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -145,20 +142,17 @@ public class DocumentIdentificationType
      *     </restriction>
      *   </complexContent>
      * </complexType>
-     * }</pre>
+     * }
+     * </pre>
      * 
      * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "hashAlgorithm",
-        "hashValue"
-    })
-    public static class DocumentHash
-        implements Serializable
-    {
+    @XmlType(name = "", propOrder = { "hashAlgorithm", "hashValue" })
+    public static class DocumentHash implements Serializable {
 
         private static final long serialVersionUID = -1L;
+
         /**
          * Benennung eines Algorithmus zur Berechnung des Hashwerts.
          * 
@@ -167,6 +161,7 @@ public class DocumentIdentificationType
         @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
         @XmlSchemaType(name = "normalizedString")
         protected String hashAlgorithm;
+
         /**
          * Der Hashwert des geprüften Dokuments bei Anwendung des bezeichneten Algorithmus.
          * 
@@ -177,10 +172,8 @@ public class DocumentIdentificationType
         /**
          * Benennung eines Algorithmus zur Berechnung des Hashwerts.
          * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
+         * @return possible object is {@link String }
+         * 
          */
         public String getHashAlgorithm() {
             return hashAlgorithm;
@@ -189,10 +182,8 @@ public class DocumentIdentificationType
         /**
          * Legt den Wert der hashAlgorithm-Eigenschaft fest.
          * 
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
+         * @param value allowed object is {@link String }
+         * 
          * @see #getHashAlgorithm()
          */
         public void setHashAlgorithm(String value) {
@@ -202,9 +193,7 @@ public class DocumentIdentificationType
         /**
          * Der Hashwert des geprüften Dokuments bei Anwendung des bezeichneten Algorithmus.
          * 
-         * @return
-         *     possible object is
-         *     byte[]
+         * @return possible object is byte[]
          */
         public byte[] getHashValue() {
             return hashValue;
@@ -213,9 +202,7 @@ public class DocumentIdentificationType
         /**
          * Legt den Wert der hashValue-Eigenschaft fest.
          * 
-         * @param value
-         *     allowed object is
-         *     byte[]
+         * @param value allowed object is byte[]
          * @see #getHashValue()
          */
         public void setHashValue(byte[] value) {

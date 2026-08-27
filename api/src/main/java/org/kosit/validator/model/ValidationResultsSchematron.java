@@ -15,13 +15,17 @@ import jakarta.xml.bind.annotation.XmlType;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 
-
 /**
- * <p>Java-Klasse für ValidationResultsSchematron complex type.</p>
+ * <p>
+ * Java-Klasse für ValidationResultsSchematron complex type.
+ * </p>
  * 
- * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.</p>
+ * <p>
+ * Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+ * </p>
  * 
- * <pre>{@code
+ * <pre>
+ * {@code
  * <complexType name="ValidationResultsSchematron">
  *   <complexContent>
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -42,32 +46,29 @@ import org.oclc.purl.dsdl.svrl.SchematronOutputType;
  *     </restriction>
  *   </complexContent>
  * </complexType>
- * }</pre>
+ * }
+ * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ValidationResultsSchematron", namespace = "http://www.xoev.de/de/validator/framework/1/model", propOrder = {
-    "resource",
-    "results"
-})
-public class ValidationResultsSchematron
-    implements Serializable
-{
+@XmlType(name = "ValidationResultsSchematron", namespace = "http://www.xoev.de/de/validator/framework/1/model",
+         propOrder = { "resource", "results" })
+public class ValidationResultsSchematron implements Serializable {
 
     private static final long serialVersionUID = -1L;
+
     @XmlElement(namespace = "http://www.xoev.de/de/validator/framework/2/scenarios", required = true)
     protected ResourceType resource;
+
     @XmlElement(namespace = "http://www.xoev.de/de/validator/framework/1/model", required = true)
     protected ValidationResultsSchematron.Results results;
 
     /**
      * Ruft den Wert der resource-Eigenschaft ab.
      * 
-     * @return
-     *     possible object is
-     *     {@link ResourceType }
-     *     
+     * @return possible object is {@link ResourceType }
+     * 
      */
     public ResourceType getResource() {
         return resource;
@@ -76,10 +77,8 @@ public class ValidationResultsSchematron
     /**
      * Legt den Wert der resource-Eigenschaft fest.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ResourceType }
-     *     
+     * @param value allowed object is {@link ResourceType }
+     * 
      */
     public void setResource(ResourceType value) {
         this.resource = value;
@@ -88,10 +87,8 @@ public class ValidationResultsSchematron
     /**
      * Ruft den Wert der results-Eigenschaft ab.
      * 
-     * @return
-     *     possible object is
-     *     {@link ValidationResultsSchematron.Results }
-     *     
+     * @return possible object is {@link ValidationResultsSchematron.Results }
+     * 
      */
     public ValidationResultsSchematron.Results getResults() {
         return results;
@@ -100,22 +97,24 @@ public class ValidationResultsSchematron
     /**
      * Legt den Wert der results-Eigenschaft fest.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ValidationResultsSchematron.Results }
-     *     
+     * @param value allowed object is {@link ValidationResultsSchematron.Results }
+     * 
      */
     public void setResults(ValidationResultsSchematron.Results value) {
         this.results = value;
     }
 
-
     /**
-     * <p>Java-Klasse für anonymous complex type.</p>
+     * <p>
+     * Java-Klasse für anonymous complex type.
+     * </p>
      * 
-     * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.</p>
+     * <p>
+     * Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
+     * </p>
      * 
-     * <pre>{@code
+     * <pre>
+     * {@code
      * <complexType>
      *   <complexContent>
      *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
@@ -125,29 +124,25 @@ public class ValidationResultsSchematron
      *     </restriction>
      *   </complexContent>
      * </complexType>
-     * }</pre>
+     * }
+     * </pre>
      * 
      * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "schematronOutput"
-    })
-    public static class Results
-        implements Serializable
-    {
+    @XmlType(name = "", propOrder = { "schematronOutput" })
+    public static class Results implements Serializable {
 
         private static final long serialVersionUID = -1L;
+
         @XmlElement(name = "schematron-output", namespace = "http://purl.oclc.org/dsdl/svrl", required = true)
         protected SchematronOutputType schematronOutput;
 
         /**
          * Ruft den Wert der schematronOutput-Eigenschaft ab.
          * 
-         * @return
-         *     possible object is
-         *     {@link SchematronOutputType }
-         *     
+         * @return possible object is {@link SchematronOutputType }
+         * 
          */
         public SchematronOutputType getSchematronOutput() {
             return schematronOutput;
@@ -156,10 +151,8 @@ public class ValidationResultsSchematron
         /**
          * Legt den Wert der schematronOutput-Eigenschaft fest.
          * 
-         * @param value
-         *     allowed object is
-         *     {@link SchematronOutputType }
-         *     
+         * @param value allowed object is {@link SchematronOutputType }
+         * 
          */
         public void setSchematronOutput(SchematronOutputType value) {
             this.schematronOutput = value;
