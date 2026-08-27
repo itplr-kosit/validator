@@ -18,17 +18,11 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import javax.xml.transform.stream.StreamSource;
-
 import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VInput;
-import org.kosit.validator.api.VInputFactory;
-import org.kosit.validator.api.VInputResourceBridge;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.helper.ResourceHelperExtension;
@@ -249,22 +243,6 @@ public class DefaultVCheckTest {
         assertThat(result.isAcceptable()).isFalse();
         assertThat(result.getReport()).isNotNull();
         assertThat(result.getProcessingErrors()).hasSize(1);
-    }
-
-    // TODO do we need an input with XdmNode?
-    @Test
-    @Disabled("TinyDocumentImpl currently not supported for v2")
-    public void testXdmNode() throws Exception {
-        XdmNode node = TestObjectFactory.getProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
-        VInput domVInput = VInputFactory.read(node, "node test");
-        VResult result = this.validCheck.checkInput(VInputResourceBridge.of(domVInput));
-        assertThat(result.isProcessingSuccessful()).isTrue();
-
-        // test compatible configuration
-        node = this.validCheck.getProcessor().newDocumentBuilder().build(new StreamSource(SIMPLE_VALID.toASCIIString()));
-        domVInput = VInputFactory.read(node, "node test");
-        result = this.validCheck.checkInput(VInputResourceBridge.of(domVInput));
-        assertThat(result.isProcessingSuccessful()).isTrue();
     }
 
     private CTReadResource read(final URI simpleValid) {

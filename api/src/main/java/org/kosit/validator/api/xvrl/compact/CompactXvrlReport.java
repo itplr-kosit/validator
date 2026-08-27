@@ -23,6 +23,7 @@ import org.kosit.xvrl.model.XvrlMetadataType;
 import org.kosit.xvrl.model.XvrlProvenanceType;
 import org.kosit.xvrl.model.XvrlReportType;
 import org.kosit.xvrl.model.XvrlSchemaType;
+import org.kosit.xvrl.model.XvrlSeverityType;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.slf4j.Logger;
@@ -258,12 +259,12 @@ public class CompactXvrlReport {
         // In the target XML severity is often info, but we take the role value if present
         if (failedAssert.getRole() != null) {
             try {
-                d.setSeverity(XvrlDetectionType.Severity.fromValue(failedAssert.getRole().toLowerCase()));
+                d.setSeverity(XvrlSeverityType.fromValue(failedAssert.getRole().toLowerCase()));
             } catch (final IllegalArgumentException e) {
-                d.setSeverity(XvrlDetectionType.Severity.INFO);
+                d.setSeverity(XvrlSeverityType.INFO);
             }
         } else {
-            d.setSeverity(XvrlDetectionType.Severity.INFO);
+            d.setSeverity(XvrlSeverityType.INFO);
         }
 
         // Message
@@ -322,13 +323,13 @@ public class CompactXvrlReport {
         }).toList();
     }
 
-    private XvrlDetectionType.Severity mapSeverity(final XmlError.Severity severity) {
+    private XvrlSeverityType mapSeverity(final XmlError.Severity severity) {
         if (severity == null)
-            return XvrlDetectionType.Severity.INFO;
+            return XvrlSeverityType.INFO;
         return switch (severity) {
-            case SEVERITY_WARNING -> XvrlDetectionType.Severity.WARNING;
-            case SEVERITY_ERROR -> XvrlDetectionType.Severity.ERROR;
-            case SEVERITY_FATAL_ERROR -> XvrlDetectionType.Severity.FATAL_ERROR;
+            case SEVERITY_WARNING -> XvrlSeverityType.WARNING;
+            case SEVERITY_ERROR -> XvrlSeverityType.ERROR;
+            case SEVERITY_FATAL_ERROR -> XvrlSeverityType.FATAL_ERROR;
         };
     }
 

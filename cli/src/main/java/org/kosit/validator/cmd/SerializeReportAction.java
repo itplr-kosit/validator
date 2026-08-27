@@ -13,8 +13,8 @@ import org.kosit.validator.impl.tasks.CreateReportsTask;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.xvrl.impl.XvrlConversionService;
-import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlSeverityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +37,9 @@ class SerializeReportAction implements CheckTask {
 
     private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
         if (result.isValid()) {
-            return builder(REPORT_NAME).add(XvrlDetectionBuilder.detectionBuilder().addMessage("Serialization successful")
-                    .severity(XvrlDetectionType.Severity.INFO)).build();
+            return builder(REPORT_NAME)
+                    .add(XvrlDetectionBuilder.detectionBuilder().addMessage("Serialization successful").severity(XvrlSeverityType.INFO))
+                    .build();
         }
         return XvrlReportBuilder.builder(REPORT_NAME)
                 .addAll(result.getErrors().stream().map(e -> XvrlDetectionBuilder.detectionBuilder().addError(e))).build();

@@ -155,7 +155,7 @@
   </xs:complexType>
   <xs:element name="document" type="xvrl:XvrlDocumentType" />
   
-  <xs:simpleType name="SeverityType">
+  <xs:simpleType name="XvrlSeverityType">
     <xs:restriction base="xs:token">
       <xs:enumeration value="info"/>
       <xs:enumeration value="warning"/>
@@ -178,7 +178,7 @@
       <xs:element ref="xvrl:context"/>
     </xs:choice>
     <xs:attributeGroup ref="xvrl:common.attr" />
-    <xs:attribute name="severity" type="xvrl:SeverityType" />
+    <xs:attribute name="severity" type="xvrl:XvrlSeverityType" />
     <xs:attribute name="code" type="xs:string" />
   </xs:complexType>
   <xs:element name="detection" type="xvrl:XvrlDetectionType" />

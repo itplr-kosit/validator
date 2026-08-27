@@ -12,8 +12,8 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.XmlSyntaxError;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
-import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlSeverityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class ScenarioSelectionTask implements CheckTask {
         } else {
             builder.add(detectionBuilder()
                     .addMessage("Scenario '" + scenarioTypeResult.getObject().getName() + "' identified for '" + name + "'")
-                    .severity(XvrlDetectionType.Severity.INFO).code("scenario-matched"));
+                    .severity(XvrlSeverityType.INFO).code("scenario-matched"));
             builder.add(detectionBuilder().id("scenario").code(scenarioTypeResult.getObject().getName()));
         }
         return builder.build();

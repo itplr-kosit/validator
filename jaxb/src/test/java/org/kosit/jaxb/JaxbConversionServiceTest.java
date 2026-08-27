@@ -207,8 +207,7 @@ public class JaxbConversionServiceTest {
 
     @Test
     public void nullNamespaceMapResetsToDefault() {
-        final AbstractJaxbConverter<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, "bk"))
-                .withNamespacePrefixMap(null);
+        final AbstractJaxbConverter<Book> s = bookSvc().withNamespacePrefixMap(Map.of(Book.NS_BOOK, "bk")).withNamespacePrefixMap(null);
         final String xml = s.writeXml(new Book("Hamlet", "Shakespeare"));
         // After reset, JAXB picks its own prefixes — but it must not pick the configured "bk".
         assertThat(xml).doesNotContain("xmlns:bk=");
