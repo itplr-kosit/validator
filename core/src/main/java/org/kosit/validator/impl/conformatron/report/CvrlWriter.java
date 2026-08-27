@@ -1,15 +1,19 @@
 package org.kosit.validator.impl.conformatron.report;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.HexFormat;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -24,6 +28,7 @@ import org.conformatron.api.model.detection.CTSeverity;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.validation.CTValidationStandard;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
@@ -34,7 +39,11 @@ import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
+import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.ScenarioDetection;
+import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.w3c.dom.Document;
 
 /**
  * <b>DRAFT intermediate format</b>: serializes a canonical pipeline run (steps 2–8) to a CVRL report — an XVRL profile
@@ -63,6 +72,16 @@ import org.kosit.validator.impl.conformatron.model.Detection;
  * <li><b>D9</b> detections carry {@code cvrl:line}/{@code cvrl:col} when known; the XPath stays in the message</li>
  * <li><b>D10</b> per-report timestamps are the serialization time — the true execution time needs
  * {@code ICTActionExecution} (not implemented yet)</li>
+ * <li><b>D11</b> a detection carries no {@code code} that merely restates the action — {@code creator/@name} already
+ * does; codes with information of their own (rule ids, outcome markers) stay</li>
+ * <li><b>D12</b> scenario detection omits the severity attribute where it carries no information (every match is an
+ * info) — it is optional in XVRL. Errors keep it: dropping it there would leave the detection "unspecified" while the
+ * digest counts an error. Open consistency question across all steps</li>
+ * <li><b>D13</b> scenario detections carry {@code cvrl:scenario-id} plus a {@code location} pointing into the scenario
+ * configuration; the selected scenario is embedded in full as a second message</li>
+ * <li><b>D14</b> messages that belong to the same detection are identified by {@code xml:id}
+ * ({@code parse-document-hash}, {@code parse-document-content}, {@code select-scenario-content}) so consumers never
+ * depend on their order</li>
  * </ul>
  *
  * @author Andreas Schmitz
@@ -74,6 +93,25 @@ public final class CvrlWriter {
 
     /** D1: draft namespace for the CVRL extension attributes. */
     public static final String NS_CVRL = "urn:conformatron:cvrl:draft";
+
+    /** {@code xml:id} of the message carrying the document hash. */
+    public static final String ID_DOCUMENT_HASH = "parse-document-hash";
+
+    /** {@code xml:id} of the message carrying the source document. */
+    public static final String ID_DOCUMENT_CONTENT = "parse-document-content";
+
+    /** {@code xml:id} of the message carrying the selected scenario. */
+    public static final String ID_SCENARIO_CONTENT = "select-scenario-content";
+
+    /** {@code cvrl:encoding}: embedded as an XML fragment, readable and processable. */
+    public static final String ENCODING_DOM = "dom";
+
+    /** {@code cvrl:encoding}: embedded base64-encoded, byte-faithful for any encoding and syntax. */
+    public static final String ENCODING_BASE64 = "base64";
+
+    private static final String MIME_TYPE_XML = "application/xml";
+
+    private static final String MIME_TYPE_OCTET_STREAM = "application/octet-stream";
 
     /**
      * The results of one canonical pipeline run. Fields from the cancellation point onwards are {@code null} — the
@@ -215,7 +253,7 @@ public final class CvrlWriter {
         writer.writeEndElement();
         writeDigest(writer, detections);
         for (final CTDetection detection : detections.getAll()) {
-            writeDetection(writer, detection, parseEvidence);
+            writeDetection(writer, action, detection, parseEvidence);
         }
         newline(writer, 1);
         writer.writeEndElement();
@@ -238,12 +276,19 @@ public final class CvrlWriter {
         writer.writeAttribute("error-codes", String.join(" ", errorCodes));
     }
 
-    private static void writeDetection(final XMLStreamWriter writer, final CTDetection detection,
+    private static void writeDetection(final XMLStreamWriter writer, final CTActionType action, final CTDetection detection,
             final CTParsedValidationSource parseEvidence) throws XMLStreamException, IOException {
         newline(writer, 2);
         writer.writeStartElement(NS_XVRL, "detection");
-        writer.writeAttribute("severity", xvrlSeverity(detection.getSeverity()));
-        writer.writeAttribute("code", detection.getCode());
+        // D12: scenario detection omits the severity that says nothing — an error is of course still reported
+        final boolean omitSeverity = action == CTActionType.DETECT_SCENARIOS && detection.getSeverity() == CTStandardSeverity.NONE;
+        if (!omitSeverity) {
+            writer.writeAttribute("severity", xvrlSeverity(detection.getSeverity()));
+        }
+        // D11: no code that merely restates the action — the creator name in the metadata already carries it
+        if (!isRedundantCode(action, detection.getCode())) {
+            writer.writeAttribute("code", detection.getCode());
+        }
         // D9: line/col as extension attributes when known; the XPath location stays in the message
         if (detection.getLocation().getLineNumber() > 0) {
             writer.writeAttribute(NS_CVRL, "line", String.valueOf(detection.getLocation().getLineNumber()));
@@ -255,6 +300,17 @@ public final class CvrlWriter {
         if (detection instanceof final Detection impl && impl.getOriginalSeverity() != null) {
             writer.writeAttribute(NS_CVRL, "original-severity", xvrlSeverity(impl.getOriginalSeverity()));
         }
+        final ScenarioDetection scenario = detection instanceof final ScenarioDetection sd ? sd : null;
+        if (scenario != null && scenario.getScenarioID() != null) {
+            // D13: consumers that use the validator for more than plain validation need the scenario id everywhere
+            writer.writeAttribute(NS_CVRL, "scenario-id", scenario.getScenarioID());
+        }
+        if (scenario != null && scenario.getConfigurationLocation() != null) {
+            // the location points into the scenario configuration so the scenario can be looked up quickly
+            newline(writer, 3);
+            writer.writeEmptyElement(NS_XVRL, "location");
+            writer.writeAttribute("xpath", scenario.getConfigurationLocation());
+        }
         if (XmlDetection.CODE_DOCUMENT_PARSED.equals(detection.getCode()) && parseEvidence != null) {
             writeParseEvidence(writer, parseEvidence);
         } else {
@@ -262,42 +318,129 @@ public final class CvrlWriter {
             writer.writeStartElement(NS_XVRL, "message");
             writer.writeCharacters(detection.getText().getDisplayTextLocaleIndependent());
             writer.writeEndElement();
+            if (scenario != null && scenario.getConfiguration() != null) {
+                writeScenarioEvidence(writer, scenario);
+            }
         }
         newline(writer, 2);
         writer.writeEndElement();
     }
 
     /**
-     * The {@code document-parsed} detection carries two messages — first the document hash (over the retained source
-     * bytes, algorithm as {@code cvrl:algorithm}), then the parsed document embedded as evidence
-     * ({@code cvrl:mime-type}). Separate elements so a streaming consumer can skip the payload. The payload is only
-     * ever written for a successfully parsed document — failed content is not echoed (injection safety); non-XML
-     * sources would be base64 with their own mime type (not applicable to the XML facade).
+     * D11: a detection code that only repeats what {@code metadata/creator/@name} already says is dropped from the
+     * report. Codes that carry information of their own — rule ids, outcome markers — always stay.
      */
-    private static void writeParseEvidence(final XMLStreamWriter writer, final CTParsedValidationSource source)
+    private static boolean isRedundantCode(final CTActionType action, final String code) {
+        if (code == null) {
+            return true;
+        }
+        return switch (action) {
+            case PARSE_DOCUMENT -> XmlDetection.CODE_DOCUMENT_PARSED.equals(code);
+            case DETECT_SCENARIOS -> DetectScenariosAction.CODE_SCENARIO_MATCHED.equals(code)
+                    || DetectScenariosAction.CODE_SCENARIO_USER_SELECTED.equals(code);
+            default -> false;
+        };
+    }
+
+    /**
+     * The selected scenario is embedded in its original form as a second message, so a report consumer sees exactly
+     * which rules were applied. This is the <b>individual scenario</b>, not the scenario configuration file. Scenario
+     * configurations are UTF-8 by definition, so no base64 detour is needed here.
+     */
+    private static void writeScenarioEvidence(final XMLStreamWriter writer, final ScenarioDetection scenario)
             throws XMLStreamException, IOException {
         newline(writer, 3);
         writer.writeStartElement(NS_XVRL, "message");
-        writer.writeAttribute(NS_CVRL, "algorithm", source.getSource().getReadResource().getHashAlgorithmName());
-        writer.writeCharacters(HexFormat.of().formatHex(source.getSource().getReadResource().getHashBytes()));
+        writer.writeAttribute(XMLConstants.XML_NS_URI, "id", ID_SCENARIO_CONTENT);
+        writer.writeAttribute(NS_CVRL, "mime-type", MIME_TYPE_XML);
+        writer.writeAttribute(NS_CVRL, "encoding", ENCODING_DOM);
+        writer.writeAttribute(NS_CVRL, "source-encoding", StandardCharsets.UTF_8.name());
+        embedXml(writer, new ByteArrayInputStream(ScenarioXml.toXmlBytes(scenario.getConfiguration())));
         writer.writeEndElement();
+    }
+
+    /**
+     * The {@code document-parsed} detection carries two messages, each identified by its own {@code xml:id} so a
+     * consumer never has to rely on their order — first the document hash (over the retained source bytes, algorithm as
+     * {@code cvrl:algorithm}), then the source document itself. Separate elements so a streaming consumer can skip the
+     * payload. The payload is only ever written for a successfully parsed document — failed content is not echoed
+     * (injection safety).
+     * <p>
+     * <b>Embedding rule</b> ({@code cvrl:encoding}): an XML document declared as UTF-8 is embedded as a DOM fragment —
+     * readable, and byte-faithful because the report itself is UTF-8. Any other encoding is embedded as {@code base64},
+     * because serializing the fragment into the UTF-8 report would silently transcode it and lose the original XML
+     * declaration. The declared encoding is always reported as {@code cvrl:source-encoding} (needed to write a base64
+     * payload back out). Non-XML sources are always base64.
+     * </p>
+     */
+    private static void writeParseEvidence(final XMLStreamWriter writer, final CTParsedValidationSource source)
+            throws XMLStreamException, IOException {
+        final CTReadResource resource = source.getSource().getReadResource();
         newline(writer, 3);
         writer.writeStartElement(NS_XVRL, "message");
-        writer.writeAttribute(NS_CVRL, "mime-type", "application/xml");
-        embedDocument(writer, source.getSource().getReadResource());
+        writer.writeAttribute(XMLConstants.XML_NS_URI, "id", ID_DOCUMENT_HASH);
+        writer.writeAttribute(NS_CVRL, "algorithm", resource.getHashAlgorithmName());
+        writer.writeCharacters(HexFormat.of().formatHex(resource.getHashBytes()));
         writer.writeEndElement();
+
+        final String sourceEncoding = sourceEncodingOf(source);
+        final boolean asDom = isXml(source) && StandardCharsets.UTF_8.name().equalsIgnoreCase(sourceEncoding);
+        newline(writer, 3);
+        writer.writeStartElement(NS_XVRL, "message");
+        writer.writeAttribute(XMLConstants.XML_NS_URI, "id", ID_DOCUMENT_CONTENT);
+        writer.writeAttribute(NS_CVRL, "mime-type", isXml(source) ? MIME_TYPE_XML : MIME_TYPE_OCTET_STREAM);
+        writer.writeAttribute(NS_CVRL, "encoding", asDom ? ENCODING_DOM : ENCODING_BASE64);
+        writer.writeAttribute(NS_CVRL, "source-encoding", sourceEncoding);
+        if (asDom) {
+            embedXml(writer, resource.getSourceStream());
+        } else {
+            embedBase64(writer, resource);
+        }
+        writer.writeEndElement();
+    }
+
+    /**
+     * The encoding the source document declares. For XML the DOM knows it: {@code getXmlEncoding()} is the encoding
+     * from the XML declaration, {@code getInputEncoding()} the one the parser actually used (set when the declaration
+     * omits it). Without a parsed DOM the XML default applies.
+     */
+    private static String sourceEncodingOf(final CTParsedValidationSource source) {
+        final Document dom = domOf(source);
+        if (dom != null) {
+            if (dom.getXmlEncoding() != null) {
+                return dom.getXmlEncoding();
+            }
+            if (dom.getInputEncoding() != null) {
+                return dom.getInputEncoding();
+            }
+        }
+        return StandardCharsets.UTF_8.name();
+    }
+
+    private static boolean isXml(final CTParsedValidationSource source) {
+        return domOf(source) != null;
+    }
+
+    private static Document domOf(final CTParsedValidationSource source) {
+        return source instanceof final CTParsedValidationSourceXML xml ? xml.getAsDom() : null;
+    }
+
+    /** Writes the source bytes as base64 text content — byte-faithful for any encoding and any syntax. */
+    private static void embedBase64(final XMLStreamWriter writer, final CTReadResource resource) throws XMLStreamException, IOException {
+        try ( InputStream in = resource.getSourceStream() ) {
+            writer.writeCharacters(Base64.getEncoder().encodeToString(in.readAllBytes()));
+        }
     }
 
     /**
      * Streams the retained source bytes into the report as element content (flat copy, XML declaration and DTD
      * excluded). The copy is event-based so the embedded document keeps its own namespaces without re-serialization.
      */
-    private static void embedDocument(final XMLStreamWriter writer, final CTReadResource readResource)
-            throws XMLStreamException, IOException {
+    private static void embedXml(final XMLStreamWriter writer, final InputStream sourceStream) throws XMLStreamException, IOException {
         final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
         inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-        final XMLStreamReader reader = inputFactory.createXMLStreamReader(readResource.getSourceStream());
+        final XMLStreamReader reader = inputFactory.createXMLStreamReader(sourceStream);
         try {
             while (reader.hasNext()) {
                 copyEvent(writer, reader, reader.next());

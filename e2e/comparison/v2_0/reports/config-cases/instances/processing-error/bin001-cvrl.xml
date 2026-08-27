@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
+  <metadata>
+    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
+    <timestamp>2026-08-27T14:43:20+02:00</timestamp>
+    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+    <document href="config-cases/instances/processing-error/bin001.xml"/>
+  </metadata>
+  <report>
+    <metadata>
+      <!-- Offene Frage: how to deal with reports from other validator software -->
+      <creator name="parse-document"/>
+      <timestamp>2026-08-27T14:43:20+02:00</timestamp>
+    </metadata>
+    <digest valid="false" worst-severity="error" fatal-error-count="1" error-count="1" warning-count="0" error-codes="not-wellformed"/>
+    <detection severity="error" code="not-wellformed" cvrl:line="1" cvrl:col="1">
+      <message>Content ist nicht zulässig in Prolog.</message>
+    </detection>
+  </report>
+</reports>

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="COMPLETED">
+  <metadata>
+    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
+    <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+    <document href="config-cases/cen-unit-test/XRechnung-CEFACT-2020-12-17-with-invalid-attachment-without-extension-urn.xml"/>
+  </metadata>
+  <report>
+    <metadata>
+      <!-- Offene Frage: how to deal with reports from other validator software -->
+      <creator name="parse-document"/>
+      <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info">
+      <message xml:id="parse-document-hash" cvrl:algorithm="SHA-512">ccf074f9a61ce797a11fbf90cbe0dc865675886ed0e9b291638db1510f5024094a7e395832e0ed230e8b06e29438901ff9541d7fb5a783dd49852da54536fa3a</message>
+      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom" cvrl:source-encoding="UTF-8"><CrossIndustryInvoice xmlns="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+   <ExchangedDocumentContext>
+      <ram:BusinessProcessSpecifiedDocumentContextParameter>
+         <ram:ID>XRechnung 2.0.0</ram:ID>
+      </ram:BusinessProcessSpecifiedDocumentContextParameter>
+      <ram:GuidelineSpecifiedDocumentContextParameter>
+         <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</ram:ID>
+      </ram:GuidelineSpecifiedDocumentContextParameter>
+   </ExchangedDocumentContext>
+   <ExchangedDocument>
+      <ram:ID>12345</ram:ID>
+      <ram:TypeCode>380</ram:TypeCode>
+      <ram:IssueDateTime>
+         <udt:DateTimeString format="102">20201217</udt:DateTimeString>
+      </ram:IssueDateTime>
+   </ExchangedDocument>
+   <SupplyChainTradeTransaction>
+      <ram:IncludedSupplyChainTradeLineItem>
+         <ram:AssociatedDocumentLineDocument>
+            <ram:LineID>1</ram:LineID>
+         </ram:AssociatedDocumentLineDocument>
+         <ram:SpecifiedTradeProduct>
+            <ram:Name>TestTestTest</ram:Name>
+         </ram:SpecifiedTradeProduct>
+         <ram:SpecifiedLineTradeAgreement>
+            <ram:GrossPriceProductTradePrice>
+               <ram:ChargeAmount>12345</ram:ChargeAmount>
+               <ram:BasisQuantity unitCode="MIK">1</ram:BasisQuantity>
+               <ram:AppliedTradeAllowanceCharge>
+                  <ram:ChargeIndicator>
+                     <udt:Indicator>false</udt:Indicator>
+                  </ram:ChargeIndicator>
+                  <ram:ActualAmount>0</ram:ActualAmount>
+               </ram:AppliedTradeAllowanceCharge>
+            </ram:GrossPriceProductTradePrice>
+            <ram:NetPriceProductTradePrice>
+               <ram:ChargeAmount>12345</ram:ChargeAmount>
+               <ram:BasisQuantity unitCode="MIK">1</ram:BasisQuantity>
+            </ram:NetPriceProductTradePrice>
+         </ram:SpecifiedLineTradeAgreement>
+         <ram:SpecifiedLineTradeDelivery>
+            <ram:BilledQuantity unitCode="MIK">678</ram:BilledQuantity>
+         </ram:SpecifiedLineTradeDelivery>
+         <ram:SpecifiedLineTradeSettlement>
+            <ram:ApplicableTradeTax>
+               <ram:TypeCode>VAT</ram:TypeCode>
+               <ram:CategoryCode>S</ram:CategoryCode>
+               <ram:RateApplicablePercent>16</ram:RateApplicablePercent>
+            </ram:ApplicableTradeTax>
+            <ram:SpecifiedTradeSettlementLineMonetarySummation>
+               <ram:LineTotalAmount>8369910</ram:LineTotalAmount>
+            </ram:SpecifiedTradeSettlementLineMonetarySummation>
+         </ram:SpecifiedLineTradeSettlement>
+      </ram:IncludedSupplyChainTradeLineItem>
+      <ram:ApplicableHeaderTradeAgreement>
+         <ram:BuyerReference>TestTestTest</ram:BuyerReference>
+         <ram:SellerTradeParty>
+            <ram:Name>TestTestTest</ram:Name>
+            <ram:DefinedTradeContact>
+               <ram:PersonName>TestTestTest</ram:PersonName>
+               <ram:TelephoneUniversalCommunication>
+                  <ram:CompleteNumber>01234</ram:CompleteNumber>
+               </ram:TelephoneUniversalCommunication>
+               <ram:EmailURIUniversalCommunication>
+                  <ram:URIID>TestTestTest@TestTestTest-invalid-domain.test</ram:URIID>
+               </ram:EmailURIUniversalCommunication>
+            </ram:DefinedTradeContact>
+            <ram:PostalTradeAddress>
+               <ram:PostcodeCode>12345</ram:PostcodeCode>
+               <ram:CityName>Berlin</ram:CityName>
+               <ram:CountryID>DE</ram:CountryID>
+            </ram:PostalTradeAddress>
+            <ram:URIUniversalCommunication>
+               <ram:URIID schemeID="0088">rechnungsausgang@test.de</ram:URIID>
+            </ram:URIUniversalCommunication>
+            <ram:SpecifiedTaxRegistration>
+               <ram:ID schemeID="VA">DE1234</ram:ID>
+            </ram:SpecifiedTaxRegistration>
+         </ram:SellerTradeParty>
+         <ram:BuyerTradeParty>
+            <ram:Name>TestTestTest</ram:Name>
+            <ram:PostalTradeAddress>
+               <ram:PostcodeCode>12345</ram:PostcodeCode>
+               <ram:CityName>Berlin</ram:CityName>
+               <ram:CountryID>DE</ram:CountryID>
+            </ram:PostalTradeAddress>
+            <ram:URIUniversalCommunication>
+               <ram:URIID schemeID="0088">rechnungseingang@test.de</ram:URIID>
+            </ram:URIUniversalCommunication>
+         </ram:BuyerTradeParty>
+         <ram:AdditionalReferencedDocument>
+            <ram:IssuerAssignedID>XRechnung-UBL-2020-12-17-no-attachments.xml</ram:IssuerAssignedID>
+            <ram:TypeCode>916</ram:TypeCode>
+            <ram:AttachmentBinaryObject mimeCode="this-should/be-invalid" filename="XRechnung-UBL-2020-12-17-no-attachments.xml">PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPEludm9pY2UgeG1sbnM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkludm9pY2UtMiIKICAgICAgICAgeG1sbnM6eGFkZXM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMvdjEuMy4yIyIKICAgICAgICAgeG1sbnM6ZHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiCiAgICAgICAgIHhtbG5zOmNhYz0idXJuOm9hc2lzOm5hbWVzOnNwZWNpZmljYXRpb246dWJsOnNjaGVtYTp4c2Q6Q29tbW9uQWdncmVnYXRlQ29tcG9uZW50cy0yIgogICAgICAgICB4bWxuczpjYmM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkJhc2ljQ29tcG9uZW50cy0yIgogICAgICAgICB4bWxuczpleHQ9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkV4dGVuc2lvbkNvbXBvbmVudHMtMiIKICAgICAgICAgeG1sbnM6bjA9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vblNpZ25hdHVyZUNvbXBvbmVudHMtMiIKICAgICAgICAgeG1sbnM6cWR0PSJ1cm46b2FzaXM6bmFtZXM6c3BlY2lmaWNhdGlvbjp1Ymw6c2NoZW1hOnhzZDpRdWFsaWZpZWREYXRhVHlwZXMtMiIKICAgICAgICAgeG1sbnM6c2FjPSJ1cm46b2FzaXM6bmFtZXM6c3BlY2lmaWNhdGlvbjp1Ymw6c2NoZW1hOnhzZDpTaWduYXR1cmVBZ2dyZWdhdGVDb21wb25lbnRzLTIiCiAgICAgICAgIHhtbG5zOnNiYz0idXJuOm9hc2lzOm5hbWVzOnNwZWNpZmljYXRpb246dWJsOnNjaGVtYTp4c2Q6U2lnbmF0dXJlQmFzaWNDb21wb25lbnRzLTIiCiAgICAgICAgIHhtbG5zOnVkdD0idXJuOm9hc2lzOm5hbWVzOnNwZWNpZmljYXRpb246dWJsOnNjaGVtYTp4c2Q6VW5xdWFsaWZpZWREYXRhVHlwZXMtMiIKICAgICAgICAgeG1sbnM6Y2N0cy1jY3Q9InVybjp1bjp1bmVjZTp1bmNlZmFjdDpkYXRhOnNwZWNpZmljYXRpb246Q29yZUNvbXBvbmVudFR5cGVTY2hlbWFNb2R1bGU6MiI+CiAgIDxjYmM6Q3VzdG9taXphdGlvbklEPnVybjpjZW4uZXU6ZW4xNjkzMToyMDE3I2NvbXBsaWFudCN1cm46eG9ldi1kZTprb3NpdDpzdGFuZGFyZDp4cmVjaG51bmdfMi4wPC9jYmM6Q3VzdG9taXphdGlvbklEPgogICA8Y2JjOlByb2ZpbGVJRD5YUmVjaG51bmcgMi4wLjA8L2NiYzpQcm9maWxlSUQ+CiAgIDxjYmM6SUQ+MTIzNDU8L2NiYzpJRD4KICAgPGNiYzpJc3N1ZURhdGU+MjAyMC0xMi0xNzwvY2JjOklzc3VlRGF0ZT4KICAgPGNiYzpEdWVEYXRlPjIwMjAtMTItMzE8L2NiYzpEdWVEYXRlPgogICA8Y2JjOkludm9pY2VUeXBlQ29kZT4zODA8L2NiYzpJbnZvaWNlVHlwZUNvZGU+CiAgIDxjYmM6RG9jdW1lbnRDdXJyZW5jeUNvZGU+RVVSPC9jYmM6RG9jdW1lbnRDdXJyZW5jeUNvZGU+CiAgIDxjYmM6VGF4Q3VycmVuY3lDb2RlPkVVUjwvY2JjOlRheEN1cnJlbmN5Q29kZT4KICAgPGNiYzpBY2NvdW50aW5nQ29zdC8+CiAgIDxjYmM6QnV5ZXJSZWZlcmVuY2U+VGVzdFRlc3RUZXN0PC9jYmM6QnV5ZXJSZWZlcmVuY2U+CiAgIDxjYWM6T3JkZXJSZWZlcmVuY2U+CiAgICAgIDxjYmM6SUQvPgogICAgICA8Y2JjOlNhbGVzT3JkZXJJRC8+CiAgIDwvY2FjOk9yZGVyUmVmZXJlbmNlPgogICA8Y2FjOkRlc3BhdGNoRG9jdW1lbnRSZWZlcmVuY2U+CiAgICAgIDxjYmM6SUQvPgogICA8L2NhYzpEZXNwYXRjaERvY3VtZW50UmVmZXJlbmNlPgogICA8Y2FjOlJlY2VpcHREb2N1bWVudFJlZmVyZW5jZT4KICAgICAgPGNiYzpJRC8+CiAgIDwvY2FjOlJlY2VpcHREb2N1bWVudFJlZmVyZW5jZT4KICAgPGNhYzpPcmlnaW5hdG9yRG9jdW1lbnRSZWZlcmVuY2U+CiAgICAgIDxjYmM6SUQvPgogICA8L2NhYzpPcmlnaW5hdG9yRG9jdW1lbnRSZWZlcmVuY2U+CiAgIDxjYWM6Q29udHJhY3REb2N1bWVudFJlZmVyZW5jZT4KICAgICAgPGNiYzpJRC8+CiAgIDwvY2FjOkNvbnRyYWN0RG9jdW1lbnRSZWZlcmVuY2U+CiAgIDxjYWM6UHJvamVjdFJlZmVyZW5jZT4KICAgICAgPGNiYzpJRC8+CiAgIDwvY2FjOlByb2plY3RSZWZlcmVuY2U+CiAgIDxjYWM6QWNjb3VudGluZ1N1cHBsaWVyUGFydHk+CiAgICAgIDxjYWM6UGFydHk+CiAgICAgICAgIDxjYmM6RW5kcG9pbnRJRCBzY2hlbWVJRD0iMDA4OCIvPgogICAgICAgICA8Y2FjOlBhcnR5TmFtZT4KICAgICAgICAgICAgPGNiYzpOYW1lLz4KICAgICAgICAgPC9jYWM6UGFydHlOYW1lPgogICAgICAgICA8Y2FjOlBvc3RhbEFkZHJlc3M+CiAgICAgICAgICAgIDxjYmM6U3RyZWV0TmFtZS8+CiAgICAgICAgICAgIDxjYmM6QWRkaXRpb25hbFN0cmVldE5hbWUvPgogICAgICAgICAgICA8Y2JjOkNpdHlOYW1lPkJlcmxpbjwvY2JjOkNpdHlOYW1lPgogICAgICAgICAgICA8Y2JjOlBvc3RhbFpvbmU+MTIzNDU8L2NiYzpQb3N0YWxab25lPgogICAgICAgICAgICA8Y2JjOkNvdW50cnlTdWJlbnRpdHkvPgogICAgICAgICAgICA8Y2FjOkFkZHJlc3NMaW5lPgogICAgICAgICAgICAgICA8Y2JjOkxpbmUvPgogICAgICAgICAgICA8L2NhYzpBZGRyZXNzTGluZT4KICAgICAgICAgICAgPGNhYzpDb3VudHJ5PgogICAgICAgICAgICAgICA8Y2JjOklkZW50aWZpY2F0aW9uQ29kZT5ERTwvY2JjOklkZW50aWZpY2F0aW9uQ29kZT4KICAgICAgICAgICAgPC9jYWM6Q291bnRyeT4KICAgICAgICAgPC9jYWM6UG9zdGFsQWRkcmVzcz4KICAgICAgICAgPGNhYzpQYXJ0eVRheFNjaGVtZT4KICAgICAgICAgICAgPGNiYzpDb21wYW55SUQ+REUxMjM0PC9jYmM6Q29tcGFueUlEPgogICAgICAgICAgICA8Y2FjOlRheFNjaGVtZT4KICAgICAgICAgICAgICAgPGNiYzpJRD5WQVQ8L2NiYzpJRD4KICAgICAgICAgICAgPC9jYWM6VGF4U2NoZW1lPgogICAgICAgICA8L2NhYzpQYXJ0eVRheFNjaGVtZT4KICAgICAgICAgPGNhYzpQYXJ0eUxlZ2FsRW50aXR5PgogICAgICAgICAgICA8Y2JjOlJlZ2lzdHJhdGlvbk5hbWU+VGVzdFRlc3RUZXN0PC9jYmM6UmVnaXN0cmF0aW9uTmFtZT4KICAgICAgICAgICAgPGNiYzpDb21wYW55SUQvPgogICAgICAgICAgICA8Y2JjOkNvbXBhbnlMZWdhbEZvcm0vPgogICAgICAgICA8L2NhYzpQYXJ0eUxlZ2FsRW50aXR5PgogICAgICAgICA8Y2FjOkNvbnRhY3Q+CiAgICAgICAgICAgIDxjYmM6TmFtZT5UZXN0VGVzdFRlc3Q8L2NiYzpOYW1lPgogICAgICAgICAgICA8Y2JjOlRlbGVwaG9uZT5UZXN0VGVzdFRlc3Q8L2NiYzpUZWxlcGhvbmU+CiAgICAgICAgICAgIDxjYmM6RWxlY3Ryb25pY01haWw+VGVzdFRlc3RUZXN0QFRlc3RUZXN0VGVzdC1pbnZhbGlkLWRvbWFpbi50ZXN0PC9jYmM6RWxlY3Ryb25pY01haWw+CiAgICAgICAgIDwvY2FjOkNvbnRhY3Q+CiAgICAgIDwvY2FjOlBhcnR5PgogICA8L2NhYzpBY2NvdW50aW5nU3VwcGxpZXJQYXJ0eT4KICAgPGNhYzpBY2NvdW50aW5nQ3VzdG9tZXJQYXJ0eT4KICAgICAgPGNhYzpQYXJ0eT4KICAgICAgICAgPGNiYzpFbmRwb2ludElEIHNjaGVtZUlEPSIwMDg4Ii8+CiAgICAgICAgIDxjYWM6UGFydHlJZGVudGlmaWNhdGlvbj4KICAgICAgICAgICAgPGNiYzpJRC8+CiAgICAgICAgIDwvY2FjOlBhcnR5SWRlbnRpZmljYXRpb24+CiAgICAgICAgIDxjYWM6UGFydHlOYW1lPgogICAgICAgICAgICA8Y2JjOk5hbWUvPgogICAgICAgICA8L2NhYzpQYXJ0eU5hbWU+CiAgICAgICAgIDxjYWM6UG9zdGFsQWRkcmVzcz4KICAgICAgICAgICAgPGNiYzpTdHJlZXROYW1lLz4KICAgICAgICAgICAgPGNiYzpBZGRpdGlvbmFsU3RyZWV0TmFtZS8+CiAgICAgICAgICAgIDxjYmM6Q2l0eU5hbWU+QmVybGluPC9jYmM6Q2l0eU5hbWU+CiAgICAgICAgICAgIDxjYmM6UG9zdGFsWm9uZT4xMjM0NTwvY2JjOlBvc3RhbFpvbmU+CiAgICAgICAgICAgIDxjYmM6Q291bnRyeVN1YmVudGl0eS8+CiAgICAgICAgICAgIDxjYWM6QWRkcmVzc0xpbmU+CiAgICAgICAgICAgICAgIDxjYmM6TGluZS8+CiAgICAgICAgICAgIDwvY2FjOkFkZHJlc3NMaW5lPgogICAgICAgICAgICA8Y2FjOkNvdW50cnk+CiAgICAgICAgICAgICAgIDxjYmM6SWRlbnRpZmljYXRpb25Db2RlPkRFPC9jYmM6SWRlbnRpZmljYXRpb25Db2RlPgogICAgICAgICAgICA8L2NhYzpDb3VudHJ5PgogICAgICAgICA8L2NhYzpQb3N0YWxBZGRyZXNzPgogICAgICAgICA8Y2FjOlBhcnR5TGVnYWxFbnRpdHk+CiAgICAgICAgICAgIDxjYmM6UmVnaXN0cmF0aW9uTmFtZT5UZXN0VGVzdFRlc3Q8L2NiYzpSZWdpc3RyYXRpb25OYW1lPgogICAgICAgICAgICA8Y2JjOkNvbXBhbnlJRC8+CiAgICAgICAgIDwvY2FjOlBhcnR5TGVnYWxFbnRpdHk+CiAgICAgIDwvY2FjOlBhcnR5PgogICA8L2NhYzpBY2NvdW50aW5nQ3VzdG9tZXJQYXJ0eT4KICAgPGNhYzpQYXltZW50TWVhbnM+CiAgICAgIDxjYmM6UGF5bWVudE1lYW5zQ29kZSBuYW1lPSJJbmZvcm1hdGlvbmVuIMO8YmVyIGRhcyBCYW5ra29udG8sIGF1ZiBkYXMgZGllIMOcYmVyd2Vpc3VuZyB6dSBsZWlzdGVuIGlzdCI+NTg8L2NiYzpQYXltZW50TWVhbnNDb2RlPgogICAgICA8Y2JjOlBheW1lbnRJRC8+CiAgICAgIDxjYWM6UGF5ZWVGaW5hbmNpYWxBY2NvdW50PgogICAgICAgICA8Y2JjOklEPkRFOTExMDAwMDAwMDAxMjM0NTY3ODk8L2NiYzpJRD4KICAgICAgICAgPGNiYzpOYW1lLz4KICAgICAgICAgPGNhYzpGaW5hbmNpYWxJbnN0aXR1dGlvbkJyYW5jaD4KICAgICAgICAgICAgPGNiYzpJRC8+CiAgICAgICAgIDwvY2FjOkZpbmFuY2lhbEluc3RpdHV0aW9uQnJhbmNoPgogICAgICA8L2NhYzpQYXllZUZpbmFuY2lhbEFjY291bnQ+CiAgIDwvY2FjOlBheW1lbnRNZWFucz4KICAgPGNhYzpQYXltZW50VGVybXM+CiAgICAgIDxjYmM6Tm90ZS8+CiAgIDwvY2FjOlBheW1lbnRUZXJtcz4KICAgPGNhYzpUYXhUb3RhbD4KICAgICAgPGNiYzpUYXhBbW91bnQgY3VycmVuY3lJRD0iRVVSIj4xMzM5MTg1LjY8L2NiYzpUYXhBbW91bnQ+CiAgICAgIDxjYWM6VGF4U3VidG90YWw+CiAgICAgICAgIDxjYmM6VGF4YWJsZUFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjgzNjk5MTA8L2NiYzpUYXhhYmxlQW1vdW50PgogICAgICAgICA8Y2JjOlRheEFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjEzMzkxODUuNjwvY2JjOlRheEFtb3VudD4KICAgICAgICAgPGNhYzpUYXhDYXRlZ29yeT4KICAgICAgICAgICAgPGNiYzpJRD5TPC9jYmM6SUQ+CiAgICAgICAgICAgIDxjYmM6UGVyY2VudD4xNjwvY2JjOlBlcmNlbnQ+CiAgICAgICAgICAgIDxjYWM6VGF4U2NoZW1lPgogICAgICAgICAgICAgICA8Y2JjOklEPlZBVDwvY2JjOklEPgogICAgICAgICAgICA8L2NhYzpUYXhTY2hlbWU+CiAgICAgICAgIDwvY2FjOlRheENhdGVnb3J5PgogICAgICA8L2NhYzpUYXhTdWJ0b3RhbD4KICAgPC9jYWM6VGF4VG90YWw+CiAgIDxjYWM6TGVnYWxNb25ldGFyeVRvdGFsPgogICAgICA8Y2JjOkxpbmVFeHRlbnNpb25BbW91bnQgY3VycmVuY3lJRD0iRVVSIj44MzY5OTEwPC9jYmM6TGluZUV4dGVuc2lvbkFtb3VudD4KICAgICAgPGNiYzpUYXhFeGNsdXNpdmVBbW91bnQgY3VycmVuY3lJRD0iRVVSIj44MzY5OTEwPC9jYmM6VGF4RXhjbHVzaXZlQW1vdW50PgogICAgICA8Y2JjOlRheEluY2x1c2l2ZUFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjk3MDkwOTUuNjwvY2JjOlRheEluY2x1c2l2ZUFtb3VudD4KICAgICAgPGNiYzpBbGxvd2FuY2VUb3RhbEFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjA8L2NiYzpBbGxvd2FuY2VUb3RhbEFtb3VudD4KICAgICAgPGNiYzpDaGFyZ2VUb3RhbEFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjA8L2NiYzpDaGFyZ2VUb3RhbEFtb3VudD4KICAgICAgPGNiYzpQcmVwYWlkQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MDwvY2JjOlByZXBhaWRBbW91bnQ+CiAgICAgIDxjYmM6UGF5YWJsZVJvdW5kaW5nQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MDwvY2JjOlBheWFibGVSb3VuZGluZ0Ftb3VudD4KICAgICAgPGNiYzpQYXlhYmxlQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+OTcwOTA5NS42PC9jYmM6UGF5YWJsZUFtb3VudD4KICAgPC9jYWM6TGVnYWxNb25ldGFyeVRvdGFsPgogICA8Y2FjOkludm9pY2VMaW5lPgogICAgICA8Y2JjOklEPjE8L2NiYzpJRD4KICAgICAgPGNiYzpOb3RlLz4KICAgICAgPGNiYzpJbnZvaWNlZFF1YW50aXR5IHVuaXRDb2RlPSJNSUsiPjY3ODwvY2JjOkludm9pY2VkUXVhbnRpdHk+CiAgICAgIDxjYmM6TGluZUV4dGVuc2lvbkFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjgzNjk5MTA8L2NiYzpMaW5lRXh0ZW5zaW9uQW1vdW50PgogICAgICA8Y2JjOkFjY291bnRpbmdDb3N0Lz4KICAgICAgPGNhYzpPcmRlckxpbmVSZWZlcmVuY2U+CiAgICAgICAgIDxjYmM6TGluZUlELz4KICAgICAgPC9jYWM6T3JkZXJMaW5lUmVmZXJlbmNlPgogICAgICA8Y2FjOkRvY3VtZW50UmVmZXJlbmNlPgogICAgICAgICA8Y2JjOklELz4KICAgICAgPC9jYWM6RG9jdW1lbnRSZWZlcmVuY2U+CiAgICAgIDxjYWM6SXRlbT4KICAgICAgICAgPGNiYzpEZXNjcmlwdGlvbi8+CiAgICAgICAgIDxjYmM6TmFtZT5UZXN0VGVzdFRlc3Q8L2NiYzpOYW1lPgogICAgICAgICA8Y2FjOkJ1eWVyc0l0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgICAgPGNiYzpJRC8+CiAgICAgICAgIDwvY2FjOkJ1eWVyc0l0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgPGNhYzpTZWxsZXJzSXRlbUlkZW50aWZpY2F0aW9uPgogICAgICAgICAgICA8Y2JjOklELz4KICAgICAgICAgPC9jYWM6U2VsbGVyc0l0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgPGNhYzpTdGFuZGFyZEl0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgICAgPGNiYzpJRCBzY2hlbWVJRD0iMDAwMSIvPgogICAgICAgICA8L2NhYzpTdGFuZGFyZEl0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgPGNhYzpDbGFzc2lmaWVkVGF4Q2F0ZWdvcnk+CiAgICAgICAgICAgIDxjYmM6SUQ+UzwvY2JjOklEPgogICAgICAgICAgICA8Y2JjOlBlcmNlbnQ+MTY8L2NiYzpQZXJjZW50PgogICAgICAgICAgICA8Y2FjOlRheFNjaGVtZT4KICAgICAgICAgICAgICAgPGNiYzpJRD5WQVQ8L2NiYzpJRD4KICAgICAgICAgICAgPC9jYWM6VGF4U2NoZW1lPgogICAgICAgICA8L2NhYzpDbGFzc2lmaWVkVGF4Q2F0ZWdvcnk+CiAgICAgIDwvY2FjOkl0ZW0+CiAgICAgIDxjYWM6UHJpY2U+CiAgICAgICAgIDxjYmM6UHJpY2VBbW91bnQgY3VycmVuY3lJRD0iRVVSIj4xMjM0NTwvY2JjOlByaWNlQW1vdW50PgogICAgICAgICA8Y2JjOkJhc2VRdWFudGl0eSB1bml0Q29kZT0iTUlLIj4wPC9jYmM6QmFzZVF1YW50aXR5PgogICAgICAgICA8Y2FjOkFsbG93YW5jZUNoYXJnZT4KICAgICAgICAgICAgPGNiYzpDaGFyZ2VJbmRpY2F0b3I+ZmFsc2U8L2NiYzpDaGFyZ2VJbmRpY2F0b3I+CiAgICAgICAgICAgIDxjYmM6QW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MDwvY2JjOkFtb3VudD4KICAgICAgICAgICAgPGNiYzpCYXNlQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MTIzNDU8L2NiYzpCYXNlQW1vdW50PgogICAgICAgICA8L2NhYzpBbGxvd2FuY2VDaGFyZ2U+CiAgICAgIDwvY2FjOlByaWNlPgogICA8L2NhYzpJbnZvaWNlTGluZT4KPC9JbnZvaWNlPgo=</ram:AttachmentBinaryObject>
+         </ram:AdditionalReferencedDocument>
+      </ram:ApplicableHeaderTradeAgreement>
+      <ram:ApplicableHeaderTradeDelivery>
+         <ram:ActualDeliverySupplyChainEvent>
+            <ram:OccurrenceDateTime>
+               <udt:DateTimeString format="102">20160404</udt:DateTimeString>
+            </ram:OccurrenceDateTime>
+         </ram:ActualDeliverySupplyChainEvent>
+      </ram:ApplicableHeaderTradeDelivery>
+      <ram:ApplicableHeaderTradeSettlement>
+         <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+         <ram:SpecifiedTradeSettlementPaymentMeans>
+            <ram:TypeCode>58</ram:TypeCode>
+            <ram:Information>Informationen über das Bankkonto, auf das die Überweisung zu leisten ist</ram:Information>
+            <ram:PayeePartyCreditorFinancialAccount>
+               <ram:IBANID>DE79000000001234567890</ram:IBANID>
+            </ram:PayeePartyCreditorFinancialAccount>
+            </ram:SpecifiedTradeSettlementPaymentMeans>
+         <ram:ApplicableTradeTax>
+            <ram:CalculatedAmount>1339185.6</ram:CalculatedAmount>
+            <ram:TypeCode>VAT</ram:TypeCode>
+            <ram:BasisAmount>8369910</ram:BasisAmount>
+            <ram:CategoryCode>S</ram:CategoryCode>
+            <ram:RateApplicablePercent>16</ram:RateApplicablePercent>
+         </ram:ApplicableTradeTax>
+         <ram:SpecifiedTradePaymentTerms>
+            <ram:DueDateDateTime>
+               <udt:DateTimeString format="102">20201231</udt:DateTimeString>
+            </ram:DueDateDateTime>
+         </ram:SpecifiedTradePaymentTerms>
+         <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+            <ram:LineTotalAmount>8369910</ram:LineTotalAmount>
+            <ram:ChargeTotalAmount>0</ram:ChargeTotalAmount>
+            <ram:AllowanceTotalAmount>0</ram:AllowanceTotalAmount>
+            <ram:TaxBasisTotalAmount>8369910</ram:TaxBasisTotalAmount>
+            <ram:TaxTotalAmount currencyID="EUR">1339185.6</ram:TaxTotalAmount>
+            <ram:RoundingAmount>0</ram:RoundingAmount>
+            <ram:GrandTotalAmount>9709095.6</ram:GrandTotalAmount>
+            <ram:TotalPrepaidAmount>0</ram:TotalPrepaidAmount>
+            <ram:DuePayableAmount>9709095.6</ram:DuePayableAmount>
+         </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+      </ram:ApplicableHeaderTradeSettlement>
+   </SupplyChainTradeTransaction>
+</CrossIndustryInvoice></message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="detect-scenarios"/>
+      <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection cvrl:scenario-id="EN16931 XRechnung (CII)">
+      <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']"/>
+      <message>Scenario 'EN16931 XRechnung (CII)' matched</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="select-scenario"/>
+      <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="scenario-selected" cvrl:scenario-id="EN16931 XRechnung (CII)">
+      <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']"/>
+      <message>Scenario 'EN16931 XRechnung (CII)' selected</message>
+      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom" cvrl:source-encoding="UTF-8"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>EN16931 XRechnung (CII)</name><description><p>Validates UN/CEFACT XML (SCRDM - CII uncoupled) version                 D16B</p><p>Uses UN/CEFACT (SCRDM - CII uncoupled) version                 D16B XML Schema, Schematron rules from EN16931:2017,                 and XRechnung Schematron rules version 3.0.2 </p><p>Download of CII uncoupled XML Schema on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/D16B_SCRDM__Subset__CII/D16B/D16B_SCRDM__Subset__CII-D16B.zip</p><p>Download of CII Schematron rules on 2026-08-19 from                 https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-cii-1.3.15.zip </p><p>Download of XRechnung Schematron rules on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p></description><namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace><namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace><namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace><match>exists(/rsm:CrossIndustryInvoice[rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match><validateWithXmlSchema><resource><name>XML Schema for UN/CEFACT XML (SCRDM - CII uncoupled)</name><location>resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Schematron rules for EN16931 (CII)</name><location>resources/cii/16b/xsl/EN16931-CII-validation.xsl</location></resource></validateWithSchematron><validateWithSchematron><resource><name>Schematron rules for CIUS XRechnung (CII)</name><location>resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl</location></resource></validateWithSchematron><createReport><id>report-6</id><resource><name>Validation report for XRechnung</name><location>resources/xrechnung-report.xsl</location></resource><customLevel level="warning">BR-CL-23</customLevel><customLevel level="warning">BR-CL-21</customLevel><customLevel level="error">CII-SR-452</customLevel><customLevel level="error">CII-SR-453</customLevel><customLevel level="error">CII-SR-454</customLevel><customLevel level="error">CII-SR-465</customLevel><customLevel level="error">CII-SR-466</customLevel></createReport><acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch></scenario></message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="retrieve-artifacts"/>
+      <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="artifacts-retrieved">
+      <message>Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' retrieved as xsd</message>
+    </detection>
+    <detection severity="info" code="artifacts-retrieved">
+      <message>Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' retrieved as schematron-xslt2</message>
+    </detection>
+    <detection severity="info" code="artifacts-retrieved">
+      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' retrieved as schematron-xslt2</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="prepare-rules"/>
+      <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rule-compiled">
+      <message>Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' compiled (XML Schema)</message>
+    </detection>
+    <detection severity="info" code="rule-precompiled">
+      <message>Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' passed through (transpiled ahead of time)</message>
+    </detection>
+    <detection severity="info" code="rule-precompiled">
+      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' passed through (transpiled ahead of time)</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+      <schema href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" language="XSD"/>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rules-applied">
+      <message>Rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' applied without findings</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+      <schema href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
+    </metadata>
+    <digest valid="false" worst-severity="error" fatal-error-count="1" error-count="1" warning-count="0" error-codes="BR-CL-24"/>
+    <detection severity="error" code="BR-CL-24">
+      <message>[BR-CL-24]-For Mime code in attribute use MIMEMediaType. (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeAgreement[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}AdditionalReferencedDocument[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}AttachmentBinaryObject[1])</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+      <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rules-applied">
+      <message>Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' applied without findings</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="compute-conformance"/>
+      <timestamp>2026-08-27T14:43:19+02:00</timestamp>
+    </metadata>
+    <digest valid="false" worst-severity="error" fatal-error-count="1" error-count="1" warning-count="0" error-codes="target-non-conformant"/>
+    <detection severity="info" code="target-conformant">
+      <message>Target 'EN16931 XRechnung (CII)' conformant (rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd')</message>
+    </detection>
+    <detection severity="error" code="target-non-conformant">
+      <message>Target 'EN16931 XRechnung (CII)' non-conformant: 1 error detection(s) from rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl'</message>
+    </detection>
+    <detection severity="info" code="target-conformant">
+      <message>Target 'EN16931 XRechnung (CII)' conformant (rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl')</message>
+    </detection>
+  </report>
+</reports>

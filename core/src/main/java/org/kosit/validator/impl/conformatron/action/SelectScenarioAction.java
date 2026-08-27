@@ -13,6 +13,8 @@ import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.model.ScenarioDetection;
+import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 
 /**
  * Step 4 of the canonical pipeline, {@code SELECT_SCENARIO} (see
@@ -77,8 +79,12 @@ public class SelectScenarioAction implements CTAction {
             return new SelectScenarioResult(CTStepResult.FAILURE, null, DetectionList.of(detection));
         }
         final CTScenarioMatch selected = detectedScenarios.get(0);
-        final CTDetection detection = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_SELECTED, DetectionLocation.of(resourceId),
+        final Detection plain = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_SELECTED, DetectionLocation.of(resourceId),
                 "Scenario '" + selected.getScenarioID() + "' selected");
+        // the selected scenario additionally carries its configuration so the report can embed the scenario itself
+        final CTDetection detection = selected instanceof final ScenarioMatch match
+                ? ScenarioDetection.selected(plain, match.getScenarioID(), match.getConfigurationLocation(), match.getConfiguration())
+                : plain;
         return new SelectScenarioResult(CTStepResult.SUCCESS, selected, DetectionList.of(detection));
     }
 }

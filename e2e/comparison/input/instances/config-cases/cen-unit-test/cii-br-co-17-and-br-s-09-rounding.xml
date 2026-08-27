@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This test is based on an example invoice with document currency HUF (Hungarian Forint) with rounding at totals, which was not recognized by CEN schematron rules up to 1.3.7. With CEN 1.3.8, a slack was added for CII BR-S-09 (see CEN issue https://github.com/ConnectingEurope/eInvoicing-EN16931/issues/311) -->
+<rsm:CrossIndustryInvoice xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100">
+	<rsm:ExchangedDocumentContext>
+		<ram:BusinessProcessSpecifiedDocumentContextParameter>
+			<ram:ID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</ram:ID>
+		</ram:BusinessProcessSpecifiedDocumentContextParameter>
+		<ram:GuidelineSpecifiedDocumentContextParameter>
+			<ram:ID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</ram:ID>
+		</ram:GuidelineSpecifiedDocumentContextParameter>
+	</rsm:ExchangedDocumentContext>
+	<rsm:ExchangedDocument>
+		<ram:ID>1</ram:ID>
+		<ram:TypeCode>380</ram:TypeCode>
+		<ram:IssueDateTime>
+			<udt:DateTimeString format="102">20230101</udt:DateTimeString>
+		</ram:IssueDateTime>
+		<ram:IncludedNote>
+			<ram:Content>HU</ram:Content>
+			<ram:SubjectCode>AHS</ram:SubjectCode>
+		</ram:IncludedNote>
+	</rsm:ExchangedDocument>
+	<rsm:SupplyChainTradeTransaction>
+		<ram:IncludedSupplyChainTradeLineItem>
+			<ram:AssociatedDocumentLineDocument>
+				<ram:LineID>1</ram:LineID>
+			</ram:AssociatedDocumentLineDocument>
+			<ram:SpecifiedTradeProduct>
+				<ram:SellerAssignedID>0099</ram:SellerAssignedID>
+				<ram:Name>MUELLER</ram:Name>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>TempID</ram:Description>
+					<ram:Value>704310.0101631815</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Uhrzeit</ram:Description>
+					<ram:Value>08:24</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Ort</ram:Description>
+					<ram:Value>ORT-3</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Marke</ram:Description>
+					<ram:Value>MRK</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Servicestelle</ram:Description>
+					<ram:Value>SS123456</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Lieferscheinnummer</ram:Description>
+					<ram:Value>0000012345</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Kilometerstand</ram:Description>
+					<ram:Value>0054321</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:OriginTradeCountry>
+					<ram:ID>HU</ram:ID>
+				</ram:OriginTradeCountry>
+			</ram:SpecifiedTradeProduct>
+			<ram:SpecifiedLineTradeAgreement>
+				<ram:NetPriceProductTradePrice>
+					<ram:ChargeAmount>36109.00</ram:ChargeAmount>
+					<ram:BasisQuantity>100.</ram:BasisQuantity>
+				</ram:NetPriceProductTradePrice>
+			</ram:SpecifiedLineTradeAgreement>
+			<ram:SpecifiedLineTradeDelivery>
+				<ram:BilledQuantity unitCode="LTR">64.</ram:BilledQuantity>
+			</ram:SpecifiedLineTradeDelivery>
+			<ram:SpecifiedLineTradeSettlement>
+				<ram:ApplicableTradeTax>
+					<ram:TypeCode>VAT</ram:TypeCode>
+					<ram:CategoryCode>S</ram:CategoryCode>
+					<ram:RateApplicablePercent>27.00</ram:RateApplicablePercent>
+				</ram:ApplicableTradeTax>
+				<ram:BillingSpecifiedPeriod>
+					<ram:StartDateTime>
+						<udt:DateTimeString format="102">20210922</udt:DateTimeString>
+					</ram:StartDateTime>
+					<ram:EndDateTime>
+						<udt:DateTimeString format="102">20210922</udt:DateTimeString>
+					</ram:EndDateTime>
+				</ram:BillingSpecifiedPeriod>
+				<ram:SpecifiedTradeAllowanceCharge>
+					<ram:ChargeIndicator>
+						<udt:Indicator>true</udt:Indicator>
+					</ram:ChargeIndicator>
+					<ram:ActualAmount>330.00</ram:ActualAmount>
+					<ram:Reason>Fee</ram:Reason>
+				</ram:SpecifiedTradeAllowanceCharge>
+				<ram:SpecifiedTradeSettlementLineMonetarySummation>
+					<ram:LineTotalAmount>23440.00</ram:LineTotalAmount>
+				</ram:SpecifiedTradeSettlementLineMonetarySummation>
+				<ram:AdditionalReferencedDocument>
+					<ram:IssuerAssignedID>BN-H 6622</ram:IssuerAssignedID>
+					<ram:TypeCode>130</ram:TypeCode>
+					<ram:ReferenceTypeCode>ABZ</ram:ReferenceTypeCode>
+				</ram:AdditionalReferencedDocument>
+			</ram:SpecifiedLineTradeSettlement>
+		</ram:IncludedSupplyChainTradeLineItem>
+		<ram:IncludedSupplyChainTradeLineItem>
+			<ram:AssociatedDocumentLineDocument>
+				<ram:LineID>2</ram:LineID>
+			</ram:AssociatedDocumentLineDocument>
+			<ram:SpecifiedTradeProduct>
+				<ram:SellerAssignedID>0099</ram:SellerAssignedID>
+				<ram:Name>MUELLER</ram:Name>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>TempID</ram:Description>
+					<ram:Value>704310.0101631945</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Uhrzeit</ram:Description>
+					<ram:Value>08:34</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Ort</ram:Description>
+					<ram:Value>ASDASDASD</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Marke</ram:Description>
+					<ram:Value>MRK</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Servicestelle</ram:Description>
+					<ram:Value>SS0012345</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Lieferscheinnummer</ram:Description>
+					<ram:Value>0000054322</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Kilometerstand</ram:Description>
+					<ram:Value>0000000</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:OriginTradeCountry>
+					<ram:ID>HU</ram:ID>
+				</ram:OriginTradeCountry>
+			</ram:SpecifiedTradeProduct>
+			<ram:SpecifiedLineTradeAgreement>
+				<ram:NetPriceProductTradePrice>
+					<ram:ChargeAmount>37134.00</ram:ChargeAmount>
+					<ram:BasisQuantity>100.</ram:BasisQuantity>
+				</ram:NetPriceProductTradePrice>
+			</ram:SpecifiedLineTradeAgreement>
+			<ram:SpecifiedLineTradeDelivery>
+				<ram:BilledQuantity unitCode="LTR">56.81</ram:BilledQuantity>
+			</ram:SpecifiedLineTradeDelivery>
+			<ram:SpecifiedLineTradeSettlement>
+				<ram:ApplicableTradeTax>
+					<ram:TypeCode>VAT</ram:TypeCode>
+					<ram:CategoryCode>S</ram:CategoryCode>
+					<ram:RateApplicablePercent>27.00</ram:RateApplicablePercent>
+				</ram:ApplicableTradeTax>
+				<ram:BillingSpecifiedPeriod>
+					<ram:StartDateTime>
+						<udt:DateTimeString format="102">20210930</udt:DateTimeString>
+					</ram:StartDateTime>
+					<ram:EndDateTime>
+						<udt:DateTimeString format="102">20210930</udt:DateTimeString>
+					</ram:EndDateTime>
+				</ram:BillingSpecifiedPeriod>
+				<ram:SpecifiedTradeAllowanceCharge>
+					<ram:ChargeIndicator>
+						<udt:Indicator>true</udt:Indicator>
+					</ram:ChargeIndicator>
+					<ram:ActualAmount>293.00</ram:ActualAmount>
+					<ram:Reason>Fee</ram:Reason>
+				</ram:SpecifiedTradeAllowanceCharge>
+				<ram:SpecifiedTradeSettlementLineMonetarySummation>
+					<ram:LineTotalAmount>21389.00</ram:LineTotalAmount>
+				</ram:SpecifiedTradeSettlementLineMonetarySummation>
+				<ram:AdditionalReferencedDocument>
+					<ram:IssuerAssignedID>BN-H 8603</ram:IssuerAssignedID>
+					<ram:TypeCode>130</ram:TypeCode>
+					<ram:ReferenceTypeCode>ABZ</ram:ReferenceTypeCode>
+				</ram:AdditionalReferencedDocument>
+			</ram:SpecifiedLineTradeSettlement>
+		</ram:IncludedSupplyChainTradeLineItem>
+		<ram:IncludedSupplyChainTradeLineItem>
+			<ram:AssociatedDocumentLineDocument>
+				<ram:LineID>3</ram:LineID>
+			</ram:AssociatedDocumentLineDocument>
+			<ram:SpecifiedTradeProduct>
+				<ram:SellerAssignedID>0099</ram:SellerAssignedID>
+				<ram:Name>MUELLER</ram:Name>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>TempID</ram:Description>
+					<ram:Value>704310.0102555002</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Uhrzeit</ram:Description>
+					<ram:Value>10:14</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Ort</ram:Description>
+					<ram:Value>ASDASDASD</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Marke</ram:Description>
+					<ram:Value>DSA</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Servicestelle</ram:Description>
+					<ram:Value>SS0011223</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Lieferscheinnummer</ram:Description>
+					<ram:Value>0000012346</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:ApplicableProductCharacteristic>
+					<ram:Description>Kilometerstand</ram:Description>
+					<ram:Value>0001234</ram:Value>
+				</ram:ApplicableProductCharacteristic>
+				<ram:OriginTradeCountry>
+					<ram:ID>HU</ram:ID>
+				</ram:OriginTradeCountry>
+			</ram:SpecifiedTradeProduct>
+			<ram:SpecifiedLineTradeAgreement>
+				<ram:NetPriceProductTradePrice>
+					<ram:ChargeAmount>37550.00</ram:ChargeAmount>
+					<ram:BasisQuantity>100.</ram:BasisQuantity>
+				</ram:NetPriceProductTradePrice>
+			</ram:SpecifiedLineTradeAgreement>
+			<ram:SpecifiedLineTradeDelivery>
+				<ram:BilledQuantity unitCode="LTR">63.97</ram:BilledQuantity>
+			</ram:SpecifiedLineTradeDelivery>
+			<ram:SpecifiedLineTradeSettlement>
+				<ram:ApplicableTradeTax>
+					<ram:TypeCode>VAT</ram:TypeCode>
+					<ram:CategoryCode>S</ram:CategoryCode>
+					<ram:RateApplicablePercent>27.00</ram:RateApplicablePercent>
+				</ram:ApplicableTradeTax>
+				<ram:BillingSpecifiedPeriod>
+					<ram:StartDateTime>
+						<udt:DateTimeString format="102">20210926</udt:DateTimeString>
+					</ram:StartDateTime>
+					<ram:EndDateTime>
+						<udt:DateTimeString format="102">20210926</udt:DateTimeString>
+					</ram:EndDateTime>
+				</ram:BillingSpecifiedPeriod>
+				<ram:SpecifiedTradeAllowanceCharge>
+					<ram:ChargeIndicator>
+						<udt:Indicator>true</udt:Indicator>
+					</ram:ChargeIndicator>
+					<ram:ActualAmount>330.00</ram:ActualAmount>
+					<ram:Reason>Fee</ram:Reason>
+				</ram:SpecifiedTradeAllowanceCharge>
+				<ram:SpecifiedTradeSettlementLineMonetarySummation>
+					<ram:LineTotalAmount>24351.00</ram:LineTotalAmount>
+				</ram:SpecifiedTradeSettlementLineMonetarySummation>
+				<ram:AdditionalReferencedDocument>
+					<ram:IssuerAssignedID>ASD</ram:IssuerAssignedID>
+					<ram:TypeCode>130</ram:TypeCode>
+					<ram:ReferenceTypeCode>ABZ</ram:ReferenceTypeCode>
+				</ram:AdditionalReferencedDocument>
+				<ram:ReceivableSpecifiedTradeAccountingAccount>
+					<ram:ID>MEIER GMBH</ram:ID>
+				</ram:ReceivableSpecifiedTradeAccountingAccount>
+			</ram:SpecifiedLineTradeSettlement>
+		</ram:IncludedSupplyChainTradeLineItem>
+		<ram:ApplicableHeaderTradeAgreement>
+			<ram:BuyerReference>1</ram:BuyerReference>
+			<ram:SellerTradeParty>
+				<ram:ID>0012</ram:ID>
+				<ram:Name>International Service GmbH + Co. KG</ram:Name>
+				<ram:DefinedTradeContact>
+					<ram:PersonName>Ali Meier</ram:PersonName>
+					<ram:TelephoneUniversalCommunication>
+						<ram:CompleteNumber>12345</ram:CompleteNumber>
+					</ram:TelephoneUniversalCommunication>
+					<ram:EmailURIUniversalCommunication>
+						<ram:URIID>ali-meier@International.com</ram:URIID>
+					</ram:EmailURIUniversalCommunication>
+				</ram:DefinedTradeContact>
+				<ram:PostalTradeAddress>
+					<ram:PostcodeCode>11223</ram:PostcodeCode>
+					<ram:LineOne>Palmen-Allee 1</ram:LineOne>
+					<ram:CityName>Testingen</ram:CityName>
+					<ram:CountryID>DE</ram:CountryID>
+				</ram:PostalTradeAddress>
+				<ram:URIUniversalCommunication>
+					<ram:URIID schemeID="EM">rechnungsausgang@test.com</ram:URIID>
+				</ram:URIUniversalCommunication>
+				<ram:SpecifiedTaxRegistration>
+					<ram:ID schemeID="VA">HU00011111</ram:ID>
+				</ram:SpecifiedTaxRegistration>
+			</ram:SellerTradeParty>
+			<ram:BuyerTradeParty>
+				<ram:ID>123</ram:ID>
+				<ram:Name>Logistik GmbH</ram:Name>
+				<ram:PostalTradeAddress>
+					<ram:PostcodeCode>10101</ram:PostcodeCode>
+					<ram:LineOne>Musterweg 1</ram:LineOne>
+					<ram:CityName>Stadt</ram:CityName>
+					<ram:CountryID>DE</ram:CountryID>
+				</ram:PostalTradeAddress>
+				<ram:URIUniversalCommunication>
+					<ram:URIID schemeID="EM">rechnungseingang@test.com</ram:URIID>
+				</ram:URIUniversalCommunication>
+				<ram:SpecifiedTaxRegistration>
+					<ram:ID schemeID="VA">DE000011166</ram:ID>
+				</ram:SpecifiedTaxRegistration>
+			</ram:BuyerTradeParty>
+			<ram:AdditionalReferencedDocument>
+				<ram:IssuerAssignedID>123</ram:IssuerAssignedID>
+			</ram:AdditionalReferencedDocument>			
+		</ram:ApplicableHeaderTradeAgreement>
+		<ram:ApplicableHeaderTradeDelivery/>
+		<ram:ApplicableHeaderTradeSettlement>
+			<ram:InvoiceCurrencyCode>HUF</ram:InvoiceCurrencyCode>
+			<ram:SpecifiedTradeSettlementPaymentMeans>
+				<ram:TypeCode>70</ram:TypeCode>
+				<ram:PayeePartyCreditorFinancialAccount>
+					<ram:IBANID>DE79000000001234567890</ram:IBANID>
+				</ram:PayeePartyCreditorFinancialAccount>
+			</ram:SpecifiedTradeSettlementPaymentMeans>
+		    <!--		        
+            [BR-CO-17]-VAT category tax amount (BT-117) = VAT category taxable amount (BT-116) x (VAT category rate (BT-119) / 100), rounded to two decimals.
+            [BR-S-09]-The VAT category tax amount (BT-117) in a VAT breakdown (BG-23) where VAT category code (BT-118) is "Standard rated" shall equal the VAT category taxable amount (BT-116) multiplied by the VAT category rate (BT-119).
+            -->
+			<ram:ApplicableTradeTax>
+			    <!-- BT-117 -->
+			    <?xmute mutator="identity" schematron-valid="cencii:BR-CO-17 cencii:BR-S-09" id="ubl-br-co-17-and-br-s-09"?>
+			    <?xmute mutator="code" values="18678.60, 18677.61, 18679.59, 18678.00" schematron-valid="cencii:BR-CO-17 cencii:BR-S-09" id="cii-br-co-17-and-br-s-09-valid" description="rounding divergences of up to +/- 1 accepted"?>
+			    <?xmute mutator="code" values="18677.59, 18679.61, 18680.00" schematron-invalid="cencii:BR-CO-17 cencii:BR-S-09" id="cii-br-co-17-and-br-s-09-invalid" description="rounding divergences of more than +/- 1 not accepted"?>
+				<ram:CalculatedAmount>18679.00</ram:CalculatedAmount>
+			    <!-- BT-118 -->
+				<ram:TypeCode>VAT</ram:TypeCode>
+			    <!-- BT-116 -->
+				<ram:BasisAmount>69180.00</ram:BasisAmount>
+				<ram:CategoryCode>S</ram:CategoryCode>
+			    <!-- BT-119 -->
+				<ram:RateApplicablePercent>27.00</ram:RateApplicablePercent>
+			</ram:ApplicableTradeTax>
+			<ram:SpecifiedTradePaymentTerms>
+				<ram:Description>01.01.2023 00:00:00</ram:Description>
+				<ram:DueDateDateTime>
+					<udt:DateTimeString format="102">20230101</udt:DateTimeString>
+				</ram:DueDateDateTime>
+			</ram:SpecifiedTradePaymentTerms>
+			<ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+				<ram:LineTotalAmount>69180.00</ram:LineTotalAmount>
+				<ram:TaxBasisTotalAmount>69180.00</ram:TaxBasisTotalAmount>
+				<ram:TaxTotalAmount currencyID="HUF">18679.00</ram:TaxTotalAmount>
+				<ram:GrandTotalAmount>87859.00</ram:GrandTotalAmount>
+				<ram:TotalPrepaidAmount>0.00</ram:TotalPrepaidAmount>
+				<ram:DuePayableAmount>87859.00</ram:DuePayableAmount>
+			</ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+		</ram:ApplicableHeaderTradeSettlement>
+	</rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>

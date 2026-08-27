@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -28,6 +30,7 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosRe
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
+import org.kosit.validator.impl.conformatron.util.ScenarioXml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -109,12 +112,21 @@ public class CvrlWriterTest {
         final NodeList messages = parseReport.getElementsByTagNameNS(NS, "message");
         assertThat(messages.getLength()).isEqualTo(2);
         final Element hashMessage = (Element) messages.item(0);
+        // messages are identified by xml:id so consumers never depend on their order
+        assertThat(hashMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_DOCUMENT_HASH);
         assertThat(hashMessage.getAttributeNS(NS_CVRL, "algorithm")).isEqualTo("SHA-512");
         assertThat(hashMessage.getTextContent()).matches("[0-9a-f]{128}");
         final Element payloadMessage = (Element) messages.item(1);
+        assertThat(payloadMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_DOCUMENT_CONTENT);
         assertThat(payloadMessage.getAttributeNS(NS_CVRL, "mime-type")).isEqualTo("application/xml");
+        // UTF-8 XML is embedded as a DOM fragment, and the declared encoding is always reported
+        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "encoding")).isEqualTo(CvrlWriter.ENCODING_DOM);
+        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "source-encoding")).isEqualTo("UTF-8");
         // the parsed document is embedded as element content, not as escaped text
         assertThat(payloadMessage.getElementsByTagName("*").getLength()).isGreaterThan(0);
+        // no code that merely restates the creator name
+        final Element parseDetection = (Element) parseReport.getElementsByTagNameNS(NS, "detection").item(0);
+        assertThat(parseDetection.hasAttribute("code")).isFalse();
         // 6 steps + APPLY_RULES twice (xsd + schematron rule set) = 8 reports
         assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly(CTActionType.PARSE_DOCUMENT.getName(),
                 CTActionType.DETECT_SCENARIOS.getName(), CTActionType.SELECT_SCENARIO.getName(), CTActionType.RETRIEVE_ARTIFACTS.getName(),
@@ -126,6 +138,51 @@ public class CvrlWriterTest {
         assertThat(schema.getAttribute("href")).isEqualTo("simple.sch");
         assertThat(schema.getAttribute("language")).isEqualTo("Schematron");
         assertThat(schema.getAttributeNS(NS_CVRL, "phase")).isEqualTo("#ALL");
+    }
+
+    @Test
+    public void testNonUtf8SourceIsEmbeddedAsBase64() throws Exception {
+        final Document cvrl = serialize(Simple.SIMPLE_LATIN1);
+
+        final NodeList messages = reports(cvrl).get(0).getElementsByTagNameNS(NS, "message");
+        final Element payloadMessage = (Element) messages.item(1);
+        // transcoding into the UTF-8 report would lose the original bytes, so the source travels base64
+        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "encoding")).isEqualTo(CvrlWriter.ENCODING_BASE64);
+        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "source-encoding")).isEqualTo("ISO-8859-1");
+        assertThat(payloadMessage.getElementsByTagName("*").getLength()).isZero();
+        final byte[] decoded = Base64.getMimeDecoder().decode(payloadMessage.getTextContent());
+        assertThat(new String(decoded, StandardCharsets.ISO_8859_1)).contains("encoding=\"ISO-8859-1\"").contains("Maßnahme");
+    }
+
+    @Test
+    public void testScenarioDetectionsCarryIdAndLocation() throws Exception {
+        final Document cvrl = serialize(Simple.SIMPLE_VALID);
+
+        final Element detectReport = reports(cvrl).get(1);
+        final Element detection = (Element) detectReport.getElementsByTagNameNS(NS, "detection").item(0);
+        assertThat(detection.getAttributeNS(NS_CVRL, "scenario-id")).isEqualTo("Simple");
+        // severity is omitted for scenario detection, the code would only restate the creator
+        assertThat(detection.hasAttribute("severity")).isFalse();
+        assertThat(detection.hasAttribute("code")).isFalse();
+        // the location points into the scenario configuration so the scenario can be looked up
+        final Element location = (Element) detection.getElementsByTagNameNS(NS, "location").item(0);
+        assertThat(location.getAttribute("xpath")).isEqualTo("/*:scenarios/*:scenario[*:name='Simple']");
+    }
+
+    @Test
+    public void testSelectedScenarioIsEmbeddedInFull() throws Exception {
+        final Document cvrl = serialize(Simple.SIMPLE_VALID);
+
+        final Element selectReport = reports(cvrl).get(2);
+        final NodeList messages = selectReport.getElementsByTagNameNS(NS, "message");
+        assertThat(messages.getLength()).isEqualTo(2);
+        final Element scenarioMessage = (Element) messages.item(1);
+        assertThat(scenarioMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_SCENARIO_CONTENT);
+        // scenario configurations are UTF-8 by definition, so the scenario is always embedded as a DOM fragment
+        assertThat(scenarioMessage.getAttributeNS(NS_CVRL, "encoding")).isEqualTo(CvrlWriter.ENCODING_DOM);
+        final Element scenario = (Element) scenarioMessage.getElementsByTagName("*").item(0);
+        assertThat(scenario.getLocalName()).isEqualTo("scenario");
+        assertThat(scenario.getElementsByTagNameNS(ScenarioXml.NS_SCENARIOS, "name").item(0).getTextContent()).isEqualTo("Simple");
     }
 
     @Test

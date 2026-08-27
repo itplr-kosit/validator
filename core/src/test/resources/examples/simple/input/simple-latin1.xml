@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<simple xmlns="http://validator.kosit.de/test-sample">
+    <inner>Grundstück Größe: 30 m2 - Umlaute: Maßnahme für Straße</inner>
+    <content>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <!--nothing-->
+            </head>
+            <body>
+                <div>Beispieldaten mit Umlauten: Äpfel, Öl, Überprüfung</div>
+            </body>
+        </html>
+    </content>
+</simple>
