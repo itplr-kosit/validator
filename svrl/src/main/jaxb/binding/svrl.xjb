@@ -20,7 +20,7 @@
                 xmlType="xs:integer" adapter="org.kosit.jaxb.adapter.LongAdapter"/>
     </jaxb:globalBindings>
 
-    <jaxb:bindings schemaLocation="../xsd/svrl-kosit.xsd">
+    <jaxb:bindings schemaLocation="../../resources/xsd/svrl-kosit.xsd">
         <jaxb:bindings node="//xs:complexType[@name='SchematronOutputType']">
             <inheritance:extends>org.kosit.svrl.impl.AbstractSvrlOutput</inheritance:extends>
         </jaxb:bindings>
