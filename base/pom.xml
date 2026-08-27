@@ -10,17 +10,11 @@
     </parent>
 
     <packaging>jar</packaging>
-    <artifactId>jaxb</artifactId>
-    <name>KoSIT generic JAXB helpers</name>
-    <description>Generic, reusable JAXB read/write helper and XML adapters.</description>
+    <artifactId>base</artifactId>
+    <name>KoSIT generic base helpers</name>
+    <description>Generic, reusable helpers for objects, strings, errors and XML.</description>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>base</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.jspecify</groupId>
             <artifactId>jspecify</artifactId>
@@ -28,14 +22,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.conformatron</groupId>

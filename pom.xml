@@ -5,6 +5,7 @@
 
     <name>KoSIT XML Validator</name>
     <modules>
+        <module>base</module>
         <module>jaxb</module>
         <module>svrl</module>
         <module>xvrl</module>
