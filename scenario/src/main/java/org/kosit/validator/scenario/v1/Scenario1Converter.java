@@ -16,19 +16,23 @@ import jakarta.xml.bind.JAXBException;
  */
 public final class Scenario1Converter extends AbstractJaxbConverter<Scenarios> {
 
+    private static final String XSD_PATH = "/xsd";
+
+    /** XSD for the scenarios.xml definition as used by Validator v1.x */
+    public static final String SCENARIOS_V1_XSD_PATH = XSD_PATH + "/scenarios-v1.xsd";
+
     private static final JAXBContext JAXB_CTX;
 
     private static final Schema SCHEMA;
 
     static {
         try {
-            JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(),
-                    Scenario1Converter.class.getClassLoader());
+            JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(), Scenario1Converter.class.getClassLoader());
         } catch (final JAXBException e) {
             throw new IllegalStateException("Can not create scenario JAXB context", e);
         }
 
-        SCHEMA = SchemaResolver.createParsedSchema(Scenario1Converter.class.getResource(ScenarioSchemas.SCENARIOS_V1_XSD_PATH));
+        SCHEMA = SchemaResolver.createParsedSchema(Scenario1Converter.class.getResource(SCENARIOS_V1_XSD_PATH));
     }
 
     /**
@@ -40,6 +44,7 @@ public final class Scenario1Converter extends AbstractJaxbConverter<Scenarios> {
         super(JAXB_CTX, Scenarios.class,
                 x -> new JAXBElement<>(new QName("http://www.xoev.de/de/validator/framework/2/scenarios", "scenarios"), Scenarios.class,
                         x));
+        // Always use XML Schema
         withSchema(SCHEMA);
     }
 }
