@@ -1,0 +1,160 @@
+name: KoSIT Validator
+description: >-
+  Validate XML documents against a validator configuration (e.g. XRechnung)
+  using the KoSIT validator. Downloads a released validator jar, optionally
+  verifies checksums, runs each file and fails if any document is rejected.
+author: KoSIT contributors
+branding:
+  icon: check-circle
+  color: green
+
+inputs:
+  version:
+    description: >-
+      Validator release to use (a tag of this repository without the leading
+      "v", e.g. "1.6.2"). The standalone jar is downloaded from the GitHub
+      release of this repository.
+    required: false
+    default: "1.6.2"
+  checksum:
+    description: >-
+      Optional SHA-256 checksum of the validator jar. When set, the download
+      is verified against it and the action fails on a mismatch.
+    required: false
+    default: ""
+  configuration:
+    description: >-
+      The validator configuration: either a URL to a configuration zip (for
+      example a release asset of validator-configuration-xrechnung) or a
+      path to an already unpacked configuration directory containing
+      scenarios.xml.
+    required: true
+  configuration-checksum:
+    description: >-
+      Optional SHA-256 checksum of the configuration zip. Only used when
+      "configuration" is a URL.
+    required: false
+    default: ""
+  files:
+    description: >-
+      XML documents to validate: a file, a directory (validated recursively,
+      *.xml) or a shell glob.
+    required: true
+  report-dir:
+    description: Directory the validation reports are written to.
+    required: false
+    default: validator-reports
+
+outputs:
+  report-dir:
+    description: Directory containing the validation reports.
+    value: ${{ steps.validate.outputs.report-dir }}
+  accepted:
+    description: Number of accepted documents.
+    value: ${{ steps.validate.outputs.accepted }}
+  rejected:
+    description: Number of rejected documents.
+    value: ${{ steps.validate.outputs.rejected }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: "21"
+
+    - name: Validate
+      id: validate
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        CHECKSUM: ${{ inputs.checksum }}
+        CONFIGURATION: ${{ inputs.configuration }}
+        CONFIGURATION_CHECKSUM: ${{ inputs.configuration-checksum }}
+        FILES: ${{ inputs.files }}
+        REPORT_DIR: ${{ inputs.report-dir }}
+      run: |
+        set -euo pipefail
+
+        verify() { # <checksum> <file>
+          if command -v sha256sum >/dev/null 2>&1; then
+            echo "$1  $2" | sha256sum -c - >/dev/null
+          else
+            echo "$1  $2" | shasum -a 256 -c - >/dev/null
+          fi
+        }
+
+        cache="${RUNNER_TEMP:-/tmp}/kosit-validator"
+        mkdir -p "$cache"
+
+        jar="$cache/validator-$VERSION-standalone.jar"
+        if [ ! -f "$jar" ]; then
+          echo "Downloading validator $VERSION..."
+          curl -fsSL \
+            "https://github.com/itplr-kosit/validator/releases/download/v$VERSION/validator-$VERSION-standalone.jar" \
+            -o "$jar"
+        fi
+        if [ -n "$CHECKSUM" ]; then
+          verify "$CHECKSUM" "$jar"
+        fi
+
+        case "$CONFIGURATION" in
+          http://*|https://*)
+            config_dir="$cache/configuration"
+            if [ ! -f "$config_dir/scenarios.xml" ]; then
+              echo "Downloading configuration..."
+              curl -fsSL "$CONFIGURATION" -o "$cache/configuration.zip"
+              if [ -n "$CONFIGURATION_CHECKSUM" ]; then
+                verify "$CONFIGURATION_CHECKSUM" "$cache/configuration.zip"
+              fi
+              unzip -o -q "$cache/configuration.zip" -d "$config_dir"
+            fi
+            ;;
+          *)
+            config_dir="$CONFIGURATION"
+            ;;
+        esac
+        if [ ! -f "$config_dir/scenarios.xml" ]; then
+          echo "No scenarios.xml in configuration: $CONFIGURATION" >&2
+          exit 2
+        fi
+
+        shopt -s nullglob
+        files=()
+        if [ -d "$FILES" ]; then
+          while IFS= read -r f; do files+=("$f"); done \
+            < <(find "$FILES" -name '*.xml' -type f | sort)
+        else
+          for f in $FILES; do files+=("$f"); done
+        fi
+        if [ "${#files[@]}" -eq 0 ]; then
+          echo "No XML documents matched: $FILES" >&2
+          exit 2
+        fi
+
+        mkdir -p "$REPORT_DIR"
+        rule_ids='\[[A-Z][A-Z0-9]*(-[A-Z0-9]+)+\]'
+        accepted=0
+        rejected=0
+        for f in "${files[@]}"; do
+          if output="$(java -jar "$jar" -s "$config_dir/scenarios.xml" \
+                         -r "$config_dir" -o "$REPORT_DIR" "$f" 2>&1)"; then
+            accepted=$((accepted + 1))
+            echo "PASS  $f"
+          else
+            rejected=$((rejected + 1))
+            report="$REPORT_DIR/$(basename "${f%.xml}")-report.xml"
+            ids="$( { printf '%s' "$output"; [ -f "$report" ] && cat "$report"; } \
+                    | grep -oE "$rule_ids" | sort -u | paste -sd' ' - || true)"
+            echo "FAIL  $f  ${ids:-<no rule id parsed>}"
+            printf '%s\n' "$output" | grep -iE 'rejected|error' || true
+          fi
+        done
+
+        echo "report-dir=$REPORT_DIR" >> "$GITHUB_OUTPUT"
+        echo "accepted=$accepted" >> "$GITHUB_OUTPUT"
+        echo "rejected=$rejected" >> "$GITHUB_OUTPUT"
+        echo "Accepted: $accepted  Rejected: $rejected"
+        [ "$rejected" -eq 0 ]
