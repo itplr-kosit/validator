@@ -10,7 +10,7 @@ import javax.xml.validation.Schema;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v2.ResourceType;
 
 /**
  * Tests {@link SchemaBuilder}.

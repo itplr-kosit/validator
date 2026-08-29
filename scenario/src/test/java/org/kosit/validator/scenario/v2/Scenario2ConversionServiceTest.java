@@ -1,4 +1,4 @@
-package org.kosit.validator.scenario.v1;
+package org.kosit.validator.scenario.v2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -13,15 +13,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
 
-public class Scenario1ConversionServiceTest {
+public class Scenario2ConversionServiceTest {
 
-    private static final URL SAMPLE = Scenario1ConversionServiceTest.class.getResource("/sample-scenarios.xml");
+    private static final URL SAMPLE = Scenario2ConversionServiceTest.class.getResource("/sample-scenarios.xml");
 
-    private Scenario1Converter converter;
+    private Scenario2Converter converter;
 
     @BeforeEach
     public void setUp() {
-        this.converter = new Scenario1Converter();
+        this.converter = new Scenario2Converter();
     }
 
     private @NonNull Scenarios readSample() throws URISyntaxException {
@@ -61,8 +61,7 @@ public class Scenario1ConversionServiceTest {
     @Test
     public void writesScenariosToXml() throws URISyntaxException {
         final String xml = this.converter.writeXml(readSample());
-        assertThat(xml).contains("http://www.xoev.de/de/validator/framework/2/scenarios").contains("Sample-TestSuite")
-                .contains("/test:simple");
+        assertThat(xml).contains(Scenario2Converter.NAMESPACE_URI).contains("Sample-TestSuite").contains("/test:simple");
     }
 
     @Test
@@ -79,15 +78,22 @@ public class Scenario1ConversionServiceTest {
 
     @Test
     public void rejectsDocumentViolatingTheSchema() {
-        assertThatThrownBy(() -> this.converter.readXml("<scenarios xmlns=\"http://www.xoev.de/de/validator/framework/2/scenarios\"/>"))
+        assertThatThrownBy(() -> this.converter.readXml("<scenarios xmlns=\"" + Scenario2Converter.NAMESPACE_URI + "\"/>"))
                 .isInstanceOf(JaxbConversionException.class);
     }
 
     @Test
     public void schemaIsResolvableFromTheModuleItself() throws IOException {
         assertThat(SAMPLE).isNotNull();
-        try ( var in = Scenario1ConversionServiceTest.class.getResourceAsStream("/xsd/scenarios-v1.xsd") ) {
+        try ( var in = Scenario2ConversionServiceTest.class.getResourceAsStream("/xsd/scenarios-v2.xsd") ) {
             assertNotNull(in);
         }
+    }
+
+    @Test
+    public void readSecondDoc() {
+        final var doc = this.converter
+                .readXml(Scenario2ConversionServiceTest.class.getResourceAsStream("/scenario-playground/scenarios-v2.xml"));
+        assertThat(doc).isNotNull();
     }
 }

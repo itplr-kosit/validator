@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:s="urn:kosit:validator:scenario:3"
+           targetNamespace="urn:kosit:validator:scenario:3"
+           version="3.0.0"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:annotation>
+        <xs:documentation>
+            Version 3 of the scenario configuration. Compared to version 2 it adds DVR coordinates (groupId,
+            artifactId, version and the optional classifier) to the configuration container's scenarios and to every
+            referenced resource, it distinguishes XML scenarios from PDF scenarios, and it splits the single "date" of
+            version 2 into "lastModificationDate" and "validFromDate".
+        </xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="scenarios">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:token" />
+                <xs:element minOccurs="0" name="author" type="xs:token" />
+                <xs:element name="lastModificationDate" type="xs:date" />
+                <xs:element minOccurs="0" name="validFromDate" type="xs:date">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Optional: the date from which on this configuration is meant to be applied. If it is
+                            absent, the configuration is valid immediately.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="description" type="s:DescriptionType" />
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element name="scenarioXml" type="s:ScenarioXmlType" />
+                    <xs:element name="scenarioPdf" type="s:ScenarioPdfType" />
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="frameworkVersion" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        Optional in version 3, because the configuration layout is already identified by the XML
+                        namespace. It is retained so that a configuration can be converted to version 2 and back
+                        without losing the value.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="CoordinatePartType">
+        <xs:annotation>
+            <xs:documentation>
+                A single part of a DVR coordinate. The character set matches the one accepted by
+                org.kosit.base.coord.DVRValidityHelper. The length restrictions of that class are configurable at
+                runtime and are therefore deliberately not repeated here.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="[a-zA-Z0-9_\-\.]+" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="CoordinateIdType">
+        <xs:annotation>
+            <xs:documentation>
+                A complete DVR coordinate as a single String: "groupId:artifactId:version" with an optional
+                ":classifier" appended. This is the layout of DVRCoordinate.getAsSingleID().
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="[a-zA-Z0-9_\-\.]+(:[a-zA-Z0-9_\-\.]+){2,3}" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="AbstractCoordinateType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>Base type of everything that is identified by a DVR coordinate.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="groupId" type="s:CoordinatePartType" />
+            <xs:element name="artifactId" type="s:CoordinatePartType" />
+            <xs:element name="version" type="s:CoordinatePartType" />
+            <xs:element minOccurs="0" name="classifier" type="s:CoordinatePartType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DescriptionType" mixed="true">
+        <xs:annotation>
+            <xs:documentation>
+                Contrary to version 2 the description is mixed content, so that a short description can be written as
+                plain text without wrapping it into a "p" element. Whitespace only text between the child elements
+                carries no meaning and is discarded when reading.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="p" type="xs:normalizedString" />
+            <xs:element name="ol" type="s:DescriptionListType" />
+            <xs:element name="ul" type="s:DescriptionListType" />
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="DescriptionListType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="li" type="xs:normalizedString" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="ErrorLevelType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="error" />
+            <xs:enumeration value="warning" />
+            <xs:enumeration value="information" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="Tokens">
+        <xs:list itemType="xs:token" />
+    </xs:simpleType>
+
+    <xs:complexType name="AbstractScenarioType" abstract="true">
+        <xs:complexContent>
+            <xs:extension base="s:AbstractCoordinateType">
+                <xs:sequence>
+                    <xs:element name="name" type="xs:token" />
+                    <xs:element minOccurs="0" name="description" type="s:DescriptionType" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ScenarioXmlType">
+        <xs:annotation>
+            <xs:documentation>A scenario that validates an XML document.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="s:AbstractScenarioType">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="namespace" type="s:NamespaceType" />
+                    <xs:element minOccurs="0" name="match" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Optional in version 3: a scenario may alternatively be selected by its coordinate
+                                instead of by an XPath expression.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="validateWithXmlSchema" type="s:ValidateWithXmlSchemaType" />
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="validateWithSchematron"
+                                type="s:ValidateWithSchematronType" />
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="createReport" type="s:CreateReportType" />
+                    <xs:element minOccurs="0" name="acceptMatch" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Optional: An XPATH expression to be applied to a generated validation report as
+                                defined in the createReport element
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ScenarioPdfType">
+        <xs:annotation>
+            <xs:documentation>
+                A scenario that validates a PDF document. The embedded XML document is validated by the XML scenario
+                referenced via "xmlScenarioRef".
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="s:AbstractScenarioType">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="requirements" type="s:RequirementsType" />
+                    <xs:element minOccurs="0" name="xmlScenarioRef" type="s:ScenarioRefType" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RequirementsType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="requirement" type="s:RequirementType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RequirementType">
+        <xs:attribute name="id" type="xs:token" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="ScenarioRefType">
+        <xs:attribute name="id" type="s:CoordinateIdType" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="NamespaceType">
+        <xs:simpleContent>
+            <xs:extension base="xs:anyURI">
+                <xs:attribute name="prefix" type="xs:NCName" use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="ResourceType">
+        <xs:complexContent>
+            <xs:extension base="s:AbstractCoordinateType">
+                <xs:sequence>
+                    <xs:element name="name" type="xs:token" />
+                    <xs:element minOccurs="0" name="location" type="xs:anyURI">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Optional in version 3: if it is absent, the resource is retrieved from the global
+                                repository based on its coordinate.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ValidateWithXmlSchemaType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="resource" type="s:ResourceType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValidateWithSchematronType">
+        <xs:sequence>
+            <xs:element name="resource" type="s:ResourceType" />
+        </xs:sequence>
+        <xs:attribute name="psvi" type="xs:boolean" default="false" use="optional" />
+        <xs:attribute name="compiler" type="xs:string" use="optional" />
+    </xs:complexType>
+
+    <xs:complexType name="CreateReportType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string" />
+            <xs:element name="resource" type="s:ResourceType" />
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="customLevel" type="s:CustomErrorLevelType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CustomErrorLevelType">
+        <xs:simpleContent>
+            <xs:extension base="s:Tokens">
+                <xs:attribute name="level" type="s:ErrorLevelType" use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>

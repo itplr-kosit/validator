@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.kosit.validator.impl.ActionMetadata;
-import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v2.ResourceType;
 import org.kosit.xvrl.api.XvrlHelper;
 import org.kosit.xvrl.model.XvrlDetectionType;
 import org.kosit.xvrl.model.XvrlDigestType;

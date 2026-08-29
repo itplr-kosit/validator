@@ -7,8 +7,8 @@ import java.util.Optional;
 import javax.xml.validation.Schema;
 
 import org.kosit.validator.api.ResolvingConfigurationStrategy;
-import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v2.ResourceType;
+import org.kosit.validator.scenario.v2.ScenarioType;
 
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;

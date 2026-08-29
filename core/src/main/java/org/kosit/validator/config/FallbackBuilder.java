@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v2.ScenarioType;
 
 /**
  * Create a fallback {@link Scenario} configuration.

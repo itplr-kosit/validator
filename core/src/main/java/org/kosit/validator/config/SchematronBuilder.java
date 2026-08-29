@@ -9,8 +9,8 @@ import org.kosit.validator.config.SchematronBuilder.SchematronBuilderResult;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.validator.scenario.v1.ValidateWithSchematron;
+import org.kosit.validator.scenario.v2.ResourceType;
+import org.kosit.validator.scenario.v2.ValidateWithSchematron;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

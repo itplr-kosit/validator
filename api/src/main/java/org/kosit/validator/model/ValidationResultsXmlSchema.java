@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v2.ResourceType;
 
 public class ValidationResultsXmlSchema {
 

@@ -1,6 +1,6 @@
 package org.kosit.validator.model;
 
-import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v2.ResourceType;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 
 public class ValidationResultsSchematron {

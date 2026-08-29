@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
 import org.kosit.validator.impl.TestHelper.Invalid;
 import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.scenario.v1.Scenario1Converter;
-import org.kosit.validator.scenario.v1.Scenarios;
+import org.kosit.validator.scenario.v2.Scenarios;
+import org.kosit.validator.scenario.v2.Scenario2Converter;
 
 /**
  * Simple test for testing the jaxb conversion service.
@@ -21,13 +21,13 @@ import org.kosit.validator.scenario.v1.Scenarios;
  */
 public class ConversionServiceTest {
 
-    private Scenario1Converter converter;
+    private Scenario2Converter converter;
 
     private ContentRepository repository;
 
     @BeforeEach
     public void setup() {
-        this.converter = new Scenario1Converter();
+        this.converter = new Scenario2Converter();
         this.repository = TestHelper.Simple.createContentRepository();
     }
 

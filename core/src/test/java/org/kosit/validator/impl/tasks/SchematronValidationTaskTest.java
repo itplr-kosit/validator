@@ -20,8 +20,8 @@ import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.validator.scenario.v1.ValidateWithSchematron;
+import org.kosit.validator.scenario.v2.ResourceType;
+import org.kosit.validator.scenario.v2.ValidateWithSchematron;
 
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;

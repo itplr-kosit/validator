@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- THIS is the source file for creating scenarios.xml-->
-<scenarios xmlns="urn:kosit:validator:scenario:2">
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" frameworkVersion="2.0.0">
   <name>Prüftool-Konfiguration Peppol BIS</name>
-  
-  <!-- metadata to be copied into each scenario -->
   <author>KoSIT</author>
-  <lastModificationDate>2026-05-20</lastModificationDate>
-  <validFromDate>2026-09-20</validFromDate>
+  <date>2026-05-20</date>
   <description>
-    Prüfung von Dokumenten auf Konformität zum Standard Peppol BIS 3.0.21 (Mai 2026).
-    Diese Konfiguration enthält ausschließlich Peppol Rechnungs-Prüfungen und keine XRechnungs-Prüfungen
+    <p>Prüfung von Dokumenten auf Konformität zum Standard Peppol BIS 3.0.21 (Mai 2026)</p>
+    <p>Diese Konfiguration enthält ausschließlich Peppol Rechnungs-Prüfungen und keine XRechnungs-Prüfungen</p>
   </description>
 
-  <scenarioXml>
-    <groupId>org.peppol</groupId>
-    <artifactId>invoice-bis3</artifactId>
-    <version>2026.5</version>
+  <scenario>
     <name>Peppol Billing BIS 3 - UBL Invoice</name>
     <description>
       <p>Validierung von UBL Invoice version 2.1</p>
@@ -25,70 +19,73 @@
 - Schematron-Regeln Peppol Billing v3.0.21
       </p>
     </description>
-    
-    <!-- XML specific -->
     <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
     <namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace>
-    
-    <!-- future optional element; select scenario by ID additionally -->
     <match>/invoice:Invoice[starts-with(cbc:CustomizationID,'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0')]</match>
-
     <validateWithXmlSchema>
       <resource>
-        <groupId>org.oasis</groupId>
-        <artifactId>ubl-invoice</artifactId>
-        <version>2.1</version>
-        <!-- org.oasis:ubl-invoice:2.1 -->
         <name>XML Schema for UBL 2.1 Invoice</name>
         <location>resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd</location>
       </resource>
     </validateWithXmlSchema>
     <validateWithSchematron>
       <resource>
-        <groupId>org.peppol</groupId>
-        <artifactId>en16931-ubl</artifactId>
-        <version>2026.5</version>
         <name>Schematron rules for EN16931 (UBL)</name>
         <location>resources/peppol/billing-bis/3.0.21/CEN-EN16931-UBL.xslt</location>
       </resource>
     </validateWithSchematron>
     <validateWithSchematron>
       <resource>
-        <groupId>org.peppol</groupId>
-        <artifactId>invoice-bis3-ubl</artifactId>
-        <version>2026.5</version>
         <name>Schematron rules for Invoice - CIUS Peppol Billing BIS (UBL)</name>
-        <!-- optional element in the future - if not present, retrieve from global repo based on coordinates -->
         <location>resources/peppol/billing-bis/3.0.21/PEPPOL-EN16931-UBL.xslt</location>
+      </resource>
+    </validateWithSchematron>
+    <createReport>
+      <id>Report-id</id>
+      <resource>
+        <name>Validation report for Peppol Billing BIS</name>
+        <location>resources/xrechnung-report.xsl</location>
+      </resource>
+    </createReport>
+  </scenario>
+  
+  <scenario>
+    <name>Peppol Billing BIS 3 - UBL CreditNote</name>
+    <description>
+      <p>Validierung von UBL CreditNote version 2.1</p>
+      <p>Dieses Scenario enthält:
+- XML Schema UBL v2.1 CreditNote
+- Schematron-Regeln EN16931:2017
+- Schematron-Regeln Peppol Billing v3.0.21
+      </p>
+    </description>
+    <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
+    <namespace prefix="creditnote">urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2</namespace>
+    <match>/creditnote:CreditNote[starts-with(cbc:CustomizationID,'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0')]</match>
+    <validateWithXmlSchema>
+      <resource>
+        <name>XML Schema for UBL 2.1 CreditNote</name>
+        <location>resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd</location>
+      </resource>
+    </validateWithXmlSchema>
+    <validateWithSchematron>
+      <resource>
+        <name>Schematron rules for EN16931 (UBL)</name>
+        <location>resources/peppol/billing-bis/3.0.21/CEN-EN16931-UBL.xslt</location>
       </resource>
     </validateWithSchematron>
     <validateWithSchematron>
       <resource>
-        <groupId>org.example</groupId>
-        <artifactId>doof</artifactId>
-        <version>renzo</version> <!-- 0.0.0-renzo -->
-        <name>Rule x (original version "renzo")</name>
-        <!-- optional element in the future - if not present, retrieve from global repo based on coordinates -->
+        <name>Schematron rules for CreditNote - CIUS Peppol Billing BIS (UBL)</name>
         <location>resources/peppol/billing-bis/3.0.21/PEPPOL-EN16931-UBL.xslt</location>
       </resource>
     </validateWithSchematron>
-  </scenarioXml>
-
-  <scenarioPdf>
-    <groupId>fr.afie</groupId>
-    <artifactId>factur-x</artifactId>
-    <version>1.09.2</version>
-    <name>Factur-X basic</name>
-    <description>
-      ...
-    </description>
-    
-    <requirements>
-      <requirement id="pdf-a3" />
-      <requirement id="attachment-filename-factur-x" />
-    </requirements>
-    
-    <!-- reference to inner XML scenario -->
-    <xmlScenarioRef id="org.cefact:cii:d22b" />
-  </scenarioPdf>
+    <createReport>
+      <id>Report-id</id>
+      <resource>
+        <name>Prüfbericht für Peppol Billing BIS</name>
+        <location>resources/xrechnung-report.xsl</location>
+      </resource>
+    </createReport>
+  </scenario>
 </scenarios>

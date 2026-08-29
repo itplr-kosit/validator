@@ -9,10 +9,10 @@ import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.scenario.v1.DescriptionType;
-import org.kosit.validator.scenario.v1.NamespaceType;
-import org.kosit.validator.scenario.v1.ObjectFactory;
-import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v2.DescriptionType;
+import org.kosit.validator.scenario.v2.NamespaceType;
+import org.kosit.validator.scenario.v2.ObjectFactory;
+import org.kosit.validator.scenario.v2.ScenarioType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
