@@ -15,7 +15,7 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class DocumentParseTask implements CheckTask {
 
     private final Processor processor;
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<XdmNode, SimpleError> parserResult) {
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<XdmNode, SimpleError> parserResult) {
         final XvrlReportBuilder builder = XvrlReportBuilder.builder("Document wellformedness Validator");
         if (parserResult.isValid()) {
             final XvrlDetectionBuilder detection = XvrlDetectionBuilder.builderInfo()

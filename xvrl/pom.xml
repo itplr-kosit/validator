@@ -58,7 +58,6 @@
                     <bindingDirectory>src/main/jaxb/binding</bindingDirectory>
                     <packageLevelAnnotations>false</packageLevelAnnotations>
                     <args>
-                        <arg>-Xinheritance</arg>
                         <arg>-Xsimplify</arg>
                         <arg>-Xsimplify-usePluralForm=true</arg>
                     </args>

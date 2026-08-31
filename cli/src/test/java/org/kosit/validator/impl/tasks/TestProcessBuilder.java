@@ -16,8 +16,8 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.xvrl.model.XvrlMetadataType;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 
@@ -46,7 +46,7 @@ public class TestProcessBuilder {
 
     public static TestProcessBuilder create(final CTReadResource input, final boolean parse) {
         final TestProcessBuilder builder = new TestProcessBuilder();
-        builder.process = new Process(input, new XvrlMetadataType());
+        builder.process = new Process(input, XvrlMetadata.builder().build());
         if (parse) {
             builder.parse(input);
         }
@@ -56,7 +56,7 @@ public class TestProcessBuilder {
 
     public static List<BusinessReport> createReport(final String id, final XdmNode node) {
         final BusinessReport r = new BusinessReport();
-        r.setReport(new XvrlReportType());
+        r.setReport(XvrlReport.builder().build());
         r.setName(id);
         r.setContent(node);
         return Collections.singletonList(r);
@@ -70,7 +70,7 @@ public class TestProcessBuilder {
     private static ProcessStepResult<XdmNode, SimpleError> parseInput(final CTReadResource input) {
         final ProcessStepResult<XdmNode, SimpleError> stepResult = new ProcessStepResult<>(DocumentParseTask.KEY);
         stepResult.setResult(TestHelper.parseDocument(input));
-        stepResult.setReport(new XvrlReportType());
+        stepResult.setReport(XvrlReport.builder().build());
         return stepResult;
     }
 
@@ -79,7 +79,7 @@ public class TestProcessBuilder {
         return this;
     }
 
-    public TestProcessBuilder setMetadata(final XvrlMetadataType metadata) {
+    public TestProcessBuilder setMetadata(final XvrlMetadata metadata) {
         this.process.setMetadata(metadata);
         return this;
     }
@@ -101,7 +101,7 @@ public class TestProcessBuilder {
     public TestProcessBuilder setSchemaValidationResult(final SingleProcessingResult<Boolean, SimpleError> schemaResult) {
         final ProcessStepResult<Boolean, SimpleError> stepResult = new ProcessStepResult<>(SchemaValidationTask.KEY);
         stepResult.setResult(schemaResult);
-        stepResult.setReport(new XvrlReportType());
+        stepResult.setReport(XvrlReport.builder().build());
         this.process.addStepResult(stepResult);
         return this;
     }
@@ -115,7 +115,7 @@ public class TestProcessBuilder {
         final ProcessStepResult<List<ValidationResultsSchematron>, String> stepResult = new ProcessStepResult<>(
                 SchematronValidationTask.KEY);
         stepResult.setResult(schematronResult);
-        stepResult.setReport(new XvrlReportType());
+        stepResult.setReport(XvrlReport.builder().build());
         this.process.addStepResult(stepResult);
         return this;
     }
@@ -131,7 +131,7 @@ public class TestProcessBuilder {
     public TestProcessBuilder setCreateReport(final List<BusinessReport> report) {
         final ProcessStepResult<List<BusinessReport>, SimpleError> stepResult = new ProcessStepResult<>(CreateReportsTask.KEY);
         stepResult.setResult(new SingleProcessingResult<>(report, Collections.emptyList()));
-        stepResult.setReport(new XvrlReportType());
+        stepResult.setReport(XvrlReport.builder().build());
         this.process.addStepResult(stepResult);
         return this;
     }
@@ -149,7 +149,7 @@ public class TestProcessBuilder {
     public TestProcessBuilder setScenario(final Scenario scenario) {
         final ProcessStepResult<Scenario, String> stepResult = new ProcessStepResult<>(ScenarioSelectionTask.KEY);
         stepResult.setResult(new SingleProcessingResult<>(scenario));
-        stepResult.setReport(new XvrlReportType());
+        stepResult.setReport(XvrlReport.builder().build());
         this.process.addStepResult(stepResult);
         return this;
     }

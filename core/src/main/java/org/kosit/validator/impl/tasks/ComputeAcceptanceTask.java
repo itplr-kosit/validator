@@ -14,7 +14,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlReport;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class ComputeAcceptanceTask implements CheckTask {
 
     private static final String REPORT_NAME = "Compute Acceptance Validator";
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<AcceptRecommendation, SimpleError> currentResult) {
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<AcceptRecommendation, SimpleError> currentResult) {
         if (currentResult.isValid()) {
             return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builder().addMessage(currentResult.getObject().getID())).build();
         }

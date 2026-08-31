@@ -8,9 +8,8 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.DocumentHash;
 import org.kosit.validator.model.DocumentIdentificationType;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.xvrl.model.XvrlDocumentType;
-import org.kosit.xvrl.model.XvrlMetadataType;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlDocument;
+import org.kosit.xvrl.model.XvrlReport;
 
 /**
  * Creates a document identification element for the report by using the generates hash.
@@ -24,7 +23,7 @@ public class CreateDocumentIdentificationTask implements CheckTask {
 
     private static final String REPORT_NAME = "CreateDocument Identification Validator";
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<DocumentIdentificationType, SimpleError> currentResult) {
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<DocumentIdentificationType, SimpleError> currentResult) {
         if (currentResult.isValid()) {
             final DocumentIdentificationType result = currentResult.getObject();
             return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builderInfo().addMessage(result.documentReference())).build();
@@ -35,10 +34,8 @@ public class CreateDocumentIdentificationTask implements CheckTask {
     }
 
     private static void addDocumentIdentification(final Process transporter) {
-        final XvrlMetadataType metadata = transporter.getXvrlReportSummary().getMetadata();
-        final XvrlDocumentType document = new XvrlDocumentType();
-        document.setHref(transporter.getInput().getName());
-        metadata.getDocuments().add(document);
+        transporter.setMetadata(
+                transporter.getMetadata().toBuilder().addDocument(XvrlDocument.builder(transporter.getInput().getName())).build());
     }
 
     @Override

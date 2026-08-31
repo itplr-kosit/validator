@@ -25,7 +25,7 @@ import org.kosit.validator.impl.tasks.CheckTask.Process.ProcessKey;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -62,7 +62,7 @@ public class SchemaValidationTask implements CheckTask {
 
     private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
 
-    private static XvrlReportType generateXvrlReport(final ValidationResultsXmlSchema result) {
+    private static XvrlReport generateXvrlReport(final ValidationResultsXmlSchema result) {
         final XvrlReportBuilder builder = XvrlReportBuilder.builder("Schema Validator").addSchemas(result.getResource());
         builder.addDetections(result.getXmlSyntaxError().stream().map(e -> XvrlDetectionBuilder.builder().addError(e)));
         return builder.build();

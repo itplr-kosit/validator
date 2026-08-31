@@ -4,9 +4,8 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
     xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
-    xmlns:inheritance="urn:jaxb.jvnet.org:plugin:inheritance"
     xmlns:simplify="urn:jaxb.jvnet.org:plugin:simplify"
-    jaxb:extensionBindingPrefixes="inheritance simplify xjc"
+    jaxb:extensionBindingPrefixes="simplify xjc"
     version="3.0">
 
     <jaxb:globalBindings>
@@ -23,20 +22,10 @@
     <jaxb:bindings schemaLocation="../../resources/xsd/xvrl-1.0.xsd">
 
         <jaxb:schemaBindings>
-            <jaxb:package name="org.kosit.xvrl.model"/>
+            <jaxb:package name="org.kosit.xvrl.jaxb"/>
         </jaxb:schemaBindings>
 
-        <jaxb:bindings node="//xs:complexType[@name='XvrlReportType']">
-            <inheritance:extends>org.kosit.xvrl.impl.AbstractXvrlReport</inheritance:extends>
-        </jaxb:bindings>
-
-        <jaxb:bindings node="//xs:complexType[@name='XvrlReportsType']">
-            <inheritance:extends>org.kosit.xvrl.impl.AbstractXvrlReportSummary</inheritance:extends>
-        </jaxb:bindings>
-
         <jaxb:bindings node="//xs:complexType[@name='XvrlDetectionType']">
-            <inheritance:implements>org.kosit.xvrl.api.BaseDetection</inheritance:implements>
-
             <jaxb:bindings node="xs:choice">
                  <simplify:as-element-property/>
             </jaxb:bindings>
@@ -46,10 +35,6 @@
             <jaxb:bindings node="xs:choice">
                 <simplify:as-element-property/>
             </jaxb:bindings>
-        </jaxb:bindings>
-
-        <jaxb:bindings node="//xs:complexType[@name='XvrlMessageType']">
-            <inheritance:implements>org.kosit.xvrl.api.BaseMessage</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings node="//xs:simpleType[@name='XvrlSeverityType']">

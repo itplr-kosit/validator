@@ -12,7 +12,7 @@ import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ class ExtractReportContentAction implements CheckTask {
         this.processor = processor;
     }
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
         if (result.isValid()) {
             return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builder().addMessage("Extraction successful")).build();
         }

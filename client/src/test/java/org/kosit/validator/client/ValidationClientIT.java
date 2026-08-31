@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
-import org.kosit.xvrl.model.XvrlReportsType;
+import org.kosit.xvrl.model.XvrlReports;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -52,7 +52,7 @@ class ValidationClientIT {
     void shouldValidateXml() {
         final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
 
-        final XvrlReportsType result = validationClient.validate(input);
+        final XvrlReports result = validationClient.validate(input);
 
         assertThat(result).isNotNull();
         assertThat(result.getReports().isEmpty()).isFalse();
@@ -102,8 +102,8 @@ class ValidationClientIT {
     void shouldValidateXmlWithMetadata() {
         final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
 
-        final ValidationResponse<XvrlReportsType> result = validationClient.validateWithMetadata(input);
-        final XvrlReportsType report = result.getBody();
+        final ValidationResponse<XvrlReports> result = validationClient.validateWithMetadata(input);
+        final XvrlReports report = result.getBody();
 
         assertThat(report).isNotNull();
         assertThat(report.getReports().isEmpty()).isFalse();

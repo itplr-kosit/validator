@@ -14,7 +14,7 @@ import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
 import org.kosit.validator.xvrl.XvrlSerializer;
 import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,12 +51,12 @@ public class CreateReportsTask implements CheckTask {
         return scenarioSelection.getObject().getReportTransformations();
     }
 
-    private static XvrlReportType generateXvrlReport(final ResourceType resourceType, final XdmNode node) {
+    private static XvrlReport generateXvrlReport(final ResourceType resourceType, final XdmNode node) {
         return XvrlReportBuilder.builder(METADATA).addDetection(XvrlDetectionBuilder.builder().id(resourceType.getName())
                 .supplemental(XvrlSupplementalBuilder.builder().addContent(node).id(resourceType.getName()))).build();
     }
 
-    private static XvrlReportType createErrorInformation(final ResourceType resourceType, final SimpleError error) {
+    private static XvrlReport createErrorInformation(final ResourceType resourceType, final SimpleError error) {
         return XvrlReportBuilder.builder(METADATA).addDetection(XvrlDetectionBuilder.builder().id("error").addError(error)).build();
     }
 

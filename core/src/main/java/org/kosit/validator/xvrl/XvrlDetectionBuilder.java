@@ -5,17 +5,17 @@ import java.util.stream.Collectors;
 import org.kosit.base.error.SimpleError;
 import org.kosit.base.string.StringHelper;
 import org.kosit.xvrl.api.XvrlHelper;
-import org.kosit.xvrl.model.XvrlDetectionType;
-import org.kosit.xvrl.model.XvrlMessageType;
-import org.kosit.xvrl.model.XvrlSeverityType;
-import org.kosit.xvrl.model.XvrlSupplementalType;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlMessage;
+import org.kosit.xvrl.model.XvrlSeverity;
+import org.kosit.xvrl.model.XvrlSupplemental;
 import org.oclc.purl.dsdl.svrl.ActivePattern;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.FiredRule;
 
 public class XvrlDetectionBuilder {
 
-    private final XvrlDetectionType detection = new XvrlDetectionType();
+    private final XvrlDetection.Builder detection = XvrlDetection.builder();
 
     public static XvrlDetectionBuilder builder() {
         return new XvrlDetectionBuilder();
@@ -29,7 +29,7 @@ public class XvrlDetectionBuilder {
         return builder().severityError();
     }
 
-    private static XvrlMessageType createMessage(final FailedAssert failedAssert) {
+    private static XvrlMessage createMessage(final FailedAssert failedAssert) {
         final String string = failedAssert.getText().getContent().stream().map(Object::toString).collect(Collectors.joining());
         return XvrlHelper.createMessage(string);
     }
@@ -41,16 +41,14 @@ public class XvrlDetectionBuilder {
         return addContent != null ? supplemental(addContent.build()) : this;
     }
 
-    private XvrlDetectionBuilder supplemental(final XvrlSupplementalType build) {
-        if (build != null) {
-            detection.getSupplementals().add(build);
-        }
+    private XvrlDetectionBuilder supplemental(final XvrlSupplemental build) {
+        this.detection.addSupplemental(build);
         return this;
     }
 
     public XvrlDetectionBuilder addMessage(final String message) {
         if (StringHelper.isNotBlank(message)) {
-            this.detection.getMessages().add(XvrlHelper.createMessage(message));
+            this.detection.addMessage(XvrlHelper.createMessage(message));
         }
         return this;
     }
@@ -60,7 +58,7 @@ public class XvrlDetectionBuilder {
             addMessage(error.getMessage());
             severity(XvrlHelper.translate(error.getSeverity()));
             if (error.hasLineOrColumnNumber()) {
-                this.detection.getLocations().add(XvrlHelper.createLocation(error));
+                this.detection.addLocation(XvrlHelper.createLocation(error));
             }
         }
         return this;
@@ -69,7 +67,7 @@ public class XvrlDetectionBuilder {
     public XvrlDetectionBuilder add(final ActivePattern activePattern) {
         if (activePattern != null) {
             severityInfo();
-            this.detection.setCode(activePattern.getName());
+            this.detection.code(activePattern.getName());
         }
         return this;
     }
@@ -79,7 +77,7 @@ public class XvrlDetectionBuilder {
             return this;
         }
         severityInfo();
-        this.detection.setCode(firedRule.getName());
+        this.detection.code(firedRule.getName());
         return this;
     }
 
@@ -89,45 +87,45 @@ public class XvrlDetectionBuilder {
         }
 
         severityError();
-        this.detection.getMessages().add(createMessage(failedAssert));
+        this.detection.addMessage(createMessage(failedAssert));
 
         return this;
     }
 
-    private XvrlDetectionBuilder severity(final XvrlSeverityType severity) {
+    private XvrlDetectionBuilder severity(final XvrlSeverity severity) {
         // TODO this "worse than" check needs improvement
-        if (detection.getSeverity() == null || severity.ordinal() > (detection.getSeverity().ordinal()))
-            detection.setSeverity(severity);
+        if (this.detection.getSeverity() == null || severity.ordinal() > this.detection.getSeverity().ordinal())
+            this.detection.severity(severity);
         return this;
     }
 
     public XvrlDetectionBuilder severityInfo() {
-        return severity(XvrlSeverityType.INFO);
+        return severity(XvrlSeverity.INFO);
     }
 
     public XvrlDetectionBuilder severityWarning() {
-        return severity(XvrlSeverityType.WARNING);
+        return severity(XvrlSeverity.WARNING);
     }
 
     public XvrlDetectionBuilder severityError() {
-        return severity(XvrlSeverityType.ERROR);
+        return severity(XvrlSeverity.ERROR);
     }
 
     public XvrlDetectionBuilder code(final String code) {
         if (StringHelper.isNotBlank(code)) {
-            this.detection.setCode(code);
+            this.detection.code(code);
         }
         return this;
     }
 
     public XvrlDetectionBuilder id(final String id) {
         if (StringHelper.isNotBlank(id)) {
-            this.detection.setId(id);
+            this.detection.id(id);
         }
         return this;
     }
 
-    public XvrlDetectionType build() {
-        return this.detection;
+    public XvrlDetection build() {
+        return this.detection.build();
     }
 }

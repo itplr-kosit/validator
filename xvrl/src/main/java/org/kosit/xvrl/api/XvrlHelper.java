@@ -4,10 +4,10 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.error.SimpleError;
-import org.kosit.xvrl.model.XvrlLocationType;
-import org.kosit.xvrl.model.XvrlMessageType;
-import org.kosit.xvrl.model.XvrlSchemaType;
-import org.kosit.xvrl.model.XvrlSeverityType;
+import org.kosit.xvrl.model.XvrlLocation;
+import org.kosit.xvrl.model.XvrlMessage;
+import org.kosit.xvrl.model.XvrlSchema;
+import org.kosit.xvrl.model.XvrlSeverity;
 
 /**
  * XVRL utility methods
@@ -16,36 +16,27 @@ import org.kosit.xvrl.model.XvrlSeverityType;
  */
 public final class XvrlHelper {
 
-    public static @NonNull XvrlSeverityType translate(final @Nullable CTStandardSeverity severity) {
+    public static @NonNull XvrlSeverity translate(final @Nullable CTStandardSeverity severity) {
         if (severity == null)
-            return XvrlSeverityType.UNSPECIFIED;
+            return XvrlSeverity.UNSPECIFIED;
 
         return switch (severity) {
-            case NONE -> XvrlSeverityType.UNSPECIFIED;
-            case WARNING -> XvrlSeverityType.WARNING;
-            case ERROR -> XvrlSeverityType.ERROR;
+            case NONE -> XvrlSeverity.UNSPECIFIED;
+            case WARNING -> XvrlSeverity.WARNING;
+            case ERROR -> XvrlSeverity.ERROR;
         };
     }
 
-    public static XvrlSchemaType createSchema(final String href, final String schemaTypeNs) {
-        final XvrlSchemaType schema = new XvrlSchemaType();
-        schema.setHref(href);
-        schema.setSchematypens(schemaTypeNs);
-        return schema;
+    public static XvrlSchema createSchema(final @Nullable String href, final @Nullable String schemaTypeNs) {
+        return XvrlSchema.builder().href(href).schemaTypeNs(schemaTypeNs).build();
     }
 
-    public static XvrlLocationType createLocation(final SimpleError error) {
-        final XvrlLocationType location = new XvrlLocationType();
-        location.setLine(error.getLineNumberObj());
-        location.setColumn(error.getColumnNumberObj());
-        location.setXpath(null);
-        return location;
+    public static XvrlLocation createLocation(final SimpleError error) {
+        return XvrlLocation.builder().line(error.getLineNumberObj()).column(error.getColumnNumberObj()).build();
     }
 
-    public static XvrlMessageType createMessage(final String message) {
-        final XvrlMessageType messageObject = new XvrlMessageType();
-        messageObject.getContent().add(message);
-        return messageObject;
+    public static XvrlMessage createMessage(final @Nullable String message) {
+        return XvrlMessage.builder(message).build();
     }
 
     private XvrlHelper() {

@@ -1,6 +1,6 @@
 package org.kosit.validator.xvrl;
 
-import org.kosit.xvrl.model.XvrlSupplementalType;
+import org.kosit.xvrl.model.XvrlSupplemental;
 import org.w3c.dom.Node;
 
 import net.sf.saxon.dom.NodeOverNodeInfo;
@@ -8,7 +8,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 public class XvrlSupplementalBuilder {
 
-    private final XvrlSupplementalType sup = new XvrlSupplementalType();
+    private final XvrlSupplemental.Builder sup = XvrlSupplemental.builder();
 
     public static XvrlSupplementalBuilder builder() {
         return new XvrlSupplementalBuilder();
@@ -18,7 +18,7 @@ public class XvrlSupplementalBuilder {
     }
 
     public XvrlSupplementalBuilder id(final String id) {
-        this.sup.setId(id);
+        this.sup.id(id);
         return this;
     }
 
@@ -30,13 +30,11 @@ public class XvrlSupplementalBuilder {
     }
 
     public XvrlSupplementalBuilder addContent(final Node node) {
-        if (node != null) {
-            this.sup.getContent().add(node);
-        }
+        this.sup.addContent(node);
         return this;
     }
 
-    public XvrlSupplementalType build() {
-        return this.sup;
+    public XvrlSupplemental build() {
+        return this.sup.build();
     }
 }

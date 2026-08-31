@@ -11,7 +11,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.xvrl.XvrlDetectionBuilder;
 import org.kosit.validator.xvrl.XvrlReportBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class ScenarioSelectionTask implements CheckTask {
 
     private final SelectScenarioAction selectScenarioAction;
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
         final XvrlReportBuilder builder = XvrlReportBuilder.builder(METADATA);
         if (scenarioTypeResult.getObject().isFallback()) {
             builder.addDetection(XvrlDetectionBuilder.builderError().addMessage("No valid scenario configuration found for '" + name + "'")

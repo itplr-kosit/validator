@@ -1,6 +1,6 @@
 /**
- * Public XVRL API: interfaces that are mixed in to the JAXB-generated model types via {@code inheritance:implements}
- * bindings.
+ * Public XVRL API: utility methods that bridge the generic validator types onto the XVRL data model of
+ * {@code org.kosit.xvrl.model}.
  *
  * <p>
  * All types in this package follow the {@link org.jspecify.annotations.NullMarked} contract: members are non-null

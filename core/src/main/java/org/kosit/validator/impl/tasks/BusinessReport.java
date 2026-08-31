@@ -1,6 +1,6 @@
 package org.kosit.validator.impl.tasks;
 
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlReport;
 
 import net.sf.saxon.s9api.XdmNode;
 
@@ -15,7 +15,7 @@ public class BusinessReport {
 
     private XdmNode content;
 
-    private XvrlReportType report;
+    private XvrlReport report;
 
     public String getName() {
         return this.name;
@@ -25,7 +25,7 @@ public class BusinessReport {
         return this.content;
     }
 
-    public XvrlReportType getReport() {
+    public XvrlReport getReport() {
         return this.report;
     }
 
@@ -37,7 +37,7 @@ public class BusinessReport {
         this.content = content;
     }
 
-    public void setReport(final XvrlReportType report) {
+    public void setReport(final XvrlReport report) {
         this.report = report;
     }
 }

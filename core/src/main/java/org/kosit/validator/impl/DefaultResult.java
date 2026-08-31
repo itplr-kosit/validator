@@ -8,7 +8,7 @@ import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.xvrl.XvrlSerializer;
-import org.kosit.xvrl.model.XvrlReportsType;
+import org.kosit.xvrl.model.XvrlReports;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class DefaultResult implements VResult {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultResult.class);
 
     /** The internal report 'preliminary stage' produced by the validator */
-    private XvrlReportsType reportSummary;
+    private XvrlReports reportSummary;
 
     /** The evaluated result. */
     private final AcceptRecommendation acceptRecommendation;
@@ -118,7 +118,7 @@ public class DefaultResult implements VResult {
      * The reporting source
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    public XvrlReportsType getReportSummary() {
+    public XvrlReports getReportSummary() {
         return this.reportSummary;
     }
 
@@ -126,7 +126,7 @@ public class DefaultResult implements VResult {
     /**
      * @param reportSummary Report summary
      */
-    void setReportSummary(final XvrlReportsType reportSummary) {
+    void setReportSummary(final XvrlReports reportSummary) {
         this.reportSummary = reportSummary;
     }
 

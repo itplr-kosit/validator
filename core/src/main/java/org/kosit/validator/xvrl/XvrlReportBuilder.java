@@ -8,18 +8,24 @@ import org.jspecify.annotations.Nullable;
 import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.xvrl.api.XvrlHelper;
-import org.kosit.xvrl.model.XvrlDetectionType;
-import org.kosit.xvrl.model.XvrlDigestType;
-import org.kosit.xvrl.model.XvrlDocumentType;
-import org.kosit.xvrl.model.XvrlMetadataType;
-import org.kosit.xvrl.model.XvrlReportType;
-import org.kosit.xvrl.model.XvrlSeverityType;
-import org.kosit.xvrl.model.XvrlValidatorType;
-import org.kosit.xvrl.model.XvrlValidityType;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlDigest;
+import org.kosit.xvrl.model.XvrlDocument;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
+import org.kosit.xvrl.model.XvrlSeverity;
+import org.kosit.xvrl.model.XvrlValidator;
+import org.kosit.xvrl.model.XvrlValidity;
 
 public class XvrlReportBuilder {
 
-    final XvrlReportType xvrlReport;
+    private final XvrlReport.Builder xvrlReport = XvrlReport.builder();
+
+    private final XvrlMetadata.Builder metadata = XvrlMetadata.builder();
+
+    private final XvrlDigest.Builder digest = XvrlDigest.builder();
+
+    private final XvrlValidator.Builder validator = XvrlValidator.builder();
 
     public static XvrlReportBuilder builder(final String name) {
         return builder(new ActionMetadata(name, name));
@@ -33,53 +39,41 @@ public class XvrlReportBuilder {
     }
 
     private XvrlReportBuilder() {
-        this.xvrlReport = new XvrlReportType();
-        this.xvrlReport.setDigest(new XvrlDigestType());
-        this.xvrlReport.setMetadata(new XvrlMetadataType());
     }
 
-    private @NonNull XvrlValidityType calcValidity() {
-        return this.xvrlReport.getDetection().stream().filter(XvrlDetectionType::hasErrors).findAny().map(e -> XvrlValidityType.FALSE)
-                .orElse(XvrlValidityType.TRUE);
+    private @NonNull XvrlValidity calcValidity() {
+        return this.xvrlReport.getDetections().stream().anyMatch(XvrlDetection::hasErrors) ? XvrlValidity.FALSE : XvrlValidity.TRUE;
     }
 
     @Nullable
-    private Long countDetections(final @NonNull XvrlSeverityType severity) {
+    private Long countDetections(final @NonNull XvrlSeverity severity) {
         // Only values > 0 are emitted
-        final long count = this.xvrlReport.getDetection().stream().filter(e -> e.getSeverity() == severity).count();
+        final long count = this.xvrlReport.getDetections().stream().filter(e -> e.getSeverity() == severity).count();
         return count == 0 ? null : Long.valueOf(count);
     }
 
-    private XvrlValidatorType assertValidatorExistance() {
-        final var vals = this.xvrlReport.getMetadata().getValidators();
-        if (vals.isEmpty()) {
-            vals.add(new XvrlValidatorType());
-        }
-        return vals.getFirst();
-    }
-
     public XvrlReportBuilder name(final String name) {
-        assertValidatorExistance().setName(name);
+        this.validator.name(name);
         return this;
     }
 
     private XvrlReportBuilder id(final String id) {
-        assertValidatorExistance().setId(id);
-        this.xvrlReport.setId(id);
+        this.validator.id(id);
+        this.xvrlReport.id(id);
         return this;
     }
 
     public XvrlReportBuilder setValid() {
-        return setValid(XvrlValidityType.TRUE);
+        return setValid(XvrlValidity.TRUE);
     }
 
-    public XvrlReportBuilder setValid(final XvrlValidityType isValid) {
-        this.xvrlReport.getDigest().setValid(isValid);
+    public XvrlReportBuilder setValid(final XvrlValidity isValid) {
+        this.digest.valid(isValid);
         return this;
     }
 
     public XvrlReportBuilder addSchema(final ResourceType schema) {
-        xvrlReport.getMetadata().getSchemas().add(XvrlHelper.createSchema(schema.getLocation(), schema.getName()));
+        this.metadata.addSchema(XvrlHelper.createSchema(schema.getLocation(), schema.getName()));
         return this;
     }
 
@@ -90,9 +84,7 @@ public class XvrlReportBuilder {
     }
 
     public XvrlReportBuilder addDocumentIdentification(final String documentReference) {
-        final XvrlDocumentType document = new XvrlDocumentType();
-        document.setHref(documentReference);
-        xvrlReport.getMetadata().getDocuments().add(document);
+        this.metadata.addDocument(XvrlDocument.builder(documentReference));
         return this;
     }
 
@@ -108,25 +100,22 @@ public class XvrlReportBuilder {
         return this;
     }
 
-    private XvrlReportBuilder addDetection(final XvrlDetectionType build) {
-        if (build != null) {
-            this.xvrlReport.getDetection().add(build);
-        }
+    private XvrlReportBuilder addDetection(final XvrlDetection build) {
+        this.xvrlReport.addDetection(build);
         return this;
     }
 
-    public XvrlReportType build() {
-        final XvrlDigestType digest = xvrlReport.getDigest();
-        digest.setFatalErrorCount(countDetections(XvrlSeverityType.FATAL_ERROR));
-        digest.setErrorCount(countDetections(XvrlSeverityType.ERROR));
-        digest.setWarningCount(countDetections(XvrlSeverityType.WARNING));
-        digest.setInfoCount(countDetections(XvrlSeverityType.INFO));
-        digest.setUnspecifiedCount(countDetections(XvrlSeverityType.UNSPECIFIED));
+    public XvrlReport build() {
+        this.digest.fatalErrorCount(countDetections(XvrlSeverity.FATAL_ERROR));
+        this.digest.errorCount(countDetections(XvrlSeverity.ERROR));
+        this.digest.warningCount(countDetections(XvrlSeverity.WARNING));
+        this.digest.infoCount(countDetections(XvrlSeverity.INFO));
+        this.digest.unspecifiedCount(countDetections(XvrlSeverity.UNSPECIFIED));
 
         // Don't overwrite manual validity state
-        if (digest.getValid() == null)
-            digest.setValid(calcValidity());
+        if (this.digest.getValid() == null)
+            this.digest.valid(calcValidity());
 
-        return this.xvrlReport;
+        return this.xvrlReport.metadata(this.metadata.validator(this.validator)).digest(this.digest).build();
     }
 }
