@@ -21,10 +21,13 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.namespace.QName;
 
 import org.jspecify.annotations.NonNull;
-import org.kosit.validator.scenario.v1.Scenario1ConversionService;
+import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.ScenarioType;
 
+import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 /**
  * Serializes an individual scenario back to XML so the report can embed the scenario that was selected. Note the
@@ -32,6 +35,11 @@ import jakarta.xml.bind.JAXBElement;
  * <p>
  * Scenario configurations are UTF-8 by definition, so the embedded scenario never needs the base64 detour that applies
  * to arbitrary source documents.
+ * </p>
+ * <p>
+ * The generated scenario type carries no root element and {@link Scenario1Converter} is bound to the enclosing
+ * {@code scenarios} document, so this marshals against the converter's JAXB context directly with an explicit element
+ * name.
  * </p>
  *
  * @author Andreas Schmitz
@@ -43,7 +51,7 @@ public final class ScenarioXml {
 
     private static final QName SCENARIO_QNAME = new QName(NS_SCENARIOS, "scenario");
 
-    private static final Scenario1ConversionService CONVERSION_SERVICE = new Scenario1ConversionService();
+    private static final JAXBContext JAXB_CONTEXT = new Scenario1Converter().getJaxbContext();
 
     private ScenarioXml() {
         // static utility
@@ -56,10 +64,15 @@ public final class ScenarioXml {
      * @return the scenario as UTF-8 encoded XML
      */
     public static byte @NonNull [] toXmlBytes(final @NonNull ScenarioType configuration) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        // the generated type carries no root element, so the element name is supplied explicitly
-        CONVERSION_SERVICE.writeXml(new JAXBElement<>(SCENARIO_QNAME, ScenarioType.class, configuration), out);
-        return out.toByteArray();
+        try {
+            final Marshaller marshaller = JAXB_CONTEXT.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
+            marshaller.marshal(new JAXBElement<>(SCENARIO_QNAME, ScenarioType.class, configuration), out);
+            return out.toByteArray();
+        } catch (final JAXBException e) {
+            throw new IllegalStateException("Can not serialize the selected scenario", e);
+        }
     }
 
     /**
