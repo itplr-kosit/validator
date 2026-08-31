@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="COMPLETED">
+  <metadata>
+    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
+    <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+    <document href="config-cases/cen-unit-test/ubl-br-co-15-no-multiple-bt-110-allowed-test.xml"/>
+  </metadata>
+  <report>
+    <metadata>
+      <!-- Offene Frage: how to deal with reports from other validator software -->
+      <creator name="parse-document"/>
+      <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info">
+      <message xml:id="parse-document-hash" cvrl:algorithm="SHA-512">148840941c030f59d1e217b61eaae4e76bb7f34b7b6325437a6ad1fb433bd9e17b16ae472b59080acfb8daf180e01b9125bc69a494634227f09d2ba3fef71a12</message>
+      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom" cvrl:source-encoding="UTF-8"><Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cec="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>1234567</cbc:ID>
+  <cbc:IssueDate>2018-04-13</cbc:IssueDate>
+  <cbc:DueDate>2018-04-13</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:Note>#AAC#Invoice Note Description</cbc:Note>
+  <cbc:TaxPointDate>2018-04-13</cbc:TaxPointDate>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:TaxCurrencyCode>GBP</cbc:TaxCurrencyCode>
+  <cbc:BuyerReference>90000000-03083-72</cbc:BuyerReference>
+  <cac:InvoicePeriod>
+    <cbc:StartDate>2016-01-01</cbc:StartDate>
+      <cbc:EndDate>2016-12-31</cbc:EndDate>
+  </cac:InvoicePeriod>
+  <cac:OrderReference>
+    <cbc:ID>65002278</cbc:ID>
+      <cbc:SalesOrderID>ABC123456789</cbc:SalesOrderID>
+  </cac:OrderReference>
+  <cac:OriginatorDocumentReference>
+    <cbc:ID>ANG987654321</cbc:ID>
+  </cac:OriginatorDocumentReference>
+  <cac:ContractDocumentReference>
+    <cbc:ID>0000000752</cbc:ID>
+  </cac:ContractDocumentReference>
+  
+  <cac:ProjectReference>
+    <cbc:ID>PR12345678</cbc:ID>
+  </cac:ProjectReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">rechnungsausgang@test.com</cbc:EndpointID>
+          <cac:PartyIdentification>
+        <cbc:ID schemeID="0088">987654321</cbc:ID>
+      </cac:PartyIdentification>
+          <cac:PartyName>
+        <cbc:Name>[Seller name]</cbc:Name>
+      </cac:PartyName>
+          <cac:PostalAddress>
+        <cbc:StreetName>[Seller address line 1]</cbc:StreetName>
+              <cbc:AdditionalStreetName>[Seller address line 2]</cbc:AdditionalStreetName>
+              <cbc:CityName>[Seller city]</cbc:CityName>
+              <cbc:PostalZone>12345</cbc:PostalZone>
+              <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+          <cac:PartyTaxScheme>
+        <cbc:CompanyID>ATU123456789</cbc:CompanyID>
+              <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+          <cac:PartyTaxScheme>
+        <cbc:CompanyID>123/456/789</cbc:CompanyID>
+              <cac:TaxScheme>
+          <cbc:ID>FC</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+          <cac:PartyLegalEntity>
+        <cbc:RegistrationName>[Seller trading name]</cbc:RegistrationName>
+              <cbc:CompanyID schemeID="0088">123456789</cbc:CompanyID>
+              <cbc:CompanyLegalForm>Amtsgericht […], Geschäftsführer: […], Sitz der Gesellschaft […], Aufsichtsratvorsitzender: […]</cbc:CompanyLegalForm>
+      </cac:PartyLegalEntity>
+          <cac:Contact>
+        <cbc:Name>Tim Tester</cbc:Name>
+              <cbc:Telephone>012 3456789</cbc:Telephone>
+              <cbc:ElectronicMail>tim.tester@test.com</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">rechnungseingang@test.de</cbc:EndpointID>
+          <cac:PartyIdentification>
+        <cbc:ID>138</cbc:ID>
+      </cac:PartyIdentification>
+          <cac:PartyName>
+        <cbc:Name>[Buyer name]</cbc:Name>
+      </cac:PartyName>
+          <cac:PostalAddress>
+        <cbc:StreetName>[Buyer address line 1]</cbc:StreetName>
+              <cbc:AdditionalStreetName>[Buyer address line 2]</cbc:AdditionalStreetName>
+              <cbc:CityName>[Buyer city]</cbc:CityName>
+              <cbc:PostalZone>98765</cbc:PostalZone>
+              <cac:AddressLine>
+          <cbc:Line>[Buyer address line 3]</cbc:Line>
+        </cac:AddressLine>
+              <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+          <cac:PartyTaxScheme>
+        <cbc:CompanyID>DE12345ABC</cbc:CompanyID>
+              <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+          <cac:PartyLegalEntity>
+        <cbc:RegistrationName>[Buyer name]</cbc:RegistrationName>
+              <cbc:CompanyID schemeID="0204">90000000-03083-72</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+          <cac:Contact>
+        <cbc:Name>Tina Tester</cbc:Name>
+              <cbc:Telephone>0800 123456</cbc:Telephone>
+              <cbc:ElectronicMail>tester@test.de</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:PayeeParty>
+    <cac:PartyIdentification>
+      <cbc:ID>74</cbc:ID>
+    </cac:PartyIdentification>
+      <cac:PartyName>
+      <cbc:Name>[Payee name]</cbc:Name>
+    </cac:PartyName>
+  </cac:PayeeParty>
+  <cac:TaxRepresentativeParty>
+    <cac:PartyName>
+      <cbc:Name>[Seller tax representative name]</cbc:Name>
+    </cac:PartyName>
+      <cac:PostalAddress>
+      <cac:Country>
+        <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+      </cac:Country>
+    </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+      <cbc:CompanyID>DE124567</cbc:CompanyID>
+          <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:PartyTaxScheme>
+  </cac:TaxRepresentativeParty>
+  <cac:Delivery>
+    <cbc:ActualDeliveryDate>2018-04-13</cbc:ActualDeliveryDate>
+      <cac:DeliveryLocation>
+      <cbc:ID>68</cbc:ID>
+          <cac:Address>
+        <cbc:StreetName>[Deliver to street]</cbc:StreetName>
+              <cbc:AdditionalStreetName>4. OG</cbc:AdditionalStreetName>
+              <cbc:CityName>[Deliver to city]</cbc:CityName>
+              <cbc:PostalZone>98765</cbc:PostalZone>
+              <cbc:CountrySubentity>Bayern</cbc:CountrySubentity>
+              <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:Address>
+    </cac:DeliveryLocation>
+      <cac:DeliveryParty>
+      <cac:PartyName>
+        <cbc:Name>[Deliver to party name]</cbc:Name>
+      </cac:PartyName>
+    </cac:DeliveryParty>
+  </cac:Delivery>
+  <cac:PaymentMeans>
+    <cbc:PaymentMeansCode>58</cbc:PaymentMeansCode>
+      <cbc:PaymentID>Deb. 12345 / Fact. 9876543</cbc:PaymentID>
+      <cac:PayeeFinancialAccount>
+      <cbc:ID>DE79000000001234567890</cbc:ID>
+          <cbc:Name>[Payment account name]</cbc:Name>
+          <cac:FinancialInstitutionBranch>
+        <cbc:ID>[BIC]</cbc:ID>
+      </cac:FinancialInstitutionBranch>
+    </cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>
+  <cac:PaymentTerms>
+    <cbc:Note>Bitte überweisen Sie bis zum 24.01.2015 auf das unten aufgeführte Konto.</cbc:Note>
+  </cac:PaymentTerms>
+  <cac:AllowanceCharge>
+    <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+      <cbc:AllowanceChargeReasonCode>TAC</cbc:AllowanceChargeReasonCode>
+      <cbc:AllowanceChargeReason>Testing</cbc:AllowanceChargeReason>
+      <cbc:MultiplierFactorNumeric>0</cbc:MultiplierFactorNumeric>
+      <cbc:Amount currencyID="EUR">0</cbc:Amount>
+      <cbc:BaseAmount currencyID="EUR">0</cbc:BaseAmount>
+      <cac:TaxCategory>
+      <cbc:ID>E</cbc:ID>
+          <cbc:Percent>0</cbc:Percent>
+          <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:AllowanceCharge>
+  <cac:AllowanceCharge>
+    <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+      <cbc:AllowanceChargeReasonCode>102</cbc:AllowanceChargeReasonCode>
+      <cbc:AllowanceChargeReason>Fixed long term</cbc:AllowanceChargeReason>
+      <cbc:MultiplierFactorNumeric>0</cbc:MultiplierFactorNumeric>
+      <cbc:Amount currencyID="EUR">0</cbc:Amount>
+      <cbc:BaseAmount currencyID="EUR">0</cbc:BaseAmount>
+      <cac:TaxCategory>
+      <cbc:ID>E</cbc:ID>
+          <cbc:Percent>0</cbc:Percent>
+          <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:AllowanceCharge>
+  <cac:TaxTotal>
+    <!-- BT-110 -->
+    <cbc:TaxAmount currencyID="EUR">2048.44</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">10781.25</cbc:TaxableAmount>
+          <cbc:TaxAmount currencyID="EUR">2048.44</cbc:TaxAmount>
+          <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+              <cbc:Percent>19</cbc:Percent>
+              <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <?xmute mutator="remove" schematron-valid="cenubl:BR-CO-15" id="ubl-br-co-15-no-multiple-bt-110-allowed-1" description="ubl br-co-15 no multiple bt-110 allowed"?>
+  <cac:TaxTotal>
+    <!-- BT-110 -->
+    <?xmute mutator="identity" schematron-invalid="cenubl:BR-CO-15" id="ubl-br-co-15-no-multiple-bt-110-allowed-2" description="ubl br-co-15 no multiple bt-110 allowed"?>
+    <cbc:TaxAmount currencyID="EUR">0</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">0</cbc:TaxableAmount>
+          <cbc:TaxAmount currencyID="EUR">0</cbc:TaxAmount>
+          <cac:TaxCategory>
+        <cbc:ID>E</cbc:ID>
+              <cbc:Percent>0</cbc:Percent>
+            <cbc:TaxExemptionReasonCode>VATEX-EU-132-1A</cbc:TaxExemptionReasonCode>
+              <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>  
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="GBP">2048.44</cbc:TaxAmount>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">10781.25</cbc:LineExtensionAmount>
+      <cbc:TaxExclusiveAmount currencyID="EUR">10781.25</cbc:TaxExclusiveAmount>
+      <cbc:TaxInclusiveAmount currencyID="EUR">12829.69</cbc:TaxInclusiveAmount>
+      <cbc:AllowanceTotalAmount currencyID="EUR">0</cbc:AllowanceTotalAmount>
+      <cbc:ChargeTotalAmount currencyID="EUR">0</cbc:ChargeTotalAmount>
+      <cbc:PrepaidAmount currencyID="EUR">0</cbc:PrepaidAmount>
+      <cbc:PayableAmount currencyID="EUR">12829.69</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+      <cbc:Note>Die letzte Lieferung im Rahmen des abgerechneten Abonnements erfolgt in 12/2016 Lieferung erfolgt / erfolgte direkt vom Verlag</cbc:Note>
+      <cbc:InvoicedQuantity unitCode="XPP">33</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">4743.75</cbc:LineExtensionAmount>
+      <cac:InvoicePeriod>
+      <cbc:StartDate>2016-01-01</cbc:StartDate>
+          <cbc:EndDate>2016-12-31</cbc:EndDate>
+    </cac:InvoicePeriod>
+      <cac:OrderLineReference>
+      <cbc:LineID>6171175.1</cbc:LineID>
+    </cac:OrderLineReference>
+      <cac:Item>
+      <cbc:Description>Anforderungmanagament</cbc:Description>
+          <cbc:Name>Beratung</cbc:Name>
+          <cac:SellersItemIdentification>
+        <cbc:ID>1034</cbc:ID>
+      </cac:SellersItemIdentification>
+          <cac:CommodityClassification>
+        <cbc:ItemClassificationCode listID="IB">0721-880X</cbc:ItemClassificationCode>
+      </cac:CommodityClassification>
+          <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+              <cbc:Percent>19</cbc:Percent>
+              <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+      <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">143.75</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="XPP">42</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">6037.5</cbc:LineExtensionAmount>
+      <cac:Item>
+      <cbc:Name>Beratung</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+              <cbc:Percent>19</cbc:Percent>
+              <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+      <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">143.75</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice></message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="detect-scenarios"/>
+      <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection cvrl:scenario-id="EN16931 XRechnung (UBL Invoice)">
+      <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']"/>
+      <message>Scenario 'EN16931 XRechnung (UBL Invoice)' matched</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="select-scenario"/>
+      <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="scenario-selected" cvrl:scenario-id="EN16931 XRechnung (UBL Invoice)">
+      <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']"/>
+      <message>Scenario 'EN16931 XRechnung (UBL Invoice)' selected</message>
+      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom" cvrl:source-encoding="UTF-8"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>EN16931 XRechnung (UBL Invoice)</name><description><p>Validates UBL Invoice in version 2.1</p><p>Uses UBL Invoice 2.1 XML Schema,                 Schematron rules from EN16931:2017, and XRechnung                 3.0.2 </p><p>Download of UBL XML Schema on 2026-08-19 from                 https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip</p><p>Download of UBL Schematron rules on 2026-08-19 from                 https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-ubl-1.3.15.zip</p><p>Download of XRechnung Schematron rules on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p></description><namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace><namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace><namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace><match>exists(/invoice:Invoice/cbc:CustomizationID[ . = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match><validateWithXmlSchema><resource><name>XML Schema for UBL 2.1 Invoice</name><location>resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Schematron rules for EN16931 (UBL)</name><location>resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location></resource></validateWithSchematron><validateWithSchematron><resource><name>Schematron rules for Invoice - CIUS XRechnung (UBL)</name><location>resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl</location></resource></validateWithSchematron><createReport><id>report-1</id><resource><name>Validation report for XRechnung</name><location>resources/xrechnung-report.xsl</location></resource><customLevel level="warning">BR-CL-23</customLevel><customLevel level="warning">BR-CL-21</customLevel><customLevel level="error">UBL-CR-646</customLevel></createReport><acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch></scenario></message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="retrieve-artifacts"/>
+      <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="artifacts-retrieved">
+      <message>Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' retrieved as xsd</message>
+    </detection>
+    <detection severity="info" code="artifacts-retrieved">
+      <message>Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' retrieved as schematron-xslt2</message>
+    </detection>
+    <detection severity="info" code="artifacts-retrieved">
+      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' retrieved as schematron-xslt2</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="prepare-rules"/>
+      <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rule-compiled">
+      <message>Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' compiled (XML Schema)</message>
+    </detection>
+    <detection severity="info" code="rule-precompiled">
+      <message>Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' passed through (transpiled ahead of time)</message>
+    </detection>
+    <detection severity="info" code="rule-precompiled">
+      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' passed through (transpiled ahead of time)</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+      <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" language="XSD"/>
+    </metadata>
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rules-applied">
+      <message>Rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' applied without findings</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+      <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
+    </metadata>
+    <digest valid="false" worst-severity="error" fatal-error-count="1" error-count="1" warning-count="0" error-codes="BR-CO-15"/>
+    <detection severity="error" code="BR-CO-15">
+      <message>[BR-CO-15]-Invoice total amount with VAT (BT-112) = Invoice total amount without VAT (BT-109) + Invoice total VAT amount (BT-110). (at /Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1])</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+      <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
+    </metadata>
+    <digest valid="false" worst-severity="error" fatal-error-count="1" error-count="1" warning-count="0" error-codes="PEPPOL-EN16931-R053"/>
+    <detection severity="error" code="PEPPOL-EN16931-R053">
+      <message>Only one tax total with tax subtotals MUST be provided. (at /Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1])</message>
+    </detection>
+  </report>
+  <report>
+    <metadata>
+      <creator name="compute-conformance"/>
+      <timestamp>2026-08-27T14:43:15+02:00</timestamp>
+    </metadata>
+    <digest valid="false" worst-severity="error" fatal-error-count="2" error-count="2" warning-count="0" error-codes="target-non-conformant"/>
+    <detection severity="info" code="target-conformant">
+      <message>Target 'EN16931 XRechnung (UBL Invoice)' conformant (rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd')</message>
+    </detection>
+    <detection severity="error" code="target-non-conformant">
+      <message>Target 'EN16931 XRechnung (UBL Invoice)' non-conformant: 1 error detection(s) from rule set 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl'</message>
+    </detection>
+    <detection severity="error" code="target-non-conformant">
+      <message>Target 'EN16931 XRechnung (UBL Invoice)' non-conformant: 1 error detection(s) from rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl'</message>
+    </detection>
+  </report>
+</reports>

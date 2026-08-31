@@ -47,6 +47,9 @@ public class TestHelper {
 
         public static final URI SIMPLE_ISO_VALID = ROOT.resolve("input/simple-iso.xml");
 
+        /** Valid instance that is actually encoded in ISO-8859-1 (not UTF-8), for the base64 embedding path. */
+        public static final URI SIMPLE_LATIN1 = ROOT.resolve("input/simple-latin1.xml");
+
         public static final URI FOO = ROOT.resolve("input/foo.xml");
 
         public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");
@@ -56,6 +59,9 @@ public class TestHelper {
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
         public static final URI SCENARIOS_WITH_SCH = ROOT.resolve("scenarios-with-sch.xml");
+
+        /** Configuration with two scenarios matching the same document, for the ambiguity path. */
+        public static final URI SCENARIOS_AMBIGUOUS = ROOT.resolve("scenarios-ambiguous.xml");
 
         public static final URI SCENARIOS_WITH_RELATIVE_PATHS = ROOT.resolve("scenarios-with-relative-paths.xml");
 

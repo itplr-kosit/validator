@@ -16,6 +16,7 @@ import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.model.ScenarioDetection;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,8 +128,10 @@ public class DetectScenariosAction implements CTAction {
         }
 
         final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource);
-        final CTDetection detection = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED, DetectionLocation.of(resourceId),
-                "Scenario '" + scenario.getName() + "' fixed by user input");
+        final CTDetection detection = ScenarioDetection.candidate(
+                Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED, DetectionLocation.of(resourceId),
+                        "Scenario '" + scenario.getName() + "' fixed by user input"),
+                match.getScenarioID(), match.getConfigurationLocation());
         return new DetectScenariosResult(CTStepResult.SUCCESS, List.of(match), DetectionList.of(detection));
     }
 
@@ -144,9 +147,12 @@ public class DetectScenariosAction implements CTAction {
         LOGGER.debug("{} scenario(s) matched for {}", matching.size(), resourceId);
         final List<ScenarioMatch> matches = matching.stream().map(scenario -> ScenarioMatch.of(scenario, parsedSource)).toList();
         final List<CTDetection> detections = new ArrayList<>();
-        for (final CTScenarioMatch match : matches) {
-            detections.add(Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_MATCHED, DetectionLocation.of(resourceId),
-                    "Scenario '" + match.getScenarioName() + "' matched"));
+        for (final ScenarioMatch match : matches) {
+            // scenario id and the pointer into the configuration travel with every candidate
+            detections.add(ScenarioDetection.candidate(
+                    Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_MATCHED, DetectionLocation.of(resourceId),
+                            "Scenario '" + match.getScenarioName() + "' matched"),
+                    match.getScenarioID(), match.getConfigurationLocation()));
         }
         return new DetectScenariosResult(CTStepResult.SUCCESS, List.copyOf(matches), new DetectionList(detections));
     }

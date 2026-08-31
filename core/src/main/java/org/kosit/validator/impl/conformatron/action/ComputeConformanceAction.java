@@ -43,13 +43,13 @@ import org.kosit.validator.impl.conformatron.model.DetectionLocation;
  */
 public class ComputeConformanceAction implements CTAction {
 
-    /** Detection code per conformant target (INFO). */
+    /** Detection code per conformant target (NONE). */
     public static final String CODE_TARGET_CONFORMANT = "target-conformant";
 
     /** Detection code per non-conformant target (ERROR). */
     public static final String CODE_TARGET_NON_CONFORMANT = "target-non-conformant";
 
-    /** Detection code when the step is skipped because step 7 produced no results (INFO). */
+    /** Detection code when the step is skipped because step 7 produced no results (NONE). */
     public static final String CODE_STEP_SKIPPED = "step-skipped";
 
     /**

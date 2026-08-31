@@ -24,6 +24,7 @@ import org.kosit.validator.impl.conformatron.model.ApplyRulesResult;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
 import org.kosit.validator.impl.conformatron.util.SvrlDetections;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.slf4j.Logger;
@@ -52,6 +53,12 @@ import net.sf.saxon.s9api.XsltTransformer;
  * access, no re-read of the original input. Schematron rule sets run their compiled XSLT and map the SVRL output to
  * detections ({@link SvrlDetections}: assert id → detection code); XSD rule sets run a JAXP validator whose violations
  * become {@code schema-violation} detections with line/column.
+ * </p>
+ * <p>
+ * <b>customLevel</b>: the selected scenario's severity overrides ({@link SeverityOverrides}) are applied to the
+ * findings right here — the detection carries the <b>effective</b> severity into steps 8/9 and the CVRL, with the
+ * declared severity preserved on the detection for auditability. This closes the last verdict gap to the 1.x report-XSL
+ * mechanism ({@code rep:custom-level()}).
  * </p>
  *
  * @author Andreas Schmitz
@@ -99,18 +106,40 @@ public class ApplyRulesAction implements CTAction {
     }
 
     /**
-     * Applies all prepared rule sets to the document, in order.
+     * Applies all prepared rule sets to the document, in order, without scenario severity overrides (ad-hoc path).
      *
      * @param parsedSource the parsed source from step 2 (rules run on its retained bytes)
      * @param ruleSets the prepared rule sets from step 6; an empty list skips the step
      * @return the result including the per-rule-set detections
      */
     public ApplyRulesActionResult execute(final CTParsedValidationSource parsedSource, final List<CTPreparedRuleSet> ruleSets) {
+        return execute(parsedSource, ruleSets, SeverityOverrides.NONE);
+    }
+
+    /**
+     * Applies all prepared rule sets to the document, in order, applying the scenario's {@code customLevel} severity
+     * overrides to the findings (successor of the 1.x report-XSL mechanism).
+     * <p>
+     * Overrides touch only the findings produced by the rules themselves; the step's own engine-error and skip markers
+     * are structurally out of reach (1.x {@code PROCESSING_ERROR} exemption). An overridden detection keeps its
+     * declared severity retrievable ({@link Detection#getOriginalSeverity()}) for auditability.
+     * </p>
+     *
+     * @param parsedSource the parsed source from step 2 (rules run on its retained bytes)
+     * @param ruleSets the prepared rule sets from step 6; an empty list skips the step
+     * @param overrides the selected scenario's severity overrides ({@link SeverityOverrides#NONE} for none)
+     * @return the result including the per-rule-set detections
+     */
+    public ApplyRulesActionResult execute(final CTParsedValidationSource parsedSource, final List<CTPreparedRuleSet> ruleSets,
+            final SeverityOverrides overrides) {
         if (parsedSource == null) {
             throw new IllegalArgumentException("parsedSource may not be null");
         }
         if (ruleSets == null) {
             throw new IllegalArgumentException("ruleSets may not be null");
+        }
+        if (overrides == null) {
+            throw new IllegalArgumentException("overrides may not be null (use SeverityOverrides.NONE)");
         }
         final String documentName = parsedSource.getSource().getName();
         if (ruleSets.isEmpty()) {
@@ -128,7 +157,7 @@ public class ApplyRulesAction implements CTAction {
                                 "Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)")));
                 continue;
             }
-            final CTDetectionList detections = applyOne(parsedSource, ruleSet, documentName);
+            final CTDetectionList detections = applyOne(parsedSource, ruleSet, documentName, overrides);
             results.put(ruleSet, detections);
             failed = detections.getAll().stream().anyMatch(d -> CODE_RULE_ENGINE_ERROR.equals(d.getCode()));
         }
@@ -139,14 +168,15 @@ public class ApplyRulesAction implements CTAction {
     }
 
     private CTDetectionList applyOne(final CTParsedValidationSource parsedSource, final CTPreparedRuleSet ruleSet,
-            final String documentName) {
+            final String documentName, final SeverityOverrides overrides) {
         try {
-            final CTDetectionList findings = switch (ruleSet.getEngineType().getStandard()) {
+            // overrides apply here and only here: engine-error/skip markers below never pass through them
+            final CTDetectionList findings = applyOverrides(switch (ruleSet.getEngineType().getStandard()) {
                 case SCHEMATRON -> applySchematron(parsedSource, ruleSet, documentName);
                 case XSD -> applySchema(parsedSource, ruleSet, documentName);
                 default -> throw new IllegalStateException(
                         "Unsupported engine type " + ruleSet.getEngineType().getID() + " for rule application");
-            };
+            }, overrides);
             if (findings.getCount() == 0) {
                 return DetectionList.of(Detection.of(CTStandardSeverity.NONE, CODE_RULES_APPLIED, DetectionLocation.of(documentName),
                         "Rule set '" + href(ruleSet) + "' applied without findings"));
@@ -198,6 +228,28 @@ public class ApplyRulesAction implements CTAction {
         } catch (final SAXException e) {
             LOGGER.warn("Validator implementation does not support secure processing properties", e);
         }
+    }
+
+    /**
+     * Replaces the severity of every finding whose code carries a scenario override; untouched findings keep their
+     * instance. Overridden detections retain the declared severity ({@link Detection#getOriginalSeverity()}).
+     */
+    private static CTDetectionList applyOverrides(final CTDetectionList findings, final SeverityOverrides overrides) {
+        if (overrides.isEmpty() || findings.getCount() == 0) {
+            return findings;
+        }
+        final List<CTDetection> result = new ArrayList<>(findings.getAll().size());
+        boolean changed = false;
+        for (final CTDetection detection : findings.getAll()) {
+            final CTStandardSeverity effective = overrides.effectiveFor(detection.getCode());
+            if (effective != null && effective != detection.getSeverity()) {
+                result.add(Detection.overridden(detection, effective));
+                changed = true;
+            } else {
+                result.add(detection);
+            }
+        }
+        return changed ? new DetectionList(result) : findings;
     }
 
     private static String href(final CTPreparedRuleSet ruleSet) {

@@ -37,6 +37,7 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosRe
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
+import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
 import org.kosit.validator.impl.conformatron.report.CvrlWriter;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
 
@@ -55,15 +56,15 @@ import net.sf.saxon.s9api.Processor;
  *     -Dexec.classpathScope=test
  * </pre>
  * <p>
- * All inputs and outputs live in the repository's own {@code e2e/} folder (self-contained since session 25.08.2026):
- * scenarios, repository and instances are read from {@code e2e/comparison/input/}, per-instance reports and CVRLs are
- * written to {@code e2e/comparison/v2_0/reports/}, the summary to {@code e2e/results/}. Every default can be overridden
- * with the system properties {@code e2e.scenarios}, {@code e2e.repository}, {@code e2e.instances}, {@code e2e.output},
+ * All inputs and outputs live in the repository's own {@code e2e/} folder (self-contained): scenarios, repository and
+ * instances are read from {@code e2e/comparison/input/}, per-instance reports and CVRLs are written to
+ * {@code e2e/comparison/v2_0/reports/}, the summary to {@code e2e/results/}. Every default can be overridden with the
+ * system properties {@code e2e.scenarios}, {@code e2e.repository}, {@code e2e.instances}, {@code e2e.output},
  * {@code e2e.reports}.
  * </p>
  * <p>
- * <b>Known gap surfaced by this run</b> (list in the report header): scenario {@code customLevel} overrides are not yet
- * applied by step 7 — severities are reported as declared by the rules (open question in step-07 spec).
+ * Scenario {@code customLevel} overrides are applied by step 7 — detections carry the effective severity, overridden
+ * ones additionally the declared one. Remaining gaps are listed in the report header.
  * </p>
  *
  * @author Andreas Schmitz
@@ -206,8 +207,9 @@ public final class XRechnungE2ERunner {
         if (!prepared.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
         }
-        // step 7: APPLY_RULES
-        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets());
+        // step 7: APPLY_RULES (with the scenario's customLevel severity overrides)
+        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets(),
+                SeverityOverrides.of(selected.selected()));
         if (!applied.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
         }
@@ -305,7 +307,7 @@ public final class XRechnungE2ERunner {
             out.println();
             out.println("**Bekannte Lücken dieses Laufs** (bei der Bewertung berücksichtigen):");
             out.println(
-                    "- `customLevel`-Overrides der Szenarien werden von Step 7 noch nicht angewandt — Severities wie in den Regeln deklariert (offene Frage step-07).");
+                    "- `customLevel`-Overrides werden von Step 7 angewandt (effektive Severity; Original als `cvrl:original-severity`).");
             out.println(
                     "- `acceptMatch` der Szenarien wird nicht ausgewertet (läuft auf dem Report; ADR-004 Follow-up) — Verdikt ist rein detection-basiert.");
             out.println("- Step 8 nutzt ein szenarioweites Default-Target (`ConformanceTarget.ofScenario`).");

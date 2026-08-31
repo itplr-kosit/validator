@@ -22,11 +22,19 @@ import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
+import org.conformatron.api.model.detection.CTDetection;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
 import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.validator.scenario.v1.CreateReportType;
+import org.kosit.validator.scenario.v1.CustomErrorLevel;
+import org.kosit.validator.scenario.v1.ErrorLevelType;
+import org.kosit.validator.scenario.v1.ScenarioType;
 
 /**
  * Tests {@link ApplyRulesAction} (step 7) with real rule sets prepared by steps 5+6.
@@ -112,6 +120,47 @@ public class ApplyRulesActionTest {
         final List<CTDetectionList> lists = List.copyOf(result.result().getResultsByRuleSet().values());
         assertThat(lists.get(0).getAll()).extracting("code").containsExactly(ApplyRulesAction.CODE_RULE_ENGINE_ERROR);
         assertThat(lists.get(1).getAll()).extracting("code").containsExactly(ApplyRulesAction.CODE_STEP_SKIPPED);
+    }
+
+    @Test
+    public void testCustomLevelOverrideDowngradesFinding() throws IOException {
+        // the scenario demotes the failing rule to information -> the finding is no longer an error
+        final SeverityOverrides overrides = overridesFor("content-1", ErrorLevelType.INFORMATION);
+        final ApplyRulesActionResult result = this.action.execute(parse(Simple.SCHEMATRON_INVALID), prepare("simple.xsd", "simple.sch"),
+                overrides);
+
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.result().hasErrors()).isFalse();
+        final CTDetection overridden = result.detections().getAll().stream().filter(d -> "content-1".equals(d.getCode())).findFirst()
+                .orElseThrow();
+        assertThat(overridden.getSeverity()).isEqualTo(CTStandardSeverity.NONE);
+        // the declared severity stays auditable on the detection
+        assertThat(((Detection) overridden).getOriginalSeverity()).isEqualTo(CTStandardSeverity.ERROR);
+    }
+
+    @Test
+    public void testEngineErrorAndSkipMarkersAreNeverOverridable() throws IOException {
+        // 1.x PROCESSING_ERROR exemption, enforced structurally: overrides only reach rule findings
+        final SeverityOverrides overrides = overridesFor(ApplyRulesAction.CODE_RULE_ENGINE_ERROR, ErrorLevelType.INFORMATION);
+        final ApplyRulesActionResult result = this.action.execute(parse(Simple.SIMPLE_VALID),
+                prepare("simple-runtime-error.sch", "simple.sch"), overrides);
+
+        assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
+        final CTDetection engineError = result.detections().getAll().stream()
+                .filter(d -> ApplyRulesAction.CODE_RULE_ENGINE_ERROR.equals(d.getCode())).findFirst().orElseThrow();
+        assertThat(engineError.getSeverity()).isEqualTo(CTStandardSeverity.ERROR);
+        assertThat(((Detection) engineError).getOriginalSeverity()).isNull();
+    }
+
+    private static SeverityOverrides overridesFor(final String code, final ErrorLevelType level) {
+        final CustomErrorLevel custom = new CustomErrorLevel();
+        custom.setLevel(level);
+        custom.getValue().add(code);
+        final CreateReportType report = new CreateReportType();
+        report.getCustomLevel().add(custom);
+        final ScenarioType scenario = new ScenarioType();
+        scenario.getCreateReport().add(report);
+        return SeverityOverrides.fromConfiguration(scenario);
     }
 
     @Test

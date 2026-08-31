@@ -37,6 +37,9 @@ public final class Detection implements CTDetection {
 
     private final CTSeverity severity;
 
+    /** The severity declared by the rule when {@link #severity} is a scenario override. */
+    private final CTSeverity originalSeverity;
+
     private final String code;
 
     private final CTDetectionLocation location;
@@ -50,16 +53,45 @@ public final class Detection implements CTDetection {
         return new Detection(severity, code, location, message, null);
     }
 
+    /**
+     * Derives a detection whose severity was overridden by the scenario ({@code customLevel}): same code, location,
+     * text and linked exception, but the effective severity — the declared one stays retrievable via
+     * {@link #getOriginalSeverity()} for auditability.
+     *
+     * @param base the detection as produced by the rules
+     * @param effectiveSeverity the severity after applying the scenario override
+     * @return the overridden detection
+     */
+    public static Detection overridden(final @NonNull CTDetection base, final @NonNull CTSeverity effectiveSeverity) {
+        Objects.requireNonNull(base);
+        return new Detection(effectiveSeverity, base.getSeverity(), base.getCode(), base.getLocation(), base.getText(),
+                base.getLinkedException());
+    }
+
     public Detection(final @NonNull CTSeverity severity, final @Nullable String code, final @NonNull CTDetectionLocation location,
             final @Nullable String message, final @Nullable Exception linkedException) {
+        this(severity, null, code, location, message != null ? new DetectionText(message) : null, linkedException);
+    }
+
+    private Detection(final @NonNull CTSeverity severity, final @Nullable CTSeverity originalSeverity, final @Nullable String code,
+            final @NonNull CTDetectionLocation location, final @Nullable CTDetectionText text, final @Nullable Exception linkedException) {
         Objects.requireNonNull(severity);
         Objects.requireNonNull(location);
         this.dateTimeUTC = OffsetDateTime.now(ZoneOffset.UTC);
         this.severity = severity;
+        this.originalSeverity = originalSeverity;
         this.code = code;
         this.location = location;
-        this.text = message != null ? new DetectionText(message) : null;
+        this.text = text;
         this.linkedException = linkedException;
+    }
+
+    /**
+     * The severity declared by the rule, when the effective {@link #getSeverity()} is a scenario {@code customLevel}
+     * override; {@code null} when no override was applied.
+     */
+    public @Nullable CTSeverity getOriginalSeverity() {
+        return this.originalSeverity;
     }
 
     @Override

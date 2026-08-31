@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsm:CrossIndustryInvoice xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100"
+                          xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+                          xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                          xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+   <rsm:ExchangedDocumentContext>
+      <ram:BusinessProcessSpecifiedDocumentContextParameter>
+         <ram:ID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</ram:ID>
+      </ram:BusinessProcessSpecifiedDocumentContextParameter>
+      <ram:GuidelineSpecifiedDocumentContextParameter>
+         <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</ram:ID>
+      </ram:GuidelineSpecifiedDocumentContextParameter>
+   </rsm:ExchangedDocumentContext>
+   <rsm:ExchangedDocument>
+      <ram:ID>001</ram:ID>
+      <ram:TypeCode>380</ram:TypeCode>
+      <ram:IssueDateTime>
+         <udt:DateTimeString format="102">20250107</udt:DateTimeString>
+      </ram:IssueDateTime>
+      <!-- BG-1 -->
+      <ram:IncludedNote>
+         <!-- BT-22 -->
+         <ram:Content>Beispielvertrag</ram:Content>
+         <ram:SubjectCode>AAI</ram:SubjectCode>
+      </ram:IncludedNote>
+      <ram:IncludedNote>
+        <!-- BT-22 -->
+        <?xmute mutator="identity" schematron-valid="cencii:CII-SR-030" id="cii-sr-030-valid" ?>
+        <?xmute mutator="remove" schematron-invalid="cencii:CII-SR-030" id="cii-sr-030-bt-22-removed" description="expected-to-fail: BT-22 should exist"?>
+        <ram:Content>Beispielvertrag</ram:Content>
+        <ram:SubjectCode>AAI</ram:SubjectCode>
+      </ram:IncludedNote>
+   </rsm:ExchangedDocument>
+   <rsm:SupplyChainTradeTransaction>
+      <ram:IncludedSupplyChainTradeLineItem>
+         <ram:AssociatedDocumentLineDocument>
+            <ram:LineID>1</ram:LineID>
+         </ram:AssociatedDocumentLineDocument>
+         <ram:SpecifiedTradeProduct>
+            <ram:Name>Wartung</ram:Name>
+            <ram:Description>Wartungsbeschreibung</ram:Description>
+         </ram:SpecifiedTradeProduct>
+         <ram:SpecifiedLineTradeAgreement>
+            <ram:BuyerOrderReferencedDocument>
+               <ram:LineID>1</ram:LineID>
+            </ram:BuyerOrderReferencedDocument>
+            <ram:NetPriceProductTradePrice>
+               <ram:ChargeAmount>10000</ram:ChargeAmount>
+               <ram:BasisQuantity unitCode="C62">1</ram:BasisQuantity>
+            </ram:NetPriceProductTradePrice>
+         </ram:SpecifiedLineTradeAgreement>
+         <ram:SpecifiedLineTradeDelivery>
+            <ram:BilledQuantity unitCode="C62">1</ram:BilledQuantity>
+         </ram:SpecifiedLineTradeDelivery>
+         <ram:SpecifiedLineTradeSettlement>
+            <ram:ApplicableTradeTax>
+               <ram:TypeCode>VAT</ram:TypeCode>
+               <ram:CategoryCode>S</ram:CategoryCode>
+               <ram:RateApplicablePercent>19</ram:RateApplicablePercent>
+            </ram:ApplicableTradeTax>
+            <ram:SpecifiedTradeSettlementLineMonetarySummation>
+               <ram:LineTotalAmount>10000</ram:LineTotalAmount>
+            </ram:SpecifiedTradeSettlementLineMonetarySummation>
+         </ram:SpecifiedLineTradeSettlement>
+      </ram:IncludedSupplyChainTradeLineItem>
+      <ram:ApplicableHeaderTradeAgreement>
+         <ram:BuyerReference>123456</ram:BuyerReference>
+         <ram:SellerTradeParty>
+            <ram:ID>1</ram:ID>
+            <ram:Name>Beispiel GmbH</ram:Name>
+            <ram:DefinedTradeContact>
+               <ram:PersonName>M. Meier</ram:PersonName>
+               <ram:TelephoneUniversalCommunication>
+                  <ram:CompleteNumber>01234-567</ram:CompleteNumber>
+               </ram:TelephoneUniversalCommunication>
+               <ram:EmailURIUniversalCommunication>
+                  <ram:URIID>mail@beispiel.de</ram:URIID>
+               </ram:EmailURIUniversalCommunication>
+            </ram:DefinedTradeContact>
+            <ram:PostalTradeAddress>
+               <ram:PostcodeCode>12345</ram:PostcodeCode>
+               <ram:LineOne>Musterweg 1</ram:LineOne>
+               <ram:CityName>Stadt</ram:CityName>
+               <ram:CountryID>DE</ram:CountryID>
+            </ram:PostalTradeAddress>
+            <ram:URIUniversalCommunication>
+               <ram:URIID schemeID="EM">mail@beispiel.de</ram:URIID>
+            </ram:URIUniversalCommunication>
+            <ram:SpecifiedTaxRegistration>
+               <ram:ID schemeID="VA">DE123456</ram:ID>
+            </ram:SpecifiedTaxRegistration>
+         </ram:SellerTradeParty>
+         <ram:BuyerTradeParty>
+            <ID xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100">2</ID>
+            <Name xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100">Käufer</Name>
+            <DefinedTradeContact xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100">
+               <EmailURIUniversalCommunication>
+                  <URIID>kaeufer@beispiel.de</URIID>
+               </EmailURIUniversalCommunication>
+            </DefinedTradeContact>
+            <PostalTradeAddress xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100">
+               <PostcodeCode>54321</PostcodeCode>
+               <LineOne>Musterstr. 1</LineOne>
+               <LineThree>Bereich 3</LineThree>
+               <CityName>Stadt2</CityName>
+               <CountryID>DE</CountryID>
+            </PostalTradeAddress>
+            <URIUniversalCommunication xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100">
+               <URIID schemeID="EM">kaeufer@beispiel.de</URIID>
+            </URIUniversalCommunication>
+         </ram:BuyerTradeParty>
+         <ram:BuyerOrderReferencedDocument>
+            <ram:IssuerAssignedID>ABC-123</ram:IssuerAssignedID>
+         </ram:BuyerOrderReferencedDocument>
+      </ram:ApplicableHeaderTradeAgreement>
+      <ram:ApplicableHeaderTradeDelivery>
+         <ram:ActualDeliverySupplyChainEvent>
+            <ram:OccurrenceDateTime>
+               <udt:DateTimeString format="102">20160404</udt:DateTimeString>
+            </ram:OccurrenceDateTime>
+         </ram:ActualDeliverySupplyChainEvent>
+      </ram:ApplicableHeaderTradeDelivery><ram:ApplicableHeaderTradeSettlement>
+         <ram:PaymentReference>Ref. 1</ram:PaymentReference>
+         <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+         <ram:SpecifiedTradeSettlementPaymentMeans>
+            <ram:TypeCode>10</ram:TypeCode>
+            <ram:Information>Bargeld</ram:Information>
+         </ram:SpecifiedTradeSettlementPaymentMeans>
+         <ram:ApplicableTradeTax>
+            <ram:CalculatedAmount>1900</ram:CalculatedAmount>
+            <ram:TypeCode>VAT</ram:TypeCode>
+            <ram:BasisAmount>10000</ram:BasisAmount>
+            <ram:CategoryCode>S</ram:CategoryCode>
+            <ram:RateApplicablePercent>19</ram:RateApplicablePercent>
+         </ram:ApplicableTradeTax>
+         <ram:SpecifiedTradePaymentTerms>
+            <ram:Description>Allgemein</ram:Description>
+            <ram:DueDateDateTime>
+               <udt:DateTimeString format="102">20250107</udt:DateTimeString>
+            </ram:DueDateDateTime>
+         </ram:SpecifiedTradePaymentTerms>
+         <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+            <ram:LineTotalAmount>10000</ram:LineTotalAmount>
+            <ram:ChargeTotalAmount>0</ram:ChargeTotalAmount>
+            <ram:AllowanceTotalAmount>0</ram:AllowanceTotalAmount>
+            <ram:TaxBasisTotalAmount>10000</ram:TaxBasisTotalAmount>
+            <ram:TaxTotalAmount currencyID="EUR">1900</ram:TaxTotalAmount>
+            <ram:GrandTotalAmount>11900</ram:GrandTotalAmount>
+            <ram:TotalPrepaidAmount>0</ram:TotalPrepaidAmount>
+            <ram:DuePayableAmount>11900</ram:DuePayableAmount>
+         </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+      </ram:ApplicableHeaderTradeSettlement>
+   </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>

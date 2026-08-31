@@ -42,14 +42,21 @@ public final class ScenarioMatch implements CTScenarioMatch {
 
     private final CTParsedValidationSource parsedSource;
 
+    private final SeverityOverrides severityOverrides;
+
+    private final ScenarioType configuration;
+
     private ScenarioMatch(final String scenarioId, final String scenarioName, final String matchExpression, final boolean userSelected,
-            final List<CTValidationArtifactReference> artifactReferences, final CTParsedValidationSource parsedSource) {
+            final List<CTValidationArtifactReference> artifactReferences, final CTParsedValidationSource parsedSource,
+            final SeverityOverrides severityOverrides, final ScenarioType configuration) {
         this.scenarioId = scenarioId;
         this.scenarioName = scenarioName;
         this.matchExpression = matchExpression;
         this.userSelected = userSelected;
         this.artifactReferences = List.copyOf(artifactReferences);
         this.parsedSource = parsedSource;
+        this.severityOverrides = severityOverrides;
+        this.configuration = configuration;
     }
 
     /**
@@ -71,7 +78,7 @@ public final class ScenarioMatch implements CTScenarioMatch {
         }
         final ScenarioType configuration = scenario.getConfiguration();
         return new ScenarioMatch(scenario.getName(), scenario.getName(), configuration.getMatch(), false,
-                collectArtifactReferences(configuration), parsedSource);
+                collectArtifactReferences(configuration), parsedSource, SeverityOverrides.fromConfiguration(configuration), configuration);
     }
 
     /**
@@ -94,7 +101,30 @@ public final class ScenarioMatch implements CTScenarioMatch {
             throw new IllegalArgumentException("parsedSource may not be null");
         }
         return new ScenarioMatch(scenario.getName(), scenario.getName(), null, true, collectArtifactReferences(scenario.getConfiguration()),
-                parsedSource);
+                parsedSource, SeverityOverrides.fromConfiguration(scenario.getConfiguration()), scenario.getConfiguration());
+    }
+
+    /**
+     * The scenario's {@code customLevel} severity overrides, applied by step 7 ({@code APPLY_RULES}); never
+     * {@code null} — a scenario without overrides yields {@link SeverityOverrides#NONE}.
+     */
+    public SeverityOverrides getSeverityOverrides() {
+        return this.severityOverrides;
+    }
+
+    /** The wrapped scenario configuration, for embedding the individual scenario into the report. */
+    public ScenarioType getConfiguration() {
+        return this.configuration;
+    }
+
+    /**
+     * A pointer into the scenario configuration that locates this scenario, so a report consumer can look it up
+     * quickly. The legacy scenario model has no separate id, so the pointer selects by name.
+     *
+     * @return an XPath expression selecting this scenario within the scenario configuration
+     */
+    public String getConfigurationLocation() {
+        return "/*:scenarios/*:scenario[*:name='" + this.scenarioName + "']";
     }
 
     private static List<CTValidationArtifactReference> collectArtifactReferences(final ScenarioType configuration) {

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="COMPLETED">
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
   <metadata>
-    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen (Session 25.08.2026) -->
-    <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
+    <timestamp>2026-08-27T14:42:23+02:00</timestamp>
     <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
     <document href="business-cases/extension/04.05a-INVOICE_uncefact.xml"/>
   </metadata>
   <report>
     <metadata>
-      <!-- Offene Frage: how to deal with reports from other validator software (Session 25.08.2026) -->
+      <!-- Offene Frage: how to deal with reports from other validator software -->
       <creator name="parse-document"/>
-      <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+      <timestamp>2026-08-27T14:42:23+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="document-parsed">
-      <message cvrl:algorithm="SHA-512">b7b53bc312ea8de7d849e53bfdfe70c2a80eab268d717f86ff6f26feef97bfcec7da5105a9da375d4d15f137692e6c76915a5a89b19e095457b0a53a42749381</message>
-      <message cvrl:mime-type="application/xml"><!--
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info">
+      <message xml:id="parse-document-hash" cvrl:algorithm="SHA-512">b7b53bc312ea8de7d849e53bfdfe70c2a80eab268d717f86ff6f26feef97bfcec7da5105a9da375d4d15f137692e6c76915a5a89b19e095457b0a53a42749381</message>
+      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom" cvrl:source-encoding="UTF-8"><!--
    - Copyright © 2020 BITMARCK Service GmbH
    -
    - Licensed under the Apache License, Version 2.0 (the "License");
@@ -189,111 +189,114 @@
   <report>
     <metadata>
       <creator name="detect-scenarios"/>
-      <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+      <timestamp>2026-08-27T14:42:23+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="scenario-matched">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection cvrl:scenario-id="EN16931 XRechnung Extension (CII)">
+      <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (CII)']"/>
       <message>Scenario 'EN16931 XRechnung Extension (CII)' matched</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="select-scenario"/>
-      <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+      <timestamp>2026-08-27T14:42:23+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="scenario-selected">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="scenario-selected" cvrl:scenario-id="EN16931 XRechnung Extension (CII)">
+      <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (CII)']"/>
       <message>Scenario 'EN16931 XRechnung Extension (CII)' selected</message>
+      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom" cvrl:source-encoding="UTF-8"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>EN16931 XRechnung Extension (CII)</name><description><p>Validates UN/CEFACT XML (SCRDM - CII uncoupled) version         D16B</p><p>Uses UN/CEFACT (SCRDM - CII uncoupled) version         D16B XML Schema, Schematron rules from EN16931:2017,         and XRechnung Schematron rules version 3.0.2 </p><p>Download of CII uncoupled XML Schema on 2026-08-19 from         https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/D16B_SCRDM__Subset__CII/D16B/D16B_SCRDM__Subset__CII-D16B.zip</p><p>Download of CII Schematron rules on 2026-08-19 from         https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-cii-1.3.15.zip </p><p>Download of XRechnung Schematron rules on 2026-08-19 from         https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p></description><namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace><namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace><namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace><match>exists(/rsm:CrossIndustryInvoice[rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0'])</match><validateWithXmlSchema><resource><name>XML Schema for UN/CEFACT XML (SCRDM - CII uncoupled)</name><location>resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Schematron rules for EN16931 (CII)</name><location>resources/cii/16b/xsl/EN16931-CII-validation.xsl</location></resource></validateWithSchematron><validateWithSchematron><resource><name>Schematron rules for CIUS XRechnung (CII)</name><location>resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl</location></resource></validateWithSchematron><createReport><id>report-7</id><resource><name>Validation report for XRechnung</name><location>resources/xrechnung-report.xsl</location></resource><customLevel level="warning">BR-CL-23</customLevel><customLevel level="information">BR-CL-21</customLevel><customLevel level="information">BR-CL-11</customLevel><customLevel level="information">BR-CL-10</customLevel><customLevel level="information">BR-CL-24</customLevel><customLevel level="information">BR-CL-25</customLevel><customLevel level="information">BR-CL-26</customLevel><customLevel level="error">CII-SR-452</customLevel><customLevel level="error">CII-SR-453</customLevel><customLevel level="error">CII-SR-454</customLevel><customLevel level="error">CII-SR-465</customLevel><customLevel level="error">CII-SR-466</customLevel></createReport><acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch></scenario></message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="retrieve-artifacts"/>
-      <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+      <timestamp>2026-08-27T14:42:23+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="artifacts-retrieved">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="artifacts-retrieved">
       <message>Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' retrieved as xsd</message>
     </detection>
-    <detection severity="none" code="artifacts-retrieved">
+    <detection severity="info" code="artifacts-retrieved">
       <message>Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' retrieved as schematron-xslt2</message>
     </detection>
-    <detection severity="none" code="artifacts-retrieved">
+    <detection severity="info" code="artifacts-retrieved">
       <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' retrieved as schematron-xslt2</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="prepare-rules"/>
-      <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+      <timestamp>2026-08-27T14:42:23+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="rule-compiled">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rule-compiled">
       <message>Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' compiled (XML Schema)</message>
     </detection>
-    <detection severity="none" code="rule-precompiled">
+    <detection severity="info" code="rule-precompiled">
       <message>Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' passed through (transpiled ahead of time)</message>
     </detection>
-    <detection severity="none" code="rule-precompiled">
+    <detection severity="info" code="rule-precompiled">
       <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' passed through (transpiled ahead of time)</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="apply-rules"/>
-      <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+      <timestamp>2026-08-27T14:42:23+02:00</timestamp>
       <schema href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" language="XSD"/>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="rules-applied">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rules-applied">
       <message>Rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' applied without findings</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="apply-rules"/>
-      <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+      <timestamp>2026-08-27T14:42:23+02:00</timestamp>
       <schema href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
     </metadata>
-    <digest valid="false" worst-severity="error" fatal-error-count="4" error-count="4" warning-count="0" error-codes="BR-CL-21 BR-CL-10"/>
-    <detection severity="error" code="BR-CL-21">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="BR-CL-21" cvrl:original-severity="error">
       <message>[BR-CL-21]-Item standard identifier scheme identifier MUST belong to the ISO 6523 ICD
       code list (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}IncludedSupplyChainTradeLineItem[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}SpecifiedTradeProduct[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}GlobalID[1])</message>
     </detection>
-    <detection severity="error" code="BR-CL-10">
+    <detection severity="info" code="BR-CL-10" cvrl:original-severity="error">
       <message>[BR-CL-10]-Any identifier identification scheme identifier MUST be coded using one of the ISO 6523 ICD list. (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeAgreement[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}SellerTradeParty[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}GlobalID[1])</message>
     </detection>
-    <detection severity="error" code="BR-CL-10">
+    <detection severity="info" code="BR-CL-10" cvrl:original-severity="error">
       <message>[BR-CL-10]-Any identifier identification scheme identifier MUST be coded using one of the ISO 6523 ICD list. (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeAgreement[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}BuyerTradeParty[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}GlobalID[1])</message>
     </detection>
-    <detection severity="error" code="BR-CL-10">
+    <detection severity="info" code="BR-CL-10" cvrl:original-severity="error">
       <message>[BR-CL-10]-Any identifier identification scheme identifier MUST be coded using one of the ISO 6523 ICD list. (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeSettlement[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}PayeeTradeParty[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}GlobalID[1])</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="apply-rules"/>
-      <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+      <timestamp>2026-08-27T14:42:23+02:00</timestamp>
       <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
     </metadata>
-    <digest valid="true" worst-severity="none" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="none" code="rules-applied">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="rules-applied">
       <message>Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' applied without findings</message>
     </detection>
   </report>
   <report>
     <metadata>
       <creator name="compute-conformance"/>
-      <timestamp>2026-08-25T14:16:24+02:00</timestamp>
+      <timestamp>2026-08-27T14:42:23+02:00</timestamp>
     </metadata>
-    <digest valid="false" worst-severity="error" fatal-error-count="1" error-count="1" warning-count="0" error-codes="target-non-conformant"/>
-    <detection severity="none" code="target-conformant">
+    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
+    <detection severity="info" code="target-conformant">
       <message>Target 'EN16931 XRechnung Extension (CII)' conformant (rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd')</message>
     </detection>
-    <detection severity="error" code="target-non-conformant">
-      <message>Target 'EN16931 XRechnung Extension (CII)' non-conformant: 4 error detection(s) from rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl'</message>
+    <detection severity="info" code="target-conformant">
+      <message>Target 'EN16931 XRechnung Extension (CII)' conformant (rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl')</message>
     </detection>
-    <detection severity="none" code="target-conformant">
+    <detection severity="info" code="target-conformant">
       <message>Target 'EN16931 XRechnung Extension (CII)' conformant (rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl')</message>
     </detection>
   </report>
