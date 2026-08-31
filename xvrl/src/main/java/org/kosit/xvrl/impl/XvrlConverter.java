@@ -17,6 +17,7 @@ import javax.xml.validation.Schema;
 
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.ObjectHelper;
+import org.kosit.base.xml.SchemaResolver;
 import org.kosit.jaxb.AbstractJaxbConverter;
 import org.kosit.xvrl.jaxb.ObjectFactory;
 import org.kosit.xvrl.jaxb.XvrlJaxbCreator;
@@ -39,13 +40,15 @@ import jakarta.xml.bind.ValidationEventHandler;
  */
 public final class XvrlConverter {
 
+    public static final String NS_URI = "http://www.xproc.org/ns/xvrl";
+
     public static final String XSD_PATH = "/xsd";
 
     public static final String XVRL_XSD_PATH = XSD_PATH + "/xvrl-1.0.xsd";
 
     public static final JAXBContext JAXB_CTX;
 
-    public static final String NS_URI = "http://www.xproc.org/ns/xvrl";
+    private static final Schema SCHEMA;
 
     private static final Map<String, String> NS_PREFIX = new HashMap<>();
 
@@ -56,6 +59,7 @@ public final class XvrlConverter {
             throw new IllegalStateException("Can not create XVRL JAXB context", e);
         }
         NS_PREFIX.put(NS_URI, "");
+        SCHEMA = SchemaResolver.createParsedSchema(XvrlConverter.class.getResource(XVRL_XSD_PATH));
     }
 
     /**
@@ -65,6 +69,7 @@ public final class XvrlConverter {
 
         JaxbConverter() {
             super(JAXB_CTX, XvrlReportsType.class, new ObjectFactory()::createReports);
+            withSchema(SCHEMA);
             withNamespacePrefixMap(NS_PREFIX);
         }
     }

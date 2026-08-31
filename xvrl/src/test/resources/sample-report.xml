@@ -7,11 +7,11 @@
     </metadata>
     <report xml:id="schema-validation">
         <metadata>
-            <validator name="Schema Validator" xml:id="schema-validation"/>
+            <validator name="Schema Validator" xml:id="schema-validation1"/>
             <schema href="sample.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
         </metadata>
         <detection severity="error" code="cvc-complex-type.2.4.a">
-            <location xpath-default-namespace="urn:sample">/sample/missing</location>
+            <location xpath-default-namespace="urn:sample" href="/sample/missing" />
             <message>Required element 'missing' is not present.</message>
         </detection>
         <detection severity="info">
@@ -21,7 +21,7 @@
     </report>
     <report xml:id="schematron-validation">
         <metadata>
-            <validator name="Schematron Validator" xml:id="schematron-validation"/>
+            <validator name="Schematron Validator" xml:id="schematron-validation2"/>
         </metadata>
         <detection severity="warning" code="rule-42">
             <message>The value should be in upper case.</message>
