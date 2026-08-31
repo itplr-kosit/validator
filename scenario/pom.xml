@@ -9,15 +9,14 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>jar</packaging>
-    <artifactId>scenario</artifactId>
+    <artifactId>validator-scenario</artifactId>
     <name>KoSIT Scenario JAXB binding</name>
     <description>Standalone JAXB binding and read/write helper for the KoSIT validator scenario configuration.</description>
 
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>jaxb</artifactId>
+            <artifactId>validator-jaxb</artifactId>
             <version>${project.version}</version>
         </dependency>
 
