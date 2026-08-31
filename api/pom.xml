@@ -9,23 +9,22 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>jar</packaging>
     <artifactId>validator-api</artifactId>
     
     <dependencies>
         <dependency>
             <groupId>org.kosit</groupId>
-            <artifactId>svrl</artifactId>
+            <artifactId>validator-svrl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kosit</groupId>
-            <artifactId>xvrl</artifactId>
+            <artifactId>validator-xvrl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kosit</groupId>
-            <artifactId>scenario</artifactId>
+            <artifactId>validator-scenario</artifactId>
             <version>${project.version}</version>
         </dependency>
         

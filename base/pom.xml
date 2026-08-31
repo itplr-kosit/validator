@@ -9,8 +9,7 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>jar</packaging>
-    <artifactId>base</artifactId>
+    <artifactId>validator-base</artifactId>
     <name>KoSIT generic base helpers</name>
     <description>Generic, reusable helpers for objects, strings, errors and XML.</description>
 

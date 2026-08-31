@@ -9,8 +9,7 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>jar</packaging>
-    <artifactId>jaxb</artifactId>
+    <artifactId>validator-jaxb</artifactId>
     <name>KoSIT generic JAXB helpers</name>
     <description>Generic, reusable JAXB read/write helper and XML adapters.</description>
 
