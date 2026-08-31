@@ -14,6 +14,7 @@ import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
+import org.kosit.validator.xvrl.XvrlHelper;
 import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
@@ -80,7 +81,7 @@ public class SchematronValidationTask implements CheckTask {
                 reportBuilder.addDetection(XvrlDetection.builderNone().code(ap.getName()));
             for (final var fr : schematronOutput.getFiredRules())
                 reportBuilder.addDetection(XvrlDetection.builderNone().code(fr.getName()));
-            return reportBuilder.build();
+            return XvrlHelper.finalizeAndBuild(reportBuilder);
         }).toList();
     }
 

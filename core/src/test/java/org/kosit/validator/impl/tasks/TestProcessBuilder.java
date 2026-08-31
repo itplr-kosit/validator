@@ -18,7 +18,6 @@ import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
-import org.kosit.xvrl.model.XvrlTitle;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 
@@ -57,7 +56,7 @@ public class TestProcessBuilder {
 
     public static List<BusinessReport> createReport(final String id, final XdmNode node) {
         final BusinessReport r = new BusinessReport();
-        r.setReport(XvrlReport.builder().metadata(XvrlMetadata.builder().addTitle(XvrlTitle.builder("title"))).build());
+        r.setReport(XvrlReport.builder().metadata(XvrlMetadata.builder().addTitle("title")).build());
         r.setName(id);
         r.setContent(node);
         return Collections.singletonList(r);

@@ -23,6 +23,7 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process.ProcessKey;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
+import org.kosit.validator.xvrl.XvrlHelper;
 import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
@@ -70,7 +71,7 @@ public class SchemaValidationTask implements CheckTask {
 
         final var builder = XvrlReport.builder().metadata(mdBuilder);
         builder.addDetections(result.getXmlSyntaxError().stream().map(e -> XvrlDetection.builder().error(e).build()).toList());
-        return builder.build();
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     private static boolean hasNoSchema(final Process results) {

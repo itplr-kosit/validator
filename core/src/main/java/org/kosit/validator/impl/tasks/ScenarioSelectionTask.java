@@ -8,6 +8,7 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.validator.xvrl.XvrlHelper;
 import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
@@ -47,7 +48,7 @@ public class ScenarioSelectionTask implements CheckTask {
                     .code("scenario-matched"));
             builder.addDetection(XvrlDetection.builder().id("scenario").code(scenarioTypeResult.getObject().getName()));
         }
-        return builder.build();
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     @Override

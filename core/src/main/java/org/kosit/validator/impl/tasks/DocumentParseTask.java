@@ -13,6 +13,7 @@ import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.saxon.SaxonHelper;
+import org.kosit.validator.xvrl.XvrlHelper;
 import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
@@ -50,7 +51,7 @@ public class DocumentParseTask implements CheckTask {
             for (final var error : parserResult.getErrors())
                 builder.addDetection(XvrlDetection.builder().error(error));
         }
-        return builder.build();
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     /**
