@@ -1,6 +1,7 @@
 package org.kosit.xvrl.model;
 
 import org.jspecify.annotations.Nullable;
+import org.kosit.base.error.SimpleError;
 
 /**
  * The XVRL {@code location} element - a pointer into the validated document.
@@ -148,6 +149,10 @@ public final class XvrlLocation extends AbstractXvrlObject {
             this.octetPosition = src.octetPosition;
         }
 
+        public Builder location(final SimpleError error) {
+            return line(error.getLineNumberObj()).column(error.getColumnNumberObj());
+        }
+
         public Builder xpathDefaultNamespace(final @Nullable String xpathDefaultNamespace) {
             this.xpathDefaultNamespace = xpathDefaultNamespace;
             return this;
@@ -173,9 +178,17 @@ public final class XvrlLocation extends AbstractXvrlObject {
             return this;
         }
 
+        public Builder line(final @Nullable long line) {
+            return line(Long.valueOf(line));
+        }
+
         public Builder line(final @Nullable Long line) {
             this.line = line;
             return this;
+        }
+
+        public Builder column(final @Nullable long line) {
+            return column(Long.valueOf(line));
         }
 
         public Builder column(final @Nullable Long column) {

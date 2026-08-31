@@ -230,6 +230,10 @@ public final class XvrlMetadata extends AbstractXvrlCommonObject {
             return validator(validator == null ? null : validator.build());
         }
 
+        public Builder validator(final @Nullable String validator) {
+            return validator(validator == null ? null : XvrlValidator.builder(validator));
+        }
+
         public Builder addCreator(final @Nullable XvrlCreator creator) {
             if (creator != null)
                 this.creators.add(creator);
@@ -312,6 +316,10 @@ public final class XvrlMetadata extends AbstractXvrlCommonObject {
 
         public Builder addTitle(final XvrlTitle.@Nullable Builder title) {
             return addTitle(title == null ? null : title.build());
+        }
+
+        public Builder addTitle(final String title) {
+            return addTitle(title == null ? null : XvrlTitle.builder(title));
         }
 
         public Builder addSummary(final @Nullable XvrlSummary summary) {

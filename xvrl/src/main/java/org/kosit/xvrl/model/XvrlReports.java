@@ -94,7 +94,7 @@ public final class XvrlReports extends AbstractXvrlCommonObject implements IXvrl
     /**
      * Builder for {@link XvrlReports}.
      */
-    public static final class Builder extends AbstractCommonBuilder<XvrlReports, Builder> {
+    public static class Builder extends AbstractCommonBuilder<XvrlReports, Builder> {
 
         private @Nullable XvrlMetadata metadata;
 

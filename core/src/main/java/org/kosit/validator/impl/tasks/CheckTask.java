@@ -8,6 +8,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.base.ObjectHelper;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.xvrl.model.XvrlMetadata;
@@ -105,9 +106,7 @@ public interface CheckTask {
         }
 
         public <T, E> Optional<ProcessStepResult<T, E>> getActionResult(final ProcessKey<T, E> key) {
-            final ProcessStepResult<T, E> result = (ProcessStepResult<T, E>) this.processStepResults.stream().filter(b -> b.getKey() == key)
-                    .findFirst().orElse(null);
-            return Optional.ofNullable(result);
+            return ObjectHelper.uncheckedCast(this.processStepResults.stream().filter(b -> b.getKey() == key).findFirst());
         }
 
         public <T, E> SingleProcessingResult<T, E> getResult(final ProcessKey<T, E> type) {

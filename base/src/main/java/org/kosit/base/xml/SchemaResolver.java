@@ -36,7 +36,9 @@ public final class SchemaResolver {
     public static Schema createParsedSchema(final URL schemaUrl) {
         final Source source = resolve(schemaUrl);
         try {
-            return XmlHelper.createSafeSchemaFactory().newSchema(source);
+            final var factory = XmlHelper.createSafeSchemaFactory();
+            factory.setErrorHandler(new LoggingSaxErrorHandler());
+            return factory.newSchema(source);
         } catch (final SAXException e) {
             throw new IllegalArgumentException("Can not load schema from source '" + source.getSystemId() + "'", e);
         }

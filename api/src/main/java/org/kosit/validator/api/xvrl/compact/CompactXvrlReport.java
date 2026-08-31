@@ -14,7 +14,6 @@ import javax.xml.namespace.QName;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.base.error.SimpleError;
-import org.kosit.xvrl.api.XvrlHelper;
 import org.kosit.xvrl.model.XvrlCreator;
 import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlDocument;
@@ -231,15 +230,14 @@ public class CompactXvrlReport {
      * @param error the schema error object
      */
     public void addSchemaViolation(final SimpleError error) {
-        final XvrlDetection.Builder d = XvrlDetection.builder().code(CODE_XSD_VIOLATION)
-                .severity(XvrlHelper.translate(error.getSeverity()));
+        final XvrlDetection.Builder d = XvrlDetection.builder().code(CODE_XSD_VIOLATION).severity(error.getSeverity());
 
         // Message
         d.addMessage(XvrlMessage.builder(error.getMessage()));
 
         // Location/Provenance
         if (error.hasLineOrColumnNumber()) {
-            d.addProvenance(XvrlProvenance.builder().addLocation(XvrlHelper.createLocation(error)));
+            d.addProvenance(XvrlProvenance.builder().addLocation(XvrlLocation.builder().location(error)));
         }
 
         this.report.addDetection(d);

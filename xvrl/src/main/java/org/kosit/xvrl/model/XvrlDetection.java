@@ -3,8 +3,11 @@ package org.kosit.xvrl.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.conformatron.api.model.detection.CTStandardSeverity;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.annotation.ReturnsImmutableObject;
+import org.kosit.base.error.SimpleError;
 
 /**
  * The XVRL {@code detection} element - a single finding of a validation, hence the central payload of an
@@ -35,6 +38,17 @@ public final class XvrlDetection extends AbstractXvrlCommonObject {
     private final @Nullable XvrlSeverity severity;
 
     private final @Nullable String code;
+
+    public static @NonNull XvrlSeverity translate(final @Nullable CTStandardSeverity severity) {
+        if (severity == null)
+            return XvrlSeverity.UNSPECIFIED;
+
+        return switch (severity) {
+            case NONE -> XvrlSeverity.UNSPECIFIED;
+            case WARNING -> XvrlSeverity.WARNING;
+            case ERROR -> XvrlSeverity.ERROR;
+        };
+    }
 
     private XvrlDetection(final Builder builder) {
         super(builder);
@@ -178,6 +192,18 @@ public final class XvrlDetection extends AbstractXvrlCommonObject {
         return new Builder();
     }
 
+    public static Builder builderError() {
+        return builder().severity(CTStandardSeverity.ERROR);
+    }
+
+    public static Builder builderWarning() {
+        return builder().severity(CTStandardSeverity.WARNING);
+    }
+
+    public static Builder builderNone() {
+        return builder().severity(CTStandardSeverity.NONE);
+    }
+
     /**
      * @return a new builder prefilled with the state of this object. Never <code>null</code>.
      */
@@ -228,6 +254,17 @@ public final class XvrlDetection extends AbstractXvrlCommonObject {
             this.contexts.addAll(src.contexts);
             this.severity = src.severity;
             this.code = src.code;
+        }
+
+        public Builder error(final @Nullable SimpleError error) {
+            if (error != null) {
+                addMessage(XvrlMessage.builder(error.getMessage()));
+                severity(error.getSeverity());
+                if (error.hasLineOrColumnNumber()) {
+                    addLocation(XvrlLocation.builder().location(error));
+                }
+            }
+            return this;
         }
 
         public Builder addLocation(final @Nullable XvrlLocation location) {
@@ -300,6 +337,10 @@ public final class XvrlDetection extends AbstractXvrlCommonObject {
             return addMessage(message == null ? null : message.build());
         }
 
+        public Builder addMessage(final @Nullable String message) {
+            return addMessage(message == null ? null : XvrlMessage.builder(message));
+        }
+
         public Builder addSupplemental(final @Nullable XvrlSupplemental supplemental) {
             if (supplemental != null)
                 this.supplementals.add(supplemental);
@@ -318,6 +359,10 @@ public final class XvrlDetection extends AbstractXvrlCommonObject {
 
         public Builder addContext(final XvrlContext.@Nullable Builder context) {
             return addContext(context == null ? null : context.build());
+        }
+
+        public Builder severity(final @Nullable CTStandardSeverity severity) {
+            return severity(translate(severity));
         }
 
         public Builder severity(final @Nullable XvrlSeverity severity) {

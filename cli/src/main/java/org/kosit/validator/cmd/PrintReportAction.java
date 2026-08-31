@@ -9,7 +9,8 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.xvrl.XvrlReportBuilder;
+import org.kosit.xvrl.model.XvrlDigest;
+import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,8 @@ class PrintReportAction implements CheckTask {
     private final Processor processor;
 
     private static XvrlReport createReport() {
-        return XvrlReportBuilder.builder("Document wellformedness Validator").name("Print Report").setValid().build();
+        return XvrlReport.builder().metadata(XvrlMetadata.builder().validator("Document wellformedness Validator").addTitle("Print Report"))
+                .digest(XvrlDigest.builderValid()).build();
     }
 
     @Override

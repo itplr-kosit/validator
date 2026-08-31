@@ -154,6 +154,10 @@ public final class XvrlDigest extends AbstractXvrlCommonObject implements IXvrlR
         return new Builder();
     }
 
+    public static Builder builderValid() {
+        return builder().valid(XvrlValidity.TRUE);
+    }
+
     /**
      * @return a new builder prefilled with the state of this object. Never <code>null</code>.
      */

@@ -103,9 +103,10 @@ public class ValidationService {
     }
 
     private String detectSelectedScenario(final VResult defaultResult) {
-        return defaultResult.getReportSummary().getReports().stream().filter(rep -> ScenarioSelectionTask.METADATA.id().equals(rep.getID()))
-                .findFirst().map(rep -> rep.getDetections().stream().filter(d -> "scenario".equals(d.getID())).findFirst()
-                        .map(XvrlDetection::getCode).orElse("null"))
+        return defaultResult.getReportSummary().getReports().stream()
+                .filter(rep -> ScenarioSelectionTask.REPORT_NAME.equals(rep.getMetadata().getFirstValidator().getName())).findFirst()
+                .map(rep -> rep.getDetections().stream().filter(d -> "scenario".equals(d.getID())).findFirst().map(XvrlDetection::getCode)
+                        .orElse("null"))
                 .orElse("null");
     }
 

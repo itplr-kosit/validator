@@ -43,18 +43,18 @@ public class TestHelper {
 
         public static final URI EXAMPLES = ROOT.resolve("input/");
 
-        public static final URI SIMPLE_VALID = ROOT.resolve("input/simple.xml");
+        public static final URI SIMPLE_VALID = EXAMPLES.resolve("simple.xml");
 
-        public static final URI SIMPLE_ISO_VALID = ROOT.resolve("input/simple-iso.xml");
+        public static final URI SIMPLE_ISO_VALID = EXAMPLES.resolve("simple-iso.xml");
 
         /** Valid instance that is actually encoded in ISO-8859-1 (not UTF-8), for the base64 embedding path. */
-        public static final URI SIMPLE_LATIN1 = ROOT.resolve("input/simple-latin1.xml");
+        public static final URI SIMPLE_LATIN1 = EXAMPLES.resolve("simple-latin1.xml");
 
-        public static final URI FOO = ROOT.resolve("input/foo.xml");
+        public static final URI FOO = EXAMPLES.resolve("foo.xml");
 
         public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");
 
-        public static final URI REJECTED = ROOT.resolve("input/withManualReject.xml");
+        public static final URI REJECTED = EXAMPLES.resolve("withManualReject.xml");
 
         public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
 
@@ -73,15 +73,15 @@ public class TestHelper {
 
         public static final URI REPOSITORY_URI = ROOT.resolve("repository/");
 
-        public static final URI SCHEMA_INVALID = ROOT.resolve("input/simple-schema-invalid.xml");
+        public static final URI SCHEMA_INVALID = EXAMPLES.resolve("simple-schema-invalid.xml");
 
-        public static final URI SCHEMATRON_INVALID = ROOT.resolve("input/simple-schematron-invalid.xml");
+        public static final URI SCHEMATRON_INVALID = EXAMPLES.resolve("simple-schematron-invalid.xml");
 
-        public static final URI NOT_WELLFORMED = ROOT.resolve("input/simple-not-wellformed.xml");
+        public static final URI NOT_WELLFORMED = EXAMPLES.resolve("simple-not-wellformed.xml");
 
-        public static final URI UNKNOWN = ROOT.resolve("input/unknown.xml");
+        public static final URI UNKNOWN = EXAMPLES.resolve("unknown.xml");
 
-        public static final URI GARBAGE = ROOT.resolve("input/no-xml.file");
+        public static final URI GARBAGE = EXAMPLES.resolve("no-xml.file");
 
         public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
 

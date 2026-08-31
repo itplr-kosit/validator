@@ -13,9 +13,9 @@ import org.jspecify.annotations.Nullable;
  */
 public class SingleProcessingResult<T, E> {
 
-    private T object;
+    private final T object;
 
-    private List<E> errors;
+    private final List<E> errors;
 
     /**
      * Creates a new result with a result object.

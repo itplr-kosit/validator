@@ -9,12 +9,14 @@ import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.validator.impl.saxon.SaxonHelper;
 import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.validator.xvrl.XvrlReportBuilder;
+import org.kosit.validator.xvrl.XvrlHelper;
 import org.kosit.validator.xvrl.XvrlSerializer;
-import org.kosit.validator.xvrl.XvrlSupplementalBuilder;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
+import org.kosit.xvrl.model.XvrlSupplemental;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,12 +54,15 @@ public class CreateReportsTask implements CheckTask {
     }
 
     private static XvrlReport generateXvrlReport(final ResourceType resourceType, final XdmNode node) {
-        return XvrlReportBuilder.builder(METADATA).addDetection(XvrlDetectionBuilder.builder().id(resourceType.getName())
-                .supplemental(XvrlSupplementalBuilder.builder().addContent(node).id(resourceType.getName()))).build();
+        final var builder = XvrlReport.builder().metadata(XvrlMetadata.builder().validator(METADATA.name())).addDetection(XvrlDetection
+                .builder().id(resourceType.getName()).addSupplemental(XvrlSupplemental.builder().addContent(SaxonHelper.toNode(node))));
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     private static XvrlReport createErrorInformation(final ResourceType resourceType, final SimpleError error) {
-        return XvrlReportBuilder.builder(METADATA).addDetection(XvrlDetectionBuilder.builder().id("error").addError(error)).build();
+        final var builder = XvrlReport.builder().metadata(XvrlMetadata.builder().validator(METADATA.name()))
+                .addDetection(XvrlDetection.builder().error(error));
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     @Override
