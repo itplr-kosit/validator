@@ -92,17 +92,6 @@ public final class XvrlConverter {
     // ---------- configuration (fluent) ----------
 
     /**
-     * Sets the XML schema used to validate read and write operations.
-     *
-     * @param schema schema to apply, or {@code null} to disable schema validation
-     * @return this instance for chaining
-     */
-    public XvrlConverter withSchema(final @Nullable Schema schema) {
-        this.converter.withSchema(schema);
-        return this;
-    }
-
-    /**
      * Sets the validation event handler invoked on parser and schema events.
      *
      * @param handler handler to apply, or {@code null} to fall back to JAXB defaults
@@ -133,13 +122,6 @@ public final class XvrlConverter {
     public XvrlConverter withEncoding(final Charset encoding) {
         this.converter.withEncoding(encoding);
         return this;
-    }
-
-    /**
-     * @return the JAXB context backing this converter. Never <code>null</code>.
-     */
-    public JAXBContext getJaxbContext() {
-        return this.converter.getJaxbContext();
     }
 
     // ---------- read ----------
