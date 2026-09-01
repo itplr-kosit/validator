@@ -2,9 +2,10 @@ validator:
   framework-version: 1.0.2
   logging:
     json: false
+  # Development and test default: the shared test data of this build. Replace for a real deployment.
   scenarios:
-    - scenarioPath: src/test/resources/examples/simple/scenarios.xml
-      repositoryPath: src/test/resources/examples/simple/repository
+    - scenarioPath: ../test-data/src/main/resources/examples/simple/scenarios.xml
+      repositoryPath: ../test-data/src/main/resources/examples/simple/repository
 
 quarkus:
   smallrye-openapi:

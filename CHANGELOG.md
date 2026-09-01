@@ -36,6 +36,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (API) The foreign attributes of an XVRL object keep their insertion order, so the order of the CVRL attributes in the compact report is deterministic. Previously they were emitted in `HashMap` order
 - (API) `CompactXvrlReport.addSchematronViolation` converts the rich text children (`dir`, `span`, `emph`) of an SVRL `failed-assert` text to their string representation, instead of copying the SVRL JAXB objects into the XVRL message content
 - (API) `CompactXvrlReport.addSchemaReference` takes the mandatory `schematypens` as the third parameter, because the XSD requires that attribute on every `schema` element
+- (BUILD) Extracted the test data shared by the tests of `core`, `cli`, `server` and `client` into the new submodule `test-data`, built as the first module and depending on no other module. It was previously copied into every one of those modules, where 89 of the 152 files were redundant copies and four of them had silently drifted apart
+- (BUILD) The test helpers of `validator-core` (`TestHelper`, `TestObjectFactory`, `TestProcessBuilder`, `TestScenarioBuilder`, `TestConfigurationFactory`) are attached as a `test-jar` and reused by `validator-cli`, which previously kept its own, partly outdated copies of all five
+- (BUILD) Test data is located through `org.kosit.validator.testdata.TestData` (`file`, `dir` and `missing`) instead of the working directory relative `Paths.get("src/test/resources")`. A resource that is not on the classpath now fails immediately instead of yielding a URI that points nowhere
+- (CORE) `TestHelper.JAR_REPOSITORY` became the method `TestHelper.getJarRepository()`, so that the packaged test scenario artifact is only resolved when a test actually uses it
 
 ### Added
 
@@ -54,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- (CORE) Removed the unused `TestHelper.LARGE_XML`, which resolved to the `pom.xml` of whichever module happened to be running
 - (API) Removed the XVRL mix-in types `org.kosit.xvrl.api.BaseDetection`, `org.kosit.xvrl.api.BaseMessage` and `org.kosit.xvrl.api.BaseReportSummary` as well as the base classes `org.kosit.xvrl.impl.AbstractXvrlReport` and `org.kosit.xvrl.impl.AbstractXvrlReportSummary`. They only existed to graft convenience methods onto the generated JAXB classes, which the data model provides natively: `BaseDetection.getAllMessages()` is `XvrlDetection.getAllMessageStrings()`, `BaseMessage.getMessageStrings()` is `AbstractXvrlContentObject.getContentStrings()` and `getAllErrors()` stayed on `XvrlReport` and `XvrlReports`. The `inheritance` JAXB plugin is no longer used for the XVRL model
 
 ### Fixed
@@ -64,6 +69,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (CORE) `CreateReportsTask` puts the name of the report resource into the `code` attribute of the created detection instead of into `xml:id`. As `xml:id` is of type `xs:ID` it must be unique per document, which a report resource name is not - two `createReport` elements using the same resource name made the marshalling of the XVRL report fail with `cvc-id.2`
 - (API) `XvrlJaxbCreator` always writes the `metadata` element of `reports` and of `report` as well as the `digest` element of `report`, because the XSD requires them. An `XvrlReport` that was not passed through `XvrlHelper.finalizeAndBuild` previously made the marshalling fail with `cvc-complex-type.2.4.b`
 - (API) The schema references of the compact report carry the required `schematypens` attribute now - `http://www.w3.org/2001/XMLSchema` for XML Schema and `http://purl.oclc.org/dsdl/schematron` for Schematron. Serializing a compact report to XML previously failed with `cvc-complex-type.4`, so `POST /api/validate/minimal` with `Accept: application/xml` answered with HTTP 500
+- (CORE) `ConversionServiceTest.testInvalid` and `testIllformed` asserted on a file that did not exist: `TestHelper.Invalid.ROOT` pointed at `examples/invaid/` and `SCENARIOS_ILLFORMED` at `scenarios-illformed.xml` while the file was named `scenarios-illforned.xml`. Both tests passed for the wrong reason
+- (CORE) `TestScenarioBuilder` puts the name of the artifact relative to the repository into the scenario `location`, as a real scenario configuration does, instead of the absolute raw path of its URI
+- (CLI) `CommandlineApplicationTest.testValidDirectoryInput` derives the number of expected documents from the input directory instead of hard coding it, so adding a sample to the shared test data cannot break it
+- (CORE) A `scenarioPath` or `repositoryPath` configured for the server is normalized before use. `Path.toUri()` keeps a `..` segment, so for such a path the repository base URI no longer matched the resolved artifact URI and every schema reference failed with "is not within the configured repository"
 
 ## 1.6.3 - 2026-08-20
 

@@ -125,10 +125,23 @@ public class TestScenarioBuilder {
         }
     }
 
+    /**
+     * Returns the name of the artifact relative to the repository it lives in, which is what a scenario configuration
+     * carries as {@code location}. Deliberately not {@link URI#getRawPath()}: that returns {@code null} for the opaque
+     * "jar:" URIs the test data has when it is read straight from the artifact.
+     *
+     * @param resource the absolute URI of the artifact
+     * @return the last segment of the URI, never {@code null}
+     */
+    private static String getRepositoryLocation(final URI resource) {
+        final String uri = resource.toASCIIString();
+        return uri.substring(uri.lastIndexOf('/') + 1);
+    }
+
     private static CreateReportType createReportTransformation(final URI reportTransformation) {
         final CreateReportType report = new CreateReportType();
         final ResourceType reporResource = new ResourceType();
-        reporResource.setLocation(reportTransformation.getRawPath());
+        reporResource.setLocation(getRepositoryLocation(reportTransformation));
         reporResource.setName("default");
         report.setResource(reporResource);
         report.setId("default");
@@ -138,7 +151,7 @@ public class TestScenarioBuilder {
     private static ValidateWithXmlSchema createSchemaValidation(final URI schemafile) {
         final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
         final ResourceType r = new ResourceType();
-        r.setLocation(schemafile.getRawPath());
+        r.setLocation(getRepositoryLocation(schemafile));
         r.setName("default");
         v.getResource().add(r);
         return v;

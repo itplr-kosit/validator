@@ -6,9 +6,9 @@ import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.kosit.validator.testdata.TestData;
 
 import java.io.File;
-import java.nio.file.Path;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -17,10 +17,9 @@ import static org.hamcrest.Matchers.*;
 class ValidationControllerTest {
 
     @ParameterizedTest
-    @ValueSource(strings = { "src/test/resources/examples/simple/input/simple.xml",
-            "src/test/resources/examples/simple/input/simple-sch-with-sch.xml" })
+    @ValueSource(strings = { "examples/simple/input/simple.xml", "examples/simple/input/simple-sch-with-sch.xml" })
     void testValidateReturnsXmlReportAndHeaders(final String xmlFileStrg) {
-        File xmlFile = Path.of(xmlFileStrg).toFile();
+        File xmlFile = new File(TestData.file(xmlFileStrg));
 
         given().contentType(ContentType.XML).body(xmlFile).when().post("/api/validate").then().statusCode(200).contentType(ContentType.XML)
                 .header("Content-Disposition", allOf(containsString("attachment"), containsString("validation-result.xml")))
@@ -31,7 +30,7 @@ class ValidationControllerTest {
 
     @Test
     void testValidateMinimalJson() {
-        File xmlFile = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        File xmlFile = new File(TestData.file("examples/simple/input/simple.xml"));
 
         given().contentType(ContentType.XML).body(xmlFile).accept(MediaType.APPLICATION_JSON).when().post("/api/validate/minimal").then()
                 .statusCode(200).contentType(ContentType.JSON).body("acceptable", is(1)).body("rejected", is(0))
@@ -44,7 +43,7 @@ class ValidationControllerTest {
 
     @Test
     void testValidateMinimalXml() {
-        File xmlFile = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        File xmlFile = new File(TestData.file("examples/simple/input/simple.xml"));
 
         given().contentType(ContentType.XML).body(xmlFile).accept(MediaType.APPLICATION_XML).when().post("/api/validate/minimal").then()
                 .statusCode(200).contentType(ContentType.XML)

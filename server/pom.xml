@@ -88,9 +88,23 @@
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-test-data</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
+        <testResources>
+            <!-- The shared test data of the test-data module, so that it is always a real directory in
+                 target/test-classes and thus yields hierarchical file: URIs, never opaque jar: ones. -->
+            <testResource>
+                <directory>${project.basedir}/../test-data/src/main/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>io.quarkus</groupId>

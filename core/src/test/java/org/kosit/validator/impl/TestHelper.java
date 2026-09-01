@@ -8,7 +8,6 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.List;
 
 import javax.xml.transform.stream.StreamSource;
@@ -23,6 +22,7 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
+import org.kosit.validator.testdata.TestData;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -39,57 +39,57 @@ public class TestHelper {
 
     public static class Simple {
 
-        public static final URI ROOT = EXAMPLES_DIR.resolve("simple/");
+        public static final URI ROOT = TestData.dir("examples/simple/");
 
-        public static final URI EXAMPLES = ROOT.resolve("input/");
+        public static final URI EXAMPLES = TestData.dir("examples/simple/input/");
 
-        public static final URI SIMPLE_VALID = EXAMPLES.resolve("simple.xml");
+        public static final URI SIMPLE_VALID = TestData.file("examples/simple/input/simple.xml");
 
-        public static final URI SIMPLE_ISO_VALID = EXAMPLES.resolve("simple-iso.xml");
+        public static final URI SIMPLE_ISO_VALID = TestData.file("examples/simple/input/simple-iso.xml");
 
         /** Valid instance that is actually encoded in ISO-8859-1 (not UTF-8), for the base64 embedding path. */
-        public static final URI SIMPLE_LATIN1 = EXAMPLES.resolve("simple-latin1.xml");
+        public static final URI SIMPLE_LATIN1 = TestData.file("examples/simple/input/simple-latin1.xml");
 
-        public static final URI FOO = EXAMPLES.resolve("foo.xml");
+        public static final URI FOO = TestData.file("examples/simple/input/foo.xml");
 
-        public static final URI FOO_SCHEMATRON_INVALID = EXAMPLES.resolve("foo-schematron-invalid.xml");
+        public static final URI FOO_SCHEMATRON_INVALID = TestData.file("examples/simple/input/foo-schematron-invalid.xml");
 
-        public static final URI REJECTED = EXAMPLES.resolve("withManualReject.xml");
+        public static final URI REJECTED = TestData.file("examples/simple/input/withManualReject.xml");
 
-        public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
+        public static final URI SCENARIOS = TestData.file("examples/simple/scenarios.xml");
 
-        public static final URI SCENARIOS_WITH_SCH = ROOT.resolve("scenarios-with-sch.xml");
+        public static final URI SCENARIOS_WITH_SCH = TestData.file("examples/simple/scenarios-with-sch.xml");
 
         /** Configuration with two scenarios matching the same document, for the ambiguity path. */
-        public static final URI SCENARIOS_AMBIGUOUS = ROOT.resolve("scenarios-ambiguous.xml");
+        public static final URI SCENARIOS_AMBIGUOUS = TestData.file("examples/simple/scenarios-ambiguous.xml");
 
-        public static final URI SCENARIOS_WITH_RELATIVE_PATHS = ROOT.resolve("scenarios-with-relative-paths.xml");
+        public static final URI SCENARIOS_WITH_RELATIVE_PATHS = TestData.file("examples/simple/scenarios-with-relative-paths.xml");
 
-        public static final URI OTHER_SCENARIOS = ROOT.resolve("otherScenarios.xml");
+        public static final URI OTHER_SCENARIOS = TestData.file("examples/simple/otherScenarios.xml");
 
-        public static final URI SCENARIOS_WITH_MANY_CONFIGS = ROOT.resolve("scenarios-with-many-configs.xml");
+        public static final URI SCENARIOS_WITH_MANY_CONFIGS = TestData.file("examples/simple/scenarios-with-many-configs.xml");
 
-        public static final URI ERROR_SCENARIOS = ROOT.resolve("scenarios-with-errors.xml");
+        public static final URI ERROR_SCENARIOS = TestData.file("examples/simple/scenarios-with-errors.xml");
 
-        public static final URI REPOSITORY_URI = ROOT.resolve("repository/");
+        public static final URI REPOSITORY_URI = TestData.dir("examples/simple/repository/");
 
-        public static final URI SCHEMA_INVALID = EXAMPLES.resolve("simple-schema-invalid.xml");
+        public static final URI SCHEMA_INVALID = TestData.file("examples/simple/input/simple-schema-invalid.xml");
 
-        public static final URI SCHEMATRON_INVALID = EXAMPLES.resolve("simple-schematron-invalid.xml");
+        public static final URI SCHEMATRON_INVALID = TestData.file("examples/simple/input/simple-schematron-invalid.xml");
 
-        public static final URI NOT_WELLFORMED = EXAMPLES.resolve("simple-not-wellformed.xml");
+        public static final URI NOT_WELLFORMED = TestData.file("examples/simple/input/simple-not-wellformed.xml");
 
-        public static final URI UNKNOWN = EXAMPLES.resolve("unknown.xml");
+        public static final URI UNKNOWN = TestData.file("examples/simple/input/unknown.xml");
 
-        public static final URI GARBAGE = EXAMPLES.resolve("no-xml.file");
+        public static final URI GARBAGE = TestData.file("examples/simple/input/no-xml.file");
 
-        public static final URI NOT_EXISTING = EXAMPLES_DIR.resolve("doesnotexist");
+        public static final URI NOT_EXISTING = TestData.missing("examples/", "doesnotexist");
 
-        public static final URI REPORT_XSL = REPOSITORY_URI.resolve("report.xsl");
+        public static final URI REPORT_XSL = TestData.file("examples/simple/repository/report.xsl");
 
-        public static final URI SCHEMA = REPOSITORY_URI.resolve("simple.xsd");
+        public static final URI SCHEMA = TestData.file("examples/simple/repository/simple.xsd");
 
-        public static final URI SCHEMATRON = REPOSITORY_URI.resolve("simple-schematron-error.xsl");
+        public static final URI SCHEMATRON = TestData.file("examples/simple/repository/simple-schematron-error.xsl");
 
         public static final ContentRepository createContentRepository() {
             final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
@@ -103,33 +103,36 @@ public class TestHelper {
 
     public static class Invalid {
 
-        public static final URI ROOT = EXAMPLES_DIR.resolve("invaid/");
+        public static final URI ROOT = TestData.dir("examples/invalid/");
 
-        public static final URI SCENARIOS = ROOT.resolve("scenarios.xml");
+        public static final URI SCENARIOS = TestData.file("examples/invalid/scenarios.xml");
 
-        public static final URI SCENARIOS_ILLFORMED = ROOT.resolve("scenarios-illformed.xml");
+        public static final URI SCENARIOS_ILLFORMED = TestData.file("examples/invalid/scenarios-illformed.xml");
 
     }
 
     public static class Resolving {
 
-        public static final URI ROOT = EXAMPLES_DIR.resolve("resolving/");
+        public static final URI ROOT = TestData.dir("examples/resolving/");
 
-        public static final URI SCHEMA_WITH_REMOTE_REFERENCE = ROOT.resolve("withRemote.xsd");
+        public static final URI SCHEMA_WITH_REMOTE_REFERENCE = TestData.file("examples/resolving/withRemote.xsd");
 
-        public static final URI SCHEMA_WITH_REFERENCE = ROOT.resolve("main.xsd");
+        public static final URI SCHEMA_WITH_REFERENCE = TestData.file("examples/resolving/main.xsd");
     }
 
-    public static final URI TEST_ROOT = Paths.get("src/test/resources").toAbsolutePath().toUri();
+    public static final URI EXAMPLES_DIR = TestData.dir("examples/");
 
-    public static final URI EXAMPLES_DIR = TEST_ROOT.resolve("examples/");
+    public static final URI ASSERTIONS = TestData.file("examples/assertions/tests-xrechnung.xml");
 
-    public static final URI ASSERTIONS = EXAMPLES_DIR.resolve("assertions/tests-xrechnung.xml");
-
-    public static final URI JAR_REPOSITORY = URI
-            .create(TestHelper.class.getClassLoader().getResource("simple/packaged/repository/").toExternalForm());
-
-    public static final URI LARGE_XML = Paths.get("pom.xml").toUri();
+    /**
+     * Repository that lives inside a jar (packaged-test-scenarios) instead of the shared test data. Resolved lazily,
+     * because that artifact is only a test dependency of this module and not of the modules reusing this helper.
+     *
+     * @return the URI of the packaged repository, never {@code null}
+     */
+    public static URI getJarRepository() {
+        return TestData.dir("simple/packaged/repository/");
+    }
 
     public static XdmNode load(final URI url) {
         try {
