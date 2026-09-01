@@ -25,7 +25,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Utilities for creating test objects.
- * 
+ *
  * @author Andreas Penski
  */
 public class TestProcessBuilder {
