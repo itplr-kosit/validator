@@ -1,5 +1,7 @@
 package org.kosit.xvrl.model;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * The XVRL {@code supplemental} element - additional, implementation defined information. It has mixed content and the
  * {@code common.attr} attributes.
@@ -8,13 +10,23 @@ package org.kosit.xvrl.model;
  */
 public final class XvrlSupplemental extends AbstractXvrlContentObject {
 
+    private final @Nullable String role;
+
     private XvrlSupplemental(final Builder builder) {
         super(builder);
+        this.role = builder.role;
+    }
+
+    /**
+     * @return the role of this supplemental. May be <code>null</code>.
+     */
+    public @Nullable String getRole() {
+        return this.role;
     }
 
     @Override
     public String toString() {
-        return "XvrlSupplemental[" + getContentText() + "]";
+        return "XvrlSupplemental[role=" + this.role + ", " + getContentText() + "]";
     }
 
     /**
@@ -46,11 +58,19 @@ public final class XvrlSupplemental extends AbstractXvrlContentObject {
      */
     public static final class Builder extends AbstractContentBuilder<XvrlSupplemental, Builder> {
 
+        private @Nullable String role;
+
         private Builder() {
         }
 
         private Builder(final XvrlSupplemental src) {
             super(src);
+            this.role = src.role;
+        }
+
+        public Builder role(final @Nullable String role) {
+            this.role = role;
+            return this;
         }
 
         @Override

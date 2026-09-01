@@ -266,7 +266,7 @@ public final class XvrlJaxbReader {
 
         final XvrlSupplemental.Builder ret = XvrlSupplemental.builder();
         applyCommon(src.getOtherAttributes(), src.getLang(), src.getId(), src.getBase(), src.getXpathDefaultNamespace(), ret);
-        ret.addAllContent(src.getContent());
+        ret.role(src.getRole()).addAllContent(src.getContent());
         return ret.build();
     }
 

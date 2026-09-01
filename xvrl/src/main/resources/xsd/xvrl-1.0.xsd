@@ -251,6 +251,8 @@
   <xs:complexType mixed="true" name="XvrlSupplementalType">
     <xs:group minOccurs="0" maxOccurs="unbounded" ref="xvrl:any.element"/>
     <xs:attributeGroup ref="xvrl:common.attr"/>
+    <!-- Added 2026-08 -->
+    <xs:attribute name="role"/>
   </xs:complexType>
   <xs:element name="supplemental" type="xvrl:XvrlSupplementalType" />
 

@@ -277,6 +277,7 @@ public final class XvrlJaxbCreator {
 
         final XvrlSupplementalType ret = new XvrlSupplementalType();
         applyCommon(src, ret.getOtherAttributes(), ret::setLang, ret::setId, ret::setBase, ret::setXpathDefaultNamespace);
+        ret.setRole(src.getRole());
         applyContent(src, ret.getContent());
         return ret;
     }
