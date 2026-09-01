@@ -15,7 +15,7 @@ import org.kosit.validator.server.api.CompactResultLayerDto;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
 import org.kosit.validator.server.api.CompactViolationDto;
 import org.kosit.validator.server.api.ValidatorEngineDto;
-import org.kosit.xvrl.model.XvrlDetectionType;
+import org.kosit.xvrl.model.XvrlDetection;
 
 public final class CompactXvrlReportSummaryMapper {
 
@@ -40,7 +40,7 @@ public final class CompactXvrlReportSummaryMapper {
 
         // Schema-Layer
         final CompactXvrlReport.ValidationResult schValidation = r.getSchemaValidationResult();
-        final List<CompactViolationDto> schemaViolations = r.getOriginal().getDetection().stream()
+        final List<CompactViolationDto> schemaViolations = r.getOriginal().getDetections().stream()
                 .filter(d -> "xsd-violation".equals(d.getCode())).map(CompactXvrlReportSummaryMapper::toViolationDto).toList();
         layers.add(new CompactResultLayerDto("schema", r.isSchemaValid(), "XSD", schemaViolations));
 
@@ -57,22 +57,22 @@ public final class CompactXvrlReportSummaryMapper {
                 r.getAcceptance() != null ? r.getAcceptance().getID() : null, StringHelper.blankToNull(r.getErrorSummary()), layers);
     }
 
-    private static CompactViolationDto toViolationDto(final XvrlDetectionType d) {
-        final String message = d.getMessages().stream().flatMap(m -> m.getMessageStrings().stream()).collect(Collectors.joining("; "));
+    private static CompactViolationDto toViolationDto(final XvrlDetection d) {
+        final String message = d.getMessages().stream().flatMap(m -> m.getContentStrings().stream()).collect(Collectors.joining("; "));
 
-        final String severity = d.getSeverity() != null ? d.getSeverity().value() : null;
+        final String severity = d.getSeverity() != null ? d.getSeverity().getID() : null;
 
         // extract detail (line/column or ID)
         final AtomicReference<Long> line = new AtomicReference<>();
         final AtomicReference<Long> col = new AtomicReference<>();
-        d.getProvenances().stream().flatMap(p -> p.getLocation().stream()).map(l -> {
+        d.getProvenances().stream().flatMap(p -> p.getLocations().stream()).map(l -> {
             line.set(l.getLine());
             col.set(l.getColumn());
             return null;
         }).filter(s -> s != null).findFirst().orElse(null);
 
         return new CompactViolationDto(StringHelper.blankToNull(message), StringHelper.blankToNull(severity), line.get(), col.get(),
-                StringHelper.blankToNull(d.getId()));
+                StringHelper.blankToNull(d.getID()));
     }
 
     private static CompactViolationDto toViolationDto(final CompactXvrlReport.Violation v) {

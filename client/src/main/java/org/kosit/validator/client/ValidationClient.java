@@ -8,7 +8,7 @@ import org.kosit.validator.client.api.ValidationApi;
 import org.kosit.validator.client.filter.ValidationRequestConfig;
 import org.kosit.validator.client.filter.ValidationResponseMetadata;
 import org.kosit.xvrl.impl.XvrlConverter;
-import org.kosit.xvrl.model.XvrlReportsType;
+import org.kosit.xvrl.model.XvrlReports;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.MediaType;
@@ -42,7 +42,7 @@ public class ValidationClient {
         return api.validateMinimal(input);
     }
 
-    public XvrlReportsType validate(final File input) {
+    public XvrlReports validate(final File input) {
         return new XvrlConverter().readXml(api.validate(input));
     }
 
@@ -65,7 +65,7 @@ public class ValidationClient {
         return toResponse(api.validateMinimal(input));
     }
 
-    public ValidationResponse<XvrlReportsType> validateWithMetadata(final File input) {
+    public ValidationResponse<XvrlReports> validateWithMetadata(final File input) {
         final File result = api.validate(input);
         return toResponse(new XvrlConverter().readXml(result));
     }

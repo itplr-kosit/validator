@@ -144,8 +144,8 @@ public class ScenarioBuilder implements SingleProcessingResultBuilder<Scenario> 
     }
 
     /**
-     * Add description for this scenario. This is part of the {@link org.kosit.xvrl.model.XvrlReportsType} configuration
-     * and can be used while creating the report
+     * Add description for this scenario. This is part of the {@link org.kosit.xvrl.model.XvrlReports} configuration and
+     * can be used while creating the report
      * 
      * @param description the description
      * @return this

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.base.error.SimpleError;
-import org.kosit.jaxb.JaxbHelper;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
@@ -17,9 +16,9 @@ import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.xvrl.model.XvrlMetadataType;
-import org.kosit.xvrl.model.XvrlTimestampType;
-import org.kosit.xvrl.model.XvrlValidatorType;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlTimestamp;
+import org.kosit.xvrl.model.XvrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,17 +75,9 @@ public class ConformanceValidation implements ValidationEngine<VResult> {
      *
      * @return the metadata
      */
-    public XvrlMetadataType createMetadata() {
-        final XvrlMetadataType metadata = new XvrlMetadataType();
-        final XvrlTimestampType timestamp = new XvrlTimestampType();
-        timestamp.setValue(JaxbHelper.createTimestamp());
-        metadata.getTimestamps().add(timestamp);
-
-        final XvrlValidatorType validator = new XvrlValidatorType();
-        validator.setName(this.engineInformation.getName());
-        validator.setVersion(this.engineInformation.getVersion());
-        metadata.getValidators().add(validator);
-        return metadata;
+    public XvrlMetadata createMetadata() {
+        return XvrlMetadata.builder().addTimestamp(XvrlTimestamp.builderNow())
+                .addValidator(XvrlValidator.builder(this.engineInformation.getName()).version(this.engineInformation.getVersion())).build();
     }
 
     /**

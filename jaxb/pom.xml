@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>base</artifactId>
+            <artifactId>validator-base</artifactId>
             <version>${project.version}</version>
         </dependency>
 

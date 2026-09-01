@@ -1,7 +1,5 @@
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,10 +8,11 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.validator.xvrl.XvrlReportBuilder;
+import org.kosit.validator.xvrl.XvrlHelper;
 import org.kosit.xvrl.impl.XvrlConverter;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +33,14 @@ class SerializeReportAction implements CheckTask {
 
     private final NamingStrategy namingStrategy;
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
+        final var builder = XvrlReport.builder().metadata(XvrlMetadata.builder().validator(REPORT_NAME));
         if (result.isValid()) {
-            return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builderInfo().addMessage("Serialization successful")).build();
+            builder.addDetection(XvrlDetection.builderNone().addMessage("Serialization successful"));
+        } else {
+            builder.addDetections(result.getErrors().stream().map(e -> XvrlDetection.builderError().addMessage(e).build()).toList());
         }
-        return XvrlReportBuilder.builder(REPORT_NAME)
-                .addDetections(result.getErrors().stream().map(e -> XvrlDetectionBuilder.builderError().addMessage(e))).build();
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     public SerializeReportAction(final Path outputDirectory, final NamingStrategy namingStrategy) {

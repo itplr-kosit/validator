@@ -1,5 +1,6 @@
 package org.kosit.jaxb;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -11,14 +12,40 @@ import org.jspecify.annotations.NonNull;
 
 public final class JaxbHelper {
 
-    public static @NonNull XMLGregorianCalendar createTimestamp() {
+    private static final DatatypeFactory DATATYPE_FACTORY;
+
+    static {
         try {
-            final GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(new Date());
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+            DATATYPE_FACTORY = DatatypeFactory.newInstance();
         } catch (final DatatypeConfigurationException ex) {
-            throw new IllegalStateException(ex);
+            throw new IllegalStateException("Can not create the XML datatype factory", ex);
         }
+    }
+
+    public static @NonNull XMLGregorianCalendar createTimestamp() {
+        final GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new Date());
+        return createTimestamp(cal);
+    }
+
+    /**
+     * Converts a {@link GregorianCalendar} into the JAXB representation of {@code xs:dateTime}.
+     *
+     * @param zdt the zoned DateTime to convert. May not be <code>null</code>.
+     * @return the converted value. Never <code>null</code>.
+     */
+    public static @NonNull XMLGregorianCalendar createTimestamp(final @NonNull ZonedDateTime zdt) {
+        return createTimestamp(GregorianCalendar.from(zdt));
+    }
+
+    /**
+     * Converts a {@link GregorianCalendar} into the JAXB representation of {@code xs:dateTime}.
+     *
+     * @param calendar the calendar to convert. May not be <code>null</code>.
+     * @return the converted value. Never <code>null</code>.
+     */
+    public static @NonNull XMLGregorianCalendar createTimestamp(final @NonNull GregorianCalendar calendar) {
+        return DATATYPE_FACTORY.newXMLGregorianCalendar(calendar);
     }
 
     private JaxbHelper() {

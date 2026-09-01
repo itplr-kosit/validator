@@ -2,6 +2,7 @@ package org.kosit.validator.impl.tasks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.transform.dom.DOMSource;
 
@@ -13,9 +14,11 @@ import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.validator.xvrl.XvrlReportBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.validator.xvrl.XvrlHelper;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
+import org.kosit.xvrl.model.XvrlSchema;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.oclc.purl.dsdl.svrl.Text;
@@ -64,19 +67,21 @@ public class SchematronValidationTask implements CheckTask {
         return object.getSchematronValidations().isEmpty();
     }
 
-    private static List<XvrlReportType> generateXvrlReport(final List<ValidationResultsSchematron> validationResult) {
+    private static List<XvrlReport> generateXvrlReport(final List<ValidationResultsSchematron> validationResult) {
         return validationResult.stream().map(e -> {
-            final XvrlReportBuilder reportBuilder = XvrlReportBuilder.builder(REPORT_NAME);
-            reportBuilder.addSchema(e.getResource());
+            final var mdBuilder = XvrlMetadata.builder().validator(REPORT_NAME)
+                    .addSchema(XvrlSchema.builder().href(e.getResource().getLocation()).schemaTypeNs(e.getResource().getName()));
 
+            final var reportBuilder = XvrlReport.builder().metadata(mdBuilder);
             final SchematronOutputType schematronOutput = e.getResults();
-            for (final var f : schematronOutput.getFailedAsserts())
-                reportBuilder.addDetection(XvrlDetectionBuilder.builder().add(f));
-            for (final var f : schematronOutput.getActivePatterns())
-                reportBuilder.addDetection(XvrlDetectionBuilder.builder().add(f));
-            for (final var f : schematronOutput.getFiredRules())
-                reportBuilder.addDetection(XvrlDetectionBuilder.builder().add(f));
-            return reportBuilder.build();
+            for (final var fa : schematronOutput.getFailedAsserts())
+                reportBuilder.addDetection(XvrlDetection.builderError()
+                        .addMessage(fa.getText().getContent().stream().map(Object::toString).collect(Collectors.joining())));
+            for (final var ap : schematronOutput.getActivePatterns())
+                reportBuilder.addDetection(XvrlDetection.builderNone().code(ap.getName()));
+            for (final var fr : schematronOutput.getFiredRules())
+                reportBuilder.addDetection(XvrlDetection.builderNone().code(fr.getName()));
+            return XvrlHelper.finalizeAndBuild(reportBuilder);
         }).toList();
     }
 

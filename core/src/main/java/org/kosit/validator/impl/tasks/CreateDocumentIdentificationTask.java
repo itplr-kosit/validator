@@ -1,16 +1,15 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
-
 import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.DocumentHash;
 import org.kosit.validator.model.DocumentIdentificationType;
-import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.xvrl.model.XvrlDocumentType;
-import org.kosit.xvrl.model.XvrlMetadataType;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.validator.xvrl.XvrlHelper;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlDocument;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
 
 /**
  * Creates a document identification element for the report by using the generates hash.
@@ -24,21 +23,20 @@ public class CreateDocumentIdentificationTask implements CheckTask {
 
     private static final String REPORT_NAME = "CreateDocument Identification Validator";
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<DocumentIdentificationType, SimpleError> currentResult) {
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<DocumentIdentificationType, SimpleError> currentResult) {
+        final var builder = XvrlReport.builder().metadata(XvrlMetadata.builder().validator(REPORT_NAME));
         if (currentResult.isValid()) {
             final DocumentIdentificationType result = currentResult.getObject();
-            return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builderInfo().addMessage(result.documentReference())).build();
+            builder.addDetection(XvrlDetection.builderNone().addMessage(result.documentReference()));
+        } else {
+            builder.addDetections(currentResult.getErrors().stream().map(e -> XvrlDetection.builder().error(e).build()).toList());
         }
-        return builder(REPORT_NAME).addDetections(currentResult.getErrors().stream().map(e -> XvrlDetectionBuilder.builder().addError(e)))
-                .build();
-
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     private static void addDocumentIdentification(final Process transporter) {
-        final XvrlMetadataType metadata = transporter.getXvrlReportSummary().getMetadata();
-        final XvrlDocumentType document = new XvrlDocumentType();
-        document.setHref(transporter.getInput().getName());
-        metadata.getDocuments().add(document);
+        transporter.setMetadata(
+                transporter.getMetadata().toBuilder().addDocument(XvrlDocument.builder(transporter.getInput().getName())).build());
     }
 
     @Override

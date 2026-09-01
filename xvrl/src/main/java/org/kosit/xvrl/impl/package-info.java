@@ -1,7 +1,6 @@
 /**
- * Hand-written implementation classes that the JAXB-generated XVRL model extends or uses: base classes for the
- * inheritance bindings, JAXB {@link jakarta.xml.bind.annotation.adapters.XmlAdapter}s referenced from
- * {@code global.xjb}, and the XVRL-specific {@link org.kosit.xvrl.impl.XvrlConverter} facade.
+ * Hand-written implementation classes for reading and writing the XVRL data model, namely the
+ * {@link org.kosit.xvrl.impl.XvrlConverter} facade.
  *
  * <p>
  * All types in this package follow the {@link org.jspecify.annotations.NullMarked} contract: members are non-null

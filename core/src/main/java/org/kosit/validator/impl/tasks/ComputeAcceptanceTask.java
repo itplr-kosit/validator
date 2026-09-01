@@ -1,7 +1,5 @@
 package org.kosit.validator.impl.tasks;
 
-import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -13,8 +11,10 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
-import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.validator.xvrl.XvrlHelper;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +37,14 @@ public class ComputeAcceptanceTask implements CheckTask {
 
     private static final String REPORT_NAME = "Compute Acceptance Validator";
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<AcceptRecommendation, SimpleError> currentResult) {
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<AcceptRecommendation, SimpleError> currentResult) {
+        final var builder = XvrlReport.builder().metadata(XvrlMetadata.builder().validator(REPORT_NAME));
         if (currentResult.isValid()) {
-            return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builder().addMessage(currentResult.getObject().getID())).build();
+            builder.addDetection(XvrlDetection.builderNone().addMessage(currentResult.getObject().getID()));
+        } else {
+            builder.addDetections(currentResult.getErrors().stream().map(e -> XvrlDetection.builder().error(e).build()).toList());
         }
-        return builder(REPORT_NAME)
-                .addDetections(currentResult.getErrors().stream().map(e -> XvrlDetectionBuilder.builderError().addError(e))).build();
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     private static SingleProcessingResult<AcceptRecommendation, SimpleError> evaluateSchemaAndSchematron(final Process results) {

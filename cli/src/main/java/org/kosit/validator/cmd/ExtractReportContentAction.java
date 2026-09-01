@@ -1,7 +1,5 @@
 package org.kosit.validator.cmd;
 
-import static org.kosit.validator.xvrl.XvrlReportBuilder.builder;
-
 import java.nio.file.Path;
 import java.util.List;
 
@@ -11,8 +9,10 @@ import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CreateReportsTask;
-import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.validator.xvrl.XvrlHelper;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,12 +44,14 @@ class ExtractReportContentAction implements CheckTask {
         this.processor = processor;
     }
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<Boolean, String> result) {
+        final var builder = XvrlReport.builder().metadata(XvrlMetadata.builder().validator(REPORT_NAME));
         if (result.isValid()) {
-            return builder(REPORT_NAME).addDetection(XvrlDetectionBuilder.builder().addMessage("Extraction successful")).build();
+            builder.addDetection(XvrlDetection.builderNone().addMessage("Extraction successful"));
+        } else {
+            builder.addDetections(result.getErrors().stream().map(msg -> XvrlDetection.builderError().addMessage(msg).build()).toList());
         }
-        return builder(REPORT_NAME).addDetections(result.getErrors().stream().map(e -> XvrlDetectionBuilder.builderError().addMessage(e)))
-                .build();
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     @Override

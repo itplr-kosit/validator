@@ -1,7 +1,6 @@
 package org.kosit.validator.impl.tasks;
 
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.impl.ActionMetadata;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
@@ -9,9 +8,10 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.validator.xvrl.XvrlReportBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.validator.xvrl.XvrlHelper;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +29,7 @@ public class ScenarioSelectionTask implements CheckTask {
 
     public static final Process.ProcessKey<Scenario, String> KEY = new Process.ProcessKey<>(Scenario.class, String.class);
 
-    public static final ActionMetadata METADATA = new ActionMetadata("Scenario Selection", "scenario_selection");
+    public static final String REPORT_NAME = "Scenario Selection";
 
     private final ScenarioRepository repository;
 
@@ -37,18 +37,18 @@ public class ScenarioSelectionTask implements CheckTask {
 
     private final SelectScenarioAction selectScenarioAction;
 
-    private static XvrlReportType generateXvrlReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
-        final XvrlReportBuilder builder = XvrlReportBuilder.builder(METADATA);
+    private static XvrlReport generateXvrlReport(final SingleProcessingResult<Scenario, String> scenarioTypeResult, final String name) {
+        final XvrlReport.Builder builder = XvrlReport.builder().metadata(XvrlMetadata.builder().validator(REPORT_NAME));
         if (scenarioTypeResult.getObject().isFallback()) {
-            builder.addDetection(XvrlDetectionBuilder.builderError().addMessage("No valid scenario configuration found for '" + name + "'")
+            builder.addDetection(XvrlDetection.builderError().addMessage("No valid scenario configuration found for '" + name + "'")
                     .code("fallback-match"));
         } else {
-            builder.addDetection(XvrlDetectionBuilder.builderInfo()
+            builder.addDetection(XvrlDetection.builderNone()
                     .addMessage("Scenario '" + scenarioTypeResult.getObject().getName() + "' identified for '" + name + "'")
                     .code("scenario-matched"));
-            builder.addDetection(XvrlDetectionBuilder.builder().id("scenario").code(scenarioTypeResult.getObject().getName()));
+            builder.addDetection(XvrlDetection.builder().id("scenario").code(scenarioTypeResult.getObject().getName()));
         }
-        return builder.build();
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     @Override

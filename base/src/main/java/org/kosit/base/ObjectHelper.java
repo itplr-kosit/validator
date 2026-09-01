@@ -33,6 +33,11 @@ public final class ObjectHelper {
         return left.compareTo(right);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <SRCTYPE, DSTTYPE> DSTTYPE uncheckedCast(@Nullable final SRCTYPE aObject) {
+        return (DSTTYPE) aObject;
+    }
+
     private ObjectHelper() {
     }
 }

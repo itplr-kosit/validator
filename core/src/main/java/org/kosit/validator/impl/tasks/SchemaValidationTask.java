@@ -23,9 +23,11 @@ import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process.ProcessKey;
 import org.kosit.validator.model.ValidationResultsXmlSchema;
-import org.kosit.validator.xvrl.XvrlDetectionBuilder;
-import org.kosit.validator.xvrl.XvrlReportBuilder;
-import org.kosit.xvrl.model.XvrlReportType;
+import org.kosit.validator.xvrl.XvrlHelper;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
+import org.kosit.xvrl.model.XvrlSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -62,10 +64,14 @@ public class SchemaValidationTask implements CheckTask {
 
     private long inMemoryLimit = Long.parseLong(System.getProperty(LIMIT_PARAMETER, BA_LIMIT.toString())) * FileUtils.ONE_MB;
 
-    private static XvrlReportType generateXvrlReport(final ValidationResultsXmlSchema result) {
-        final XvrlReportBuilder builder = XvrlReportBuilder.builder("Schema Validator").addSchemas(result.getResource());
-        builder.addDetections(result.getXmlSyntaxError().stream().map(e -> XvrlDetectionBuilder.builder().addError(e)));
-        return builder.build();
+    private static XvrlReport generateXvrlReport(final ValidationResultsXmlSchema result) {
+        final var mdBuilder = XvrlMetadata.builder().validator("Schema Validator");
+        for (final var schema : result.getResource())
+            mdBuilder.addSchema(XvrlSchema.builder().href(schema.getLocation()).schemaTypeNs(schema.getName()));
+
+        final var builder = XvrlReport.builder().metadata(mdBuilder);
+        builder.addDetections(result.getXmlSyntaxError().stream().map(e -> XvrlDetection.builder().error(e).build()).toList());
+        return XvrlHelper.finalizeAndBuild(builder);
     }
 
     private static boolean hasNoSchema(final Process results) {
