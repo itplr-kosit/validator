@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>validator-core</artifactId>
-    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -64,6 +63,7 @@
             <artifactId>validator-test-data</artifactId>
         </dependency>
     </dependencies>
+    
     <build>
         <testResources>
             <!-- The shared test data of the test-data module, so that it is always a real directory in

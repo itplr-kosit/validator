@@ -37,13 +37,6 @@
     
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
             <!-- Embed CycloneDX SBOM in the deployable jar (config inherited from parent pluginManagement). -->
             <plugin>
                 <groupId>org.cyclonedx</groupId>
