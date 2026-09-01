@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (API) Added `XvrlValueOf` modelling the XVRL `value-of` element that may occur inside an `XvrlMessage`
 - (API) Added the XVRL base types `AbstractXvrlObject` (foreign attributes), `AbstractXvrlCommonObject` (the `common.attr` group) and `AbstractXvrlContentObject` (mixed content) together with their abstract builders. Mixed content is stored as `List<Object>`, but the `addContent` methods only accept the allowed types `String`, `org.w3c.dom.Node` and - for messages - `XvrlValueOf`
 - (API) Added the marker interface `IXvrlReportsItem` implemented by `XvrlReport`, `XvrlReports` and `XvrlDigest`, denoting the types that may be a direct child of an `xvrl:reports` element
+- (API) Added `XmlHelper.createValidNCName(String)` converting an arbitrary string to a valid `xs:NCName`, plus the accompanying `XmlHelper.isValidNCName(String)`, `XmlHelper.isNCNameStartChar(char)` and `XmlHelper.isNCNameChar(char)`
 
 ### Removed
 
@@ -58,6 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - (BUILD) The `validator-api` module no longer emits stub `ObjectFactory` classes for the `svrl` and `scenario` packages, which shadowed the complete ones of the respective modules on the classpath
 - (CLI) `Format.mergeCodes` no longer discards the plain formatting codes like `BOLD` or `UNDERLINE` and no longer emits background colors twice. `Code.isColor()` is `true` for the background colors as well, so the previous filter combination only ever selected the `BG_*` codes
+- (API) The `xml:id` of all XVRL data model types is converted to a valid `xs:NCName` now. Values like `Report for eInvoice` previously made the marshalling of the XVRL report fail with `cvc-datatype-valid.1.2.1`
+- (CORE) `CreateReportsTask` puts the name of the report resource into the `code` attribute of the created detection instead of into `xml:id`. As `xml:id` is of type `xs:ID` it must be unique per document, which a report resource name is not - two `createReport` elements using the same resource name made the marshalling of the XVRL report fail with `cvc-id.2`
 
 ## 1.6.3 - 2026-08-20
 

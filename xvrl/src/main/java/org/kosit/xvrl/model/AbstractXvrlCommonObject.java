@@ -1,6 +1,7 @@
 package org.kosit.xvrl.model;
 
 import org.jspecify.annotations.Nullable;
+import org.kosit.base.xml.XmlHelper;
 
 /**
  * Base class of all XVRL data model types that carry the {@code common.attr} attribute group of the XVRL schema, hence
@@ -92,11 +93,14 @@ public abstract class AbstractXvrlCommonObject extends AbstractXvrlObject {
         }
 
         /**
+         * Sets the value of {@code xml:id}. As the underlying XML Schema type is {@code xs:ID} the provided value is
+         * converted to a valid {@code xs:NCName} before it is stored.
+         *
          * @param id the value of {@code xml:id}. May be <code>null</code>.
          * @return this for chaining
          */
         public final IMPLTYPE id(final @Nullable String id) {
-            this.id = id;
+            this.id = XmlHelper.createValidNCName(id);
             return thisAsT();
         }
 

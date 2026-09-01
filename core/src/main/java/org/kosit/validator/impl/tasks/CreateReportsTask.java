@@ -55,7 +55,7 @@ public class CreateReportsTask implements CheckTask {
 
     private static XvrlReport generateXvrlReport(final ResourceType resourceType, final XdmNode node) {
         final var builder = XvrlReport.builder().metadata(XvrlMetadata.builder().validator(METADATA.name())).addDetection(XvrlDetection
-                .builder().id(resourceType.getName()).addSupplemental(XvrlSupplemental.builder().addContent(SaxonHelper.toNode(node))));
+                .builder().code(resourceType.getName()).addSupplemental(XvrlSupplemental.builder().addContent(SaxonHelper.toNode(node))));
         return XvrlHelper.finalizeAndBuild(builder);
     }
 
