@@ -70,6 +70,12 @@ public class CompactXvrlReport {
 
     private static final String ATTR_LANGUAGE = "language";
 
+    /** The namespace URI identifying W3C XML Schema as the schema language, for the {@code schematypens} attribute. */
+    private static final String SCHEMATYPENS_XSD = "http://www.w3.org/2001/XMLSchema";
+
+    /** The namespace URI identifying ISO Schematron as the schema language, for the {@code schematypens} attribute. */
+    private static final String SCHEMATYPENS_SCHEMATRON = "http://purl.oclc.org/dsdl/schematron";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CompactXvrlReport.class);
 
     private final XvrlReport.Builder report;
@@ -322,10 +328,13 @@ public class CompactXvrlReport {
      * Adds a schema reference to the metadata.
      *
      * @param href the URL or path to the schema
-     * @param language the language of the schema (e.g. "XSD" or "Schematron")
+     * @param language the language of the schema (e.g. "xsd" or "schematron")
+     * @param schemaTypeNs the namespace URI identifying the schema language, hence the mandatory {@code schematypens}
+     *            attribute
      */
-    public void addSchemaReference(final String href, final String language) {
-        metadata().addSchema(XvrlSchema.builder().href(href).otherAttribute(new QName(CVRL_NS, ATTR_LANGUAGE, CVRL_PREFIX), language));
+    public void addSchemaReference(final String href, final String language, final String schemaTypeNs) {
+        metadata().addSchema(XvrlSchema.builder().href(href).schemaTypeNs(schemaTypeNs)
+                .otherAttribute(new QName(CVRL_NS, ATTR_LANGUAGE, CVRL_PREFIX), language));
     }
 
     @ReturnsImmutableObject
@@ -338,7 +347,7 @@ public class CompactXvrlReport {
     }
 
     public void addSchemaValidationResult(final List<SimpleError> violations) {
-        addSchemaReference(CODE_XSD_VALIDATION, CODE_XSD_VALIDATION);
+        addSchemaReference(CODE_XSD_VALIDATION, CODE_XSD_VALIDATION, SCHEMATYPENS_XSD);
         Optional.ofNullable(violations).ifPresent(v -> v.forEach(this::addSchemaViolation));
     }
 
@@ -348,7 +357,7 @@ public class CompactXvrlReport {
 
     private void addSchematronValidationResult(final SchematronOutputType schematronOutput) {
         final String title = schematronOutput.getTitle() != null ? schematronOutput.getTitle() : "Schematron";
-        addSchemaReference(title, CODE_SCHEMATRON_VALIDATION);
+        addSchemaReference(title, CODE_SCHEMATRON_VALIDATION, SCHEMATYPENS_SCHEMATRON);
         schematronOutput.getFailedAsserts().forEach(fa -> addSchematronViolation(fa, title));
     }
 

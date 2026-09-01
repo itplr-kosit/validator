@@ -25,7 +25,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Utilities for creating test objects.
- * 
+ *
  * @author Andreas Penski
  */
 public class TestProcessBuilder {
@@ -56,7 +56,7 @@ public class TestProcessBuilder {
 
     public static List<BusinessReport> createReport(final String id, final XdmNode node) {
         final BusinessReport r = new BusinessReport();
-        r.setReport(XvrlReport.builder().metadata(XvrlMetadata.builder().addTitle("title")).build());
+        r.setReport(XvrlReport.builder().metadata(XvrlMetadata.builder()).build());
         r.setName(id);
         r.setContent(node);
         return Collections.singletonList(r);
@@ -91,7 +91,6 @@ public class TestProcessBuilder {
     public TestProcessBuilder schemaInvalid() {
         final SimpleError error = DefaultSimpleError.builderError().message("Default error").build();
         return setSchemaValidationResult(false, Collections.singletonList(error));
-
     }
 
     public TestProcessBuilder setSchemaValidationResult(final boolean value, final List<SimpleError> errors) {

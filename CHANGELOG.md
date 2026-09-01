@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (API) `CompactXvrlReport` and `CompactXvrlReportSummary` are mutable facades over the immutable data model now. `getOriginal()` materializes the collected state and returns a new object on every call
 - (API) The foreign attributes of an XVRL object keep their insertion order, so the order of the CVRL attributes in the compact report is deterministic. Previously they were emitted in `HashMap` order
 - (API) `CompactXvrlReport.addSchematronViolation` converts the rich text children (`dir`, `span`, `emph`) of an SVRL `failed-assert` text to their string representation, instead of copying the SVRL JAXB objects into the XVRL message content
+- (API) `CompactXvrlReport.addSchemaReference` takes the mandatory `schematypens` as the third parameter, because the XSD requires that attribute on every `schema` element
 
 ### Added
 
@@ -61,6 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (CLI) `Format.mergeCodes` no longer discards the plain formatting codes like `BOLD` or `UNDERLINE` and no longer emits background colors twice. `Code.isColor()` is `true` for the background colors as well, so the previous filter combination only ever selected the `BG_*` codes
 - (API) The `xml:id` of all XVRL data model types is converted to a valid `xs:NCName` now. Values like `Report for eInvoice` previously made the marshalling of the XVRL report fail with `cvc-datatype-valid.1.2.1`
 - (CORE) `CreateReportsTask` puts the name of the report resource into the `code` attribute of the created detection instead of into `xml:id`. As `xml:id` is of type `xs:ID` it must be unique per document, which a report resource name is not - two `createReport` elements using the same resource name made the marshalling of the XVRL report fail with `cvc-id.2`
+- (API) `XvrlJaxbCreator` always writes the `metadata` element of `reports` and of `report` as well as the `digest` element of `report`, because the XSD requires them. An `XvrlReport` that was not passed through `XvrlHelper.finalizeAndBuild` previously made the marshalling fail with `cvc-complex-type.2.4.b`
+- (API) The schema references of the compact report carry the required `schematypens` attribute now - `http://www.w3.org/2001/XMLSchema` for XML Schema and `http://purl.oclc.org/dsdl/schematron` for Schematron. Serializing a compact report to XML previously failed with `cvc-complex-type.4`, so `POST /api/validate/minimal` with `Accept: application/xml` answered with HTTP 500
 
 ## 1.6.3 - 2026-08-20
 

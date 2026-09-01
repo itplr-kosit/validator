@@ -49,7 +49,7 @@ public final class XvrlJaxbCreator {
 
         final XvrlReportsType ret = new XvrlReportsType();
         applyCommon(src, ret.getOtherAttributes(), ret::setLang, ret::setId, ret::setBase, ret::setXpathDefaultNamespace);
-        ret.setMetadata(createMetadataType(src.getMetadata()));
+        ret.setMetadata(createMandatoryMetadataType(src.getMetadata()));
         for (final IXvrlReportsItem item : src.getAllItems())
             switch (item) {
                 case final XvrlReport report -> ret.getReportOrReportsOrDigest().add(createReportType(report));
@@ -66,10 +66,10 @@ public final class XvrlJaxbCreator {
 
         final XvrlReportType ret = new XvrlReportType();
         applyCommon(src, ret.getOtherAttributes(), ret::setLang, ret::setId, ret::setBase, ret::setXpathDefaultNamespace);
-        ret.setMetadata(createMetadataType(src.getMetadata()));
+        ret.setMetadata(createMandatoryMetadataType(src.getMetadata()));
         for (final XvrlDetection detection : src.getDetections())
             ret.getDetection().add(createDetectionType(detection));
-        ret.setDigest(createDigestType(src.getDigest()));
+        ret.setDigest(createMandatoryDigestType(src.getDigest()));
         return ret;
     }
 
@@ -362,6 +362,30 @@ public final class XvrlJaxbCreator {
         id.accept(src.getID());
         base.accept(src.getBase());
         xpathDefaultNamespace.accept(src.getXPathDefaultNamespace());
+    }
+
+    /**
+     * The XSD requires the {@code metadata} element in {@code reports} and in {@code report}, so an absent metadata is
+     * written as an empty element instead of being omitted.
+     *
+     * @param src the metadata to convert. May be <code>null</code>.
+     * @return the JAXB metadata. Never <code>null</code>.
+     */
+    private static @NonNull XvrlMetadataType createMandatoryMetadataType(final @Nullable XvrlMetadata src) {
+        final XvrlMetadataType ret = createMetadataType(src);
+        return ret != null ? ret : new XvrlMetadataType();
+    }
+
+    /**
+     * The XSD requires the {@code digest} element in {@code report}, so an absent digest is written as an empty element
+     * instead of being omitted.
+     *
+     * @param src the digest to convert. May be <code>null</code>.
+     * @return the JAXB digest. Never <code>null</code>.
+     */
+    private static @NonNull XvrlDigestType createMandatoryDigestType(final @Nullable XvrlDigest src) {
+        final XvrlDigestType ret = createDigestType(src);
+        return ret != null ? ret : new XvrlDigestType();
     }
 
     private static void addAll(final List<String> src, final Supplier<List<String>> target) {
