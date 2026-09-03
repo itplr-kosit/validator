@@ -7,6 +7,7 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.base.uri.UriHelper;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.ResolvingMode;
@@ -119,8 +120,8 @@ public class SchematronValidation implements ValidationEngine<SchematronValidati
 
         final String documentName = parsed.getParsedSource().getSource().getName();
         // the parent directory of the schematron is the artifact repository of this ad-hoc run
-        final URI base = schematron.resolve(".");
-        final ValidationArtifactReference reference = ValidationArtifactReference.of(base.relativize(schematron).toString());
+        final URI base = UriHelper.resolve(schematron, ".");
+        final ValidationArtifactReference reference = ValidationArtifactReference.of(UriHelper.relativize(base, schematron).toString());
 
         // step 5 (RETRIEVE_ARTIFACTS): resolve confined to that directory
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(base).execute(List.of(reference),

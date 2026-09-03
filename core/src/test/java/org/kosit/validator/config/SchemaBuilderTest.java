@@ -3,12 +3,18 @@ package org.kosit.validator.config;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.config.ConfigurationBuilder.schema;
 
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.xml.validation.Schema;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.kosit.validator.impl.ContentRepository;
+import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.scenario.v1.ResourceType;
 
@@ -61,9 +67,18 @@ public class SchemaBuilderTest {
     }
 
     @Test
-    public void testPath() {
-        final SchemaBuilder builder = schema("myname").schemaLocation(Paths.get(Simple.SCHEMA));
-        final var result = builder.build(Simple.createContentRepository());
+    public void testPath(@TempDir final Path tempDir) throws IOException {
+        // a Path can only address a real file, so the schema is materialized in an own repository - the shared test
+        // data is not necessarily an unpacked directory
+        final Path schemaFile = tempDir.resolve("simple.xsd");
+        try ( final InputStream in = Simple.SCHEMA.toURL().openStream() ) {
+            Files.write(schemaFile, in.readAllBytes());
+        }
+        final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
+                ResolvingMode.STRICT_RELATIVE.getStrategy(), tempDir.toUri());
+
+        final SchemaBuilder builder = schema("myname").schemaLocation(schemaFile);
+        final var result = builder.build(repository);
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
     }

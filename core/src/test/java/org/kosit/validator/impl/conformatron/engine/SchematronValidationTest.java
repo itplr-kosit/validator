@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.junit.jupiter.api.Test;
+import org.kosit.base.uri.UriHelper;
 import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
@@ -22,7 +23,7 @@ public class SchematronValidationTest {
     @Test
     public void testConformantDocument() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
-                Simple.REPOSITORY_URI.resolve("simple.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch"));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.isConformant()).isTrue();
@@ -33,7 +34,7 @@ public class SchematronValidationTest {
     @Test
     public void testDocumentWithFindings() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SCHEMATRON_INVALID),
-                Simple.REPOSITORY_URI.resolve("simple.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch"));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.isConformant()).isFalse();
@@ -44,7 +45,7 @@ public class SchematronValidationTest {
     @Test
     public void testProcessingErrorFailsTheRun() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
-                Simple.REPOSITORY_URI.resolve("simple-runtime-error.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple-runtime-error.sch"));
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
@@ -59,7 +60,7 @@ public class SchematronValidationTest {
     @Test
     public void testMissingSchematronFailsInRetrieveStep() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
-                Simple.REPOSITORY_URI.resolve("does-not-exist.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "does-not-exist.sch"));
 
         assertThat(result.isSuccess()).isFalse();
         // reported under the canonical step-5 code, not a generic ad-hoc preparation error
@@ -69,7 +70,7 @@ public class SchematronValidationTest {
     @Test
     public void testNotWellformedDocumentFailsBeforeRules() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.NOT_WELLFORMED),
-                Simple.REPOSITORY_URI.resolve("simple.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch"));
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.detections().getAll()).extracting("code").contains(XmlDetection.CODE_NOT_WELLFORMED);

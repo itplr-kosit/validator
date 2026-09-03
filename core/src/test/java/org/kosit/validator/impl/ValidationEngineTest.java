@@ -3,6 +3,7 @@ package org.kosit.validator.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.kosit.base.uri.UriHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
@@ -43,7 +44,7 @@ public class ValidationEngineTest {
     @Test
     public void testSchematronValidationIsAnEngine() {
         final ValidationEngine<AdHocValidationResult> engine = new SchematronValidation(TestHelper.getTestProcessor(),
-                Simple.REPOSITORY_URI.resolve("simple.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch"));
 
         assertThat(engine.validate(TestHelper.read(Simple.SIMPLE_VALID)).isConformant()).isTrue();
         assertThat(engine.validate(TestHelper.read(Simple.SCHEMATRON_INVALID)).isConformant()).isFalse();
@@ -53,7 +54,7 @@ public class ValidationEngineTest {
     public void testAdHocConvenienceOnDefaultCheck() {
         final DefaultVCheck engine = createEngine();
         final AdHocValidationResult result = engine.validateAdHoc(TestHelper.read(Simple.SIMPLE_VALID),
-                Simple.REPOSITORY_URI.resolve("simple.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch"));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.isConformant()).isTrue();

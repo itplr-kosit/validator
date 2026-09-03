@@ -13,6 +13,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.jupiter.api.Test;
+import org.kosit.base.uri.UriHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.TestHelper;
@@ -55,7 +56,9 @@ public class DetectScenariosExamplesTest {
                 : null;
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        this.writer.write(document.getPath().substring(document.getPath().lastIndexOf('/') + 1),
+        // an archive URI is opaque and has no path of its own, so the name is taken from the URL it wraps
+        final String path = UriHelper.getHierarchicalUri(document).getPath();
+        this.writer.write(path.substring(path.lastIndexOf('/') + 1),
                 new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null), out);
         writeExample(exampleName, out.toByteArray());
 

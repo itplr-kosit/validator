@@ -47,7 +47,7 @@ public class EDVRPreReleaseQualifierTest {
         final Set<Integer> ranks = new HashSet<>();
         for (final EDVRPreReleaseQualifier e : EDVRPreReleaseQualifier.values()) {
             assertThat(e.getRank()).as(e.getID()).isPositive();
-            assertThat(ranks.add(Integer.valueOf(e.getRank()))).as("Rank %d is used more than once", e.getRank()).isTrue();
+            assertThat(ranks.add(Integer.valueOf(e.getRank()))).as("Rank " + e.getRank() + " is used more than once").isTrue();
         }
     }
 
@@ -197,7 +197,7 @@ public class EDVRPreReleaseQualifierTest {
         for (final EDVRPreReleaseQualifier e1 : EDVRPreReleaseQualifier.values()) {
             for (final EDVRPreReleaseQualifier e2 : EDVRPreReleaseQualifier.values()) {
                 if (e1 != e2) {
-                    assertThat(e1.getID().startsWith(e2.getID())).as("%s vs. %s", e1.getID(), e2.getID()).isFalse();
+                    assertThat(e1.getID().startsWith(e2.getID())).as(e1.getID() + " vs. " + e2.getID()).isFalse();
                 }
             }
         }

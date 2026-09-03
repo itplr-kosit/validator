@@ -9,6 +9,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
+import org.kosit.base.uri.UriHelper;
+
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.ResourceRequest;
 import net.sf.saxon.lib.ResourceResolver;
@@ -37,14 +39,7 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
      * @return the resolved uri
      */
     public static URI resolve(final URI href, final URI base) {
-        final boolean jarURI = isJarURI(base);
-        final URI tmpBase = jarURI ? URI.create(base.toASCIIString().substring(4)) : base;
-        final URI result = tmpBase.resolve(href);
-        return jarURI ? URI.create("jar:" + result.toString()) : result;
-    }
-
-    static boolean isJarURI(final URI uri) {
-        return uri.isOpaque() && uri.getScheme().equals("jar");
+        return UriHelper.resolve(base, href);
     }
 
     private static boolean isUnderBaseUri(final URI resolved, final URI baseUri) {
