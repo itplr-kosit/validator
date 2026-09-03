@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (BUILD) The test helpers of `validator-core` (`TestHelper`, `TestObjectFactory`, `TestProcessBuilder`, `TestScenarioBuilder`, `TestConfigurationFactory`) are attached as a `test-jar` and reused by `validator-cli`, which previously kept its own, partly outdated copies of all five
 - (BUILD) Test data is located through `org.kosit.validator.testdata.TestData` (`file`, `dir` and `missing`) instead of the working directory relative `Paths.get("src/test/resources")`. A resource that is not on the classpath now fails immediately instead of yielding a URI that points nowhere
 - (CORE) `TestHelper.JAR_REPOSITORY` became the method `TestHelper.getJarRepository()`, so that the packaged test scenario artifact is only resolved when a test actually uses it
+- (BUILD) The previously external dependency `org.conformatron:conformatron-api` was integrated as the new submodule `conformatron`, built as the second module and depending on no other module. It is available as `org.kosit:validator-conformatron` and the Java package `org.conformatron.api` is unchanged
 
 ### Added
 
