@@ -1,21 +1,39 @@
 package org.kosit.base.xml;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.SchemaFactory;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.string.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 public final class XmlHelper {
 
     public static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+
+    public static final String EXTERNAL_GENERAL_ENTITIES_FEATURE = "http://xml.org/sax/features/external-general-entities";
+
+    public static final String EXTERNAL_PARAMETER_ENTITIES_FEATURE = "http://xml.org/sax/features/external-parameter-entities";
 
     public static final String LOAD_EXTERNAL_DTD_FEATURE = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
 
@@ -58,23 +76,27 @@ public final class XmlHelper {
         }
     }
 
+    public static DocumentBuilderFactory createSafeDocumentBuilderFactory() {
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        setFeature(factory, XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        setFeature(factory, DISALLOW_DOCTYPE_DECL_FEATURE, true);
+        setFeature(factory, EXTERNAL_GENERAL_ENTITIES_FEATURE, false);
+        setFeature(factory, EXTERNAL_PARAMETER_ENTITIES_FEATURE, false);
+        setFeature(factory, LOAD_EXTERNAL_DTD_FEATURE, false);
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file");
+        factory.setNamespaceAware(true);
+        factory.setValidating(false);
+        factory.setIgnoringElementContentWhitespace(false);
+        factory.setExpandEntityReferences(true);
+        factory.setIgnoringComments(true);
+        factory.setCoalescing(true);
+        return factory;
+    }
+
     public static DocumentBuilder createSafeDocumentBuilder() {
         try {
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            setFeature(factory, XMLConstants.FEATURE_SECURE_PROCESSING, true);
-            setFeature(factory, DISALLOW_DOCTYPE_DECL_FEATURE, true);
-            setFeature(factory, "http://xml.org/sax/features/external-general-entities", false);
-            setFeature(factory, "http://xml.org/sax/features/external-parameter-entities", false);
-            setFeature(factory, LOAD_EXTERNAL_DTD_FEATURE, false);
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file");
-            factory.setNamespaceAware(true);
-            factory.setValidating(false);
-            factory.setIgnoringElementContentWhitespace(false);
-            factory.setExpandEntityReferences(true);
-            factory.setIgnoringComments(true);
-            factory.setCoalescing(true);
-            return factory.newDocumentBuilder();
+            return createSafeDocumentBuilderFactory().newDocumentBuilder();
         } catch (final ParserConfigurationException ex) {
             throw new IllegalStateException("Failed to create XML DocumentBuilder", ex);
         }
@@ -136,6 +158,65 @@ public final class XmlHelper {
         setProperty(factory, XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
         setProperty(factory, XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
         return factory;
+    }
+
+    /**
+     * Set a feature on a {@link TransformerFactory}, optionally logging a warning if the feature is not supported.
+     *
+     * @param aFactory The transformer factory to set the feature on. May not be <code>null</code>.
+     * @param sFeature The parser feature to set. May not be <code>null</code>.
+     * @param bValue The value to set for the feature.
+     * @param bLogOnError <code>true</code> to log a warning if the feature is not supported, <code>false</code> to
+     *            silently ignore the error.
+     */
+    public static void setFeature(@NonNull final TransformerFactory aFactory, @NonNull final String sFeature, final boolean bValue,
+            final boolean bLogOnError) {
+        try {
+            aFactory.setFeature(sFeature, bValue);
+        } catch (final TransformerConfigurationException ex) {
+            if (bLogOnError)
+                LOGGER.warn("Failed to set feature '" + sFeature + "' to " + bValue + " on XML TransformerFactory: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Create a new {@link TransformerFactory} with the default customization applied.
+     *
+     * @return A new, customized {@link TransformerFactory}. Never <code>null</code>.
+     * @throws IllegalStateException In case the factory cannot be created
+     */
+    @NonNull
+    public static TransformerFactory createSafeTransformerFactory() {
+        try {
+            final TransformerFactory aFactory = TransformerFactory.newInstance();
+            // This prevents to use XSLT includes - so disable it, when you use it for reading if you need to support
+            // includes
+            setFeature(aFactory, XMLConstants.FEATURE_SECURE_PROCESSING, true, true);
+
+            /*
+             * The following properties might not be applied - e.g. default JDK does not support them. But as other
+             * implementations might allow it...
+             */
+            setFeature(aFactory, DISALLOW_DOCTYPE_DECL_FEATURE, true, false);
+            setFeature(aFactory, EXTERNAL_GENERAL_ENTITIES_FEATURE, false, false);
+            setFeature(aFactory, EXTERNAL_PARAMETER_ENTITIES_FEATURE, false, false);
+            setFeature(aFactory, LOAD_EXTERNAL_DTD_FEATURE, false, false);
+            return aFactory;
+        } catch (final TransformerFactoryConfigurationError ex) {
+            throw new IllegalStateException("Failed to create XML TransformerFactory", ex);
+        }
+    }
+
+    public static String getXmlAsString(final Node n) {
+        try ( ByteArrayOutputStream baos = new ByteArrayOutputStream() ) {
+            final Transformer transformer = createSafeTransformerFactory().newTransformer();
+            transformer.transform(new DOMSource(n), new StreamResult(baos));
+            return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+        } catch (final TransformerException ex) {
+            throw new IllegalStateException("Failed to serialized node", ex);
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private static boolean isLatin1Letter(final char c) {

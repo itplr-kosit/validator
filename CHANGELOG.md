@@ -74,6 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (CORE) `TestScenarioBuilder` puts the name of the artifact relative to the repository into the scenario `location`, as a real scenario configuration does, instead of the absolute raw path of its URI
 - (CLI) `CommandlineApplicationTest.testValidDirectoryInput` derives the number of expected documents from the input directory instead of hard coding it, so adding a sample to the shared test data cannot break it
 - (CORE) A `scenarioPath` or `repositoryPath` configured for the server is normalized before use. `Path.toUri()` keeps a `..` segment, so for such a path the repository base URI no longer matched the resolved artifact URI and every schema reference failed with "is not within the configured repository"
+- (CORE) `ArtifactResolver` resolves artifact references against a repository that lives inside an archive, as in `jar:file:/some.jar!/repository/`. Such URIs are opaque, so `URI.resolve` handed the bare reference back instead of resolving it and every artifact of such a repository was rejected with `artifact-access-denied`. The reference is resolved against the hierarchical URL of the archive now, so that the confinement covers the archive and the entry path within it in one go
 
 ## 1.6.3 - 2026-08-20
 
