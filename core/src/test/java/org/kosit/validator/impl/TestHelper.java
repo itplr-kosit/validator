@@ -160,9 +160,7 @@ public class TestHelper {
             return TestObjectFactory.getProcessor().newDocumentBuilder().build(new StreamSource(input));
         } catch (final SaxonApiException | IOException e) {
             throw new IllegalStateException("Error loading the XML file", e);
-
         }
-
     }
 
     public static String serialize(final List<BusinessReport> reports) {

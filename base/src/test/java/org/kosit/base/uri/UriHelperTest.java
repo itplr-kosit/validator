@@ -44,10 +44,11 @@ public class UriHelperTest {
 
     @Test
     public void resolveWithHierarchicalBaseBehavesLikeUriResolve() {
-        assertThat(UriHelper.resolve(FILE_DIR, URI.create("a.xsd"))).isEqualTo(FILE_DIR.resolve("a.xsd"));
-        assertThat(UriHelper.resolve(FILE_DIR, URI.create("sub/a.xsd"))).isEqualTo(FILE_DIR.resolve("sub/a.xsd"));
-        assertThat(UriHelper.resolve(FILE_DIR, URI.create("../a.xsd"))).isEqualTo(FILE_DIR.resolve("../a.xsd"));
-        assertThat(UriHelper.resolve(FILE_DIR, URI.create("https://example.org/a.xsd"))).isEqualTo(URI.create("https://example.org/a.xsd"));
+        assertThat(UriHelper.resolve(FILE_DIR, URI.create("a.xsd"), false)).isEqualTo(FILE_DIR.resolve("a.xsd"));
+        assertThat(UriHelper.resolve(FILE_DIR, URI.create("sub/a.xsd"), false)).isEqualTo(FILE_DIR.resolve("sub/a.xsd"));
+        assertThat(UriHelper.resolve(FILE_DIR, URI.create("../a.xsd"), false)).isEqualTo(FILE_DIR.resolve("../a.xsd"));
+        assertThat(UriHelper.resolve(FILE_DIR, URI.create("https://example.org/a.xsd"), false))
+                .isEqualTo(URI.create("https://example.org/a.xsd"));
     }
 
     @Test
@@ -55,12 +56,11 @@ public class UriHelperTest {
         // reaching into an archive is opt in, so without it an archive base behaves like it does in URI#resolve:
         // being opaque it can not be resolved against, and the reference is handed back unchanged
         assertThat(JAR_DIR.resolve(URI.create("a.xsd"))).isEqualTo(URI.create("a.xsd"));
-        assertThat(UriHelper.resolve(JAR_DIR, URI.create("a.xsd"))).isEqualTo(URI.create("a.xsd"));
         assertThat(UriHelper.resolve(JAR_DIR, URI.create("a.xsd"), false)).isEqualTo(URI.create("a.xsd"));
-        assertThat(UriHelper.resolve(JAR_DIR, "a.xsd")).isEqualTo(URI.create("a.xsd"));
+        assertThat(UriHelper.resolve(JAR_DIR, "a.xsd", false)).isEqualTo(URI.create("a.xsd"));
 
         // a hierarchical base is not affected by the flag at all
-        assertThat(UriHelper.resolve(FILE_DIR, URI.create("a.xsd"))).isEqualTo(URI.create("file:/tmp/dir/a.xsd"));
+        assertThat(UriHelper.resolve(FILE_DIR, URI.create("a.xsd"), false)).isEqualTo(URI.create("file:/tmp/dir/a.xsd"));
         assertThat(UriHelper.resolve(FILE_DIR, URI.create("a.xsd"), true)).isEqualTo(URI.create("file:/tmp/dir/a.xsd"));
     }
 
@@ -103,7 +103,7 @@ public class UriHelperTest {
     @Test
     public void resolveWithStringReference() {
         assertThat(UriHelper.resolve(JAR_DIR, "a.xsd", true)).isEqualTo(URI.create("jar:file:/some.jar!/dir/a.xsd"));
-        assertThat(UriHelper.resolve(FILE_DIR, "a.xsd")).isEqualTo(URI.create("file:/tmp/dir/a.xsd"));
+        assertThat(UriHelper.resolve(FILE_DIR, "a.xsd", false)).isEqualTo(URI.create("file:/tmp/dir/a.xsd"));
     }
 
     @Test
@@ -146,9 +146,9 @@ public class UriHelperTest {
         assertThatThrownBy(() -> UriHelper.normalize(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> UriHelper.relativize(JAR_DIR, null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> UriHelper.relativize(null, JAR_DIR)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> UriHelper.resolve(null, URI.create("a.xsd"))).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> UriHelper.resolve(JAR_DIR, (URI) null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> UriHelper.resolve(JAR_DIR, (String) null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> UriHelper.resolve(null, URI.create("a.xsd"), false)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> UriHelper.resolve(JAR_DIR, (URI) null, false)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> UriHelper.resolve(JAR_DIR, (String) null, false)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> UriHelper.resolve(null, URI.create("a.xsd"), true)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> UriHelper.resolve(JAR_DIR, (URI) null, true)).isInstanceOf(NullPointerException.class);
     }

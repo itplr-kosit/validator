@@ -16,10 +16,6 @@ import org.jspecify.annotations.Nullable;
  * it wraps ({@code file:/some.jar!/dir/}) - the path of that URL carries the entry path within the archive - perform
  * the operation there and wrap the result again. For every other URI they behave exactly like their {@link URI}
  * counterparts.
- * <p>
- * {@link #resolve(URI, URI)} is the exception: reaching into an archive means making the content of a file addressable
- * that is a single opaque resource to everybody who only looks at the base URI, so it has to be enabled explicitly
- * through {@link #resolve(URI, URI, boolean)}.
  *
  * @author Philip Helger
  */
@@ -56,18 +52,6 @@ public final class UriHelper {
     }
 
     /**
-     * Resolves the passed reference against the passed base URI, like {@link URI#resolve(URI)} does, <b>without</b>
-     * resolving into an archive - see {@link #resolve(URI, URI, boolean)}.
-     *
-     * @param base the base URI to resolve against. May not be <code>null</code>.
-     * @param reference the reference to resolve. May not be <code>null</code>.
-     * @return the resolved URI. Never <code>null</code>.
-     */
-    public static @NonNull URI resolve(final @NonNull URI base, final @NonNull URI reference) {
-        return resolve(base, reference, false);
-    }
-
-    /**
      * Resolves the passed reference against the passed base URI, like {@link URI#resolve(URI)} does, optionally with
      * support for a base URI that addresses something inside an archive.
      *
@@ -91,19 +75,6 @@ public final class UriHelper {
             return base.resolve(reference);
         }
         return wrapAsArchiveUri(base.getScheme(), getHierarchicalUri(base).resolve(reference));
-    }
-
-    /**
-     * Resolves the passed reference against the passed base URI, like {@link URI#resolve(String)} does, <b>without</b>
-     * resolving into an archive - see {@link #resolve(URI, String, boolean)}.
-     *
-     * @param base the base URI to resolve against. May not be <code>null</code>.
-     * @param reference the reference to resolve. May not be <code>null</code>.
-     * @return the resolved URI. Never <code>null</code>.
-     * @throws IllegalArgumentException if the reference is not a valid URI.
-     */
-    public static @NonNull URI resolve(final @NonNull URI base, final @NonNull String reference) {
-        return resolve(base, reference, false);
     }
 
     /**
