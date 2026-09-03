@@ -7,12 +7,14 @@ import java.util.Locale;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTStandardSeverity;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.oclc.purl.dsdl.svrl.SuccessfulReport;
+import org.oclc.purl.dsdl.svrl.Text;
 
 /**
  * Maps an SVRL {@link SchematronOutput} to an {@link CTDetectionList} (conformatron-api step 7, {@code APPLY_RULES}).
@@ -48,20 +50,20 @@ public final class SvrlDetections {
     public static CTDetectionList toDetections(final SchematronOutputType svrl, final String documentName) {
         final List<CTDetection> detections = new ArrayList<>();
         for (final Object entry : svrl.getActivePatternOrActiveGroupAndFiredRule()) {
-            if (entry instanceof final FailedAssert failedAssert) {
-                detections.add(Detection.of(severityOf(failedAssert.getRole(), failedAssert.getFlag()),
-                        code(failedAssert.getId(), CODE_FAILED_ASSERT), DetectionLocation.of(documentName),
-                        message(failedAssert.getLocation(), textOf(failedAssert.getText()))));
-            } else if (entry instanceof final SuccessfulReport report) {
-                detections.add(Detection.of(severityOf(report.getRole(), report.getFlag()), code(report.getId(), CODE_SUCCESSFUL_REPORT),
-                        DetectionLocation.of(documentName), message(report.getLocation(), textOf(report.getText()))));
+            switch (entry) {
+                case final FailedAssert failedAssert -> detections
+                        .add(Detection.of(severityOf(failedAssert.getRole(), failedAssert.getFlag()),
+                                StringHelper.blankToDefault(failedAssert.getId(), CODE_FAILED_ASSERT), DetectionLocation.of(documentName),
+                                message(failedAssert.getLocation(), textOf(failedAssert.getText()))));
+                case final SuccessfulReport report -> detections.add(Detection.of(severityOf(report.getRole(), report.getFlag()),
+                        StringHelper.blankToDefault(report.getId(), CODE_SUCCESSFUL_REPORT), DetectionLocation.of(documentName),
+                        message(report.getLocation(), textOf(report.getText()))));
+                default -> {
+                    // Ignore
+                }
             }
         }
         return new DetectionList(detections);
-    }
-
-    private static String code(final String id, final String fallback) {
-        return id == null || id.isBlank() ? fallback : id;
     }
 
     /**
@@ -81,7 +83,7 @@ public final class SvrlDetections {
         };
     }
 
-    private static String textOf(final org.oclc.purl.dsdl.svrl.Text text) {
+    private static String textOf(final Text text) {
         if (text == null) {
             return "";
         }

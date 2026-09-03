@@ -2,6 +2,7 @@ package org.kosit.validator.config;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ContentRepository;
@@ -86,47 +87,39 @@ public class TestConfiguration implements VConfiguration {
     }
 
     @Override
-    public boolean equals(final java.lang.Object o) {
+    public boolean equals(final Object o) {
         if (o == this)
             return true;
-        if (!(o instanceof TestConfiguration))
+        if (!(o instanceof final TestConfiguration other))
             return false;
-        final TestConfiguration other = (TestConfiguration) o;
-        if (!other.canEqual((java.lang.Object) this))
+        if (!other.canEqual(this))
             return false;
-        final java.lang.Object this$scenarios = this.getScenarios();
-        final java.lang.Object other$scenarios = other.getScenarios();
-        if (this$scenarios == null ? other$scenarios != null : !this$scenarios.equals(other$scenarios))
+
+        if (!Objects.equals(this.getScenarios(), other.getScenarios()))
             return false;
-        final java.lang.Object this$fallbackScenario = this.getFallbackScenario();
-        final java.lang.Object other$fallbackScenario = other.getFallbackScenario();
-        if (this$fallbackScenario == null ? other$fallbackScenario != null : !this$fallbackScenario.equals(other$fallbackScenario))
+
+        if (!Objects.equals(this.getFallbackScenario(), other.getFallbackScenario()))
             return false;
-        final java.lang.Object this$author = this.getAuthor();
-        final java.lang.Object other$author = other.getAuthor();
-        if (this$author == null ? other$author != null : !this$author.equals(other$author))
+
+        if (!Objects.equals(this.getAuthor(), other.getAuthor()))
             return false;
-        final java.lang.Object this$name = this.getName();
-        final java.lang.Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name))
+
+        if (!Objects.equals(this.getName(), other.getName()))
             return false;
-        final java.lang.Object this$date = this.getDate();
-        final java.lang.Object other$date = other.getDate();
-        if (this$date == null ? other$date != null : !this$date.equals(other$date))
+
+        if (!Objects.equals(this.getDate(), other.getDate()))
             return false;
-        final java.lang.Object this$contentRepository = this.getContentRepository();
-        final java.lang.Object other$contentRepository = other.getContentRepository();
-        if (this$contentRepository == null ? other$contentRepository != null : !this$contentRepository.equals(other$contentRepository))
+
+        if (!Objects.equals(this.getContentRepository(), other.getContentRepository()))
             return false;
-        final java.lang.Object this$additionalParameters = this.getAdditionalParameters();
-        final java.lang.Object other$additionalParameters = other.getAdditionalParameters();
-        if (this$additionalParameters == null ? other$additionalParameters != null
-                : !this$additionalParameters.equals(other$additionalParameters))
+
+        if (!Objects.equals(this.getAdditionalParameters(), other.getAdditionalParameters()))
             return false;
+
         return true;
     }
 
-    protected boolean canEqual(final java.lang.Object other) {
+    protected boolean canEqual(final Object other) {
         return other instanceof TestConfiguration;
     }
 
@@ -134,19 +127,19 @@ public class TestConfiguration implements VConfiguration {
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final java.lang.Object $scenarios = this.getScenarios();
+        final var $scenarios = this.getScenarios();
         result = result * PRIME + ($scenarios == null ? 43 : $scenarios.hashCode());
-        final java.lang.Object $fallbackScenario = this.getFallbackScenario();
+        final var $fallbackScenario = this.getFallbackScenario();
         result = result * PRIME + ($fallbackScenario == null ? 43 : $fallbackScenario.hashCode());
-        final java.lang.Object $author = this.getAuthor();
+        final var $author = this.getAuthor();
         result = result * PRIME + ($author == null ? 43 : $author.hashCode());
-        final java.lang.Object $name = this.getName();
+        final var $name = this.getName();
         result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        final java.lang.Object $date = this.getDate();
+        final var $date = this.getDate();
         result = result * PRIME + ($date == null ? 43 : $date.hashCode());
-        final java.lang.Object $contentRepository = this.getContentRepository();
+        final var $contentRepository = this.getContentRepository();
         result = result * PRIME + ($contentRepository == null ? 43 : $contentRepository.hashCode());
-        final java.lang.Object $additionalParameters = this.getAdditionalParameters();
+        final var $additionalParameters = this.getAdditionalParameters();
         result = result * PRIME + ($additionalParameters == null ? 43 : $additionalParameters.hashCode());
         return result;
     }
