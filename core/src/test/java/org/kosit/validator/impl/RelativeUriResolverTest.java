@@ -25,7 +25,7 @@ public class RelativeUriResolverTest {
 
     static {
         try {
-            BASE = RelativeUriResolver.class.getResource("/examples/assertions/").toURI();
+            BASE = RelativeUriResolver.class.getResource("/examples/simple/").toURI();
         } catch (final URISyntaxException e) {
             throw new IllegalStateException(e);
         }
@@ -35,7 +35,7 @@ public class RelativeUriResolverTest {
 
     @Test
     public void testSuccess() throws TransformerException {
-        final Source resource = this.resolver.resolve("ubl-0001.xml", BASE.toASCIIString());
+        final Source resource = this.resolver.resolve("scenarios.xml", BASE.toASCIIString());
         assertThat(resource).isNotNull();
     }
 
