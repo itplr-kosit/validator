@@ -19,6 +19,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.jspecify.annotations.NonNull;
+
 /**
  * Locates the shared test data of this artifact on the classpath.
  * <p>
@@ -32,7 +34,7 @@ public final class TestData {
     private TestData() {
     }
 
-    private static URI toUri(final String path) {
+    private static @NonNull URI toUri(final @NonNull String path) {
         final URL resource = TestData.class.getResource("/" + path);
         if (resource == null) {
             throw new IllegalStateException("Test data resource not found on the classpath: '" + path
