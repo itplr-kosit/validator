@@ -232,6 +232,6 @@ public class CvrlWriterTest {
         assertThat(digest.getAttribute("valid")).isEqualTo("false");
         assertThat(digest.getAttribute("error-count")).isEqualTo("1");
         // one detection already states its severity, so the digest does not repeat it
-        assertThat(digest.hasAttribute("worst-severity")).isFalse();
+        assertThat(digest.hasAttribute("worst")).isFalse();
     }
 }

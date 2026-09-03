@@ -3,9 +3,9 @@ package org.kosit.validator.impl.conformatron.report;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,13 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.stream.StreamResult;
 
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.detection.CTDetection;
@@ -36,6 +32,9 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.validation.CTValidationStandard;
+import org.kosit.base.xml.SchemaResolver;
+import org.kosit.base.xml.XmlHelper;
+import org.kosit.jaxb.AbstractJaxbConverter;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
@@ -44,62 +43,84 @@ import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
-import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 import org.kosit.validator.impl.conformatron.model.PreparedRuleSet;
 import org.kosit.validator.impl.conformatron.model.SubjectDetection;
+import org.kosit.xvrl.impl.XvrlConverter;
+import org.kosit.xvrl.jaxb.ObjectFactory;
+import org.kosit.xvrl.jaxb.XvrlReportsType;
+import org.kosit.xvrl.model.XvrlContext;
+import org.kosit.xvrl.model.XvrlCreator;
+import org.kosit.xvrl.model.XvrlDetection;
+import org.kosit.xvrl.model.XvrlDigest;
+import org.kosit.xvrl.model.XvrlDocument;
+import org.kosit.xvrl.model.XvrlLocation;
+import org.kosit.xvrl.model.XvrlMessage;
+import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlReport;
+import org.kosit.xvrl.model.XvrlReports;
+import org.kosit.xvrl.model.XvrlSchema;
+import org.kosit.xvrl.model.XvrlSeverity;
+import org.kosit.xvrl.model.XvrlSupplemental;
+import org.kosit.xvrl.model.XvrlTimestamp;
+import org.kosit.xvrl.model.XvrlValidator;
+import org.kosit.xvrl.model.XvrlValidity;
+import org.kosit.xvrl.model.XvrlWorst;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
- * <b>DRAFT intermediate format</b>: serializes a canonical pipeline run (steps 2–8) to a CVRL report — an XVRL profile
- * per {@code conformance-validation-report-spec.md}. Every opinionated default is tagged {@code D<n>} and listed as an
- * explicit decision point; nothing here is final until the team confirms.
+ * Serializes a canonical pipeline run (steps 2–8) to a CVRL report — an XVRL profile per
+ * {@code conformance-validation-report-spec.md}. The report is assembled as an {@link XvrlReports} object model and
+ * marshalled through the {@code xvrl} module, so the XVRL vocabulary (element and attribute names, the digest, the
+ * severity and validity value spaces) comes from that model and only the CVRL extensions are named here. Every
+ * opinionated default is tagged {@code D<n>} and listed as an explicit decision point.
  *
  * <ul>
  * <li><b>D1</b> extension namespace: {@code urn:conformatron:cvrl:draft} (spec placeholder was
  * {@code xmlns:cvrl="my"})</li>
- * <li><b>D2</b> canonical creator names come from {@code ECTCanonicalAction} (the spec's {@code document-loader} etc.
- * are treated as outdated)</li>
+ * <li><b>D2</b> canonical creator names come from {@code CTActionType} (the spec's {@code document-loader} etc. are
+ * treated as outdated)</li>
  * <li><b>D3</b> one {@code <report>} per step execution; APPLY_RULES emits one report <b>per rule set</b> (sequential,
  * not nested)</li>
- * <li><b>D4</b> consistent digest attribute set: {@code valid}, {@code worst-severity}, {@code error-count},
- * {@code warning-count}, {@code error-codes} (distinct, space-separated). No {@code fatal-error-count} — the severity
- * model has no separate fatal band, so it would only duplicate {@code error-count}</li>
+ * <li><b>D4</b> the digest carries {@code valid}, {@code worst}, {@code error-count}, {@code warning-count},
+ * {@code error-codes} (distinct). No {@code fatal-error-count} — the severity model has no separate fatal band, so it
+ * would only duplicate {@code error-count}</li>
  * <li><b>D5</b> root carries {@code cvrl:conformant} and {@code cvrl:status} (COMPLETED | CANCELLED); a cancelled run
  * still serializes — partial CVRL per ADR-004</li>
  * <li><b>D6</b> verbosity: full only. Document by reference in the root metadata; hash and parsed document are
- * <b>output</b> of the parse step and travel as two messages of the {@code document-parsed} detection — message 1
- * carries the hash (algorithm as {@code cvrl:algorithm}, hash over the retained source bytes), message 2 embeds the
- * parsed document ({@code cvrl:mime-type}). The payload is only written on parse success — failed content is never
- * echoed (injection safety). Open point: a failed parse currently loses the document hash in the report.</li>
+ * <b>output</b> of the parse step and travel with the {@code document-parsed} detection — the hash as context, the
+ * document as a message ({@code cvrl:mime-type}, {@code cvrl:encoding}). The payload is only written on parse success —
+ * failed content is never echoed (injection safety)</li>
  * <li><b>D7</b> scenario identity travels as detections (no {@code metadata/document} scenario embedding)</li>
- * <li><b>D8</b> APPLY_RULES reports carry {@code <schema href language>} plus {@code cvrl:phase} from the prepared rule
- * set; the engine identity sits on PREPARE_RULES instead, see D15</li>
+ * <li><b>D8</b> APPLY_RULES reports carry {@code <schema href schematypens>} plus {@code cvrl:phase} from the prepared
+ * rule set; the engine identity sits on PREPARE_RULES instead, see D15</li>
  * <li><b>D9</b> everything positional lives in the XVRL {@code location} element — {@code xpath} for the node a rule
  * finding applies to, {@code line}/{@code column} for a schema violation, {@code href} for the subject the detection is
  * about. Nothing positional is written into the message text</li>
  * <li><b>D10</b> per-report timestamps are the serialization time — the true execution time needs
- * {@code ICTActionExecution} (not implemented yet)</li>
+ * {@code CTActionExecution} (not implemented yet)</li>
  * <li><b>D11</b> a detection carries no {@code code} that merely restates the action — {@code creator/@name} already
  * does; codes with information of their own (rule ids, outcome markers) stay</li>
  * <li><b>D12</b> scenario detection omits the severity attribute where it carries no information (every match is an
  * info) — it is optional in XVRL. Errors keep it: dropping it there would leave the detection "unspecified" while the
- * digest counts an error. Open consistency question across all steps</li>
+ * digest counts an error</li>
  * <li><b>D13</b> a detection about an identified subject (scenario, artifact, conformance target) names it as
  * {@code cvrl:scenario-id} / {@code cvrl:artifact-id} / {@code cvrl:target-id}, adds what is known about it
  * ({@code cvrl:artifact-type}, {@code cvrl:conformance}) as attributes, and locates it. The selected scenario is
  * additionally embedded in full as a second message</li>
  * <li><b>D14</b> messages that belong to the same detection are identified by {@code xml:id}
- * ({@code parse-document-hash}, {@code parse-document-content}, {@code select-scenario-content}) so consumers never
- * depend on their order</li>
+ * ({@code parse-document-content}, {@code select-scenario-content}) so consumers never depend on their order</li>
  * <li><b>D15</b> the engine that transpiled/compiled the rules is reported on PREPARE_RULES as the XVRL standard
  * element {@code <validator name version/>} — it is a property of that step, not of rule application</li>
  * <li><b>D16</b> what a detection is about goes into {@code context}: {@code location} plus {@code cvrl:hash}, the
  * latter proving which bytes were validated and which rule-set version ran</li>
- * <li><b>D17</b> messages stay short; full stack traces go to {@code supplemental cvrl:role="java-trace"}</li>
- * <li><b>D18</b> the digest omits what says nothing: zero counts, and {@code worst-severity} while everything is valid
- * or a single detection already carries its severity</li>
+ * <li><b>D17</b> messages stay short; full stack traces go to {@code supplemental role="java-trace"} — the XVRL
+ * {@code role} attribute, now that the xvrl module carries it</li>
+ * <li><b>D18</b> the digest omits what says nothing: zero counts, and {@code worst} while everything is valid or a
+ * single detection already carries its severity</li>
  * </ul>
  *
  * @author Andreas Schmitz
@@ -107,13 +128,10 @@ import org.w3c.dom.Document;
 public final class CvrlWriter {
 
     /** XVRL namespace — CVRL is a profile of XVRL, the report must validate against it. */
-    public static final String NS_XVRL = "http://www.xproc.org/ns/xvrl";
+    public static final String NS_XVRL = XvrlConverter.NS_URI;
 
     /** D1: draft namespace for the CVRL extension attributes. */
     public static final String NS_CVRL = "urn:conformatron:cvrl:draft";
-
-    /** {@code xml:id} of the message carrying the document hash. */
-    public static final String ID_DOCUMENT_HASH = "parse-document-hash";
 
     /** {@code xml:id} of the message carrying the source document. */
     public static final String ID_DOCUMENT_CONTENT = "parse-document-content";
@@ -137,13 +155,27 @@ public final class CvrlWriter {
     /** {@code schematypens} of a Schematron rule set (ISO Schematron). */
     public static final String SCHEMATYPENS_SCHEMATRON = "http://purl.oclc.org/dsdl/schematron";
 
+    /** {@code role} of the supplemental carrying a Java stack trace. */
+    public static final String ROLE_JAVA_TRACE = "java-trace";
+
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     /** Name reported for the XSLT processor that runs the prepared rules. */
     private static final String XSLT_PROCESSOR_NAME = "Saxon";
 
-    /** {@code cvrl:role} of the supplemental carrying a Java stack trace. */
-    public static final String ROLE_JAVA_TRACE = "java-trace";
+    private static final QName ATTR_CONFORMANT = cvrl("conformant");
+
+    private static final QName ATTR_STATUS = cvrl("status");
+
+    private static final QName ATTR_PHASE = cvrl("phase");
+
+    private static final QName ATTR_ORIGINAL_SEVERITY = cvrl("original-severity");
+
+    private static final QName ATTR_MIME_TYPE = cvrl("mime-type");
+
+    private static final QName ATTR_ENCODING = cvrl("encoding");
+
+    private static final QName ATTR_SOURCE_ENCODING = cvrl("source-encoding");
 
     /**
      * The results of one canonical pipeline run. Fields from the cancellation point onwards are {@code null} — the
@@ -162,9 +194,27 @@ public final class CvrlWriter {
         }
     }
 
+    /**
+     * Marshals the XVRL object model with the CVRL prefix declared. {@link XvrlConverter} fixes its prefix map
+     * privately, so the profile brings its own converter over the same JAXB context and schema.
+     */
+    private static final class CvrlConverter extends AbstractJaxbConverter<XvrlReportsType> {
+
+        CvrlConverter() {
+            super(XvrlConverter.JAXB_CTX, XvrlReportsType.class, new ObjectFactory()::createReports);
+            withSchema(SchemaResolver.createParsedSchema(XvrlConverter.class.getResource(XvrlConverter.XVRL_XSD_PATH)));
+            withNamespacePrefixMap(Map.of(NS_XVRL, "", NS_CVRL, "cvrl"));
+        }
+    }
+
     private final String validatorName;
 
     private final String validatorVersion;
+
+    private final CvrlConverter converter = new CvrlConverter();
+
+    /** Owner document for the DOM nodes the profile adds ({@code cvrl:hash}); never serialized itself. */
+    private final Document factory = XmlHelper.createSafeDocumentBuilder().newDocument();
 
     public CvrlWriter(final String validatorName, final String validatorVersion) {
         this.validatorName = validatorName;
@@ -179,257 +229,191 @@ public final class CvrlWriter {
      * @param out the target stream (UTF-8)
      */
     public void write(final String documentName, final PipelineResults results, final OutputStream out) throws IOException {
+        // the Result path is the one that marshals directly and therefore honours the converter's formatted output;
+        // the stream and writer paths go through an XMLStreamWriter, which JAXB does not indent
+        this.converter.writeXml(XvrlJaxbCreatorBridge.toJaxb(build(documentName, results)), new StreamResult(out));
+    }
+
+    /**
+     * Assembles the pipeline run as an XVRL object model — the CVRL profile before serialization.
+     *
+     * @param documentName reference to the document under test
+     * @param results the pipeline results; {@code parse} must not be {@code null}
+     * @return the report model
+     */
+    public XvrlReports build(final String documentName, final PipelineResults results) throws IOException {
         if (results == null || results.parse() == null) {
             throw new IllegalArgumentException("results with at least the parse step are required");
         }
-        try {
-            final XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(out, StandardCharsets.UTF_8.name());
-            writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
-            newline(writer, 0);
-            writer.writeStartElement("reports");
-            writer.writeDefaultNamespace(NS_XVRL);
-            writer.writeNamespace("cvrl", NS_CVRL);
-            // D5: overall verdict + run status on the root
-            writer.writeAttribute(NS_CVRL, "conformant", String.valueOf(results.isConformant()));
-            writer.writeAttribute(NS_CVRL, "status", results.isCompleted() ? "COMPLETED" : "CANCELLED");
+        final XvrlReports.Builder reports = XvrlReports.builder()
+                // D5: overall verdict + run status on the root
+                .otherAttribute(ATTR_CONFORMANT, String.valueOf(results.isConformant()))
+                .otherAttribute(ATTR_STATUS, results.isCompleted() ? "COMPLETED" : "CANCELLED")
+                // D6: reference only — hash and parsed payload are output of the parse step
+                .metadata(XvrlMetadata.builder().addTimestamp(now())
+                        .addValidator(XvrlValidator.builder(this.validatorName).version(this.validatorVersion))
+                        .addDocument(XvrlDocument.builder(documentName)));
 
-            writeRootMetadata(writer, documentName);
-            writeStepReport(writer, CTActionType.PARSE_DOCUMENT, results.parse().getDetectionList(), null,
-                    results.parse().getParsedSource(), null);
-            if (results.detect() != null) {
-                writeStepReport(writer, CTActionType.DETECT_SCENARIOS, results.detect().detections(), null, null, null);
-            }
-            if (results.select() != null) {
-                writeStepReport(writer, CTActionType.SELECT_SCENARIO, results.select().detections(), null, null, null);
-            }
-            if (results.retrieve() != null) {
-                writeStepReport(writer, CTActionType.RETRIEVE_ARTIFACTS, results.retrieve().detections(), null, null, null);
-            }
-            if (results.prepare() != null) {
-                writeStepReport(writer, CTActionType.PREPARE_RULES, results.prepare().detections(), null, null,
-                        results.prepare().ruleSets());
-            }
-            if (results.apply() != null) {
-                // D3: one report per rule set execution, in scenario order
-                for (final Map.Entry<CTPreparedRuleSet, CTDetectionList> entry : results.apply().result().getResultsByRuleSet()
-                        .entrySet()) {
-                    writeStepReport(writer, CTActionType.APPLY_RULES, entry.getValue(), entry.getKey(), null, null);
-                }
-            }
-            if (results.conformance() != null) {
-                writeStepReport(writer, CTActionType.COMPUTE_CONFORMANCE, results.conformance().detections(), null, null, null);
-            }
-            newline(writer, 0);
-            writer.writeEndElement();
-            writer.writeEndDocument();
-            writer.flush();
-        } catch (final XMLStreamException e) {
-            throw new IllegalStateException("Can not serialize CVRL report for " + documentName, e);
+        reports.addReport(
+                stepReport(CTActionType.PARSE_DOCUMENT, results.parse().getDetectionList(), null, results.parse().getParsedSource(), null));
+        if (results.detect() != null) {
+            reports.addReport(stepReport(CTActionType.DETECT_SCENARIOS, results.detect().detections(), null, null, null));
         }
+        if (results.select() != null) {
+            reports.addReport(stepReport(CTActionType.SELECT_SCENARIO, results.select().detections(), null, null, null));
+        }
+        if (results.retrieve() != null) {
+            reports.addReport(stepReport(CTActionType.RETRIEVE_ARTIFACTS, results.retrieve().detections(), null, null, null));
+        }
+        if (results.prepare() != null) {
+            reports.addReport(
+                    stepReport(CTActionType.PREPARE_RULES, results.prepare().detections(), null, null, results.prepare().ruleSets()));
+        }
+        if (results.apply() != null) {
+            // D3: one report per rule set execution, in scenario order
+            for (final Map.Entry<CTPreparedRuleSet, CTDetectionList> entry : results.apply().result().getResultsByRuleSet().entrySet()) {
+                reports.addReport(stepReport(CTActionType.APPLY_RULES, entry.getValue(), entry.getKey(), null, null));
+            }
+        }
+        if (results.conformance() != null) {
+            reports.addReport(stepReport(CTActionType.COMPUTE_CONFORMANCE, results.conformance().detections(), null, null, null));
+        }
+        return reports.build();
     }
 
-    private void writeRootMetadata(final XMLStreamWriter writer, final String documentName) throws XMLStreamException {
-        newline(writer, 1);
-        writer.writeStartElement(NS_XVRL, "metadata");
-        newline(writer, 2);
-        // open point: make runs distinguishable beyond the timestamp
-        writer.writeComment(" TODO: ggf. UUID pro Validierungslauf ergaenzen ");
-        newline(writer, 2);
-        writer.writeStartElement(NS_XVRL, "timestamp");
-        writer.writeCharacters(timestamp(OffsetDateTime.now()));
-        writer.writeEndElement();
-        newline(writer, 2);
-        writer.writeEmptyElement(NS_XVRL, "validator");
-        writer.writeAttribute("name", this.validatorName);
-        writer.writeAttribute("version", this.validatorVersion);
-        newline(writer, 2);
-        // D6: reference only — hash and parsed payload are output of the parse step
-        writer.writeEmptyElement(NS_XVRL, "document");
-        writer.writeAttribute("href", documentName);
-        newline(writer, 1);
-        writer.writeEndElement();
-    }
-
-    private void writeStepReport(final XMLStreamWriter writer, final CTActionType action, final CTDetectionList detections,
-            final CTPreparedRuleSet ruleSet, final CTParsedValidationSource parseEvidence, final List<CTPreparedRuleSet> engines)
-            throws XMLStreamException, IOException {
-        newline(writer, 1);
-        writer.writeStartElement(NS_XVRL, "report");
-        newline(writer, 2);
-        writer.writeStartElement(NS_XVRL, "metadata");
-        newline(writer, 3);
-        writer.writeEmptyElement(NS_XVRL, "creator");
-        // D2: the canonical names of ECTCanonicalAction are normative for <creator @name>
-        writer.writeAttribute("name", action.getName());
-        newline(writer, 3);
-        // D10: serialization time, not execution time (needs ICTActionExecution)
-        writer.writeStartElement(NS_XVRL, "timestamp");
-        writer.writeCharacters(timestamp(OffsetDateTime.now()));
-        writer.writeEndElement();
+    private XvrlReport.Builder stepReport(final CTActionType action, final CTDetectionList detections, final CTPreparedRuleSet ruleSet,
+            final CTParsedValidationSource parseEvidence, final List<CTPreparedRuleSet> engines) throws IOException {
+        // D2: the canonical action names are normative for <creator @name>; D10: serialization time, not execution time
+        final XvrlMetadata.Builder metadata = XvrlMetadata.builder().addCreator(XvrlCreator.builder(action.getName())).addTimestamp(now());
         if (action == CTActionType.PREPARE_RULES && engines != null) {
             // D15: which engine compiled the rules is a property of this step, and XVRL has a standard element for it
             for (final String transpiler : transpilers(engines)) {
-                newline(writer, 3);
-                writer.writeEmptyElement(NS_XVRL, "validator");
-                writer.writeAttribute("name", transpiler);
+                metadata.addValidator(XvrlValidator.builder(transpiler));
             }
             for (final String engine : engineIdentities(engines)) {
-                newline(writer, 3);
-                writer.writeEmptyElement(NS_XVRL, "validator");
-                writer.writeAttribute("name", engine.substring(0, engine.indexOf('/')));
-                writer.writeAttribute("version", engine.substring(engine.indexOf('/') + 1));
+                metadata.addValidator(
+                        XvrlValidator.builder(engine.substring(0, engine.indexOf('/'))).version(engine.substring(engine.indexOf('/') + 1)));
             }
         }
         if (ruleSet != null) {
-            // D8: rule set identity on the APPLY_RULES report
-            newline(writer, 3);
-            writer.writeEmptyElement(NS_XVRL, "schema");
-            writer.writeAttribute("href", ruleSet.getArtifactReference().getValidationArtifactReference().toString());
-            // schematypens is required by XVRL and names the rule language by its namespace; there is no "language"
-            // attribute in the schema type, so the namespace URI is how the language is stated
-            writer.writeAttribute("schematypens",
-                    ruleSet.getEngineType().getStandard() == CTValidationStandard.XSD ? SCHEMATYPENS_XSD : SCHEMATYPENS_SCHEMATRON);
-            if (ruleSet.getPhase() != null) {
-                writer.writeAttribute(NS_CVRL, "phase", ruleSet.getPhase());
-            }
+            // D8: rule set identity on the APPLY_RULES report. schematypens names the rule language by its namespace;
+            // XVRL has no "language" attribute
+            metadata.addSchema(XvrlSchema.builder().href(ruleSet.getArtifactReference().getValidationArtifactReference().toString())
+                    .schemaTypeNs(
+                            ruleSet.getEngineType().getStandard() == CTValidationStandard.XSD ? SCHEMATYPENS_XSD : SCHEMATYPENS_SCHEMATRON)
+                    .otherAttribute(ATTR_PHASE, ruleSet.getPhase()));
         }
-        newline(writer, 2);
-        writer.writeEndElement();
+        final XvrlReport.Builder report = XvrlReport.builder().metadata(metadata);
         for (final CTDetection detection : detections.getAll()) {
-            writeDetection(writer, action, detection, parseEvidence);
+            report.addDetection(detection(action, detection, parseEvidence));
         }
-        // XVRL puts the digest last: it summarises the detections above it (XvrlReportType)
-        writeDigest(writer, detections);
-        newline(writer, 1);
-        writer.writeEndElement();
+        // XVRL puts the digest last: it summarises the detections above it
+        return report.digest(digest(detections));
     }
 
     /**
      * D4: the digest is always present — a step without one would be indistinguishable from a step that did not run.
-     * Only what carries information is written: counts of zero say nothing, and {@code worst-severity} says nothing
-     * while everything is valid or while there is a single detection that already states its own severity.
+     * Only what carries information is written: counts of zero say nothing, and {@code worst} says nothing while
+     * everything is valid or while there is a single detection that already states its own severity.
      */
-    private static void writeDigest(final XMLStreamWriter writer, final CTDetectionList detections) throws XMLStreamException {
-        // D4: consistent digest attribute set
+    private static XvrlDigest.Builder digest(final CTDetectionList detections) {
         // the severity model has no separate fatal band, so a fatal-error-count would only duplicate error-count
         final long errors = detections.getCount(d -> d.getSeverity() == CTStandardSeverity.ERROR);
         final long warnings = detections.getCount(d -> d.getSeverity() == CTStandardSeverity.WARNING);
         final Set<String> errorCodes = new LinkedHashSet<>();
         detections.getAll().stream().filter(d -> d.getSeverity().isError()).forEach(d -> errorCodes.add(d.getCode()));
         final boolean valid = !detections.containsAtLeastOneError();
-        newline(writer, 2);
-        writer.writeEmptyElement(NS_XVRL, "digest");
-        writer.writeAttribute("valid", String.valueOf(valid));
+        final XvrlDigest.Builder digest = XvrlDigest.builder().valid(valid ? XvrlValidity.TRUE : XvrlValidity.FALSE);
         if (!valid && detections.getCount() > 1) {
-            writer.writeAttribute("worst-severity", severityId(detections));
+            digest.worst(worst(detections.getWorstSeverity()));
         }
         if (errors > 0) {
-            writer.writeAttribute("error-count", String.valueOf(errors));
+            digest.errorCount(errors);
         }
         if (warnings > 0) {
-            writer.writeAttribute("warning-count", String.valueOf(warnings));
+            digest.warningCount(warnings);
         }
-        if (!errorCodes.isEmpty()) {
-            writer.writeAttribute("error-codes", String.join(" ", errorCodes));
-        }
+        return digest.addErrorCodes(errorCodes);
     }
 
-    private static void writeDetection(final XMLStreamWriter writer, final CTActionType action, final CTDetection detection,
-            final CTParsedValidationSource parseEvidence) throws XMLStreamException, IOException {
-        newline(writer, 2);
-        writer.writeStartElement(NS_XVRL, "detection");
+    private XvrlDetection.Builder detection(final CTActionType action, final CTDetection detection, final CTParsedValidationSource parseEvidence)
+            throws IOException {
+        final XvrlDetection.Builder ret = XvrlDetection.builder();
         // D11/D12: severity and code appear exactly where they carry information — see carriesOwnIdentity
         if (carriesOwnIdentity(action, detection)) {
-            writer.writeAttribute("severity", xvrlSeverity(detection.getSeverity()));
-            if (detection.getCode() != null) {
-                writer.writeAttribute("code", detection.getCode());
-            }
+            ret.severity(xvrlSeverity(detection.getSeverity())).code(detection.getCode());
         }
         // customLevel: severity is the effective one; the declared severity stays auditable
         if (detection instanceof final Detection impl && impl.getOriginalSeverity() != null) {
-            writer.writeAttribute(NS_CVRL, "original-severity", xvrlSeverity(impl.getOriginalSeverity()));
+            ret.otherAttribute(ATTR_ORIGINAL_SEVERITY, xvrlSeverity(impl.getOriginalSeverity()).getID());
         }
         final SubjectDetection subject = detection instanceof final SubjectDetection sd ? sd : null;
         if (subject != null) {
             // D13: what the detection is about, and what is known about it, as attributes rather than prose
             if (subject.getSubjectId() != null) {
-                writer.writeAttribute(NS_CVRL, subject.getSubjectAttribute(), subject.getSubjectId());
+                ret.otherAttribute(cvrl(subject.getSubjectAttribute()), subject.getSubjectId());
             }
             for (final Map.Entry<String, String> attribute : subject.getAttributes().entrySet()) {
-                writer.writeAttribute(NS_CVRL, attribute.getKey(), attribute.getValue());
+                ret.otherAttribute(cvrl(attribute.getKey()), attribute.getValue());
             }
         }
-        writeContext(writer, detection, subject, parseEvidence);
+        final XvrlContext.Builder context = context(detection, subject, parseEvidence);
+        if (context != null) {
+            ret.addContext(context);
+        }
         if (XmlDetection.CODE_DOCUMENT_PARSED.equals(detection.getCode()) && parseEvidence != null) {
-            writeParseEvidence(writer, parseEvidence);
+            ret.addMessage(parseEvidence(parseEvidence));
         } else {
-            newline(writer, 3);
-            writer.writeStartElement(NS_XVRL, "message");
-            writer.writeCharacters(detection.getText().getDisplayTextLocaleIndependent());
-            writer.writeEndElement();
+            ret.addMessage(detection.getText().getDisplayTextLocaleIndependent());
             if (subject != null && subject.getEmbeddedXml() != null) {
-                writeSubjectEvidence(writer, subject);
+                ret.addMessage(subjectEvidence(subject));
             }
         }
-        writeTrace(writer, detection);
-        newline(writer, 2);
-        writer.writeEndElement();
-    }
-
-    /**
-     * D17: the message stays short and readable; the full technical trace goes to {@code supplemental}, where a
-     * consumer can ignore it. {@code cvrl:role} carries the kind until XVRL's own {@code role} attribute is available.
-     */
-    private static void writeTrace(final XMLStreamWriter writer, final CTDetection detection) throws XMLStreamException {
-        if (detection.getLinkedException() == null) {
-            return;
+        // D17: the message stays short and readable; the full technical trace goes to supplemental
+        if (detection.getLinkedException() != null) {
+            final StringWriter trace = new StringWriter();
+            try ( PrintWriter out = new PrintWriter(trace) ) {
+                detection.getLinkedException().printStackTrace(out);
+            }
+            ret.addSupplemental(XvrlSupplemental.builder(trace.toString()).role(ROLE_JAVA_TRACE));
         }
-        final StringWriter trace = new StringWriter();
-        try ( PrintWriter out = new PrintWriter(trace) ) {
-            detection.getLinkedException().printStackTrace(out);
-        }
-        newline(writer, 3);
-        writer.writeStartElement(NS_XVRL, "supplemental");
-        writer.writeAttribute(NS_CVRL, "role", ROLE_JAVA_TRACE);
-        writer.writeCharacters(trace.toString());
-        writer.writeEndElement();
+        return ret;
     }
 
     /**
      * D9/D16: what a detection is <i>about</i> goes into {@code context}: where it applies or can be looked up
      * ({@code location}) and the fingerprint of the thing it concerns ({@code cvrl:hash}). Both are structure rather
      * than prose, so a consumer can navigate and verify without parsing message text.
+     *
+     * @return the context, or {@code null} when there is nothing to put into it
      */
-    private static void writeContext(final XMLStreamWriter writer, final CTDetection detection, final SubjectDetection subject,
-            final CTParsedValidationSource parseEvidence) throws XMLStreamException {
+    private XvrlContext.Builder context(final CTDetection detection, final SubjectDetection subject,
+            final CTParsedValidationSource parseEvidence) {
         final boolean documentHash = XmlDetection.CODE_DOCUMENT_PARSED.equals(detection.getCode()) && parseEvidence != null;
         final boolean subjectHash = subject != null && subject.getHashValue() != null;
         if (!hasLocation(detection, subject) && !documentHash && !subjectHash) {
-            return;
+            return null;
         }
-        newline(writer, 3);
-        writer.writeStartElement(NS_XVRL, "context");
+        final XvrlContext.Builder context = XvrlContext.builder();
         if (hasLocation(detection, subject)) {
-            newline(writer, 4);
-            writeLocation(writer, detection, subject);
+            context.location(location(detection, subject));
         }
         if (documentHash) {
             final CTReadResource resource = parseEvidence.getSource().getReadResource();
-            writeHash(writer, resource.getHashAlgorithmName(), HexFormat.of().formatHex(resource.getHashBytes()));
+            context.addContent(hash(resource.getHashAlgorithmName(), HexFormat.of().formatHex(resource.getHashBytes())));
         }
         if (subjectHash) {
-            writeHash(writer, subject.getHashAlgorithm(), subject.getHashValue());
+            context.addContent(hash(subject.getHashAlgorithm(), subject.getHashValue()));
         }
-        newline(writer, 3);
-        writer.writeEndElement();
+        return context;
     }
 
-    private static void writeHash(final XMLStreamWriter writer, final String algorithm, final String value) throws XMLStreamException {
-        newline(writer, 4);
-        writer.writeStartElement(NS_CVRL, "hash");
-        writer.writeAttribute(NS_CVRL, "algorithm", algorithm);
-        writer.writeCharacters(value);
-        writer.writeEndElement();
+    /** {@code <cvrl:hash cvrl:algorithm="…">hex</cvrl:hash>} — the one CVRL element, so it is built as a DOM node. */
+    private Element hash(final String algorithm, final String value) {
+        final Element hash = this.factory.createElementNS(NS_CVRL, "cvrl:hash");
+        hash.setAttributeNS(NS_CVRL, "cvrl:algorithm", algorithm);
+        hash.setTextContent(value);
+        return hash;
     }
 
     private static boolean hasLocation(final CTDetection detection, final SubjectDetection subject) {
@@ -442,34 +426,35 @@ public final class CvrlWriter {
         return location instanceof final DetectionLocation impl && impl.hasXPath() ? impl.getXPath() : null;
     }
 
-    private static void writeLocation(final XMLStreamWriter writer, final CTDetection detection, final SubjectDetection subject)
-            throws XMLStreamException {
+    private static XvrlLocation.Builder location(final CTDetection detection, final SubjectDetection subject) {
         final CTDetectionLocation location = detection.getLocation();
         final String xpath = xpathOf(location);
-        writer.writeEmptyElement(NS_XVRL, "location");
-        if (xpath != null) {
-            writer.writeAttribute("xpath", xpath);
-        }
+        final XvrlLocation.Builder ret = XvrlLocation.builder().xpath(xpath);
         if (location.hasLineNumber()) {
-            writer.writeAttribute("line", String.valueOf(location.getLineNumber()));
+            ret.line(location.getLineNumber());
         }
         if (location.hasColumnNumber()) {
-            writer.writeAttribute("column", String.valueOf(location.getColumnNumber()));
+            ret.column(location.getColumnNumber());
         }
         if (subject == null) {
-            return;
+            return ret;
         }
         // the subject location only needs its own attribute when the positional one has not already used it
         if (subject.getSubjectLocation() != null && !(xpath != null && subject.getLocationKind() == SubjectDetection.LocationKind.XPATH)) {
-            writer.writeAttribute(subject.getLocationKind().getAttributeName(), subject.getSubjectLocation());
+            if (subject.getLocationKind() == SubjectDetection.LocationKind.XPATH) {
+                ret.xpath(subject.getSubjectLocation());
+            } else {
+                ret.href(subject.getSubjectLocation());
+            }
         }
         if (subject.getSecondaryLocation() != null) {
             // the containing file, next to the pointer inside it — both are needed to look a scenario up
-            writer.writeAttribute("href", subject.getSecondaryLocation());
+            ret.href(subject.getSecondaryLocation());
         }
         for (final Map.Entry<String, String> attribute : subject.getLocationAttributes().entrySet()) {
-            writer.writeAttribute(NS_CVRL, attribute.getKey(), attribute.getValue());
+            ret.otherAttribute(cvrl(attribute.getKey()), attribute.getValue());
         }
+        return ret;
     }
 
     /**
@@ -524,52 +509,41 @@ public final class CvrlWriter {
      * selected scenario, which means the <b>individual scenario</b>, not the configuration file it came from. Scenario
      * configurations are UTF-8 by definition, so no base64 detour is needed here.
      */
-    private static void writeSubjectEvidence(final XMLStreamWriter writer, final SubjectDetection subject)
-            throws XMLStreamException, IOException {
-        newline(writer, 3);
-        writer.writeStartElement(NS_XVRL, "message");
-        writer.writeAttribute(XMLConstants.XML_NS_URI, "id", ID_SCENARIO_CONTENT);
-        writer.writeAttribute(NS_CVRL, "mime-type", MIME_TYPE_XML);
-        writer.writeAttribute(NS_CVRL, "encoding", ENCODING_DOM);
-        embedXml(writer, new ByteArrayInputStream(subject.getEmbeddedXml()));
-        writer.writeEndElement();
+    private XvrlMessage.Builder subjectEvidence(final SubjectDetection subject) throws IOException {
+        return XvrlMessage.builder().id(ID_SCENARIO_CONTENT).otherAttribute(ATTR_MIME_TYPE, MIME_TYPE_XML)
+                .otherAttribute(ATTR_ENCODING, ENCODING_DOM)
+                .addContent(parse(new ByteArrayInputStream(subject.getEmbeddedXml())).getDocumentElement());
     }
 
     /**
-     * The {@code document-parsed} detection carries two messages, each identified by its own {@code xml:id} so a
-     * consumer never has to rely on their order — first the document hash (over the retained source bytes, algorithm as
-     * {@code cvrl:algorithm}), then the source document itself. Separate elements so a streaming consumer can skip the
-     * payload. The payload is only ever written for a successfully parsed document — failed content is not echoed
-     * (injection safety).
+     * The {@code document-parsed} detection embeds the source document as a message identified by its own
+     * {@code xml:id}; the document hash sits in the detection's context. The payload is only ever written for a
+     * successfully parsed document — failed content is not echoed (injection safety).
      * <p>
      * <b>Embedding rule</b> ({@code cvrl:encoding}): an XML document declared as UTF-8 is embedded as a DOM fragment —
-     * readable, and byte-faithful because the report itself is UTF-8. Any other encoding is embedded as {@code base64},
-     * because serializing the fragment into the UTF-8 report would silently transcode it and lose the original XML
-     * declaration. The declared encoding is always reported as {@code cvrl:source-encoding} (needed to write a base64
-     * payload back out). Non-XML sources are always base64.
+     * readable, and in the report's own encoding. Any other encoding is embedded as {@code base64}, because serializing
+     * the fragment into the UTF-8 report would silently transcode it and lose the original XML declaration. The
+     * declared encoding is then reported as {@code cvrl:source-encoding} (needed to write a base64 payload back out).
+     * Non-XML sources are always base64.
      * </p>
      */
-    private static void writeParseEvidence(final XMLStreamWriter writer, final CTParsedValidationSource source)
-            throws XMLStreamException, IOException {
+    private static XvrlMessage.Builder parseEvidence(final CTParsedValidationSource source) throws IOException {
         final CTReadResource resource = source.getSource().getReadResource();
-        final String sourceEncoding = sourceEncodingOf(source);
-        final boolean asDom = isXml(source) && StandardCharsets.UTF_8.name().equalsIgnoreCase(sourceEncoding);
-        newline(writer, 3);
-        writer.writeStartElement(NS_XVRL, "message");
-        writer.writeAttribute(XMLConstants.XML_NS_URI, "id", ID_DOCUMENT_CONTENT);
-        writer.writeAttribute(NS_CVRL, "mime-type", isXml(source) ? MIME_TYPE_XML : MIME_TYPE_OCTET_STREAM);
-        writer.writeAttribute(NS_CVRL, "encoding", asDom ? ENCODING_DOM : ENCODING_BASE64);
-        if (!asDom) {
-            // only a base64 payload needs it — writing the source document back out requires the encoding, whereas a
-            // DOM fragment is by construction in the report's own encoding
-            writer.writeAttribute(NS_CVRL, "source-encoding", sourceEncoding);
-        }
+        final Document dom = domOf(source);
+        final String sourceEncoding = sourceEncodingOf(dom);
+        final boolean asDom = dom != null && StandardCharsets.UTF_8.name().equalsIgnoreCase(sourceEncoding);
+        final XvrlMessage.Builder message = XvrlMessage.builder().id(ID_DOCUMENT_CONTENT)
+                .otherAttribute(ATTR_MIME_TYPE, dom != null ? MIME_TYPE_XML : MIME_TYPE_OCTET_STREAM)
+                .otherAttribute(ATTR_ENCODING, asDom ? ENCODING_DOM : ENCODING_BASE64);
         if (asDom) {
-            embedXml(writer, resource.getSourceStream());
-        } else {
-            embedBase64(writer, resource);
+            return message.addContent(dom.getDocumentElement());
         }
-        writer.writeEndElement();
+        // only a base64 payload needs the source encoding — writing the document back out requires it, whereas a DOM
+        // fragment is by construction in the report's own encoding
+        message.otherAttribute(ATTR_SOURCE_ENCODING, sourceEncoding);
+        try ( InputStream in = resource.getSourceStream() ) {
+            return message.addContent(Base64.getEncoder().encodeToString(in.readAllBytes()));
+        }
     }
 
     /**
@@ -577,8 +551,7 @@ public final class CvrlWriter {
      * from the XML declaration, {@code getInputEncoding()} the one the parser actually used (set when the declaration
      * omits it). Without a parsed DOM the XML default applies.
      */
-    private static String sourceEncodingOf(final CTParsedValidationSource source) {
-        final Document dom = domOf(source);
+    private static String sourceEncodingOf(final Document dom) {
         if (dom != null) {
             if (dom.getXmlEncoding() != null) {
                 return dom.getXmlEncoding();
@@ -590,64 +563,21 @@ public final class CvrlWriter {
         return StandardCharsets.UTF_8.name();
     }
 
-    private static boolean isXml(final CTParsedValidationSource source) {
-        return domOf(source) != null;
-    }
-
     private static Document domOf(final CTParsedValidationSource source) {
         return source instanceof final CTParsedValidationSourceXML xml ? xml.getAsDom() : null;
     }
 
-    /** Writes the source bytes as base64 text content — byte-faithful for any encoding and any syntax. */
-    private static void embedBase64(final XMLStreamWriter writer, final CTReadResource resource) throws XMLStreamException, IOException {
-        try ( InputStream in = resource.getSourceStream() ) {
-            writer.writeCharacters(Base64.getEncoder().encodeToString(in.readAllBytes()));
-        }
-    }
-
-    /**
-     * Streams the retained source bytes into the report as element content (flat copy, XML declaration and DTD
-     * excluded). The copy is event-based so the embedded document keeps its own namespaces without re-serialization.
-     */
-    private static void embedXml(final XMLStreamWriter writer, final InputStream sourceStream) throws XMLStreamException, IOException {
-        final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
-        inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-        final XMLStreamReader reader = inputFactory.createXMLStreamReader(sourceStream);
+    private static Document parse(final InputStream xml) throws IOException {
         try {
-            while (reader.hasNext()) {
-                copyEvent(writer, reader, reader.next());
-            }
-        } finally {
-            reader.close();
+            final DocumentBuilder builder = XmlHelper.createSafeDocumentBuilder();
+            return builder.parse(xml);
+        } catch (final SAXException e) {
+            throw new IOException("Embedded XML is not well-formed", e);
         }
     }
 
-    private static void copyEvent(final XMLStreamWriter writer, final XMLStreamReader reader, final int event) throws XMLStreamException {
-        switch (event) {
-            case XMLStreamConstants.START_ELEMENT -> {
-                writer.writeStartElement(defaultIfNull(reader.getPrefix()), reader.getLocalName(), defaultIfNull(reader.getNamespaceURI()));
-                for (int i = 0; i < reader.getNamespaceCount(); i++) {
-                    writer.writeNamespace(defaultIfNull(reader.getNamespacePrefix(i)), defaultIfNull(reader.getNamespaceURI(i)));
-                }
-                for (int i = 0; i < reader.getAttributeCount(); i++) {
-                    writer.writeAttribute(defaultIfNull(reader.getAttributePrefix(i)), defaultIfNull(reader.getAttributeNamespace(i)),
-                            reader.getAttributeLocalName(i), reader.getAttributeValue(i));
-                }
-            }
-            case XMLStreamConstants.END_ELEMENT -> writer.writeEndElement();
-            case XMLStreamConstants.CHARACTERS, XMLStreamConstants.SPACE, XMLStreamConstants.CDATA -> writer
-                    .writeCharacters(reader.getText());
-            case XMLStreamConstants.COMMENT -> writer.writeComment(reader.getText());
-            case XMLStreamConstants.PROCESSING_INSTRUCTION -> writer.writeProcessingInstruction(reader.getPITarget(), reader.getPIData());
-            default -> {
-                // START_DOCUMENT/END_DOCUMENT and DTD events are intentionally not copied
-            }
-        }
-    }
-
-    private static String defaultIfNull(final String value) {
-        return value == null ? "" : value;
+    private static XvrlTimestamp.Builder now() {
+        return XvrlTimestamp.builder(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS));
     }
 
     /**
@@ -662,29 +592,47 @@ public final class CvrlWriter {
         return moment.truncatedTo(ChronoUnit.SECONDS).format(TIMESTAMP_FORMAT);
     }
 
-    private static String severityId(final CTDetectionList detections) {
-        return detections.getCount() == 0 ? "info" : xvrlSeverity(detections.getWorstSeverity());
+    private static XvrlWorst worst(final CTSeverity severity) {
+        return switch (xvrlSeverity(severity)) {
+            case ERROR -> XvrlWorst.ERROR;
+            case WARNING -> XvrlWorst.WARNING;
+            case INFO -> XvrlWorst.INFO;
+            case FATAL_ERROR -> XvrlWorst.FATAL_ERROR;
+            case UNSPECIFIED -> XvrlWorst.UNSPECIFIED;
+        };
     }
 
     /**
-     * Maps the model severity onto the XVRL severity vocabulary ({@code info | warning | error | fatal-error |
-     * unspecified}) — CVRL is an XVRL profile, so the report never emits raw model IDs (the API currently returns
-     * non-XVRL IDs such as {@code warn} and {@code none}; flagged upstream).
+     * Maps the model severity onto the XVRL severity vocabulary. Deliberately not {@link XvrlDetection#translate}: that
+     * maps {@code NONE} to {@code unspecified}, whereas a downgraded rule finding (customLevel) is an
+     * <i>information</i> — a consumer must be able to tell it from a detection whose severity is simply unknown.
      */
-    private static String xvrlSeverity(final CTSeverity severity) {
+    private static XvrlSeverity xvrlSeverity(final CTSeverity severity) {
         if (severity == CTStandardSeverity.ERROR) {
-            return "error";
+            return XvrlSeverity.ERROR;
         }
         if (severity == CTStandardSeverity.WARNING) {
-            return "warning";
+            return XvrlSeverity.WARNING;
         }
         if (severity == CTStandardSeverity.NONE) {
-            return "info";
+            return XvrlSeverity.INFO;
         }
-        return "unspecified";
+        return XvrlSeverity.UNSPECIFIED;
     }
 
-    private static void newline(final XMLStreamWriter writer, final int indent) throws XMLStreamException {
-        writer.writeCharacters("\n" + "  ".repeat(indent));
+    private static QName cvrl(final String localName) {
+        return new QName(NS_CVRL, localName, "cvrl");
+    }
+
+    /** Keeps the JAXB mapping in one place and out of the profile's own code. */
+    private static final class XvrlJaxbCreatorBridge {
+
+        private XvrlJaxbCreatorBridge() {
+            // static utility
+        }
+
+        static XvrlReportsType toJaxb(final XvrlReports reports) {
+            return org.kosit.xvrl.jaxb.XvrlJaxbCreator.createReportsType(reports);
+        }
     }
 }
