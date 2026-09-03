@@ -63,6 +63,15 @@ public class TestHelper {
         /** Configuration with two scenarios matching the same document, for the ambiguity path. */
         public static final URI SCENARIOS_AMBIGUOUS = TestData.file("examples/simple/scenarios-ambiguous.xml");
 
+        /** Configuration whose scenario references a rule set that does not resolve (step 5 failure). */
+        public static final URI SCENARIOS_ARTIFACT_MISSING = TestData.file("examples/simple/scenarios-artifact-missing.xml");
+
+        /** Configuration whose scenario references a rule set that resolves but does not compile (step 6 failure). */
+        public static final URI SCENARIOS_RULES_BROKEN = TestData.file("examples/simple/scenarios-rules-broken.xml");
+
+        /** Configuration whose scenario references a rule set that fails while running (step 7 failure). */
+        public static final URI SCENARIOS_ENGINE_ERROR = TestData.file("examples/simple/scenarios-engine-error.xml");
+
         public static final URI SCENARIOS_WITH_RELATIVE_PATHS = TestData.file("examples/simple/scenarios-with-relative-paths.xml");
 
         public static final URI OTHER_SCENARIOS = TestData.file("examples/simple/otherScenarios.xml");

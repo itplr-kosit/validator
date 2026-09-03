@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
+  <metadata>
+    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
+    <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+    <document href="simple.xml"/>
+  </metadata>
+  <report>
+    <metadata>
+      <creator name="parse-document"/>
+      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+    </metadata>
+    <detection>
+      <context>
+        <cvrl:hash cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+      </context>
+      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><simple xmlns="http://validator.kosit.de/test-sample">
+    <inner>asldkfj</inner>
+    <content>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <!--nothing-->
+            </head>
+            <body>
+                <div>some data</div>
+            </body>
+        </html>
+    </content>
+</simple></message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="detect-scenarios"/>
+      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+    </metadata>
+    <detection cvrl:scenario-id="Simple">
+      <context>
+        <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-engine-error.xml"/>
+      </context>
+      <message>Scenario 'Simple' matched</message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="select-scenario"/>
+      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+    </metadata>
+    <detection cvrl:scenario-id="Simple">
+      <context>
+        <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-engine-error.xml"/>
+      </context>
+      <message>Scenario 'Simple' selected</message>
+      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>Simple</name><description><p>Nur Schemaprüfung.</p></description><namespace prefix="xvrl">http://www.xproc.org/ns/xvrl
+        </namespace><namespace prefix="test">
+            http://validator.kosit.de/test-sample</namespace><namespace prefix="rpt">http://validator.kosit.de/test-report</namespace><match>/test:simple</match><validateWithXmlSchema><resource><name>Sample Schema</name><location>simple.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Sample Schematron</name><location>simple-runtime-error.sch</location></resource></validateWithSchematron><createReport><id>Report for eInvoice</id><resource><name>Report for eInvoice</name><location>report.xsl</location></resource></createReport><createReport><id>Report for eInvoice2</id><resource><name>Report for eInvoice</name><location>report.xsl</location></resource></createReport><acceptMatch>count(//test:rejected) = 0</acceptMatch></scenario></message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="retrieve-artifacts"/>
+      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+    </metadata>
+    <detection cvrl:artifact-id="simple.xsd">
+      <context>
+        <location href="simple.xsd" cvrl:artifact-type="xsd"/>
+        <cvrl:hash cvrl:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvrl:hash>
+      </context>
+      <message>Artifact retrieved</message>
+    </detection>
+    <detection cvrl:artifact-id="simple-runtime-error.sch">
+      <context>
+        <location href="simple-runtime-error.sch" cvrl:artifact-type="schematron-schxslt2-xslt3"/>
+        <cvrl:hash cvrl:algorithm="SHA-512">3695478cdf445280e6efbd5ed251c1ea46fcf6d1c48dc560b3a648bc3bb9b789b3951f83fb03f2ffbc6b3ecab6d1b188055acac8040a6ac51a49bdee0e4dae53</cvrl:hash>
+      </context>
+      <message>Artifact retrieved</message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="prepare-rules"/>
+      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+      <validator name="schxslt"/>
+      <validator name="Saxon" version="12.10"/>
+    </metadata>
+    <detection cvrl:artifact-id="simple.xsd">
+      <context>
+        <location href="simple.xsd"/>
+      </context>
+      <message>Compiled (XML Schema)</message>
+    </detection>
+    <detection cvrl:artifact-id="simple-runtime-error.sch">
+      <context>
+        <location href="simple-runtime-error.sch"/>
+      </context>
+      <message>Compiled (Schematron via schxslt)</message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+      <schema href="simple.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
+    </metadata>
+    <detection>
+      <message>Rule set 'simple.xsd' applied without findings</message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+      <schema href="simple-runtime-error.sch" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+    </metadata>
+    <detection severity="error" code="rule-engine-error">
+      <message>Rule set 'simple-runtime-error.sch' could not be applied: Cannot convert string "asldkfj" to an integer</message>
+      <supplemental cvrl:role="java-trace">net.sf.saxon.s9api.SaxonApiException: Cannot convert string "asldkfj" to an integer
+	at net.sf.saxon.s9api.XsltTransformer.transform(XsltTransformer.java:371)
+	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applySchematron(ApplyRulesAction.java:200)
+	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java:175)
+	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java:160)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:91)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:155)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step7RuleEngineFails(CvrlUnhappyPathTest.java:296)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:528)
+	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:53)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:163)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:148)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:124)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:99)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:66)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:47)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:39)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invokeVoid(InterceptingExecutableInvoker.java:71)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$0(TestMethodTestDescriptor.java:219)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:215)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:157)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:70)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:176)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:139)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:139)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:139)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:36)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:52)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.executeEngine(EngineExecutionOrchestrator.java:256)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.failOrExecuteEngine(EngineExecutionOrchestrator.java:228)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:189)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:109)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:66)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:168)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:65)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:137)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:126)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:71)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$2(InterceptingLauncher.java:66)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:65)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:71)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.apache.maven.surefire.api.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:125)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.executeWithCancellationToken(LauncherAdapter.java:68)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.execute(LauncherAdapter.java:54)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:203)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:168)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:136)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: ValidationException: Cannot convert string "asldkfj" to an integer
+	at net.sf.saxon.type.ValidationFailure.makeException(ValidationFailure.java:410)
+	at net.sf.saxon.expr.CastExpression.doCast(CastExpression.java:389)
+	at net.sf.saxon.expr.CastExpression$CastExprElaborator.lambda$elaborateForItem$0(CastExpression.java:489)
+	at net.sf.saxon.expr.ValueComparison$ValueComparisonElaborator.lambda$elaborateForBoolean$5(ValueComparison.java:611)
+	at net.sf.saxon.expr.instruct.Choose$ChooseExprElaborator.lambda$elaborateForPush$10(Choose.java:1177)
+	at net.sf.saxon.expr.instruct.Block$BlockElaborator.lambda$elaborateForPush$2(Block.java:867)
+	at net.sf.saxon.expr.instruct.FixedElement$FixedElementElaborator.lambda$elaborateForPush$0(FixedElement.java:641)
+	at net.sf.saxon.expr.instruct.Block$BlockElaborator.lambda$elaborateForPush$1(Block.java:851)
+	at net.sf.saxon.expr.instruct.Choose$ChooseExprElaborator.lambda$elaborateForPush$11(Choose.java:1183)
+	at net.sf.saxon.expr.instruct.Block$BlockElaborator.lambda$elaborateForPush$1(Block.java:853)
+	at net.sf.saxon.expr.instruct.TemplateRule.applyLeavingTail(TemplateRule.java:376)
+	at net.sf.saxon.trans.Mode.handleRuleNotNull(Mode.java:587)
+	at net.sf.saxon.trans.Mode.applyTemplates(Mode.java:521)
+	at net.sf.saxon.expr.instruct.ApplyTemplates$ApplyTemplatesPackage.processLeavingTail(ApplyTemplates.java:553)
+	at net.sf.saxon.expr.Expression.dispatchTailCall(Expression.java:981)
+	at net.sf.saxon.expr.instruct.ApplyTemplates$ApplyTemplatesElaborator.lambda$elaborateForPush$1(ApplyTemplates.java:656)
+	at net.sf.saxon.expr.instruct.Block$BlockElaborator.lambda$elaborateForPush$1(Block.java:853)
+	at net.sf.saxon.expr.instruct.FixedElement$FixedElementElaborator.lambda$elaborateForPush$0(FixedElement.java:641)
+	at net.sf.saxon.expr.instruct.NamedTemplate.expand(NamedTemplate.java:247)
+	at net.sf.saxon.expr.instruct.CallTemplate$CallTemplateElaborator.lambda$elaborateForPush$1(CallTemplate.java:633)
+	at net.sf.saxon.expr.instruct.FixedElement$FixedElementElaborator.lambda$elaborateForPush$0(FixedElement.java:641)
+	at net.sf.saxon.expr.elab.ComplexNodePushElaborator.lambda$elaborateForPull$0(ComplexNodePushElaborator.java:35)
+	at net.sf.saxon.expr.elab.EagerPullEvaluator.evaluate(EagerPullEvaluator.java:37)
+	at net.sf.saxon.expr.LetExpression$LetExprElaborator.lambda$setAllVariables$0(LetExpression.java:857)
+	at net.sf.saxon.expr.LetExpression$LetExprElaborator.lambda$elaborateForPush$6(LetExpression.java:958)
+	at net.sf.saxon.expr.instruct.Choose$ChooseExprElaborator.lambda$elaborateForPush$11(Choose.java:1183)
+	at net.sf.saxon.expr.instruct.Block$BlockElaborator.lambda$elaborateForPush$1(Block.java:853)
+	at net.sf.saxon.expr.instruct.TemplateRule.applyLeavingTail(TemplateRule.java:376)
+	at net.sf.saxon.trans.Mode.handleRuleNotNull(Mode.java:587)
+	at net.sf.saxon.trans.Mode.applyTemplates(Mode.java:521)
+	at net.sf.saxon.trans.XsltController.applyTemplates(XsltController.java:684)
+	at net.sf.saxon.s9api.AbstractXsltTransformer.applyTemplatesToSource(AbstractXsltTransformer.java:431)
+	at net.sf.saxon.s9api.XsltTransformer.transform(XsltTransformer.java:359)
+	... 87 more
+</supplemental>
+    </detection>
+    <digest valid="false" error-count="1" error-codes="rule-engine-error"/>
+  </report>
+</reports>

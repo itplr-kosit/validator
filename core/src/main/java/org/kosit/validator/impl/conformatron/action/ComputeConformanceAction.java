@@ -22,6 +22,7 @@ import org.kosit.validator.impl.conformatron.model.ConformanceStatement;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.model.SubjectDetection;
 
 /**
  * Step 8 of the canonical pipeline, {@code COMPUTE_CONFORMANCE} (see
@@ -142,15 +143,21 @@ public class ComputeConformanceAction implements CTAction {
         return detections.getAll().stream().anyMatch(d -> ApplyRulesAction.CODE_STEP_SKIPPED.equals(d.getCode()));
     }
 
+    /**
+     * The verdict is what a consumer acts on, so it travels as an attribute rather than being derivable only from the
+     * detection code; target and rule set are named and located the same way step 5 names its artifacts.
+     */
     private static CTDetection toDetection(final CTConformanceStatement statement, final CTPreparedRuleSet ruleSet,
             final CTDetectionList ruleDetections, final String resourceId) {
         final String targetName = statement.getTarget().getTargetName();
         final String href = ruleSet.getArtifactReference().getValidationArtifactReference().toString();
-        if (statement.getResult().isConformant()) {
-            return Detection.of(CTStandardSeverity.NONE, CODE_TARGET_CONFORMANT, DetectionLocation.of(resourceId),
-                    "Target '" + targetName + "' conformant (rule set '" + href + "')");
-        }
-        return Detection.of(CTStandardSeverity.ERROR, CODE_TARGET_NON_CONFORMANT, DetectionLocation.of(resourceId),
-                "Target '" + targetName + "' non-conformant: " + statement.getRationale());
+        final boolean conformant = statement.getResult().isConformant();
+        final Detection plain = conformant
+                ? Detection.of(CTStandardSeverity.NONE, CODE_TARGET_CONFORMANT, DetectionLocation.of(resourceId),
+                        "Target '" + targetName + "' conformant")
+                : Detection.of(CTStandardSeverity.ERROR, CODE_TARGET_NON_CONFORMANT, DetectionLocation.of(resourceId),
+                        "Target '" + targetName + "' non-conformant: " + statement.getRationale());
+        return SubjectDetection.about(plain).identifiedBy(SubjectDetection.ATTR_TARGET_ID, statement.getTarget().getTargetID())
+                .locatedAt(href).with(SubjectDetection.ATTR_CONFORMANCE, statement.getResult().name()).build();
     }
 }

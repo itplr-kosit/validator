@@ -2,20 +2,20 @@
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
   <metadata>
     <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-08-27T14:43:24+02:00</timestamp>
+    <timestamp>2026-08-31T16:15:24+02:00</timestamp>
     <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
     <document href="config-cases/instances/processing-valid/ubl006.xml"/>
   </metadata>
   <report>
     <metadata>
-      <!-- Offene Frage: how to deal with reports from other validator software -->
       <creator name="parse-document"/>
-      <timestamp>2026-08-27T14:43:24+02:00</timestamp>
+      <timestamp>2026-08-31T16:15:24+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="info">
-      <message xml:id="parse-document-hash" cvrl:algorithm="SHA-512">6d0df0658068e0b6a63e8a828221a1dc3d312d4d6dd02507ff51f5255aff5c96e963d0b78ae787a6d69fcac0c0cadc376bc2ffca54cad4c4aa0d8c3a44ed867f</message>
-      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom" cvrl:source-encoding="UTF-8"><Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+    <detection>
+      <context>
+        <cvrl:hash cvrl:algorithm="SHA-512">6d0df0658068e0b6a63e8a828221a1dc3d312d4d6dd02507ff51f5255aff5c96e963d0b78ae787a6d69fcac0c0cadc376bc2ffca54cad4c4aa0d8c3a44ed867f</cvrl:hash>
+      </context>
+      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
   <!-- No scenario matches without CustomizationID -->
   <!--<cbc:CustomizationID>urn:cen.eu:en16931:2017</cbc:CustomizationID>-->
   <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
@@ -547,15 +547,16 @@
   </cac:InvoiceLine>
 </Invoice></message>
     </detection>
+    <digest valid="true"/>
   </report>
   <report>
     <metadata>
       <creator name="detect-scenarios"/>
-      <timestamp>2026-08-27T14:43:24+02:00</timestamp>
+      <timestamp>2026-08-31T16:15:24+02:00</timestamp>
     </metadata>
-    <digest valid="false" worst-severity="error" fatal-error-count="1" error-count="1" warning-count="0" error-codes="no-scenario-matched"/>
     <detection severity="error" code="no-scenario-matched">
       <message>None of the configured scenarios matches the document</message>
     </detection>
+    <digest valid="false" error-count="1" error-codes="no-scenario-matched"/>
   </report>
 </reports>

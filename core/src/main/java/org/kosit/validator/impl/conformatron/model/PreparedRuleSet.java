@@ -43,6 +43,8 @@ public final class PreparedRuleSet implements CTPreparedRuleSet {
 
     private final CTCompiledValidationArtifact<?> compiledArtifact;
 
+    private String transpilerId;
+
     private PreparedRuleSet(final CTValidationType engineType, final String engineVersion, final String outputFormatName,
             final String outputFormatVersion, final String phase, final CTValidationArtifactReference artifactReference,
             final CTCompiledValidationArtifact<?> compiledArtifact) {
@@ -85,6 +87,25 @@ public final class PreparedRuleSet implements CTPreparedRuleSet {
     public static PreparedRuleSet xsd(final CTValidationArtifactReference artifactReference,
             final CTCompiledValidationArtifact<?> compiledArtifact) {
         return new PreparedRuleSet(CTStandardValidationType.XSD, null, null, null, null, artifactReference, compiledArtifact);
+    }
+
+    /**
+     * The Schematron transpiler that produced the executable ({@code schxslt}, {@code iso-schematron}); the report
+     * names it as the validator of the preparation step. {@code null} for rule sets that need no transpilation.
+     *
+     * @return the transpiler id. May be <code>null</code>.
+     */
+    public String getTranspilerId() {
+        return this.transpilerId;
+    }
+
+    /**
+     * @param transpilerId the transpiler that produced the executable
+     * @return this for chaining
+     */
+    public PreparedRuleSet withTranspilerId(final String transpilerId) {
+        this.transpilerId = transpilerId;
+        return this;
     }
 
     @Override
