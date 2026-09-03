@@ -13,7 +13,8 @@ import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.ScenarioDetection;
+import org.kosit.validator.impl.conformatron.model.SubjectDetection;
+import org.kosit.validator.impl.conformatron.util.ScenarioXml;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 
 /**
@@ -81,9 +82,11 @@ public class SelectScenarioAction implements CTAction {
         final CTScenarioMatch selected = detectedScenarios.get(0);
         final Detection plain = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_SELECTED, DetectionLocation.of(resourceId),
                 "Scenario '" + selected.getScenarioID() + "' selected");
-        // the selected scenario additionally carries its configuration so the report can embed the scenario itself
+        // the selected scenario additionally carries its own XML, so the report shows which rules were applied
         final CTDetection detection = selected instanceof final ScenarioMatch match
-                ? ScenarioDetection.selected(plain, match.getScenarioID(), match.getConfigurationLocation(), match.getConfiguration())
+                ? SubjectDetection.about(plain).identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID())
+                        .locatedByXPath(match.getConfigurationLocation()).inFile(match.getDefinitionFile())
+                        .embedding(match.getConfiguration() == null ? null : ScenarioXml.toXmlBytes(match.getConfiguration())).build()
                 : plain;
         return new SelectScenarioResult(CTStepResult.SUCCESS, selected, DetectionList.of(detection));
     }

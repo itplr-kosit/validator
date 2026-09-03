@@ -49,7 +49,7 @@ public class DetectScenariosExamplesTest {
         assertThat(parsed.isSuccess()).isTrue();
 
         final DetectScenariosResult detected = new DetectScenariosAction(new ScenarioRepository(configuration),
-                TestHelper.getTestProcessor()).execute(parsed.getParsedSource());
+                TestHelper.getTestProcessor()).withDefinitionFile(scenarios.toString()).execute(parsed.getParsedSource());
         final SelectScenarioAction.SelectScenarioResult selected = detected.isSuccess()
                 ? new SelectScenarioAction().execute(detected.matches())
                 : null;
@@ -58,6 +58,9 @@ public class DetectScenariosExamplesTest {
         this.writer.write(document.getPath().substring(document.getPath().lastIndexOf('/') + 1),
                 new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null), out);
         writeExample(exampleName, out.toByteArray());
+
+        // CVRL is a profile of XVRL: a report that does not validate against it is not a CVRL report
+        CvrlSchema.assertValid(out.toByteArray());
 
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);

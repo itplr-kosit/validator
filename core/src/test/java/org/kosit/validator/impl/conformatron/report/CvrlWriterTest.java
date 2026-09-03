@@ -7,6 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.net.URI;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -79,6 +81,9 @@ public class CvrlWriterTest {
     private Document serialize(final URI document) throws Exception {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         this.writer.write("test-document.xml", runPipeline(document), out);
+        // CVRL is a profile of XVRL: a report that does not validate against it is not a CVRL report
+        CvrlSchema.assertValid(out.toByteArray());
+
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
@@ -96,6 +101,16 @@ public class CvrlWriterTest {
     }
 
     @Test
+    public void testTimestampAlwaysCarriesSeconds() {
+        // the bug this guards against only appears when the seconds happen to be zero, so it needs a fixed moment:
+        // OffsetDateTime.toString() drops them, and xs:dateTime rejects the result
+        final OffsetDateTime onTheMinute = OffsetDateTime.of(2026, 8, 31, 15, 48, 0, 0, ZoneOffset.ofHours(2));
+
+        assertThat(CvrlWriter.timestamp(onTheMinute)).isEqualTo("2026-08-31T15:48:00+02:00");
+        assertThat(CvrlWriter.timestamp(onTheMinute.withSecond(7))).isEqualTo("2026-08-31T15:48:07+02:00");
+    }
+
+    @Test
     public void testCompletedRunSerializesOneReportPerStepExecution() throws Exception {
         final Document cvrl = serialize(Simple.SIMPLE_VALID);
         final Element root = cvrl.getDocumentElement();
@@ -107,26 +122,27 @@ public class CvrlWriterTest {
         final Element document = (Element) root.getElementsByTagNameNS(NS, "document").item(0);
         assertThat(document.getAttribute("href")).isEqualTo("test-document.xml");
         assertThat(document.getAttributeNS(NS_CVRL, "checksum")).isEmpty();
-        // document-parsed carries two messages — hash first, then the embedded payload
+        // the document hash is context of the detection, not one of its messages
         final Element parseReport = reports(cvrl).get(0);
+        final Element hash = (Element) parseReport.getElementsByTagNameNS(NS_CVRL, "hash").item(0);
+        assertThat(hash.getAttributeNS(NS_CVRL, "algorithm")).isEqualTo("SHA-512");
+        assertThat(hash.getTextContent()).matches("[0-9a-f]{128}");
+        assertThat(parseReport.getElementsByTagNameNS(NS, "context").getLength()).isEqualTo(1);
+        // exactly one message is left: the document itself
         final NodeList messages = parseReport.getElementsByTagNameNS(NS, "message");
-        assertThat(messages.getLength()).isEqualTo(2);
-        final Element hashMessage = (Element) messages.item(0);
-        // messages are identified by xml:id so consumers never depend on their order
-        assertThat(hashMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_DOCUMENT_HASH);
-        assertThat(hashMessage.getAttributeNS(NS_CVRL, "algorithm")).isEqualTo("SHA-512");
-        assertThat(hashMessage.getTextContent()).matches("[0-9a-f]{128}");
-        final Element payloadMessage = (Element) messages.item(1);
+        assertThat(messages.getLength()).isEqualTo(1);
+        final Element payloadMessage = (Element) messages.item(0);
         assertThat(payloadMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_DOCUMENT_CONTENT);
         assertThat(payloadMessage.getAttributeNS(NS_CVRL, "mime-type")).isEqualTo("application/xml");
-        // UTF-8 XML is embedded as a DOM fragment, and the declared encoding is always reported
+        // UTF-8 XML goes in as a DOM fragment, and then the source encoding says nothing worth writing
         assertThat(payloadMessage.getAttributeNS(NS_CVRL, "encoding")).isEqualTo(CvrlWriter.ENCODING_DOM);
-        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "source-encoding")).isEqualTo("UTF-8");
+        assertThat(payloadMessage.hasAttributeNS(NS_CVRL, "source-encoding")).isFalse();
         // the parsed document is embedded as element content, not as escaped text
         assertThat(payloadMessage.getElementsByTagName("*").getLength()).isGreaterThan(0);
-        // no code that merely restates the creator name
+        // a statement that the step ran carries neither a code nor a severity — both would suggest a finding
         final Element parseDetection = (Element) parseReport.getElementsByTagNameNS(NS, "detection").item(0);
         assertThat(parseDetection.hasAttribute("code")).isFalse();
+        assertThat(parseDetection.hasAttribute("severity")).isFalse();
         // 6 steps + APPLY_RULES twice (xsd + schematron rule set) = 8 reports
         assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly(CTActionType.PARSE_DOCUMENT.getName(),
                 CTActionType.DETECT_SCENARIOS.getName(), CTActionType.SELECT_SCENARIO.getName(), CTActionType.RETRIEVE_ARTIFACTS.getName(),
@@ -136,7 +152,8 @@ public class CvrlWriterTest {
         final Element schematronReport = reports(cvrl).get(6);
         final Element schema = (Element) schematronReport.getElementsByTagNameNS(NS, "schema").item(0);
         assertThat(schema.getAttribute("href")).isEqualTo("simple.sch");
-        assertThat(schema.getAttribute("language")).isEqualTo("Schematron");
+        // XVRL has no "language" attribute — the rule language is stated by its namespace, and it is required
+        assertThat(schema.getAttribute("schematypens")).isEqualTo(CvrlWriter.SCHEMATYPENS_SCHEMATRON);
         assertThat(schema.getAttributeNS(NS_CVRL, "phase")).isEqualTo("#ALL");
     }
 
@@ -145,7 +162,7 @@ public class CvrlWriterTest {
         final Document cvrl = serialize(Simple.SIMPLE_LATIN1);
 
         final NodeList messages = reports(cvrl).get(0).getElementsByTagNameNS(NS, "message");
-        final Element payloadMessage = (Element) messages.item(1);
+        final Element payloadMessage = (Element) messages.item(0);
         // transcoding into the UTF-8 report would lose the original bytes, so the source travels base64
         assertThat(payloadMessage.getAttributeNS(NS_CVRL, "encoding")).isEqualTo(CvrlWriter.ENCODING_BASE64);
         assertThat(payloadMessage.getAttributeNS(NS_CVRL, "source-encoding")).isEqualTo("ISO-8859-1");
@@ -213,6 +230,8 @@ public class CvrlWriterTest {
         }
         final Element digest = (Element) cvrl.getElementsByTagNameNS(NS, "digest").item(0);
         assertThat(digest.getAttribute("valid")).isEqualTo("false");
-        assertThat(digest.getAttribute("worst-severity")).isEqualTo("error");
+        assertThat(digest.getAttribute("error-count")).isEqualTo("1");
+        // one detection already states its severity, so the digest does not repeat it
+        assertThat(digest.hasAttribute("worst-severity")).isFalse();
     }
 }

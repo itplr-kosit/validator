@@ -9,7 +9,7 @@ OUT=comparison.md
 {
   echo "# Vergleich Validator 1.6 vs. kanonische Pipeline 2.0 (Steps 2–8)"
   echo
-  echo "Erzeugt: $(date -Iseconds) · Inputs: \`input/\` (Szenarien, Repository, 86 Instanzen) · Outputs: \`v1_6/reports/\`, \`v2_0/reports/\`"
+  echo "Erzeugt: $(date -Iseconds) · Inputs: \`input/\` (Szenarien, Repository, $(find v1_6/reports -name '*-report.xml' | wc -l | tr -d ' ') Instanzen) · Outputs: \`v1_6/reports/\`, \`v2_0/reports/\`"
   echo
   echo "Vergleichslogik: 1.6-Verdikt = \`rep:accept\`/\`rep:reject\` aus dem varl-Report; 1.6-Findings = \`rep:message\` (code@level)."
   echo "2.0-Verdikt = Conformance über alle RuleSets; 2.0-Findings = Detections aus APPLY_RULES (code@severity, ohne Pipeline-INFO-Trace)."
@@ -48,6 +48,8 @@ while IFS= read -r xml; do
   verdictmatch="NO"
   { [ "$v16" = "ACCEPT" ] && [ "$v20" = "CONFORMANT" ]; } && verdictmatch="yes"
   { [ "$v16" = "REJECT" ] && [ "$v20" = "NON_CONFORMANT" ]; } && verdictmatch="yes"
+  # 1.6 meldet Processing-Error/No-Match als REJECT; 2.0 als abgebrochenen Lauf — dieselbe Entscheidung
+  { [ "$v16" = "REJECT" ] && [[ "$v20" == FAILED@* ]]; } && verdictmatch="yes"
   if [ "$verdictmatch" = "yes" ]; then same=$((same+1)); match="✅"; else diff=$((diff+1)); match="❌"; fi
 
   echo "| $name | $v16 | $v20 | $match | ${f16:--} | ${f20:--} |" >> "$OUT"

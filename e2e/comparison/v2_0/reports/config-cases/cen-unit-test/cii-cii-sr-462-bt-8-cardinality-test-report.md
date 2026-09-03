@@ -16,16 +16,14 @@
 | none | `document-parsed` | SHA-512=fff61e92893da0358bc877a4c1ddad17bd045d2737df7d9631df104a72bd4ffab3939ef0eb6471833f5c34f89478e965b415634e761e538e3339ef516cf23923 |
 | none | `scenario-matched` | Scenario 'EN16931 XRechnung (CII)' matched |
 | none | `scenario-selected` | Scenario 'EN16931 XRechnung (CII)' selected |
-| none | `artifacts-retrieved` | Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' retrieved as xsd |
-| none | `artifacts-retrieved` | Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' retrieved as schematron-xslt2 |
-| none | `artifacts-retrieved` | Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' retrieved as schematron-xslt2 |
-| none | `rule-compiled` | Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' compiled (XML Schema) |
-| none | `rule-precompiled` | Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' passed through (transpiled ahead of time) |
-| none | `rule-precompiled` | Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' passed through (transpiled ahead of time) |
+| none | `artifacts-retrieved` | Artifact retrieved |
+| none | `artifacts-retrieved` | Artifact retrieved |
+| none | `artifacts-retrieved` | Artifact retrieved |
+| none | `rule-compiled` | Compiled (XML Schema) |
 | none | `rules-applied` | Rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' applied without findings |
-| error | `CII-SR-462` | [CII-SR-462] - Only one DueDateTypeCode shall be present (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeSettlement[1]) |
-| error | `BR-CL-06` | [BR-CL-06]-Value added tax point date code MUST be coded using a restriction of UNTDID 2475. (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeSettlement[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableTradeTax[2]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}DueDateTypeCode[1]) |
+| error | `CII-SR-462` | [CII-SR-462] - Only one DueDateTypeCode shall be present |
+| error | `BR-CL-06` | [BR-CL-06]-Value added tax point date code MUST be coded using a restriction of UNTDID 2475. |
 | none | `rules-applied` | Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' applied without findings |
-| none | `target-conformant` | Target 'EN16931 XRechnung (CII)' conformant (rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd') |
+| none | `target-conformant` | Target 'EN16931 XRechnung (CII)' conformant |
 | error | `target-non-conformant` | Target 'EN16931 XRechnung (CII)' non-conformant: 2 error detection(s) from rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' |
-| none | `target-conformant` | Target 'EN16931 XRechnung (CII)' conformant (rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl') |
+| none | `target-conformant` | Target 'EN16931 XRechnung (CII)' conformant |

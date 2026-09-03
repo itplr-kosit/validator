@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.jspecify.annotations.Nullable;
 import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.action.CTStepResult;
@@ -20,6 +21,8 @@ import org.conformatron.api.model.validation.CTValidationType;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
+import org.kosit.validator.impl.conformatron.model.SubjectDetection;
+import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.model.ResolvedValidationArtifact;
 import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
 import org.slf4j.Logger;
@@ -137,6 +140,26 @@ public class RetrieveArtifactsAction implements CTAction {
                 new DetectionList(detections));
     }
 
+    /**
+     * Names and locates the artifact a detection is about, so a consumer can identify and fetch it without parsing the
+     * message text. Applies to failures too — knowing <i>which</i> artifact is missing is the whole point there.
+     */
+    private static CTDetection about(final String href, final @Nullable String artifactType, final Detection detection) {
+        return about(href, artifactType, null, detection);
+    }
+
+    /**
+     * Names, locates and — when the bytes were read — fingerprints the artifact a detection is about. The hash is what
+     * makes the report provable: without it nothing shows which version of a rule set the validation ran against.
+     */
+    private static CTDetection about(final String href, final @Nullable String artifactType, final byte @Nullable [] content,
+            final Detection detection) {
+        return SubjectDetection.about(detection).identifiedBy(SubjectDetection.ATTR_ARTIFACT_ID, href).locatedAt(href)
+                .describingLocation(SubjectDetection.ATTR_ARTIFACT_TYPE, artifactType)
+                .hashed(content == null ? null : ReadResource.HASH_ALGORITHM_NAME, content == null ? null : ReadResource.hashHex(content))
+                .build();
+    }
+
     private void retrieve(final CTValidationArtifactReference reference, final String resourceId,
             final List<CTResolvedValidationArtifact> artifacts, final List<CTDetection> detections) {
         final String href = reference.getValidationArtifactReference().toString();
@@ -146,24 +169,24 @@ public class RetrieveArtifactsAction implements CTAction {
             final CTValidationType validationType = determineValidationType(reference);
             final byte[] content = this.resolver.read(resolved);
             if (content.length == 0) {
-                detections.add(Detection.of(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.of(resourceId),
-                        "Artifact '" + href + "' is empty"));
+                detections.add(about(href, null, Detection.of(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT,
+                        DetectionLocation.of(resourceId), "Artifact is empty")));
                 return;
             }
             artifacts.add(ResolvedValidationArtifact.loaded(reference, validationType, content));
-            detections.add(Detection.of(CTStandardSeverity.NONE, CODE_ARTIFACTS_RETRIEVED, DetectionLocation.of(resourceId),
-                    "Artifact '" + href + "' retrieved as " + validationType.getID()));
+            detections.add(about(href, validationType.getID(), content, Detection.of(CTStandardSeverity.NONE, CODE_ARTIFACTS_RETRIEVED,
+                    DetectionLocation.of(resourceId), "Artifact retrieved")));
         } catch (final ArtifactResolver.AccessDeniedException e) {
             LOGGER.error("Rejected artifact reference {}", href, e);
-            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_ACCESS_DENIED, DetectionLocation.of(resourceId),
-                    e.getMessage(), e));
+            detections.add(about(href, null, new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_ACCESS_DENIED,
+                    DetectionLocation.of(resourceId), e.getMessage(), e)));
         } catch (final IOException e) {
             LOGGER.error("Could not read artifact {}", href, e);
-            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_MISSING, DetectionLocation.of(resourceId),
-                    "Artifact '" + href + "' could not be read: " + e.getMessage(), e));
+            detections.add(about(href, null, new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_MISSING,
+                    DetectionLocation.of(resourceId), "Artifact could not be read: " + e.getMessage(), e)));
         } catch (final IllegalArgumentException e) {
-            detections.add(new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT, DetectionLocation.of(resourceId),
-                    "Artifact '" + href + "' is not usable: " + e.getMessage(), e));
+            detections.add(about(href, null, new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT,
+                    DetectionLocation.of(resourceId), "Artifact is not usable: " + e.getMessage(), e)));
         }
     }
 

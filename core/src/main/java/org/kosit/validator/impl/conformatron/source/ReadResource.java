@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.HexFormat;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
@@ -59,6 +60,21 @@ public final class ReadResource implements CTReadResource {
             return new ReadResource(res, HASH_ALGORITHM_NAME, resHelper, srcLength -> srcLength < 0 || srcLength > MAX_IN_MEMORY_BYTES);
         } catch (final NoSuchAlgorithmException e) {
             // Should never happen
+            throw new IllegalStateException("Unknown hash algorithm name '" + HASH_ALGORITHM_NAME + "'", e);
+        }
+    }
+
+    /**
+     * Hashes an already-read byte array with the same algorithm the read resources use, so a hash in a report always
+     * means the same thing no matter which step produced it (ADR-003).
+     *
+     * @param content the bytes to hash. May not be <code>null</code>.
+     * @return the hash as lower-case hex. Never <code>null</code>.
+     */
+    public static @NonNull String hashHex(final byte @NonNull [] content) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance(HASH_ALGORITHM_NAME).digest(content));
+        } catch (final NoSuchAlgorithmException e) {
             throw new IllegalStateException("Unknown hash algorithm name '" + HASH_ALGORITHM_NAME + "'", e);
         }
     }

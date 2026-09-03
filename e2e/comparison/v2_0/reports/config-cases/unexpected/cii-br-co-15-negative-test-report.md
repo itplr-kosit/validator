@@ -16,16 +16,14 @@
 | none | `document-parsed` | SHA-512=036367184abed552e53beac030269e101dda3da70fbf85bb7c2a1c7cb21a5a93bce64d068abb6ef24084b83a216792f68c9b72d509347a382315e54baa1a4a65 |
 | none | `scenario-matched` | Scenario 'EN16931 XRechnung (CII)' matched |
 | none | `scenario-selected` | Scenario 'EN16931 XRechnung (CII)' selected |
-| none | `artifacts-retrieved` | Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' retrieved as xsd |
-| none | `artifacts-retrieved` | Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' retrieved as schematron-xslt2 |
-| none | `artifacts-retrieved` | Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' retrieved as schematron-xslt2 |
-| none | `rule-compiled` | Artifact 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' compiled (XML Schema) |
-| none | `rule-precompiled` | Artifact 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' passed through (transpiled ahead of time) |
-| none | `rule-precompiled` | Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' passed through (transpiled ahead of time) |
+| none | `artifacts-retrieved` | Artifact retrieved |
+| none | `artifacts-retrieved` | Artifact retrieved |
+| none | `artifacts-retrieved` | Artifact retrieved |
+| none | `rule-compiled` | Compiled (XML Schema) |
 | none | `rules-applied` | Rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' applied without findings |
-| error | `BR-53` | [BR-53]-If the VAT accounting currency code (BT-6) is present, then the Invoice total VAT amount in accounting currency (BT-111) shall be provided. (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeSettlement[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}SpecifiedTradeSettlementHeaderMonetarySummation[1]) |
-| error | `PEPPOL-EN16931-R005` | VAT accounting currency code MUST be different from invoice currency code when provided. (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeSettlement[1]) |
-| error | `PEPPOL-EN16931-R054` | Only one tax total amount must be provided where currency id equals tax currency code, if tax currency code (BT-6) is provided. (at /Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeSettlement[1]) |
-| none | `target-conformant` | Target 'EN16931 XRechnung (CII)' conformant (rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd') |
+| error | `BR-53` | [BR-53]-If the VAT accounting currency code (BT-6) is present, then the Invoice total VAT amount in accounting currency (BT-111) shall be provided. |
+| error | `PEPPOL-EN16931-R005` | VAT accounting currency code MUST be different from invoice currency code when provided. |
+| error | `PEPPOL-EN16931-R054` | Only one tax total amount must be provided where currency id equals tax currency code, if tax currency code (BT-6) is provided. |
+| none | `target-conformant` | Target 'EN16931 XRechnung (CII)' conformant |
 | error | `target-non-conformant` | Target 'EN16931 XRechnung (CII)' non-conformant: 1 error detection(s) from rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' |
 | error | `target-non-conformant` | Target 'EN16931 XRechnung (CII)' non-conformant: 2 error detection(s) from rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' |

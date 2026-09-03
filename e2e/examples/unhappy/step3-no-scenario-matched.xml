@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
+  <metadata>
+    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
+    <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+    <document href="unknown.xml"/>
+  </metadata>
+  <report>
+    <metadata>
+      <creator name="parse-document"/>
+      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+    </metadata>
+    <detection>
+      <context>
+        <cvrl:hash cvrl:algorithm="SHA-512">2a02bfd700de11401b81a0d38d424c2755379b5963e9dba4b4ebe44bd07c49bf42a233025187132841b8756d1de4efd935a4c963dfbc2ac129b2e4188a28e5af</cvrl:hash>
+      </context>
+      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><existiertNicht xmlns="http://validator.kosit.de/unbekannt">
+    <inner>asldkfj</inner>
+</existiertNicht></message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="detect-scenarios"/>
+      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+    </metadata>
+    <detection severity="error" code="no-scenario-matched">
+      <message>None of the configured scenarios matches the document</message>
+    </detection>
+    <digest valid="false" error-count="1" error-codes="no-scenario-matched"/>
+  </report>
+</reports>

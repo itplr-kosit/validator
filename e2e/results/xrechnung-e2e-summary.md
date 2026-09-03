@@ -1,6 +1,6 @@
 # XRechnung E2E — kanonische Pipeline Steps 2–8
 
-Erzeugt: 2026-08-27T14:43:46.458009800 · Instanzen: 150
+Erzeugt: 2026-08-31T16:16:07.005440700 · Instanzen: 150
 
 **Bekannte Lücken dieses Laufs** (bei der Bewertung berücksichtigen):
 - `customLevel`-Overrides werden von Step 7 angewandt (effektive Severity; Original als `cvrl:original-severity`).
