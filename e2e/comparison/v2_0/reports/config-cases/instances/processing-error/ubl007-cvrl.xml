@@ -1,50 +1,47 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
-  <metadata>
-    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-08-31T16:15:13+02:00</timestamp>
-    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
-    <document href="config-cases/instances/processing-error/ubl007.xml"/>
-  </metadata>
-  <report>
     <metadata>
-      <creator name="parse-document"/>
-      <timestamp>2026-08-31T16:15:13+02:00</timestamp>
+        <timestamp>2026-09-03T21:22:31+02:00</timestamp>
+        <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+        <document href="config-cases/instances/processing-error/ubl007.xml"/>
     </metadata>
-    <detection severity="error" code="not-wellformed">
-      <context>
-        <location line="536" column="1"/>
-      </context>
-      <message>XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.</message>
-      <supplemental cvrl:role="java-trace">org.xml.sax.SAXParseException; systemId: file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/instances/config-cases/instances/processing-error/ubl007.xml; lineNumber: 536; columnNumber: 1; XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.
-	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:204)
-	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(ErrorHandlerWrapper.java:178)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:400)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:327)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(XMLScanner.java:1465)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.endEntity(XMLDocumentFragmentScannerImpl.java:952)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.endEntity(XMLDocumentScannerImpl.java:592)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLEntityManager.endEntity(XMLEntityManager.java:1560)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLEntityScanner.load(XMLEntityScanner.java:1720)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLEntityScanner.skipChar(XMLEntityScanner.java:1375)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2772)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:635)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl.next(XMLNSDocumentScannerImpl.java:113)
-	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:551)
-	at java.xml/com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:890)
-	at java.xml/com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:826)
-	at java.xml/com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:137)
-	at java.xml/com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(DOMParser.java:248)
-	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)
-	at java.xml/javax.xml.parsers.DocumentBuilder.parse(DocumentBuilder.java:151)
-	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:86)
-	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.runSteps(XRechnungE2ERunner.java:189)
-	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:175)
-	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.main(XRechnungE2ERunner.java:130)
-	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:279)
-	at java.base/java.lang.Thread.run(Thread.java:1474)
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:31+02:00</timestamp>
+            <creator name="parse-document"/>
+        </metadata>
+        <detection severity="error" code="not-wellformed">
+            <message>XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.</message>
+            <supplemental role="java-trace">org.xml.sax.SAXParseException; systemId: file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/instances/config-cases/instances/processing-error/ubl007.xml; lineNumber: 536; columnNumber: 1; XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:204)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(ErrorHandlerWrapper.java:178)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:400)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:327)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(XMLScanner.java:1465)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.endEntity(XMLDocumentFragmentScannerImpl.java:952)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.endEntity(XMLDocumentScannerImpl.java:592)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLEntityManager.endEntity(XMLEntityManager.java:1560)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLEntityScanner.load(XMLEntityScanner.java:1720)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLEntityScanner.skipChar(XMLEntityScanner.java:1375)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2772)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:635)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl.next(XMLNSDocumentScannerImpl.java:113)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:551)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:890)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:826)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:137)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(DOMParser.java:248)&#13;
+	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)&#13;
+	at java.xml/javax.xml.parsers.DocumentBuilder.parse(DocumentBuilder.java:151)&#13;
+	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:86)&#13;
+	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.runSteps(XRechnungE2ERunner.java:189)&#13;
+	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:175)&#13;
+	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.main(XRechnungE2ERunner.java:130)&#13;
 </supplemental>
-    </detection>
-    <digest valid="false" error-count="1" error-codes="not-wellformed"/>
-  </report>
+            <context>
+                <location line="536" column="1"/>
+            </context>
+        </detection>
+        <digest valid="false" error-count="1" error-codes="not-wellformed"/>
+    </report>
 </reports>

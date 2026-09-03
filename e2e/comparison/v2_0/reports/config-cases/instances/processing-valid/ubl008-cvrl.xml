@@ -1,22 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="COMPLETED">
-  <metadata>
-    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-08-31T16:15:26+02:00</timestamp>
-    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
-    <document href="config-cases/instances/processing-valid/ubl008.xml"/>
-  </metadata>
-  <report>
     <metadata>
-      <creator name="parse-document"/>
-      <timestamp>2026-08-31T16:15:26+02:00</timestamp>
+        <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+        <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+        <document href="config-cases/instances/processing-valid/ubl008.xml"/>
     </metadata>
-    <detection>
-      <context>
-        <cvrl:hash cvrl:algorithm="SHA-512">5e3062fbd1b75acaed3296f666cf2c0f5a5389c6709adfa62751109aab671bdad18d65c1b410c2f776dbc140f238762c7f4d38cde00456517cb6f4a52db34a34</cvrl:hash>
-      </context>
-      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><CreditNote xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2">
-  <!-- Gets replaced by ant build during test -->
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+            <creator name="parse-document"/>
+        </metadata>
+        <detection>
+            <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+                <CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2">
+  
   <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>
   <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
   <cbc:ID>12115118</cbc:ID>
@@ -122,219 +119,266 @@
   <cac:CreditNoteLine>
     <cbc:ID>1</cbc:ID>
   </cac:CreditNoteLine>
-</CreditNote></message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="detect-scenarios"/>
-      <timestamp>2026-08-31T16:15:26+02:00</timestamp>
-    </metadata>
-    <detection cvrl:scenario-id="EN16931 XRechnung (UBL CreditNote)">
-      <context>
-        <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL CreditNote)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
-      </context>
-      <message>Scenario 'EN16931 XRechnung (UBL CreditNote)' matched</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="select-scenario"/>
-      <timestamp>2026-08-31T16:15:26+02:00</timestamp>
-    </metadata>
-    <detection cvrl:scenario-id="EN16931 XRechnung (UBL CreditNote)">
-      <context>
-        <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL CreditNote)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
-      </context>
-      <message>Scenario 'EN16931 XRechnung (UBL CreditNote)' selected</message>
-      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>EN16931 XRechnung (UBL CreditNote)</name><description><p>Validates UBL CrediteNote version 2.1</p><p>Uses UBL CreditNote 2.1 XML Schema,                  Schematron rules from EN16931:2017, and XRechnung                 3.0.2 </p><p>Download of UBL XML Schema on 2026-08-19 from                 https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip</p><p>Download of UBL Schematron rules on 2026-08-19 from                 https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-ubl-1.3.15.zip</p><p>Download of XRechnung Schematron rules on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p></description><namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace><namespace prefix="creditnote">urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2</namespace><namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace><match>exists(/creditnote:CreditNote[ cbc:CustomizationID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match><validateWithXmlSchema><resource><name>XML Schema for UBL 2.1 CreditNote</name><location>resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Schematron rules for EN16931 (UBL)</name><location>resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location></resource></validateWithSchematron><validateWithSchematron><resource><name>Schematron rules for CreditNote - CIUS XRechnung (UBL)</name><location>resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl</location></resource></validateWithSchematron><createReport><id>report-4</id><resource><name>Validation report for XRechnung</name><location>resources/xrechnung-report.xsl</location></resource><customLevel level="warning">BR-CL-23</customLevel><customLevel level="warning">BR-CL-21</customLevel></createReport><acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch></scenario></message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="retrieve-artifacts"/>
-      <timestamp>2026-08-31T16:15:26+02:00</timestamp>
-    </metadata>
-    <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd">
-      <context>
-        <location href="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd" cvrl:artifact-type="xsd"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">fed033a12433abe79391305fefc498859b4f2dced0d02829b89159716da9a2da804561a49fb40ef6bfd956f0929f3bb8b5c0c768d9e991cb5326989d43ea713d</cvrl:hash>
-      </context>
-      <message>Artifact retrieved</message>
-    </detection>
-    <detection cvrl:artifact-id="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl">
-      <context>
-        <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">e310d4c6eda333800727111dcdf37f73a119c1c54041f133abe96b6b7a6d99439c30f0e1080fcd8589d0eea811955b205591c553ee14a65eefb7f20ffdf45696</cvrl:hash>
-      </context>
-      <message>Artifact retrieved</message>
-    </detection>
-    <detection cvrl:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl">
-      <context>
-        <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">ee48549b0e794ddd8aa7728896e5420702b1d3c400d7289b73ed1f424d37e3e54a5da37e2b06ce572bcf822ff516c42f443175d5ae2e84dc91699fe2dd0afb9c</cvrl:hash>
-      </context>
-      <message>Artifact retrieved</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="prepare-rules"/>
-      <timestamp>2026-08-31T16:15:26+02:00</timestamp>
-      <validator name="Saxon" version="12.10"/>
-    </metadata>
-    <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd">
-      <context>
-        <location href="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd"/>
-      </context>
-      <message>Compiled (XML Schema)</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-31T16:15:26+02:00</timestamp>
-      <schema href="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
-    </metadata>
-    <detection>
-      <message>Rule set 'resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd' applied without findings</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-31T16:15:26+02:00</timestamp>
-      <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
-    </metadata>
-    <detection severity="error" code="BR-S-01">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]"/>
-      </context>
-      <message>[BR-S-01]-An Invoice that contains an Invoice line (BG-25), a Document level allowance (BG-20) or a Document level charge (BG-21) where the VAT category code (BT-151, BT-95 or BT-102) is "Standard rated" shall contain in the VAT breakdown (BG-23) at least one VAT category code (BT-118) equal with "Standard rated".</message>
-    </detection>
-    <detection severity="error" code="BR-S-08">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxTotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxSubtotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxCategory[1]"/>
-      </context>
-      <message>[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is "Standard rated" and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</message>
-    </detection>
-    <detection severity="error" code="BR-S-08">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxTotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxSubtotal[2]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxCategory[1]"/>
-      </context>
-      <message>[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is "Standard rated" and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</message>
-    </detection>
-    <detection severity="error" code="BR-CO-10">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}LegalMonetaryTotal[1]"/>
-      </context>
-      <message>[BR-CO-10]-Sum of Invoice line net amount (BT-106) = Σ Invoice line net amount (BT-131).</message>
-    </detection>
-    <detection severity="error" code="BR-22">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
-      </context>
-      <message>[BR-22]-Each Invoice line (BG-25) shall have an Invoiced quantity (BT-129).</message>
-    </detection>
-    <detection severity="error" code="BR-23">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
-      </context>
-      <message>[BR-23]-An Invoice line (BG-25) shall have an Invoiced quantity unit of measure code (BT-130).</message>
-    </detection>
-    <detection severity="error" code="BR-24">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
-      </context>
-      <message>[BR-24]-Each Invoice line (BG-25) shall have an Invoice line net amount (BT-131).</message>
-    </detection>
-    <detection severity="error" code="BR-25">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
-      </context>
-      <message>[BR-25]-Each Invoice line (BG-25) shall contain the Item name (BT-153).</message>
-    </detection>
-    <detection severity="error" code="BR-26">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
-      </context>
-      <message>[BR-26]-Each Invoice line (BG-25) shall contain the Item net price (BT-146).</message>
-    </detection>
-    <detection severity="error" code="BR-27">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
-      </context>
-      <message>[BR-27]-The Item net price (BT-146) shall NOT be negative.</message>
-    </detection>
-    <detection severity="error" code="BR-CO-04">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
-      </context>
-      <message>[BR-CO-04]-Each Invoice line (BG-25) shall be categorized with an Invoiced item VAT category code (BT-151).</message>
-    </detection>
-    <detection severity="error" code="UBL-SR-48">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
-      </context>
-      <message>[UBL-SR-48]-Invoice lines shall have one and only one classified tax category.</message>
-    </detection>
-    <detection severity="error" code="BR-CL-01">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2}CreditNoteTypeCode[1]"/>
-      </context>
-      <message>[BR-CL-01]-The document type code MUST be coded by the invoice and credit note related code lists of UNTDID 1001.</message>
-    </detection>
-    <digest valid="false" worst-severity="error" error-count="13" error-codes="BR-S-01 BR-S-08 BR-CO-10 BR-22 BR-23 BR-24 BR-25 BR-26 BR-27 BR-CO-04 UBL-SR-48 BR-CL-01"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-31T16:15:26+02:00</timestamp>
-      <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
-    </metadata>
-    <detection severity="error" code="BR-DE-15">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]"/>
-      </context>
-      <message>[BR-DE-15] Das Element "Buyer reference" (BT-10) muss übermittelt werden.</message>
-    </detection>
-    <detection severity="info" code="BR-DE-TMP-32">
-      <context>
-        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]"/>
-      </context>
-      <message>[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 "Actual delivery date", BG-14 "Invoicing period" oder in jeder Rechnungsposition BG-26 "Invoice line period" enthalten.</message>
-    </detection>
-    <digest valid="false" worst-severity="error" error-count="1" error-codes="BR-DE-15"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="compute-conformance"/>
-      <timestamp>2026-08-31T16:15:26+02:00</timestamp>
-    </metadata>
-    <detection cvrl:target-id="EN16931 XRechnung (UBL CreditNote)" cvrl:conformance="CONFORMANT">
-      <context>
-        <location href="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd"/>
-      </context>
-      <message>Target 'EN16931 XRechnung (UBL CreditNote)' conformant</message>
-    </detection>
-    <detection severity="error" code="target-non-conformant" cvrl:target-id="EN16931 XRechnung (UBL CreditNote)" cvrl:conformance="NON_CONFORMANT">
-      <context>
-        <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl"/>
-      </context>
-      <message>Target 'EN16931 XRechnung (UBL CreditNote)' non-conformant: 13 error detection(s) from rule set 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl'</message>
-    </detection>
-    <detection severity="error" code="target-non-conformant" cvrl:target-id="EN16931 XRechnung (UBL CreditNote)" cvrl:conformance="NON_CONFORMANT">
-      <context>
-        <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"/>
-      </context>
-      <message>Target 'EN16931 XRechnung (UBL CreditNote)' non-conformant: 1 error detection(s) from rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl'</message>
-    </detection>
-    <digest valid="false" worst-severity="error" error-count="2" error-codes="target-non-conformant"/>
-  </report>
+</CreditNote>
+            </message>
+            <context>
+                <cvrl:hash cvrl:algorithm="SHA-512">5e3062fbd1b75acaed3296f666cf2c0f5a5389c6709adfa62751109aab671bdad18d65c1b410c2f776dbc140f238762c7f4d38cde00456517cb6f4a52db34a34</cvrl:hash>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+            <creator name="detect-scenarios"/>
+        </metadata>
+        <detection cvrl:scenario-id="EN16931 XRechnung (UBL CreditNote)">
+            <message>Scenario 'EN16931 XRechnung (UBL CreditNote)' matched</message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL CreditNote)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+            <creator name="select-scenario"/>
+        </metadata>
+        <detection cvrl:scenario-id="EN16931 XRechnung (UBL CreditNote)">
+            <message>Scenario 'EN16931 XRechnung (UBL CreditNote)' selected</message>
+            <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+                <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
+                    <name>EN16931 XRechnung (UBL CreditNote)</name>
+                    <description>
+                        <p>Validates UBL CrediteNote version 2.1</p>
+                        <p>Uses UBL CreditNote 2.1 XML Schema,                  Schematron rules from EN16931:2017, and XRechnung                 3.0.2 </p>
+                        <p>Download of UBL XML Schema on 2026-08-19 from                 https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip</p>
+                        <p>Download of UBL Schematron rules on 2026-08-19 from                 https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-ubl-1.3.15.zip</p>
+                        <p>Download of XRechnung Schematron rules on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p>
+                    </description>
+                    <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
+                    <namespace prefix="creditnote">urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2</namespace>
+                    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+                    <match>exists(/creditnote:CreditNote[ cbc:CustomizationID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match>
+                    <validateWithXmlSchema>
+                        <resource>
+                            <name>XML Schema for UBL 2.1 CreditNote</name>
+                            <location>resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd</location>
+                        </resource>
+                    </validateWithXmlSchema>
+                    <validateWithSchematron>
+                        <resource>
+                            <name>Schematron rules for EN16931 (UBL)</name>
+                            <location>resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location>
+                        </resource>
+                    </validateWithSchematron>
+                    <validateWithSchematron>
+                        <resource>
+                            <name>Schematron rules for CreditNote - CIUS XRechnung (UBL)</name>
+                            <location>resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl</location>
+                        </resource>
+                    </validateWithSchematron>
+                    <createReport>
+                        <id>report-4</id>
+                        <resource>
+                            <name>Validation report for XRechnung</name>
+                            <location>resources/xrechnung-report.xsl</location>
+                        </resource>
+                        <customLevel level="warning">BR-CL-23</customLevel>
+                        <customLevel level="warning">BR-CL-21</customLevel>
+                    </createReport>
+                    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+                </scenario>
+            </message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL CreditNote)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+            <creator name="retrieve-artifacts"/>
+        </metadata>
+        <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd">
+            <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd" cvrl:artifact-type="xsd"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">fed033a12433abe79391305fefc498859b4f2dced0d02829b89159716da9a2da804561a49fb40ef6bfd956f0929f3bb8b5c0c768d9e991cb5326989d43ea713d</cvrl:hash>
+            </context>
+        </detection>
+        <detection cvrl:artifact-id="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl">
+            <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">e310d4c6eda333800727111dcdf37f73a119c1c54041f133abe96b6b7a6d99439c30f0e1080fcd8589d0eea811955b205591c553ee14a65eefb7f20ffdf45696</cvrl:hash>
+            </context>
+        </detection>
+        <detection cvrl:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl">
+            <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">ee48549b0e794ddd8aa7728896e5420702b1d3c400d7289b73ed1f424d37e3e54a5da37e2b06ce572bcf822ff516c42f443175d5ae2e84dc91699fe2dd0afb9c</cvrl:hash>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+            <validator name="Saxon" version="12.10"/>
+            <creator name="prepare-rules"/>
+        </metadata>
+        <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd">
+            <message>Compiled (XML Schema)</message>
+            <context>
+                <location href="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+            <creator name="apply-rules"/>
+            <schema href="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
+        </metadata>
+        <detection>
+            <message>Rule set 'resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd' applied without findings</message>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+            <creator name="apply-rules"/>
+            <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+        </metadata>
+        <detection severity="error" code="BR-S-01">
+            <message>[BR-S-01]-An Invoice that contains an Invoice line (BG-25), a Document level allowance (BG-20) or a Document level charge (BG-21) where the VAT category code (BT-151, BT-95 or BT-102) is "Standard rated" shall contain in the VAT breakdown (BG-23) at least one VAT category code (BT-118) equal with "Standard rated".</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-S-08">
+            <message>[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is "Standard rated" and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxTotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxSubtotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxCategory[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-S-08">
+            <message>[BR-S-08]-For each different value of VAT category rate (BT-119) where the VAT category code (BT-118) is "Standard rated", the VAT category taxable amount (BT-116) in a VAT breakdown (BG-23) shall equal the sum of Invoice line net amounts (BT-131) plus the sum of document level charge amounts (BT-99) minus the sum of document level allowance amounts (BT-92) where the VAT category code (BT-151, BT-102, BT-95) is "Standard rated" and the VAT rate (BT-152, BT-103, BT-96) equals the VAT category rate (BT-119).</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxTotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxSubtotal[2]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxCategory[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-CO-10">
+            <message>[BR-CO-10]-Sum of Invoice line net amount (BT-106) = Σ Invoice line net amount (BT-131).</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}LegalMonetaryTotal[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-22">
+            <message>[BR-22]-Each Invoice line (BG-25) shall have an Invoiced quantity (BT-129).</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-23">
+            <message>[BR-23]-An Invoice line (BG-25) shall have an Invoiced quantity unit of measure code (BT-130).</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-24">
+            <message>[BR-24]-Each Invoice line (BG-25) shall have an Invoice line net amount (BT-131).</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-25">
+            <message>[BR-25]-Each Invoice line (BG-25) shall contain the Item name (BT-153).</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-26">
+            <message>[BR-26]-Each Invoice line (BG-25) shall contain the Item net price (BT-146).</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-27">
+            <message>[BR-27]-The Item net price (BT-146) shall NOT be negative.</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-CO-04">
+            <message>[BR-CO-04]-Each Invoice line (BG-25) shall be categorized with an Invoiced item VAT category code (BT-151).</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="UBL-SR-48">
+            <message>[UBL-SR-48]-Invoice lines shall have one and only one classified tax category.</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}CreditNoteLine[1]"/>
+            </context>
+        </detection>
+        <detection severity="error" code="BR-CL-01">
+            <message>[BR-CL-01]-The document type code MUST be coded by the invoice and credit note related code lists of UNTDID 1001.</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2}CreditNoteTypeCode[1]"/>
+            </context>
+        </detection>
+        <digest valid="false" error-count="13" error-codes="BR-S-01 BR-S-08 BR-CO-10 BR-22 BR-23 BR-24 BR-25 BR-26 BR-27 BR-CO-04 UBL-SR-48 BR-CL-01" worst="error"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+            <creator name="apply-rules"/>
+            <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+        </metadata>
+        <detection severity="error" code="BR-DE-15">
+            <message>[BR-DE-15] Das Element "Buyer reference" (BT-10) muss übermittelt werden.</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]"/>
+            </context>
+        </detection>
+        <detection severity="info" code="BR-DE-TMP-32">
+            <message>[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 "Actual delivery date", BG-14 "Invoicing period" oder in jeder Rechnungsposition BG-26 "Invoice line period" enthalten.</message>
+            <context>
+                <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]"/>
+            </context>
+        </detection>
+        <digest valid="false" error-count="1" error-codes="BR-DE-15" worst="error"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:33+02:00</timestamp>
+            <creator name="compute-conformance"/>
+        </metadata>
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung (UBL CreditNote)">
+            <message>Target 'EN16931 XRechnung (UBL CreditNote)' conformant</message>
+            <context>
+                <location href="resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd"/>
+            </context>
+        </detection>
+        <detection severity="error" code="target-non-conformant" cvrl:conformance="NON_CONFORMANT" cvrl:target-id="EN16931 XRechnung (UBL CreditNote)">
+            <message>Target 'EN16931 XRechnung (UBL CreditNote)' non-conformant: 13 error detection(s) from rule set 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl'</message>
+            <context>
+                <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl"/>
+            </context>
+        </detection>
+        <detection severity="error" code="target-non-conformant" cvrl:conformance="NON_CONFORMANT" cvrl:target-id="EN16931 XRechnung (UBL CreditNote)">
+            <message>Target 'EN16931 XRechnung (UBL CreditNote)' non-conformant: 1 error detection(s) from rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl'</message>
+            <context>
+                <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"/>
+            </context>
+        </detection>
+        <digest valid="false" error-count="2" error-codes="target-non-conformant" worst="error"/>
+    </report>
 </reports>

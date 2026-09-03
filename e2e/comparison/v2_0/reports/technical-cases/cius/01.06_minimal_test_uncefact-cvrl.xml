@@ -1,37 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
-  <metadata>
-    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-08-31T16:16:05+02:00</timestamp>
-    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
-    <document href="technical-cases/cius/01.06_minimal_test_uncefact.xml"/>
-  </metadata>
-  <report>
     <metadata>
-      <creator name="parse-document"/>
-      <timestamp>2026-08-31T16:16:05+02:00</timestamp>
+        <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+        <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+        <document href="technical-cases/cius/01.06_minimal_test_uncefact.xml"/>
     </metadata>
-    <detection>
-      <context>
-        <cvrl:hash cvrl:algorithm="SHA-512">9cb82669e5be862a8826b64badc76954f34aebedb12cba35745c331bd6601a3dba9abe24dee7dcca140ae0202288ae0c228b83457ed631a5e24a598d034ef1b0</cvrl:hash>
-      </context>
-      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <creator name="parse-document"/>
+        </metadata>
+        <detection>
+            <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+                <rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
     <rsm:ExchangedDocumentContext>
-		<!-- BT-23 -->
+		
         <ram:BusinessProcessSpecifiedDocumentContextParameter>
             <ram:ID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</ram:ID>
         </ram:BusinessProcessSpecifiedDocumentContextParameter>
-		<!-- BT-24 -->
+		
         <ram:GuidelineSpecifiedDocumentContextParameter>
             <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</ram:ID>
         </ram:GuidelineSpecifiedDocumentContextParameter>
     </rsm:ExchangedDocumentContext>
     <rsm:ExchangedDocument>
-		<!-- BT-1 -->
+		
         <ram:ID>1234567</ram:ID>
-		<!-- BT-3 -->
+		
         <ram:TypeCode>380</ram:TypeCode>
-		<!-- BT-2 -->
+		
         <ram:IssueDateTime>
             <udt:DateTimeString format="102">20180413</udt:DateTimeString>
         </ram:IssueDateTime>        
@@ -39,268 +36,320 @@
     <rsm:SupplyChainTradeTransaction>
         <ram:IncludedSupplyChainTradeLineItem>
             <ram:AssociatedDocumentLineDocument>
-				<!-- BT-126 -->
+				
                 <ram:LineID>1</ram:LineID>				
             </ram:AssociatedDocumentLineDocument>
             <ram:SpecifiedTradeProduct>                		
-				<!-- BT-153 -->
+				
                 <ram:Name>Beratung</ram:Name>				                		
             </ram:SpecifiedTradeProduct>
             <ram:SpecifiedLineTradeAgreement>												                
-                <!-- BT-146 -->
+                
                 <ram:NetPriceProductTradePrice>
                     <ram:ChargeAmount>132.8780000000</ram:ChargeAmount>
                 </ram:NetPriceProductTradePrice>                
             </ram:SpecifiedLineTradeAgreement>
             <ram:SpecifiedLineTradeDelivery>
-				<!-- BT-129, BT-130 -->
+				
                 <ram:BilledQuantity unitCode="XPP">30.00000000000</ram:BilledQuantity>
             </ram:SpecifiedLineTradeDelivery>
             <ram:SpecifiedLineTradeSettlement>
                 <ram:ApplicableTradeTax>
-					<!-- BT-151 -->
+					
                     <ram:TypeCode>VAT</ram:TypeCode>
-					<!-- BT-151 -->
+					
                     <ram:CategoryCode>S</ram:CategoryCode>
-                    <!-- BT-152 -->
+                    
                     <ram:RateApplicablePercent>19</ram:RateApplicablePercent>
                 </ram:ApplicableTradeTax>                                                             
                 <ram:SpecifiedTradeSettlementLineMonetarySummation>
-					<!-- BT-131 -->
+					
                     <ram:LineTotalAmount>3986.34</ram:LineTotalAmount>
                 </ram:SpecifiedTradeSettlementLineMonetarySummation>                                
             </ram:SpecifiedLineTradeSettlement>
         </ram:IncludedSupplyChainTradeLineItem>        
         <ram:ApplicableHeaderTradeAgreement>
-			<!-- BT-10 -->
+			
             <ram:BuyerReference>90000000-03083-72</ram:BuyerReference>
             <ram:SellerTradeParty>    
-                <!-- BT-29 -->
+                
                 <ram:ID>9876543217894897438</ram:ID>
-				<!-- BT-27 -->
+				
                 <ram:Name>[Seller name]</ram:Name>				     
                 <ram:DefinedTradeContact>
-					<!-- BT-41 -->
+					
                     <ram:PersonName>Tim Tester</ram:PersonName>
-					<!-- BT-42 -->
+					
                     <ram:TelephoneUniversalCommunication>
                         <ram:CompleteNumber>012 3456789</ram:CompleteNumber>
                     </ram:TelephoneUniversalCommunication>
-					<!-- BT-43 -->
+					
                     <ram:EmailURIUniversalCommunication>
                         <ram:URIID>tim.tester@test.com</ram:URIID>
                     </ram:EmailURIUniversalCommunication>
                 </ram:DefinedTradeContact>
                 <ram:PostalTradeAddress>
-					<!-- BT-38 -->
+					
                     <ram:PostcodeCode>12345</ram:PostcodeCode>										
-					<!-- BT-37 -->
+					
                     <ram:CityName>[Seller city]</ram:CityName>
-					<!-- BT-40 -->
+					
                     <ram:CountryID>DE</ram:CountryID>                    
                 </ram:PostalTradeAddress>	
-                <!-- BT-34 -->
+                
                 <ram:URIUniversalCommunication>
                     <ram:URIID schemeID="EM">rechnungsausgang@test.com</ram:URIID>
                 </ram:URIUniversalCommunication>
-                <!-- BT-31 -->
+                
                 <ram:SpecifiedTaxRegistration>
                     <ram:ID schemeID="VA">ATU123456789</ram:ID>
                 </ram:SpecifiedTaxRegistration>
             </ram:SellerTradeParty>
             <ram:BuyerTradeParty>				
-				<!-- BT-44 -->
+				
                 <ram:Name>[Buyer name]</ram:Name>                                
                 <ram:PostalTradeAddress>
-					<!-- BT-53 -->
+					
                     <ram:PostcodeCode>98765</ram:PostcodeCode>										
-					<!-- BT-52 -->
+					
                     <ram:CityName>[Buyer city]</ram:CityName>
-					<!-- BT-55 -->
+					
                     <ram:CountryID>DE</ram:CountryID>                    
                 </ram:PostalTradeAddress>
-				<!-- BT-49 -->
+				
                 <ram:URIUniversalCommunication>
                     <ram:URIID schemeID="EM">rechnungseingang@test.de</ram:URIID>
                 </ram:URIUniversalCommunication>                
             </ram:BuyerTradeParty>
         </ram:ApplicableHeaderTradeAgreement>
-        <ram:ApplicableHeaderTradeDelivery></ram:ApplicableHeaderTradeDelivery>
+        <ram:ApplicableHeaderTradeDelivery/>
         <ram:ApplicableHeaderTradeSettlement>			            			       
-			<!-- BT-5 -->
+			
             <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>                                 
             <ram:SpecifiedTradeSettlementPaymentMeans>				
-                <!-- BT-81 -->
+                
                 <ram:TypeCode>58</ram:TypeCode>
                 <ram:PayeePartyCreditorFinancialAccount>
-					<!-- BT-84 -->
+					
                     <ram:IBANID>DE75512108001245126199</ram:IBANID>					
                 </ram:PayeePartyCreditorFinancialAccount>               
             </ram:SpecifiedTradeSettlementPaymentMeans>           
             <ram:ApplicableTradeTax>
-				<!-- BT-117 -->
+				
                 <ram:CalculatedAmount>757.41</ram:CalculatedAmount>
-				<!-- BT-118 -->
+				
                 <ram:TypeCode>VAT</ram:TypeCode>
-				<!-- BT-116 -->
+				
                 <ram:BasisAmount>3986.34</ram:BasisAmount>
-				<!-- BT-118 -->
+				
                 <ram:CategoryCode>S</ram:CategoryCode>		   
-				<!-- BT-119 -->
+				
                 <ram:RateApplicablePercent>19</ram:RateApplicablePercent>
             </ram:ApplicableTradeTax>                
             <ram:SpecifiedTradePaymentTerms>                        
-                <!-- BT-9 -->
+                
                 <ram:DueDateDateTime>
                     <udt:DateTimeString format="102">20180413</udt:DateTimeString>
                 </ram:DueDateDateTime>                
             </ram:SpecifiedTradePaymentTerms> 
             <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
-				<!-- BT-106 -->
+				
                 <ram:LineTotalAmount>3986.34</ram:LineTotalAmount>				
-				<!-- BT-109 -->
+				
                 <ram:TaxBasisTotalAmount>3986.34</ram:TaxBasisTotalAmount>
-                <!-- BT-110 -->
+                
                 <ram:TaxTotalAmount currencyID="EUR">757.41</ram:TaxTotalAmount>
-				<!-- BT-112 -->
+				
                 <ram:GrandTotalAmount>4743.75</ram:GrandTotalAmount>				
-				<!-- BT-115 -->
+				
                 <ram:DuePayableAmount>4743.75</ram:DuePayableAmount>
             </ram:SpecifiedTradeSettlementHeaderMonetarySummation>                
         </ram:ApplicableHeaderTradeSettlement>
     </rsm:SupplyChainTradeTransaction>
-</rsm:CrossIndustryInvoice></message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="detect-scenarios"/>
-      <timestamp>2026-08-31T16:16:05+02:00</timestamp>
-    </metadata>
-    <detection cvrl:scenario-id="EN16931 XRechnung (CII)">
-      <context>
-        <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
-      </context>
-      <message>Scenario 'EN16931 XRechnung (CII)' matched</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="select-scenario"/>
-      <timestamp>2026-08-31T16:16:05+02:00</timestamp>
-    </metadata>
-    <detection cvrl:scenario-id="EN16931 XRechnung (CII)">
-      <context>
-        <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
-      </context>
-      <message>Scenario 'EN16931 XRechnung (CII)' selected</message>
-      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>EN16931 XRechnung (CII)</name><description><p>Validates UN/CEFACT XML (SCRDM - CII uncoupled) version                 D16B</p><p>Uses UN/CEFACT (SCRDM - CII uncoupled) version                 D16B XML Schema, Schematron rules from EN16931:2017,                 and XRechnung Schematron rules version 3.0.2 </p><p>Download of CII uncoupled XML Schema on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/D16B_SCRDM__Subset__CII/D16B/D16B_SCRDM__Subset__CII-D16B.zip</p><p>Download of CII Schematron rules on 2026-08-19 from                 https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-cii-1.3.15.zip </p><p>Download of XRechnung Schematron rules on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p></description><namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace><namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace><namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace><match>exists(/rsm:CrossIndustryInvoice[rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match><validateWithXmlSchema><resource><name>XML Schema for UN/CEFACT XML (SCRDM - CII uncoupled)</name><location>resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Schematron rules for EN16931 (CII)</name><location>resources/cii/16b/xsl/EN16931-CII-validation.xsl</location></resource></validateWithSchematron><validateWithSchematron><resource><name>Schematron rules for CIUS XRechnung (CII)</name><location>resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl</location></resource></validateWithSchematron><createReport><id>report-6</id><resource><name>Validation report for XRechnung</name><location>resources/xrechnung-report.xsl</location></resource><customLevel level="warning">BR-CL-23</customLevel><customLevel level="warning">BR-CL-21</customLevel><customLevel level="error">CII-SR-452</customLevel><customLevel level="error">CII-SR-453</customLevel><customLevel level="error">CII-SR-454</customLevel><customLevel level="error">CII-SR-465</customLevel><customLevel level="error">CII-SR-466</customLevel></createReport><acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch></scenario></message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="retrieve-artifacts"/>
-      <timestamp>2026-08-31T16:16:05+02:00</timestamp>
-    </metadata>
-    <detection cvrl:artifact-id="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd">
-      <context>
-        <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" cvrl:artifact-type="xsd"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">29468106dda4341afbd7cc215c4ff8031aca6953d85bfe7b0257a2f2bc7eb9287af9e7812c20a288580dc55a72c451d03e1d85120328042c03312203f5df4ddb</cvrl:hash>
-      </context>
-      <message>Artifact retrieved</message>
-    </detection>
-    <detection cvrl:artifact-id="resources/cii/16b/xsl/EN16931-CII-validation.xsl">
-      <context>
-        <location href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">88626d4c6176fa1e82105b3c76452a43c025e8ba511bc46cb6d8d64ced6f88dc1cd8d5cfed580394c157194ab2f28a7f084211207130c818584035a38cd12968</cvrl:hash>
-      </context>
-      <message>Artifact retrieved</message>
-    </detection>
-    <detection cvrl:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl">
-      <context>
-        <location href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">cb7e941393b8a841af75714f482ba595c017cb34171b617774674c4404bc3c49447ce5c67b7747c7639e93a905bab83f589facc253d0c784912d826cbd12bf41</cvrl:hash>
-      </context>
-      <message>Artifact retrieved</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="prepare-rules"/>
-      <timestamp>2026-08-31T16:16:05+02:00</timestamp>
-      <validator name="Saxon" version="12.10"/>
-    </metadata>
-    <detection cvrl:artifact-id="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd">
-      <context>
-        <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd"/>
-      </context>
-      <message>Compiled (XML Schema)</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-31T16:16:05+02:00</timestamp>
-      <schema href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
-    </metadata>
-    <detection>
-      <message>Rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' applied without findings</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-31T16:16:05+02:00</timestamp>
-      <schema href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
-    </metadata>
-    <detection>
-      <message>Rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' applied without findings</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-31T16:16:05+02:00</timestamp>
-      <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
-    </metadata>
-    <detection severity="info" code="BR-DE-TMP-32">
-      <context>
-        <location xpath="/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]"/>
-      </context>
-      <message>[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 "Actual delivery date", BG-14 "Invoicing period" oder in jeder Rechnungsposition BG-26 "Invoice line period" enthalten.</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="compute-conformance"/>
-      <timestamp>2026-08-31T16:16:05+02:00</timestamp>
-    </metadata>
-    <detection cvrl:target-id="EN16931 XRechnung (CII)" cvrl:conformance="CONFORMANT">
-      <context>
-        <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd"/>
-      </context>
-      <message>Target 'EN16931 XRechnung (CII)' conformant</message>
-    </detection>
-    <detection cvrl:target-id="EN16931 XRechnung (CII)" cvrl:conformance="CONFORMANT">
-      <context>
-        <location href="resources/cii/16b/xsl/EN16931-CII-validation.xsl"/>
-      </context>
-      <message>Target 'EN16931 XRechnung (CII)' conformant</message>
-    </detection>
-    <detection cvrl:target-id="EN16931 XRechnung (CII)" cvrl:conformance="CONFORMANT">
-      <context>
-        <location href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl"/>
-      </context>
-      <message>Target 'EN16931 XRechnung (CII)' conformant</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
+</rsm:CrossIndustryInvoice>
+            </message>
+            <context>
+                <cvrl:hash cvrl:algorithm="SHA-512">9cb82669e5be862a8826b64badc76954f34aebedb12cba35745c331bd6601a3dba9abe24dee7dcca140ae0202288ae0c228b83457ed631a5e24a598d034ef1b0</cvrl:hash>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <creator name="detect-scenarios"/>
+        </metadata>
+        <detection cvrl:scenario-id="EN16931 XRechnung (CII)">
+            <message>Scenario 'EN16931 XRechnung (CII)' matched</message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <creator name="select-scenario"/>
+        </metadata>
+        <detection cvrl:scenario-id="EN16931 XRechnung (CII)">
+            <message>Scenario 'EN16931 XRechnung (CII)' selected</message>
+            <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+                <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
+                    <name>EN16931 XRechnung (CII)</name>
+                    <description>
+                        <p>Validates UN/CEFACT XML (SCRDM - CII uncoupled) version                 D16B</p>
+                        <p>Uses UN/CEFACT (SCRDM - CII uncoupled) version                 D16B XML Schema, Schematron rules from EN16931:2017,                 and XRechnung Schematron rules version 3.0.2 </p>
+                        <p>Download of CII uncoupled XML Schema on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/D16B_SCRDM__Subset__CII/D16B/D16B_SCRDM__Subset__CII-D16B.zip</p>
+                        <p>Download of CII Schematron rules on 2026-08-19 from                 https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-cii-1.3.15.zip </p>
+                        <p>Download of XRechnung Schematron rules on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p>
+                    </description>
+                    <namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace>
+                    <namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace>
+                    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+                    <match>exists(/rsm:CrossIndustryInvoice[rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match>
+                    <validateWithXmlSchema>
+                        <resource>
+                            <name>XML Schema for UN/CEFACT XML (SCRDM - CII uncoupled)</name>
+                            <location>resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd</location>
+                        </resource>
+                    </validateWithXmlSchema>
+                    <validateWithSchematron>
+                        <resource>
+                            <name>Schematron rules for EN16931 (CII)</name>
+                            <location>resources/cii/16b/xsl/EN16931-CII-validation.xsl</location>
+                        </resource>
+                    </validateWithSchematron>
+                    <validateWithSchematron>
+                        <resource>
+                            <name>Schematron rules for CIUS XRechnung (CII)</name>
+                            <location>resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl</location>
+                        </resource>
+                    </validateWithSchematron>
+                    <createReport>
+                        <id>report-6</id>
+                        <resource>
+                            <name>Validation report for XRechnung</name>
+                            <location>resources/xrechnung-report.xsl</location>
+                        </resource>
+                        <customLevel level="warning">BR-CL-23</customLevel>
+                        <customLevel level="warning">BR-CL-21</customLevel>
+                        <customLevel level="error">CII-SR-452</customLevel>
+                        <customLevel level="error">CII-SR-453</customLevel>
+                        <customLevel level="error">CII-SR-454</customLevel>
+                        <customLevel level="error">CII-SR-465</customLevel>
+                        <customLevel level="error">CII-SR-466</customLevel>
+                    </createReport>
+                    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+                </scenario>
+            </message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <creator name="retrieve-artifacts"/>
+        </metadata>
+        <detection cvrl:artifact-id="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd">
+            <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" cvrl:artifact-type="xsd"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">29468106dda4341afbd7cc215c4ff8031aca6953d85bfe7b0257a2f2bc7eb9287af9e7812c20a288580dc55a72c451d03e1d85120328042c03312203f5df4ddb</cvrl:hash>
+            </context>
+        </detection>
+        <detection cvrl:artifact-id="resources/cii/16b/xsl/EN16931-CII-validation.xsl">
+            <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">88626d4c6176fa1e82105b3c76452a43c025e8ba511bc46cb6d8d64ced6f88dc1cd8d5cfed580394c157194ab2f28a7f084211207130c818584035a38cd12968</cvrl:hash>
+            </context>
+        </detection>
+        <detection cvrl:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl">
+            <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">cb7e941393b8a841af75714f482ba595c017cb34171b617774674c4404bc3c49447ce5c67b7747c7639e93a905bab83f589facc253d0c784912d826cbd12bf41</cvrl:hash>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <validator name="Saxon" version="12.10"/>
+            <creator name="prepare-rules"/>
+        </metadata>
+        <detection cvrl:artifact-id="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd">
+            <message>Compiled (XML Schema)</message>
+            <context>
+                <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <creator name="apply-rules"/>
+            <schema href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
+        </metadata>
+        <detection>
+            <message>Rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' applied without findings</message>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <creator name="apply-rules"/>
+            <schema href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+        </metadata>
+        <detection>
+            <message>Rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' applied without findings</message>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <creator name="apply-rules"/>
+            <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+        </metadata>
+        <detection severity="info" code="BR-DE-TMP-32">
+            <message>[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 "Actual delivery date", BG-14 "Invoicing period" oder in jeder Rechnungsposition BG-26 "Invoice line period" enthalten.</message>
+            <context>
+                <location xpath="/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <creator name="compute-conformance"/>
+        </metadata>
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung (CII)">
+            <message>Target 'EN16931 XRechnung (CII)' conformant</message>
+            <context>
+                <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd"/>
+            </context>
+        </detection>
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung (CII)">
+            <message>Target 'EN16931 XRechnung (CII)' conformant</message>
+            <context>
+                <location href="resources/cii/16b/xsl/EN16931-CII-validation.xsl"/>
+            </context>
+        </detection>
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung (CII)">
+            <message>Target 'EN16931 XRechnung (CII)' conformant</message>
+            <context>
+                <location href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
 </reports>

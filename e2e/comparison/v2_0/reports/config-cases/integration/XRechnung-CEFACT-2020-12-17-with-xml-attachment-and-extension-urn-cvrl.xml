@@ -1,21 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
-  <metadata>
-    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-08-31T16:15:39+02:00</timestamp>
-    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
-    <document href="config-cases/integration/XRechnung-CEFACT-2020-12-17-with-xml-attachment-and-extension-urn.xml"/>
-  </metadata>
-  <report>
     <metadata>
-      <creator name="parse-document"/>
-      <timestamp>2026-08-31T16:15:39+02:00</timestamp>
+        <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+        <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+        <document href="config-cases/integration/XRechnung-CEFACT-2020-12-17-with-xml-attachment-and-extension-urn.xml"/>
     </metadata>
-    <detection>
-      <context>
-        <cvrl:hash cvrl:algorithm="SHA-512">4be9612e98c9232710d618a47c836d7d5935eaefc7ad657f9c344e17c329d1e84c27578c5274812453cb13dbc4c968a06b00cc4f4e3da7948d7e1d9cfe1c6cd4</cvrl:hash>
-      </context>
-      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><CrossIndustryInvoice xmlns="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+            <creator name="parse-document"/>
+        </metadata>
+        <detection>
+            <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+                <CrossIndustryInvoice xmlns="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
    <ExchangedDocumentContext>
       <ram:BusinessProcessSpecifiedDocumentContextParameter>
          <ram:ID>XRechnung 3.0.0</ram:ID>
@@ -108,7 +105,7 @@
          <ram:AdditionalReferencedDocument>
             <ram:IssuerAssignedID>XRechnung-UBL-2020-12-17-no-attachments.xml</ram:IssuerAssignedID>
             <ram:TypeCode>916</ram:TypeCode>
-            <ram:AttachmentBinaryObject mimeCode="application/xml" filename="XRechnung-UBL-2020-12-17-no-attachments.xml">PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPEludm9pY2UgeG1sbnM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkludm9pY2UtMiIKICAgICAgICAgeG1sbnM6eGFkZXM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMvdjEuMy4yIyIKICAgICAgICAgeG1sbnM6ZHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiCiAgICAgICAgIHhtbG5zOmNhYz0idXJuOm9hc2lzOm5hbWVzOnNwZWNpZmljYXRpb246dWJsOnNjaGVtYTp4c2Q6Q29tbW9uQWdncmVnYXRlQ29tcG9uZW50cy0yIgogICAgICAgICB4bWxuczpjYmM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkJhc2ljQ29tcG9uZW50cy0yIgogICAgICAgICB4bWxuczpleHQ9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkV4dGVuc2lvbkNvbXBvbmVudHMtMiIKICAgICAgICAgeG1sbnM6bjA9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vblNpZ25hdHVyZUNvbXBvbmVudHMtMiIKICAgICAgICAgeG1sbnM6cWR0PSJ1cm46b2FzaXM6bmFtZXM6c3BlY2lmaWNhdGlvbjp1Ymw6c2NoZW1hOnhzZDpRdWFsaWZpZWREYXRhVHlwZXMtMiIKICAgICAgICAgeG1sbnM6c2FjPSJ1cm46b2FzaXM6bmFtZXM6c3BlY2lmaWNhdGlvbjp1Ymw6c2NoZW1hOnhzZDpTaWduYXR1cmVBZ2dyZWdhdGVDb21wb25lbnRzLTIiCiAgICAgICAgIHhtbG5zOnNiYz0idXJuOm9hc2lzOm5hbWVzOnNwZWNpZmljYXRpb246dWJsOnNjaGVtYTp4c2Q6U2lnbmF0dXJlQmFzaWNDb21wb25lbnRzLTIiCiAgICAgICAgIHhtbG5zOnVkdD0idXJuOm9hc2lzOm5hbWVzOnNwZWNpZmljYXRpb246dWJsOnNjaGVtYTp4c2Q6VW5xdWFsaWZpZWREYXRhVHlwZXMtMiIKICAgICAgICAgeG1sbnM6Y2N0cy1jY3Q9InVybjp1bjp1bmVjZTp1bmNlZmFjdDpkYXRhOnNwZWNpZmljYXRpb246Q29yZUNvbXBvbmVudFR5cGVTY2hlbWFNb2R1bGU6MiI+CiAgIDxjYmM6Q3VzdG9taXphdGlvbklEPnVybjpjZW4uZXU6ZW4xNjkzMToyMDE3I2NvbXBsaWFudCN1cm46eG9ldi1kZTprb3NpdDpzdGFuZGFyZDp4cmVjaG51bmdfMi4wPC9jYmM6Q3VzdG9taXphdGlvbklEPgogICA8Y2JjOlByb2ZpbGVJRD5YUmVjaG51bmcgMi4wLjA8L2NiYzpQcm9maWxlSUQ+CiAgIDxjYmM6SUQ+MTIzNDU8L2NiYzpJRD4KICAgPGNiYzpJc3N1ZURhdGU+MjAyMC0xMi0xNzwvY2JjOklzc3VlRGF0ZT4KICAgPGNiYzpEdWVEYXRlPjIwMjAtMTItMzE8L2NiYzpEdWVEYXRlPgogICA8Y2JjOkludm9pY2VUeXBlQ29kZT4zODA8L2NiYzpJbnZvaWNlVHlwZUNvZGU+CiAgIDxjYmM6RG9jdW1lbnRDdXJyZW5jeUNvZGU+RVVSPC9jYmM6RG9jdW1lbnRDdXJyZW5jeUNvZGU+CiAgIDxjYmM6VGF4Q3VycmVuY3lDb2RlPkVVUjwvY2JjOlRheEN1cnJlbmN5Q29kZT4KICAgPGNiYzpBY2NvdW50aW5nQ29zdC8+CiAgIDxjYmM6QnV5ZXJSZWZlcmVuY2U+VGVzdFRlc3RUZXN0PC9jYmM6QnV5ZXJSZWZlcmVuY2U+CiAgIDxjYWM6T3JkZXJSZWZlcmVuY2U+CiAgICAgIDxjYmM6SUQvPgogICAgICA8Y2JjOlNhbGVzT3JkZXJJRC8+CiAgIDwvY2FjOk9yZGVyUmVmZXJlbmNlPgogICA8Y2FjOkRlc3BhdGNoRG9jdW1lbnRSZWZlcmVuY2U+CiAgICAgIDxjYmM6SUQvPgogICA8L2NhYzpEZXNwYXRjaERvY3VtZW50UmVmZXJlbmNlPgogICA8Y2FjOlJlY2VpcHREb2N1bWVudFJlZmVyZW5jZT4KICAgICAgPGNiYzpJRC8+CiAgIDwvY2FjOlJlY2VpcHREb2N1bWVudFJlZmVyZW5jZT4KICAgPGNhYzpPcmlnaW5hdG9yRG9jdW1lbnRSZWZlcmVuY2U+CiAgICAgIDxjYmM6SUQvPgogICA8L2NhYzpPcmlnaW5hdG9yRG9jdW1lbnRSZWZlcmVuY2U+CiAgIDxjYWM6Q29udHJhY3REb2N1bWVudFJlZmVyZW5jZT4KICAgICAgPGNiYzpJRC8+CiAgIDwvY2FjOkNvbnRyYWN0RG9jdW1lbnRSZWZlcmVuY2U+CiAgIDxjYWM6UHJvamVjdFJlZmVyZW5jZT4KICAgICAgPGNiYzpJRC8+CiAgIDwvY2FjOlByb2plY3RSZWZlcmVuY2U+CiAgIDxjYWM6QWNjb3VudGluZ1N1cHBsaWVyUGFydHk+CiAgICAgIDxjYWM6UGFydHk+CiAgICAgICAgIDxjYmM6RW5kcG9pbnRJRCBzY2hlbWVJRD0iMDA4OCIvPgogICAgICAgICA8Y2FjOlBhcnR5TmFtZT4KICAgICAgICAgICAgPGNiYzpOYW1lLz4KICAgICAgICAgPC9jYWM6UGFydHlOYW1lPgogICAgICAgICA8Y2FjOlBvc3RhbEFkZHJlc3M+CiAgICAgICAgICAgIDxjYmM6U3RyZWV0TmFtZS8+CiAgICAgICAgICAgIDxjYmM6QWRkaXRpb25hbFN0cmVldE5hbWUvPgogICAgICAgICAgICA8Y2JjOkNpdHlOYW1lPkJlcmxpbjwvY2JjOkNpdHlOYW1lPgogICAgICAgICAgICA8Y2JjOlBvc3RhbFpvbmU+MTIzNDU8L2NiYzpQb3N0YWxab25lPgogICAgICAgICAgICA8Y2JjOkNvdW50cnlTdWJlbnRpdHkvPgogICAgICAgICAgICA8Y2FjOkFkZHJlc3NMaW5lPgogICAgICAgICAgICAgICA8Y2JjOkxpbmUvPgogICAgICAgICAgICA8L2NhYzpBZGRyZXNzTGluZT4KICAgICAgICAgICAgPGNhYzpDb3VudHJ5PgogICAgICAgICAgICAgICA8Y2JjOklkZW50aWZpY2F0aW9uQ29kZT5ERTwvY2JjOklkZW50aWZpY2F0aW9uQ29kZT4KICAgICAgICAgICAgPC9jYWM6Q291bnRyeT4KICAgICAgICAgPC9jYWM6UG9zdGFsQWRkcmVzcz4KICAgICAgICAgPGNhYzpQYXJ0eVRheFNjaGVtZT4KICAgICAgICAgICAgPGNiYzpDb21wYW55SUQ+REUxMjM0PC9jYmM6Q29tcGFueUlEPgogICAgICAgICAgICA8Y2FjOlRheFNjaGVtZT4KICAgICAgICAgICAgICAgPGNiYzpJRD5WQVQ8L2NiYzpJRD4KICAgICAgICAgICAgPC9jYWM6VGF4U2NoZW1lPgogICAgICAgICA8L2NhYzpQYXJ0eVRheFNjaGVtZT4KICAgICAgICAgPGNhYzpQYXJ0eUxlZ2FsRW50aXR5PgogICAgICAgICAgICA8Y2JjOlJlZ2lzdHJhdGlvbk5hbWU+VGVzdFRlc3RUZXN0PC9jYmM6UmVnaXN0cmF0aW9uTmFtZT4KICAgICAgICAgICAgPGNiYzpDb21wYW55SUQvPgogICAgICAgICAgICA8Y2JjOkNvbXBhbnlMZWdhbEZvcm0vPgogICAgICAgICA8L2NhYzpQYXJ0eUxlZ2FsRW50aXR5PgogICAgICAgICA8Y2FjOkNvbnRhY3Q+CiAgICAgICAgICAgIDxjYmM6TmFtZT5UZXN0VGVzdFRlc3Q8L2NiYzpOYW1lPgogICAgICAgICAgICA8Y2JjOlRlbGVwaG9uZT5UZXN0VGVzdFRlc3Q8L2NiYzpUZWxlcGhvbmU+CiAgICAgICAgICAgIDxjYmM6RWxlY3Ryb25pY01haWw+VGVzdFRlc3RUZXN0QFRlc3RUZXN0VGVzdC1pbnZhbGlkLWRvbWFpbi50ZXN0PC9jYmM6RWxlY3Ryb25pY01haWw+CiAgICAgICAgIDwvY2FjOkNvbnRhY3Q+CiAgICAgIDwvY2FjOlBhcnR5PgogICA8L2NhYzpBY2NvdW50aW5nU3VwcGxpZXJQYXJ0eT4KICAgPGNhYzpBY2NvdW50aW5nQ3VzdG9tZXJQYXJ0eT4KICAgICAgPGNhYzpQYXJ0eT4KICAgICAgICAgPGNiYzpFbmRwb2ludElEIHNjaGVtZUlEPSIwMDg4Ii8+CiAgICAgICAgIDxjYWM6UGFydHlJZGVudGlmaWNhdGlvbj4KICAgICAgICAgICAgPGNiYzpJRC8+CiAgICAgICAgIDwvY2FjOlBhcnR5SWRlbnRpZmljYXRpb24+CiAgICAgICAgIDxjYWM6UGFydHlOYW1lPgogICAgICAgICAgICA8Y2JjOk5hbWUvPgogICAgICAgICA8L2NhYzpQYXJ0eU5hbWU+CiAgICAgICAgIDxjYWM6UG9zdGFsQWRkcmVzcz4KICAgICAgICAgICAgPGNiYzpTdHJlZXROYW1lLz4KICAgICAgICAgICAgPGNiYzpBZGRpdGlvbmFsU3RyZWV0TmFtZS8+CiAgICAgICAgICAgIDxjYmM6Q2l0eU5hbWU+QmVybGluPC9jYmM6Q2l0eU5hbWU+CiAgICAgICAgICAgIDxjYmM6UG9zdGFsWm9uZT4xMjM0NTwvY2JjOlBvc3RhbFpvbmU+CiAgICAgICAgICAgIDxjYmM6Q291bnRyeVN1YmVudGl0eS8+CiAgICAgICAgICAgIDxjYWM6QWRkcmVzc0xpbmU+CiAgICAgICAgICAgICAgIDxjYmM6TGluZS8+CiAgICAgICAgICAgIDwvY2FjOkFkZHJlc3NMaW5lPgogICAgICAgICAgICA8Y2FjOkNvdW50cnk+CiAgICAgICAgICAgICAgIDxjYmM6SWRlbnRpZmljYXRpb25Db2RlPkRFPC9jYmM6SWRlbnRpZmljYXRpb25Db2RlPgogICAgICAgICAgICA8L2NhYzpDb3VudHJ5PgogICAgICAgICA8L2NhYzpQb3N0YWxBZGRyZXNzPgogICAgICAgICA8Y2FjOlBhcnR5TGVnYWxFbnRpdHk+CiAgICAgICAgICAgIDxjYmM6UmVnaXN0cmF0aW9uTmFtZT5UZXN0VGVzdFRlc3Q8L2NiYzpSZWdpc3RyYXRpb25OYW1lPgogICAgICAgICAgICA8Y2JjOkNvbXBhbnlJRC8+CiAgICAgICAgIDwvY2FjOlBhcnR5TGVnYWxFbnRpdHk+CiAgICAgIDwvY2FjOlBhcnR5PgogICA8L2NhYzpBY2NvdW50aW5nQ3VzdG9tZXJQYXJ0eT4KICAgPGNhYzpQYXltZW50TWVhbnM+CiAgICAgIDxjYmM6UGF5bWVudE1lYW5zQ29kZSBuYW1lPSJJbmZvcm1hdGlvbmVuIMO8YmVyIGRhcyBCYW5ra29udG8sIGF1ZiBkYXMgZGllIMOcYmVyd2Vpc3VuZyB6dSBsZWlzdGVuIGlzdCI+NTg8L2NiYzpQYXltZW50TWVhbnNDb2RlPgogICAgICA8Y2JjOlBheW1lbnRJRC8+CiAgICAgIDxjYWM6UGF5ZWVGaW5hbmNpYWxBY2NvdW50PgogICAgICAgICA8Y2JjOklEPkRFOTExMDAwMDAwMDAxMjM0NTY3ODk8L2NiYzpJRD4KICAgICAgICAgPGNiYzpOYW1lLz4KICAgICAgICAgPGNhYzpGaW5hbmNpYWxJbnN0aXR1dGlvbkJyYW5jaD4KICAgICAgICAgICAgPGNiYzpJRC8+CiAgICAgICAgIDwvY2FjOkZpbmFuY2lhbEluc3RpdHV0aW9uQnJhbmNoPgogICAgICA8L2NhYzpQYXllZUZpbmFuY2lhbEFjY291bnQ+CiAgIDwvY2FjOlBheW1lbnRNZWFucz4KICAgPGNhYzpQYXltZW50VGVybXM+CiAgICAgIDxjYmM6Tm90ZS8+CiAgIDwvY2FjOlBheW1lbnRUZXJtcz4KICAgPGNhYzpUYXhUb3RhbD4KICAgICAgPGNiYzpUYXhBbW91bnQgY3VycmVuY3lJRD0iRVVSIj4xMzM5MTg1LjY8L2NiYzpUYXhBbW91bnQ+CiAgICAgIDxjYWM6VGF4U3VidG90YWw+CiAgICAgICAgIDxjYmM6VGF4YWJsZUFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjgzNjk5MTA8L2NiYzpUYXhhYmxlQW1vdW50PgogICAgICAgICA8Y2JjOlRheEFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjEzMzkxODUuNjwvY2JjOlRheEFtb3VudD4KICAgICAgICAgPGNhYzpUYXhDYXRlZ29yeT4KICAgICAgICAgICAgPGNiYzpJRD5TPC9jYmM6SUQ+CiAgICAgICAgICAgIDxjYmM6UGVyY2VudD4xNjwvY2JjOlBlcmNlbnQ+CiAgICAgICAgICAgIDxjYWM6VGF4U2NoZW1lPgogICAgICAgICAgICAgICA8Y2JjOklEPlZBVDwvY2JjOklEPgogICAgICAgICAgICA8L2NhYzpUYXhTY2hlbWU+CiAgICAgICAgIDwvY2FjOlRheENhdGVnb3J5PgogICAgICA8L2NhYzpUYXhTdWJ0b3RhbD4KICAgPC9jYWM6VGF4VG90YWw+CiAgIDxjYWM6TGVnYWxNb25ldGFyeVRvdGFsPgogICAgICA8Y2JjOkxpbmVFeHRlbnNpb25BbW91bnQgY3VycmVuY3lJRD0iRVVSIj44MzY5OTEwPC9jYmM6TGluZUV4dGVuc2lvbkFtb3VudD4KICAgICAgPGNiYzpUYXhFeGNsdXNpdmVBbW91bnQgY3VycmVuY3lJRD0iRVVSIj44MzY5OTEwPC9jYmM6VGF4RXhjbHVzaXZlQW1vdW50PgogICAgICA8Y2JjOlRheEluY2x1c2l2ZUFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjk3MDkwOTUuNjwvY2JjOlRheEluY2x1c2l2ZUFtb3VudD4KICAgICAgPGNiYzpBbGxvd2FuY2VUb3RhbEFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjA8L2NiYzpBbGxvd2FuY2VUb3RhbEFtb3VudD4KICAgICAgPGNiYzpDaGFyZ2VUb3RhbEFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjA8L2NiYzpDaGFyZ2VUb3RhbEFtb3VudD4KICAgICAgPGNiYzpQcmVwYWlkQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MDwvY2JjOlByZXBhaWRBbW91bnQ+CiAgICAgIDxjYmM6UGF5YWJsZVJvdW5kaW5nQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MDwvY2JjOlBheWFibGVSb3VuZGluZ0Ftb3VudD4KICAgICAgPGNiYzpQYXlhYmxlQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+OTcwOTA5NS42PC9jYmM6UGF5YWJsZUFtb3VudD4KICAgPC9jYWM6TGVnYWxNb25ldGFyeVRvdGFsPgogICA8Y2FjOkludm9pY2VMaW5lPgogICAgICA8Y2JjOklEPjE8L2NiYzpJRD4KICAgICAgPGNiYzpOb3RlLz4KICAgICAgPGNiYzpJbnZvaWNlZFF1YW50aXR5IHVuaXRDb2RlPSJNSUsiPjY3ODwvY2JjOkludm9pY2VkUXVhbnRpdHk+CiAgICAgIDxjYmM6TGluZUV4dGVuc2lvbkFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjgzNjk5MTA8L2NiYzpMaW5lRXh0ZW5zaW9uQW1vdW50PgogICAgICA8Y2JjOkFjY291bnRpbmdDb3N0Lz4KICAgICAgPGNhYzpPcmRlckxpbmVSZWZlcmVuY2U+CiAgICAgICAgIDxjYmM6TGluZUlELz4KICAgICAgPC9jYWM6T3JkZXJMaW5lUmVmZXJlbmNlPgogICAgICA8Y2FjOkRvY3VtZW50UmVmZXJlbmNlPgogICAgICAgICA8Y2JjOklELz4KICAgICAgPC9jYWM6RG9jdW1lbnRSZWZlcmVuY2U+CiAgICAgIDxjYWM6SXRlbT4KICAgICAgICAgPGNiYzpEZXNjcmlwdGlvbi8+CiAgICAgICAgIDxjYmM6TmFtZT5UZXN0VGVzdFRlc3Q8L2NiYzpOYW1lPgogICAgICAgICA8Y2FjOkJ1eWVyc0l0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgICAgPGNiYzpJRC8+CiAgICAgICAgIDwvY2FjOkJ1eWVyc0l0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgPGNhYzpTZWxsZXJzSXRlbUlkZW50aWZpY2F0aW9uPgogICAgICAgICAgICA8Y2JjOklELz4KICAgICAgICAgPC9jYWM6U2VsbGVyc0l0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgPGNhYzpTdGFuZGFyZEl0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgICAgPGNiYzpJRCBzY2hlbWVJRD0iMDAwMSIvPgogICAgICAgICA8L2NhYzpTdGFuZGFyZEl0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgPGNhYzpDbGFzc2lmaWVkVGF4Q2F0ZWdvcnk+CiAgICAgICAgICAgIDxjYmM6SUQ+UzwvY2JjOklEPgogICAgICAgICAgICA8Y2JjOlBlcmNlbnQ+MTY8L2NiYzpQZXJjZW50PgogICAgICAgICAgICA8Y2FjOlRheFNjaGVtZT4KICAgICAgICAgICAgICAgPGNiYzpJRD5WQVQ8L2NiYzpJRD4KICAgICAgICAgICAgPC9jYWM6VGF4U2NoZW1lPgogICAgICAgICA8L2NhYzpDbGFzc2lmaWVkVGF4Q2F0ZWdvcnk+CiAgICAgIDwvY2FjOkl0ZW0+CiAgICAgIDxjYWM6UHJpY2U+CiAgICAgICAgIDxjYmM6UHJpY2VBbW91bnQgY3VycmVuY3lJRD0iRVVSIj4xMjM0NTwvY2JjOlByaWNlQW1vdW50PgogICAgICAgICA8Y2JjOkJhc2VRdWFudGl0eSB1bml0Q29kZT0iTUlLIj4wPC9jYmM6QmFzZVF1YW50aXR5PgogICAgICAgICA8Y2FjOkFsbG93YW5jZUNoYXJnZT4KICAgICAgICAgICAgPGNiYzpDaGFyZ2VJbmRpY2F0b3I+ZmFsc2U8L2NiYzpDaGFyZ2VJbmRpY2F0b3I+CiAgICAgICAgICAgIDxjYmM6QW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MDwvY2JjOkFtb3VudD4KICAgICAgICAgICAgPGNiYzpCYXNlQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MTIzNDU8L2NiYzpCYXNlQW1vdW50PgogICAgICAgICA8L2NhYzpBbGxvd2FuY2VDaGFyZ2U+CiAgICAgIDwvY2FjOlByaWNlPgogICA8L2NhYzpJbnZvaWNlTGluZT4KPC9JbnZvaWNlPgo=</ram:AttachmentBinaryObject>
+            <ram:AttachmentBinaryObject filename="XRechnung-UBL-2020-12-17-no-attachments.xml" mimeCode="application/xml">PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPEludm9pY2UgeG1sbnM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkludm9pY2UtMiIKICAgICAgICAgeG1sbnM6eGFkZXM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMvdjEuMy4yIyIKICAgICAgICAgeG1sbnM6ZHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiCiAgICAgICAgIHhtbG5zOmNhYz0idXJuOm9hc2lzOm5hbWVzOnNwZWNpZmljYXRpb246dWJsOnNjaGVtYTp4c2Q6Q29tbW9uQWdncmVnYXRlQ29tcG9uZW50cy0yIgogICAgICAgICB4bWxuczpjYmM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkJhc2ljQ29tcG9uZW50cy0yIgogICAgICAgICB4bWxuczpleHQ9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkV4dGVuc2lvbkNvbXBvbmVudHMtMiIKICAgICAgICAgeG1sbnM6bjA9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vblNpZ25hdHVyZUNvbXBvbmVudHMtMiIKICAgICAgICAgeG1sbnM6cWR0PSJ1cm46b2FzaXM6bmFtZXM6c3BlY2lmaWNhdGlvbjp1Ymw6c2NoZW1hOnhzZDpRdWFsaWZpZWREYXRhVHlwZXMtMiIKICAgICAgICAgeG1sbnM6c2FjPSJ1cm46b2FzaXM6bmFtZXM6c3BlY2lmaWNhdGlvbjp1Ymw6c2NoZW1hOnhzZDpTaWduYXR1cmVBZ2dyZWdhdGVDb21wb25lbnRzLTIiCiAgICAgICAgIHhtbG5zOnNiYz0idXJuOm9hc2lzOm5hbWVzOnNwZWNpZmljYXRpb246dWJsOnNjaGVtYTp4c2Q6U2lnbmF0dXJlQmFzaWNDb21wb25lbnRzLTIiCiAgICAgICAgIHhtbG5zOnVkdD0idXJuOm9hc2lzOm5hbWVzOnNwZWNpZmljYXRpb246dWJsOnNjaGVtYTp4c2Q6VW5xdWFsaWZpZWREYXRhVHlwZXMtMiIKICAgICAgICAgeG1sbnM6Y2N0cy1jY3Q9InVybjp1bjp1bmVjZTp1bmNlZmFjdDpkYXRhOnNwZWNpZmljYXRpb246Q29yZUNvbXBvbmVudFR5cGVTY2hlbWFNb2R1bGU6MiI+CiAgIDxjYmM6Q3VzdG9taXphdGlvbklEPnVybjpjZW4uZXU6ZW4xNjkzMToyMDE3I2NvbXBsaWFudCN1cm46eG9ldi1kZTprb3NpdDpzdGFuZGFyZDp4cmVjaG51bmdfMi4wPC9jYmM6Q3VzdG9taXphdGlvbklEPgogICA8Y2JjOlByb2ZpbGVJRD5YUmVjaG51bmcgMi4wLjA8L2NiYzpQcm9maWxlSUQ+CiAgIDxjYmM6SUQ+MTIzNDU8L2NiYzpJRD4KICAgPGNiYzpJc3N1ZURhdGU+MjAyMC0xMi0xNzwvY2JjOklzc3VlRGF0ZT4KICAgPGNiYzpEdWVEYXRlPjIwMjAtMTItMzE8L2NiYzpEdWVEYXRlPgogICA8Y2JjOkludm9pY2VUeXBlQ29kZT4zODA8L2NiYzpJbnZvaWNlVHlwZUNvZGU+CiAgIDxjYmM6RG9jdW1lbnRDdXJyZW5jeUNvZGU+RVVSPC9jYmM6RG9jdW1lbnRDdXJyZW5jeUNvZGU+CiAgIDxjYmM6VGF4Q3VycmVuY3lDb2RlPkVVUjwvY2JjOlRheEN1cnJlbmN5Q29kZT4KICAgPGNiYzpBY2NvdW50aW5nQ29zdC8+CiAgIDxjYmM6QnV5ZXJSZWZlcmVuY2U+VGVzdFRlc3RUZXN0PC9jYmM6QnV5ZXJSZWZlcmVuY2U+CiAgIDxjYWM6T3JkZXJSZWZlcmVuY2U+CiAgICAgIDxjYmM6SUQvPgogICAgICA8Y2JjOlNhbGVzT3JkZXJJRC8+CiAgIDwvY2FjOk9yZGVyUmVmZXJlbmNlPgogICA8Y2FjOkRlc3BhdGNoRG9jdW1lbnRSZWZlcmVuY2U+CiAgICAgIDxjYmM6SUQvPgogICA8L2NhYzpEZXNwYXRjaERvY3VtZW50UmVmZXJlbmNlPgogICA8Y2FjOlJlY2VpcHREb2N1bWVudFJlZmVyZW5jZT4KICAgICAgPGNiYzpJRC8+CiAgIDwvY2FjOlJlY2VpcHREb2N1bWVudFJlZmVyZW5jZT4KICAgPGNhYzpPcmlnaW5hdG9yRG9jdW1lbnRSZWZlcmVuY2U+CiAgICAgIDxjYmM6SUQvPgogICA8L2NhYzpPcmlnaW5hdG9yRG9jdW1lbnRSZWZlcmVuY2U+CiAgIDxjYWM6Q29udHJhY3REb2N1bWVudFJlZmVyZW5jZT4KICAgICAgPGNiYzpJRC8+CiAgIDwvY2FjOkNvbnRyYWN0RG9jdW1lbnRSZWZlcmVuY2U+CiAgIDxjYWM6UHJvamVjdFJlZmVyZW5jZT4KICAgICAgPGNiYzpJRC8+CiAgIDwvY2FjOlByb2plY3RSZWZlcmVuY2U+CiAgIDxjYWM6QWNjb3VudGluZ1N1cHBsaWVyUGFydHk+CiAgICAgIDxjYWM6UGFydHk+CiAgICAgICAgIDxjYmM6RW5kcG9pbnRJRCBzY2hlbWVJRD0iMDA4OCIvPgogICAgICAgICA8Y2FjOlBhcnR5TmFtZT4KICAgICAgICAgICAgPGNiYzpOYW1lLz4KICAgICAgICAgPC9jYWM6UGFydHlOYW1lPgogICAgICAgICA8Y2FjOlBvc3RhbEFkZHJlc3M+CiAgICAgICAgICAgIDxjYmM6U3RyZWV0TmFtZS8+CiAgICAgICAgICAgIDxjYmM6QWRkaXRpb25hbFN0cmVldE5hbWUvPgogICAgICAgICAgICA8Y2JjOkNpdHlOYW1lPkJlcmxpbjwvY2JjOkNpdHlOYW1lPgogICAgICAgICAgICA8Y2JjOlBvc3RhbFpvbmU+MTIzNDU8L2NiYzpQb3N0YWxab25lPgogICAgICAgICAgICA8Y2JjOkNvdW50cnlTdWJlbnRpdHkvPgogICAgICAgICAgICA8Y2FjOkFkZHJlc3NMaW5lPgogICAgICAgICAgICAgICA8Y2JjOkxpbmUvPgogICAgICAgICAgICA8L2NhYzpBZGRyZXNzTGluZT4KICAgICAgICAgICAgPGNhYzpDb3VudHJ5PgogICAgICAgICAgICAgICA8Y2JjOklkZW50aWZpY2F0aW9uQ29kZT5ERTwvY2JjOklkZW50aWZpY2F0aW9uQ29kZT4KICAgICAgICAgICAgPC9jYWM6Q291bnRyeT4KICAgICAgICAgPC9jYWM6UG9zdGFsQWRkcmVzcz4KICAgICAgICAgPGNhYzpQYXJ0eVRheFNjaGVtZT4KICAgICAgICAgICAgPGNiYzpDb21wYW55SUQ+REUxMjM0PC9jYmM6Q29tcGFueUlEPgogICAgICAgICAgICA8Y2FjOlRheFNjaGVtZT4KICAgICAgICAgICAgICAgPGNiYzpJRD5WQVQ8L2NiYzpJRD4KICAgICAgICAgICAgPC9jYWM6VGF4U2NoZW1lPgogICAgICAgICA8L2NhYzpQYXJ0eVRheFNjaGVtZT4KICAgICAgICAgPGNhYzpQYXJ0eUxlZ2FsRW50aXR5PgogICAgICAgICAgICA8Y2JjOlJlZ2lzdHJhdGlvbk5hbWU+VGVzdFRlc3RUZXN0PC9jYmM6UmVnaXN0cmF0aW9uTmFtZT4KICAgICAgICAgICAgPGNiYzpDb21wYW55SUQvPgogICAgICAgICAgICA8Y2JjOkNvbXBhbnlMZWdhbEZvcm0vPgogICAgICAgICA8L2NhYzpQYXJ0eUxlZ2FsRW50aXR5PgogICAgICAgICA8Y2FjOkNvbnRhY3Q+CiAgICAgICAgICAgIDxjYmM6TmFtZT5UZXN0VGVzdFRlc3Q8L2NiYzpOYW1lPgogICAgICAgICAgICA8Y2JjOlRlbGVwaG9uZT5UZXN0VGVzdFRlc3Q8L2NiYzpUZWxlcGhvbmU+CiAgICAgICAgICAgIDxjYmM6RWxlY3Ryb25pY01haWw+VGVzdFRlc3RUZXN0QFRlc3RUZXN0VGVzdC1pbnZhbGlkLWRvbWFpbi50ZXN0PC9jYmM6RWxlY3Ryb25pY01haWw+CiAgICAgICAgIDwvY2FjOkNvbnRhY3Q+CiAgICAgIDwvY2FjOlBhcnR5PgogICA8L2NhYzpBY2NvdW50aW5nU3VwcGxpZXJQYXJ0eT4KICAgPGNhYzpBY2NvdW50aW5nQ3VzdG9tZXJQYXJ0eT4KICAgICAgPGNhYzpQYXJ0eT4KICAgICAgICAgPGNiYzpFbmRwb2ludElEIHNjaGVtZUlEPSIwMDg4Ii8+CiAgICAgICAgIDxjYWM6UGFydHlJZGVudGlmaWNhdGlvbj4KICAgICAgICAgICAgPGNiYzpJRC8+CiAgICAgICAgIDwvY2FjOlBhcnR5SWRlbnRpZmljYXRpb24+CiAgICAgICAgIDxjYWM6UGFydHlOYW1lPgogICAgICAgICAgICA8Y2JjOk5hbWUvPgogICAgICAgICA8L2NhYzpQYXJ0eU5hbWU+CiAgICAgICAgIDxjYWM6UG9zdGFsQWRkcmVzcz4KICAgICAgICAgICAgPGNiYzpTdHJlZXROYW1lLz4KICAgICAgICAgICAgPGNiYzpBZGRpdGlvbmFsU3RyZWV0TmFtZS8+CiAgICAgICAgICAgIDxjYmM6Q2l0eU5hbWU+QmVybGluPC9jYmM6Q2l0eU5hbWU+CiAgICAgICAgICAgIDxjYmM6UG9zdGFsWm9uZT4xMjM0NTwvY2JjOlBvc3RhbFpvbmU+CiAgICAgICAgICAgIDxjYmM6Q291bnRyeVN1YmVudGl0eS8+CiAgICAgICAgICAgIDxjYWM6QWRkcmVzc0xpbmU+CiAgICAgICAgICAgICAgIDxjYmM6TGluZS8+CiAgICAgICAgICAgIDwvY2FjOkFkZHJlc3NMaW5lPgogICAgICAgICAgICA8Y2FjOkNvdW50cnk+CiAgICAgICAgICAgICAgIDxjYmM6SWRlbnRpZmljYXRpb25Db2RlPkRFPC9jYmM6SWRlbnRpZmljYXRpb25Db2RlPgogICAgICAgICAgICA8L2NhYzpDb3VudHJ5PgogICAgICAgICA8L2NhYzpQb3N0YWxBZGRyZXNzPgogICAgICAgICA8Y2FjOlBhcnR5TGVnYWxFbnRpdHk+CiAgICAgICAgICAgIDxjYmM6UmVnaXN0cmF0aW9uTmFtZT5UZXN0VGVzdFRlc3Q8L2NiYzpSZWdpc3RyYXRpb25OYW1lPgogICAgICAgICAgICA8Y2JjOkNvbXBhbnlJRC8+CiAgICAgICAgIDwvY2FjOlBhcnR5TGVnYWxFbnRpdHk+CiAgICAgIDwvY2FjOlBhcnR5PgogICA8L2NhYzpBY2NvdW50aW5nQ3VzdG9tZXJQYXJ0eT4KICAgPGNhYzpQYXltZW50TWVhbnM+CiAgICAgIDxjYmM6UGF5bWVudE1lYW5zQ29kZSBuYW1lPSJJbmZvcm1hdGlvbmVuIMO8YmVyIGRhcyBCYW5ra29udG8sIGF1ZiBkYXMgZGllIMOcYmVyd2Vpc3VuZyB6dSBsZWlzdGVuIGlzdCI+NTg8L2NiYzpQYXltZW50TWVhbnNDb2RlPgogICAgICA8Y2JjOlBheW1lbnRJRC8+CiAgICAgIDxjYWM6UGF5ZWVGaW5hbmNpYWxBY2NvdW50PgogICAgICAgICA8Y2JjOklEPkRFOTExMDAwMDAwMDAxMjM0NTY3ODk8L2NiYzpJRD4KICAgICAgICAgPGNiYzpOYW1lLz4KICAgICAgICAgPGNhYzpGaW5hbmNpYWxJbnN0aXR1dGlvbkJyYW5jaD4KICAgICAgICAgICAgPGNiYzpJRC8+CiAgICAgICAgIDwvY2FjOkZpbmFuY2lhbEluc3RpdHV0aW9uQnJhbmNoPgogICAgICA8L2NhYzpQYXllZUZpbmFuY2lhbEFjY291bnQ+CiAgIDwvY2FjOlBheW1lbnRNZWFucz4KICAgPGNhYzpQYXltZW50VGVybXM+CiAgICAgIDxjYmM6Tm90ZS8+CiAgIDwvY2FjOlBheW1lbnRUZXJtcz4KICAgPGNhYzpUYXhUb3RhbD4KICAgICAgPGNiYzpUYXhBbW91bnQgY3VycmVuY3lJRD0iRVVSIj4xMzM5MTg1LjY8L2NiYzpUYXhBbW91bnQ+CiAgICAgIDxjYWM6VGF4U3VidG90YWw+CiAgICAgICAgIDxjYmM6VGF4YWJsZUFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjgzNjk5MTA8L2NiYzpUYXhhYmxlQW1vdW50PgogICAgICAgICA8Y2JjOlRheEFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjEzMzkxODUuNjwvY2JjOlRheEFtb3VudD4KICAgICAgICAgPGNhYzpUYXhDYXRlZ29yeT4KICAgICAgICAgICAgPGNiYzpJRD5TPC9jYmM6SUQ+CiAgICAgICAgICAgIDxjYmM6UGVyY2VudD4xNjwvY2JjOlBlcmNlbnQ+CiAgICAgICAgICAgIDxjYWM6VGF4U2NoZW1lPgogICAgICAgICAgICAgICA8Y2JjOklEPlZBVDwvY2JjOklEPgogICAgICAgICAgICA8L2NhYzpUYXhTY2hlbWU+CiAgICAgICAgIDwvY2FjOlRheENhdGVnb3J5PgogICAgICA8L2NhYzpUYXhTdWJ0b3RhbD4KICAgPC9jYWM6VGF4VG90YWw+CiAgIDxjYWM6TGVnYWxNb25ldGFyeVRvdGFsPgogICAgICA8Y2JjOkxpbmVFeHRlbnNpb25BbW91bnQgY3VycmVuY3lJRD0iRVVSIj44MzY5OTEwPC9jYmM6TGluZUV4dGVuc2lvbkFtb3VudD4KICAgICAgPGNiYzpUYXhFeGNsdXNpdmVBbW91bnQgY3VycmVuY3lJRD0iRVVSIj44MzY5OTEwPC9jYmM6VGF4RXhjbHVzaXZlQW1vdW50PgogICAgICA8Y2JjOlRheEluY2x1c2l2ZUFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjk3MDkwOTUuNjwvY2JjOlRheEluY2x1c2l2ZUFtb3VudD4KICAgICAgPGNiYzpBbGxvd2FuY2VUb3RhbEFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjA8L2NiYzpBbGxvd2FuY2VUb3RhbEFtb3VudD4KICAgICAgPGNiYzpDaGFyZ2VUb3RhbEFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjA8L2NiYzpDaGFyZ2VUb3RhbEFtb3VudD4KICAgICAgPGNiYzpQcmVwYWlkQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MDwvY2JjOlByZXBhaWRBbW91bnQ+CiAgICAgIDxjYmM6UGF5YWJsZVJvdW5kaW5nQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MDwvY2JjOlBheWFibGVSb3VuZGluZ0Ftb3VudD4KICAgICAgPGNiYzpQYXlhYmxlQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+OTcwOTA5NS42PC9jYmM6UGF5YWJsZUFtb3VudD4KICAgPC9jYWM6TGVnYWxNb25ldGFyeVRvdGFsPgogICA8Y2FjOkludm9pY2VMaW5lPgogICAgICA8Y2JjOklEPjE8L2NiYzpJRD4KICAgICAgPGNiYzpOb3RlLz4KICAgICAgPGNiYzpJbnZvaWNlZFF1YW50aXR5IHVuaXRDb2RlPSJNSUsiPjY3ODwvY2JjOkludm9pY2VkUXVhbnRpdHk+CiAgICAgIDxjYmM6TGluZUV4dGVuc2lvbkFtb3VudCBjdXJyZW5jeUlEPSJFVVIiPjgzNjk5MTA8L2NiYzpMaW5lRXh0ZW5zaW9uQW1vdW50PgogICAgICA8Y2JjOkFjY291bnRpbmdDb3N0Lz4KICAgICAgPGNhYzpPcmRlckxpbmVSZWZlcmVuY2U+CiAgICAgICAgIDxjYmM6TGluZUlELz4KICAgICAgPC9jYWM6T3JkZXJMaW5lUmVmZXJlbmNlPgogICAgICA8Y2FjOkRvY3VtZW50UmVmZXJlbmNlPgogICAgICAgICA8Y2JjOklELz4KICAgICAgPC9jYWM6RG9jdW1lbnRSZWZlcmVuY2U+CiAgICAgIDxjYWM6SXRlbT4KICAgICAgICAgPGNiYzpEZXNjcmlwdGlvbi8+CiAgICAgICAgIDxjYmM6TmFtZT5UZXN0VGVzdFRlc3Q8L2NiYzpOYW1lPgogICAgICAgICA8Y2FjOkJ1eWVyc0l0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgICAgPGNiYzpJRC8+CiAgICAgICAgIDwvY2FjOkJ1eWVyc0l0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgPGNhYzpTZWxsZXJzSXRlbUlkZW50aWZpY2F0aW9uPgogICAgICAgICAgICA8Y2JjOklELz4KICAgICAgICAgPC9jYWM6U2VsbGVyc0l0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgPGNhYzpTdGFuZGFyZEl0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgICAgPGNiYzpJRCBzY2hlbWVJRD0iMDAwMSIvPgogICAgICAgICA8L2NhYzpTdGFuZGFyZEl0ZW1JZGVudGlmaWNhdGlvbj4KICAgICAgICAgPGNhYzpDbGFzc2lmaWVkVGF4Q2F0ZWdvcnk+CiAgICAgICAgICAgIDxjYmM6SUQ+UzwvY2JjOklEPgogICAgICAgICAgICA8Y2JjOlBlcmNlbnQ+MTY8L2NiYzpQZXJjZW50PgogICAgICAgICAgICA8Y2FjOlRheFNjaGVtZT4KICAgICAgICAgICAgICAgPGNiYzpJRD5WQVQ8L2NiYzpJRD4KICAgICAgICAgICAgPC9jYWM6VGF4U2NoZW1lPgogICAgICAgICA8L2NhYzpDbGFzc2lmaWVkVGF4Q2F0ZWdvcnk+CiAgICAgIDwvY2FjOkl0ZW0+CiAgICAgIDxjYWM6UHJpY2U+CiAgICAgICAgIDxjYmM6UHJpY2VBbW91bnQgY3VycmVuY3lJRD0iRVVSIj4xMjM0NTwvY2JjOlByaWNlQW1vdW50PgogICAgICAgICA8Y2JjOkJhc2VRdWFudGl0eSB1bml0Q29kZT0iTUlLIj4wPC9jYmM6QmFzZVF1YW50aXR5PgogICAgICAgICA8Y2FjOkFsbG93YW5jZUNoYXJnZT4KICAgICAgICAgICAgPGNiYzpDaGFyZ2VJbmRpY2F0b3I+ZmFsc2U8L2NiYzpDaGFyZ2VJbmRpY2F0b3I+CiAgICAgICAgICAgIDxjYmM6QW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MDwvY2JjOkFtb3VudD4KICAgICAgICAgICAgPGNiYzpCYXNlQW1vdW50IGN1cnJlbmN5SUQ9IkVVUiI+MTIzNDU8L2NiYzpCYXNlQW1vdW50PgogICAgICAgICA8L2NhYzpBbGxvd2FuY2VDaGFyZ2U+CiAgICAgIDwvY2FjOlByaWNlPgogICA8L2NhYzpJbnZvaWNlTGluZT4KPC9JbnZvaWNlPgo=</ram:AttachmentBinaryObject>
          </ram:AdditionalReferencedDocument>
       </ram:ApplicableHeaderTradeAgreement>
       <ram:ApplicableHeaderTradeDelivery>
@@ -152,138 +149,195 @@
          </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
       </ram:ApplicableHeaderTradeSettlement>
    </SupplyChainTradeTransaction>
-</CrossIndustryInvoice></message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="detect-scenarios"/>
-      <timestamp>2026-08-31T16:15:39+02:00</timestamp>
-    </metadata>
-    <detection cvrl:scenario-id="EN16931 XRechnung Extension (CII)">
-      <context>
-        <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
-      </context>
-      <message>Scenario 'EN16931 XRechnung Extension (CII)' matched</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="select-scenario"/>
-      <timestamp>2026-08-31T16:15:39+02:00</timestamp>
-    </metadata>
-    <detection cvrl:scenario-id="EN16931 XRechnung Extension (CII)">
-      <context>
-        <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
-      </context>
-      <message>Scenario 'EN16931 XRechnung Extension (CII)' selected</message>
-      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>EN16931 XRechnung Extension (CII)</name><description><p>Validates UN/CEFACT XML (SCRDM - CII uncoupled) version         D16B</p><p>Uses UN/CEFACT (SCRDM - CII uncoupled) version         D16B XML Schema, Schematron rules from EN16931:2017,         and XRechnung Schematron rules version 3.0.2 </p><p>Download of CII uncoupled XML Schema on 2026-08-19 from         https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/D16B_SCRDM__Subset__CII/D16B/D16B_SCRDM__Subset__CII-D16B.zip</p><p>Download of CII Schematron rules on 2026-08-19 from         https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-cii-1.3.15.zip </p><p>Download of XRechnung Schematron rules on 2026-08-19 from         https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p></description><namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace><namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace><namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace><match>exists(/rsm:CrossIndustryInvoice[rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0'])</match><validateWithXmlSchema><resource><name>XML Schema for UN/CEFACT XML (SCRDM - CII uncoupled)</name><location>resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Schematron rules for EN16931 (CII)</name><location>resources/cii/16b/xsl/EN16931-CII-validation.xsl</location></resource></validateWithSchematron><validateWithSchematron><resource><name>Schematron rules for CIUS XRechnung (CII)</name><location>resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl</location></resource></validateWithSchematron><createReport><id>report-7</id><resource><name>Validation report for XRechnung</name><location>resources/xrechnung-report.xsl</location></resource><customLevel level="warning">BR-CL-23</customLevel><customLevel level="information">BR-CL-21</customLevel><customLevel level="information">BR-CL-11</customLevel><customLevel level="information">BR-CL-10</customLevel><customLevel level="information">BR-CL-24</customLevel><customLevel level="information">BR-CL-25</customLevel><customLevel level="information">BR-CL-26</customLevel><customLevel level="error">CII-SR-452</customLevel><customLevel level="error">CII-SR-453</customLevel><customLevel level="error">CII-SR-454</customLevel><customLevel level="error">CII-SR-465</customLevel><customLevel level="error">CII-SR-466</customLevel></createReport><acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch></scenario></message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="retrieve-artifacts"/>
-      <timestamp>2026-08-31T16:15:39+02:00</timestamp>
-    </metadata>
-    <detection cvrl:artifact-id="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd">
-      <context>
-        <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" cvrl:artifact-type="xsd"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">29468106dda4341afbd7cc215c4ff8031aca6953d85bfe7b0257a2f2bc7eb9287af9e7812c20a288580dc55a72c451d03e1d85120328042c03312203f5df4ddb</cvrl:hash>
-      </context>
-      <message>Artifact retrieved</message>
-    </detection>
-    <detection cvrl:artifact-id="resources/cii/16b/xsl/EN16931-CII-validation.xsl">
-      <context>
-        <location href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">88626d4c6176fa1e82105b3c76452a43c025e8ba511bc46cb6d8d64ced6f88dc1cd8d5cfed580394c157194ab2f28a7f084211207130c818584035a38cd12968</cvrl:hash>
-      </context>
-      <message>Artifact retrieved</message>
-    </detection>
-    <detection cvrl:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl">
-      <context>
-        <location href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">cb7e941393b8a841af75714f482ba595c017cb34171b617774674c4404bc3c49447ce5c67b7747c7639e93a905bab83f589facc253d0c784912d826cbd12bf41</cvrl:hash>
-      </context>
-      <message>Artifact retrieved</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="prepare-rules"/>
-      <timestamp>2026-08-31T16:15:39+02:00</timestamp>
-      <validator name="Saxon" version="12.10"/>
-    </metadata>
-    <detection cvrl:artifact-id="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd">
-      <context>
-        <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd"/>
-      </context>
-      <message>Compiled (XML Schema)</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-31T16:15:39+02:00</timestamp>
-      <schema href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
-    </metadata>
-    <detection>
-      <message>Rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' applied without findings</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-31T16:15:39+02:00</timestamp>
-      <schema href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
-    </metadata>
-    <detection severity="info" code="BR-CL-24" cvrl:original-severity="error">
-      <context>
-        <location xpath="/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeAgreement[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}AdditionalReferencedDocument[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}AttachmentBinaryObject[1]"/>
-      </context>
-      <message>[BR-CL-24]-For Mime code in attribute use MIMEMediaType.</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="apply-rules"/>
-      <timestamp>2026-08-31T16:15:39+02:00</timestamp>
-      <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
-    </metadata>
-    <detection>
-      <message>Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' applied without findings</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="compute-conformance"/>
-      <timestamp>2026-08-31T16:15:39+02:00</timestamp>
-    </metadata>
-    <detection cvrl:target-id="EN16931 XRechnung Extension (CII)" cvrl:conformance="CONFORMANT">
-      <context>
-        <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd"/>
-      </context>
-      <message>Target 'EN16931 XRechnung Extension (CII)' conformant</message>
-    </detection>
-    <detection cvrl:target-id="EN16931 XRechnung Extension (CII)" cvrl:conformance="CONFORMANT">
-      <context>
-        <location href="resources/cii/16b/xsl/EN16931-CII-validation.xsl"/>
-      </context>
-      <message>Target 'EN16931 XRechnung Extension (CII)' conformant</message>
-    </detection>
-    <detection cvrl:target-id="EN16931 XRechnung Extension (CII)" cvrl:conformance="CONFORMANT">
-      <context>
-        <location href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl"/>
-      </context>
-      <message>Target 'EN16931 XRechnung Extension (CII)' conformant</message>
-    </detection>
-    <digest valid="true"/>
-  </report>
+</CrossIndustryInvoice>
+            </message>
+            <context>
+                <cvrl:hash cvrl:algorithm="SHA-512">4be9612e98c9232710d618a47c836d7d5935eaefc7ad657f9c344e17c329d1e84c27578c5274812453cb13dbc4c968a06b00cc4f4e3da7948d7e1d9cfe1c6cd4</cvrl:hash>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+            <creator name="detect-scenarios"/>
+        </metadata>
+        <detection cvrl:scenario-id="EN16931 XRechnung Extension (CII)">
+            <message>Scenario 'EN16931 XRechnung Extension (CII)' matched</message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+            <creator name="select-scenario"/>
+        </metadata>
+        <detection cvrl:scenario-id="EN16931 XRechnung Extension (CII)">
+            <message>Scenario 'EN16931 XRechnung Extension (CII)' selected</message>
+            <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+                <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
+                    <name>EN16931 XRechnung Extension (CII)</name>
+                    <description>
+                        <p>Validates UN/CEFACT XML (SCRDM - CII uncoupled) version         D16B</p>
+                        <p>Uses UN/CEFACT (SCRDM - CII uncoupled) version         D16B XML Schema, Schematron rules from EN16931:2017,         and XRechnung Schematron rules version 3.0.2 </p>
+                        <p>Download of CII uncoupled XML Schema on 2026-08-19 from         https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/D16B_SCRDM__Subset__CII/D16B/D16B_SCRDM__Subset__CII-D16B.zip</p>
+                        <p>Download of CII Schematron rules on 2026-08-19 from         https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-cii-1.3.15.zip </p>
+                        <p>Download of XRechnung Schematron rules on 2026-08-19 from         https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p>
+                    </description>
+                    <namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace>
+                    <namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace>
+                    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+                    <match>exists(/rsm:CrossIndustryInvoice[rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0'])</match>
+                    <validateWithXmlSchema>
+                        <resource>
+                            <name>XML Schema for UN/CEFACT XML (SCRDM - CII uncoupled)</name>
+                            <location>resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd</location>
+                        </resource>
+                    </validateWithXmlSchema>
+                    <validateWithSchematron>
+                        <resource>
+                            <name>Schematron rules for EN16931 (CII)</name>
+                            <location>resources/cii/16b/xsl/EN16931-CII-validation.xsl</location>
+                        </resource>
+                    </validateWithSchematron>
+                    <validateWithSchematron>
+                        <resource>
+                            <name>Schematron rules for CIUS XRechnung (CII)</name>
+                            <location>resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl</location>
+                        </resource>
+                    </validateWithSchematron>
+                    <createReport>
+                        <id>report-7</id>
+                        <resource>
+                            <name>Validation report for XRechnung</name>
+                            <location>resources/xrechnung-report.xsl</location>
+                        </resource>
+                        <customLevel level="warning">BR-CL-23</customLevel>
+                        <customLevel level="information">BR-CL-21</customLevel>
+                        <customLevel level="information">BR-CL-11</customLevel>
+                        <customLevel level="information">BR-CL-10</customLevel>
+                        <customLevel level="information">BR-CL-24</customLevel>
+                        <customLevel level="information">BR-CL-25</customLevel>
+                        <customLevel level="information">BR-CL-26</customLevel>
+                        <customLevel level="error">CII-SR-452</customLevel>
+                        <customLevel level="error">CII-SR-453</customLevel>
+                        <customLevel level="error">CII-SR-454</customLevel>
+                        <customLevel level="error">CII-SR-465</customLevel>
+                        <customLevel level="error">CII-SR-466</customLevel>
+                    </createReport>
+                    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+                </scenario>
+            </message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+            <creator name="retrieve-artifacts"/>
+        </metadata>
+        <detection cvrl:artifact-id="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd">
+            <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" cvrl:artifact-type="xsd"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">29468106dda4341afbd7cc215c4ff8031aca6953d85bfe7b0257a2f2bc7eb9287af9e7812c20a288580dc55a72c451d03e1d85120328042c03312203f5df4ddb</cvrl:hash>
+            </context>
+        </detection>
+        <detection cvrl:artifact-id="resources/cii/16b/xsl/EN16931-CII-validation.xsl">
+            <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">88626d4c6176fa1e82105b3c76452a43c025e8ba511bc46cb6d8d64ced6f88dc1cd8d5cfed580394c157194ab2f28a7f084211207130c818584035a38cd12968</cvrl:hash>
+            </context>
+        </detection>
+        <detection cvrl:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl">
+            <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">cb7e941393b8a841af75714f482ba595c017cb34171b617774674c4404bc3c49447ce5c67b7747c7639e93a905bab83f589facc253d0c784912d826cbd12bf41</cvrl:hash>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+            <validator name="Saxon" version="12.10"/>
+            <creator name="prepare-rules"/>
+        </metadata>
+        <detection cvrl:artifact-id="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd">
+            <message>Compiled (XML Schema)</message>
+            <context>
+                <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+            <creator name="apply-rules"/>
+            <schema href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
+        </metadata>
+        <detection>
+            <message>Rule set 'resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd' applied without findings</message>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+            <creator name="apply-rules"/>
+            <schema href="resources/cii/16b/xsl/EN16931-CII-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+        </metadata>
+        <detection severity="info" code="BR-CL-24" cvrl:original-severity="error">
+            <message>[BR-CL-24]-For Mime code in attribute use MIMEMediaType.</message>
+            <context>
+                <location xpath="/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}ApplicableHeaderTradeAgreement[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}AdditionalReferencedDocument[1]/Q{urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100}AttachmentBinaryObject[1]"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+            <creator name="apply-rules"/>
+            <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+        </metadata>
+        <detection>
+            <message>Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' applied without findings</message>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:22:35+02:00</timestamp>
+            <creator name="compute-conformance"/>
+        </metadata>
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung Extension (CII)">
+            <message>Target 'EN16931 XRechnung Extension (CII)' conformant</message>
+            <context>
+                <location href="resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd"/>
+            </context>
+        </detection>
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung Extension (CII)">
+            <message>Target 'EN16931 XRechnung Extension (CII)' conformant</message>
+            <context>
+                <location href="resources/cii/16b/xsl/EN16931-CII-validation.xsl"/>
+            </context>
+        </detection>
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung Extension (CII)">
+            <message>Target 'EN16931 XRechnung Extension (CII)' conformant</message>
+            <context>
+                <location href="resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
 </reports>

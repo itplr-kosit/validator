@@ -1,468 +1,444 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true"
-         cvrl:status="COMPLETED">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
     <metadata>
-        <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
         <!-- OFFEN: Serialisierungszeit, nicht Ausfuehrungszeit - mit CTActionExecution waeren Start und Dauer je Schritt moeglich -->
-        <timestamp>2026-08-31T16:13:29+02:00</timestamp>
+        <timestamp>2026-09-03T21:22:08+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="business-cases/extension/04.01a-INVOICE_ubl.xml"/>
     </metadata>
     <report>
         <metadata>
+            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
             <creator name="parse-document"/>
-            <timestamp>2026-08-31T16:13:29+02:00</timestamp>
         </metadata>
         <detection>
-            <context>
-                <cvrl:hash cvrl:algorithm="SHA-512">
-                    7f59f9d544f46a38e4feb3c6f9afe72f28233a12c31dda40abc24bfa25e96bdf25ab080445f9ffeff8d28e64507243c4065855fbec9804eb55153b5775c04c98
-                </cvrl:hash>
-            </context>
             <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
-                <ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
-                             xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
-                             xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
-                    <cbc:CustomizationID>
-                        urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0
-                    </cbc:CustomizationID>
-                    <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
-                    <cbc:ID>12345</cbc:ID>
-                    <cbc:IssueDate>2019-05-15</cbc:IssueDate>
-                    <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
-                    <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
-                    <cbc:BuyerReference>12345678-12345-83</cbc:BuyerReference>
-                    <cac:InvoicePeriod>
-                        <cbc:StartDate>2019-02-01</cbc:StartDate>
-                        <cbc:EndDate>2019-05-07</cbc:EndDate>
-                    </cac:InvoicePeriod>
-                    <cac:OrderReference>
-                        <cbc:ID>123</cbc:ID>
-                    </cac:OrderReference>
-                    <cac:AccountingSupplierParty>
-                        <cac:Party>
-                            <cbc:EndpointID schemeID="EM">seller@email.de</cbc:EndpointID>
-                            <cac:PartyName>
-                                <cbc:Name>M. Meier</cbc:Name>
-                            </cac:PartyName>
-                            <cac:PostalAddress>
-                                <cbc:StreetName>Hauptstraße 2</cbc:StreetName>
-                                <cbc:CityName>Musterstadt</cbc:CityName>
-                                <cbc:PostalZone>12345</cbc:PostalZone>
-                                <cac:Country>
-                                    <cbc:IdentificationCode>DE</cbc:IdentificationCode>
-                                </cac:Country>
-                            </cac:PostalAddress>
-                            <cac:PartyTaxScheme>
-                                <cbc:CompanyID>DE/12/345/67890</cbc:CompanyID>
-                                <cac:TaxScheme>
-                                    <cbc:ID>VAT</cbc:ID>
-                                </cac:TaxScheme>
-                            </cac:PartyTaxScheme>
-                            <cac:PartyLegalEntity>
-                                <cbc:RegistrationName>M. Meier Handwerk GbR</cbc:RegistrationName>
-                                <cbc:CompanyID>1122334455</cbc:CompanyID>
-                            </cac:PartyLegalEntity>
-                            <cac:Contact>
-                                <cbc:Name>M. Meier Handwerk GbR</cbc:Name>
-                                <cbc:Telephone>010/12345</cbc:Telephone>
-                                <cbc:ElectronicMail>info@m-meier.de</cbc:ElectronicMail>
-                            </cac:Contact>
-                        </cac:Party>
-                    </cac:AccountingSupplierParty>
-                    <cac:AccountingCustomerParty>
-                        <cac:Party>
-                            <cbc:EndpointID schemeID="EM">buyer@info.de</cbc:EndpointID>
-                            <cac:PartyIdentification>
-                                <cbc:ID>345LA5324</cbc:ID>
-                            </cac:PartyIdentification>
-                            <cac:PostalAddress>
-                                <cbc:StreetName>Dorfplatz 3</cbc:StreetName>
-                                <cbc:CityName>Musterort</cbc:CityName>
-                                <cbc:PostalZone>54321</cbc:PostalZone>
-                                <cac:Country>
-                                    <cbc:IdentificationCode>DE</cbc:IdentificationCode>
-                                </cac:Country>
-                            </cac:PostalAddress>
-                            <cac:PartyLegalEntity>
-                                <cbc:RegistrationName>Beispielkunde</cbc:RegistrationName>
-                            </cac:PartyLegalEntity>
-                        </cac:Party>
-                    </cac:AccountingCustomerParty>
-                    <cac:PaymentMeans>
-                        <cbc:PaymentMeansCode>31</cbc:PaymentMeansCode>
-                        <cac:PayeeFinancialAccount>
-                            <cbc:ID>DE091111222233334444</cbc:ID>
-                        </cac:PayeeFinancialAccount>
-                    </cac:PaymentMeans>
-                    <cac:PaymentTerms>
-                        <cbc:Note>Zahlbar innerhalb 14 Tagen nach Erhalt der Rechnung.</cbc:Note>
-                    </cac:PaymentTerms>
-                    <cac:TaxTotal>
-                        <cbc:TaxAmount currencyID="EUR">2382</cbc:TaxAmount>
-                        <cac:TaxSubtotal>
-                            <cbc:TaxableAmount currencyID="EUR">12536.84</cbc:TaxableAmount>
-                            <cbc:TaxAmount currencyID="EUR">2382</cbc:TaxAmount>
-                            <cac:TaxCategory>
-                                <cbc:ID>S</cbc:ID>
-                                <cbc:Percent>19</cbc:Percent>
-                                <cac:TaxScheme>
-                                    <cbc:ID>VAT</cbc:ID>
-                                </cac:TaxScheme>
-                            </cac:TaxCategory>
-                        </cac:TaxSubtotal>
-                    </cac:TaxTotal>
-                    <cac:LegalMonetaryTotal>
-                        <cbc:LineExtensionAmount currencyID="EUR">12536.84</cbc:LineExtensionAmount>
-                        <cbc:TaxExclusiveAmount currencyID="EUR">12536.84</cbc:TaxExclusiveAmount>
-                        <cbc:TaxInclusiveAmount currencyID="EUR">14918.84</cbc:TaxInclusiveAmount>
-                        <cbc:PrepaidAmount currencyID="EUR">10000.0</cbc:PrepaidAmount>
-                        <cbc:PayableAmount currencyID="EUR">4918.84</cbc:PayableAmount>
-                    </cac:LegalMonetaryTotal>
-                    <cac:InvoiceLine>
-                        <cbc:ID>1</cbc:ID>
-                        <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
-                        <cbc:LineExtensionAmount currencyID="EUR">818.04</cbc:LineExtensionAmount>
-                        <cac:Item>
-                            <cbc:Name>Sanitär und Zubehör</cbc:Name>
-                            <cac:ClassifiedTaxCategory>
-                                <cbc:ID>S</cbc:ID>
-                                <cbc:Percent>19</cbc:Percent>
-                                <cac:TaxScheme>
-                                    <cbc:ID>VAT</cbc:ID>
-                                </cac:TaxScheme>
-                            </cac:ClassifiedTaxCategory>
-                        </cac:Item>
-                        <cac:Price>
-                            <cbc:PriceAmount currencyID="EUR">818.04</cbc:PriceAmount>
-                            <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
-                        </cac:Price>
-                        <cac:SubInvoiceLine>
-                            <cbc:ID>1 1</cbc:ID>
-                            <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
-                            <cbc:LineExtensionAmount currencyID="EUR">335.79</cbc:LineExtensionAmount>
-                            <cac:Item>
-                                <cbc:Name>Demontage Sanitär</cbc:Name>
-                                <cac:ClassifiedTaxCategory>
-                                    <cbc:ID>S</cbc:ID>
-                                    <cbc:Percent>19</cbc:Percent>
-                                    <cac:TaxScheme>
-                                        <cbc:ID>VAT</cbc:ID>
-                                    </cac:TaxScheme>
-                                </cac:ClassifiedTaxCategory>
-                            </cac:Item>
-                            <cac:Price>
-                                <cbc:PriceAmount currencyID="EUR">335.79</cbc:PriceAmount>
-                                <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
-                            </cac:Price>
-                            <cac:SubInvoiceLine>
-                                <cbc:ID>1 1 1</cbc:ID>
-                                <cbc:InvoicedQuantity unitCode="MTR">149</cbc:InvoicedQuantity>
-                                <cbc:LineExtensionAmount currencyID="EUR">193.70</cbc:LineExtensionAmount>
-                                <cac:Item>
-                                    <cbc:Name>Demontage TW-Rohrleitung DN 12-25</cbc:Name>
-                                    <cac:ClassifiedTaxCategory>
-                                        <cbc:ID>S</cbc:ID>
-                                        <cbc:Percent>19</cbc:Percent>
-                                        <cac:TaxScheme>
-                                            <cbc:ID>VAT</cbc:ID>
-                                        </cac:TaxScheme>
-                                    </cac:ClassifiedTaxCategory>
-                                </cac:Item>
-                                <cac:Price>
-                                    <cbc:PriceAmount currencyID="EUR">1.30</cbc:PriceAmount>
-                                    <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
-                                </cac:Price>
-                            </cac:SubInvoiceLine>
-                            <cac:SubInvoiceLine>
-                                <cbc:ID>1 1 2</cbc:ID>
-                                <cbc:InvoicedQuantity unitCode="MTR">32.50</cbc:InvoicedQuantity>
-                                <cbc:LineExtensionAmount currencyID="EUR">48.75</cbc:LineExtensionAmount>
-                                <cac:Item>
-                                    <cbc:Name>Demontage SML DN 100</cbc:Name>
-                                    <cac:ClassifiedTaxCategory>
-                                        <cbc:ID>S</cbc:ID>
-                                        <cbc:Percent>19</cbc:Percent>
-                                        <cac:TaxScheme>
-                                            <cbc:ID>VAT</cbc:ID>
-                                        </cac:TaxScheme>
-                                    </cac:ClassifiedTaxCategory>
-                                </cac:Item>
-                                <cac:Price>
-                                    <cbc:PriceAmount currencyID="EUR">1.50</cbc:PriceAmount>
-                                    <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
-                                </cac:Price>
-                            </cac:SubInvoiceLine>
-                            <cac:SubInvoiceLine>
-                                <cbc:ID>1 1 3</cbc:ID>
-                                <cbc:InvoicedQuantity unitCode="MTR">71.80</cbc:InvoicedQuantity>
-                                <cbc:LineExtensionAmount currencyID="EUR">93.34</cbc:LineExtensionAmount>
-                                <cac:Item>
-                                    <cbc:Name>Demontage AW-Rohrleitungen Kunststoff PP bis DN100</cbc:Name>
-                                    <cac:ClassifiedTaxCategory>
-                                        <cbc:ID>S</cbc:ID>
-                                        <cbc:Percent>19</cbc:Percent>
-                                        <cac:TaxScheme>
-                                            <cbc:ID>VAT</cbc:ID>
-                                        </cac:TaxScheme>
-                                    </cac:ClassifiedTaxCategory>
-                                </cac:Item>
-                                <cac:Price>
-                                    <cbc:PriceAmount currencyID="EUR">1.30</cbc:PriceAmount>
-                                    <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
-                                </cac:Price>
-                            </cac:SubInvoiceLine>
-                        </cac:SubInvoiceLine>
-                        <cac:SubInvoiceLine>
-                            <cbc:ID>1 2</cbc:ID>
-                            <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
-                            <cbc:LineExtensionAmount currencyID="EUR">482.25</cbc:LineExtensionAmount>
-                            <cac:Item>
-                                <cbc:Name>Abwasserleitungen und Zubehör</cbc:Name>
-                                <cac:ClassifiedTaxCategory>
-                                    <cbc:ID>S</cbc:ID>
-                                    <cbc:Percent>19</cbc:Percent>
-                                    <cac:TaxScheme>
-                                        <cbc:ID>VAT</cbc:ID>
-                                    </cac:TaxScheme>
-                                </cac:ClassifiedTaxCategory>
-                            </cac:Item>
-                            <cac:Price>
-                                <cbc:PriceAmount currencyID="EUR">482.25</cbc:PriceAmount>
-                                <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
-                            </cac:Price>
-                            <cac:SubInvoiceLine>
-                                <cbc:ID>1 2 1</cbc:ID>
-                                <cbc:InvoicedQuantity unitCode="MTR">9.5</cbc:InvoicedQuantity>
-                                <cbc:LineExtensionAmount currencyID="EUR">99.75</cbc:LineExtensionAmount>
-                                <cac:Item>
-                                    <cbc:Name>Abwasserleitung HT-PP DN 100</cbc:Name>
-                                    <cac:ClassifiedTaxCategory>
-                                        <cbc:ID>S</cbc:ID>
-                                        <cbc:Percent>19</cbc:Percent>
-                                        <cac:TaxScheme>
-                                            <cbc:ID>VAT</cbc:ID>
-                                        </cac:TaxScheme>
-                                    </cac:ClassifiedTaxCategory>
-                                </cac:Item>
-                                <cac:Price>
-                                    <cbc:PriceAmount currencyID="EUR">10.50</cbc:PriceAmount>
-                                    <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
-                                </cac:Price>
-                            </cac:SubInvoiceLine>
-                            <cac:SubInvoiceLine>
-                                <cbc:ID>1 2 2</cbc:ID>
-                                <cbc:InvoicedQuantity unitCode="MTR">45.0</cbc:InvoicedQuantity>
-                                <cbc:LineExtensionAmount currencyID="EUR">382.50</cbc:LineExtensionAmount>
-                                <cac:Item>
-                                    <cbc:Name>Abwasserleitung HT-PP DN 50</cbc:Name>
-                                    <cac:ClassifiedTaxCategory>
-                                        <cbc:ID>S</cbc:ID>
-                                        <cbc:Percent>19</cbc:Percent>
-                                        <cac:TaxScheme>
-                                            <cbc:ID>VAT</cbc:ID>
-                                        </cac:TaxScheme>
-                                    </cac:ClassifiedTaxCategory>
-                                </cac:Item>
-                                <cac:Price>
-                                    <cbc:PriceAmount currencyID="EUR">8.50</cbc:PriceAmount>
-                                    <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
-                                </cac:Price>
-                            </cac:SubInvoiceLine>
-                        </cac:SubInvoiceLine>
-                    </cac:InvoiceLine>
-                    <cac:InvoiceLine>
-                        <cbc:ID>2</cbc:ID>
-                        <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
-                        <cbc:LineExtensionAmount currencyID="EUR">11718.8</cbc:LineExtensionAmount>
-                        <cac:Item>
-                            <cbc:Name>Heizung und Zubehör</cbc:Name>
-                            <cac:ClassifiedTaxCategory>
-                                <cbc:ID>S</cbc:ID>
-                                <cbc:Percent>19</cbc:Percent>
-                                <cac:TaxScheme>
-                                    <cbc:ID>VAT</cbc:ID>
-                                </cac:TaxScheme>
-                            </cac:ClassifiedTaxCategory>
-                        </cac:Item>
-                        <cac:Price>
-                            <cbc:PriceAmount currencyID="EUR">11718.8</cbc:PriceAmount>
-                            <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
-                        </cac:Price>
-                        <cac:SubInvoiceLine>
-                            <cbc:ID>2 1</cbc:ID>
-                            <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
-                            <cbc:LineExtensionAmount currencyID="EUR">1324</cbc:LineExtensionAmount>
-                            <cac:Item>
-                                <cbc:Name>Demontage Heizung</cbc:Name>
-                                <cac:ClassifiedTaxCategory>
-                                    <cbc:ID>S</cbc:ID>
-                                    <cbc:Percent>19</cbc:Percent>
-                                    <cac:TaxScheme>
-                                        <cbc:ID>VAT</cbc:ID>
-                                    </cac:TaxScheme>
-                                </cac:ClassifiedTaxCategory>
-                            </cac:Item>
-                            <cac:Price>
-                                <cbc:PriceAmount currencyID="EUR">1324</cbc:PriceAmount>
-                                <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
-                            </cac:Price>
-                            <cac:SubInvoiceLine>
-                                <cbc:ID>2 1 1</cbc:ID>
-                                <cbc:InvoicedQuantity unitCode="C62">20</cbc:InvoicedQuantity>
-                                <cbc:LineExtensionAmount currencyID="EUR">700</cbc:LineExtensionAmount>
-                                <cac:Item>
-                                    <cbc:Name>Entleeren der Heizungsanlage, teilnetz</cbc:Name>
-                                    <cac:ClassifiedTaxCategory>
-                                        <cbc:ID>S</cbc:ID>
-                                        <cbc:Percent>19</cbc:Percent>
-                                        <cac:TaxScheme>
-                                            <cbc:ID>VAT</cbc:ID>
-                                        </cac:TaxScheme>
-                                    </cac:ClassifiedTaxCategory>
-                                </cac:Item>
-                                <cac:Price>
-                                    <cbc:PriceAmount currencyID="EUR">35</cbc:PriceAmount>
-                                    <cbc:BaseQuantity unitCode="C62">1</cbc:BaseQuantity>
-                                </cac:Price>
-                            </cac:SubInvoiceLine>
-                            <cac:SubInvoiceLine>
-                                <cbc:ID>2 1 2</cbc:ID>
-                                <cbc:InvoicedQuantity unitCode="C62">52</cbc:InvoicedQuantity>
-                                <cbc:LineExtensionAmount currencyID="EUR">624</cbc:LineExtensionAmount>
-                                <cac:Item>
-                                    <cbc:Name>Demontage Flachheizkörpers</cbc:Name>
-                                    <cac:ClassifiedTaxCategory>
-                                        <cbc:ID>S</cbc:ID>
-                                        <cbc:Percent>19</cbc:Percent>
-                                        <cac:TaxScheme>
-                                            <cbc:ID>VAT</cbc:ID>
-                                        </cac:TaxScheme>
-                                    </cac:ClassifiedTaxCategory>
-                                </cac:Item>
-                                <cac:Price>
-                                    <cbc:PriceAmount currencyID="EUR">12</cbc:PriceAmount>
-                                    <cbc:BaseQuantity unitCode="C62">1</cbc:BaseQuantity>
-                                </cac:Price>
-                            </cac:SubInvoiceLine>
-                        </cac:SubInvoiceLine>
-                        <cac:SubInvoiceLine>
-                            <cbc:ID>2 2</cbc:ID>
-                            <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
-                            <cbc:LineExtensionAmount currencyID="EUR">10394.8</cbc:LineExtensionAmount>
-                            <cac:Item>
-                                <cbc:Name>Heizflächen und Zubehör</cbc:Name>
-                                <cac:ClassifiedTaxCategory>
-                                    <cbc:ID>S</cbc:ID>
-                                    <cbc:Percent>19</cbc:Percent>
-                                    <cac:TaxScheme>
-                                        <cbc:ID>VAT</cbc:ID>
-                                    </cac:TaxScheme>
-                                </cac:ClassifiedTaxCategory>
-                            </cac:Item>
-                            <cac:Price>
-                                <cbc:PriceAmount currencyID="EUR">10394.8</cbc:PriceAmount>
-                                <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
-                            </cac:Price>
-                            <cac:SubInvoiceLine>
-                                <cbc:ID>2 2 1</cbc:ID>
-                                <cbc:InvoicedQuantity unitCode="C62">52</cbc:InvoicedQuantity>
-                                <cbc:LineExtensionAmount currencyID="EUR">10202.4</cbc:LineExtensionAmount>
-                                <cac:Item>
-                                    <cbc:Name>Flachheizkörper Stahl profiliert Seitent. H 300mm L -500mm Typ22
-                                    </cbc:Name>
-                                    <cac:ClassifiedTaxCategory>
-                                        <cbc:ID>S</cbc:ID>
-                                        <cbc:Percent>19</cbc:Percent>
-                                        <cac:TaxScheme>
-                                            <cbc:ID>VAT</cbc:ID>
-                                        </cac:TaxScheme>
-                                    </cac:ClassifiedTaxCategory>
-                                </cac:Item>
-                                <cac:Price>
-                                    <cbc:PriceAmount currencyID="EUR">196.20</cbc:PriceAmount>
-                                    <cbc:BaseQuantity unitCode="C62">1</cbc:BaseQuantity>
-                                </cac:Price>
-                            </cac:SubInvoiceLine>
-                            <cac:SubInvoiceLine>
-                                <cbc:ID>2 2 2</cbc:ID>
-                                <cbc:InvoicedQuantity unitCode="C62">104</cbc:InvoicedQuantity>
-                                <cbc:LineExtensionAmount currencyID="EUR">192.4</cbc:LineExtensionAmount>
-                                <cac:Item>
-                                    <cbc:Name>Einzelrosette aus Kunststoff, weiß</cbc:Name>
-                                    <cac:ClassifiedTaxCategory>
-                                        <cbc:ID>S</cbc:ID>
-                                        <cbc:Percent>19</cbc:Percent>
-                                        <cac:TaxScheme>
-                                            <cbc:ID>VAT</cbc:ID>
-                                        </cac:TaxScheme>
-                                    </cac:ClassifiedTaxCategory>
-                                </cac:Item>
-                                <cac:Price>
-                                    <cbc:PriceAmount currencyID="EUR">1.85</cbc:PriceAmount>
-                                    <cbc:BaseQuantity unitCode="C62">1</cbc:BaseQuantity>
-                                </cac:Price>
-                            </cac:SubInvoiceLine>
-                        </cac:SubInvoiceLine>
-                    </cac:InvoiceLine>
-                </ubl:Invoice>
+                <ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>12345</cbc:ID>
+  <cbc:IssueDate>2019-05-15</cbc:IssueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>12345678-12345-83</cbc:BuyerReference>
+  <cac:InvoicePeriod>
+    <cbc:StartDate>2019-02-01</cbc:StartDate>
+    <cbc:EndDate>2019-05-07</cbc:EndDate>
+  </cac:InvoicePeriod>
+  <cac:OrderReference>
+    <cbc:ID>123</cbc:ID>
+  </cac:OrderReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">seller@email.de</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>M. Meier</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Hauptstraße 2</cbc:StreetName>
+        <cbc:CityName>Musterstadt</cbc:CityName>
+        <cbc:PostalZone>12345</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>DE/12/345/67890</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>M. Meier Handwerk GbR</cbc:RegistrationName>
+        <cbc:CompanyID>1122334455</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>M. Meier Handwerk GbR</cbc:Name>
+        <cbc:Telephone>010/12345</cbc:Telephone>
+        <cbc:ElectronicMail>info@m-meier.de</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">buyer@info.de</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID>345LA5324</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PostalAddress>
+        <cbc:StreetName>Dorfplatz 3</cbc:StreetName>
+        <cbc:CityName>Musterort</cbc:CityName>
+        <cbc:PostalZone>54321</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Beispielkunde</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:PaymentMeans>
+    <cbc:PaymentMeansCode>31</cbc:PaymentMeansCode>
+    <cac:PayeeFinancialAccount>
+      <cbc:ID>DE091111222233334444</cbc:ID>
+    </cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>
+  <cac:PaymentTerms>
+    <cbc:Note>Zahlbar innerhalb 14 Tagen nach Erhalt der Rechnung.</cbc:Note>
+  </cac:PaymentTerms>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">2382</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">12536.84</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">2382</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">12536.84</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">12536.84</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">14918.84</cbc:TaxInclusiveAmount>
+    <cbc:PrepaidAmount currencyID="EUR">10000.0</cbc:PrepaidAmount>
+    <cbc:PayableAmount currencyID="EUR">4918.84</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">818.04</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Sanitär und Zubehör</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">818.04</cbc:PriceAmount>
+      <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
+    </cac:Price>
+    <cac:SubInvoiceLine>
+      <cbc:ID>1 1</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">335.79</cbc:LineExtensionAmount>
+      <cac:Item>
+        <cbc:Name>Demontage Sanitär</cbc:Name>
+        <cac:ClassifiedTaxCategory>
+          <cbc:ID>S</cbc:ID>
+          <cbc:Percent>19</cbc:Percent>
+          <cac:TaxScheme>
+            <cbc:ID>VAT</cbc:ID>
+          </cac:TaxScheme>
+        </cac:ClassifiedTaxCategory>
+      </cac:Item>
+      <cac:Price>
+        <cbc:PriceAmount currencyID="EUR">335.79</cbc:PriceAmount>
+        <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
+      </cac:Price>  
+      <cac:SubInvoiceLine>
+        <cbc:ID>1 1 1</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MTR">149</cbc:InvoicedQuantity>       
+        <cbc:LineExtensionAmount currencyID="EUR">193.70</cbc:LineExtensionAmount>
+        <cac:Item>
+          <cbc:Name>Demontage TW-Rohrleitung DN 12-25</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19</cbc:Percent>
+            <cac:TaxScheme>
+              <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+          </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+          <cbc:PriceAmount currencyID="EUR">1.30</cbc:PriceAmount>
+          <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
+        </cac:Price>
+      </cac:SubInvoiceLine>
+      <cac:SubInvoiceLine>
+        <cbc:ID>1 1 2</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MTR">32.50</cbc:InvoicedQuantity>     
+        <cbc:LineExtensionAmount currencyID="EUR">48.75</cbc:LineExtensionAmount>
+        <cac:Item>
+          <cbc:Name>Demontage SML DN 100</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19</cbc:Percent>
+            <cac:TaxScheme>
+              <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+          </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+          <cbc:PriceAmount currencyID="EUR">1.50</cbc:PriceAmount>
+          <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
+        </cac:Price>
+      </cac:SubInvoiceLine>
+      <cac:SubInvoiceLine>
+        <cbc:ID>1 1 3</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MTR">71.80</cbc:InvoicedQuantity>     
+        <cbc:LineExtensionAmount currencyID="EUR">93.34</cbc:LineExtensionAmount>
+        <cac:Item>
+          <cbc:Name>Demontage AW-Rohrleitungen Kunststoff PP bis DN100</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19</cbc:Percent>
+            <cac:TaxScheme>
+              <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+          </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+          <cbc:PriceAmount currencyID="EUR">1.30</cbc:PriceAmount>
+          <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
+        </cac:Price>
+      </cac:SubInvoiceLine>
+    </cac:SubInvoiceLine>
+    <cac:SubInvoiceLine>
+      <cbc:ID>1 2</cbc:ID>    
+      <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">482.25</cbc:LineExtensionAmount>
+      <cac:Item>
+        <cbc:Name>Abwasserleitungen und Zubehör</cbc:Name>
+        <cac:ClassifiedTaxCategory>
+          <cbc:ID>S</cbc:ID>
+          <cbc:Percent>19</cbc:Percent>
+          <cac:TaxScheme>
+            <cbc:ID>VAT</cbc:ID>
+          </cac:TaxScheme>
+        </cac:ClassifiedTaxCategory>
+      </cac:Item>
+      <cac:Price>
+        <cbc:PriceAmount currencyID="EUR">482.25</cbc:PriceAmount>
+        <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
+      </cac:Price>  
+      <cac:SubInvoiceLine>
+        <cbc:ID>1 2 1</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MTR">9.5</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">99.75</cbc:LineExtensionAmount>
+        <cac:Item>
+          <cbc:Name>Abwasserleitung HT-PP DN 100</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19</cbc:Percent>
+            <cac:TaxScheme>
+              <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+          </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+          <cbc:PriceAmount currencyID="EUR">10.50</cbc:PriceAmount>
+          <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
+        </cac:Price>
+      </cac:SubInvoiceLine>
+      <cac:SubInvoiceLine>
+        <cbc:ID>1 2 2</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="MTR">45.0</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">382.50</cbc:LineExtensionAmount>
+        <cac:Item>
+          <cbc:Name>Abwasserleitung HT-PP DN 50</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19</cbc:Percent>
+            <cac:TaxScheme>
+              <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+          </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+          <cbc:PriceAmount currencyID="EUR">8.50</cbc:PriceAmount>
+          <cbc:BaseQuantity unitCode="MTR">1</cbc:BaseQuantity>
+        </cac:Price>
+      </cac:SubInvoiceLine>
+    </cac:SubInvoiceLine>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">11718.8</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Heizung und Zubehör</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">11718.8</cbc:PriceAmount>
+      <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
+    </cac:Price>   
+    <cac:SubInvoiceLine>
+      <cbc:ID>2 1</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">1324</cbc:LineExtensionAmount>
+      <cac:Item>
+        <cbc:Name>Demontage Heizung</cbc:Name>
+        <cac:ClassifiedTaxCategory>
+          <cbc:ID>S</cbc:ID>
+          <cbc:Percent>19</cbc:Percent>
+          <cac:TaxScheme>
+            <cbc:ID>VAT</cbc:ID>
+          </cac:TaxScheme>
+        </cac:ClassifiedTaxCategory>
+      </cac:Item>
+      <cac:Price>
+        <cbc:PriceAmount currencyID="EUR">1324</cbc:PriceAmount>
+        <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
+      </cac:Price>  
+      <cac:SubInvoiceLine>
+        <cbc:ID>2 1 1</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="C62">20</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">700</cbc:LineExtensionAmount>
+        <cac:Item>
+          <cbc:Name>Entleeren der Heizungsanlage, teilnetz</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19</cbc:Percent>
+            <cac:TaxScheme>
+              <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+          </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+          <cbc:PriceAmount currencyID="EUR">35</cbc:PriceAmount>
+          <cbc:BaseQuantity unitCode="C62">1</cbc:BaseQuantity>
+        </cac:Price>
+      </cac:SubInvoiceLine>
+      <cac:SubInvoiceLine>
+        <cbc:ID>2 1 2</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="C62">52</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">624</cbc:LineExtensionAmount>
+        <cac:Item>
+          <cbc:Name>Demontage Flachheizkörpers</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19</cbc:Percent>
+            <cac:TaxScheme>
+              <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+          </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+          <cbc:PriceAmount currencyID="EUR">12</cbc:PriceAmount>
+          <cbc:BaseQuantity unitCode="C62">1</cbc:BaseQuantity>
+        </cac:Price>
+      </cac:SubInvoiceLine>
+    </cac:SubInvoiceLine>
+    <cac:SubInvoiceLine>
+      <cbc:ID>2 2</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="XPP">1</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="EUR">10394.8</cbc:LineExtensionAmount>
+      <cac:Item>
+        <cbc:Name>Heizflächen und Zubehör</cbc:Name>
+        <cac:ClassifiedTaxCategory>
+          <cbc:ID>S</cbc:ID>
+          <cbc:Percent>19</cbc:Percent>
+          <cac:TaxScheme>
+            <cbc:ID>VAT</cbc:ID>
+          </cac:TaxScheme>
+        </cac:ClassifiedTaxCategory>
+      </cac:Item>
+      <cac:Price>
+        <cbc:PriceAmount currencyID="EUR">10394.8</cbc:PriceAmount>
+        <cbc:BaseQuantity unitCode="XPP">1</cbc:BaseQuantity>
+      </cac:Price>  
+      <cac:SubInvoiceLine>
+        <cbc:ID>2 2 1</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="C62">52</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">10202.4</cbc:LineExtensionAmount>
+        <cac:Item>
+          <cbc:Name>Flachheizkörper Stahl profiliert Seitent. H 300mm L -500mm Typ22</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19</cbc:Percent>
+            <cac:TaxScheme>
+              <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+          </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+          <cbc:PriceAmount currencyID="EUR">196.20</cbc:PriceAmount>
+          <cbc:BaseQuantity unitCode="C62">1</cbc:BaseQuantity>
+        </cac:Price>
+      </cac:SubInvoiceLine>
+      <cac:SubInvoiceLine>
+        <cbc:ID>2 2 2</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="C62">104</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="EUR">192.4</cbc:LineExtensionAmount>
+        <cac:Item>
+          <cbc:Name>Einzelrosette aus Kunststoff, weiß</cbc:Name>
+          <cac:ClassifiedTaxCategory>
+            <cbc:ID>S</cbc:ID>
+            <cbc:Percent>19</cbc:Percent>
+            <cac:TaxScheme>
+              <cbc:ID>VAT</cbc:ID>
+            </cac:TaxScheme>
+          </cac:ClassifiedTaxCategory>
+        </cac:Item>
+        <cac:Price>
+          <cbc:PriceAmount currencyID="EUR">1.85</cbc:PriceAmount>
+          <cbc:BaseQuantity unitCode="C62">1</cbc:BaseQuantity>
+        </cac:Price>
+      </cac:SubInvoiceLine>
+    </cac:SubInvoiceLine>
+  </cac:InvoiceLine>
+</ubl:Invoice>
             </message>
+            <context>
+                <cvrl:hash cvrl:algorithm="SHA-512">7f59f9d544f46a38e4feb3c6f9afe72f28233a12c31dda40abc24bfa25e96bdf25ab080445f9ffeff8d28e64507243c4065855fbec9804eb55153b5775c04c98</cvrl:hash>
+            </context>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
-            <!-- OFFEN: Step umbenennen in match-scenarios (CTActionType liegt in der conformatron-api, braucht Philipp) -->
+            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <!-- OFFEN: Step umbenennen in match-scenarios (CTActionType liegt jetzt im Validator-Modul conformatron) -->
             <creator name="detect-scenarios"/>
-            <timestamp>2026-08-31T16:13:29+02:00</timestamp>
         </metadata>
         <!-- OFFEN: doch ein code an der scenario-detection? Vorschlag aus der Runde: code="detected" oder code="matched" - waere eine Ausnahme von "codes erstmal alle weg" -->
         <!-- OFFEN: scenario-id soll eine Koordinate sein (xse:xrechnung:3.0.2); heute liefert die Fassade den Namen, echte IDs brauchen Szenario-Config V2 -->
         <!-- OFFEN: das href ist ein absoluter lokaler Pfad - fuer ausgelieferte Reports unschoen (Aufrufer-Frage: welchen URI gibt man der Pipeline?) -->
         <detection cvrl:scenario-id="EN16931 XRechnung Extension (UBL Invoice)">
-            <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (UBL Invoice)']"
-                          href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
-            </context>
             <message>Scenario 'EN16931 XRechnung Extension (UBL Invoice)' matched</message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (UBL Invoice)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+            </context>
         </detection>
         <digest valid="true"/>
     </report>
-    <!-- ADR festhalten: Scenario xml darf kein XInclude enthalten, eine entsprechende Prüfung muss auch im Code erfolgen  -->
     <report>
         <metadata>
+            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
             <creator name="select-scenario"/>
-            <timestamp>2026-08-31T16:13:29+02:00</timestamp>
         </metadata>
         <detection cvrl:scenario-id="EN16931 XRechnung Extension (UBL Invoice)">
-            <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (UBL Invoice)']"
-                          href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
-            </context>
             <message>Scenario 'EN16931 XRechnung Extension (UBL Invoice)' selected</message>
             <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
                 <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
                     <name>EN16931 XRechnung Extension (UBL Invoice)</name>
                     <description>
                         <p>Validates UBL Invoice in version 2.1</p>
-                        <p>Uses UBL Invoice 2.1 XML Schema, Schematron rules from EN16931:2017, and XRechnung 3.0.2</p>
-                        <p>Download of UBL XML Schema on 2026-08-19 from
-                            https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip
-                        </p>
-                        <p>Download of UBL Schematron rules on 2026-08-19 from
-                            https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-ubl-1.3.15.zip
-                        </p>
-                        <p>Download of XRechnung Schematron rules on 2026-08-19 from
-                            https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip
-                        </p>
+                        <p>Uses UBL Invoice 2.1 XML Schema,         Schematron rules from EN16931:2017, and XRechnung         3.0.2 </p>
+                        <p>Download of UBL XML Schema on 2026-08-19 from         https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip</p>
+                        <p>Download of UBL Schematron rules on 2026-08-19 from         https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-ubl-1.3.15.zip</p>
+                        <p>Download of XRechnung Schematron rules on 2026-08-19 from         https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p>
                     </description>
-                    <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2
-                    </namespace>
+                    <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
                     <namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace>
                     <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
-                    <match>exists(/invoice:Invoice/cbc:CustomizationID[ . =
-                        'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0'])
-                    </match>
+                    <match>exists(/invoice:Invoice/cbc:CustomizationID[ . = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0'])</match>
                     <validateWithXmlSchema>
                         <resource>
                             <name>XML Schema for UBL 2.1 Invoice</name>
@@ -501,75 +477,65 @@
                     <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
                 </scenario>
             </message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (UBL Invoice)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+            </context>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
+            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
             <creator name="retrieve-artifacts"/>
-            <timestamp>2026-08-31T16:13:29+02:00</timestamp>
         </metadata>
         <!-- OFFEN: cvrl:artifact-id und location/@href tragen dieselbe Kennung - bewusst beides, streichbar wenn gewuenscht (gilt genauso fuer cvrl:target-id weiter unten) -->
         <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
+            <message>Artifact retrieved</message>
             <context>
                 <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" cvrl:artifact-type="xsd"/>
-                <!-- ADR: Hashwerte müssen immer nach Linux convetion erstellt werden um Interoperabilität zwischen Win und Mac gewährleistet ist
-                Oder kein whitespace oder line break am Ende erlaubt -> Als attribute
-                Normalisierung vor der Hash-Generierung muss klar geregelt werden -->
-                <cvrl:hash cvrl:algorithm="SHA-512">
-                    94d388e6003abb89c51be2e46ce2937d88b311482299d5725c789fdcd58f3fb0abf33743d7684b1384ba0b6c78ad9e24c255fb7a8e37cb0f550fdd256d0cdf32
-                </cvrl:hash>
+                <cvrl:hash cvrl:algorithm="SHA-512">94d388e6003abb89c51be2e46ce2937d88b311482299d5725c789fdcd58f3fb0abf33743d7684b1384ba0b6c78ad9e24c255fb7a8e37cb0f550fdd256d0cdf32</cvrl:hash>
             </context>
-            <message>Artifact retrieved</message>
         </detection>
         <detection cvrl:artifact-id="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl">
-            <context>
-                <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl"
-                          cvrl:artifact-type="schematron-xslt2"/>
-                <cvrl:hash cvrl:algorithm="SHA-512">
-                    e310d4c6eda333800727111dcdf37f73a119c1c54041f133abe96b6b7a6d99439c30f0e1080fcd8589d0eea811955b205591c553ee14a65eefb7f20ffdf45696
-                </cvrl:hash>
-            </context>
             <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">e310d4c6eda333800727111dcdf37f73a119c1c54041f133abe96b6b7a6d99439c30f0e1080fcd8589d0eea811955b205591c553ee14a65eefb7f20ffdf45696</cvrl:hash>
+            </context>
         </detection>
         <detection cvrl:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl">
-            <context>
-                <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"
-                          cvrl:artifact-type="schematron-xslt2"/>
-                <cvrl:hash cvrl:algorithm="SHA-512">
-                    ee48549b0e794ddd8aa7728896e5420702b1d3c400d7289b73ed1f424d37e3e54a5da37e2b06ce572bcf822ff516c42f443175d5ae2e84dc91699fe2dd0afb9c
-                </cvrl:hash>
-            </context>
             <message>Artifact retrieved</message>
+            <context>
+                <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+                <cvrl:hash cvrl:algorithm="SHA-512">ee48549b0e794ddd8aa7728896e5420702b1d3c400d7289b73ed1f424d37e3e54a5da37e2b06ce572bcf822ff516c42f443175d5ae2e84dc91699fe2dd0afb9c</cvrl:hash>
+            </context>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
+            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <!-- OFFEN: der Transpiler (schxslt/iso) erscheint nur, wenn wirklich transpiliert wurde - hier sind alle Schematrons vorkompilierte .xsl; mehrere validator-Elemente sind in XVRL zulaessig (metadata ist ein choice) -->
+            <validator name="Saxon" version="12.10"/>
             <!-- OFFEN: ggf. zu viel fuer einen eigenen Schritt - verschoben -->
             <!-- OFFEN: pass-throughs erzeugen keine detection mehr, daher steht hier nur das echte Kompilat -->
             <!-- OFFEN: cvrl:compilation="compiled|passed-through" erst nach dem Workshop -->
             <creator name="prepare-rules"/>
-            <timestamp>2026-08-31T16:13:29+02:00</timestamp>
-            <!-- OFFEN: der Transpiler (schxslt/iso) erscheint nur, wenn wirklich transpiliert wurde - hier sind alle Schematrons vorkompilierte .xsl -->
-            <!-- OFFEN: Hier sind keine zwei Validator Elemente zulässig. Von daher muss noch verortet werden, wo mehrere Angaben wenn nötig gemacht werden bpsw. saxon und schxslt -->
-            <validator name="Saxon" version="12.10"/>
         </metadata>
         <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
+            <message>Compiled (XML Schema)</message>
             <context>
                 <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd"/>
             </context>
-            <message>Compiled (XML Schema)</message>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
+            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
             <creator name="apply-rules"/>
-            <timestamp>2026-08-31T16:13:29+02:00</timestamp>
-            <!-- OFFEN: fundfreier Regelsatz: der code rules-applied ist gestrichen. Falls ein Report ohne detection wie "nicht gelaufen" aussieht, braeuchte der digest ein explizites "ausgefuehrt"-Merkmal -->
-            <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd"
-                    schematypens="http://www.w3.org/2001/XMLSchema"/>
+            <!-- OFFEN: fundfreier Regelsatz: der code rules-applied ist gestrichen. Falls ein Report ohne detection wie "nicht gelaufen" aussieht: XVRL kennt fuer digest/@valid bereits partial und undetermined -->
+            <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
         </metadata>
         <detection>
             <message>Rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' applied without findings</message>
@@ -578,56 +544,51 @@
     </report>
     <report>
         <metadata>
+            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
             <creator name="apply-rules"/>
-            <timestamp>2026-08-31T16:13:29+02:00</timestamp>
-            <!-- schema sollte einen ID (coordinates pending) der verwendeten Scenarios angeben -->
-            <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl"
-                    schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+            <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
         </metadata>
         <detection severity="info" code="UBL-CR-646" cvrl:original-severity="warning">
+            <message>[UBL-CR-646]-A UBL invoice should not include the InvoiceLine SubInvoiceLine</message>
             <context>
                 <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1]"/>
             </context>
-            <message>[UBL-CR-646]-A UBL invoice should not include the InvoiceLine SubInvoiceLine</message>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
+            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
             <creator name="apply-rules"/>
-            <timestamp>2026-08-31T16:13:29+02:00</timestamp>
-            <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"
-                    schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+            <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
         </metadata>
         <detection>
-            <message>Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' applied without findings
-            </message>
+            <message>Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' applied without findings</message>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
+            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
             <creator name="compute-conformance"/>
-            <timestamp>2026-08-31T16:13:29+02:00</timestamp>
         </metadata>
-        <!-- Enum Werte in IDs übersetzen dammit der Report nicht auf konkrete Enum Werte depended -->
-        <detection cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)" cvrl:conformance="CONFORMANT">
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)">
+            <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant</message>
             <context>
                 <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd"/>
             </context>
-            <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant</message>
         </detection>
-        <detection cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)" cvrl:conformance="CONFORMANT">
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)">
+            <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant</message>
             <context>
                 <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl"/>
             </context>
-            <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant</message>
         </detection>
-        <detection cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)" cvrl:conformance="CONFORMANT">
+        <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)">
+            <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant</message>
             <context>
                 <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"/>
             </context>
-            <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant</message>
         </detection>
         <digest valid="true"/>
     </report>

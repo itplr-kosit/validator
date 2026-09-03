@@ -1,44 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
-  <metadata>
-    <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-09-03T10:54:58+02:00</timestamp>
-    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
-    <document href="simple.xml"/>
-  </metadata>
-  <report>
     <metadata>
-      <creator name="parse-document"/>
-      <timestamp>2026-09-03T10:54:58+02:00</timestamp>
+        <timestamp>2026-09-03T21:21:44+02:00</timestamp>
+        <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+        <document href="simple.xml"/>
     </metadata>
-    <detection>
-      <context>
-        <cvrl:hash cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
-      </context>
-      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><simple xmlns="http://validator.kosit.de/test-sample">
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:21:44+02:00</timestamp>
+            <creator name="parse-document"/>
+        </metadata>
+        <detection>
+            <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+                <simple xmlns="http://validator.kosit.de/test-sample">
     <inner>asldkfj</inner>
     <content>
         <html xmlns="http://www.w3.org/1999/xhtml">
             <head>
-                <!--nothing-->
+                
             </head>
             <body>
                 <div>some data</div>
             </body>
         </html>
     </content>
-</simple></message>
-    </detection>
-    <digest valid="true"/>
-  </report>
-  <report>
-    <metadata>
-      <creator name="detect-scenarios"/>
-      <timestamp>2026-09-03T10:54:58+02:00</timestamp>
-    </metadata>
-    <detection severity="error" code="scenario-unknown-id">
-      <message>Requested scenario 'no-such-scenario' is not configured</message>
-    </detection>
-    <digest valid="false" error-count="1" error-codes="scenario-unknown-id"/>
-  </report>
+</simple>
+            </message>
+            <context>
+                <cvrl:hash cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T21:21:44+02:00</timestamp>
+            <creator name="detect-scenarios"/>
+        </metadata>
+        <detection severity="error" code="scenario-unknown-id">
+            <message>Requested scenario 'no-such-scenario' is not configured</message>
+        </detection>
+        <digest valid="false" error-count="1" error-codes="scenario-unknown-id"/>
+    </report>
 </reports>
