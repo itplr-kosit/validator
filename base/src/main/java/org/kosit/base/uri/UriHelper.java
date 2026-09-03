@@ -16,6 +16,10 @@ import org.jspecify.annotations.Nullable;
  * it wraps ({@code file:/some.jar!/dir/}) - the path of that URL carries the entry path within the archive - perform
  * the operation there and wrap the result again. For every other URI they behave exactly like their {@link URI}
  * counterparts.
+ * <p>
+ * {@link #resolve(URI, URI)} is the exception: reaching into an archive means making the content of a file addressable
+ * that is a single opaque resource to everybody who only looks at the base URI, so it has to be enabled explicitly
+ * through {@link #resolve(URI, URI, boolean)}.
  *
  * @author Philip Helger
  */
@@ -52,39 +56,70 @@ public final class UriHelper {
     }
 
     /**
-     * Resolves the passed reference against the passed base URI, like {@link URI#resolve(URI)} does, but with support
-     * for a base URI that addresses something inside an archive.
+     * Resolves the passed reference against the passed base URI, like {@link URI#resolve(URI)} does, <b>without</b>
+     * resolving into an archive - see {@link #resolve(URI, URI, boolean)}.
+     *
+     * @param base the base URI to resolve against. May not be <code>null</code>.
+     * @param reference the reference to resolve. May not be <code>null</code>.
+     * @return the resolved URI. Never <code>null</code>.
+     */
+    public static @NonNull URI resolve(final @NonNull URI base, final @NonNull URI reference) {
+        return resolve(base, reference, false);
+    }
+
+    /**
+     * Resolves the passed reference against the passed base URI, like {@link URI#resolve(URI)} does, optionally with
+     * support for a base URI that addresses something inside an archive.
      *
      * @param base the base URI to resolve against. May not be <code>null</code>.
      * @param reference the reference to resolve. May not be <code>null</code>. An absolute reference is returned
      *            unchanged, exactly like {@link URI#resolve(URI)} does.
+     * @param resolveInArchive <code>true</code> to resolve into an archive base URI. Reaching into an archive is opt
+     *            in, because it makes the content of a file addressable that is a single opaque resource to everybody
+     *            who only looks at the base URI. When it is <code>false</code>, an archive base behaves as it does in
+     *            {@link URI#resolve(URI)}: being opaque it can not be resolved against, so the reference is returned
+     *            unchanged.
      * @return the resolved URI, in the same form as the base URI, so that a reference resolved against an archive URI
      *         is an archive URI again. Never <code>null</code>.
      */
-    public static @NonNull URI resolve(final @NonNull URI base, final @NonNull URI reference) {
+    public static @NonNull URI resolve(final @NonNull URI base, final @NonNull URI reference, final boolean resolveInArchive) {
         Objects.requireNonNull(base);
         Objects.requireNonNull(reference);
 
-        if (!isArchiveUri(base) || reference.isAbsolute()) {
-            // nothing to unwrap, or a reference that replaces the base anyway
+        if (!resolveInArchive || !isArchiveUri(base) || reference.isAbsolute()) {
+            // not allowed to reach into the archive, nothing to unwrap, or a reference that replaces the base anyway
             return base.resolve(reference);
         }
         return wrapAsArchiveUri(base.getScheme(), getHierarchicalUri(base).resolve(reference));
     }
 
     /**
-     * Resolves the passed reference against the passed base URI, like {@link URI#resolve(String)} does, but with
+     * Resolves the passed reference against the passed base URI, like {@link URI#resolve(String)} does, <b>without</b>
+     * resolving into an archive - see {@link #resolve(URI, String, boolean)}.
+     *
+     * @param base the base URI to resolve against. May not be <code>null</code>.
+     * @param reference the reference to resolve. May not be <code>null</code>.
+     * @return the resolved URI. Never <code>null</code>.
+     * @throws IllegalArgumentException if the reference is not a valid URI.
+     */
+    public static @NonNull URI resolve(final @NonNull URI base, final @NonNull String reference) {
+        return resolve(base, reference, false);
+    }
+
+    /**
+     * Resolves the passed reference against the passed base URI, like {@link URI#resolve(String)} does, optionally with
      * support for a base URI that addresses something inside an archive.
      *
      * @param base the base URI to resolve against. May not be <code>null</code>.
      * @param reference the reference to resolve. May not be <code>null</code>.
+     * @param resolveInArchive <code>true</code> to resolve into an archive base URI, see
+     *            {@link #resolve(URI, URI, boolean)}.
      * @return the resolved URI, in the same form as the base URI. Never <code>null</code>.
      * @throws IllegalArgumentException if the reference is not a valid URI.
      */
-    public static @NonNull URI resolve(final @NonNull URI base, final @NonNull String reference) {
+    public static @NonNull URI resolve(final @NonNull URI base, final @NonNull String reference, final boolean resolveInArchive) {
         Objects.requireNonNull(reference);
-
-        return resolve(base, URI.create(reference));
+        return resolve(base, URI.create(reference), resolveInArchive);
     }
 
     /**

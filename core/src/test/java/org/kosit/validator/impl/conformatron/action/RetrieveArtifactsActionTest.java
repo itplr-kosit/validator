@@ -26,7 +26,7 @@ public class RetrieveArtifactsActionTest {
 
     private static final String DOCUMENT = "simple.xml";
 
-    private final RetrieveArtifactsAction action = new RetrieveArtifactsAction(Simple.REPOSITORY_URI);
+    private final RetrieveArtifactsAction action = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true);
 
     private static List<ValidationArtifactReference> refs(final String... references) {
         return List.of(references).stream().map(ValidationArtifactReference::of).toList();
@@ -116,10 +116,25 @@ public class RetrieveArtifactsActionTest {
     }
 
     @Test
+    public void testRepositoryInsideAJarIsRejectedByDefault() {
+        // reaching into an archive has to be enabled explicitly, so the reference does not resolve at all
+        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository());
+
+        final RetrieveArtifactsResult result = packaged.execute(refs("simple.xsd"), DOCUMENT);
+
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.artifacts()).isEmpty();
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED);
+        // and an absolute reference in archive form is no way around it either
+        assertThat(packaged.execute(refs(TestHelper.getJarRepository() + "simple.xsd"), DOCUMENT).detections().getAll()).extracting("code")
+                .containsExactly(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED);
+    }
+
+    @Test
     public void testRepositoryInsideAJarIsResolved() {
         // "jar:file:/some.jar!/dir/" is an opaque URI, so the entry path behind the separator has to be resolved
         // separately - a plain URI.resolve() would hand back the bare reference
-        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository());
+        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository(), true);
 
         final RetrieveArtifactsResult result = packaged.execute(refs("simple.xsd", "simple.sch"), DOCUMENT);
 
@@ -131,7 +146,7 @@ public class RetrieveArtifactsActionTest {
 
     @Test
     public void testReferenceEscapingTheJarRepositoryIsRejected() {
-        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository());
+        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository(), true);
 
         // scenarios.xml exists in that jar, but one entry above the repository - and an absolute reference never
         // addresses the archive
@@ -144,7 +159,7 @@ public class RetrieveArtifactsActionTest {
 
     @Test
     public void testMissingArtifactInAJarFailsTheStep() {
-        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository());
+        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository(), true);
 
         final RetrieveArtifactsResult result = packaged.execute(refs("does-not-exist.xsd"), DOCUMENT);
 

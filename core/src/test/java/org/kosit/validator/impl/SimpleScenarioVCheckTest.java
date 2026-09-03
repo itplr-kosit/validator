@@ -20,7 +20,8 @@ public class SimpleScenarioVCheckTest {
 
     @BeforeEach
     public void setup() {
-        final VConfiguration d = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final VConfiguration d = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.implementation = new DefaultVCheck(new TestEngineInformation(), d);
     }
 

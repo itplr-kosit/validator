@@ -45,7 +45,8 @@ public class DetectScenariosExamplesTest {
      * readable.
      */
     private Document serialize(final URI scenarios, final URI document, final String exampleName) throws Exception {
-        final VConfiguration configuration = VConfiguration.load(scenarios, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final VConfiguration configuration = VConfiguration.load(scenarios, Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
 

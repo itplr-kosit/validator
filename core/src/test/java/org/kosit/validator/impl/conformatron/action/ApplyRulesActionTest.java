@@ -46,8 +46,8 @@ public class ApplyRulesActionTest {
 
     private final ApplyRulesAction action = new ApplyRulesAction();
 
-    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
-            ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
+    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
+            Simple.REPOSITORY_URI);
 
     private @NonNull CTParsedValidationSource parse(final @NonNull URI document) throws IOException {
         final ParseXmlResult parsed = new ParseXmlAction().execute(ReadResource.of(Resource.of(document), resHelper.get()));
@@ -59,7 +59,7 @@ public class ApplyRulesActionTest {
     }
 
     private List<CTPreparedRuleSet> prepare(final String... references) {
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true)
                 .execute(Arrays.stream(references).map(ValidationArtifactReference::of).toList(), "test");
         assertThat(retrieved.isSuccess()).isTrue();
 

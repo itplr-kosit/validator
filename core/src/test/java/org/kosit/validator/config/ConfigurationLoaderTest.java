@@ -17,7 +17,7 @@ public class ConfigurationLoaderTest {
     @Test
     public void testCustomResolvingStrategy() {
         final ConfigurationLoader loader = TestConfigurationFactory.loadSimpleConfiguration();
-        loader.setResolvingStrategy(new StrictRelativeResolvingStrategy());
+        loader.setResolvingStrategy(TestHelper.getTestResolvingStrategy());
         loader.setResolvingMode(ResolvingMode.ALLOW_REMOTE);
         final VConfiguration config = loader.build(TestHelper.getTestProcessor());
         assertThat(config.getContentRepository().getResolvingConfigurationStrategy()).isNotInstanceOf(RemoteResolvingStrategy.class);

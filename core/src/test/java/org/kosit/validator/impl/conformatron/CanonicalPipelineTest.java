@@ -54,7 +54,8 @@ public class CanonicalPipelineTest {
 
     @BeforeEach
     public void setup() {
-        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
 
@@ -77,7 +78,7 @@ public class CanonicalPipelineTest {
         trace.addAll(codes(selected.detections().getAll()));
 
         // step 5: RETRIEVE_ARTIFACTS — repository-confined resolution of the scenario's references
-        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(selected.selected());
+        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true).execute(selected.selected());
         assertThat(retrieved.isSuccess()).isTrue();
         trace.addAll(codes(retrieved.detections().getAll()));
 

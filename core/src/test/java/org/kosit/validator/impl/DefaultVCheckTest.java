@@ -63,17 +63,17 @@ public class DefaultVCheckTest {
     @BeforeEach
     public void setup() throws URISyntaxException {
         final VConfiguration validConfig = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI)
-                .build(TestHelper.getTestProcessor());
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.validCheck = new DefaultVCheck(this.engineInformation, validConfig);
 
         final VConfiguration errorConfig = VConfiguration.load(Simple.ERROR_SCENARIOS, Simple.REPOSITORY_URI)
-                .build(TestHelper.getTestProcessor());
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.errorCheck = new DefaultVCheck(this.engineInformation, errorConfig);
 
         final VConfiguration jarConfig = VConfiguration
                 .load(requireNonNull(DefaultVCheckTest.class.getClassLoader().getResource("simple/packaged/scenarios.xml")).toURI(),
                         requireNonNull(DefaultVCheckTest.class.getClassLoader().getResource("simple/packaged/repository/")).toURI())
-                .build(TestHelper.getTestProcessor());
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
 
         this.jarScenarioCheck = new DefaultVCheck(this.engineInformation, jarConfig);
     }

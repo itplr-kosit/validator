@@ -23,6 +23,7 @@ import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.testdata.TestData;
+import org.kosit.validator.xml.resolve.StrictRelativeResolvingStrategy;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -101,8 +102,7 @@ public class TestHelper {
         public static final URI SCHEMATRON = TestData.file("examples/simple/repository/simple-schematron-error.xsl");
 
         public static final ContentRepository createContentRepository() {
-            final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
-            return new ContentRepository(TestHelper.getTestProcessor(), strategy, Simple.REPOSITORY_URI);
+            return new ContentRepository(TestHelper.getTestProcessor(), getTestResolvingStrategy(), Simple.REPOSITORY_URI);
         }
 
         public static URI getSchemaLocation() {
@@ -185,6 +185,16 @@ public class TestHelper {
 
     public static SingleProcessingResult<XdmNode, SimpleError> parseDocument(final CTReadResource input) {
         return new DocumentParseTask(getTestProcessor()).parseDocument(input);
+    }
+
+    /**
+     * The shared test data is a jar on the class path, so its artifacts live inside an archive. Resolving into an
+     * archive is off by default, and the tests are the ones that explicitly allow it.
+     *
+     * @return the resolving strategy of the tests, never {@code null}
+     */
+    public static ResolvingConfigurationStrategy getTestResolvingStrategy() {
+        return new StrictRelativeResolvingStrategy(true);
     }
 
     public static Processor getTestProcessor() {

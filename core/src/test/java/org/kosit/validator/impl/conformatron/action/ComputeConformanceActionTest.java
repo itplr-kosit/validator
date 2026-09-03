@@ -31,8 +31,8 @@ public class ComputeConformanceActionTest {
 
     private final ComputeConformanceAction action = new ComputeConformanceAction();
 
-    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
-            ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
+    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
+            Simple.REPOSITORY_URI);
 
     private static final CTConformanceTarget TARGET = ConformanceTarget.of("simple-target", "Simple Target",
             List.of("simple.xsd", "simple.sch", "simple-runtime-error.sch"), null);
@@ -41,8 +41,8 @@ public class ComputeConformanceActionTest {
         final CTParsedValidationSource parsed = new ParseXmlAction().execute(TestHelper.read(document)).getParsedSource();
         final List<CTValidationArtifactReference> refs = List.of(references).stream()
                 .map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(refs,
-                "test");
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true)
+                .execute(refs, "test");
         final List<CTPreparedRuleSet> ruleSets = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(), "test").ruleSets();
         return new ApplyRulesAction().execute(parsed, ruleSets).result();
     }

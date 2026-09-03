@@ -67,7 +67,7 @@ public class SchematronValidationTaskTest {
 
         // real SchXslt compilation (no mock): the schematron compiles fine but raises a dynamic
         // XPath error (FORG0001) when validating simple.xml, whose inner element is not a number
-        final ContentRepository repo = new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
+        final ContentRepository repo = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
                 Simple.REPOSITORY_URI);
         final ValidateWithSchematron validateWithSchematron = new ValidateWithSchematron();
         final ResourceType resource = new ResourceType();
@@ -90,7 +90,8 @@ public class SchematronValidationTaskTest {
 
     @Test
     public void testXsltValid() {
-        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
@@ -101,7 +102,8 @@ public class SchematronValidationTaskTest {
 
     @Test
     public void testSchCompiledValid() {
-        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
@@ -112,7 +114,8 @@ public class SchematronValidationTaskTest {
 
     @Test
     public void testIsoSchCompiledValid() {
-        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_ISO_VALID))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);

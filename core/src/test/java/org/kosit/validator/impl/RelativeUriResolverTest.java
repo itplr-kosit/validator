@@ -31,7 +31,7 @@ public class RelativeUriResolverTest {
         }
     }
 
-    private URIResolver resolver = new RelativeUriResolver(BASE);
+    private URIResolver resolver = new RelativeUriResolver(BASE, true);
 
     @Test
     public void testSuccess() throws TransformerException {
@@ -50,8 +50,17 @@ public class RelativeUriResolverTest {
     }
 
     @Test
+    public void testArchiveBaseIsNotResolvedByDefault() throws TransformerException {
+        final URI jarBase = TestHelper.getJarRepository();
+
+        // reaching into an archive is opt in, and without it the reference stays relative and therefore outside
+        assertThat(new RelativeUriResolver(jarBase, true).resolve("simple.xsd", jarBase.toASCIIString())).isNotNull();
+        assertThrows(TransformerException.class, () -> new RelativeUriResolver(jarBase).resolve("simple.xsd", jarBase.toASCIIString()));
+    }
+
+    @Test
     public void testClasspathLocal() throws URISyntaxException, TransformerException {
-        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("loading").toURI());
+        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("loading").toURI(), true);
         final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("loading/main.xsd");
         final Source resolved = this.resolver.resolve("./resources/reference.xsd", moz.toURI().toASCIIString());
         assertThat(resolved).isNotNull();
@@ -59,7 +68,7 @@ public class RelativeUriResolverTest {
 
     @Test
     public void testClasspathJAR() throws URISyntaxException, TransformerException {
-        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("packaged").toURI());
+        this.resolver = new RelativeUriResolver(RelativeUriResolver.class.getClassLoader().getResource("packaged").toURI(), true);
         final URL moz = RelativeUriResolverTest.class.getClassLoader().getResource("packaged/main.xsd");
         final Source resolved = this.resolver.resolve("./resources/reference.xsd", moz.toURI().toASCIIString());
         assertThat(resolved).isNotNull();

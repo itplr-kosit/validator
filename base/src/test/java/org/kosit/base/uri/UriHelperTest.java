@@ -51,47 +51,58 @@ public class UriHelperTest {
     }
 
     @Test
-    public void resolveWithArchiveBase() {
-        // this is what the class is about: URI#resolve hands the reference back unchanged for an opaque base
+    public void resolveDoesNotReachIntoAnArchiveByDefault() {
+        // reaching into an archive is opt in, so without it an archive base behaves like it does in URI#resolve:
+        // being opaque it can not be resolved against, and the reference is handed back unchanged
         assertThat(JAR_DIR.resolve(URI.create("a.xsd"))).isEqualTo(URI.create("a.xsd"));
+        assertThat(UriHelper.resolve(JAR_DIR, URI.create("a.xsd"))).isEqualTo(URI.create("a.xsd"));
+        assertThat(UriHelper.resolve(JAR_DIR, URI.create("a.xsd"), false)).isEqualTo(URI.create("a.xsd"));
+        assertThat(UriHelper.resolve(JAR_DIR, "a.xsd")).isEqualTo(URI.create("a.xsd"));
 
-        assertThat(UriHelper.resolve(JAR_DIR, URI.create("a.xsd"))).isEqualTo(URI.create("jar:file:/some.jar!/dir/a.xsd"));
-        assertThat(UriHelper.resolve(JAR_DIR, URI.create("sub/a.xsd"))).isEqualTo(URI.create("jar:file:/some.jar!/dir/sub/a.xsd"));
-        assertThat(UriHelper.resolve(JAR_DIR, URI.create("./a.xsd"))).isEqualTo(URI.create("jar:file:/some.jar!/dir/a.xsd"));
-        assertThat(UriHelper.resolve(URI.create("jar:file:/some.jar!/dir/sub/"), URI.create("../a.xsd")))
+        // a hierarchical base is not affected by the flag at all
+        assertThat(UriHelper.resolve(FILE_DIR, URI.create("a.xsd"))).isEqualTo(URI.create("file:/tmp/dir/a.xsd"));
+        assertThat(UriHelper.resolve(FILE_DIR, URI.create("a.xsd"), true)).isEqualTo(URI.create("file:/tmp/dir/a.xsd"));
+    }
+
+    @Test
+    public void resolveWithArchiveBase() {
+        assertThat(UriHelper.resolve(JAR_DIR, URI.create("a.xsd"), true)).isEqualTo(URI.create("jar:file:/some.jar!/dir/a.xsd"));
+        assertThat(UriHelper.resolve(JAR_DIR, URI.create("sub/a.xsd"), true)).isEqualTo(URI.create("jar:file:/some.jar!/dir/sub/a.xsd"));
+        assertThat(UriHelper.resolve(JAR_DIR, URI.create("./a.xsd"), true)).isEqualTo(URI.create("jar:file:/some.jar!/dir/a.xsd"));
+        assertThat(UriHelper.resolve(URI.create("jar:file:/some.jar!/dir/sub/"), URI.create("../a.xsd"), true))
                 .isEqualTo(URI.create("jar:file:/some.jar!/dir/a.xsd"));
         // the entry path is a path, so it can be left again: first up to the root of the archive, then out of it -
         // it is up to the caller to accept that or not
-        assertThat(UriHelper.resolve(JAR_DIR, URI.create("../a.xsd"))).isEqualTo(URI.create("jar:file:/some.jar!/a.xsd"));
-        assertThat(UriHelper.resolve(JAR_DIR, URI.create("../../a.xsd"))).isEqualTo(URI.create("jar:file:/a.xsd"));
+        assertThat(UriHelper.resolve(JAR_DIR, URI.create("../a.xsd"), true)).isEqualTo(URI.create("jar:file:/some.jar!/a.xsd"));
+        assertThat(UriHelper.resolve(JAR_DIR, URI.create("../../a.xsd"), true)).isEqualTo(URI.create("jar:file:/a.xsd"));
         // resolving against an entry, not against a directory
-        assertThat(UriHelper.resolve(URI.create("jar:file:/some.jar!/dir/main.xsd"), URI.create("a.xsd")))
+        assertThat(UriHelper.resolve(URI.create("jar:file:/some.jar!/dir/main.xsd"), URI.create("a.xsd"), true))
                 .isEqualTo(URI.create("jar:file:/some.jar!/dir/a.xsd"));
 
         // an absolute reference replaces the base, exactly like URI#resolve does, and is not wrapped
-        assertThat(UriHelper.resolve(JAR_DIR, URI.create("file:///etc/passwd"))).isEqualTo(URI.create("file:///etc/passwd"));
-        assertThat(UriHelper.resolve(JAR_DIR, URI.create("jar:file:/other.jar!/a.xsd")))
+        assertThat(UriHelper.resolve(JAR_DIR, URI.create("file:///etc/passwd"), true)).isEqualTo(URI.create("file:///etc/passwd"));
+        assertThat(UriHelper.resolve(JAR_DIR, URI.create("jar:file:/other.jar!/a.xsd"), true))
                 .isEqualTo(URI.create("jar:file:/other.jar!/a.xsd"));
     }
 
     @Test
     public void resolveWithArchiveBaseRetainsPercentEncoding() {
         // the decoded scheme specific part would turn "a%20b.jar" into "a b.jar", which is not a valid URI any more
-        assertThat(UriHelper.resolve(URI.create("jar:file:/a%20b.jar!/dir/"), URI.create("a.xsd")))
+        assertThat(UriHelper.resolve(URI.create("jar:file:/a%20b.jar!/dir/"), URI.create("a.xsd"), true))
                 .isEqualTo(URI.create("jar:file:/a%20b.jar!/dir/a.xsd"));
-        assertThat(UriHelper.resolve(URI.create("jar:file:/some.jar!/a%20dir/"), URI.create("a%20b.xsd")))
+        assertThat(UriHelper.resolve(URI.create("jar:file:/some.jar!/a%20dir/"), URI.create("a%20b.xsd"), true))
                 .isEqualTo(URI.create("jar:file:/some.jar!/a%20dir/a%20b.xsd"));
     }
 
     @Test
     public void resolveWithNestedArchiveBase() {
-        assertThat(UriHelper.resolve(URI.create("jar:file:/app.jar!/lib/inner.jar!/dir/"), URI.create("a.xsd")))
+        assertThat(UriHelper.resolve(URI.create("jar:file:/app.jar!/lib/inner.jar!/dir/"), URI.create("a.xsd"), true))
                 .isEqualTo(URI.create("jar:file:/app.jar!/lib/inner.jar!/dir/a.xsd"));
     }
 
     @Test
     public void resolveWithStringReference() {
-        assertThat(UriHelper.resolve(JAR_DIR, "a.xsd")).isEqualTo(URI.create("jar:file:/some.jar!/dir/a.xsd"));
+        assertThat(UriHelper.resolve(JAR_DIR, "a.xsd", true)).isEqualTo(URI.create("jar:file:/some.jar!/dir/a.xsd"));
         assertThat(UriHelper.resolve(FILE_DIR, "a.xsd")).isEqualTo(URI.create("file:/tmp/dir/a.xsd"));
     }
 
@@ -138,5 +149,7 @@ public class UriHelperTest {
         assertThatThrownBy(() -> UriHelper.resolve(null, URI.create("a.xsd"))).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> UriHelper.resolve(JAR_DIR, (URI) null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> UriHelper.resolve(JAR_DIR, (String) null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> UriHelper.resolve(null, URI.create("a.xsd"), true)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> UriHelper.resolve(JAR_DIR, (URI) null, true)).isInstanceOf(NullPointerException.class);
     }
 }

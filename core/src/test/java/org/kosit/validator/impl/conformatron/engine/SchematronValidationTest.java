@@ -2,6 +2,8 @@ package org.kosit.validator.impl.conformatron.engine;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
+
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,7 @@ public class SchematronValidationTest {
     @Test
     public void testConformantDocument() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
-                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch", true), true);
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.isConformant()).isTrue();
@@ -34,7 +36,7 @@ public class SchematronValidationTest {
     @Test
     public void testDocumentWithFindings() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SCHEMATRON_INVALID),
-                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch", true), true);
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.isConformant()).isFalse();
@@ -45,7 +47,7 @@ public class SchematronValidationTest {
     @Test
     public void testProcessingErrorFailsTheRun() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
-                UriHelper.resolve(Simple.REPOSITORY_URI, "simple-runtime-error.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple-runtime-error.sch", true), true);
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
@@ -58,9 +60,23 @@ public class SchematronValidationTest {
     }
 
     @Test
+    public void testSchematronThatHasNoRepositoryIsReportedAsDetection() {
+        // no repository can be derived from these two, and that is reported like every other step failure instead of
+        // escaping as an exception: an archive without the permission to reach into it, and a relative URI
+        final AdHocValidationResult packaged = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
+                UriHelper.resolve(TestHelper.getJarRepository(), "simple.sch", true));
+        final AdHocValidationResult relative = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID), URI.create("simple.sch"));
+
+        assertThat(packaged.isSuccess()).isFalse();
+        assertThat(packaged.detections().getAll()).extracting("code").containsExactly(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED);
+        assertThat(relative.isSuccess()).isFalse();
+        assertThat(relative.detections().getAll()).extracting("code").containsExactly(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED);
+    }
+
+    @Test
     public void testMissingSchematronFailsInRetrieveStep() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.SIMPLE_VALID),
-                UriHelper.resolve(Simple.REPOSITORY_URI, "does-not-exist.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "does-not-exist.sch", true), true);
 
         assertThat(result.isSuccess()).isFalse();
         // reported under the canonical step-5 code, not a generic ad-hoc preparation error
@@ -70,7 +86,7 @@ public class SchematronValidationTest {
     @Test
     public void testNotWellformedDocumentFailsBeforeRules() {
         final AdHocValidationResult result = this.validation.validate(TestHelper.read(Simple.NOT_WELLFORMED),
-                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch"));
+                UriHelper.resolve(Simple.REPOSITORY_URI, "simple.sch", true), true);
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.detections().getAll()).extracting("code").contains(XmlDetection.CODE_NOT_WELLFORMED);

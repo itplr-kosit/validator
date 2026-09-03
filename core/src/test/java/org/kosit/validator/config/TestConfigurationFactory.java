@@ -9,8 +9,8 @@ import static org.kosit.validator.config.ConfigurationBuilder.schematron;
 import java.net.URI;
 import java.util.Date;
 
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.TestHelper.Simple;
 
 /**
@@ -22,11 +22,11 @@ public class TestConfigurationFactory {
         return VConfiguration.create().name("Simple-API").author("me").description("test desc").date(new Date())
                 .with(createScenario().description("awesome scenario")).with(fallback().name("default").source("report.xsl"))
 
-                .resolvingMode(ResolvingMode.STRICT_RELATIVE).useRepository(Simple.REPOSITORY_URI);
+                .resolvingStrategy(TestHelper.getTestResolvingStrategy()).useRepository(Simple.REPOSITORY_URI);
     }
 
     public static ConfigurationLoader loadSimpleConfiguration() {
-        return VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI);
+        return VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI).setResolvingStrategy(TestHelper.getTestResolvingStrategy());
     }
 
     public static ScenarioBuilder createScenario() {
