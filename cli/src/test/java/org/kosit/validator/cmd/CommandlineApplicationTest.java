@@ -1,7 +1,6 @@
 package org.kosit.validator.cmd;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kosit.validator.impl.TestHelper.ASSERTIONS;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -240,7 +239,7 @@ public class CommandlineApplicationTest {
     @Test
     public void testDebugFlag() {
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-r", "unknown", "-o", this.output.toString(), "-d",
-                Paths.get(ASSERTIONS).toString() };
+                Paths.get(Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
         assertThat(testWriter.getErrorOutput()).contains("at org.kosit.validator");
     }

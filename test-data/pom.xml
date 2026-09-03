@@ -12,6 +12,13 @@
     <artifactId>validator-test-data</artifactId>
     <name>KoSIT Validator test data</name>
     <description>Scenario configurations, schemas, stylesheets and sample instances shared by the tests of all modules.</description>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <resources>

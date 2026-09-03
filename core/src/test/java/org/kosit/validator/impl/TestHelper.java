@@ -131,8 +131,6 @@ public class TestHelper {
 
     public static final URI EXAMPLES_DIR = TestData.dir("examples/");
 
-    public static final URI ASSERTIONS = TestData.file("examples/assertions/tests-xrechnung.xml");
-
     /**
      * Repository that lives inside a jar (packaged-test-scenarios) instead of the shared test data. Resolved lazily,
      * because that artifact is only a test dependency of this module and not of the modules reusing this helper.

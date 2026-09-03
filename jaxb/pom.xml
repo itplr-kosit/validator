@@ -37,8 +37,8 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conformatron</groupId>
-            <artifactId>conformatron-api</artifactId>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-conformatron</artifactId>
         </dependency>
 
         <dependency>
