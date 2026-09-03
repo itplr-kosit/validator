@@ -126,8 +126,11 @@ public class ValidationService {
 
     private static List<VConfiguration> getConfiguration(final ValidationConfig cfg, final Processor processor) {
         return cfg.scenarios().stream().map(scenarioBundle -> {
-            assertFileExistance(scenarioBundle.scenarioPath(), "scenario");
-            final URI scenarioLocation = scenarioBundle.scenarioPath().toUri();
+            // Normalized, because a configured path containing ".." survives Path.toUri() and then no longer matches
+            // the repository base URI that the artifact resolution compares against.
+            final Path scenarioPath = scenarioBundle.scenarioPath().toAbsolutePath().normalize();
+            assertFileExistance(scenarioPath, "scenario");
+            final URI scenarioLocation = scenarioPath.toUri();
             final URI repositoryLocation = findRepository(scenarioLocation, scenarioBundle.repositoryOpt());
             return VConfiguration.load(scenarioLocation, repositoryLocation).build(processor);
         }).toList();
@@ -139,10 +142,11 @@ public class ValidationService {
     }
 
     private static URI determineRepository(final Path d) {
-        if (Files.isDirectory(d)) {
-            return d.toUri();
+        final Path repository = d.toAbsolutePath().normalize();
+        if (Files.isDirectory(repository)) {
+            return repository.toUri();
         }
-        throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + d.toAbsolutePath() + "'");
+        throw new IllegalArgumentException("Not a valid path for repository definition specified: '" + repository + "'");
     }
 
     private static void assertFileExistance(final Path f, final String type) {

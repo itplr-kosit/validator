@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>validator-core</artifactId>
-    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -59,9 +58,37 @@
             <artifactId>packaged-test-scenarios</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-test-data</artifactId>
+        </dependency>
     </dependencies>
+    
     <build>
+        <testResources>
+            <!-- The shared test data of the test-data module, so that it is always a real directory in
+                 target/test-classes and thus yields hierarchical file: URIs, never opaque jar: ones. -->
+            <testResource>
+                <directory>${project.basedir}/../test-data/src/main/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
         <plugins>
+            <!-- The test helpers below org.kosit.validator are reused by the tests of validator-cli. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-test-jar</id>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Embed CycloneDX SBOM in the deployable jar (config inherited from parent pluginManagement). -->
             <plugin>
                 <groupId>org.cyclonedx</groupId>

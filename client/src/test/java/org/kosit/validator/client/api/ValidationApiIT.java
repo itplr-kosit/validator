@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kosit.validator.testdata.TestData;
 
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -23,7 +23,7 @@ class ValidationApiIT {
 
     @Test
     void shouldValidateXml() throws IOException {
-        File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         File result = validationApi.validate(input);
 
@@ -35,7 +35,7 @@ class ValidationApiIT {
 
     @Test
     void shouldValidateMinimalXml() {
-        File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         File result = validationApi.validateMinimal(input);
 
@@ -46,7 +46,7 @@ class ValidationApiIT {
     @Test
     void shouldRejectInvalidInput() {
         assertThrows(Exception.class, () -> {
-            File invalid = Path.of("src/test/resources/examples/simple/input/no-xml.file").toFile();
+            File invalid = new File(TestData.file("examples/simple/input/no-xml.file"));
             validationApi.validate(invalid);
         });
     }

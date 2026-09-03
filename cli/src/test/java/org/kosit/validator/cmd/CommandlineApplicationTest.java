@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Condition;
@@ -175,11 +177,17 @@ public class CommandlineApplicationTest {
     }
 
     @Test
-    public void testValidDirectoryInput() {
+    public void testValidDirectoryInput() throws IOException {
+        // Derived instead of hard coded, because the input directory is shared test data: adding a sample there must
+        // not break this test, which only asserts that every XML file of the directory was picked up.
+        final long expected;
+        try ( Stream<Path> files = Files.list(Paths.get(Simple.EXAMPLES)) ) {
+            expected = files.filter(p -> p.toString().toLowerCase(Locale.ROOT).endsWith(".xml")).count();
+        }
         final String[] args = { "-s", Paths.get(Simple.SCENARIOS).toString(), "-o", this.output.toString(), "-r",
                 Paths.get(Simple.REPOSITORY_URI).toString(), Paths.get(Simple.EXAMPLES).toString() };
         commandLine.execute(args);
-        assertThat(testWriter.getErrorOutput()).contains("Processing 8 object(s) completed");
+        assertThat(testWriter.getErrorOutput()).contains("Processing " + expected + " object(s) completed");
     }
 
     @Test

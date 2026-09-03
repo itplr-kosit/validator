@@ -5,13 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
+import org.kosit.validator.testdata.TestData;
 import org.kosit.xvrl.model.XvrlReports;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +28,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateXmlRaw() throws IOException {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final File result = validationClient.validateRaw(input);
 
@@ -40,7 +40,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateMinimalXmlRaw() {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final File result = validationClient.validateMinimalRaw(input);
 
@@ -50,7 +50,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateXml() {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final XvrlReports result = validationClient.validate(input);
 
@@ -60,7 +60,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateMinimalXml() {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final CompactXvrlReportSummary result = validationClient.validateMinimal(input);
 
@@ -72,7 +72,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateMinimalXmlRawWithMetadata() {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final ValidationResponse<File> result = validationClient.validateMinimalRawWithMetadata(input);
         final File report = result.getBody();
@@ -83,7 +83,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateMinimalRawAsJsonWithMetadata() throws IOException {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final ValidationResponse<File> result = validationClient.validateMinimalRawAsJsonWithMetadata(input);
         final File report = result.getBody();
@@ -100,7 +100,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateXmlWithMetadata() {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final ValidationResponse<XvrlReports> result = validationClient.validateWithMetadata(input);
         final XvrlReports report = result.getBody();
@@ -113,7 +113,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateRawWithMetadata() {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final ValidationResponse<File> result = validationClient.validateRawWithMetadata(input);
         final File report = result.getBody();
@@ -124,7 +124,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateMinimalXmlWithMetadata() {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final ValidationResponse<CompactXvrlReportSummary> result = validationClient.validateMinimalWithMetadata(input);
         final CompactXvrlReportSummary report = result.getBody();
@@ -139,7 +139,7 @@ class ValidationClientIT {
 
     @Test
     void shouldValidateMinimalRawAsJson() throws IOException {
-        final File input = Path.of("src/test/resources/examples/simple/input/simple.xml").toFile();
+        final File input = new File(TestData.file("examples/simple/input/simple.xml"));
 
         final File result = validationClient.validateMinimalRawAsJson(input);
 

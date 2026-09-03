@@ -71,9 +71,8 @@ public class ContentRepositoryTest {
 
     @Test
     public void loadFromJar() {
-        assert TestHelper.JAR_REPOSITORY != null;
         this.repository = new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(),
-                TestHelper.JAR_REPOSITORY);
+                TestHelper.getJarRepository());
         final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("report.xsl"));
         assertThat(xsltExecutable).isNotNull();
         final Schema schema = this.repository.createSchema(URI.create("main.xsd"));

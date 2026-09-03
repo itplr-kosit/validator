@@ -2,7 +2,7 @@
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
   <metadata>
     <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-08-31T21:45:13+02:00</timestamp>
+    <timestamp>2026-09-01T10:22:33+02:00</timestamp>
     <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
     <document href="simple.xml"/>
   </metadata>
@@ -10,7 +10,7 @@
     <metadata>
       <!-- Offene Frage: how to deal with reports from other validator software -->
       <creator name="parse-document"/>
-      <timestamp>2026-08-31T21:45:13+02:00</timestamp>
+      <timestamp>2026-09-01T10:22:33+02:00</timestamp>
     </metadata>
     <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
     <detection severity="info">
@@ -33,7 +33,7 @@
   <report>
     <metadata>
       <creator name="detect-scenarios"/>
-      <timestamp>2026-08-31T21:45:13+02:00</timestamp>
+      <timestamp>2026-09-01T10:22:33+02:00</timestamp>
     </metadata>
     <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
     <detection cvrl:scenario-id="Simple">
@@ -44,7 +44,7 @@
   <report>
     <metadata>
       <creator name="select-scenario"/>
-      <timestamp>2026-08-31T21:45:13+02:00</timestamp>
+      <timestamp>2026-09-01T10:22:33+02:00</timestamp>
     </metadata>
     <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
     <detection severity="info" code="scenario-selected" cvrl:scenario-id="Simple">

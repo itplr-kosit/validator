@@ -47,7 +47,7 @@ public class StandardExample {
     }
 
     public static void main(final String[] args) throws Exception {
-        // Use e.g. "src/test/resources/examples/simple/input/foo.xml"
+        // Use e.g. "test-data/src/main/resources/examples/simple/input/foo.xml"
         if (args.length == 0) {
             throw new IllegalStateException("Provide a test document filename on the commandline");
         }

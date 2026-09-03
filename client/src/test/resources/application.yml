@@ -1,8 +1,8 @@
 validator:
   framework-version: 1.0.2
   scenarios:
-    - scenarioPath: src/test/resources/examples/simple/scenarios.xml
-      repositoryPath: src/test/resources/examples/simple/repository
+    - scenarioPath: ../test-data/src/main/resources/examples/simple/scenarios.xml
+      repositoryPath: ../test-data/src/main/resources/examples/simple/repository
 
 quarkus:
   index-dependency:
