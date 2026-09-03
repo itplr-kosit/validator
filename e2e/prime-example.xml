@@ -2,13 +2,13 @@
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
     <metadata>
         <!-- OFFEN: Serialisierungszeit, nicht Ausfuehrungszeit - mit CTActionExecution waeren Start und Dauer je Schritt moeglich -->
-        <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+        <timestamp>2026-09-03T22:37:58+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="business-cases/extension/04.01a-INVOICE_ubl.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
@@ -403,7 +403,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
             <!-- OFFEN: Step umbenennen in match-scenarios (CTActionType liegt jetzt im Validator-Modul conformatron) -->
             <creator name="detect-scenarios"/>
         </metadata>
@@ -420,7 +420,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
             <creator name="select-scenario"/>
         </metadata>
         <detection cvrl:scenario-id="EN16931 XRechnung Extension (UBL Invoice)">
@@ -485,7 +485,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
             <creator name="retrieve-artifacts"/>
         </metadata>
         <!-- OFFEN: cvrl:artifact-id und location/@href tragen dieselbe Kennung - bewusst beides, streichbar wenn gewuenscht (gilt genauso fuer cvrl:target-id weiter unten) -->
@@ -514,7 +514,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
             <!-- OFFEN: der Transpiler (schxslt/iso) erscheint nur, wenn wirklich transpiliert wurde - hier sind alle Schematrons vorkompilierte .xsl; mehrere validator-Elemente sind in XVRL zulaessig (metadata ist ein choice) -->
             <validator name="Saxon" version="12.10"/>
             <!-- OFFEN: ggf. zu viel fuer einen eigenen Schritt - verschoben -->
@@ -532,7 +532,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
             <creator name="apply-rules"/>
             <!-- OFFEN: fundfreier Regelsatz: der code rules-applied ist gestrichen. Falls ein Report ohne detection wie "nicht gelaufen" aussieht: XVRL kennt fuer digest/@valid bereits partial und undetermined -->
             <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
@@ -544,7 +544,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
             <creator name="apply-rules"/>
             <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
         </metadata>
@@ -558,7 +558,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
             <creator name="apply-rules"/>
             <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
         </metadata>
@@ -569,7 +569,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:08+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
             <creator name="compute-conformance"/>
         </metadata>
         <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)">
@@ -592,7 +592,17 @@
         </detection>
         <digest valid="true"/>
     </report>
-    <!-- OFFEN: decision-recommendation (Schritt 9) fehlt noch: cvrl:decision (accept/reject) plus die
-         Begruendung als <summary>. Hier landet acceptMatch/acceptSelector - der letzte 1.x-Mechanismus,
-         der in der kanonischen Pipeline noch fehlt (heute ist das Verdikt rein detection-basiert). -->
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T22:37:58+02:00</timestamp>
+            <!-- OFFEN: Schritt 9 laeuft immer, auch nach Abbruch (dann REJECT mit dem abbrechenden Schritt in der Begruendung) -->
+            <!-- OFFEN: Spec-Frage offen: cvrl:decision zusaetzlich als Attribut an der Wurzel (neben cvrl:conformant), damit ein Konsument das Verdikt ohne Suche im letzten Report findet? Ein eigenes Wurzel-Element laesst XVRL nicht zu -->
+            <!-- OFFEN: acceptMatch/acceptSelector aus 1.x wird hier NICHT ausgewertet - das Verdikt folgt allein aus den Konformitaetsaussagen von Schritt 8 (INCONCLUSIVE -> EVALUATE_FURTHER ist damit heute unerreichbar) -->
+            <creator name="decision-recommendation"/>
+        </metadata>
+        <detection cvrl:decision="ACCEPT">
+            <message>All 1 conformance target(s) conformant: EN16931 XRechnung Extension (UBL Invoice)</message>
+        </detection>
+        <digest valid="true"/>
+    </report>
 </reports>

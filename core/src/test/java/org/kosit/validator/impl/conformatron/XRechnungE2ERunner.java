@@ -44,7 +44,7 @@ import org.kosit.validator.impl.saxon.ProcessorProvider;
 import net.sf.saxon.s9api.Processor;
 
 /**
- * <b>E2E runner</b>: walks the canonical pipeline (steps 2–8) over the real XRechnung testsuite instances against the
+ * <b>E2E runner</b>: walks the canonical pipeline (steps 2–9) over the real XRechnung testsuite instances against the
  * real XRechnung validator configuration and writes human-readable Markdown reports for manual evaluation.
  * <p>
  * Not a JUnit test — run it via:
@@ -72,8 +72,9 @@ import net.sf.saxon.s9api.Processor;
 public final class XRechnungE2ERunner {
 
     /** Result row of one instance run. */
-    private record InstanceResult(String instance, String outcome, String scenario, int ruleSets, long infos, long warnings, long errors,
-            List<String> conformance, List<CTDetection> findings, String failedStep, String hash, List<CTDetection> allDetections) {
+    private record InstanceResult(String instance, String outcome, String decision, String scenario, int ruleSets, long infos,
+            long warnings, long errors, List<String> conformance, List<CTDetection> findings, String failedStep, String hash,
+            List<CTDetection> allDetections) {
     }
 
     private final ScenarioRepository scenarioRepository;
@@ -167,14 +168,14 @@ public final class XRechnungE2ERunner {
         }
     }
 
-    /** Runs steps 2–8 for one instance; never throws — every outcome becomes a result row plus a (partial) CVRL. */
+    /** Runs steps 2–9 for one instance; never throws — every outcome becomes a result row plus a (partial) CVRL. */
     private InstanceResult run(final Path file, final Path instancesRoot, final Path reportsDir) {
         final String name = instancesRoot.relativize(file).toString().replace('\\', '/');
         final CvrlWriter.PipelineResults results;
         try {
             results = runSteps(file, name);
         } catch (final RuntimeException e) {
-            return new InstanceResult(name, "RUNNER_ERROR: " + e.getClass().getSimpleName(), "-", 0, 0, 0, 0, List.of(), List.of(),
+            return new InstanceResult(name, "RUNNER_ERROR: " + e.getClass().getSimpleName(), "-", "-", 0, 0, 0, 0, List.of(), List.of(),
                     e.getMessage(), "-", List.of());
         }
         if (reportsDir != null) {
@@ -239,23 +240,26 @@ public final class XRechnungE2ERunner {
 
     /** Derives the summary row from the (partial) pipeline results. */
     private static InstanceResult toInstanceResult(final String name, final CvrlWriter.PipelineResults r) {
+        // step 9 always runs, so every row has a decision — a cancelled run is a rejection with the step in the
+        // rationale
+        final String decision = r.decision().decision().name();
         if (!r.parse().isSuccess()) {
-            return failed(name, "PARSE_DOCUMENT", r.parse().getDetectionList().getAll());
+            return failed(name, "PARSE_DOCUMENT", decision, r.parse().getDetectionList().getAll());
         }
         if (r.detect() != null && !r.detect().isSuccess()) {
-            return failed(name, "DETECT_SCENARIOS", r.detect().detections().getAll());
+            return failed(name, "DETECT_SCENARIOS", decision, r.detect().detections().getAll());
         }
         if (r.select() != null && !r.select().isSuccess()) {
-            return failed(name, "SELECT_SCENARIO", r.select().detections().getAll());
+            return failed(name, "SELECT_SCENARIO", decision, r.select().detections().getAll());
         }
         if (r.retrieve() != null && !r.retrieve().isSuccess()) {
-            return failed(name, "RETRIEVE_ARTIFACTS", r.retrieve().detections().getAll());
+            return failed(name, "RETRIEVE_ARTIFACTS", decision, r.retrieve().detections().getAll());
         }
         if (r.prepare() != null && !r.prepare().isSuccess()) {
-            return failed(name, "PREPARE_RULES", r.prepare().detections().getAll());
+            return failed(name, "PREPARE_RULES", decision, r.prepare().detections().getAll());
         }
         if (r.apply() != null && !r.apply().isSuccess()) {
-            return failed(name, "APPLY_RULES", r.apply().detections().getAll());
+            return failed(name, "APPLY_RULES", decision, r.apply().detections().getAll());
         }
         final ParseXmlResult parsed = r.parse();
         final SelectScenarioResult selected = r.select();
@@ -273,6 +277,7 @@ public final class XRechnungE2ERunner {
         trace.addAll(prepared.detections().getAll());
         trace.addAll(applied.detections().getAll());
         trace.addAll(conformance.detections().getAll());
+        trace.addAll(r.decision().detections().getAll());
 
         final String hash = parsed.getParsedSource().getSource().getReadResource().getHashAlgorithmName() + "="
                 + HexFormat.of().formatHex(parsed.getParsedSource().getSource().getReadResource().getHashBytes());
@@ -286,13 +291,14 @@ public final class XRechnungE2ERunner {
         }
         final boolean conformant = !conformance.result().hasNonConformantTarget();
         final List<CTDetection> findings = all.stream().filter(d -> d.getSeverity() != CTStandardSeverity.NONE).toList();
-        return new InstanceResult(name, conformant ? "CONFORMANT" : "NON_CONFORMANT", scenarioName, prepared.ruleSets().size(), infos,
-                warnings, errors, statements, findings, null, hash, trace);
+        return new InstanceResult(name, conformant ? "CONFORMANT" : "NON_CONFORMANT", decision, scenarioName, prepared.ruleSets().size(),
+                infos, warnings, errors, statements, findings, null, hash, trace);
     }
 
-    private static InstanceResult failed(final String name, final String step, final List<CTDetection> detections) {
+    private static InstanceResult failed(final String name, final String step, final String decision, final List<CTDetection> detections) {
         final List<CTDetection> findings = detections.stream().filter(d -> d.getSeverity() != CTStandardSeverity.NONE).toList();
-        return new InstanceResult(name, "FAILED@" + step, "-", 0, 0, 0, findings.size(), List.of(), findings, step, "-", detections);
+        return new InstanceResult(name, "FAILED@" + step, decision, "-", 0, 0, 0, findings.size(), List.of(), findings, step, "-",
+                detections);
     }
 
     private static long count(final List<CTDetection> detections, final CTStandardSeverity severity) {
@@ -306,7 +312,7 @@ public final class XRechnungE2ERunner {
 
     private static void writeSummary(final Path file, final List<InstanceResult> results, final int total) throws IOException {
         try ( PrintWriter out = new PrintWriter(Files.newBufferedWriter(file, StandardCharsets.UTF_8)) ) {
-            out.println("# XRechnung E2E — kanonische Pipeline Steps 2–8");
+            out.println("# XRechnung E2E — kanonische Pipeline Steps 2–9");
             out.println();
             out.println("Erzeugt: " + LocalDateTime.now() + " · Instanzen: " + total);
             out.println();
@@ -314,7 +320,7 @@ public final class XRechnungE2ERunner {
             out.println(
                     "- `customLevel`-Overrides werden von Step 7 angewandt (effektive Severity; Original als `cvrl:original-severity`).");
             out.println(
-                    "- `acceptMatch` der Szenarien wird nicht ausgewertet (läuft auf dem Report; ADR-004 Follow-up) — Verdikt ist rein detection-basiert.");
+                    "- `acceptMatch` der Szenarien wird nicht ausgewertet (läuft auf dem Report; ADR-004 Follow-up) — die Entscheidung (Step 9) folgt allein aus den Konformitätsaussagen von Step 8.");
             out.println("- Step 8 nutzt ein szenarioweites Default-Target (`ConformanceTarget.ofScenario`).");
             out.println();
             final Map<String, Long> byOutcome = new LinkedHashMap<>();
@@ -325,11 +331,11 @@ public final class XRechnungE2ERunner {
             out.println();
             out.println("## Übersicht");
             out.println();
-            out.println("| Instanz | Ergebnis | Szenario | RuleSets | INFO | WARN | ERROR+ | Conformance je RuleSet |");
-            out.println("|---|---|---|---|---|---|---|---|");
+            out.println("| Instanz | Ergebnis | Entscheidung | Szenario | RuleSets | INFO | WARN | ERROR+ | Conformance je RuleSet |");
+            out.println("|---|---|---|---|---|---|---|---|---|");
             for (final InstanceResult r : results) {
-                out.printf("| %s | %s | %s | %d | %d | %d | %d | %s |%n", r.instance(), r.outcome(), r.scenario(), r.ruleSets(), r.infos(),
-                        r.warnings(), r.errors(), String.join("<br>", r.conformance()));
+                out.printf("| %s | %s | %s | %s | %d | %d | %d | %d | %s |%n", r.instance(), r.outcome(), r.decision(), r.scenario(),
+                        r.ruleSets(), r.infos(), r.warnings(), r.errors(), String.join("<br>", r.conformance()));
             }
         }
     }

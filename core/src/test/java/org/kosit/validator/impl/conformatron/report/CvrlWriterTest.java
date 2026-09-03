@@ -143,11 +143,15 @@ public class CvrlWriterTest {
         final Element parseDetection = (Element) parseReport.getElementsByTagNameNS(NS, "detection").item(0);
         assertThat(parseDetection.hasAttribute("code")).isFalse();
         assertThat(parseDetection.hasAttribute("severity")).isFalse();
-        // 6 steps + APPLY_RULES twice (xsd + schematron rule set) = 8 reports
+        // 7 steps + APPLY_RULES twice (xsd + schematron rule set) = 9 reports, the decision last
         assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly(CTActionType.PARSE_DOCUMENT.getName(),
                 CTActionType.DETECT_SCENARIOS.getName(), CTActionType.SELECT_SCENARIO.getName(), CTActionType.RETRIEVE_ARTIFACTS.getName(),
                 CTActionType.PREPARE_RULES.getName(), CTActionType.APPLY_RULES.getName(), CTActionType.APPLY_RULES.getName(),
-                CTActionType.COMPUTE_CONFORMANCE.getName());
+                CTActionType.COMPUTE_CONFORMANCE.getName(), CTActionType.DECISION_RECOMMENDATION.getName());
+        // the verdict is an attribute a consumer reads without parsing text, and an accepted run carries no error band
+        final Element verdict = (Element) reports(cvrl).get(8).getElementsByTagNameNS(NS, "detection").item(0);
+        assertThat(verdict.getAttributeNS(NS_CVRL, "decision")).isEqualTo("ACCEPT");
+        assertThat(verdict.hasAttribute("severity")).isFalse();
         // the APPLY_RULES reports carry the rule set identity
         final Element schematronReport = reports(cvrl).get(6);
         final Element schema = (Element) schematronReport.getElementsByTagNameNS(NS, "schema").item(0);
@@ -221,8 +225,10 @@ public class CvrlWriterTest {
 
         assertThat(root.getAttributeNS(NS_CVRL, "status")).isEqualTo("CANCELLED");
         assertThat(root.getAttributeNS(NS_CVRL, "conformant")).isEqualTo("false");
-        // only the executed step is reported
-        assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly("parse-document");
+        // only the executed step is reported — plus the decision, which always runs and rejects a cancelled run
+        assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly("parse-document", "decision-recommendation");
+        final Element verdict = (Element) reports(cvrl).get(1).getElementsByTagNameNS(NS, "detection").item(0);
+        assertThat(verdict.getAttributeNS(NS_CVRL, "decision")).isEqualTo("REJECT");
         // failed content is never echoed into the report (injection safety)
         final NodeList messages = cvrl.getElementsByTagNameNS(NS, "message");
         for (int i = 0; i < messages.getLength(); i++) {

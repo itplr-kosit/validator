@@ -37,6 +37,7 @@ import org.kosit.base.xml.XmlHelper;
 import org.kosit.jaxb.AbstractJaxbConverter;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
+import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
@@ -44,6 +45,7 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosRe
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.Detection;
+import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
 import org.kosit.validator.impl.conformatron.model.PreparedRuleSet;
 import org.kosit.validator.impl.conformatron.model.SubjectDetection;
@@ -183,8 +185,56 @@ public final class CvrlWriter {
      */
     public record PipelineResults(ParseXmlResult parse, DetectScenariosResult detect, SelectScenarioAction.SelectScenarioResult select,
             RetrieveArtifactsAction.RetrieveArtifactsResult retrieve, PrepareRulesAction.PrepareRulesResult prepare,
-            ApplyRulesAction.ApplyRulesActionResult apply, ComputeConformanceAction.ComputeConformanceActionResult conformance) {
+            ApplyRulesAction.ApplyRulesActionResult apply, ComputeConformanceAction.ComputeConformanceActionResult conformance,
+            DecisionRecommendationAction.DecisionRecommendationResult decision) {
 
+        /**
+         * Assembles the run from the results of steps 2–8 and lets step 9 decide it. Step 9 always runs (step-09 spec),
+         * also for a cancelled run — so a run without a decision cannot be assembled from step results.
+         */
+        public PipelineResults(final ParseXmlResult parse, final DetectScenariosResult detect,
+                final SelectScenarioAction.SelectScenarioResult select, final RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
+                final PrepareRulesAction.PrepareRulesResult prepare, final ApplyRulesAction.ApplyRulesActionResult apply,
+                final ComputeConformanceAction.ComputeConformanceActionResult conformance) {
+            this(parse, detect, select, retrieve, prepare, apply, conformance,
+                    decide(parse, detect, select, retrieve, prepare, apply, conformance));
+        }
+
+        private static DecisionRecommendationAction.DecisionRecommendationResult decide(final ParseXmlResult parse,
+                final DetectScenariosResult detect, final SelectScenarioAction.SelectScenarioResult select,
+                final RetrieveArtifactsAction.RetrieveArtifactsResult retrieve, final PrepareRulesAction.PrepareRulesResult prepare,
+                final ApplyRulesAction.ApplyRulesActionResult apply,
+                final ComputeConformanceAction.ComputeConformanceActionResult conformance) {
+            final DecisionRecommendationAction action = new DecisionRecommendationAction();
+            if (conformance != null) {
+                return action.execute(conformance.result());
+            }
+            final String resourceId = parse != null && parse.getParsedSource() != null ? parse.getParsedSource().getSource().getName()
+                    : null;
+            // the first step without a successor is the one that cancelled the run
+            if (parse != null && !parse.isSuccess()) {
+                return action.executeCancelled(CTActionType.PARSE_DOCUMENT, parse.getDetectionList(), resourceId);
+            }
+            if (detect != null && !detect.isSuccess()) {
+                return action.executeCancelled(CTActionType.DETECT_SCENARIOS, detect.detections(), resourceId);
+            }
+            if (select != null && !select.isSuccess()) {
+                return action.executeCancelled(CTActionType.SELECT_SCENARIO, select.detections(), resourceId);
+            }
+            if (retrieve != null && !retrieve.isSuccess()) {
+                return action.executeCancelled(CTActionType.RETRIEVE_ARTIFACTS, retrieve.detections(), resourceId);
+            }
+            if (prepare != null && !prepare.isSuccess()) {
+                return action.executeCancelled(CTActionType.PREPARE_RULES, prepare.detections(), resourceId);
+            }
+            if (apply != null && !apply.isSuccess()) {
+                return action.executeCancelled(CTActionType.APPLY_RULES, apply.detections(), resourceId);
+            }
+            // steps 2–7 succeeded but step 8 is missing: the run stopped without a failing step
+            return action.executeCancelled(CTActionType.COMPUTE_CONFORMANCE, DetectionList.empty(), resourceId);
+        }
+
+        /** Whether the run reached step 8; the decision of step 9 exists in every case. */
         public boolean isCompleted() {
             return this.conformance != null;
         }
@@ -277,6 +327,11 @@ public final class CvrlWriter {
         }
         if (results.conformance() != null) {
             reports.addReport(stepReport(CTActionType.COMPUTE_CONFORMANCE, results.conformance().detections(), null, null, null));
+        }
+        if (results.decision() != null) {
+            // step 9 is the terminal step and runs for cancelled runs too — it is what makes every report end in a
+            // verdict
+            reports.addReport(stepReport(CTActionType.DECISION_RECOMMENDATION, results.decision().detections(), null, null, null));
         }
         return reports.build();
     }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-03T21:21:44+02:00</timestamp>
+        <timestamp>2026-09-03T22:37:31+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="simple-not-wellformed.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:21:44+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection severity="error" code="not-wellformed">
@@ -34,9 +34,9 @@
 	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)&#13;
 	at java.xml/javax.xml.parsers.DocumentBuilder.parse(DocumentBuilder.java:151)&#13;
 	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:86)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:67)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:155)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step2NotWellformed(CvrlUnhappyPathTest.java:229)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:68)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:156)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step2NotWellformed(CvrlUnhappyPathTest.java:239)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;
@@ -124,5 +124,15 @@
             </context>
         </detection>
         <digest valid="false" error-count="1" error-codes="not-wellformed"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
+            <creator name="decision-recommendation"/>
+        </metadata>
+        <detection severity="error" code="decision-reject" cvrl:decision="REJECT">
+            <message>Run cancelled at parse-document: not-wellformed</message>
+        </detection>
+        <digest valid="false" error-count="1" error-codes="decision-reject"/>
     </report>
 </reports>

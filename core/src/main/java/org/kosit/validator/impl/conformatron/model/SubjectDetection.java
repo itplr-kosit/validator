@@ -67,6 +67,9 @@ public final class SubjectDetection implements CTDetection {
     /** Extension attribute carrying a conformance verdict. */
     public static final String ATTR_CONFORMANCE = "conformance";
 
+    /** Extension attribute carrying the decision recommendation for the whole run (step 9). */
+    public static final String ATTR_DECISION = "decision";
+
     private final CTDetection delegate;
 
     private final String subjectAttribute;

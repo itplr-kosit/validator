@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-03T21:21:44+02:00</timestamp>
+        <timestamp>2026-09-03T22:37:31+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="simple.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:21:44+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
@@ -34,12 +34,22 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:21:44+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
             <creator name="detect-scenarios"/>
         </metadata>
         <detection severity="error" code="scenario-unknown-id">
             <message>Requested scenario 'no-such-scenario' is not configured</message>
         </detection>
         <digest valid="false" error-count="1" error-codes="scenario-unknown-id"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
+            <creator name="decision-recommendation"/>
+        </metadata>
+        <detection severity="error" code="decision-reject" cvrl:decision="REJECT">
+            <message>Run cancelled at detect-scenarios: scenario-unknown-id</message>
+        </detection>
+        <digest valid="false" error-count="1" error-codes="decision-reject"/>
     </report>
 </reports>

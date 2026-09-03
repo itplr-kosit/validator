@@ -18,6 +18,8 @@ import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
+import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction;
+import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction.DecisionRecommendationResult;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
@@ -33,18 +35,17 @@ import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
 
 /**
- * <b>End-to-end walkthrough of the canonical pipeline, steps 2–8</b>, composed exclusively from the new-API actions —
+ * <b>End-to-end walkthrough of the canonical pipeline, steps 2–9</b>, composed exclusively from the new-API actions —
  * no legacy {@code CheckAction} involved:
  *
  * <pre>
  * 2 PARSE_DOCUMENT → 3 DETECT_SCENARIOS → 4 SELECT_SCENARIO → 5 RETRIEVE_ARTIFACTS
- *                  → 6 PREPARE_RULES    → 7 APPLY_RULES     → 8 COMPUTE_CONFORMANCE
+ *                  → 6 PREPARE_RULES    → 7 APPLY_RULES     → 8 COMPUTE_CONFORMANCE → 9 DECISION_RECOMMENDATION
  * </pre>
  *
- * Step 1 (DETECT_SYNTAX) is not implemented yet; step 9 (DECISION_RECOMMENDATION) is pending. The handshake objects
- * cross every step boundary exactly as specified: {@code ICTParsedValidationSource} → {@code ICTScenarioMatch} →
- * {@code ICTResolvedValidationArtifact} → {@code ICTPreparedRuleSet} → {@code ICTApplyRulesResult} →
- * {@code ICTComputeConformanceResult}.
+ * Step 1 (DETECT_SYNTAX) is not implemented yet. The handshake objects cross every step boundary exactly as specified:
+ * {@code ICTParsedValidationSource} → {@code ICTScenarioMatch} → {@code ICTResolvedValidationArtifact} →
+ * {@code ICTPreparedRuleSet} → {@code ICTApplyRulesResult} → {@code ICTComputeConformanceResult}.
  */
 public class CanonicalPipelineTest {
 
@@ -58,7 +59,7 @@ public class CanonicalPipelineTest {
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
 
-    /** Runs the full chain 2–8 and returns the step-8 result; asserts every intermediate step succeeded. */
+    /** Runs the full chain 2–9 and returns the step-8 result; asserts every intermediate step succeeded. */
     private ComputeConformanceActionResult runPipeline(final URI document, final List<String> trace) {
         // step 2: PARSE_DOCUMENT — DOM-based reference action, retains bytes + hash
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
@@ -98,6 +99,11 @@ public class CanonicalPipelineTest {
                 List.of(ConformanceTarget.ofScenario(selected.selected())));
         assertThat(conformance.isSuccess()).isTrue();
         trace.addAll(codes(conformance.detections().getAll()));
+
+        // step 9: DECISION_RECOMMENDATION — the terminal verdict over all conformance statements
+        final DecisionRecommendationResult decision = new DecisionRecommendationAction().execute(conformance.result());
+        assertThat(decision.isSuccess()).isTrue();
+        trace.addAll(codes(decision.detections().getAll()));
         return conformance;
     }
 
@@ -122,8 +128,9 @@ public class CanonicalPipelineTest {
                                                                                                                     // 5
                 PrepareRulesAction.CODE_RULE_COMPILED, PrepareRulesAction.CODE_RULE_COMPILED, // step 6
                 ApplyRulesAction.CODE_RULES_APPLIED, ApplyRulesAction.CODE_RULES_APPLIED, // step 7
-                ComputeConformanceAction.CODE_TARGET_CONFORMANT, ComputeConformanceAction.CODE_TARGET_CONFORMANT); // step
-                                                                                                                   // 8
+                ComputeConformanceAction.CODE_TARGET_CONFORMANT, ComputeConformanceAction.CODE_TARGET_CONFORMANT, // step
+                                                                                                                  // 8
+                DecisionRecommendationAction.CODE_ACCEPT); // step 9
     }
 
     @Test
@@ -136,6 +143,7 @@ public class CanonicalPipelineTest {
         assertThat(conformance.result().getAllStatements()).extracting("result").containsExactly(CTConformanceResult.CONFORMANT,
                 CTConformanceResult.NON_CONFORMANT);
         // the violated assert id travels through as detection code (step-07 spec)
-        assertThat(trace).contains("content-1", ComputeConformanceAction.CODE_TARGET_NON_CONFORMANT);
+        assertThat(trace).contains("content-1", ComputeConformanceAction.CODE_TARGET_NON_CONFORMANT,
+                DecisionRecommendationAction.CODE_REJECT);
     }
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-03T21:22:32+02:00</timestamp>
+        <timestamp>2026-09-03T22:38:20+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="config-cases/instances/processing-valid/ubl006.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:32+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:20+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
@@ -552,12 +552,22 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:32+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:20+02:00</timestamp>
             <creator name="detect-scenarios"/>
         </metadata>
         <detection severity="error" code="no-scenario-matched">
             <message>None of the configured scenarios matches the document</message>
         </detection>
         <digest valid="false" error-count="1" error-codes="no-scenario-matched"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T22:38:20+02:00</timestamp>
+            <creator name="decision-recommendation"/>
+        </metadata>
+        <detection severity="error" code="decision-reject" cvrl:decision="REJECT">
+            <message>Run cancelled at detect-scenarios: no-scenario-matched</message>
+        </detection>
+        <digest valid="false" error-count="1" error-codes="decision-reject"/>
     </report>
 </reports>

@@ -59,7 +59,7 @@ public enum CTActionType {
      * Step 8: Compute the final decision recommendation: accept, reject, or evaluate further. Result: Decision
      * Recommendation (Maybe based on ICTReportDigest, that is right now mostly redundant to ICTDetectionList)
      */
-    COMPUTE_CONFORMANCE("compute-conformance");
+    COMPUTE_CONFORMANCE("compute-conformance"), DECISION_RECOMMENDATION("decision-recommendation");
 
     private final String name;
 

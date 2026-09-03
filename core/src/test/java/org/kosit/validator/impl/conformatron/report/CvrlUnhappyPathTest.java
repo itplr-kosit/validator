@@ -24,6 +24,7 @@ import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
+import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
@@ -205,10 +206,19 @@ public class CvrlUnhappyPathTest {
         assertThat(root.getAttributeNS(NS_CVRL, "conformant")).as("a cancelled run must never look conformant").isEqualTo("false");
 
         final List<Element> reports = reports(cvrl);
-        assertThat(reports).as("the report must not be empty").isNotEmpty();
-        final Element last = reports.get(reports.size() - 1);
-        assertThat(creator(last)).as("the failing step is the last report — nothing runs after a cancellation")
-                .isEqualTo(failingStep.getName());
+        assertThat(reports).as("the report must not be empty").hasSizeGreaterThanOrEqualTo(2);
+        // step 9 always runs, so the last report is the decision — and a cancelled run is always rejected
+        final Element decision = reports.get(reports.size() - 1);
+        assertThat(creator(decision)).as("the decision is the last report").isEqualTo(CTActionType.DECISION_RECOMMENDATION.getName());
+        assertThat(digest(decision).getAttribute("error-codes")).contains(DecisionRecommendationAction.CODE_REJECT);
+        final Element verdict = (Element) decision.getElementsByTagNameNS(NS, "detection").item(0);
+        assertThat(verdict.getAttributeNS(NS_CVRL, "decision")).isEqualTo("REJECT");
+        assertThat(verdict.getElementsByTagNameNS(NS, "message").item(0).getTextContent()).as("the rationale names the cancelling step")
+                .contains(failingStep.getName());
+
+        // the failing step is the last one that did real work — nothing else runs after a cancellation
+        final Element last = reports.get(reports.size() - 2);
+        assertThat(creator(last)).as("the failing step is the last step before the decision").isEqualTo(failingStep.getName());
 
         assertThat(digest(last).getAttribute("valid")).as("the failing step's digest").isEqualTo("false");
         assertThat(Integer.parseInt(digest(last).getAttribute("error-count"))).as("errors counted").isPositive();
@@ -219,7 +229,7 @@ public class CvrlUnhappyPathTest {
                 .as("the spec's code for this path").contains(expectedCode);
 
         // every step before the failure ran cleanly and stays in the report
-        for (final Element earlier : reports.subList(0, reports.size() - 1)) {
+        for (final Element earlier : reports.subList(0, reports.size() - 2)) {
             assertThat(digest(earlier).getAttribute("valid")).as("earlier step " + creator(earlier)).isEqualTo("true");
         }
     }
@@ -254,7 +264,7 @@ public class CvrlUnhappyPathTest {
 
         assertCancelledAt(cvrl, CTActionType.DETECT_SCENARIOS, DetectScenariosAction.CODE_SCENARIO_UNKNOWN_ID);
         // the requested id belongs in the message so the caller sees what was asked for
-        final Element failing = reports(cvrl).get(reports(cvrl).size() - 1);
+        final Element failing = reports(cvrl).get(reports(cvrl).size() - 2);
         assertThat(failing.getElementsByTagNameNS(NS, "message").item(0).getTextContent()).contains("no-such-scenario");
     }
 

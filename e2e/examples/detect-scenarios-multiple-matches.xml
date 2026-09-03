@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-03T21:21:46+02:00</timestamp>
+        <timestamp>2026-09-03T22:37:32+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="simple.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:21:46+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:32+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
@@ -34,7 +34,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:21:46+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:32+02:00</timestamp>
             <creator name="detect-scenarios"/>
         </metadata>
         <detection cvrl:scenario-id="Simple">
@@ -53,12 +53,22 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:21:46+02:00</timestamp>
+            <timestamp>2026-09-03T22:37:32+02:00</timestamp>
             <creator name="select-scenario"/>
         </metadata>
         <detection severity="error" code="scenario-ambiguous">
             <message>More than one scenario matches the document: Simple, Simple (second opinion)</message>
         </detection>
         <digest valid="false" error-count="1" error-codes="scenario-ambiguous"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T22:37:32+02:00</timestamp>
+            <creator name="decision-recommendation"/>
+        </metadata>
+        <detection severity="error" code="decision-reject" cvrl:decision="REJECT">
+            <message>Run cancelled at select-scenario: scenario-ambiguous</message>
+        </detection>
+        <digest valid="false" error-count="1" error-codes="decision-reject"/>
     </report>
 </reports>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
     <metadata>
-        <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+        <timestamp>2026-09-03T22:38:26+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="technical-cases/cius/01.05_minimal_test_ubl.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
@@ -113,7 +113,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
             <creator name="detect-scenarios"/>
         </metadata>
         <detection cvrl:scenario-id="EN16931 XRechnung (UBL Invoice)">
@@ -126,7 +126,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
             <creator name="select-scenario"/>
         </metadata>
         <detection cvrl:scenario-id="EN16931 XRechnung (UBL Invoice)">
@@ -184,7 +184,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
             <creator name="retrieve-artifacts"/>
         </metadata>
         <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
@@ -212,7 +212,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
             <validator name="Saxon" version="12.10"/>
             <creator name="prepare-rules"/>
         </metadata>
@@ -226,7 +226,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
             <creator name="apply-rules"/>
             <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
         </metadata>
@@ -237,7 +237,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
             <creator name="apply-rules"/>
             <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
         </metadata>
@@ -248,7 +248,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
             <creator name="apply-rules"/>
             <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
         </metadata>
@@ -262,7 +262,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T21:22:38+02:00</timestamp>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
             <creator name="compute-conformance"/>
         </metadata>
         <detection cvrl:conformance="CONFORMANT" cvrl:target-id="EN16931 XRechnung (UBL Invoice)">
@@ -282,6 +282,16 @@
             <context>
                 <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"/>
             </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-09-03T22:38:26+02:00</timestamp>
+            <creator name="decision-recommendation"/>
+        </metadata>
+        <detection cvrl:decision="ACCEPT">
+            <message>All 1 conformance target(s) conformant: EN16931 XRechnung (UBL Invoice)</message>
         </detection>
         <digest valid="true"/>
     </report>
