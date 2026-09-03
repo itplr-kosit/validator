@@ -84,10 +84,14 @@ public final class XRechnungE2ERunner {
 
     private final URI repository;
 
-    private XRechnungE2ERunner(final VConfiguration configuration, final Processor processor, final URI repository) {
+    private final String scenarioDefinition;
+
+    private XRechnungE2ERunner(final VConfiguration configuration, final Processor processor, final URI repository,
+            final String scenarioDefinition) {
         this.configuration = configuration;
         this.processor = processor;
         this.repository = repository;
+        this.scenarioDefinition = scenarioDefinition;
         this.scenarioRepository = new ScenarioRepository(configuration);
     }
 
@@ -112,7 +116,8 @@ public final class XRechnungE2ERunner {
         System.out.println("Configuration loaded in " + (System.currentTimeMillis() - t0) + " ms (" + configuration.getScenarios().size()
                 + " scenarios)");
 
-        final XRechnungE2ERunner runner = new XRechnungE2ERunner(configuration, processor, repository.toUri());
+        final XRechnungE2ERunner runner = new XRechnungE2ERunner(configuration, processor, repository.toUri(),
+                scenarios.toUri().toString());
         final List<Path> files;
         try ( Stream<Path> stream = Files.walk(instances) ) {
             files = stream.filter(p -> p.toString().endsWith(".xml")).filter(p -> !p.toString().contains(".idea")).sorted().toList();
@@ -187,7 +192,7 @@ public final class XRechnungE2ERunner {
         }
         // step 3: DETECT_SCENARIOS (DOM wrapped into the Saxon model)
         final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, this.processor)
-                .execute(parsed.getParsedSource());
+                .withDefinitionFile(this.scenarioDefinition).execute(parsed.getParsedSource());
         if (!detected.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, null, null, null, null, null);
         }

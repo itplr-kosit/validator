@@ -71,7 +71,9 @@ public class PrepareRulesActionTest {
         final PrepareRulesResult result = this.action.execute(retrieve("simple.xsl"), DOCUMENT);
 
         assertThat(result.isSuccess()).isTrue();
-        assertThat(result.detections().getAll()).extracting("code").containsExactly(PrepareRulesAction.CODE_RULE_PRECOMPILED);
+        assertThat(result.ruleSets()).hasSize(1);
+        // an artifact that needed no preparation is not worth a report entry
+        assertThat(result.detections().getAll()).isEmpty();
     }
 
     @Test
@@ -85,7 +87,7 @@ public class PrepareRulesActionTest {
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.ruleSets().get(0).getCompiledArtifact()).isSameAs(compiled);
-        assertThat(result.detections().getAll()).extracting("code").containsExactly(PrepareRulesAction.CODE_RULE_PRECOMPILED);
+        assertThat(result.detections().getAll()).isEmpty();
     }
 
     @Test

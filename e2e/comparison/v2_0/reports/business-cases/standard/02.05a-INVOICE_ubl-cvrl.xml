@@ -2,20 +2,20 @@
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true" cvrl:status="COMPLETED">
   <metadata>
     <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-08-27T14:42:51+02:00</timestamp>
+    <timestamp>2026-08-31T16:14:22+02:00</timestamp>
     <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
     <document href="business-cases/standard/02.05a-INVOICE_ubl.xml"/>
   </metadata>
   <report>
     <metadata>
-      <!-- Offene Frage: how to deal with reports from other validator software -->
       <creator name="parse-document"/>
-      <timestamp>2026-08-27T14:42:51+02:00</timestamp>
+      <timestamp>2026-08-31T16:14:22+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="info">
-      <message xml:id="parse-document-hash" cvrl:algorithm="SHA-512">235f9761e847c069dc5e6433977e869d6ceaf6ffbe4b174485be24102abb8773326e3b5f550317b7bb982bc279854aca792c0c3f6ea5f9c775ee59a713b2518e</message>
-      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom" cvrl:source-encoding="UTF-8"><Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cec="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+    <detection>
+      <context>
+        <cvrl:hash cvrl:algorithm="SHA-512">235f9761e847c069dc5e6433977e869d6ceaf6ffbe4b174485be24102abb8773326e3b5f550317b7bb982bc279854aca792c0c3f6ea5f9c775ee59a713b2518e</cvrl:hash>
+      </context>
+      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cec="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
   <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>
   <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
   <cbc:ID>1234567</cbc:ID>
@@ -607,109 +607,136 @@
   </cac:InvoiceLine>
 </Invoice></message>
     </detection>
+    <digest valid="true"/>
   </report>
   <report>
     <metadata>
       <creator name="detect-scenarios"/>
-      <timestamp>2026-08-27T14:42:52+02:00</timestamp>
+      <timestamp>2026-08-31T16:14:23+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
     <detection cvrl:scenario-id="EN16931 XRechnung (UBL Invoice)">
-      <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']"/>
+      <context>
+        <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+      </context>
       <message>Scenario 'EN16931 XRechnung (UBL Invoice)' matched</message>
     </detection>
+    <digest valid="true"/>
   </report>
   <report>
     <metadata>
       <creator name="select-scenario"/>
-      <timestamp>2026-08-27T14:42:52+02:00</timestamp>
+      <timestamp>2026-08-31T16:14:23+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="info" code="scenario-selected" cvrl:scenario-id="EN16931 XRechnung (UBL Invoice)">
-      <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']"/>
+    <detection cvrl:scenario-id="EN16931 XRechnung (UBL Invoice)">
+      <context>
+        <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+      </context>
       <message>Scenario 'EN16931 XRechnung (UBL Invoice)' selected</message>
-      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom" cvrl:source-encoding="UTF-8"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>EN16931 XRechnung (UBL Invoice)</name><description><p>Validates UBL Invoice in version 2.1</p><p>Uses UBL Invoice 2.1 XML Schema,                 Schematron rules from EN16931:2017, and XRechnung                 3.0.2 </p><p>Download of UBL XML Schema on 2026-08-19 from                 https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip</p><p>Download of UBL Schematron rules on 2026-08-19 from                 https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-ubl-1.3.15.zip</p><p>Download of XRechnung Schematron rules on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p></description><namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace><namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace><namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace><match>exists(/invoice:Invoice/cbc:CustomizationID[ . = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match><validateWithXmlSchema><resource><name>XML Schema for UBL 2.1 Invoice</name><location>resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Schematron rules for EN16931 (UBL)</name><location>resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location></resource></validateWithSchematron><validateWithSchematron><resource><name>Schematron rules for Invoice - CIUS XRechnung (UBL)</name><location>resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl</location></resource></validateWithSchematron><createReport><id>report-1</id><resource><name>Validation report for XRechnung</name><location>resources/xrechnung-report.xsl</location></resource><customLevel level="warning">BR-CL-23</customLevel><customLevel level="warning">BR-CL-21</customLevel><customLevel level="error">UBL-CR-646</customLevel></createReport><acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch></scenario></message>
+      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>EN16931 XRechnung (UBL Invoice)</name><description><p>Validates UBL Invoice in version 2.1</p><p>Uses UBL Invoice 2.1 XML Schema,                 Schematron rules from EN16931:2017, and XRechnung                 3.0.2 </p><p>Download of UBL XML Schema on 2026-08-19 from                 https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip</p><p>Download of UBL Schematron rules on 2026-08-19 from                 https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/download/validation-1.3.15/en16931-ubl-1.3.15.zip</p><p>Download of XRechnung Schematron rules on 2026-08-19 from                 https://projekte.kosit.org/api/v4/projects/356/packages/maven/de/xeinkauf/xrechnung-3.0.2-schematron/2.5.0/xrechnung-3.0.2-schematron-2.5.0.zip</p></description><namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace><namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace><namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace><match>exists(/invoice:Invoice/cbc:CustomizationID[ . = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match><validateWithXmlSchema><resource><name>XML Schema for UBL 2.1 Invoice</name><location>resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Schematron rules for EN16931 (UBL)</name><location>resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location></resource></validateWithSchematron><validateWithSchematron><resource><name>Schematron rules for Invoice - CIUS XRechnung (UBL)</name><location>resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl</location></resource></validateWithSchematron><createReport><id>report-1</id><resource><name>Validation report for XRechnung</name><location>resources/xrechnung-report.xsl</location></resource><customLevel level="warning">BR-CL-23</customLevel><customLevel level="warning">BR-CL-21</customLevel><customLevel level="error">UBL-CR-646</customLevel></createReport><acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch></scenario></message>
     </detection>
+    <digest valid="true"/>
   </report>
   <report>
     <metadata>
       <creator name="retrieve-artifacts"/>
-      <timestamp>2026-08-27T14:42:52+02:00</timestamp>
+      <timestamp>2026-08-31T16:14:23+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="info" code="artifacts-retrieved">
-      <message>Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' retrieved as xsd</message>
+    <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
+      <context>
+        <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" cvrl:artifact-type="xsd"/>
+        <cvrl:hash cvrl:algorithm="SHA-512">94d388e6003abb89c51be2e46ce2937d88b311482299d5725c789fdcd58f3fb0abf33743d7684b1384ba0b6c78ad9e24c255fb7a8e37cb0f550fdd256d0cdf32</cvrl:hash>
+      </context>
+      <message>Artifact retrieved</message>
     </detection>
-    <detection severity="info" code="artifacts-retrieved">
-      <message>Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' retrieved as schematron-xslt2</message>
+    <detection cvrl:artifact-id="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl">
+      <context>
+        <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+        <cvrl:hash cvrl:algorithm="SHA-512">e310d4c6eda333800727111dcdf37f73a119c1c54041f133abe96b6b7a6d99439c30f0e1080fcd8589d0eea811955b205591c553ee14a65eefb7f20ffdf45696</cvrl:hash>
+      </context>
+      <message>Artifact retrieved</message>
     </detection>
-    <detection severity="info" code="artifacts-retrieved">
-      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' retrieved as schematron-xslt2</message>
+    <detection cvrl:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl">
+      <context>
+        <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" cvrl:artifact-type="schematron-xslt2"/>
+        <cvrl:hash cvrl:algorithm="SHA-512">ee48549b0e794ddd8aa7728896e5420702b1d3c400d7289b73ed1f424d37e3e54a5da37e2b06ce572bcf822ff516c42f443175d5ae2e84dc91699fe2dd0afb9c</cvrl:hash>
+      </context>
+      <message>Artifact retrieved</message>
     </detection>
+    <digest valid="true"/>
   </report>
   <report>
     <metadata>
       <creator name="prepare-rules"/>
-      <timestamp>2026-08-27T14:42:52+02:00</timestamp>
+      <timestamp>2026-08-31T16:14:23+02:00</timestamp>
+      <validator name="Saxon" version="12.10"/>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="info" code="rule-compiled">
-      <message>Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' compiled (XML Schema)</message>
+    <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
+      <context>
+        <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd"/>
+      </context>
+      <message>Compiled (XML Schema)</message>
     </detection>
-    <detection severity="info" code="rule-precompiled">
-      <message>Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' passed through (transpiled ahead of time)</message>
-    </detection>
-    <detection severity="info" code="rule-precompiled">
-      <message>Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' passed through (transpiled ahead of time)</message>
-    </detection>
+    <digest valid="true"/>
   </report>
   <report>
     <metadata>
       <creator name="apply-rules"/>
-      <timestamp>2026-08-27T14:42:52+02:00</timestamp>
-      <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" language="XSD"/>
+      <timestamp>2026-08-31T16:14:23+02:00</timestamp>
+      <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="info" code="rules-applied">
+    <detection>
       <message>Rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' applied without findings</message>
     </detection>
+    <digest valid="true"/>
   </report>
   <report>
     <metadata>
       <creator name="apply-rules"/>
-      <timestamp>2026-08-27T14:42:52+02:00</timestamp>
-      <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
+      <timestamp>2026-08-31T16:14:23+02:00</timestamp>
+      <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="info" code="rules-applied">
+    <detection>
       <message>Rule set 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' applied without findings</message>
     </detection>
+    <digest valid="true"/>
   </report>
   <report>
     <metadata>
       <creator name="apply-rules"/>
-      <timestamp>2026-08-27T14:42:52+02:00</timestamp>
-      <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" language="Schematron" cvrl:engine-version="12.10" cvrl:phase="#ALL"/>
+      <timestamp>2026-08-31T16:14:23+02:00</timestamp>
+      <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
     <detection severity="info" code="BR-DE-TMP-32">
-      <message>[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 "Actual delivery date", BG-14 "Invoicing period" oder in jeder Rechnungsposition BG-26 "Invoice line period" enthalten. (at /Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1])</message>
+      <context>
+        <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1]"/>
+      </context>
+      <message>[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 "Actual delivery date", BG-14 "Invoicing period" oder in jeder Rechnungsposition BG-26 "Invoice line period" enthalten.</message>
     </detection>
+    <digest valid="true"/>
   </report>
   <report>
     <metadata>
       <creator name="compute-conformance"/>
-      <timestamp>2026-08-27T14:42:52+02:00</timestamp>
+      <timestamp>2026-08-31T16:14:23+02:00</timestamp>
     </metadata>
-    <digest valid="true" worst-severity="info" fatal-error-count="0" error-count="0" warning-count="0" error-codes=""/>
-    <detection severity="info" code="target-conformant">
-      <message>Target 'EN16931 XRechnung (UBL Invoice)' conformant (rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd')</message>
+    <detection cvrl:target-id="EN16931 XRechnung (UBL Invoice)" cvrl:conformance="CONFORMANT">
+      <context>
+        <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd"/>
+      </context>
+      <message>Target 'EN16931 XRechnung (UBL Invoice)' conformant</message>
     </detection>
-    <detection severity="info" code="target-conformant">
-      <message>Target 'EN16931 XRechnung (UBL Invoice)' conformant (rule set 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl')</message>
+    <detection cvrl:target-id="EN16931 XRechnung (UBL Invoice)" cvrl:conformance="CONFORMANT">
+      <context>
+        <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl"/>
+      </context>
+      <message>Target 'EN16931 XRechnung (UBL Invoice)' conformant</message>
     </detection>
-    <detection severity="info" code="target-conformant">
-      <message>Target 'EN16931 XRechnung (UBL Invoice)' conformant (rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl')</message>
+    <detection cvrl:target-id="EN16931 XRechnung (UBL Invoice)" cvrl:conformance="CONFORMANT">
+      <context>
+        <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"/>
+      </context>
+      <message>Target 'EN16931 XRechnung (UBL Invoice)' conformant</message>
     </detection>
+    <digest valid="true"/>
   </report>
 </reports>

@@ -22,8 +22,9 @@ import org.oclc.purl.dsdl.svrl.Text;
  * <p>
  * Field mapping per step-07 spec: the assertion {@code @id} becomes the detection <b>code</b> (fallback:
  * {@link #CODE_FAILED_ASSERT} / {@link #CODE_SUCCESSFUL_REPORT}), {@code @role} maps to the severity (default ERROR for
- * asserts), {@code <svrl:text>} becomes the text, and the SVRL {@code @location} XPath is appended to the message until
- * {@code ICTDetectionLocation} carries XPath locations natively.
+ * asserts), {@code <svrl:text>} becomes the text, and the SVRL {@code @location} XPath becomes the detection's location
+ * ({@link DetectionLocation#ofXPath}) — a report consumer can then jump to the node instead of parsing the message
+ * text.
  * </p>
  *
  * @author Andreas Schmitz
@@ -53,11 +54,11 @@ public final class SvrlDetections {
             switch (entry) {
                 case final FailedAssert failedAssert -> detections
                         .add(Detection.of(severityOf(failedAssert.getRole(), failedAssert.getFlag()),
-                                StringHelper.blankToDefault(failedAssert.getId(), CODE_FAILED_ASSERT), DetectionLocation.of(documentName),
-                                message(failedAssert.getLocation(), textOf(failedAssert.getText()))));
+                                StringHelper.blankToDefault(failedAssert.getId(), CODE_FAILED_ASSERT),
+                                DetectionLocation.ofXPath(documentName, failedAssert.getLocation()), textOf(failedAssert.getText())));
                 case final SuccessfulReport report -> detections.add(Detection.of(severityOf(report.getRole(), report.getFlag()),
-                        StringHelper.blankToDefault(report.getId(), CODE_SUCCESSFUL_REPORT), DetectionLocation.of(documentName),
-                        message(report.getLocation(), textOf(report.getText()))));
+                        StringHelper.blankToDefault(report.getId(), CODE_SUCCESSFUL_REPORT),
+                        DetectionLocation.ofXPath(documentName, report.getLocation()), textOf(report.getText())));
                 default -> {
                     // Ignore
                 }
@@ -92,7 +93,4 @@ public final class SvrlDetections {
         return builder.toString();
     }
 
-    private static String message(final String location, final String text) {
-        return location == null ? text : text + " (at " + location + ")";
-    }
 }

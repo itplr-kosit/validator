@@ -16,15 +16,13 @@
 | none | `document-parsed` | SHA-512=11ee35e809ab1c266622b995e805c6affe6464f2a5847ea06a81a98a846f7ad0ee4e0e328d65af52f911d3b9987d100ba4a03dfd607de1221c64a542aa627016 |
 | none | `scenario-matched` | Scenario 'EN16931 XRechnung (UBL Invoice)' matched |
 | none | `scenario-selected` | Scenario 'EN16931 XRechnung (UBL Invoice)' selected |
-| none | `artifacts-retrieved` | Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' retrieved as xsd |
-| none | `artifacts-retrieved` | Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' retrieved as schematron-xslt2 |
-| none | `artifacts-retrieved` | Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' retrieved as schematron-xslt2 |
-| none | `rule-compiled` | Artifact 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' compiled (XML Schema) |
-| none | `rule-precompiled` | Artifact 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' passed through (transpiled ahead of time) |
-| none | `rule-precompiled` | Artifact 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' passed through (transpiled ahead of time) |
+| none | `artifacts-retrieved` | Artifact retrieved |
+| none | `artifacts-retrieved` | Artifact retrieved |
+| none | `artifacts-retrieved` | Artifact retrieved |
+| none | `rule-compiled` | Compiled (XML Schema) |
 | none | `rules-applied` | Rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd' applied without findings |
 | none | `rules-applied` | Rule set 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl' applied without findings |
 | none | `rules-applied` | Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' applied without findings |
-| none | `target-conformant` | Target 'EN16931 XRechnung (UBL Invoice)' conformant (rule set 'resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd') |
-| none | `target-conformant` | Target 'EN16931 XRechnung (UBL Invoice)' conformant (rule set 'resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl') |
-| none | `target-conformant` | Target 'EN16931 XRechnung (UBL Invoice)' conformant (rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl') |
+| none | `target-conformant` | Target 'EN16931 XRechnung (UBL Invoice)' conformant |
+| none | `target-conformant` | Target 'EN16931 XRechnung (UBL Invoice)' conformant |
+| none | `target-conformant` | Target 'EN16931 XRechnung (UBL Invoice)' conformant |

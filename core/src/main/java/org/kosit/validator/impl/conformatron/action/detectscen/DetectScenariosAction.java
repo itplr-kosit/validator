@@ -16,7 +16,7 @@ import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.model.Detection;
 import org.kosit.validator.impl.conformatron.model.DetectionList;
 import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.ScenarioDetection;
+import org.kosit.validator.impl.conformatron.model.SubjectDetection;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +65,23 @@ public class DetectScenariosAction implements CTAction {
 
     private final Processor processor;
 
+    private String definitionFile;
+
     public DetectScenariosAction(final ScenarioRepository repository) {
         this(repository, null);
+    }
+
+    /**
+     * The scenario configuration the repository was built from. The report locates a matched scenario both by an XPath
+     * inside the configuration and by the file itself, and the file is not derivable from the legacy scenario model —
+     * so whoever assembles the pipeline has to say.
+     *
+     * @param definitionFile the configuration file, e.g. its URI
+     * @return this for chaining
+     */
+    public DetectScenariosAction withDefinitionFile(final String definitionFile) {
+        this.definitionFile = definitionFile;
+        return this;
     }
 
     /**
@@ -127,11 +142,12 @@ public class DetectScenariosAction implements CTAction {
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
 
-        final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource);
-        final CTDetection detection = ScenarioDetection.candidate(
-                Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED, DetectionLocation.of(resourceId),
-                        "Scenario '" + scenario.getName() + "' fixed by user input"),
-                match.getScenarioID(), match.getConfigurationLocation());
+        final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource, this.definitionFile);
+        final CTDetection detection = SubjectDetection
+                .about(Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED, DetectionLocation.of(resourceId),
+                        "Scenario '" + scenario.getName() + "' fixed by user input"))
+                .identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID()).locatedByXPath(match.getConfigurationLocation())
+                .inFile(match.getDefinitionFile()).build();
         return new DetectScenariosResult(CTStepResult.SUCCESS, List.of(match), DetectionList.of(detection));
     }
 
@@ -145,14 +161,16 @@ public class DetectScenariosAction implements CTAction {
         }
 
         LOGGER.debug("{} scenario(s) matched for {}", matching.size(), resourceId);
-        final List<ScenarioMatch> matches = matching.stream().map(scenario -> ScenarioMatch.of(scenario, parsedSource)).toList();
+        final List<ScenarioMatch> matches = matching.stream().map(scenario -> ScenarioMatch.of(scenario, parsedSource, this.definitionFile))
+                .toList();
         final List<CTDetection> detections = new ArrayList<>();
         for (final ScenarioMatch match : matches) {
             // scenario id and the pointer into the configuration travel with every candidate
-            detections.add(ScenarioDetection.candidate(
-                    Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_MATCHED, DetectionLocation.of(resourceId),
-                            "Scenario '" + match.getScenarioName() + "' matched"),
-                    match.getScenarioID(), match.getConfigurationLocation()));
+            detections.add(SubjectDetection
+                    .about(Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_MATCHED, DetectionLocation.of(resourceId),
+                            "Scenario '" + match.getScenarioName() + "' matched"))
+                    .identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID()).locatedByXPath(match.getConfigurationLocation())
+                    .inFile(match.getDefinitionFile()).build());
         }
         return new DetectScenariosResult(CTStepResult.SUCCESS, List.copyOf(matches), new DetectionList(detections));
     }

@@ -46,9 +46,11 @@ public final class ScenarioMatch implements CTScenarioMatch {
 
     private final ScenarioType configuration;
 
+    private final String definitionFile;
+
     private ScenarioMatch(final String scenarioId, final String scenarioName, final String matchExpression, final boolean userSelected,
             final List<CTValidationArtifactReference> artifactReferences, final CTParsedValidationSource parsedSource,
-            final SeverityOverrides severityOverrides, final ScenarioType configuration) {
+            final SeverityOverrides severityOverrides, final ScenarioType configuration, final String definitionFile) {
         this.scenarioId = scenarioId;
         this.scenarioName = scenarioName;
         this.matchExpression = matchExpression;
@@ -57,6 +59,7 @@ public final class ScenarioMatch implements CTScenarioMatch {
         this.parsedSource = parsedSource;
         this.severityOverrides = severityOverrides;
         this.configuration = configuration;
+        this.definitionFile = definitionFile;
     }
 
     /**
@@ -67,6 +70,18 @@ public final class ScenarioMatch implements CTScenarioMatch {
      * @return the wrapped match
      */
     public static ScenarioMatch of(final Scenario scenario, final CTParsedValidationSource parsedSource) {
+        return of(scenario, parsedSource, null);
+    }
+
+    /**
+     * Wraps a legacy auto-detected scenario, additionally recording which configuration file it came from.
+     *
+     * @param scenario the matched legacy scenario; must not be a fallback scenario (see class Javadoc)
+     * @param parsedSource the parsed source from step 2, carried through per specification
+     * @param definitionFile the scenario configuration this scenario was read from. May be <code>null</code>.
+     * @return the wrapped match
+     */
+    public static ScenarioMatch of(final Scenario scenario, final CTParsedValidationSource parsedSource, final String definitionFile) {
         if (scenario == null) {
             throw new IllegalArgumentException("scenario may not be null");
         }
@@ -78,7 +93,8 @@ public final class ScenarioMatch implements CTScenarioMatch {
         }
         final ScenarioType configuration = scenario.getConfiguration();
         return new ScenarioMatch(scenario.getName(), scenario.getName(), configuration.getMatch(), false,
-                collectArtifactReferences(configuration), parsedSource, SeverityOverrides.fromConfiguration(configuration), configuration);
+                collectArtifactReferences(configuration), parsedSource, SeverityOverrides.fromConfiguration(configuration), configuration,
+                definitionFile);
     }
 
     /**
@@ -91,6 +107,19 @@ public final class ScenarioMatch implements CTScenarioMatch {
      * @return the wrapped match with {@link #isUserSelected()} {@code == true}
      */
     public static ScenarioMatch userSelected(final Scenario scenario, final CTParsedValidationSource parsedSource) {
+        return userSelected(scenario, parsedSource, null);
+    }
+
+    /**
+     * Wraps a user-fixed legacy scenario, additionally recording which configuration file it came from.
+     *
+     * @param scenario the user-requested legacy scenario; must not be a fallback scenario (see class Javadoc)
+     * @param parsedSource the parsed source from step 2, carried through per specification
+     * @param definitionFile the scenario configuration this scenario was read from. May be <code>null</code>.
+     * @return the wrapped match with {@link #isUserSelected()} {@code == true}
+     */
+    public static ScenarioMatch userSelected(final Scenario scenario, final CTParsedValidationSource parsedSource,
+            final String definitionFile) {
         if (scenario == null) {
             throw new IllegalArgumentException("scenario may not be null");
         }
@@ -101,7 +130,8 @@ public final class ScenarioMatch implements CTScenarioMatch {
             throw new IllegalArgumentException("parsedSource may not be null");
         }
         return new ScenarioMatch(scenario.getName(), scenario.getName(), null, true, collectArtifactReferences(scenario.getConfiguration()),
-                parsedSource, SeverityOverrides.fromConfiguration(scenario.getConfiguration()), scenario.getConfiguration());
+                parsedSource, SeverityOverrides.fromConfiguration(scenario.getConfiguration()), scenario.getConfiguration(),
+                definitionFile);
     }
 
     /**
@@ -110,6 +140,11 @@ public final class ScenarioMatch implements CTScenarioMatch {
      */
     public SeverityOverrides getSeverityOverrides() {
         return this.severityOverrides;
+    }
+
+    /** The configuration file this scenario was read from. May be <code>null</code> when the caller did not say. */
+    public String getDefinitionFile() {
+        return this.definitionFile;
     }
 
     /** The wrapped scenario configuration, for embedding the individual scenario into the report. */
