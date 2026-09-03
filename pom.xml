@@ -745,6 +745,10 @@
                                 <configuration>
                                     <shadedArtifactAttached>true</shadedArtifactAttached>
                                     <shadedClassifierName>standalone</shadedClassifierName>
+                                    <!-- the shaded jar is only attached; the main jar keeps its dependencies, so its
+                                         installed POM must keep them too (otherwise nothing resolving outside the
+                                         reactor sees the module dependencies) -->
+                                    <createDependencyReducedPom>false</createDependencyReducedPom>
                                     <transformers>
                                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                             <mainClass>org.kosit.validator.cmd.CommandLineApplication</mainClass>
