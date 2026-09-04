@@ -88,6 +88,7 @@ public class CvrlWriterTest {
     }
 
 <<<<<<< Upstream, based on origin/2.x
+<<<<<<< Upstream, based on origin/2.x
     private Document serialize(final URI document) throws Exception {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         this.writer.write("test-document.xml", runPipeline(document), out);
@@ -101,6 +102,9 @@ public class CvrlWriterTest {
         return factory.newDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));
 =======
     private Document runPipelineAndSerializeAsXml(final URI document) throws Exception {
+=======
+    private Document serialize(final URI document) throws Exception {
+>>>>>>> 35b1afd Renamed back
         try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
             this.writer.write("test-document.xml", runPipeline(document), out);
             // well-formedness is the first assertion: parsing fails on broken output
@@ -109,12 +113,12 @@ public class CvrlWriterTest {
 >>>>>>> 1d6eabe Trying to resolve in JAR resources as well
     }
 
-    private static List<Element> getAllReportElements(final Document cvrl) {
+    private static List<Element> reports(final Document cvrl) {
         final NodeList nodes = cvrl.getElementsByTagNameNS(NS, "report");
         return IntStream.range(0, nodes.getLength()).mapToObj(i -> (Element) nodes.item(i)).toList();
     }
 
-    private static String getCreator(final Element report) {
+    private static String creator(final Element report) {
         return ((Element) report.getElementsByTagNameNS(NS, "creator").item(0)).getAttribute("name");
     }
 
@@ -130,7 +134,7 @@ public class CvrlWriterTest {
 
     @Test
     public void testCompletedRunSerializesOneReportPerStepExecution() throws Exception {
-        final Document cvrl = runPipelineAndSerializeAsXml(Simple.SIMPLE_VALID);
+        final Document cvrl = serialize(Simple.SIMPLE_VALID);
         final Element root = cvrl.getDocumentElement();
 
         assertThat(root.getLocalName()).isEqualTo("reports");
@@ -152,8 +156,12 @@ public class CvrlWriterTest {
 =======
 
         // document-parsed carries two messages — hash first, then the embedded payload
+<<<<<<< Upstream, based on origin/2.x
         final Element parseReport = getAllReportElements(cvrl).get(0);
 >>>>>>> 1d6eabe Trying to resolve in JAR resources as well
+=======
+        final Element parseReport = reports(cvrl).get(0);
+>>>>>>> 35b1afd Renamed back
         final NodeList messages = parseReport.getElementsByTagNameNS(NS, "message");
 <<<<<<< Upstream, based on origin/2.x
         assertThat(messages.getLength()).isEqualTo(1);
@@ -199,13 +207,13 @@ public class CvrlWriterTest {
 
 >>>>>>> 1d6eabe Trying to resolve in JAR resources as well
         // 6 steps + APPLY_RULES twice (xsd + schematron rule set) = 8 reports
-        assertThat(getAllReportElements(cvrl)).extracting(CvrlWriterTest::getCreator).containsExactly(CTActionType.PARSE_DOCUMENT.getName(),
+        assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly(CTActionType.PARSE_DOCUMENT.getName(),
                 CTActionType.DETECT_SCENARIOS.getName(), CTActionType.SELECT_SCENARIO.getName(), CTActionType.RETRIEVE_ARTIFACTS.getName(),
                 CTActionType.PREPARE_RULES.getName(), CTActionType.APPLY_RULES.getName(), CTActionType.APPLY_RULES.getName(),
                 CTActionType.COMPUTE_CONFORMANCE.getName());
 
         // the APPLY_RULES reports carry the rule set identity
-        final Element schematronReport = getAllReportElements(cvrl).get(6);
+        final Element schematronReport = reports(cvrl).get(6);
         final Element schema = (Element) schematronReport.getElementsByTagNameNS(NS, "schema").item(0);
         assertThat(schema.getAttribute("href")).isEqualTo("simple.sch");
         // XVRL has no "language" attribute — the rule language is stated by its namespace, and it is required
@@ -215,13 +223,17 @@ public class CvrlWriterTest {
 
     @Test
     public void testNonUtf8SourceIsEmbeddedAsBase64() throws Exception {
-        final Document cvrl = runPipelineAndSerializeAsXml(Simple.SIMPLE_LATIN1);
+        final Document cvrl = serialize(Simple.SIMPLE_LATIN1);
 
+<<<<<<< Upstream, based on origin/2.x
 <<<<<<< Upstream, based on origin/2.x
         final NodeList messages = reports(cvrl).get(0).getElementsByTagNameNS(NS, "message");
         final Element payloadMessage = (Element) messages.item(0);
 =======
         final NodeList messages = getAllReportElements(cvrl).get(0).getElementsByTagNameNS(NS, "message");
+=======
+        final NodeList messages = reports(cvrl).get(0).getElementsByTagNameNS(NS, "message");
+>>>>>>> 35b1afd Renamed back
         final Element payloadMessage = (Element) messages.item(1);
 >>>>>>> 1d6eabe Trying to resolve in JAR resources as well
         // transcoding into the UTF-8 report would lose the original bytes, so the source travels base64
@@ -234,9 +246,9 @@ public class CvrlWriterTest {
 
     @Test
     public void testScenarioDetectionsCarryIdAndLocation() throws Exception {
-        final Document cvrl = runPipelineAndSerializeAsXml(Simple.SIMPLE_VALID);
+        final Document cvrl = serialize(Simple.SIMPLE_VALID);
 
-        final Element detectReport = getAllReportElements(cvrl).get(1);
+        final Element detectReport = reports(cvrl).get(1);
         final Element detection = (Element) detectReport.getElementsByTagNameNS(NS, "detection").item(0);
         assertThat(detection.getAttributeNS(NS_CVRL, "scenario-id")).isEqualTo("Simple");
         // severity is omitted for scenario detection, the code would only restate the creator
@@ -249,9 +261,9 @@ public class CvrlWriterTest {
 
     @Test
     public void testSelectedScenarioIsEmbeddedInFull() throws Exception {
-        final Document cvrl = runPipelineAndSerializeAsXml(Simple.SIMPLE_VALID);
+        final Document cvrl = serialize(Simple.SIMPLE_VALID);
 
-        final Element selectReport = getAllReportElements(cvrl).get(2);
+        final Element selectReport = reports(cvrl).get(2);
         final NodeList messages = selectReport.getElementsByTagNameNS(NS, "message");
         assertThat(messages.getLength()).isEqualTo(2);
         final Element scenarioMessage = (Element) messages.item(1);
@@ -266,12 +278,10 @@ public class CvrlWriterTest {
 
     @Test
     public void testFindingsAppearWithDigestAndCodes() throws Exception {
-        final Document cvrl = runPipelineAndSerializeAsXml(Simple.SCHEMATRON_INVALID);
-
-        LOGGER.info("XML: " + XmlHelper.getXmlAsString(cvrl));
+        final Document cvrl = serialize(Simple.SCHEMATRON_INVALID);
 
         assertThat(cvrl.getDocumentElement().getAttributeNS(NS_CVRL, "conformant")).isEqualTo("false");
-        final Element schematronReport = getAllReportElements(cvrl).get(6);
+        final Element schematronReport = reports(cvrl).get(6);
         final Element digest = (Element) schematronReport.getElementsByTagNameNS(NS, "digest").item(0);
         assertThat(digest.getAttribute("valid")).isEqualTo("false");
         assertThat(digest.getAttribute("error-count")).isEqualTo("1");
@@ -280,13 +290,13 @@ public class CvrlWriterTest {
 
     @Test
     public void testCancelledRunStillSerializesAsPartialCvrl() throws Exception {
-        final Document cvrl = runPipelineAndSerializeAsXml(Simple.NOT_WELLFORMED);
+        final Document cvrl = serialize(Simple.NOT_WELLFORMED);
         final Element root = cvrl.getDocumentElement();
 
         assertThat(root.getAttributeNS(NS_CVRL, "status")).isEqualTo("CANCELLED");
         assertThat(root.getAttributeNS(NS_CVRL, "conformant")).isEqualTo("false");
         // only the executed step is reported
-        assertThat(getAllReportElements(cvrl)).extracting(CvrlWriterTest::getCreator).containsExactly("parse-document");
+        assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly("parse-document");
         // failed content is never echoed into the report (injection safety)
         final NodeList messages = cvrl.getElementsByTagNameNS(NS, "message");
         for (int i = 0; i < messages.getLength(); i++) {
