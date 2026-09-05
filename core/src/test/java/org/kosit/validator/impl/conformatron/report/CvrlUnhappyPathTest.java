@@ -12,12 +12,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
+import org.kosit.base.uri.UriHelper;
+import org.kosit.base.xml.XmlHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.TestHelper;
@@ -33,8 +32,8 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
+import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -63,7 +62,8 @@ public class CvrlUnhappyPathTest {
      * reached. Nothing here short-circuits on failure beyond what the pipeline itself does — that is the point.
      */
     private CvrlWriter.PipelineResults run(final URI scenarios, final URI document, final String requestedScenarioId) {
-        final VConfiguration configuration = VConfiguration.load(scenarios, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final VConfiguration configuration = VConfiguration.load(scenarios, Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         if (!parsed.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
@@ -78,7 +78,7 @@ public class CvrlUnhappyPathTest {
         if (!selected.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null);
         }
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true)
                 .execute(selected.selected());
         if (!retrieved.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, null, null, null);
@@ -111,7 +111,7 @@ public class CvrlUnhappyPathTest {
      */
     private CvrlWriter.PipelineResults runWithReferences(final URI document, final String... references) {
         final VConfiguration configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
-                .build(TestHelper.getTestProcessor());
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
         final DetectScenariosResult detected = new DetectScenariosAction(new ScenarioRepository(configuration),
@@ -120,7 +120,7 @@ public class CvrlUnhappyPathTest {
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         assertThat(selected.isSuccess()).isTrue();
 
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true).execute(
                 Arrays.stream(references).map(ValidationArtifactReference::of).map(r -> (CTValidationArtifactReference) r).toList(),
                 document.getPath());
         if (!retrieved.isSuccess()) {
@@ -138,31 +138,27 @@ public class CvrlUnhappyPathTest {
 
     private Document serialize(final CvrlWriter.PipelineResults results, final String documentName, final String exampleName)
             throws Exception {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        this.writer.write(documentName, results, out);
-        writeExample(exampleName, out.toByteArray());
+        try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
+            this.writer.write(documentName, results, out);
+            writeExample(exampleName, out.toByteArray());
 
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        return factory.newDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));
+            return XmlHelper.createSafeDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));
+        }
     }
 
     private Document serialize(final URI scenarios, final URI document, final String requestedScenarioId, final String exampleName)
             throws Exception {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        this.writer.write(document.getPath().substring(document.getPath().lastIndexOf('/') + 1),
-                run(scenarios, document, requestedScenarioId), out);
-        writeExample(exampleName, out.toByteArray());
+        try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
+            final String path = UriHelper.getPath(document);
+            this.writer.write(path.substring(path.lastIndexOf('/') + 1), run(scenarios, document, requestedScenarioId), out);
+            writeExample(exampleName, out.toByteArray());
 
-        // CVRL is a profile of XVRL: a report that does not validate against it is not a CVRL report
-        CvrlSchema.assertValid(out.toByteArray());
+            // CVRL is a profile of XVRL: a report that does not validate against it is not a CVRL report
+            CvrlSchema.assertValid(out.toByteArray());
 
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        // a broken report would already fail here
-        return factory.newDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));
+            // a broken report would already fail here
+            return XmlHelper.createSafeDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));
+        }
     }
 
     /** Writes the example next to the other e2e material; skipped when that folder is not part of the checkout. */

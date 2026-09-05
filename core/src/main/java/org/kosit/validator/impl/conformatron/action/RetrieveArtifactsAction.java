@@ -68,10 +68,22 @@ public class RetrieveArtifactsAction implements CTAction {
     private final ArtifactResolver resolver;
 
     /**
+     * Creates an action that does not resolve into an archive repository, see
+     * {@link #RetrieveArtifactsAction(URI, boolean)}.
+     *
      * @param repository base URI of the artifact repository; resolution is confined to this location
      */
     public RetrieveArtifactsAction(final URI repository) {
         this(new ArtifactResolver(repository));
+    }
+
+    /**
+     * @param repository base URI of the artifact repository; resolution is confined to this location
+     * @param resolveInArchive {@code true} to resolve references inside a repository that lives in an archive, see
+     *            {@link ArtifactResolver#ArtifactResolver(URI, boolean)}
+     */
+    public RetrieveArtifactsAction(final URI repository, final boolean resolveInArchive) {
+        this(new ArtifactResolver(repository, resolveInArchive));
     }
 
     public RetrieveArtifactsAction(final ArtifactResolver resolver) {

@@ -31,8 +31,8 @@ public class ComputeAcceptanceTaskTest {
     private final ComputeAcceptanceTask action = new ComputeAcceptanceTask();
 
     private static XPathExecutable createXpath(final String expression) {
-        return new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null)
-                .createXPath(expression, new HashMap<>());
+        return new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(), null).createXPath(expression,
+                new HashMap<>());
     }
 
     @Test

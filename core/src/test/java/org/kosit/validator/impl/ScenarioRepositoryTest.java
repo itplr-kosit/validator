@@ -32,8 +32,8 @@ public class ScenarioRepositoryTest {
     @BeforeEach
     public void setup() {
         this.configInstance = new TestConfiguration();
-        this.configInstance.setContentRepository(
-                new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
+        this.configInstance
+                .setContentRepository(new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(), null));
 
         final Scenario s = createScenario();
         this.configInstance.setScenarios(new ArrayList<>());

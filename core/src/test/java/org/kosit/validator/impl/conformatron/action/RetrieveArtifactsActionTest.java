@@ -3,11 +3,17 @@ package org.kosit.validator.impl.conformatron.action;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
@@ -20,7 +26,7 @@ public class RetrieveArtifactsActionTest {
 
     private static final String DOCUMENT = "simple.xml";
 
-    private final RetrieveArtifactsAction action = new RetrieveArtifactsAction(Simple.REPOSITORY_URI);
+    private final RetrieveArtifactsAction action = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true);
 
     private static List<ValidationArtifactReference> refs(final String... references) {
         return List.of(references).stream().map(ValidationArtifactReference::of).toList();
@@ -86,14 +92,18 @@ public class RetrieveArtifactsActionTest {
 
     @Test
     public void testResolverRequiresAbsoluteRepository() {
-        assertThrows(IllegalArgumentException.class, () -> new ArtifactResolver(java.net.URI.create("relative/path/")));
+        assertThrows(IllegalArgumentException.class, () -> new ArtifactResolver(URI.create("relative/path/")));
     }
 
     @Test
-    public void testResolverAcceptsEmptyAuthorityFileUris() {
-        // Paths.toUri() produces file:///C:/... (empty authority); URI.resolve drops it (file:/C:/...) — the
-        // containment check must compare components, not string prefixes (Windows regression from the E2E run)
-        final java.nio.file.Path repositoryPath = java.nio.file.Paths.get(Simple.REPOSITORY_URI);
+    public void testResolverAcceptsEmptyAuthorityFileUris(@TempDir final Path tempDir) throws IOException {
+        // Path.toUri() produces file:///C:/... (empty authority); URI.resolve drops it (file:/C:/...) — the
+        // containment check must compare components, not string prefixes (Windows regression from the E2E run).
+        // The repository is built here instead of reusing the test data, which is not necessarily an unpacked
+        // directory.
+        final Path repositoryPath = Files.createDirectory(tempDir.resolve("repository"));
+        Files.writeString(repositoryPath.resolve("simple.xsd"), "<xs:schema/>");
+        Files.writeString(tempDir.resolve("scenarios.xml"), "<scenarios/>");
         final RetrieveArtifactsAction tripleSlash = new RetrieveArtifactsAction(repositoryPath.toUri());
 
         final RetrieveArtifactsResult result = tripleSlash.execute(refs("simple.xsd"), DOCUMENT);
@@ -103,5 +113,57 @@ public class RetrieveArtifactsActionTest {
         // and the confinement still works with that URI form
         assertThat(tripleSlash.execute(refs("../scenarios.xml"), DOCUMENT).detections().getAll()).extracting("code")
                 .containsExactly(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED);
+    }
+
+    @Test
+    public void testRepositoryInsideAJarIsRejectedByDefault() {
+        // reaching into an archive has to be enabled explicitly, so the reference does not resolve at all
+        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository());
+
+        final RetrieveArtifactsResult result = packaged.execute(refs("simple.xsd"), DOCUMENT);
+
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.artifacts()).isEmpty();
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED);
+        // and an absolute reference in archive form is no way around it either
+        assertThat(packaged.execute(refs(TestHelper.getJarRepository() + "simple.xsd"), DOCUMENT).detections().getAll()).extracting("code")
+                .containsExactly(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED);
+    }
+
+    @Test
+    public void testRepositoryInsideAJarIsResolved() {
+        // "jar:file:/some.jar!/dir/" is an opaque URI, so the entry path behind the separator has to be resolved
+        // separately - a plain URI.resolve() would hand back the bare reference
+        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository(), true);
+
+        final RetrieveArtifactsResult result = packaged.execute(refs("simple.xsd", "simple.sch"), DOCUMENT);
+
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.artifacts()).hasSize(2);
+        assertThat(result.artifacts().get(0).getContent()).isNotEmpty();
+        assertThat(result.detections().getAll()).extracting("code").containsOnly(RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED);
+    }
+
+    @Test
+    public void testReferenceEscapingTheJarRepositoryIsRejected() {
+        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository(), true);
+
+        // scenarios.xml exists in that jar, but one entry above the repository - and an absolute reference never
+        // addresses the archive
+        final RetrieveArtifactsResult result = packaged.execute(refs("../scenarios.xml", "file:///etc/passwd"), DOCUMENT);
+
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.artifacts()).isEmpty();
+        assertThat(result.detections().getAll()).extracting("code").containsOnly(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED);
+    }
+
+    @Test
+    public void testMissingArtifactInAJarFailsTheStep() {
+        final RetrieveArtifactsAction packaged = new RetrieveArtifactsAction(TestHelper.getJarRepository(), true);
+
+        final RetrieveArtifactsResult result = packaged.execute(refs("does-not-exist.xsd"), DOCUMENT);
+
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(RetrieveArtifactsAction.CODE_ARTIFACT_MISSING);
     }
 }

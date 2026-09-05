@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:ref="http://www.example.org/reference" xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/main"
+		elementFormDefault="qualified">
+
+<import namespace="http://www.example.org/reference" schemaLocation="./resources/reference.xsd" />
+
+    <complexType name="MainType">
+    	<sequence>
+    		<element name="ref" type="ref:ReferenzTyp"></element>
+    	</sequence>
+    </complexType>
+</schema>

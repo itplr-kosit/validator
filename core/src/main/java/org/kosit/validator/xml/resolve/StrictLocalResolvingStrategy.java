@@ -18,6 +18,21 @@ import net.sf.saxon.lib.ResourceResolver;
 public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrategy {
 
     /**
+     * Creates a strategy whose resolvers do not resolve within an archive repository.
+     */
+    public StrictLocalResolvingStrategy() {
+        this(false);
+    }
+
+    /**
+     * @param resolveInArchive <code>true</code> if the created resolvers may resolve within an archive repository, see
+     *            {@link StrictRelativeResolvingStrategy#StrictRelativeResolvingStrategy(boolean)}
+     */
+    public StrictLocalResolvingStrategy(final boolean resolveInArchive) {
+        super(resolveInArchive);
+    }
+
+    /**
      * Allow loading schema files from any local location.
      * 
      * @return a configured {@link SchemaFactory}

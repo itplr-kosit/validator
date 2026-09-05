@@ -13,6 +13,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.jupiter.api.Test;
+import org.kosit.base.uri.UriHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.TestHelper;
@@ -44,7 +45,8 @@ public class DetectScenariosExamplesTest {
      * readable.
      */
     private Document serialize(final URI scenarios, final URI document, final String exampleName) throws Exception {
-        final VConfiguration configuration = VConfiguration.load(scenarios, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        final VConfiguration configuration = VConfiguration.load(scenarios, Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
 
@@ -55,7 +57,8 @@ public class DetectScenariosExamplesTest {
                 : null;
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        this.writer.write(document.getPath().substring(document.getPath().lastIndexOf('/') + 1),
+        final String path = UriHelper.getPath(document);
+        this.writer.write(path.substring(path.lastIndexOf('/') + 1),
                 new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null), out);
         writeExample(exampleName, out.toByteArray());
 

@@ -29,13 +29,13 @@ public class PrepareRulesActionTest {
 
     private static final String DOCUMENT = "simple.xml";
 
-    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
-            ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
+    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
+            Simple.REPOSITORY_URI);
 
     private final PrepareRulesAction action = new PrepareRulesAction(this.repository);
 
     private static List<CTResolvedValidationArtifact> retrieve(final String... references) {
-        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)
+        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true)
                 .execute(List.of(references).stream().map(ValidationArtifactReference::of).toList(), DOCUMENT);
         assertThat(retrieved.isSuccess()).isTrue();
         return retrieved.artifacts();

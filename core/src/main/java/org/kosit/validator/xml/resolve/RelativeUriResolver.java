@@ -9,6 +9,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
+import org.kosit.base.uri.UriHelper;
+
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.ResourceRequest;
 import net.sf.saxon.lib.ResourceResolver;
@@ -30,21 +32,33 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
     private final URI baseUri;
 
     /**
-     * Resolves a relative uri including uris within a jar file.
+     * whether artifacts within an archive base uri may be resolved
+     */
+    private final boolean resolveInArchive;
+
+    /**
+     * Resolves a relative uri, but not within an archive base uri - see {@link #resolve(URI, URI, boolean)}.
      *
      * @param href the uri to resolve
      * @param base the base uri
      * @return the resolved uri
      */
     public static URI resolve(final URI href, final URI base) {
-        final boolean jarURI = isJarURI(base);
-        final URI tmpBase = jarURI ? URI.create(base.toASCIIString().substring(4)) : base;
-        final URI result = tmpBase.resolve(href);
-        return jarURI ? URI.create("jar:" + result.toString()) : result;
+        return resolve(href, base, false);
     }
 
-    static boolean isJarURI(final URI uri) {
-        return uri.isOpaque() && uri.getScheme().equals("jar");
+    /**
+     * Resolves a relative uri, optionally including uris within a jar file.
+     *
+     * @param href the uri to resolve
+     * @param base the base uri
+     * @param resolveInArchive <code>true</code> to resolve within an archive base uri like
+     *            <code>jar:file:/some.jar!/repository/</code>, e.g. because the scenario configuration is shipped as a
+     *            jar. Off by default, see {@link UriHelper#resolve(URI, URI, boolean)}
+     * @return the resolved uri
+     */
+    public static URI resolve(final URI href, final URI base, final boolean resolveInArchive) {
+        return UriHelper.resolve(base, href, resolveInArchive);
     }
 
     private static boolean isUnderBaseUri(final URI resolved, final URI baseUri) {
@@ -57,17 +71,29 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
     }
 
     /**
-     * Creates a new {@code RelativeUriResolver} instance.
+     * Creates a new {@code RelativeUriResolver} instance that does not resolve within an archive base uri.
      *
      * @param baseUri the base uri
      */
     public RelativeUriResolver(final URI baseUri) {
+        this(baseUri, false);
+    }
+
+    /**
+     * Creates a new {@code RelativeUriResolver} instance.
+     *
+     * @param baseUri the base uri
+     * @param resolveInArchive <code>true</code> to resolve within an archive base uri, see
+     *            {@link #resolve(URI, URI, boolean)}
+     */
+    public RelativeUriResolver(final URI baseUri, final boolean resolveInArchive) {
         this.baseUri = baseUri;
+        this.resolveInArchive = resolveInArchive;
     }
 
     @Override
     public Source resolve(final String href, final String base) throws TransformerException {
-        final URI resolved = resolve(URI.create(href), URI.create(base));
+        final URI resolved = resolve(URI.create(href), URI.create(base), this.resolveInArchive);
         if (isUnderBaseUri(resolved, this.baseUri)) {
             try {
                 return new StreamSource(resolved.toURL().openStream(), resolved.toASCIIString());

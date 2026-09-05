@@ -17,7 +17,23 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
  */
 public class StrictRelativeResolvingStrategy extends AbstractResolvingStrategy {
 
+    /** whether the created resolvers may resolve within an archive repository */
+    private final boolean resolveInArchive;
+
+    /**
+     * Creates a strategy whose resolvers do not resolve within an archive repository.
+     */
     public StrictRelativeResolvingStrategy() {
+        this(false);
+    }
+
+    /**
+     * @param resolveInArchive <code>true</code> if the created resolvers may resolve within an archive repository like
+     *            <code>jar:file:/some.jar!/repository/</code>, see
+     *            {@link RelativeUriResolver#resolve(java.net.URI, java.net.URI, boolean)}
+     */
+    public StrictRelativeResolvingStrategy(final boolean resolveInArchive) {
+        this.resolveInArchive = resolveInArchive;
     }
 
     @Override
@@ -27,12 +43,12 @@ public class StrictRelativeResolvingStrategy extends AbstractResolvingStrategy {
 
     @Override
     public ResourceResolver createResourceResolver(final URI repositoryURI) {
-        return new RelativeUriResolver(repositoryURI);
+        return new RelativeUriResolver(repositoryURI, this.resolveInArchive);
     }
 
     @Override
     public UnparsedTextURIResolver createUnparsedTextURIResolver(final URI scenarioRepository) {
-        return new RelativeUriResolver(scenarioRepository);
+        return new RelativeUriResolver(scenarioRepository, this.resolveInArchive);
     }
 
     @Override

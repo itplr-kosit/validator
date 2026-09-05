@@ -1,6 +1,5 @@
 package org.kosit.validator.impl;
 
-import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kosit.validator.impl.TestHelper.Simple.FOO_SCHEMATRON_INVALID;
@@ -30,6 +29,7 @@ import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.source.ReadResource;
 import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.saxon.ProcessorProvider;
+import org.kosit.validator.testdata.TestData;
 import org.kosit.validator.xvrl.XvrlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,17 +63,16 @@ public class DefaultVCheckTest {
     @BeforeEach
     public void setup() throws URISyntaxException {
         final VConfiguration validConfig = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI)
-                .build(TestHelper.getTestProcessor());
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.validCheck = new DefaultVCheck(this.engineInformation, validConfig);
 
         final VConfiguration errorConfig = VConfiguration.load(Simple.ERROR_SCENARIOS, Simple.REPOSITORY_URI)
-                .build(TestHelper.getTestProcessor());
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.errorCheck = new DefaultVCheck(this.engineInformation, errorConfig);
 
         final VConfiguration jarConfig = VConfiguration
-                .load(requireNonNull(DefaultVCheckTest.class.getClassLoader().getResource("simple/packaged/scenarios.xml")).toURI(),
-                        requireNonNull(DefaultVCheckTest.class.getClassLoader().getResource("simple/packaged/repository/")).toURI())
-                .build(TestHelper.getTestProcessor());
+                .load(TestData.inArchive("simple/packaged/scenarios.xml"), TestHelper.getJarRepository())
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
 
         this.jarScenarioCheck = new DefaultVCheck(this.engineInformation, jarConfig);
     }

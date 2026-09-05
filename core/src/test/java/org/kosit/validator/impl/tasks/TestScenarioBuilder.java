@@ -36,7 +36,7 @@ public class TestScenarioBuilder {
      * @return The scenario repository
      */
     public static ScenarioRepository createRepository(final Scenario... scenarios) {
-        final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), new StrictRelativeResolvingStrategy(),
+        final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), TestHelper.getTestResolvingStrategy(),
                 TestHelper.Simple.REPOSITORY_URI);
         for (final Scenario scenario : scenarios) {
             scenario.setMatchExecutable(repo.createMatchExecutable(scenario.getConfiguration()));
@@ -86,14 +86,14 @@ public class TestScenarioBuilder {
 
     private static Schema createSchema(final URL toURL) {
         final ContentRepository contentRepository = new ContentRepository(TestHelper.getTestProcessor(),
-                ResolvingMode.STRICT_RELATIVE.getStrategy(), null);
+                TestHelper.getTestResolvingStrategy(), null);
         return contentRepository.createSchema(toURL);
     }
 
     public static Scenario createScenario(final URI schemafile, final URI reportTransformation) {
 
         try {
-            final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), new StrictRelativeResolvingStrategy(),
+            final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), TestHelper.getTestResolvingStrategy(),
                     TestHelper.Simple.REPOSITORY_URI);
             final ScenarioType t = new ScenarioType();
             final Scenario scenario = new Scenario(t);
@@ -117,7 +117,7 @@ public class TestScenarioBuilder {
             }
 
             scenario.setSchema(createSchema(schemafile.toURL()));
-            final ResolvingConfigurationStrategy strategy = ResolvingMode.STRICT_RELATIVE.getStrategy();
+            final ResolvingConfigurationStrategy strategy = TestHelper.getTestResolvingStrategy();
             scenario.setFactory(strategy);
             return scenario;
         } catch (final IOException e) {
