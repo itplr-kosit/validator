@@ -132,13 +132,12 @@ public class TestHelper {
     public static final URI EXAMPLES_DIR = TestData.dir("examples/");
 
     /**
-     * Repository that lives inside a jar (packaged-test-scenarios) instead of the shared test data. Resolved lazily,
-     * because that artifact is only a test dependency of this module and not of the modules reusing this helper.
+     * Repository that lives inside an archive instead of an unpacked directory, for the tests covering that code path.
      *
      * @return the URI of the packaged repository, never {@code null}
      */
     public static URI getJarRepository() {
-        return TestData.dir("simple/packaged/repository/");
+        return TestData.inArchive("simple/packaged/repository/");
     }
 
     public static XdmNode load(final URI url) {
@@ -186,8 +185,9 @@ public class TestHelper {
     }
 
     /**
-     * The shared test data is a jar on the class path, so its artifacts live inside an archive. Resolving into an
-     * archive is off by default, and the tests are the ones that explicitly allow it.
+     * Part of the shared test data lives inside an archive, either because the build packaged this module or because
+     * {@link TestData#inArchive(String)} did. Resolving into an archive is off by default, and the tests are the ones
+     * that explicitly allow it.
      *
      * @return the resolving strategy of the tests, never {@code null}
      */

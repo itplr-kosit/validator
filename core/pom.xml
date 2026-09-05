@@ -54,11 +54,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>de.kosit.validationtool</groupId>
-            <artifactId>packaged-test-scenarios</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-test-data</artifactId>
             <scope>test</scope>
