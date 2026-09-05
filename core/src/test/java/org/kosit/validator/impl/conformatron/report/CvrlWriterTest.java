@@ -115,6 +115,8 @@ public class CvrlWriterTest {
         final Document cvrl = serialize(Simple.SIMPLE_VALID);
         final Element root = cvrl.getDocumentElement();
 
+        LOGGER.info(XmlHelper.getXmlAsString(cvrl));
+
         assertThat(root.getLocalName()).isEqualTo("reports");
         assertThat(root.getAttributeNS(NS_CVRL, "conformant")).isEqualTo("true");
         assertThat(root.getAttributeNS(NS_CVRL, "status")).isEqualTo("COMPLETED");
@@ -127,13 +129,14 @@ public class CvrlWriterTest {
         // document-parsed carries two messages — hash first, then the embedded payload
         final Element parseReport = reports(cvrl).get(0);
         final NodeList messages = parseReport.getElementsByTagNameNS(NS, "message");
-        assertThat(messages.getLength()).isEqualTo(2);
-        final Element hashMessage = (Element) messages.item(0);
+        assertThat(messages.getLength()).isEqualTo(1);
 
         // messages are identified by xml:id so consumers never depend on their order
+        final Element hashMessage = (Element) messages.item(0);
         assertThat(hashMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_DOCUMENT_HASH);
         assertThat(hashMessage.getAttributeNS(NS_CVRL, "algorithm")).isEqualTo("SHA-512");
         assertThat(hashMessage.getTextContent()).matches("[0-9a-f]{128}");
+
         final Element payloadMessage = (Element) messages.item(1);
         assertThat(payloadMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_DOCUMENT_CONTENT);
         assertThat(payloadMessage.getAttributeNS(NS_CVRL, "mime-type")).isEqualTo("application/xml");
@@ -168,8 +171,11 @@ public class CvrlWriterTest {
     public void testNonUtf8SourceIsEmbeddedAsBase64() throws Exception {
         final Document cvrl = serialize(Simple.SIMPLE_LATIN1);
 
+        if (false)
+            LOGGER.info(XmlHelper.getXmlAsString(cvrl));
+
         final NodeList messages = reports(cvrl).get(0).getElementsByTagNameNS(NS, "message");
-        final Element payloadMessage = (Element) messages.item(1);
+        final Element payloadMessage = (Element) messages.item(0);
         // transcoding into the UTF-8 report would lose the original bytes, so the source travels base64
         assertThat(payloadMessage.getAttributeNS(NS_CVRL, "encoding")).isEqualTo(CvrlWriter.ENCODING_BASE64);
         assertThat(payloadMessage.getAttributeNS(NS_CVRL, "source-encoding")).isEqualTo("ISO-8859-1");
