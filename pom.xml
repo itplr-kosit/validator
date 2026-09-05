@@ -12,6 +12,7 @@
         <module>svrl</module>
         <module>schematron</module>
         <module>xvrl</module>
+        <module>cvr</module>
         <module>scenario</module>
         <module>core</module>
         <module>cli</module>
@@ -246,6 +247,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-schematron</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-cvr</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

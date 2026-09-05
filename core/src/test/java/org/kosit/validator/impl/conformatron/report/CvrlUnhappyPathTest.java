@@ -154,8 +154,8 @@ public class CvrlUnhappyPathTest {
             this.writer.write(path.substring(path.lastIndexOf('/') + 1), run(scenarios, document, requestedScenarioId), out);
             writeExample(exampleName, out.toByteArray());
 
-            // CVRL is a profile of XVRL: a report that does not validate against it is not a CVRL report
-            CvrlSchema.assertValid(out.toByteArray());
+            // CVRL is a profile of XVRL: a report that does not satisfy the profile is not a CVRL report
+            CvrlAssert.assertValid(exampleName, out.toByteArray());
 
             // a broken report would already fail here
             return XmlHelper.createSafeDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));

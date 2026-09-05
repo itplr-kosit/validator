@@ -66,6 +66,12 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Checks the generated CVRL against the profile -->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-cvr</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- Reuses TestHelper and friends instead of forking them. -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>

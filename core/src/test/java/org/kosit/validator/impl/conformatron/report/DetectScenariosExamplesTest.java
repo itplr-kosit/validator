@@ -62,8 +62,8 @@ public class DetectScenariosExamplesTest {
                 new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null), out);
         writeExample(exampleName, out.toByteArray());
 
-        // CVRL is a profile of XVRL: a report that does not validate against it is not a CVRL report
-        CvrlSchema.assertValid(out.toByteArray());
+        // CVRL is a profile of XVRL: a report that does not satisfy the profile is not a CVRL report
+        CvrlAssert.assertValid(exampleName, out.toByteArray());
 
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);

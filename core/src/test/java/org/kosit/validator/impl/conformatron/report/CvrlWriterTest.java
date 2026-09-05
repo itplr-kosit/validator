@@ -86,6 +86,8 @@ public class CvrlWriterTest {
     private Document serialize(final URI document) throws Exception {
         try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
             this.writer.write("test-document.xml", runPipeline(document), out);
+            // CVRL is a profile of XVRL: a report that does not satisfy the profile is not a CVRL report
+            CvrlAssert.assertValid("test-document.xml", out.toByteArray());
             // well-formedness is the first assertion: parsing fails on broken output
             return XmlHelper.createSafeDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));
         }

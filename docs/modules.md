@@ -6,6 +6,7 @@ The KoSIT XML Validator is divided into several modules to allow a clear separat
 
 - **api**: Contains all public interfaces and model classes.
 - **schematron**: Contains the technical validation engine (XSD and Schematron), without scenario handling and without XVRL generation.
+- **cvr**: Contains the CVRL profile - the XSD of the extension vocabulary and the Schematron of the profile constraints.
 - **core**: Contains the core logic of the validation (scenario selection, XVRL generation, acceptance recommendation).
 - **server**: A REST API implementation based on Quarkus.
 - **client**: A lightweight Java client for using the REST API.
@@ -68,6 +69,30 @@ It carries the canonical pipeline steps that need no scenario configuration:
 - `org.kosit.schematron.saxon`: `ProcessorProvider`, the secured Saxon processor.
 - `org.kosit.cvr`: the Conformatron Validation Result model - the `ValidationEngine` contract plus the `action`,
   `model`, `source` and `util` packages implementing `org.conformatron.api`.
+
+## CVR Module (`validator-cvr`)
+
+CVRL - **Conformatron Validation Result** - is the XVRL profile of the validator, and this module is that profile. It
+ships two artifacts and the class that applies them, `org.kosit.cvr.report.CvrlProfile`:
+
+| Artifact | Classpath | Answers |
+|----------|-----------|---------|
+| `cvrl.xsd` | `/xsd/cvrl.xsd` | what the CVRL extension vocabulary is and what its value spaces are |
+| `cvrl.sch` | `/sch/cvrl.sch` | whether a report satisfies the profile |
+
+A report is checked in two steps, because the two questions are different. *Is it XVRL?* is answered by
+`xvrl-1.0.xsd` from `validator-xvrl`. *Is it CVRL?* is answered by the profile Schematron: the canonical pipeline
+steps a report is built from, the extension vocabulary it may use, and the internal consistency the producer
+guarantees - a digest that matches the detections it summarises, a cancelled run that does not claim conformance, a
+rule set identity only on the step that applied it.
+
+Those constraints are deliberately not in the XSD: XVRL admits foreign attributes with `processContents="skip"`, so a
+schema cannot tighten them, and most of the constraints relate one part of the report to another. `cvrl.xsd` therefore
+types the vocabulary for tooling and for the reader, and `cvrl.sch` is what an actual report is held to.
+
+The module depends on `validator-xvrl` for the XVRL schema and on `validator-schematron` to run its own rules. The
+writer that produces CVRL (`CvrlWriter`) lives in `validator-core`, because it serializes the results of the full
+pipeline including scenario detection and selection.
 
 ## Core Module (`validator-core`)
 
