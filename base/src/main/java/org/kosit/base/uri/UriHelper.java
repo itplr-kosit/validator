@@ -52,6 +52,35 @@ public final class UriHelper {
     }
 
     /**
+     * Extracts the path of the file that the passed URI addresses, like {@link URI#getPath()} does, but with support
+     * for a URI that addresses something inside an archive, where that path is the entry path within the archive and
+     * not the location of the archive: the path of <code>jar:file:/some.jar!/dir/a.xsd</code> is
+     * <code>/dir/a.xsd</code>. For an entry within a nested archive like
+     * <code>jar:file:/app.jar!/lib/inner.jar!/dir/a.xsd</code> the path within the innermost archive is returned,
+     * because that is the archive holding the file.
+     *
+     * @param uri the URI to take the path of. May not be <code>null</code>.
+     * @return the decoded path of the addressed file, or <code>null</code> if the passed URI is opaque without
+     *         addressing something inside an archive, as in <code>mailto:someone@example.org</code>, exactly like
+     *         {@link URI#getPath()} does.
+     */
+    public static @Nullable String getPath(final @NonNull URI uri) {
+        Objects.requireNonNull(uri);
+
+        if (!isArchiveUri(uri)) {
+            return uri.getPath();
+        }
+
+        // the raw form is searched deliberately: a percent encoded separator within an entry name, as in
+        // "jar:file:/some.jar!/dir/a%21%2Fb.xsd", must not be mistaken for the separator itself
+        final String rawSchemeSpecificPart = uri.getRawSchemeSpecificPart();
+        // the last separator wins: within a nested archive the file is held by the innermost one
+        final int separatorIndex = rawSchemeSpecificPart.lastIndexOf(ARCHIVE_SEPARATOR);
+        // the separator ends with the slash that starts the entry path, so that slash is kept
+        return URI.create(rawSchemeSpecificPart.substring(separatorIndex + 1)).getPath();
+    }
+
+    /**
      * Resolves the passed reference against the passed base URI, like {@link URI#resolve(URI)} does, optionally with
      * support for a base URI that addresses something inside an archive.
      *

@@ -43,6 +43,31 @@ public class UriHelperTest {
     }
 
     @Test
+    public void getPath() {
+        // URI#getPath has nothing to offer for an archive URI, because it is opaque
+        assertThat(JAR_DIR.getPath()).isNull();
+
+        assertThat(UriHelper.getPath(JAR_DIR)).isEqualTo("/dir/");
+        assertThat(UriHelper.getPath(URI.create("jar:file:/some.jar!/dir/a.xsd"))).isEqualTo("/dir/a.xsd");
+        assertThat(UriHelper.getPath(URI.create("jar:file:/some.jar!/"))).isEqualTo("/");
+        // an example within the test data jar of the local Maven repository
+        assertThat(UriHelper.getPath(URI.create("jar:file:/home/user/.m2/repository/org/kosit/validator-test-data/"
+                + "2.0.0-SNAPSHOT/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/input/unknown.xml")))
+                        .isEqualTo("/examples/simple/input/unknown.xml");
+        // within a nested archive the innermost archive holds the file
+        assertThat(UriHelper.getPath(URI.create("jar:file:/app.jar!/lib/inner.jar!/dir/a.xsd"))).isEqualTo("/dir/a.xsd");
+        // the percent encoding is resolved, exactly like URI#getPath does
+        assertThat(UriHelper.getPath(URI.create("jar:file:/a%20b.jar!/a%20dir/a%20b.xsd"))).isEqualTo("/a dir/a b.xsd");
+        // an encoded separator is part of the entry name and not a separator
+        assertThat(UriHelper.getPath(URI.create("jar:file:/some.jar!/dir/a%21%2Fb.xsd"))).isEqualTo("/dir/a!/b.xsd");
+
+        assertThat(UriHelper.getPath(FILE_DIR)).isEqualTo("/tmp/dir/");
+        assertThat(UriHelper.getPath(URI.create("https://example.org/dir/a%20b.xsd"))).isEqualTo("/dir/a b.xsd");
+        assertThat(UriHelper.getPath(URI.create("dir/a.xsd"))).isEqualTo("dir/a.xsd");
+        assertThat(UriHelper.getPath(URI.create("mailto:someone@example.org"))).isNull();
+    }
+
+    @Test
     public void resolveWithHierarchicalBaseBehavesLikeUriResolve() {
         assertThat(UriHelper.resolve(FILE_DIR, URI.create("a.xsd"), false)).isEqualTo(FILE_DIR.resolve("a.xsd"));
         assertThat(UriHelper.resolve(FILE_DIR, URI.create("sub/a.xsd"), false)).isEqualTo(FILE_DIR.resolve("sub/a.xsd"));
@@ -143,6 +168,7 @@ public class UriHelperTest {
     @Test
     public void nullParametersAreRejected() {
         assertThatThrownBy(() -> UriHelper.getHierarchicalUri(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> UriHelper.getPath(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> UriHelper.normalize(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> UriHelper.relativize(JAR_DIR, null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> UriHelper.relativize(null, JAR_DIR)).isInstanceOf(NullPointerException.class);

@@ -57,8 +57,7 @@ public class DetectScenariosExamplesTest {
                 : null;
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        // an archive URI is opaque and has no path of its own, so the name is taken from the URL it wraps
-        final String path = UriHelper.getHierarchicalUri(document).getPath();
+        final String path = UriHelper.getPath(document);
         this.writer.write(path.substring(path.lastIndexOf('/') + 1),
                 new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null), out);
         writeExample(exampleName, out.toByteArray());
