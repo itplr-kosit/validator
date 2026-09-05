@@ -14,15 +14,18 @@ import org.conformatron.api.model.scenario.CTConformanceTarget;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.resolve.ResolvingMode;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.TestHelper.Simple;
+import org.kosit.cvr.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.validator.impl.conformatron.model.ApplyRulesResult;
+import org.kosit.cvr.action.PrepareRulesAction;
+import org.kosit.cvr.action.RetrieveArtifactsAction;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.cvr.model.ApplyRulesResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
+import org.kosit.cvr.model.ValidationArtifactReference;
 
 /**
  * Tests {@link ComputeConformanceAction} (step 8) on real step-7 results.

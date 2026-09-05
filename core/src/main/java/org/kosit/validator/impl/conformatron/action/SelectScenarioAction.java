@@ -10,10 +10,10 @@ import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.SubjectDetection;
+import org.kosit.cvr.model.Detection;
+import org.kosit.cvr.model.DetectionList;
+import org.kosit.cvr.model.DetectionLocation;
+import org.kosit.cvr.model.SubjectDetection;
 import org.kosit.validator.impl.conformatron.util.ScenarioXml;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 

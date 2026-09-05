@@ -12,8 +12,8 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationResource;
 import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.cvr.source.ReadResource;
+import org.kosit.cvr.source.Resource;
 import org.kosit.validator.server.api.CompactValidationResultsDto;
 import org.kosit.xvrl.impl.XvrlConverter;
 

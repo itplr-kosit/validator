@@ -8,19 +8,20 @@ import java.util.Map;
 
 import javax.xml.validation.Schema;
 
-import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.resolve.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
+import org.kosit.validator.impl.ScenarioArtifacts;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
-import org.kosit.validator.xml.resolve.StrictRelativeResolvingStrategy;
+import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
 
 public class TestScenarioBuilder {
 
@@ -39,7 +40,7 @@ public class TestScenarioBuilder {
         final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), TestHelper.getTestResolvingStrategy(),
                 TestHelper.Simple.REPOSITORY_URI);
         for (final Scenario scenario : scenarios) {
-            scenario.setMatchExecutable(repo.createMatchExecutable(scenario.getConfiguration()));
+            scenario.setMatchExecutable(ScenarioArtifacts.createMatchExecutable(repo, scenario.getConfiguration()));
         }
         final Scenario fallback = createDefault();
         fallback.getConfiguration().setName("fallback");
@@ -112,7 +113,7 @@ public class TestScenarioBuilder {
                 // StreamSource(reportTransformation.toURL().openStream()));
                 // final Scenario.Transformation ts = new Scenario.Transformation(executable,
                 // t.getCreateReport().get(0).getResource());
-                scenario.setReportTransformations(repo.createReportTransformations(t));
+                scenario.setReportTransformations(ScenarioArtifacts.createReportTransformations(repo, t));
 
             }
 

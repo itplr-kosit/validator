@@ -3,6 +3,7 @@ package org.kosit.validator.api;
 import java.util.List;
 
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.cvr.ValidationEngine;
 import org.w3c.dom.Document;
 
 /**

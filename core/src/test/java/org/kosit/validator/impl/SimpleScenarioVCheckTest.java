@@ -4,10 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kosit.schematron.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.TestHelper.Simple;
 
 /**
  * Tests the validator functionality based on a reduced scenario.

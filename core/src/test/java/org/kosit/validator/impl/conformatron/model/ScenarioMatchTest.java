@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.TestHelper.Simple;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.tasks.TestScenarioBuilder;
 
 /**

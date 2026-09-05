@@ -10,6 +10,7 @@
         <module>base</module>
         <module>jaxb</module>
         <module>svrl</module>
+        <module>schematron</module>
         <module>xvrl</module>
         <module>scenario</module>
         <module>core</module>
@@ -240,6 +241,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-xvrl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-schematron</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

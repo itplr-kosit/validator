@@ -8,8 +8,8 @@ import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.TestEngineInformation;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.TestHelper.Simple;
 
 /**
  * @author Andreas Penski

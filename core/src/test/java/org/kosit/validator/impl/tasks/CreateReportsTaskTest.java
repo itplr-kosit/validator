@@ -12,9 +12,9 @@ import javax.xml.transform.Source;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.TestHelper.Simple;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 

@@ -9,8 +9,10 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kosit.schematron.TestHelper;
 import org.kosit.validator.config.TestConfiguration;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.TestHelper.Simple;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ScenarioType;
 
@@ -102,7 +104,7 @@ public class ScenarioRepositoryTest {
     }
 
     private XdmNode load(final URI uri) {
-        return TestHelper.parseDocument(this.configInstance.getContentRepository().getProcessor(), TestHelper.read(uri)).getObject();
+        return TestObjectFactory.parseDocument(this.configInstance.getContentRepository().getProcessor(), TestHelper.read(uri)).getObject();
     }
 
     private XPathExecutable createXpath(final String expression) {

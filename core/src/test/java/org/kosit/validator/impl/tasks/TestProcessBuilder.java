@@ -9,9 +9,10 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.schematron.TestHelper;
+import org.kosit.cvr.source.ReadResource;
+import org.kosit.cvr.source.Resource;
+import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
@@ -63,13 +64,14 @@ public class TestProcessBuilder {
     }
 
     public static List<BusinessReport> createReport() throws IOException {
-        final XdmNode someXml = TestHelper.parseDocument(ReadResource.inMemory(Resource.utf8("someXml", "<some>xml</some>"))).getObject();
+        final XdmNode someXml = TestObjectFactory.parseDocument(ReadResource.inMemory(Resource.utf8("someXml", "<some>xml</some>")))
+                .getObject();
         return createReport("report", someXml);
     }
 
     private static ProcessStepResult<XdmNode, SimpleError> parseInput(final CTReadResource input) {
         final ProcessStepResult<XdmNode, SimpleError> stepResult = new ProcessStepResult<>(DocumentParseTask.KEY);
-        stepResult.setResult(TestHelper.parseDocument(input));
+        stepResult.setResult(TestObjectFactory.parseDocument(input));
         stepResult.setReport(XvrlReport.builder().build());
         return stepResult;
     }

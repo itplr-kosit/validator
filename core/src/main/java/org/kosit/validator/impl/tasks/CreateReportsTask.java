@@ -5,7 +5,7 @@ import java.util.List;
 import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.ActionMetadata;
-import org.kosit.validator.impl.CollectingErrorEventHandler;
+import org.kosit.schematron.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;

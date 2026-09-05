@@ -21,25 +21,26 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
+import org.kosit.schematron.TestHelper;
+import org.kosit.cvr.action.ApplyRulesAction;
+import org.kosit.cvr.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.cvr.action.PrepareRulesAction;
+import org.kosit.cvr.action.PrepareRulesAction.PrepareRulesResult;
+import org.kosit.cvr.action.RetrieveArtifactsAction;
+import org.kosit.cvr.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
+import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
+import org.kosit.cvr.model.SeverityOverrides;
 import org.kosit.validator.impl.conformatron.report.CvrlWriter;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
+import org.kosit.schematron.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -214,7 +215,7 @@ public final class XRechnungE2ERunner {
         }
         // step 7: APPLY_RULES (with the scenario's customLevel severity overrides)
         final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets(),
-                SeverityOverrides.of(selected.selected()));
+                ScenarioSeverityOverrides.of(selected.selected()));
         if (!applied.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
         }

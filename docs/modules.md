@@ -5,7 +5,8 @@ The KoSIT XML Validator is divided into several modules to allow a clear separat
 ## Module Structure
 
 - **api**: Contains all public interfaces and model classes.
-- **core**: Contains the core logic of the validation (XSD, Schematron, XVRL generation).
+- **schematron**: Contains the technical validation engine (XSD and Schematron), without scenario handling and without XVRL generation.
+- **core**: Contains the core logic of the validation (scenario selection, XVRL generation, acceptance recommendation).
 - **server**: A REST API implementation based on Quarkus.
 - **client**: A lightweight Java client for using the REST API.
 - **cli**: Command Line Interface for using the validator via the console.
@@ -43,14 +44,39 @@ For use cases requiring a simplified view of the complex XVRL results, the `comp
   - Validation layers (Schema, Schematron)
 - `ValidatorEngineInformation`: Provides name and version of the used validator engine.
 
+## Schematron Module (`validator-schematron`)
+
+The schematron module is the technical validation engine. It validates a document against XML Schema and Schematron and
+reports the findings as detections. It knows nothing about scenarios and produces no XVRL - Schematron results are bound
+via SVRL only, so the module depends on `validator-svrl` (and through it on `validator-jaxb`, `validator-base` and
+`validator-conformatron`), Saxon and SchXslt, and on nothing else.
+
+It carries the canonical pipeline steps that need no scenario configuration:
+
+| Step | Action |
+|------|--------|
+| 2 `PARSE_DOCUMENT` | `org.kosit.cvr.action.parsedoc.xml.ParseXmlAction` |
+| 5 `RETRIEVE_ARTIFACTS` | `org.kosit.cvr.action.RetrieveArtifactsAction` |
+| 6 `PREPARE_RULES` | `org.kosit.cvr.action.PrepareRulesAction` |
+| 7 `APPLY_RULES` | `org.kosit.cvr.action.ApplyRulesAction` |
+
+### Package Roots
+
+- `org.kosit.schematron`: the engine itself - `ContentRepository`, the Schematron compilers and the compiler registry,
+  and `SchematronValidation`, the ad-hoc engine that validates a document against a single Schematron.
+- `org.kosit.schematron.resolve`: the resolving strategies and `ResolvingMode`.
+- `org.kosit.schematron.saxon`: `ProcessorProvider`, the secured Saxon processor.
+- `org.kosit.cvr`: the Conformatron Validation Result model - the `ValidationEngine` contract plus the `action`,
+  `model`, `source` and `util` packages implementing `org.conformatron.api`.
+
 ## Core Module (`validator-core`)
 
 The core module contains the actual implementation of the validation logic. It handles:
 
-- Parsing of XML documents.
 - Selection of matching scenarios.
-- Execution of XSD and Schematron validations.
-- Generation of XVRL (XML Validation Report Language) reports.
+- Driving the `validator-schematron` engine for XSD and Schematron validation.
+- Generation of XVRL (XML Validation Report Language) and CVRL reports.
+- The acceptance recommendation.
 
 ## Server Module (`validator-server`)
 

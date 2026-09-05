@@ -10,10 +10,10 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.TestHelper.Simple;
+import org.kosit.cvr.source.ReadResource;
+import org.kosit.cvr.source.Resource;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.TestProcessBuilder;
 

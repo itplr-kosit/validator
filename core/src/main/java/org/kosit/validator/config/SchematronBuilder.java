@@ -6,8 +6,9 @@ import java.util.Collections;
 
 import org.kosit.base.string.StringHelper;
 import org.kosit.validator.config.SchematronBuilder.SchematronBuilderResult;
-import org.kosit.validator.impl.ContentRepository;
+import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.impl.Scenario.Transformation;
+import org.kosit.validator.impl.ScenarioArtifacts;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ValidateWithSchematron;
@@ -49,7 +50,7 @@ public class SchematronBuilder implements SingleProcessingResultBuilder<Schematr
         SingleProcessingResult<SchematronBuilderResult, String> result;
         try {
             if (this.executable == null) {
-                this.executable = repository.createSchematronTransformation(object).getExecutable();
+                this.executable = ScenarioArtifacts.createSchematronTransformation(repository, object).getExecutable();
             }
             result = new SingleProcessingResult<>(
                     new SchematronBuilderResult(object, new Transformation(this.executable, object.getResource())));

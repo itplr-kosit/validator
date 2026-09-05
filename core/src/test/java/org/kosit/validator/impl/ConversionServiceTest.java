@@ -9,8 +9,10 @@ import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
-import org.kosit.validator.impl.TestHelper.Invalid;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.TestHelper.Invalid;
+import org.kosit.schematron.TestHelper.Simple;
+import org.kosit.schematron.TestHelper;
 import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.Scenarios;
 

@@ -31,10 +31,10 @@ import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
 import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.impl.conformatron.source.ResourceHelper;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
+import org.kosit.cvr.source.ReadResource;
+import org.kosit.cvr.source.Resource;
+import org.kosit.cvr.source.ResourceHelper;
+import org.kosit.schematron.saxon.ProcessorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

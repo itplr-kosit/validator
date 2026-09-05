@@ -8,7 +8,7 @@ import javax.xml.validation.Schema;
 
 import org.kosit.base.string.StringHelper;
 import org.kosit.validator.config.SchemaBuilder.SchemaParseResult;
-import org.kosit.validator.impl.ContentRepository;
+import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;

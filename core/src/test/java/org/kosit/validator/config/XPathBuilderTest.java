@@ -8,8 +8,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.base.string.StringHelper;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.TestHelper.Simple;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 
 import net.sf.saxon.s9api.XPathExecutable;

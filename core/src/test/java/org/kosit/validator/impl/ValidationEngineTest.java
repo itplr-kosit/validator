@@ -10,12 +10,13 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.kosit.base.uri.UriHelper;
+import org.kosit.schematron.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.ValidationEngine;
-import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
-import org.kosit.validator.impl.conformatron.engine.SchematronValidation.AdHocValidationResult;
+import org.kosit.cvr.ValidationEngine;
+import org.kosit.schematron.TestHelper.Simple;
+import org.kosit.schematron.SchematronValidation;
+import org.kosit.schematron.SchematronValidation.AdHocValidationResult;
 
 /**
  * Tests the {@link ValidationEngine} contract: {@link ConformanceValidation} (via {@link DefaultVCheck}) and

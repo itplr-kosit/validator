@@ -5,7 +5,7 @@ import java.util.List;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.ValidationEngine;
+import org.kosit.cvr.ValidationEngine;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
@@ -23,9 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The <b>full conformance validation</b> mode of the {@link org.kosit.validator.api.ValidationEngine}: runs the
- * complete pipeline (all steps) over a {@link Process} and assembles the {@link VResult} — scenario
- * detection/selection, schema and schematron validation, report generation and acceptance recommendation.
+ * The <b>full conformance validation</b> mode of the {@link org.kosit.cvr.ValidationEngine}: runs the complete pipeline
+ * (all steps) over a {@link Process} and assembles the {@link VResult} — scenario detection/selection, schema and
+ * schematron validation, report generation and acceptance recommendation.
  * <p>
  * Individual class per validator design philosophy: the {@code ValidationEngine} interface is a pure contract, the mode
  * behavior lives here. Counterpart for the technical ad-hoc mode:

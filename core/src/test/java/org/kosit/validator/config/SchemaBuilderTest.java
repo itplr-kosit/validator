@@ -12,10 +12,10 @@ import javax.xml.validation.Schema;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.resolve.ResolvingMode;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.TestHelper.Simple;
 import org.kosit.validator.scenario.v1.ResourceType;
 
 /**

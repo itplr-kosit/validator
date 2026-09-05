@@ -9,8 +9,8 @@ import org.conformatron.api.model.validation.CTSyntax;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.TestHelper.Simple;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 
 import net.sf.saxon.s9api.XdmNode;

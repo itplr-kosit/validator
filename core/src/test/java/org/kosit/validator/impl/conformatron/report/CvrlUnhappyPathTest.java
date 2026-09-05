@@ -19,21 +19,22 @@ import org.kosit.base.uri.UriHelper;
 import org.kosit.base.xml.XmlHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.TestHelper.Simple;
+import org.kosit.cvr.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.cvr.action.PrepareRulesAction;
+import org.kosit.cvr.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
+import org.kosit.cvr.model.SeverityOverrides;
+import org.kosit.cvr.model.ValidationArtifactReference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -89,7 +90,7 @@ public class CvrlUnhappyPathTest {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
         }
         final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
-                prepared.ruleSets(), SeverityOverrides.of(selected.selected()));
+                prepared.ruleSets(), ScenarioSeverityOverrides.of(selected.selected()));
         if (!applied.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
         }
@@ -132,7 +133,7 @@ public class CvrlUnhappyPathTest {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
         }
         final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
-                prepared.ruleSets(), SeverityOverrides.of(selected.selected()));
+                prepared.ruleSets(), ScenarioSeverityOverrides.of(selected.selected()));
         return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
     }
 

@@ -14,6 +14,10 @@
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-schematron</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-svrl</artifactId>
         </dependency>
         <dependency>
@@ -60,6 +64,14 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Reuses TestHelper and friends instead of forking them. -->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-schematron</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>

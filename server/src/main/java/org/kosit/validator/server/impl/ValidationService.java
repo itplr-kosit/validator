@@ -21,7 +21,7 @@ import org.kosit.validator.api.xvrl.compact.ValidatorEngineInformation;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
+import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.server.config.ValidationConfig;
 import org.kosit.xvrl.model.XvrlDetection;

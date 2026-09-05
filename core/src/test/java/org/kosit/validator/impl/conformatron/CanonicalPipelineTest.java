@@ -12,25 +12,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.TestHelper.Simple;
+import org.kosit.cvr.action.ApplyRulesAction;
+import org.kosit.cvr.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.cvr.action.PrepareRulesAction;
+import org.kosit.cvr.action.PrepareRulesAction.PrepareRulesResult;
+import org.kosit.cvr.action.RetrieveArtifactsAction;
+import org.kosit.cvr.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
+import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
+import org.kosit.cvr.model.SeverityOverrides;
 
 /**
  * <b>End-to-end walkthrough of the canonical pipeline, steps 2–8</b>, composed exclusively from the new-API actions —
@@ -90,7 +91,7 @@ public class CanonicalPipelineTest {
 
         // step 7: APPLY_RULES — on the retained bytes; findings do not fail the step; scenario overrides applied
         final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets(),
-                SeverityOverrides.of(selected.selected()));
+                ScenarioSeverityOverrides.of(selected.selected()));
         assertThat(applied.isSuccess()).isTrue();
         trace.addAll(codes(applied.detections().getAll()));
 

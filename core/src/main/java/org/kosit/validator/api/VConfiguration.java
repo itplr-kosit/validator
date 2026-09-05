@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.kosit.validator.config.ConfigurationBuilder;
 import org.kosit.validator.config.ConfigurationLoader;
-import org.kosit.validator.impl.ContentRepository;
+import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 
 /**

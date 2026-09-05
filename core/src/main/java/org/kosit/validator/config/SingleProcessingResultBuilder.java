@@ -1,6 +1,6 @@
 package org.kosit.validator.config;
 
-import org.kosit.validator.impl.ContentRepository;
+import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 
 /**

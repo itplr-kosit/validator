@@ -11,9 +11,9 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
-import org.kosit.validator.xml.resolve.StrictRelativeResolvingStrategy;
+import org.kosit.schematron.TestHelper;
+import org.kosit.schematron.saxon.ProcessorProvider;
+import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
 import org.kosit.validator.xvrl.XvrlSerializer;
 import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlReport;

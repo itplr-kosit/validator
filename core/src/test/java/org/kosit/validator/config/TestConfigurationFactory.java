@@ -9,9 +9,9 @@ import static org.kosit.validator.config.ConfigurationBuilder.schematron;
 import java.net.URI;
 import java.util.Date;
 
-import org.kosit.validator.impl.TestHelper;
+import org.kosit.schematron.TestHelper;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.TestHelper.Simple;
 
 /**
  * @author Andreas Penski

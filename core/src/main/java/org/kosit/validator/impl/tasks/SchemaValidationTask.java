@@ -17,7 +17,7 @@ import org.apache.commons.io.FileUtils;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.impl.CollectingErrorEventHandler;
+import org.kosit.schematron.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;

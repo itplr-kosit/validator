@@ -8,7 +8,7 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.kosit.base.error.SimpleError;
 import org.kosit.svrl.impl.SvrlConverter;
-import org.kosit.validator.impl.CollectingErrorEventHandler;
+import org.kosit.schematron.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.ProcessStepResult;

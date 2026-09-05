@@ -36,19 +36,19 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.validation.CTValidationStandard;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.cvr.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.cvr.action.PrepareRulesAction;
+import org.kosit.cvr.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
+import org.kosit.cvr.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.PreparedRuleSet;
-import org.kosit.validator.impl.conformatron.model.SubjectDetection;
+import org.kosit.cvr.model.Detection;
+import org.kosit.cvr.model.DetectionLocation;
+import org.kosit.cvr.model.PreparedRuleSet;
+import org.kosit.cvr.model.SubjectDetection;
 import org.w3c.dom.Document;
 
 /**

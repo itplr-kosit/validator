@@ -7,20 +7,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.CollectingErrorEventHandler;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.schematron.CollectingErrorEventHandler;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.resolve.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.validator.impl.ScenarioArtifacts;
+import org.kosit.cvr.source.ReadResource;
+import org.kosit.cvr.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;
-import org.kosit.validator.xml.resolve.RelativeUriResolver;
+import org.kosit.schematron.resolve.RelativeUriResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,15 +100,15 @@ public class ConfigurationLoader {
 
     private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
         final Scenario s = new Scenario(def);
-        s.setMatchExecutable(repository.createMatchExecutable(def));
-        s.setSchema(repository.createSchema(def));
-        s.setSchematronValidations(repository.createSchematronTransformations(def));
-        s.setReportTransformations(repository.createReportTransformations(def));
+        s.setMatchExecutable(ScenarioArtifacts.createMatchExecutable(repository, def));
+        s.setSchema(ScenarioArtifacts.createSchema(repository, def));
+        s.setSchematronValidations(ScenarioArtifacts.createSchematronTransformations(repository, def));
+        s.setReportTransformations(ScenarioArtifacts.createReportTransformations(repository, def));
         s.setFactory(repository.getResolvingConfigurationStrategy());
         s.setUriResolver(repository.getResolver());
         s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
         if (def.getAcceptMatch() != null) {
-            s.setAcceptExecutable(repository.createAccepptExecutable(def));
+            s.setAcceptExecutable(ScenarioArtifacts.createAccepptExecutable(repository, def));
         }
         return s;
     }

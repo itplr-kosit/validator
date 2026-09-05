@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.TestHelper;
+import org.kosit.schematron.TestHelper;
 
 /**
  * Test {@link ConfigurationBuilder}.
