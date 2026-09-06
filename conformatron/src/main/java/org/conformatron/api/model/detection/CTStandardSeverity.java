@@ -34,7 +34,7 @@ public enum CTStandardSeverity implements CTSeverity {
 
     @NonNull
     @Nonempty
-    public String getID() {
+    public String getId() {
         return id;
     }
 

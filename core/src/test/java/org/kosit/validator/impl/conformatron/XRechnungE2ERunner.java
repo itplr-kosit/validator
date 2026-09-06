@@ -161,7 +161,7 @@ public final class XRechnungE2ERunner {
             out.println("| Severity | Code | Meldung |");
             out.println("|---|---|---|");
             for (final CTDetection d : result.allDetections()) {
-                out.printf("| %s | `%s` | %s |%n", d.getSeverity().getID(), d.getCode(),
+                out.printf("| %s | `%s` | %s |%n", d.getSeverity().getId(), d.getCode(),
                         d.getText().getDisplayTextLocaleIndependent().replace("|", "\\|").replace("\n", " "));
             }
         }
@@ -348,7 +348,7 @@ public final class XRechnungE2ERunner {
                     out.println("Runner/Step-Fehler: " + r.failedStep());
                 }
                 for (final CTDetection d : r.findings()) {
-                    out.println("- `" + d.getSeverity().getID() + "` **" + d.getCode() + "** — "
+                    out.println("- `" + d.getSeverity().getId() + "` **" + d.getCode() + "** — "
                             + d.getText().getDisplayTextLocaleIndependent());
                 }
             }

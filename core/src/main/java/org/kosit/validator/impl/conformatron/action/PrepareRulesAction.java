@@ -128,8 +128,7 @@ public class PrepareRulesAction implements CTAction {
             throw new IllegalArgumentException("artifacts may not be null");
         }
         if (artifacts.isEmpty()) {
-            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.of(resourceId),
-                    "No artifacts retrieved (reason: no-artifacts)");
+            final CTDetection skipped = Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_STEP_SKIPPED).location(DetectionLocation.of(resourceId)).text("No artifacts retrieved (reason: no-artifacts)").build();
             return new PrepareRulesResult(CTStepResult.SKIPPED, List.of(), DetectionList.of(skipped));
         }
         final List<CTPreparedRuleSet> ruleSets = new ArrayList<>();
@@ -174,16 +173,15 @@ public class PrepareRulesAction implements CTAction {
                     // nothing to report: an artifact that was transpiled ahead of time needed no preparation here
                 }
                 default -> {
-                    detections.add(about(href, Detection.of(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR,
-                            DetectionLocation.of(resourceId), "Unsupported validation type " + artifact.getValidationType().getID())));
+                    detections.add(about(href, Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_RULE_PREPARE_ERROR).location(DetectionLocation.of(resourceId)).text("Unsupported validation type " + artifact.getValidationType().getID()).build()));
                     return false;
                 }
             }
             return true;
         } catch (final RuntimeException e) {
             LOGGER.error("Could not prepare artifact {}", href, e);
-            detections.add(about(href, new Detection(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.of(resourceId),
-                    "Artifact could not be prepared: " + e.getMessage(), e)));
+            detections.add(about(href, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(DetectionLocation.of(resourceId))
+                    .text("Artifact could not be prepared: " + e.getMessage()).linkedException(e).build()));
             return false;
         }
     }
@@ -194,7 +192,7 @@ public class PrepareRulesAction implements CTAction {
 
     private static CTDetection compiled(final String href, final String resourceId, final String what) {
         return about(href,
-                Detection.of(CTStandardSeverity.NONE, CODE_RULE_COMPILED, DetectionLocation.of(resourceId), "Compiled (" + what + ")"));
+                Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_RULE_COMPILED).location(DetectionLocation.of(resourceId)).text("Compiled (" + what + ")").build());
     }
 
     /**

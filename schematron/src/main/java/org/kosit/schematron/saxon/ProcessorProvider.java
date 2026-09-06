@@ -65,12 +65,14 @@ public class ProcessorProvider {
 
     private static final Processor createProcessor() {
         final Processor processor = new Processor(false);
+
         // globally disable basically all resolving strategies
-        final SecureUriResolver resolver = new SecureUriResolver();
-        processor.getUnderlyingConfiguration().setCollectionFinder(resolver);
-        // This cannot simply be replaced :( The resolver is only needed for outputs
-        processor.getUnderlyingConfiguration().setOutputURIResolver(resolver);
-        processor.getUnderlyingConfiguration().setUnparsedTextURIResolver(resolver);
+        {
+            final SecureUriResolver resolver = new SecureUriResolver();
+            processor.getUnderlyingConfiguration().setCollectionFinder(resolver);
+            processor.getUnderlyingConfiguration().getDefaultXsltCompilerInfo().setOutputURIResolver(resolver);
+            processor.getUnderlyingConfiguration().setUnparsedTextURIResolver(resolver);
+        }
 
         // basic feature configuration:
         processor.setConfigurationProperty(Feature.DTD_VALIDATION, Boolean.FALSE);

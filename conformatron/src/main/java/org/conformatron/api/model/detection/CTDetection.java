@@ -16,7 +16,7 @@ public interface CTDetection {
      * @return The date and time in UTC/GMT when the detection was created. May be <code>null</code>.
      */
     @Nullable
-    OffsetDateTime getDateTimeUTC();
+    OffsetDateTime getDateTimeUtc();
 
     /**
      * @return The severity associated with this detection. May not be <code>null</code>.
@@ -28,11 +28,11 @@ public interface CTDetection {
      * @return The unique identifier of the detection. May be <code>null</code>.
      */
     @Nullable
-    String getID();
+    String getId();
 
     /**
      * @return The detection code classifying this finding. Maps to XVRL {@code <detection @code>}. Examples:
-     *         "scenario-matched", "BR-DE-13", "compilation". This is distinct from {@link #getID()} which is a unique
+     *         "scenario-matched", "BR-DE-13", "compilation". This is distinct from {@link #getId()} which is a unique
      *         identifier, while {@code code} is a classification/category. May be <code>null</code>.
      */
     @Nullable

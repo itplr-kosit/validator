@@ -181,24 +181,22 @@ public class RetrieveArtifactsAction implements CTAction {
             final CTValidationType validationType = determineValidationType(reference);
             final byte[] content = this.resolver.read(resolved);
             if (content.length == 0) {
-                detections.add(about(href, null, Detection.of(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT,
-                        DetectionLocation.of(resourceId), "Artifact is empty")));
+                detections.add(about(href, null, Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_ARTIFACT_CORRUPT).location(DetectionLocation.of(resourceId)).text("Artifact is empty").build()));
                 return;
             }
             artifacts.add(ResolvedValidationArtifact.loaded(reference, validationType, content));
-            detections.add(about(href, validationType.getID(), content, Detection.of(CTStandardSeverity.NONE, CODE_ARTIFACTS_RETRIEVED,
-                    DetectionLocation.of(resourceId), "Artifact retrieved")));
+            detections.add(about(href, validationType.getID(), content, Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_ARTIFACTS_RETRIEVED).location(DetectionLocation.of(resourceId)).text("Artifact retrieved").build()));
         } catch (final ArtifactResolver.AccessDeniedException e) {
             LOGGER.error("Rejected artifact reference {}", href, e);
-            detections.add(about(href, null, new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_ACCESS_DENIED,
-                    DetectionLocation.of(resourceId), e.getMessage(), e)));
+            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_ACCESS_DENIED)
+                    .location(DetectionLocation.of(resourceId)).text(e.getMessage()).linkedException(e).build()));
         } catch (final IOException e) {
             LOGGER.error("Could not read artifact {}", href, e);
-            detections.add(about(href, null, new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_MISSING,
-                    DetectionLocation.of(resourceId), "Artifact could not be read: " + e.getMessage(), e)));
+            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_MISSING).location(DetectionLocation.of(resourceId))
+                    .text("Artifact could not be read: " + e.getMessage()).linkedException(e).build()));
         } catch (final IllegalArgumentException e) {
-            detections.add(about(href, null, new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT,
-                    DetectionLocation.of(resourceId), "Artifact is not usable: " + e.getMessage(), e)));
+            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_CORRUPT).location(DetectionLocation.of(resourceId))
+                    .text("Artifact is not usable: " + e.getMessage()).linkedException(e).build()));
         }
     }
 

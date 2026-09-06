@@ -100,8 +100,7 @@ public class ComputeConformanceAction implements CTAction {
         });
         final String resourceId = applyRulesResult.getParsedSource().getSource().getName();
         if (applyRulesResult.isEmpty()) {
-            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.of(resourceId),
-                    "No rule results to evaluate (reason: no-rule-results)");
+            final CTDetection skipped = Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_STEP_SKIPPED).location(DetectionLocation.of(resourceId)).text("No rule results to evaluate (reason: no-rule-results)").build();
             return new ComputeConformanceActionResult(CTStepResult.SKIPPED, ComputeConformanceResult.empty(applyRulesResult),
                     DetectionList.of(skipped));
         }
@@ -153,10 +152,8 @@ public class ComputeConformanceAction implements CTAction {
         final String href = ruleSet.getArtifactReference().getValidationArtifactReference().toString();
         final boolean conformant = statement.getResult().isConformant();
         final Detection plain = conformant
-                ? Detection.of(CTStandardSeverity.NONE, CODE_TARGET_CONFORMANT, DetectionLocation.of(resourceId),
-                        "Target '" + targetName + "' conformant")
-                : Detection.of(CTStandardSeverity.ERROR, CODE_TARGET_NON_CONFORMANT, DetectionLocation.of(resourceId),
-                        "Target '" + targetName + "' non-conformant: " + statement.getRationale());
+                ? Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_TARGET_CONFORMANT).location(DetectionLocation.of(resourceId)).text("Target '" + targetName + "' conformant").build()
+                : Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_TARGET_NON_CONFORMANT).location(DetectionLocation.of(resourceId)).text("Target '" + targetName + "' non-conformant: " + statement.getRationale()).build();
         return SubjectDetection.about(plain).identifiedBy(SubjectDetection.ATTR_TARGET_ID, statement.getTarget().getTargetID())
                 .locatedAt(href).with(SubjectDetection.ATTR_CONFORMANCE, statement.getResult().name()).build();
     }

@@ -308,8 +308,8 @@ public final class SubjectDetection implements CTDetection {
     }
 
     @Override
-    public OffsetDateTime getDateTimeUTC() {
-        return this.delegate.getDateTimeUTC();
+    public OffsetDateTime getDateTimeUtc() {
+        return this.delegate.getDateTimeUtc();
     }
 
     @Override
@@ -318,8 +318,8 @@ public final class SubjectDetection implements CTDetection {
     }
 
     @Override
-    public String getID() {
-        return this.delegate.getID();
+    public String getId() {
+        return this.delegate.getId();
     }
 
     @Override

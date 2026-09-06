@@ -13,7 +13,7 @@ public interface CTSeverity {
 
     @NonNull
     @Nonempty
-    String getID();
+    String getId();
 
     /**
      * @return The numeric level of this error level. Must be &ge; 0. The higher the numeric level, the higher the

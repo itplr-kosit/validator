@@ -137,15 +137,13 @@ public class DetectScenariosAction implements CTAction {
         final Scenario scenario = repository.getScenarios().stream().filter(s -> requestedScenarioId.equals(s.getName()) && !s.isFallback())
                 .findFirst().orElse(null);
         if (scenario == null) {
-            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_UNKNOWN_ID, DetectionLocation.of(resourceId),
-                    "Requested scenario '" + requestedScenarioId + "' is not configured");
+            final CTDetection detection = Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_SCENARIO_UNKNOWN_ID).location(DetectionLocation.of(resourceId)).text("Requested scenario '" + requestedScenarioId + "' is not configured").build();
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
 
         final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource, this.definitionFile);
         final CTDetection detection = SubjectDetection
-                .about(Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_USER_SELECTED, DetectionLocation.of(resourceId),
-                        "Scenario '" + scenario.getName() + "' fixed by user input"))
+                .about(Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_SCENARIO_USER_SELECTED).location(DetectionLocation.of(resourceId)).text("Scenario '" + scenario.getName() + "' fixed by user input").build())
                 .identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID()).locatedByXPath(match.getConfigurationLocation())
                 .inFile(match.getDefinitionFile()).build();
         return new DetectScenariosResult(CTStepResult.SUCCESS, List.of(match), DetectionList.of(detection));
@@ -155,8 +153,7 @@ public class DetectScenariosAction implements CTAction {
         final String resourceId = parsedSource.getSource().getName();
         final List<Scenario> matching = repository.findMatches(document);
         if (matching.isEmpty()) {
-            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_NO_SCENARIO_MATCHED, DetectionLocation.of(resourceId),
-                    "None of the configured scenarios matches the document");
+            final CTDetection detection = Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_NO_SCENARIO_MATCHED).location(DetectionLocation.of(resourceId)).text("None of the configured scenarios matches the document").build();
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
         }
 
@@ -167,8 +164,7 @@ public class DetectScenariosAction implements CTAction {
         for (final ScenarioMatch match : matches) {
             // scenario id and the pointer into the configuration travel with every candidate
             detections.add(SubjectDetection
-                    .about(Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_MATCHED, DetectionLocation.of(resourceId),
-                            "Scenario '" + match.getScenarioName() + "' matched"))
+                    .about(Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_SCENARIO_MATCHED).location(DetectionLocation.of(resourceId)).text("Scenario '" + match.getScenarioName() + "' matched").build())
                     .identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID()).locatedByXPath(match.getConfigurationLocation())
                     .inFile(match.getDefinitionFile()).build());
         }

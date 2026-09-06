@@ -54,12 +54,8 @@ public final class SvrlDetections {
         for (final Object entry : svrl.getActivePatternOrActiveGroupAndFiredRule()) {
             switch (entry) {
                 case final FailedAssert failedAssert -> detections
-                        .add(Detection.of(severityOf(failedAssert.getRole(), failedAssert.getFlag()),
-                                StringHelper.blankToDefault(failedAssert.getId(), CODE_FAILED_ASSERT),
-                                DetectionLocation.ofXPath(documentName, failedAssert.getLocation()), textOf(failedAssert.getText())));
-                case final SuccessfulReport report -> detections.add(Detection.of(severityOf(report.getRole(), report.getFlag()),
-                        StringHelper.blankToDefault(report.getId(), CODE_SUCCESSFUL_REPORT),
-                        DetectionLocation.ofXPath(documentName, report.getLocation()), textOf(report.getText())));
+                        .add(Detection.builder().severity(severityOf(failedAssert.getRole(), failedAssert.getFlag())).code(StringHelper.blankToDefault(failedAssert.getId(), CODE_FAILED_ASSERT)).location(DetectionLocation.ofXPath(documentName, failedAssert.getLocation())).text(textOf(failedAssert.getText())).build());
+                case final SuccessfulReport report -> detections.add(Detection.builder().severity(severityOf(report.getRole(), report.getFlag())).code(StringHelper.blankToDefault(report.getId(), CODE_SUCCESSFUL_REPORT)).location(DetectionLocation.ofXPath(documentName, report.getLocation())).text(textOf(report.getText())).build());
                 default -> {
                     // Ignore
                 }

@@ -3,7 +3,6 @@ package org.kosit.cvr.action.parsedoc.xml;
 import java.io.IOException;
 import java.util.HexFormat;
 
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.source.CTValidationSource;
 import org.jspecify.annotations.NonNull;
 import org.kosit.conformatron.detection.Detection;
@@ -30,24 +29,27 @@ public final class XmlDetection {
     @NonNull
     public static Detection success(final @NonNull CTValidationSource source) {
         // XXX is this really how we want it?
-        return new Detection(CTStandardSeverity.NONE, CODE_DOCUMENT_PARSED, DetectionLocation.of(source.getName()),
-                source.getReadResource().getHashAlgorithmName() + "=" + HexFormat.of().formatHex(source.getReadResource().getHashBytes()),
-                null);
+        return Detection.builderNone().code(CODE_DOCUMENT_PARSED).location(DetectionLocation.of(source.getName())).text(
+                source.getReadResource().getHashAlgorithmName() + "=" + HexFormat.of().formatHex(source.getReadResource().getHashBytes()))
+                .build();
     }
 
     @NonNull
     public static Detection errorNotWellformed(final @NonNull String resourceId, final @NonNull Exception e) {
-        return new Detection(CTStandardSeverity.ERROR, CODE_NOT_WELLFORMED, DetectionLocation.of(resourceId), e.getMessage(), e);
+        return Detection.builderError().code(CODE_NOT_WELLFORMED).location(DetectionLocation.of(resourceId)).text(e.getMessage())
+                .linkedException(e).build();
     }
 
     @NonNull
     public static Detection errorNotWellformed(final @NonNull String resourceId, final @NonNull SAXParseException e) {
-        return new Detection(CTStandardSeverity.ERROR, CODE_NOT_WELLFORMED, DetectionLocation.of(resourceId, e), e.getMessage(), e);
+        return Detection.builderError().code(CODE_NOT_WELLFORMED).location(DetectionLocation.of(resourceId, e)).text(e.getMessage())
+                .linkedException(e).build();
     }
 
     @NonNull
     public static Detection ioError(final @NonNull String resourceId, final @NonNull IOException e) {
-        return new Detection(CTStandardSeverity.ERROR, CODE_SOURCE_READ_ERROR, DetectionLocation.of(resourceId), e.getMessage(), e);
+        return Detection.builderError().code(CODE_SOURCE_READ_ERROR).location(DetectionLocation.of(resourceId)).text(e.getMessage())
+                .linkedException(e).build();
     }
 
     private XmlDetection() {

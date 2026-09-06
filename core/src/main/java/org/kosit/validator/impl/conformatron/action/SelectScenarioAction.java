@@ -75,13 +75,11 @@ public class SelectScenarioAction implements CTAction {
         final String resourceId = detectedScenarios.get(0).getParsedSource().getSource().getName();
         if (detectedScenarios.size() > 1) {
             final String candidates = detectedScenarios.stream().map(CTScenarioMatch::getScenarioID).collect(Collectors.joining(", "));
-            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_AMBIGUOUS, DetectionLocation.of(resourceId),
-                    "More than one scenario matches the document: " + candidates);
+            final CTDetection detection = Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_SCENARIO_AMBIGUOUS).location(DetectionLocation.of(resourceId)).text("More than one scenario matches the document: " + candidates).build();
             return new SelectScenarioResult(CTStepResult.FAILURE, null, DetectionList.of(detection));
         }
         final CTScenarioMatch selected = detectedScenarios.get(0);
-        final Detection plain = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_SELECTED, DetectionLocation.of(resourceId),
-                "Scenario '" + selected.getScenarioID() + "' selected");
+        final Detection plain = Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_SCENARIO_SELECTED).location(DetectionLocation.of(resourceId)).text("Scenario '" + selected.getScenarioID() + "' selected").build();
         // the selected scenario additionally carries its own XML, so the report shows which rules were applied
         final CTDetection detection = selected instanceof final ScenarioMatch match
                 ? SubjectDetection.about(plain).identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID())
