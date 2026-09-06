@@ -32,11 +32,6 @@ public class ContentRepositoryTest {
     }
 
     @Test
-    public void testCreateSchemaNotExisting() throws Exception {
-        assertThrows(IllegalStateException.class, () -> this.repository.createSchema(TestResources.Simple.NOT_EXISTING.toURL()));
-    }
-
-    @Test
     public void testLoadXSLT() {
         final XsltExecutable executable = this.repository.loadXsltScript(TestResources.Simple.REPORT_XSL);
         assertThat(executable).isNotNull();

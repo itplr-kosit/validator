@@ -1,4 +1,4 @@
-package org.kosit.cvr.detection;
+package org.kosit.conformatron.detection;
 
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;

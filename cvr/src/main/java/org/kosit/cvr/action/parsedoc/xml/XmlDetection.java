@@ -6,8 +6,8 @@ import java.util.HexFormat;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.source.CTValidationSource;
 import org.jspecify.annotations.NonNull;
-import org.kosit.cvr.detection.Detection;
-import org.kosit.cvr.detection.DetectionLocation;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionLocation;
 import org.xml.sax.SAXParseException;
 
 /**

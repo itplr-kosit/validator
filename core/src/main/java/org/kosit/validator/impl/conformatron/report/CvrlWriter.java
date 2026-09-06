@@ -43,12 +43,12 @@ import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionLocation;
+import org.kosit.conformatron.detection.SubjectDetection;
+import org.kosit.conformatron.rule.PreparedRuleSet;
 import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
-import org.kosit.cvr.detection.Detection;
-import org.kosit.cvr.detection.DetectionLocation;
-import org.kosit.cvr.detection.SubjectDetection;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
-import org.kosit.cvr.rule.PreparedRuleSet;
 import org.w3c.dom.Document;
 
 /**

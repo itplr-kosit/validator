@@ -13,8 +13,8 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.kosit.conformatron.validation.ValidationArtifactReference;
 import org.kosit.cvr.util.ArtifactResolver;
-import org.kosit.cvr.validation.ValidationArtifactReference;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.testdata.TestResources;
 

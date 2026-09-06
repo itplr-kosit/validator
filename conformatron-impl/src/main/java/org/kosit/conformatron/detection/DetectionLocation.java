@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kosit.cvr.detection;
+package org.kosit.conformatron.detection;
 
 import org.conformatron.api.model.detection.CTDetectionLocation;
 import org.jspecify.annotations.NonNull;

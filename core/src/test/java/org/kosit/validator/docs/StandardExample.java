@@ -13,8 +13,8 @@ import org.kosit.validator.api.VResult;
 import org.kosit.validator.impl.DefaultVCheck;
 import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.base.io.ResourceHelper;
-import org.kosit.cvr.source.ReadResource;
-import org.kosit.cvr.source.Resource;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
 import org.kosit.schematron.saxon.ProcessorProvider;
 import org.w3c.dom.Document;
 

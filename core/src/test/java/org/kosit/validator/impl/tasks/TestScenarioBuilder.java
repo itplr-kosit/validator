@@ -1,13 +1,14 @@
 package org.kosit.validator.impl.tasks;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 
+import org.kosit.base.xml.SchemaResolver;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.schematron.saxon.ProcessorProvider;
@@ -84,10 +85,16 @@ public class TestScenarioBuilder {
         return new ScenarioRepository(configuration);
     }
 
-    private static Schema createSchema(final URL toURL) {
+    private static Schema createSchema(final URL url) {
         final ContentRepository contentRepository = new ContentRepository(TestHelper.getTestProcessor(),
                 TestHelper.getTestResolvingStrategy(), null);
-        return contentRepository.createSchema(toURL);
+
+        // we resolve without a repository
+        final var resolved = SchemaResolver.resolve(url);
+        if (resolved == null)
+            throw new IllegalStateException("Failed to resolve URL " + url);
+
+        return contentRepository.createSchema(new Source[] { resolved });
     }
 
     public static Scenario createScenario(final URI schemafile, final URI reportTransformation) {
@@ -113,14 +120,13 @@ public class TestScenarioBuilder {
                 // final Scenario.Transformation ts = new Scenario.Transformation(executable,
                 // t.getCreateReport().get(0).getResource());
                 scenario.setReportTransformations(ScenarioArtifacts.createReportTransformations(repo, t));
-
             }
 
             scenario.setSchema(createSchema(schemafile.toURL()));
             final ResolvingConfigurationStrategy strategy = TestHelper.getTestResolvingStrategy();
             scenario.setFactory(strategy);
             return scenario;
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             throw new IllegalArgumentException(e);
         }
     }

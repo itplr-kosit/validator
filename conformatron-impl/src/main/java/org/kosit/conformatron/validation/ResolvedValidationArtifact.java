@@ -1,4 +1,4 @@
-package org.kosit.cvr.validation;
+package org.kosit.conformatron.validation;
 
 import java.util.Objects;
 

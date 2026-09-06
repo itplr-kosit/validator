@@ -30,9 +30,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kosit.base.io.mock.ResourceHelperExtension;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
 import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
-import org.kosit.cvr.source.ReadResource;
-import org.kosit.cvr.source.Resource;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 

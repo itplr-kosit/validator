@@ -1,4 +1,4 @@
-package org.kosit.cvr.validation;
+package org.kosit.conformatron.validation;
 
 import org.conformatron.api.model.validation.CTCompiledValidationArtifact;
 import org.conformatron.api.model.validation.CTValidationType;

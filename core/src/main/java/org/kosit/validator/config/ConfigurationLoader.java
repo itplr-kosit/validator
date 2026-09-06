@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.kosit.base.error.SimpleError;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.schematron.CollectingErrorEventHandler;
@@ -14,8 +16,6 @@ import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.resolve.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioArtifacts;
-import org.kosit.cvr.source.ReadResource;
-import org.kosit.cvr.source.Resource;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.scenario.v1.Scenario1Converter;

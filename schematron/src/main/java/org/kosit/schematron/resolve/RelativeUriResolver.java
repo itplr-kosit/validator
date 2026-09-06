@@ -9,6 +9,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
+import org.jspecify.annotations.NonNull;
 import org.kosit.base.uri.UriHelper;
 
 import net.sf.saxon.Configuration;
@@ -116,7 +117,7 @@ public class RelativeUriResolver implements URIResolver, UnparsedTextURIResolver
     }
 
     @Override
-    public Source resolve(final ResourceRequest request) throws XPathException {
+    public Source resolve(final @NonNull ResourceRequest request) throws XPathException {
         try {
             return resolve(request.relativeUri, request.baseUri);
         } catch (final TransformerException e) {

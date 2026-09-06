@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kosit.cvr.source;
+package org.kosit.conformatron.source;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;

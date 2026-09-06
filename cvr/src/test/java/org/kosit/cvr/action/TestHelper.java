@@ -7,8 +7,8 @@ import java.net.URI;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
-import org.kosit.cvr.source.ReadResource;
-import org.kosit.cvr.source.Resource;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;

@@ -1,4 +1,4 @@
-package org.kosit.cvr.rule;
+package org.kosit.conformatron.rule;
 
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.validation.CTCompiledValidationArtifact;

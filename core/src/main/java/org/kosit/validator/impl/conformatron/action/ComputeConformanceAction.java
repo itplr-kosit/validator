@@ -17,10 +17,10 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTApplyRulesResult;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.scenario.CTConformanceTarget;
-import org.kosit.cvr.detection.Detection;
-import org.kosit.cvr.detection.DetectionList;
-import org.kosit.cvr.detection.DetectionLocation;
-import org.kosit.cvr.detection.SubjectDetection;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionList;
+import org.kosit.conformatron.detection.DetectionLocation;
+import org.kosit.conformatron.detection.SubjectDetection;
 import org.kosit.validator.impl.conformatron.model.ComputeConformanceResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceStatement;
 

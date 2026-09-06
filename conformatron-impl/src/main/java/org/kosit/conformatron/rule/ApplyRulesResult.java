@@ -1,4 +1,4 @@
-package org.kosit.cvr.rule;
+package org.kosit.conformatron.rule;
 
 import java.util.LinkedHashMap;
 
