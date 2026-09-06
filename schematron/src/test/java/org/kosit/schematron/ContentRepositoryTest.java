@@ -76,16 +76,16 @@ public class ContentRepositoryTest {
 
     @Test
     public void loadSchematronXsltSchXslt() {
-        assertThat(repository.loadSchematronXslt(URI.create("simple.sch"), SchXsltCompiler.COMPILER_ID)).isNotNull();
+        assertThat(repository.loadSchematronXslt(SchXsltCompiler.COMPILER_ID, URI.create("simple.sch"))).isNotNull();
     }
 
     @Test
     public void loadSchematronXsltSchXslt2() {
-        assertThat(repository.loadSchematronXslt(URI.create("simple-xslt3.sch"), SchXslt2Compiler.COMPILER_ID)).isNotNull();
+        assertThat(repository.loadSchematronXslt(SchXslt2Compiler.COMPILER_ID, URI.create("simple-xslt3.sch"))).isNotNull();
     }
 
     @Test
     public void loadSchematronXsltIsoSch() {
-        assertThat(repository.loadSchematronXslt(URI.create("simple.sch"), IsoSchematronCompiler.COMPILER_ID)).isNotNull();
+        assertThat(repository.loadSchematronXslt(IsoSchematronCompiler.COMPILER_ID, URI.create("simple.sch"))).isNotNull();
     }
 }

@@ -19,6 +19,8 @@ public abstract class AbstractResolvingStrategy implements ResolvingConfiguratio
         void apply() throws SAXException;
     }
 
+    protected static final boolean DEFAULT_LENIENT = false;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractResolvingStrategy.class);
 
     protected AbstractResolvingStrategy() {
@@ -31,14 +33,12 @@ public abstract class AbstractResolvingStrategy implements ResolvingConfiguratio
             if (!lenient) {
                 throw new IllegalStateException(errorMessage);
             }
-            LOGGER.warn(errorMessage);
-            if (LOGGER.isDebugEnabled())
-                LOGGER.debug(e.getMessage(), e);
-        }
-    }
 
-    protected void allowExternalSchema(final Validator validator, final String... scheme) {
-        allowExternalSchema(validator, false, scheme);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(errorMessage + " - " + e.getMessage(), e);
+            else
+                LOGGER.warn(errorMessage);
+        }
     }
 
     protected void allowExternalSchema(final Validator validator, final boolean lenient, final String... schemes) {
@@ -47,18 +47,10 @@ public abstract class AbstractResolvingStrategy implements ResolvingConfiguratio
                 "Can set  external schema  access to schemes (" + schemeString + "). Maybe an unsupported JAXP implementation is used.");
     }
 
-    protected void allowExternalSchema(final SchemaFactory schemaFactory, final String... scheme) {
-        allowExternalSchema(schemaFactory, false, scheme);
-    }
-
     protected void allowExternalSchema(final SchemaFactory schemaFactory, final boolean lenient, final String... schemes) {
         final String schemeString = String.join(",", schemes);
         setProperty(() -> schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, schemeString), lenient,
                 "Can set  external schema  access to schemes (" + schemeString + "). Maybe an unsupported JAXP implementation is used.");
-    }
-
-    protected void disableExternalEntities(final Validator validator) {
-        disableExternalEntities(validator, false);
     }
 
     protected void disableExternalEntities(final Validator validator, final boolean lenient) {
@@ -66,10 +58,6 @@ public abstract class AbstractResolvingStrategy implements ResolvingConfiguratio
             LOGGER.debug("Try to disable extern DTD access");
         setProperty(() -> validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""), lenient,
                 "Can not disable external DTD access. Maybe an unsupported JAXP implementation is used.");
-    }
-
-    protected void disableExternalEntities(final SchemaFactory schemaFactory) {
-        disableExternalEntities(schemaFactory, false);
     }
 
     protected void disableExternalEntities(final SchemaFactory schemaFactory, final boolean lenient) {

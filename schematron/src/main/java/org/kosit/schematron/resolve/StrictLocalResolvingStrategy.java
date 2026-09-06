@@ -12,7 +12,7 @@ import net.sf.saxon.lib.ResourceResolver;
  * This is a slightly more open implementation that allows resolving artifacts from local filesystems. Your are not
  * bound to a specific 'repository'. But your validation artifacts (schema, xsl, etc.) must be available locally. This
  * implementation does not allow loading from http sources
- * 
+ *
  * @author Andreas Penski
  */
 public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrategy {
@@ -34,19 +34,19 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
 
     /**
      * Allow loading schema files from any local location.
-     * 
+     *
      * @return a configured {@link SchemaFactory}
      */
     @Override
     public SchemaFactory createSchemaFactory() {
         final SchemaFactory schemaFactory = super.createSchemaFactory();
-        allowExternalSchema(schemaFactory, "file");
+        allowExternalSchema(schemaFactory, DEFAULT_LENIENT, "file");
         return schemaFactory;
     }
 
     /**
      * The default resolver is able to resolve locally and relative.
-     * 
+     *
      * @param repository the repository is not used by this strategy
      * @return null!
      */
@@ -59,7 +59,7 @@ public class StrictLocalResolvingStrategy extends StrictRelativeResolvingStrateg
     @Override
     public Validator createValidator(final Schema schema) {
         final Validator validator = super.createValidator(schema);
-        allowExternalSchema(validator, "file");
+        allowExternalSchema(validator, DEFAULT_LENIENT, "file");
         return validator;
     }
 }

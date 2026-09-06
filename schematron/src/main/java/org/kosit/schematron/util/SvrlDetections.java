@@ -54,8 +54,14 @@ public final class SvrlDetections {
         for (final Object entry : svrl.getActivePatternOrActiveGroupAndFiredRule()) {
             switch (entry) {
                 case final FailedAssert failedAssert -> detections
-                        .add(Detection.builder().severity(severityOf(failedAssert.getRole(), failedAssert.getFlag())).code(StringHelper.blankToDefault(failedAssert.getId(), CODE_FAILED_ASSERT)).location(DetectionLocation.ofXPath(documentName, failedAssert.getLocation())).text(textOf(failedAssert.getText())).build());
-                case final SuccessfulReport report -> detections.add(Detection.builder().severity(severityOf(report.getRole(), report.getFlag())).code(StringHelper.blankToDefault(report.getId(), CODE_SUCCESSFUL_REPORT)).location(DetectionLocation.ofXPath(documentName, report.getLocation())).text(textOf(report.getText())).build());
+                        .add(Detection.builder().severity(severityOf(failedAssert.getRole(), failedAssert.getFlag()))
+                                .code(StringHelper.blankToDefault(failedAssert.getId(), CODE_FAILED_ASSERT))
+                                .location(DetectionLocation.builder().resourceId(documentName).xpath(failedAssert.getLocation()).build())
+                                .text(textOf(failedAssert.getText())).build());
+                case final SuccessfulReport report -> detections.add(Detection.builder()
+                        .severity(severityOf(report.getRole(), report.getFlag()))
+                        .code(StringHelper.blankToDefault(report.getId(), CODE_SUCCESSFUL_REPORT))
+                        .location(DetectionLocation.builder().resourceId(documentName).xpath(report.getLocation()).build()).text(textOf(report.getText())).build());
                 default -> {
                     // Ignore
                 }
@@ -70,8 +76,8 @@ public final class SvrlDetections {
      * ERROR — an unclassified failed assert must not disappear.
      */
     private static CTStandardSeverity severityOf(final String role, final List<String> flag) {
-        final String level = role != null && !role.isBlank() ? role : flag != null && !flag.isEmpty() ? flag.get(0) : null;
-        if (level == null || level.isBlank()) {
+        final String level = StringHelper.isNotBlank(role) ? role : flag != null && !flag.isEmpty() ? flag.get(0) : null;
+        if (StringHelper.isBlank(level)) {
             return CTStandardSeverity.ERROR;
         }
 
@@ -87,8 +93,10 @@ public final class SvrlDetections {
         if (text == null) {
             return "";
         }
+
         final StringBuilder builder = new StringBuilder();
-        text.getContent().forEach(c -> builder.append(String.valueOf(c).trim()));
+        for (final var o : text.getContent())
+            builder.append(String.valueOf(o).trim());
         return builder.toString();
     }
 

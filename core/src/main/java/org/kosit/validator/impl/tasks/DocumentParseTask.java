@@ -9,7 +9,7 @@ import org.jspecify.annotations.NonNull;
 import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
 import org.kosit.conformatron.source.ValidationSource;
-import org.kosit.cvr.source.XdmNodeValidationSource;
+import org.kosit.cvr.saxon.XdmNodeValidationSource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.saxon.SaxonHelper;

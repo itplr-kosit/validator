@@ -22,7 +22,7 @@ public class RemoteResolvingStrategy extends StrictLocalResolvingStrategy {
     @Override
     public SchemaFactory createSchemaFactory() {
         final SchemaFactory schemaFactory = super.createSchemaFactory();
-        allowExternalSchema(schemaFactory, "https,http,file");
+        allowExternalSchema(schemaFactory, DEFAULT_LENIENT, "https", "http", "file");
         return schemaFactory;
     }
 }

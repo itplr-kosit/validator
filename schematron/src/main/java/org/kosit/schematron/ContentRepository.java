@@ -78,7 +78,7 @@ public class ContentRepository {
                 strategy.createSchemaFactory(), strategy, defaultSchematronCompilerRegistry(processor));
     }
 
-    public ContentRepository(final Processor processor, final URI repository, final ResourceResolver resolver,
+    protected ContentRepository(final Processor processor, final URI repository, final ResourceResolver resolver,
             final UnparsedTextURIResolver unparsedTextURIResolver, final SchemaFactory schemaFactory,
             final ResolvingConfigurationStrategy resolvingConfigurationStrategy, final SchematronCompilerRegistry compilerRegistry) {
         this.processor = processor;
@@ -150,8 +150,9 @@ public class ContentRepository {
         }
     }
 
-    public XsltExecutable loadSchematronXslt(final URI schUri, final String compilerId) {
+    public XsltExecutable loadSchematronXslt(final String compilerId, final URI schUri) {
         LOGGER.info("Loading or compiling Schematron {} using compiler {}", schUri, compilerId);
+
         final SchematronCompiler compiler = compilerRegistry.get(compilerId);
         if (compiler == null)
             throw new IllegalStateException("Failed to resolve Schematron compiler with ID '" + compilerId + "'");

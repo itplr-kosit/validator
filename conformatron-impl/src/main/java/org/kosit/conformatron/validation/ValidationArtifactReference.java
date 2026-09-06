@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.conformatron.api.annotation.Nonempty;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
+import org.kosit.base.string.StringHelper;
 
 /**
  * Validator implementation of {@link CTValidationArtifactReference}: a pure carrier for the reference to a validation
@@ -35,7 +36,7 @@ public final class ValidationArtifactReference implements CTValidationArtifactRe
      * @return the carrier for this reference
      */
     public static ValidationArtifactReference of(@Nonempty final String reference) {
-        if (reference == null || reference.isBlank()) {
+        if (StringHelper.isBlank(reference)) {
             throw new IllegalArgumentException("reference may not be null or blank");
         }
         return of(URI.create(reference));

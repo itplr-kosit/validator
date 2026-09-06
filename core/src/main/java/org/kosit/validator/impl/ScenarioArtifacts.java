@@ -108,7 +108,7 @@ public final class ScenarioArtifacts {
         final String path = uri.getPath();
         final String compilerId = StringHelper.blankToDefault(validateWithSchematron.getCompiler(), SchXsltCompiler.COMPILER_ID);
         if (path != null && path.endsWith(".sch")) {
-            final XsltExecutable executable = repository.loadSchematronXslt(uri, compilerId);
+            final XsltExecutable executable = repository.loadSchematronXslt(compilerId, uri);
             return new Transformation(executable, resource);
         }
         return createTransformation(repository, validateWithSchematron.getResource());

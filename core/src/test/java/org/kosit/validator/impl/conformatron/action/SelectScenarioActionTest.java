@@ -10,7 +10,7 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.Test;
-import org.kosit.cvr.source.XdmNodeValidationSource;
+import org.kosit.cvr.saxon.XdmNodeValidationSource;
 import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.Scenario;

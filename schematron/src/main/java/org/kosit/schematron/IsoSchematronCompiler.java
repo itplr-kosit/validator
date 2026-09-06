@@ -36,13 +36,23 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
 
     private final XsltExecutable svrlForXslt2;
 
+    private static @NonNull StreamSource classpathXsl(final String classpathLocation) {
+        final InputStream in = IsoSchematronCompiler.class.getResourceAsStream(classpathLocation);
+        if (in == null) {
+            throw new IllegalStateException("Missing classpath resource: " + classpathLocation);
+        }
+        final StreamSource s = new StreamSource(in);
+        s.setSystemId("classpath:" + classpathLocation);
+        return s;
+    }
+
     public IsoSchematronCompiler(final Processor processor) {
         this.processor = Objects.requireNonNull(processor, "processor");
         try {
-            final XsltCompiler c = this.processor.newXsltCompiler();
-            this.dsdlInclude = c.compile(classpathXsl(CP_BASE + "iso_dsdl_include.xsl"));
-            this.abstractExpand = c.compile(classpathXsl(CP_BASE + "iso_abstract_expand.xsl"));
-            this.svrlForXslt2 = c.compile(classpathXsl(CP_BASE + "iso_svrl_for_xslt2.xsl"));
+            final XsltCompiler compiler = this.processor.newXsltCompiler();
+            this.dsdlInclude = compiler.compile(classpathXsl(CP_BASE + "iso_dsdl_include.xsl"));
+            this.abstractExpand = compiler.compile(classpathXsl(CP_BASE + "iso_abstract_expand.xsl"));
+            this.svrlForXslt2 = compiler.compile(classpathXsl(CP_BASE + "iso_svrl_for_xslt2.xsl"));
         } catch (final SaxonApiException e) {
             throw new IllegalStateException("Failed to compile ISO Schematron skeleton meta-stylesheets from classpath", e);
         }
@@ -57,6 +67,7 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
     public Source compileToXslt(final URI schematronUri, final Function<URI, Source> rawResolver) {
         Objects.requireNonNull(schematronUri, "schematronUri");
         Objects.requireNonNull(rawResolver, "rawResolver");
+
         LOGGER.info("Trying to compile Schematron file {} using ISO Schematron skeleton (classpath-only)", schematronUri);
         try {
             final Source schSource = rawResolver.apply(schematronUri);
@@ -83,15 +94,5 @@ public final class IsoSchematronCompiler implements SchematronCompiler {
         t.setDestination(dest);
         t.transform();
         return dest.getXdmNode();
-    }
-
-    private static @NonNull StreamSource classpathXsl(final String classpathLocation) {
-        final InputStream in = IsoSchematronCompiler.class.getResourceAsStream(classpathLocation);
-        if (in == null) {
-            throw new IllegalStateException("Missing classpath resource: " + classpathLocation);
-        }
-        final StreamSource s = new StreamSource(in);
-        s.setSystemId("classpath:" + classpathLocation);
-        return s;
     }
 }

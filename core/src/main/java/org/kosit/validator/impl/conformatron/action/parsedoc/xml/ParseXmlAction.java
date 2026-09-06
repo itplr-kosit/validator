@@ -30,8 +30,7 @@ import org.kosit.base.xml.XmlHelper;
 import org.kosit.conformatron.detection.DetectionList;
 import org.kosit.conformatron.source.DomValidationSource;
 import org.kosit.conformatron.source.ValidationSource;
-import org.kosit.cvr.action.parsedoc.xml.CollectingErrorHandler;
-import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
+import org.kosit.cvr.util.CollectingErrorHandler;
 import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +93,7 @@ public class ParseXmlAction extends AbstractParseDocumentAction {
         } catch (final SAXParseException e) {
             // already collected by CollectingErrorHandler#fatalError unless thrown directly
             if (errors.stream().noneMatch(d -> d.getLinkedException() == e)) {
-                errors.add(XmlDetection.errorNotWellformed(validationSource.getName(), e));
+                errors.add(CollectingErrorHandler.errorNotWellformed(validationSource.getName(), e));
             }
         } catch (final SAXException e) {
             if (LOGGER.isDebugEnabled()) {

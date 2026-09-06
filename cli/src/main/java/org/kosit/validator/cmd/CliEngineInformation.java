@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.EngineInformation;
 
 /**
@@ -36,7 +37,7 @@ public class CliEngineInformation implements EngineInformation {
 
     private static String required(final Properties props, final String key) {
         final String value = props.getProperty(key);
-        if (value == null || value.isBlank()) {
+        if (StringHelper.isBlank(value)) {
             throw new IllegalStateException("Required property '" + key + "' is missing in " + RESOURCE);
         }
         return value;

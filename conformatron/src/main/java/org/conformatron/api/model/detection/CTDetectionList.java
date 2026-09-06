@@ -1,6 +1,7 @@
 package org.conformatron.api.model.detection;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.conformatron.api.annotation.Nonnegative;
@@ -14,14 +15,16 @@ public interface CTDetectionList {
     @NonNull
     List<CTDetection> getAll();
 
+    void forEach(@NonNull Consumer<? super CTDetection> consumer);
+
     @Nonnegative
     int getCount();
 
     @NonNull
-    List<CTDetection> getAll(@NonNull Predicate<? super CTDetection> aFilter);
+    List<CTDetection> getAll(@NonNull Predicate<? super CTDetection> filter);
 
     @Nonnegative
-    int getCount(@NonNull Predicate<? super CTDetection> aFilter);
+    int getCount(@NonNull Predicate<? super CTDetection> filter);
 
     @NonNull
     default List<CTDetection> getAllErrors() {

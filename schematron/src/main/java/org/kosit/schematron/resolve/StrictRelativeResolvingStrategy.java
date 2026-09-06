@@ -57,8 +57,8 @@ public class StrictRelativeResolvingStrategy extends AbstractResolvingStrategy {
         XmlHelper.forceOpenJdkXmlImplementation();
 
         final Validator validator = schema.newValidator();
-        disableExternalEntities(validator);
-        allowExternalSchema(validator, "file" /* allow nothing external */);
+        disableExternalEntities(validator, DEFAULT_LENIENT);
+        allowExternalSchema(validator, DEFAULT_LENIENT, "file" /* allow nothing external */);
         return validator;
     }
 }

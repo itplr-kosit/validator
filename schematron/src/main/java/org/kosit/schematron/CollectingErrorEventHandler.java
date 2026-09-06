@@ -51,13 +51,18 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         };
     }
 
-    @Override
-    public boolean handleEvent(final ValidationEvent event) {
-        final SimpleError e = DefaultSimpleError.builder().severity(translateJaxbSeverity(event.getSeverity())).message(event.getMessage())
-                .location(event.getLocator().getURL(), event.getLocator().getLineNumber(), event.getLocator().getColumnNumber())
-                .linkedException(event.getLinkedException()).build();
-        this.errors.add(e);
-        return STOP_PROCESS_COUNT != this.errors.size();
+    public String getErrorDescription() {
+        final StringJoiner joiner = new StringJoiner("\n");
+        this.errors.forEach(
+                e -> joiner.add((e.getSeverity().isError() ? "[ERROR] " : e.getSeverity().isWarning() ? "[WARN] " : "") + e.getAsString()));
+        return joiner.toString();
+    }
+
+    /**
+     * @return The list of all contained errors.
+     */
+    public List<SimpleError> getErrors() {
+        return this.errors;
     }
 
     /**
@@ -78,6 +83,19 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         return !this.errors.isEmpty();
     }
 
+    // JAXB
+
+    @Override
+    public boolean handleEvent(final ValidationEvent event) {
+        final SimpleError e = DefaultSimpleError.builder().severity(translateJaxbSeverity(event.getSeverity())).message(event.getMessage())
+                .location(event.getLocator().getURL(), event.getLocator().getLineNumber(), event.getLocator().getColumnNumber())
+                .linkedException(event.getLinkedException()).build();
+        this.errors.add(e);
+        return STOP_PROCESS_COUNT != this.errors.size();
+    }
+
+    // SAX
+
     @Override
     public void warning(final SAXParseException exception) throws SAXException {
         this.errors.add(createSaxError(CTStandardSeverity.WARNING, exception));
@@ -93,6 +111,8 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
         this.errors.add(createSaxError(CTStandardSeverity.ERROR, exception));
     }
 
+    // Saxon
+
     @Override
     public void accept(final Message saxonMsg) {
         // public void message(final XdmNode content, final QName errorCode, final boolean terminate, final
@@ -104,6 +124,8 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
                 .message("Error processing " + saxonMsg.getContent().getStringValue()).build();
         this.errors.add(e);
     }
+
+    // Transform
 
     @Override
     public void warning(final TransformerException exception) throws TransformerException {
@@ -118,16 +140,5 @@ public class CollectingErrorEventHandler implements ValidationEventHandler, Erro
     @Override
     public void fatalError(final TransformerException exception) throws TransformerException {
         this.errors.add(createTransformError(CTStandardSeverity.ERROR, exception));
-    }
-
-    public String getErrorDescription() {
-        final StringJoiner joiner = new StringJoiner("\n");
-        this.errors.forEach(
-                e -> joiner.add((e.getSeverity().isError() ? "[ERROR] " : e.getSeverity().isWarning() ? "[WARN] " : "") + e.getAsString()));
-        return joiner.toString();
-    }
-
-    public List<SimpleError> getErrors() {
-        return this.errors;
     }
 }

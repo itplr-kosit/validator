@@ -10,7 +10,6 @@ import org.conformatron.api.model.conformance.CTConformanceResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -28,6 +27,7 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
 import org.kosit.validator.testdata.TestResources;

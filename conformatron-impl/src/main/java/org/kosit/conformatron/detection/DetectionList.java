@@ -18,12 +18,14 @@ package org.kosit.conformatron.detection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTSeverity;
 import org.conformatron.api.model.detection.CTStandardSeverity;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Immutable implementation of {@link CTDetectionList}.
@@ -52,6 +54,11 @@ public final class DetectionList implements CTDetectionList {
     @Override
     public List<CTDetection> getAll() {
         return this.detections;
+    }
+
+    public void forEach(@NonNull final Consumer<? super CTDetection> consumer) {
+        Objects.requireNonNull(consumer);
+        detections.forEach(consumer);
     }
 
     @Override

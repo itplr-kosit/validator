@@ -16,12 +16,12 @@
 package org.kosit.conformatron.detection;
 
 import org.conformatron.api.model.detection.CTDetectionLocation;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.xml.sax.SAXParseException;
 
 /**
- * Immutable implementation of {@link CTDetectionLocation}.
+ * Immutable implementation of {@link CTDetectionLocation}. Instances are created through the {@link Builder}, as all
+ * fields are optional.
  *
  * @author Andreas Schmitz
  * @author Philip Helger
@@ -36,45 +36,11 @@ public final class DetectionLocation implements CTDetectionLocation {
 
     private final String xpath;
 
-    /**
-     * Creates a location referencing a resource without line/column information.
-     *
-     * @param resourceId the resource identifier, may be null
-     * @return a new location
-     */
-    public static DetectionLocation of(final @Nullable String resourceId) {
-        return new DetectionLocation(resourceId, ILLEGAL_NUMBER, ILLEGAL_NUMBER);
-    }
-
-    @NonNull
-    public static DetectionLocation of(final @Nullable String resourceId, final @NonNull SAXParseException e) {
-        return new DetectionLocation(resourceId, e.getLineNumber(), e.getColumnNumber());
-    }
-
-    /**
-     * Creates a location that points at a node inside the resource. Rule engines report where a finding applies as an
-     * XPath expression; keeping it here rather than in the message text is what lets a report consumer jump to the spot
-     * instead of parsing prose.
-     *
-     * @param resourceId the resource identifier, may be null
-     * @param xpath the XPath expression selecting the node the finding applies to, may be null
-     * @return a new location
-     */
-    @NonNull
-    public static DetectionLocation ofXPath(final @Nullable String resourceId, final @Nullable String xpath) {
-        return new DetectionLocation(resourceId, ILLEGAL_NUMBER, ILLEGAL_NUMBER, xpath);
-    }
-
-    public DetectionLocation(final @Nullable String resourceId, final int lineNumber, final int columnNumber) {
-        this(resourceId, lineNumber, columnNumber, null);
-    }
-
-    public DetectionLocation(final @Nullable String resourceId, final int lineNumber, final int columnNumber,
-            final @Nullable String xpath) {
-        this.resourceId = resourceId;
-        this.lineNumber = lineNumber > 0 ? lineNumber : ILLEGAL_NUMBER;
-        this.columnNumber = columnNumber > 0 ? columnNumber : ILLEGAL_NUMBER;
-        this.xpath = xpath;
+    private DetectionLocation(final Builder builder) {
+        this.resourceId = builder.resourceId;
+        this.lineNumber = builder.lineNumber > 0 ? builder.lineNumber : ILLEGAL_NUMBER;
+        this.columnNumber = builder.columnNumber > 0 ? builder.columnNumber : ILLEGAL_NUMBER;
+        this.xpath = builder.xpath;
     }
 
     /**
@@ -102,5 +68,90 @@ public final class DetectionLocation implements CTDetectionLocation {
     @Override
     public int getColumnNumber() {
         return this.columnNumber;
+    }
+
+    /**
+     * @return a new empty builder. Never <code>null</code>.
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * @return a new builder prefilled with the state of this object. Never <code>null</code>.
+     */
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
+     * Builder for {@link DetectionLocation}.
+     */
+    public static final class Builder {
+
+        private @Nullable String resourceId;
+
+        private int lineNumber = ILLEGAL_NUMBER;
+
+        private int columnNumber = ILLEGAL_NUMBER;
+
+        private @Nullable String xpath;
+
+        private Builder() {
+        }
+
+        private Builder(final DetectionLocation src) {
+            this.resourceId = src.resourceId;
+            this.lineNumber = src.lineNumber;
+            this.columnNumber = src.columnNumber;
+            this.xpath = src.xpath;
+        }
+
+        public Builder resourceId(final @Nullable String resourceId) {
+            this.resourceId = resourceId;
+            return this;
+        }
+
+        /**
+         * @param lineNumber the 1-based line number. Anything &le; 0 means "no line number".
+         * @return this for chaining
+         */
+        public Builder lineNumber(final int lineNumber) {
+            this.lineNumber = lineNumber;
+            return this;
+        }
+
+        /**
+         * @param columnNumber the 1-based column number. Anything &le; 0 means "no column number".
+         * @return this for chaining
+         */
+        public Builder columnNumber(final int columnNumber) {
+            this.columnNumber = columnNumber;
+            return this;
+        }
+
+        /**
+         * Takes line and column number from the position the parser reported.
+         *
+         * @param e the parse exception. May not be <code>null</code>.
+         * @return this for chaining
+         */
+        public Builder location(final SAXParseException e) {
+            if (e == null)
+                return this;
+            return lineNumber(e.getLineNumber()).columnNumber(e.getColumnNumber());
+        }
+
+        public Builder xpath(final @Nullable String xpath) {
+            this.xpath = xpath;
+            return this;
+        }
+
+        /**
+         * @return the immutable object created from the current builder state. Never <code>null</code>.
+         */
+        public DetectionLocation build() {
+            return new DetectionLocation(this);
+        }
     }
 }

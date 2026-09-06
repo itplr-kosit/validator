@@ -17,6 +17,7 @@ package org.kosit.conformatron.detection;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.conformatron.api.model.detection.CTDetectionText;
 
@@ -30,9 +31,8 @@ public final class DetectionText implements CTDetectionText {
     private final String text;
 
     public DetectionText(final String text) {
-        if (text == null) {
-            throw new IllegalArgumentException("text may not be null");
-        }
+        Objects.requireNonNull(text);
+
         this.text = text;
     }
 

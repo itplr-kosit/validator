@@ -15,6 +15,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.ObjectHelper;
 import org.kosit.base.xml.SchemaResolver;
@@ -72,6 +73,11 @@ public final class XvrlConverter {
             withSchema(SCHEMA);
             withNamespacePrefixMap(NS_PREFIX);
         }
+    }
+
+    @NonNull
+    public static Schema getXvrlSchema() {
+        return SCHEMA;
     }
 
     private static XvrlReportsType toJaxb(final XvrlReports reports) {

@@ -26,7 +26,7 @@ import org.xml.sax.SAXParseException;
 import net.sf.saxon.s9api.Processor;
 
 /**
- * CVRL - <b>Conformatron Validation Result</b> - is the XVRL profile of the validator. This class is the profile: it
+ * CVR - <b>Conformatron Validation Result</b> - is the XVRL profile of the validator. This class is the profile: it
  * locates its two artifacts and checks a report against both of them.
  * <p>
  * A report is checked in two steps, because the two questions are different:
@@ -47,6 +47,37 @@ import net.sf.saxon.s9api.Processor;
  */
 public final class CvrlProfile {
 
+    /**
+     * The outcome of checking a report against the profile.
+     *
+     * @param schemaViolations what {@code xvrl-1.0.xsd} rejected; empty when the report is well formed XVRL
+     * @param profile what the profile Schematron reported, see {@link AdHocValidationResult#isConformant()}
+     */
+    public static record CvrlValidationResult(List<String> schemaViolations, AdHocValidationResult profile) {
+
+        /**
+         * @return {@code true} when the report is XVRL and satisfies the profile
+         */
+        public boolean isValid() {
+            return this.schemaViolations.isEmpty() && this.profile.isConformant();
+        }
+
+        /**
+         * @return every violation of either check, as readable text; empty when the report is valid
+         */
+        public @NonNull List<String> getViolations() {
+            final List<String> ret = new ArrayList<>(this.schemaViolations);
+            this.profile.detections().getAllErrors().stream().map(d -> d.getCode() + ": " + d.getText().getDisplayTextLocaleIndependent())
+                    .forEach(ret::add);
+            return ret;
+        }
+    }
+
+    private static final class SchemaHolder {
+
+        static final Schema XVRL = SchemaResolver.createParsedSchema(resource(XVRL_XSD_PATH));
+    }
+
     /** XVRL namespace - CVRL is a profile of XVRL, so a CVRL report is an XVRL report. */
     public static final String NS_XVRL = "http://www.xproc.org/ns/xvrl";
 
@@ -62,16 +93,7 @@ public final class CvrlProfile {
     /** Classpath location of the XVRL schema a CVRL report is validated against structurally. */
     public static final String XVRL_XSD_PATH = "/xsd/xvrl-1.0.xsd";
 
-    private static final class SchemaHolder {
-
-        static final Schema XVRL = SchemaResolver.createParsedSchema(resource(XVRL_XSD_PATH));
-    }
-
-    private CvrlProfile() {
-        // static utility
-    }
-
-    private static URL resource(final String path) {
+    private static @NonNull URL resource(final String path) {
         final URL ret = CvrlProfile.class.getResource(path);
         if (ret == null) {
             throw new IllegalStateException("The CVRL profile is incomplete: '" + path + "' is not on the classpath");
@@ -104,32 +126,6 @@ public final class CvrlProfile {
      */
     public static @NonNull URI getSchematronUri() {
         return uriOf(CVRL_SCH_PATH);
-    }
-
-    /**
-     * The outcome of checking a report against the profile.
-     *
-     * @param schemaViolations what {@code xvrl-1.0.xsd} rejected; empty when the report is well formed XVRL
-     * @param profile what the profile Schematron reported, see {@link AdHocValidationResult#isConformant()}
-     */
-    public record CvrlValidationResult(List<String> schemaViolations, AdHocValidationResult profile) {
-
-        /**
-         * @return {@code true} when the report is XVRL and satisfies the profile
-         */
-        public boolean isValid() {
-            return this.schemaViolations.isEmpty() && this.profile.isConformant();
-        }
-
-        /**
-         * @return every violation of either check, as readable text; empty when the report is valid
-         */
-        public @NonNull List<String> getViolations() {
-            final List<String> ret = new ArrayList<>(this.schemaViolations);
-            this.profile.detections().getAll().stream().filter(d -> d.getSeverity().isError())
-                    .forEach(d -> ret.add(d.getCode() + ": " + d.getText().getDisplayTextLocaleIndependent()));
-            return ret;
-        }
     }
 
     /**
@@ -197,4 +193,9 @@ public final class CvrlProfile {
         }
         return violations;
     }
+
+    private CvrlProfile() {
+        // static utility
+    }
+
 }

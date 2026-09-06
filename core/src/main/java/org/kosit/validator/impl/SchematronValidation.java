@@ -138,8 +138,13 @@ public class SchematronValidation implements ValidationEngine<AdHocValidationRes
         final URI base = UriHelper.resolve(schematron, ".", resolveInArchive);
         if (!base.isAbsolute()) {
             // no parent could be derived: the URI is relative, or it addresses an archive that may not be resolved in
-            return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(), new DetectionList(List.of(Detection.builder().severity(CTStandardSeverity.ERROR).code(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED).location(DetectionLocation.of(documentName)).text("Can not derive an artifact repository from the Schematron '" + schematron + "'"
-            + (UriHelper.isArchiveUri(schematron) ? ", because resolving inside an archive is not enabled" : "")).build())));
+            return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(),
+                    new DetectionList(List.of(Detection.builder().severity(CTStandardSeverity.ERROR)
+                            .code(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED)
+                            .location(DetectionLocation.builder().resourceId(documentName).build())
+                            .text("Can not derive an artifact repository from the Schematron '" + schematron + "'"
+                                    + (UriHelper.isArchiveUri(schematron) ? ", because resolving inside an archive is not enabled" : ""))
+                            .build())));
         }
         final ValidationArtifactReference reference = ValidationArtifactReference.of(UriHelper.relativize(base, schematron).toString());
 

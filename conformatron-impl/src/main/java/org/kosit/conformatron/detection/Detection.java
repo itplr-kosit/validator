@@ -254,6 +254,10 @@ public final class Detection implements CTDetection {
             return this;
         }
 
+        public Builder location(final DetectionLocation.@Nullable Builder builder) {
+            return location(builder == null ? null : builder.build());
+        }
+
         public Builder location(final @Nullable CTDetectionLocation location) {
             this.location = location;
             return this;

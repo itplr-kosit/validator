@@ -1,7 +1,6 @@
 package org.kosit.cvr.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.Objects;
 
@@ -45,6 +44,11 @@ public final class ArtifactResolver {
     /** The base of the containment check: for an archive that is the URL of the archive plus the entry path. */
     private final URI containmentBase;
 
+    private static URI normalizeBase(final URI repository) {
+        final URI normalized = UriHelper.normalize(repository);
+        return normalized.toString().endsWith("/") ? normalized : URI.create(normalized + "/");
+    }
+
     /**
      * Creates a resolver that does not resolve into an archive repository, see {@link #ArtifactResolver(URI, boolean)}.
      *
@@ -73,6 +77,13 @@ public final class ArtifactResolver {
     }
 
     /**
+     * @return the repository base this resolver is confined to (always ending with {@code /})
+     */
+    public URI getRepository() {
+        return this.repository;
+    }
+
+    /**
      * Resolves the reference against the repository without loading it.
      *
      * @param reference the artifact reference
@@ -95,6 +106,7 @@ public final class ArtifactResolver {
         // an archive is only unwrapped when reaching into it is allowed - otherwise an absolute reference in archive
         // form would be a way around that
         final URI candidate = this.resolveInArchive ? UriHelper.getHierarchicalUri(resolved) : resolved;
+
         // component-based containment check: java.net.URI#resolve drops an *empty* authority (file:///C:/... becomes
         // file:/C:/...), so a plain string prefix comparison rejects valid references on Windows-style file URIs
         return Objects.equals(candidate.getScheme(), this.containmentBase.getScheme())
@@ -125,20 +137,6 @@ public final class ArtifactResolver {
      * @throws IOException if the artifact can not be read (missing or unreadable)
      */
     public byte[] read(final URI resolved) throws IOException {
-        try ( InputStream in = resolved.toURL().openStream() ) {
-            return in.readAllBytes();
-        }
-    }
-
-    /**
-     * @return the repository base this resolver is confined to (always ending with {@code /})
-     */
-    public URI getRepository() {
-        return this.repository;
-    }
-
-    private static URI normalizeBase(final URI repository) {
-        final URI normalized = UriHelper.normalize(repository);
-        return normalized.toString().endsWith("/") ? normalized : URI.create(normalized + "/");
+        return resolved.toURL().openStream().readAllBytes();
     }
 }
