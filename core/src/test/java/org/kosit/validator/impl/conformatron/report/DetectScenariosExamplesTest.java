@@ -14,15 +14,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.base.uri.UriHelper;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.cvr.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.cvr.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.testdata.TestResources;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -45,7 +45,7 @@ public class DetectScenariosExamplesTest {
      * readable.
      */
     private Document serialize(final URI scenarios, final URI document, final String exampleName) throws Exception {
-        final VConfiguration configuration = VConfiguration.load(scenarios, Simple.REPOSITORY_URI)
+        final VConfiguration configuration = VConfiguration.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
@@ -100,7 +100,8 @@ public class DetectScenariosExamplesTest {
 
     @Test
     public void testNoScenarioMatches() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_WITH_SCH, Simple.UNKNOWN, "detect-scenarios-no-match.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.UNKNOWN,
+                "detect-scenarios-no-match.xml");
 
         // no match cancels the process — the run is reported as such, and the step reports an error
         assertThat(cvrl.getDocumentElement().getAttributeNS(NS_CVRL, "status")).isEqualTo("CANCELLED");
@@ -121,7 +122,8 @@ public class DetectScenariosExamplesTest {
 
     @Test
     public void testExactlyOneScenarioMatches() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_WITH_SCH, Simple.SIMPLE_VALID, "detect-scenarios-single-match.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.SIMPLE_VALID,
+                "detect-scenarios-single-match.xml");
 
         final Element detect = report(cvrl, "detect-scenarios");
         assertThat(detections(detect).getLength()).isEqualTo(1);
@@ -136,7 +138,8 @@ public class DetectScenariosExamplesTest {
 
     @Test
     public void testSeveralScenariosMatch() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_AMBIGUOUS, Simple.SIMPLE_VALID, "detect-scenarios-multiple-matches.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_AMBIGUOUS, TestResources.Simple.SIMPLE_VALID,
+                "detect-scenarios-multiple-matches.xml");
 
         // detection succeeds with one detection per candidate ...
         final Element detect = report(cvrl, "detect-scenarios");

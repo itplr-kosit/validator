@@ -12,12 +12,7 @@ import javax.xml.validation.Schema;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.IsoSchematronCompiler;
-import org.kosit.schematron.SchXslt2Compiler;
-import org.kosit.schematron.SchXsltCompiler;
-import org.kosit.schematron.TestHelper.Simple;
-import org.kosit.schematron.TestHelper;
+import org.kosit.validator.testdata.TestResources;
 
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XsltExecutable;
@@ -33,23 +28,23 @@ public class ContentRepositoryTest {
 
     @BeforeEach
     public void setup() {
-        this.repository = Simple.createContentRepository();
+        this.repository = TestHelper.createContentRepository();
     }
 
     @Test
     public void testCreateSchemaNotExisting() throws Exception {
-        assertThrows(IllegalStateException.class, () -> this.repository.createSchema(Simple.NOT_EXISTING.toURL()));
+        assertThrows(IllegalStateException.class, () -> this.repository.createSchema(TestResources.Simple.NOT_EXISTING.toURL()));
     }
 
     @Test
     public void testLoadXSLT() {
-        final XsltExecutable executable = this.repository.loadXsltScript(Simple.REPORT_XSL);
+        final XsltExecutable executable = this.repository.loadXsltScript(TestResources.Simple.REPORT_XSL);
         assertThat(executable).isNotNull();
     }
 
     @Test
     public void testLoadXSLTNotExisting() {
-        assertThrows(IllegalStateException.class, () -> this.repository.loadXsltScript(Simple.NOT_EXISTING));
+        assertThrows(IllegalStateException.class, () -> this.repository.loadXsltScript(TestResources.Simple.NOT_EXISTING));
     }
 
     @Test
@@ -77,7 +72,7 @@ public class ContentRepositoryTest {
     @Test
     public void loadFromJar() {
         this.repository = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
-                TestHelper.getJarRepository());
+                TestResources.getJarRepository());
         final XsltExecutable xsltExecutable = this.repository.loadXsltScript(URI.create("report.xsl"));
         assertThat(xsltExecutable).isNotNull();
         final Schema schema = this.repository.createSchema(URI.create("main.xsd"));

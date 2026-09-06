@@ -10,28 +10,27 @@ import org.conformatron.api.model.conformance.CTConformanceResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.TestHelper.Simple;
-import org.kosit.cvr.action.ApplyRulesAction;
-import org.kosit.cvr.action.ApplyRulesAction.ApplyRulesActionResult;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
-import org.kosit.cvr.action.PrepareRulesAction;
-import org.kosit.cvr.action.PrepareRulesAction.PrepareRulesResult;
-import org.kosit.cvr.action.RetrieveArtifactsAction;
-import org.kosit.cvr.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.cvr.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.cvr.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
-import org.kosit.cvr.model.SeverityOverrides;
+import org.kosit.validator.testdata.TestResources;
 
 /**
  * <b>End-to-end walkthrough of the canonical pipeline, steps 2–8</b>, composed exclusively from the new-API actions —
@@ -55,7 +54,7 @@ public class CanonicalPipelineTest {
 
     @BeforeEach
     public void setup() {
-        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
+        this.configuration = VConfiguration.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
@@ -79,7 +78,8 @@ public class CanonicalPipelineTest {
         trace.addAll(codes(selected.detections().getAll()));
 
         // step 5: RETRIEVE_ARTIFACTS — repository-confined resolution of the scenario's references
-        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true).execute(selected.selected());
+        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI, true)
+                .execute(selected.selected());
         assertThat(retrieved.isSuccess()).isTrue();
         trace.addAll(codes(retrieved.detections().getAll()));
 
@@ -110,7 +110,7 @@ public class CanonicalPipelineTest {
     @Test
     public void testConformantDocumentPassesAllSteps() {
         final List<String> trace = new ArrayList<>();
-        final ComputeConformanceActionResult conformance = runPipeline(Simple.SIMPLE_VALID, trace);
+        final ComputeConformanceActionResult conformance = runPipeline(TestResources.Simple.SIMPLE_VALID, trace);
 
         assertThat(conformance.result().hasNonConformantTarget()).isFalse();
         assertThat(conformance.result().getAllStatements()).extracting("result").containsOnly(CTConformanceResult.CONFORMANT);
@@ -120,18 +120,18 @@ public class CanonicalPipelineTest {
                 XmlDetection.CODE_DOCUMENT_PARSED, // step 2
                 DetectScenariosAction.CODE_SCENARIO_MATCHED, // step 3
                 SelectScenarioAction.CODE_SCENARIO_SELECTED, // step 4
-                RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, // step
-                                                                                                                    // 5
+                // step 5
+                RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED, RetrieveArtifactsAction.CODE_ARTIFACTS_RETRIEVED,
                 PrepareRulesAction.CODE_RULE_COMPILED, PrepareRulesAction.CODE_RULE_COMPILED, // step 6
                 ApplyRulesAction.CODE_RULES_APPLIED, ApplyRulesAction.CODE_RULES_APPLIED, // step 7
-                ComputeConformanceAction.CODE_TARGET_CONFORMANT, ComputeConformanceAction.CODE_TARGET_CONFORMANT); // step
-                                                                                                                   // 8
+                // step 8
+                ComputeConformanceAction.CODE_TARGET_CONFORMANT, ComputeConformanceAction.CODE_TARGET_CONFORMANT);
     }
 
     @Test
     public void testNonConformantDocumentIsTraceableToTheDrivingRuleSet() {
         final List<String> trace = new ArrayList<>();
-        final ComputeConformanceActionResult conformance = runPipeline(Simple.SCHEMATRON_INVALID, trace);
+        final ComputeConformanceActionResult conformance = runPipeline(TestResources.Simple.SCHEMATRON_INVALID, trace);
 
         assertThat(conformance.result().hasNonConformantTarget()).isTrue();
         // XSD passed, the schematron drove the non-conformance — per-rule-set traceability

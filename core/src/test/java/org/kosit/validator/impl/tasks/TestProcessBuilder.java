@@ -8,15 +8,16 @@ import java.util.List;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.impl.Scenario;
-import org.kosit.schematron.TestHelper;
 import org.kosit.cvr.source.ReadResource;
 import org.kosit.cvr.source.Resource;
+import org.kosit.validator.TestHelper;
+import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.model.ValidationResultsSchematron;
+import org.kosit.validator.testdata.TestResources;
 import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
@@ -171,6 +172,6 @@ public class TestProcessBuilder {
     }
 
     public TestProcessBuilder setDummyReport() {
-        return setCreateReport(createReport("report", TestHelper.load(TestHelper.Simple.SIMPLE_VALID)));
+        return setCreateReport(createReport("report", TestHelper.load(TestResources.Simple.SIMPLE_VALID)));
     }
 }

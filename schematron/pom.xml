@@ -18,6 +18,10 @@
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-svrl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-conformatron-impl</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>net.sf.saxon</groupId>

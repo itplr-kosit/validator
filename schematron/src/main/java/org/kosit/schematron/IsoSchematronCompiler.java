@@ -22,9 +22,9 @@ import net.sf.saxon.s9api.XsltTransformer;
 
 public final class IsoSchematronCompiler implements SchematronCompiler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IsoSchematronCompiler.class);
-
     public static final String COMPILER_ID = "iso-schematron";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IsoSchematronCompiler.class);
 
     private static final String CP_BASE = "/schematron/iso-schematron-xslt2/";
 

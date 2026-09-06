@@ -9,9 +9,9 @@ import org.conformatron.api.model.validation.CTSyntax;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.error.SimpleError;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.TestHelper.Simple;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.validator.testdata.TestResources;
 
 import net.sf.saxon.s9api.XdmNode;
 
@@ -26,12 +26,13 @@ public class DocumentParseTaskTest {
 
     @BeforeEach
     public void setup() {
-        this.action = new DocumentParseTask(TestHelper.createProcessor());
+        this.action = new DocumentParseTask(TestHelper.getTestProcessor());
     }
 
     @Test
     public void testSimple() {
-        final SingleProcessingResult<XdmNode, SimpleError> result = this.action.parseDocument(TestHelper.read(Simple.SIMPLE_VALID));
+        final SingleProcessingResult<XdmNode, SimpleError> result = this.action
+                .parseDocument(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
         assertThat(result).isNotNull();
         assertThat(result.getObject()).isNotNull();
         assertThat(result.getErrors()).isEmpty();
@@ -40,7 +41,8 @@ public class DocumentParseTaskTest {
 
     @Test
     public void testIllformed() {
-        final SingleProcessingResult<XdmNode, SimpleError> result = this.action.parseDocument(TestHelper.read(Simple.NOT_WELLFORMED));
+        final SingleProcessingResult<XdmNode, SimpleError> result = this.action
+                .parseDocument(TestHelper.read(TestResources.Simple.NOT_WELLFORMED));
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).isNotEmpty();
         assertThat(result.getObject()).isNull();
@@ -55,7 +57,7 @@ public class DocumentParseTaskTest {
 
     @Test
     public void testCheckCarriesConformatronParsedSource() {
-        final CheckTask.Process process = new CheckTask.Process(TestHelper.read(Simple.SIMPLE_VALID));
+        final CheckTask.Process process = new CheckTask.Process(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
         this.action.check(process);
 
         final CTParsedValidationSource parsedSource = process.getParsedSource();
@@ -70,7 +72,7 @@ public class DocumentParseTaskTest {
 
     @Test
     public void testCheckLeavesNoParsedSourceOnFailure() {
-        final CheckTask.Process process = new CheckTask.Process(TestHelper.read(Simple.NOT_WELLFORMED));
+        final CheckTask.Process process = new CheckTask.Process(TestHelper.read(TestResources.Simple.NOT_WELLFORMED));
         this.action.check(process);
 
         assertThat(process.getParsedSource()).isNull();

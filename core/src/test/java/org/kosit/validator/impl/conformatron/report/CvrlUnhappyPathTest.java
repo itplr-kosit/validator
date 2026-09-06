@@ -17,24 +17,23 @@ import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.uri.UriHelper;
 import org.kosit.base.xml.XmlHelper;
+import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
+import org.kosit.cvr.validation.ValidationArtifactReference;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.TestHelper.Simple;
-import org.kosit.cvr.action.ApplyRulesAction;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
-import org.kosit.cvr.action.PrepareRulesAction;
-import org.kosit.cvr.action.RetrieveArtifactsAction;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.cvr.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.cvr.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.cvr.action.parsedoc.xml.XmlDetection;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
-import org.kosit.cvr.model.SeverityOverrides;
-import org.kosit.cvr.model.ValidationArtifactReference;
+import org.kosit.validator.testdata.TestResources;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -63,7 +62,7 @@ public class CvrlUnhappyPathTest {
      * reached. Nothing here short-circuits on failure beyond what the pipeline itself does — that is the point.
      */
     private CvrlWriter.PipelineResults run(final URI scenarios, final URI document, final String requestedScenarioId) {
-        final VConfiguration configuration = VConfiguration.load(scenarios, Simple.REPOSITORY_URI)
+        final VConfiguration configuration = VConfiguration.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         if (!parsed.isSuccess()) {
@@ -79,8 +78,8 @@ public class CvrlUnhappyPathTest {
         if (!selected.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null);
         }
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true)
-                .execute(selected.selected());
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
+                true).execute(selected.selected());
         if (!retrieved.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, null, null, null);
         }
@@ -111,19 +110,22 @@ public class CvrlUnhappyPathTest {
      * </p>
      */
     private CvrlWriter.PipelineResults runWithReferences(final URI document, final String... references) {
-        final VConfiguration configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
+        final VConfiguration configuration = VConfiguration
+                .load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
         final DetectScenariosResult detected = new DetectScenariosAction(new ScenarioRepository(configuration),
-                TestHelper.getTestProcessor()).withDefinitionFile(Simple.SCENARIOS_WITH_SCH.toString()).execute(parsed.getParsedSource());
+                TestHelper.getTestProcessor()).withDefinitionFile(TestResources.Simple.SCENARIOS_WITH_SCH.toString())
+                        .execute(parsed.getParsedSource());
         assertThat(detected.isSuccess()).isTrue();
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         assertThat(selected.isSuccess()).isTrue();
 
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true).execute(
-                Arrays.stream(references).map(ValidationArtifactReference::of).map(r -> (CTValidationArtifactReference) r).toList(),
-                document.getPath());
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
+                true).execute(
+                        Arrays.stream(references).map(ValidationArtifactReference::of).map(r -> (CTValidationArtifactReference) r).toList(),
+                        document.getPath());
         if (!retrieved.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, null, null, null);
         }
@@ -223,7 +225,8 @@ public class CvrlUnhappyPathTest {
 
     @Test
     public void step2NotWellformed() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_WITH_SCH, Simple.NOT_WELLFORMED, null, "step2-not-wellformed.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.NOT_WELLFORMED, null,
+                "step2-not-wellformed.xml");
 
         assertCancelledAt(cvrl, CTActionType.PARSE_DOCUMENT, XmlDetection.CODE_NOT_WELLFORMED);
         // security: content that failed to parse is never echoed back into the report
@@ -235,7 +238,8 @@ public class CvrlUnhappyPathTest {
 
     @Test
     public void step3NoScenarioMatches() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_WITH_SCH, Simple.UNKNOWN, null, "step3-no-scenario-matched.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.UNKNOWN, null,
+                "step3-no-scenario-matched.xml");
 
         assertCancelledAt(cvrl, CTActionType.DETECT_SCENARIOS, DetectScenariosAction.CODE_NO_SCENARIO_MATCHED);
         // without a scenario there is nothing to identify or locate
@@ -246,7 +250,7 @@ public class CvrlUnhappyPathTest {
 
     @Test
     public void step3RequestedScenarioIsUnknown() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_WITH_SCH, Simple.SIMPLE_VALID, "no-such-scenario",
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.SIMPLE_VALID, "no-such-scenario",
                 "step3-scenario-unknown-id.xml");
 
         assertCancelledAt(cvrl, CTActionType.DETECT_SCENARIOS, DetectScenariosAction.CODE_SCENARIO_UNKNOWN_ID);
@@ -257,7 +261,8 @@ public class CvrlUnhappyPathTest {
 
     @Test
     public void step4ScenarioIsAmbiguous() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_AMBIGUOUS, Simple.SIMPLE_VALID, null, "step4-scenario-ambiguous.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_AMBIGUOUS, TestResources.Simple.SIMPLE_VALID, null,
+                "step4-scenario-ambiguous.xml");
 
         assertCancelledAt(cvrl, CTActionType.SELECT_SCENARIO, SelectScenarioAction.CODE_SCENARIO_AMBIGUOUS);
         // detection succeeded and reported both candidates — the ambiguity is a selection problem, not a detection one
@@ -266,8 +271,8 @@ public class CvrlUnhappyPathTest {
 
     @Test
     public void step5ArtifactIsMissing() throws Exception {
-        final Document cvrl = serialize(runWithReferences(Simple.SIMPLE_VALID, "simple.xsd", "does-not-exist.sch"), "simple.xml",
-                "step5-artifact-missing.xml");
+        final Document cvrl = serialize(runWithReferences(TestResources.Simple.SIMPLE_VALID, "simple.xsd", "does-not-exist.sch"),
+                "simple.xml", "step5-artifact-missing.xml");
 
         assertCancelledAt(cvrl, CTActionType.RETRIEVE_ARTIFACTS, RetrieveArtifactsAction.CODE_ARTIFACT_MISSING);
         // knowing *which* artifact is missing is the whole point, so it is named and located on the detection
@@ -279,7 +284,7 @@ public class CvrlUnhappyPathTest {
 
     @Test
     public void step6RulesDoNotCompile() throws Exception {
-        final Document cvrl = serialize(runWithReferences(Simple.SIMPLE_VALID, "does-not-compile.sch"), "simple.xml",
+        final Document cvrl = serialize(runWithReferences(TestResources.Simple.SIMPLE_VALID, "does-not-compile.sch"), "simple.xml",
                 "step6-rule-prepare-error.xml");
 
         assertCancelledAt(cvrl, CTActionType.PREPARE_RULES, PrepareRulesAction.CODE_RULE_PREPARE_ERROR);
@@ -290,7 +295,8 @@ public class CvrlUnhappyPathTest {
 
     @Test
     public void step7RuleEngineFails() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_ENGINE_ERROR, Simple.SIMPLE_VALID, null, "step7-rule-engine-error.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_ENGINE_ERROR, TestResources.Simple.SIMPLE_VALID, null,
+                "step7-rule-engine-error.xml");
 
         assertCancelledAt(cvrl, CTActionType.APPLY_RULES, ApplyRulesAction.CODE_RULE_ENGINE_ERROR);
         // an engine error is not a finding: it cancels, and conformance is never computed

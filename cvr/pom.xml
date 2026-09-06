@@ -35,5 +35,10 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-test-data</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

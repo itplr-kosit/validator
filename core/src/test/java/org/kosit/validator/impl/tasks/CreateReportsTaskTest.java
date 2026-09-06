@@ -13,10 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.error.SimpleError;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.TestHelper.Simple;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
+import org.kosit.validator.testdata.TestResources;
 
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
@@ -24,7 +24,7 @@ import net.sf.saxon.s9api.SaxonApiException;
 
 /**
  * Test for {@link CreateReportsTask}.
- * 
+ *
  * @author Andreas Penski
  */
 public class CreateReportsTaskTest {
@@ -35,7 +35,7 @@ public class CreateReportsTaskTest {
 
     @BeforeEach
     public void setup() {
-        this.repository = Simple.createContentRepository();
+        this.repository = TestHelper.createContentRepository();
         this.action = new CreateReportsTask(this.repository.getProcessor());
     }
 
@@ -54,7 +54,7 @@ public class CreateReportsTaskTest {
 
         when(p.newDocumentBuilder()).thenReturn(documentBuilder);
         when(documentBuilder.build(any(Source.class))).thenThrow(new SaxonApiException("mocked"));
-        final Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
+        final Process process = TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_VALID)).build();
         this.action.check(process);
         assertThat(process.isStopped()).isTrue();
 

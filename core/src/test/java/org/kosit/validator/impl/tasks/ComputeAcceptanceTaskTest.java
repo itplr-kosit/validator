@@ -7,11 +7,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.resolve.ResolvingMode;
+import org.kosit.validator.TestHelper;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.schematron.TestHelper;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
@@ -21,7 +20,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 
 /**
  * Tests the 'acceptMatch' functionality.
- * 
+ *
  * @author Andreas Penski
  */
 public class ComputeAcceptanceTaskTest {

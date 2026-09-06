@@ -1,7 +1,11 @@
 package org.kosit.schematron;
 
+import javax.xml.transform.dom.DOMSource;
+
 import name.dmaus.schxslt.Compiler;
+import name.dmaus.schxslt.adapter.SchXslt;
 import name.dmaus.schxslt.adapter.SchXslt2;
+import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * {@link SchematronCompiler} implementation backed by the original SchXslt XSLT-based Schematron processor (library
@@ -23,7 +27,7 @@ public class SchXslt2Compiler extends AbstractSchXsltCompiler {
     public static final String COMPILER_ID = "schxslt2";
 
     public SchXslt2Compiler() {
-        super(new Compiler(new SchXslt2()));
+        super(new Compiler(new SchXslt2()), "SchXslt2");
     }
 
     @Override

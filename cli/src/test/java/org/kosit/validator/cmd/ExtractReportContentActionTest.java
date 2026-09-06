@@ -10,11 +10,10 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.TestProcessBuilder;
+import org.kosit.validator.testdata.TestResources;
 
 /**
  * Tests the HTML extraction of the command line tool.
@@ -40,9 +39,9 @@ public class ExtractReportContentActionTest {
 
     @Test
     public void testSimple() throws IOException {
-        assertThat(this.action.isSkipped(TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build())).isTrue();
-        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
-                .setCreateReport(TestHelper.load(Simple.SIMPLE_VALID)).build();
+        assertThat(this.action.isSkipped(TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_VALID)).build())).isTrue();
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_VALID))
+                .setCreateReport(TestHelper.load(TestResources.Simple.SIMPLE_VALID)).build();
         this.action.check(process);
         assertThat(this.action.isSkipped(process)).isFalse();
         this.action.check(process);

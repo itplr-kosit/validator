@@ -2,21 +2,21 @@
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
   <metadata>
     <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+    <timestamp>2026-09-06T00:42:33+02:00</timestamp>
     <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
     <document href="simple-not-wellformed.xml"/>
   </metadata>
   <report>
     <metadata>
       <creator name="parse-document"/>
-      <timestamp>2026-09-03T10:54:57+02:00</timestamp>
+      <timestamp>2026-09-06T00:42:33+02:00</timestamp>
     </metadata>
     <detection severity="error" code="not-wellformed">
       <context>
         <location line="4" column="27"/>
       </context>
       <message>XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.</message>
-      <supplemental cvrl:role="java-trace">org.xml.sax.SAXParseException; systemId: file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/input/simple-not-wellformed.xml; lineNumber: 4; columnNumber: 27; XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.
+      <supplemental cvrl:role="java-trace">org.xml.sax.SAXParseException; systemId: file:/Users/philip/dev/git-kosit/validator/test-data/target/classes/examples/simple/input/simple-not-wellformed.xml; lineNumber: 4; columnNumber: 27; XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:204)
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(ErrorHandlerWrapper.java:178)
 	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:400)
@@ -37,10 +37,10 @@
 	at java.xml/com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(DOMParser.java:248)
 	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)
 	at java.xml/javax.xml.parsers.DocumentBuilder.parse(DocumentBuilder.java:151)
-	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:86)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:67)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:155)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step2NotWellformed(CvrlUnhappyPathTest.java:229)
+	at org.kosit.cvr.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:86)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:68)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:154)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step2NotWellformed(CvrlUnhappyPathTest.java:226)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)

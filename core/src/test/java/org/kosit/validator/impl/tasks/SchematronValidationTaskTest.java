@@ -10,19 +10,18 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.VConfiguration;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.resolve.ResolvingMode;
+import org.kosit.validator.TestHelper;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.ScenarioArtifacts;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.TestHelper.Simple;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ValidateWithSchematron;
+import org.kosit.validator.testdata.TestResources;
 
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
@@ -30,7 +29,7 @@ import net.sf.saxon.s9api.XsltTransformer;
 
 /**
  * Tests {@link SchematronValidationTask}.
- * 
+ *
  * @author Andreas Penski
  */
 public class SchematronValidationTaskTest {
@@ -44,7 +43,7 @@ public class SchematronValidationTaskTest {
 
     @Test
     public void testProcessingError() throws SaxonApiException {
-        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_VALID)).build();
 
         final SingleProcessingResult<Scenario, String> scenarioResult = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioResult.getObject();
@@ -63,13 +62,13 @@ public class SchematronValidationTaskTest {
 
     @Test
     public void testSchxsltRuntimeProcessingError() {
-        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_VALID)).build();
         final Scenario scenario = process.getResult(ScenarioSelectionTask.KEY).getObject();
 
         // real SchXslt compilation (no mock): the schematron compiles fine but raises a dynamic
         // XPath error (FORG0001) when validating simple.xml, whose inner element is not a number
         final ContentRepository repo = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
-                Simple.REPOSITORY_URI);
+                TestResources.Simple.REPOSITORY_URI);
         final ValidateWithSchematron validateWithSchematron = new ValidateWithSchematron();
         final ResourceType resource = new ResourceType();
         resource.setName("runtime error schematron");
@@ -92,9 +91,9 @@ public class SchematronValidationTaskTest {
 
     @Test
     public void testXsltValid() {
-        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS, Simple.REPOSITORY_URI)
+        final VConfiguration c = VConfiguration.load(TestResources.Simple.SCENARIOS, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
-        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_VALID))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final SingleProcessingResult<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
@@ -104,9 +103,9 @@ public class SchematronValidationTaskTest {
 
     @Test
     public void testSchCompiledValid() {
-        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
+        final VConfiguration c = VConfiguration.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
-        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID))
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_VALID))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final SingleProcessingResult<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
@@ -116,9 +115,9 @@ public class SchematronValidationTaskTest {
 
     @Test
     public void testIsoSchCompiledValid() {
-        final VConfiguration c = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
+        final VConfiguration c = VConfiguration.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
-        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_ISO_VALID))
+        final CheckTask.Process process = TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_ISO_VALID))
                 .setScenario(c.getScenarios().get(0)).build();
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final SingleProcessingResult<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();

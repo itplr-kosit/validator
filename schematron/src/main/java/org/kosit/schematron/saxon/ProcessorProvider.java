@@ -73,16 +73,16 @@ public class ProcessorProvider {
         processor.getUnderlyingConfiguration().setUnparsedTextURIResolver(resolver);
 
         // basic feature configuration:
-        processor.setConfigurationProperty(Feature.DTD_VALIDATION, false);
+        processor.setConfigurationProperty(Feature.DTD_VALIDATION, Boolean.FALSE);
         processor.setConfigurationProperty(Feature.ENTITY_RESOLVER_CLASS, "");
-        processor.setConfigurationProperty(Feature.XINCLUDE, false);
-        processor.setConfigurationProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, false);
+        processor.setConfigurationProperty(Feature.XINCLUDE, Boolean.FALSE);
+        processor.setConfigurationProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, Boolean.FALSE);
 
         // configuration of the parser to be used when Saxon itself has to create one, e.g. when parsing XSL
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.FEATURE_SECURE_PROCESSING), true);
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XmlHelper.DISALLOW_DOCTYPE_DECL_FEATURE), true);
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XmlHelper.LOAD_EXTERNAL_DTD_FEATURE), false);
-        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.ACCESS_EXTERNAL_DTD), false);
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.FEATURE_SECURE_PROCESSING), Boolean.TRUE);
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XmlHelper.DISALLOW_DOCTYPE_DECL_FEATURE), Boolean.TRUE);
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XmlHelper.LOAD_EXTERNAL_DTD_FEATURE), Boolean.FALSE);
+        processor.setConfigurationProperty(FeatureKeys.XML_PARSER_FEATURE + encode(XMLConstants.ACCESS_EXTERNAL_DTD), Boolean.FALSE);
         return processor;
     }
 

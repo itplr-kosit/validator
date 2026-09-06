@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.fail;
 
 import java.util.List;
 
-import org.kosit.cvr.report.CvrlProfile;
-import org.kosit.cvr.report.CvrlProfile.CvrlValidationResult;
+import org.kosit.validator.impl.CvrlProfile;
+import org.kosit.validator.impl.CvrlProfile.CvrlValidationResult;
 
 /**
  * Checks a generated report against the CVRL profile of {@code validator-cvr} - the XVRL schema for the structure, the

@@ -8,37 +8,36 @@ import java.util.Map;
 
 import javax.xml.validation.Schema;
 
-import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
-import org.kosit.validator.api.VConfiguration;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.resolve.ResolvingMode;
+import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
+import org.kosit.schematron.saxon.ProcessorProvider;
+import org.kosit.validator.TestHelper;
+import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioArtifacts;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
-import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
+import org.kosit.validator.testdata.TestResources;
 
 public class TestScenarioBuilder {
 
     public static Scenario createDefault() {
-        return createScenario(TestHelper.Simple.SCHEMA, TestHelper.Simple.REPORT_XSL);
+        return createScenario(TestResources.Simple.SCHEMA, TestResources.Simple.REPORT_XSL);
     }
 
     /**
      * Creates a {@link ScenarioRepository} around the given scenarios (match executables are compiled from the
      * configured match expressions) with a synthetic fallback scenario.
-     * 
+     *
      * @param scenarios scenarios to create
      * @return The scenario repository
      */
     public static ScenarioRepository createRepository(final Scenario... scenarios) {
         final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), TestHelper.getTestResolvingStrategy(),
-                TestHelper.Simple.REPOSITORY_URI);
+                TestResources.Simple.REPOSITORY_URI);
         for (final Scenario scenario : scenarios) {
             scenario.setMatchExecutable(ScenarioArtifacts.createMatchExecutable(repo, scenario.getConfiguration()));
         }
@@ -95,7 +94,7 @@ public class TestScenarioBuilder {
 
         try {
             final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), TestHelper.getTestResolvingStrategy(),
-                    TestHelper.Simple.REPOSITORY_URI);
+                    TestResources.Simple.REPOSITORY_URI);
             final ScenarioType t = new ScenarioType();
             final Scenario scenario = new Scenario(t);
             scenario.setUnparsedTextURIResolver(repo.getUnparsedTextURIResolver());

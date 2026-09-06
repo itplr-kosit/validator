@@ -9,7 +9,7 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.cvr.model.SeverityOverrides;
-import org.kosit.cvr.model.ValidationArtifactReference;
+import org.kosit.cvr.validation.ValidationArtifactReference;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithSchematron;

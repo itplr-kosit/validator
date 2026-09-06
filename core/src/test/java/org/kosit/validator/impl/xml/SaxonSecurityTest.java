@@ -12,15 +12,15 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.base.string.StringHelper;
 import org.kosit.base.error.SimpleError;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.TestHelper.Simple;
-import org.kosit.validator.impl.TestObjectFactory;
+import org.kosit.base.string.StringHelper;
 import org.kosit.cvr.source.ReadResource;
 import org.kosit.cvr.source.Resource;
-import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.schematron.resolve.RelativeUriResolver;
+import org.kosit.validator.TestHelper;
+import org.kosit.validator.impl.TestObjectFactory;
+import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.validator.testdata.TestResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class SaxonSecurityTest {
             try {
                 final URL resource = SaxonSecurityTest.class.getResource("/evil/evil" + i + ".xsl");
                 final XsltCompiler compiler = p.newXsltCompiler();
-                final RelativeUriResolver resolver = new RelativeUriResolver(Simple.REPOSITORY_URI);
+                final RelativeUriResolver resolver = new RelativeUriResolver(TestResources.Simple.REPOSITORY_URI);
                 compiler.setURIResolver(resolver);
                 final XsltExecutable executable = compiler.compile(new StreamSource(resource.openStream()));
                 final XsltTransformer transformer = executable.load();

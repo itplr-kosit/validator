@@ -18,21 +18,21 @@ import org.conformatron.api.model.action.CTActionType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.xml.XmlHelper;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.schematron.TestHelper;
-import org.kosit.schematron.TestHelper.Simple;
-import org.kosit.cvr.action.ApplyRulesAction;
+import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
-import org.kosit.cvr.action.PrepareRulesAction;
-import org.kosit.cvr.action.RetrieveArtifactsAction;
+import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
+import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.cvr.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.cvr.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.testdata.TestResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -59,7 +59,7 @@ public class CvrlWriterTest {
 
     @BeforeEach
     public void setup() {
-        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
+        this.configuration = VConfiguration.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
@@ -72,8 +72,8 @@ public class CvrlWriterTest {
         final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, TestHelper.getTestProcessor())
                 .execute(parsed.getParsedSource());
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true)
-                .execute(selected.selected());
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
+                true).execute(selected.selected());
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getContentRepository())
                 .execute(retrieved.artifacts(), "test");
         final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
@@ -114,7 +114,7 @@ public class CvrlWriterTest {
 
     @Test
     public void testCompletedRunSerializesOneReportPerStepExecution() throws Exception {
-        final Document cvrl = serialize(Simple.SIMPLE_VALID);
+        final Document cvrl = serialize(TestResources.Simple.SIMPLE_VALID);
         final Element root = cvrl.getDocumentElement();
 
         if (false)
@@ -173,7 +173,7 @@ public class CvrlWriterTest {
 
     @Test
     public void testNonUtf8SourceIsEmbeddedAsBase64() throws Exception {
-        final Document cvrl = serialize(Simple.SIMPLE_LATIN1);
+        final Document cvrl = serialize(TestResources.Simple.SIMPLE_LATIN1);
 
         if (false)
             LOGGER.info(XmlHelper.getXmlAsString(cvrl));
@@ -190,7 +190,7 @@ public class CvrlWriterTest {
 
     @Test
     public void testScenarioDetectionsCarryIdAndLocation() throws Exception {
-        final Document cvrl = serialize(Simple.SIMPLE_VALID);
+        final Document cvrl = serialize(TestResources.Simple.SIMPLE_VALID);
 
         final Element detectReport = reports(cvrl).get(1);
         final Element detection = (Element) detectReport.getElementsByTagNameNS(NS, "detection").item(0);
@@ -205,7 +205,7 @@ public class CvrlWriterTest {
 
     @Test
     public void testSelectedScenarioIsEmbeddedInFull() throws Exception {
-        final Document cvrl = serialize(Simple.SIMPLE_VALID);
+        final Document cvrl = serialize(TestResources.Simple.SIMPLE_VALID);
 
         final Element selectReport = reports(cvrl).get(2);
         final NodeList messages = selectReport.getElementsByTagNameNS(NS, "message");
@@ -222,7 +222,7 @@ public class CvrlWriterTest {
 
     @Test
     public void testFindingsAppearWithDigestAndCodes() throws Exception {
-        final Document cvrl = serialize(Simple.SCHEMATRON_INVALID);
+        final Document cvrl = serialize(TestResources.Simple.SCHEMATRON_INVALID);
 
         assertThat(cvrl.getDocumentElement().getAttributeNS(NS_CVRL, "conformant")).isEqualTo("false");
         final Element schematronReport = reports(cvrl).get(6);
@@ -234,7 +234,7 @@ public class CvrlWriterTest {
 
     @Test
     public void testCancelledRunStillSerializesAsPartialCvrl() throws Exception {
-        final Document cvrl = serialize(Simple.NOT_WELLFORMED);
+        final Document cvrl = serialize(TestResources.Simple.NOT_WELLFORMED);
         final Element root = cvrl.getDocumentElement();
 
         assertThat(root.getAttributeNS(NS_CVRL, "status")).isEqualTo("CANCELLED");

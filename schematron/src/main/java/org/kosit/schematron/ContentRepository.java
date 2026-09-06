@@ -9,14 +9,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.kosit.base.string.StringHelper;
 import org.kosit.base.xml.SchemaResolver;
-import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.schematron.resolve.RelativeUriResolver;
+import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -112,7 +113,8 @@ public class ContentRepository {
     /**
      * Creates a new {@link ContentRepository} based on configured security and resolving strategy and the specified
      * repository location.
-     * 
+     *
+     * @param processor Saxon processor to use
      * @param strategy the security and resolving strategy
      * @param repository the repository.
      */
@@ -171,7 +173,7 @@ public class ContentRepository {
         LOGGER.info("Loading or compiling Schematron {} using compiler {}", schUri, compilerId);
         final SchematronCompiler compiler = compilerRegistry.get(compilerId);
         final CacheKey key = new CacheKey(compilerId, schUri);
-        final Source xsltSource = schematronXsltCache.computeIfAbsent(key, k -> compiler.compileToXslt(schUri, this::resolveInRepository));
+        final Source xsltSource = schematronXsltCache.computeIfAbsent(key, _ -> compiler.compileToXslt(schUri, this::resolveInRepository));
         final XsltCompiler xsltCompiler = getProcessor().newXsltCompiler();
         try {
             return xsltCompiler.compile(xsltSource);
@@ -245,7 +247,7 @@ public class ContentRepository {
 
     /**
      * Returns the {@link URIResolver} to use for resolving xml artifacts.
-     * 
+     *
      * @return the resolver
      */
     public ResourceResolver getResolver() {

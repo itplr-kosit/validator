@@ -8,6 +8,7 @@
         <module>test-data</module>
         <module>conformatron</module>
         <module>base</module>
+        <module>conformatron-impl</module>
         <module>jaxb</module>
         <module>svrl</module>
         <module>schematron</module>
@@ -227,6 +228,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-conformatron-impl</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

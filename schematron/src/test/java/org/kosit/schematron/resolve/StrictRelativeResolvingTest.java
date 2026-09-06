@@ -7,14 +7,12 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
-import org.kosit.schematron.TestHelper.Resolving;
-import org.kosit.schematron.resolve.StrictLocalResolvingStrategy;
+import org.kosit.validator.testdata.TestResources;
 import org.xml.sax.SAXParseException;
 
 /**
  * Tests {@link StrictRelativeResolvingStrategy}.
- * 
+ *
  * @author Andreas Penski
  */
 public class StrictRelativeResolvingTest {
@@ -24,7 +22,7 @@ public class StrictRelativeResolvingTest {
         final ResolvingConfigurationStrategy s = new StrictLocalResolvingStrategy();
         final SchemaFactory schemaFactory = s.createSchemaFactory();
         final Throwable t = assertThrows(SAXParseException.class,
-                () -> schemaFactory.newSchema(Resolving.SCHEMA_WITH_REMOTE_REFERENCE.toURL()));
+                () -> schemaFactory.newSchema(TestResources.Resolving.SCHEMA_WITH_REMOTE_REFERENCE.toURL()));
         assertThat(t.getMessage()).contains("schema_reference");
     }
 
@@ -32,7 +30,7 @@ public class StrictRelativeResolvingTest {
     public void testLocalSchemaResolving() throws Exception {
         final ResolvingConfigurationStrategy s = new StrictLocalResolvingStrategy();
         final SchemaFactory schemaFactory = s.createSchemaFactory();
-        final Schema schema = schemaFactory.newSchema(Resolving.SCHEMA_WITH_REFERENCE.toURL());
+        final Schema schema = schemaFactory.newSchema(TestResources.Resolving.SCHEMA_WITH_REFERENCE.toURL());
         assertThat(schema).isNotNull();
     }
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.base.error.SimpleError;
-import org.kosit.schematron.TestHelper;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.BusinessReport;
 import org.kosit.validator.impl.tasks.DocumentParseTask;

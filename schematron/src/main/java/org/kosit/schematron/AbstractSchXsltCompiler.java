@@ -8,6 +8,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -21,26 +22,31 @@ public abstract class AbstractSchXsltCompiler implements SchematronCompiler {
 
     protected final Compiler compiler;
 
-    protected AbstractSchXsltCompiler(Compiler compiler) {
+    private final String compilerName;
+
+    protected AbstractSchXsltCompiler(@NonNull final Compiler compiler, @NonNull final String compilerName) {
         this.compiler = compiler;
+        this.compilerName = compilerName;
     }
 
     @Override
-    public Source compileToXslt(URI schematronUri, Function<URI, Source> rawResolver) {
-        LOGGER.info("Trying to compile Schematron file {} using schxslt-java", schematronUri);
+    public Source compileToXslt(final URI schematronUri, final Function<URI, Source> rawResolver) {
+        LOGGER.info("Trying to compile Schematron file '" + schematronUri + "' using " + compilerName);
         try {
-            Source schSource = rawResolver.apply(schematronUri);
+            final Source schSource = rawResolver.apply(schematronUri);
             if (schSource == null) {
                 throw new IllegalStateException("No Schematron found for " + schematronUri);
             }
+
             if (schSource.getSystemId() == null && schSource instanceof StreamSource) {
                 schSource.setSystemId(schematronUri.toString());
             }
+
             // or null, if you don't need any options
-            Document stylesheetDoc = compiler.compile(schSource, Map.of());
+            final Document stylesheetDoc = compiler.compile(schSource, Map.of());
             return new DOMSource(stylesheetDoc, stylesheetDoc.getDocumentURI());
-        } catch (SchematronException e) {
-            throw new IllegalStateException("Error compiling " + schematronUri, e);
+        } catch (final SchematronException e) {
+            throw new IllegalStateException("Error compiling '" + schematronUri + "' unsing " + compilerName, e);
         }
     }
 }

@@ -12,9 +12,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.schematron.TestHelper;
 import org.kosit.validator.testdata.TestData;
-import org.kosit.schematron.resolve.RelativeUriResolver;
+import org.kosit.validator.testdata.TestResources;
 
 /**
  * Tests the URI resolver that should resolve relatively.
@@ -53,7 +52,7 @@ public class RelativeUriResolverTest {
 
     @Test
     public void testArchiveBaseIsNotResolvedByDefault() throws TransformerException {
-        final URI jarBase = TestHelper.getJarRepository();
+        final URI jarBase = TestResources.getJarRepository();
 
         // reaching into an archive is opt in, and without it the reference stays relative and therefore outside
         assertThat(new RelativeUriResolver(jarBase, true).resolve("simple.xsd", jarBase.toASCIIString())).isNotNull();

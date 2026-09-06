@@ -3,34 +3,28 @@ package org.kosit.validator.impl;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
-import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.TestHelper.Invalid;
-import org.kosit.schematron.TestHelper.Simple;
-import org.kosit.schematron.TestHelper;
 import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.Scenarios;
+import org.kosit.validator.testdata.TestResources;
+import org.kosit.validator.testdata.TestResources.Invalid;
 
 /**
  * Simple test for testing the jaxb conversion service.
- * 
+ *
  * @author apenski
  */
 public class ConversionServiceTest {
 
     private Scenario1Converter converter;
 
-    private ContentRepository repository;
-
     @BeforeEach
     public void setup() {
         this.converter = new Scenario1Converter();
-        this.repository = TestHelper.Simple.createContentRepository();
     }
 
     @Test
@@ -40,16 +34,16 @@ public class ConversionServiceTest {
 
     @Test
     public void testUnmarshal() {
-        final Scenarios s = this.converter.readXml(Simple.SCENARIOS);
+        final Scenarios s = this.converter.readXml(TestResources.Simple.SCENARIOS);
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
 
     @Test
-    public void testUnmarshalWithSchema() throws MalformedURLException {
+    public void testUnmarshalWithSchema() {
         // since repository.createSchema(URI) forcibly resolves uri in repository path only, conversion to url is
         // neccesary
-        final Scenarios s = this.converter.readXml(Simple.SCENARIOS);
+        final Scenarios s = this.converter.readXml(TestResources.Simple.SCENARIOS);
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualToIgnoringCase("HTML-TestSuite");
     }
