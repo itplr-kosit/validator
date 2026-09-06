@@ -2,14 +2,14 @@
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
   <metadata>
     <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-09-06T00:42:33+02:00</timestamp>
+    <timestamp>2026-09-06T14:56:25+02:00</timestamp>
     <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
     <document href="simple.xml"/>
   </metadata>
   <report>
     <metadata>
       <creator name="parse-document"/>
-      <timestamp>2026-09-06T00:42:33+02:00</timestamp>
+      <timestamp>2026-09-06T14:56:25+02:00</timestamp>
     </metadata>
     <detection>
       <context>
@@ -34,7 +34,7 @@
   <report>
     <metadata>
       <creator name="detect-scenarios"/>
-      <timestamp>2026-09-06T00:42:33+02:00</timestamp>
+      <timestamp>2026-09-06T14:56:25+02:00</timestamp>
     </metadata>
     <detection cvrl:scenario-id="Simple">
       <context>
@@ -47,7 +47,7 @@
   <report>
     <metadata>
       <creator name="select-scenario"/>
-      <timestamp>2026-09-06T00:42:33+02:00</timestamp>
+      <timestamp>2026-09-06T14:56:25+02:00</timestamp>
     </metadata>
     <detection cvrl:scenario-id="Simple">
       <context>
@@ -63,7 +63,7 @@
   <report>
     <metadata>
       <creator name="retrieve-artifacts"/>
-      <timestamp>2026-09-06T00:42:33+02:00</timestamp>
+      <timestamp>2026-09-06T14:56:25+02:00</timestamp>
     </metadata>
     <detection cvrl:artifact-id="does-not-compile.sch">
       <context>
@@ -77,7 +77,7 @@
   <report>
     <metadata>
       <creator name="prepare-rules"/>
-      <timestamp>2026-09-06T00:42:33+02:00</timestamp>
+      <timestamp>2026-09-06T14:56:25+02:00</timestamp>
     </metadata>
     <detection severity="error" code="rule-prepare-error" cvrl:artifact-id="does-not-compile.sch">
       <context>
@@ -85,11 +85,11 @@
       </context>
       <message>Artifact could not be prepared: Can not compile xslt executable for uri does-not-compile.sch</message>
       <supplemental cvrl:role="java-trace">java.lang.IllegalStateException: Can not compile xslt executable for uri does-not-compile.sch
-	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:179)
-	at org.kosit.cvr.action.PrepareRulesAction.prepare(PrepareRulesAction.java:164)
-	at org.kosit.cvr.action.PrepareRulesAction.execute(PrepareRulesAction.java:138)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:131)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step6RulesDoNotCompile(CvrlUnhappyPathTest.java:282)
+	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:181)
+	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.prepare(PrepareRulesAction.java:164)
+	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.execute(PrepareRulesAction.java:138)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:133)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step6RulesDoNotCompile(CvrlUnhappyPathTest.java:287)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)
@@ -159,28 +159,23 @@
 	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
 	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:65)
 	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:71)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.apache.maven.surefire.api.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:125)
-	at org.apache.maven.surefire.junitplatform.LauncherAdapter.executeWithCancellationToken(LauncherAdapter.java:68)
-	at org.apache.maven.surefire.junitplatform.LauncherAdapter.execute(LauncherAdapter.java:54)
-	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:203)
-	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:168)
-	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:136)
-	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
-	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
-	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
-	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:94)
+	at org.eclipse.jdt.internal.junit6.runner.JUnit6TestReference.run(JUnit6TestReference.java:105)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:40)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:596)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:824)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:494)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:225)
 Caused by: net.sf.saxon.s9api.SaxonApiException: No stylesheet element found at file:/Users/philip/dev/git-kosit/validator/test-data/target/classes/examples/simple/repository/does-not-compile.sch
 	at net.sf.saxon.s9api.XsltCompiler.compile(XsltCompiler.java:985)
-	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:177)
-	... 85 more
+	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:179)
+	... 80 more
 Caused by: net.sf.saxon.trans.XPathException: No stylesheet element found at file:/Users/philip/dev/git-kosit/validator/test-data/target/classes/examples/simple/repository/does-not-compile.sch
 	at net.sf.saxon.style.Compilation.compilePackage(Compilation.java:257)
 	at net.sf.saxon.style.StylesheetModule.loadStylesheet(StylesheetModule.java:254)
 	at net.sf.saxon.style.Compilation.compileSingletonPackage(Compilation.java:115)
 	at net.sf.saxon.s9api.XsltCompiler.compile(XsltCompiler.java:980)
-	... 86 more
+	... 81 more
 </supplemental>
     </detection>
     <digest valid="false" error-count="1" error-codes="rule-prepare-error"/>
