@@ -23,6 +23,13 @@ public interface CTSeverity {
     int getNumericLevel();
 
     /**
+     * @return {@code true} if this severity is <code>NONE</code>.
+     */
+    default boolean isNone() {
+        return getNumericLevel() == CTStandardSeverity.NONE.getNumericLevel();
+    }
+
+    /**
      * @return {@code true} if this severity is <code>WARNING</code>.
      */
     default boolean isWarning() {

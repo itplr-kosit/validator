@@ -3,9 +3,9 @@ package org.kosit.validator.impl.conformatron.report;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +36,10 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.validation.CTValidationStandard;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionLocation;
+import org.kosit.conformatron.detection.SubjectDetection;
+import org.kosit.conformatron.rule.PreparedRuleSet;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
@@ -43,12 +47,8 @@ import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
-import org.kosit.conformatron.detection.Detection;
-import org.kosit.conformatron.detection.DetectionLocation;
-import org.kosit.conformatron.detection.SubjectDetection;
-import org.kosit.conformatron.rule.PreparedRuleSet;
-import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
+import org.kosit.xvrl.impl.XvrlConverter;
+import org.kost.validator.api.xml.XmlDetection;
 import org.w3c.dom.Document;
 
 /**
@@ -107,7 +107,7 @@ import org.w3c.dom.Document;
 public final class CvrlWriter {
 
     /** XVRL namespace — CVRL is a profile of XVRL, the report must validate against it. */
-    public static final String NS_XVRL = "http://www.xproc.org/ns/xvrl";
+    public static final String NS_XVRL = XvrlConverter.NS_URI;
 
     /** D1: draft namespace for the CVRL extension attributes. */
     public static final String NS_CVRL = "urn:conformatron:cvrl:draft";

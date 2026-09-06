@@ -12,7 +12,6 @@ import javax.xml.validation.SchemaFactory;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
-import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.testdata.TestResources;
 import org.kosit.validator.xvrl.XvrlSerializer;
@@ -20,6 +19,7 @@ import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlReport;
 import org.kosit.xvrl.model.XvrlReports;
 import org.kosit.xvrl.model.XvrlSupplemental;
+import org.kost.validator.api.saxon.ProcessorProvider;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 

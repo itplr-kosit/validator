@@ -14,7 +14,7 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.kosit.schematron.saxon.ProcessorProvider;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;

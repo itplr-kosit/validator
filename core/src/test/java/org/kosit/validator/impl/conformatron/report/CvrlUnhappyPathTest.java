@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.kosit.base.uri.UriHelper;
 import org.kosit.base.xml.XmlHelper;
 import org.kosit.conformatron.validation.ValidationArtifactReference;
-import org.kosit.cvr.util.CollectingErrorHandler;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -34,6 +33,7 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
 import org.kosit.validator.testdata.TestResources;
+import org.kost.validator.api.xml.XmlDetection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -228,7 +228,7 @@ public class CvrlUnhappyPathTest {
         final Document cvrl = serialize(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.NOT_WELLFORMED, null,
                 "step2-not-wellformed.xml");
 
-        assertCancelledAt(cvrl, CTActionType.PARSE_DOCUMENT, CollectingErrorHandler.CODE_NOT_WELLFORMED);
+        assertCancelledAt(cvrl, CTActionType.PARSE_DOCUMENT, XmlDetection.CODE_NOT_WELLFORMED);
         // security: content that failed to parse is never echoed back into the report
         final NodeList messages = cvrl.getElementsByTagNameNS(NS, "message");
         for (int i = 0; i < messages.getLength(); i++) {

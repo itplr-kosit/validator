@@ -17,6 +17,8 @@ public interface CTDetectionList {
 
     void forEach(@NonNull Consumer<? super CTDetection> consumer);
 
+    boolean isEmpty();
+
     @Nonnegative
     int getCount();
 
@@ -36,6 +38,11 @@ public interface CTDetectionList {
         return getAll(x -> x.getSeverity().isWarning());
     }
 
+    @NonNull
+    default List<CTDetection> getAllNones() {
+        return getAll(x -> x.getSeverity().isNone());
+    }
+
     @Nonnegative
     default int getErrorCount() {
         return getCount(x -> x.getSeverity().isError());
@@ -46,12 +53,21 @@ public interface CTDetectionList {
         return getCount(x -> x.getSeverity().isWarning());
     }
 
+    @Nonnegative
+    default int getNoneCount() {
+        return getCount(x -> x.getSeverity().isNone());
+    }
+
     default boolean containsOnlyError() {
         return getCount() == getErrorCount();
     }
 
     default boolean containsOnlyWarning() {
         return getCount() == getWarningCount();
+    }
+
+    default boolean containsOnlyNone() {
+        return getCount() == getNoneCount();
     }
 
     default boolean containsAtLeastOneError() {
@@ -68,6 +84,10 @@ public interface CTDetectionList {
 
     default boolean containsNoWarning() {
         return getWarningCount() == 0;
+    }
+
+    default boolean containsNoNone() {
+        return getNoneCount() == 0;
     }
 
     @NonNull

@@ -5,7 +5,6 @@ import java.util.List;
 import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.ActionMetadata;
-import org.kosit.schematron.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
@@ -17,6 +16,7 @@ import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
 import org.kosit.xvrl.model.XvrlSupplemental;
+import org.kost.validator.api.xml.CollectingErrorEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

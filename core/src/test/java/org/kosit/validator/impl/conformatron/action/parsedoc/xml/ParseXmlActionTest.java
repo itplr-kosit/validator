@@ -32,7 +32,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kosit.base.io.mock.ResourceHelperExtension;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.kosit.cvr.util.CollectingErrorHandler;
+import org.kost.validator.api.xml.XmlDetection;
 
 /**
  * Tests the first action built against the conformatron-api (step 2, {@code parse-document}).
@@ -104,7 +104,7 @@ public class ParseXmlActionTest {
         assertThat(result.getDetectionList().containsAtLeastOneError()).isTrue();
         assertThat(result.getDetectionList().getWorstSeverity()).isEqualTo(CTStandardSeverity.ERROR);
         assertThat(result.getDetectionList().getAll()).allSatisfy(detection -> {
-            assertThat(detection.getCode()).isEqualTo(CollectingErrorHandler.CODE_NOT_WELLFORMED);
+            assertThat(detection.getCode()).isEqualTo(XmlDetection.CODE_NOT_WELLFORMED);
             assertThat(detection.getLocation().getResourceId()).isEqualTo("broken.xml");
             assertThat(detection.getLocation().hasLineNumber()).isTrue();
         });

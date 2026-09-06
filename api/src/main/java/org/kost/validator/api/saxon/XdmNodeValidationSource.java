@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kosit.cvr.saxon;
+package org.kost.validator.api.saxon;
 
 import java.util.Objects;
 
+import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTValidationSource;
 import org.jspecify.annotations.NonNull;

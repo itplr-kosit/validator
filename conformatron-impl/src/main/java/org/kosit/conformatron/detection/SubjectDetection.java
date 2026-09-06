@@ -318,6 +318,11 @@ public final class SubjectDetection implements CTDetection {
     }
 
     @Override
+    public CTSeverity getOriginalSeverity() {
+        return this.delegate.getOriginalSeverity();
+    }
+
+    @Override
     public String getId() {
         return this.delegate.getId();
     }

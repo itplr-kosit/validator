@@ -2,9 +2,9 @@ package org.kosit.schematron;
 
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
-import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.testdata.TestData;
 import org.kosit.validator.testdata.TestResources;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 

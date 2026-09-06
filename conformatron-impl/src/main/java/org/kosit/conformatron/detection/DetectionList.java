@@ -42,18 +42,18 @@ public final class DetectionList implements CTDetectionList {
         return EMPTY;
     }
 
-    public static DetectionList of(final CTDetection... detections) {
-        return new DetectionList(List.of(detections));
+    public DetectionList(final CTDetection @NonNull... detections) {
+        this(List.of(detections));
     }
 
-    public DetectionList(final List<CTDetection> detections) {
+    public DetectionList(final @NonNull List<CTDetection> detections) {
         Objects.requireNonNull(detections);
         this.detections = List.copyOf(detections);
     }
 
     @Override
     public List<CTDetection> getAll() {
-        return this.detections;
+        return detections;
     }
 
     public void forEach(@NonNull final Consumer<? super CTDetection> consumer) {
@@ -61,25 +61,29 @@ public final class DetectionList implements CTDetectionList {
         detections.forEach(consumer);
     }
 
+    public boolean isEmpty() {
+        return detections.isEmpty();
+    }
+
     @Override
     public int getCount() {
-        return this.detections.size();
+        return detections.size();
     }
 
     @Override
     public List<CTDetection> getAll(final Predicate<? super CTDetection> filter) {
-        return this.detections.stream().filter(filter).toList();
+        return detections.stream().filter(filter).toList();
     }
 
     @Override
     public int getCount(final Predicate<? super CTDetection> filter) {
-        return (int) this.detections.stream().filter(filter).count();
+        return (int) detections.stream().filter(filter).count();
     }
 
     @Override
     public CTSeverity getWorstSeverity() {
         CTSeverity worst = CTStandardSeverity.NONE;
-        for (final CTDetection detection : this.detections) {
+        for (final CTDetection detection : detections) {
             worst = CTSeverity.getWorst(worst, detection.getSeverity());
         }
         return worst;

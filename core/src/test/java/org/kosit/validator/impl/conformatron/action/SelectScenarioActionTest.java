@@ -10,8 +10,6 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.Test;
-import org.kosit.cvr.saxon.XdmNodeValidationSource;
-import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -23,6 +21,8 @@ import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.TestScenarioBuilder;
 import org.kosit.validator.testdata.TestResources;
+import org.kost.validator.api.saxon.ProcessorProvider;
+import org.kost.validator.api.saxon.XdmNodeValidationSource;
 
 /**
  * Tests {@link DetectScenariosAction} (step 3) and {@link SelectScenarioAction} (step 4) against the legacy scenario

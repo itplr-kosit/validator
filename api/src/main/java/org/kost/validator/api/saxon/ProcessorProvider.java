@@ -1,4 +1,4 @@
-package org.kosit.schematron.saxon;
+package org.kost.validator.api.saxon;
 
 import java.io.Reader;
 import java.net.URI;

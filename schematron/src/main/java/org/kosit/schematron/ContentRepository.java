@@ -19,6 +19,7 @@ import org.jspecify.annotations.Nullable;
 import org.kosit.base.string.StringHelper;
 import org.kosit.schematron.resolve.RelativeUriResolver;
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
+import org.kost.validator.api.xml.CollectingErrorEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;

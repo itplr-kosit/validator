@@ -1,4 +1,4 @@
-package org.kosit.schematron;
+package org.kost.validator.api.xml;
 
 import java.util.ArrayList;
 import java.util.List;

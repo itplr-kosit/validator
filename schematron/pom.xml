@@ -20,13 +20,9 @@
         </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>validator-conformatron-impl</artifactId>
+            <artifactId>validator-api</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>Saxon-HE</artifactId>
-        </dependency>
         <dependency>
             <groupId>name.dmaus.schxslt</groupId>
             <artifactId>java</artifactId>

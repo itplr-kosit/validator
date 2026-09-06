@@ -57,7 +57,7 @@ public class PrepareRulesActionTest {
         assertThat(schematron.getEngineType()).isEqualTo(CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3);
         assertThat(schematron.getCompiledArtifact().getCompilation()).isInstanceOf(XsltExecutable.class);
         assertThat(schematron.getOutputFormatName()).isEqualTo(PreparedRuleSet.OUTPUT_FORMAT_SVRL);
-        assertThat(schematron.getPhase()).isEqualTo(PreparedRuleSet.PHASE_ALL);
+        assertThat(schematron.getPhase()).isEqualTo(PreparedRuleSet.SCHEMATRON_PHASE_ALL);
         assertThat(schematron.getEngineVersion()).isNotBlank();
         assertThat(schematron.getArtifactReference().getValidationArtifactReference().toString()).isEqualTo("simple.sch");
 

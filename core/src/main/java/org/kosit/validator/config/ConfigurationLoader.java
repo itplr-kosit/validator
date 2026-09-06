@@ -10,7 +10,6 @@ import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.base.error.SimpleError;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.kosit.schematron.CollectingErrorEventHandler;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.resolve.RelativeUriResolver;
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
@@ -24,6 +23,7 @@ import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;
+import org.kost.validator.api.xml.CollectingErrorEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

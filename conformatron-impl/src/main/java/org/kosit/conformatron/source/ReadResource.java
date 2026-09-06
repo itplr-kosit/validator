@@ -9,10 +9,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HexFormat;
 import java.util.Objects;
 
 import org.conformatron.api.annotation.Nonempty;
@@ -59,24 +59,10 @@ public final class ReadResource implements CTReadResource {
 
     public static @NonNull ReadResource of(final @NonNull CTResource res, final @NonNull ResourceHelper resHelper) throws IOException {
         try {
+            // Use a temp file if the length is unknown or more than 5MB
             return new ReadResource(res, HASH_ALGORITHM_NAME, resHelper, srcLength -> srcLength < 0 || srcLength > MAX_IN_MEMORY_BYTES);
         } catch (final NoSuchAlgorithmException e) {
             // Should never happen
-            throw new IllegalStateException("Unknown hash algorithm name '" + HASH_ALGORITHM_NAME + "'", e);
-        }
-    }
-
-    /**
-     * Hashes an already-read byte array with the same algorithm the read resources use, so a hash in a report always
-     * means the same thing no matter which step produced it (ADR-003).
-     *
-     * @param content the bytes to hash. May not be <code>null</code>.
-     * @return the hash as lower-case hex. Never <code>null</code>.
-     */
-    public static @NonNull String hashHex(final byte @NonNull [] content) {
-        try {
-            return HexFormat.of().formatHex(MessageDigest.getInstance(HASH_ALGORITHM_NAME).digest(content));
-        } catch (final NoSuchAlgorithmException e) {
             throw new IllegalStateException("Unknown hash algorithm name '" + HASH_ALGORITHM_NAME + "'", e);
         }
     }
@@ -88,6 +74,14 @@ public final class ReadResource implements CTReadResource {
         } catch (final NoSuchAlgorithmException e) {
             // Should never happen
             throw new IllegalStateException("Unknown hash algorithm name '" + HASH_ALGORITHM_NAME + "'", e);
+        }
+    }
+
+    public static @NonNull ReadResource inMemoryUnchecked(final @NonNull CTResource res) {
+        try {
+            return inMemory(res);
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 

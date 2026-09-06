@@ -9,11 +9,11 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.uri.UriHelper;
 import org.kosit.cvr.report.AdHocValidationResult;
-import org.kosit.cvr.util.CollectingErrorHandler;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.testdata.TestResources;
+import org.kost.validator.api.xml.XmlDetection;
 
 /**
  * Tests the ad-hoc schematron validation prototype: validate directly against a schematron, no scenario configuration.
@@ -90,6 +90,6 @@ public class SchematronValidationTest {
                 UriHelper.resolve(TestResources.Simple.REPOSITORY_URI, "simple.sch", true), true);
 
         assertThat(result.isSuccess()).isFalse();
-        assertThat(result.detections().getAll()).extracting("code").contains(CollectingErrorHandler.CODE_NOT_WELLFORMED);
+        assertThat(result.detections().getAll()).extracting("code").contains(XmlDetection.CODE_NOT_WELLFORMED);
     }
 }

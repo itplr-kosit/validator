@@ -8,8 +8,8 @@ import javax.xml.validation.Validator;
 
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
+import org.kost.validator.api.saxon.ProcessorProvider;
 import org.kosit.schematron.resolve.ResolvingMode;
-import org.kosit.schematron.saxon.ProcessorProvider;
 
 import net.sf.saxon.lib.ResourceResolver;
 import net.sf.saxon.lib.UnparsedTextURIResolver;

@@ -19,7 +19,6 @@ import org.conformatron.api.model.conformance.CTConformanceStatement;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
-import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
@@ -40,6 +39,7 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
 import org.kosit.validator.impl.conformatron.report.CvrlWriter;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -161,8 +161,8 @@ public final class XRechnungE2ERunner {
             out.println("| Severity | Code | Meldung |");
             out.println("|---|---|---|");
             for (final CTDetection d : result.allDetections()) {
-                out.printf("| %s | `%s` | %s |%n", d.getSeverity().getId(), d.getCode(),
-                        d.getText().getDisplayTextLocaleIndependent().replace("|", "\\|").replace("\n", " "));
+                out.println("| " + d.getSeverity().getId() + " | `" + d.getCode() + "` | "
+                        + d.getText().getDisplayTextLocaleIndependent().replace("|", "\\|").replace("\n", " ") + " |");
             }
         }
     }
@@ -276,16 +276,15 @@ public final class XRechnungE2ERunner {
 
         final String hash = parsed.getParsedSource().getSource().getReadResource().getHashAlgorithmName() + "="
                 + HexFormat.of().formatHex(parsed.getParsedSource().getSource().getReadResource().getHashBytes());
-        final List<CTDetection> all = applied.detections().getAll();
-        final long infos = count(all, CTStandardSeverity.NONE);
-        final long warnings = count(all, CTStandardSeverity.WARNING);
-        final long errors = all.stream().filter(d -> d.getSeverity().isError()).count();
+        final long infos = applied.detections().getNoneCount();
+        final long warnings = applied.detections().getWarningCount();
+        final long errors = applied.detections().getErrorCount();
         final List<String> statements = new ArrayList<>();
         for (final Map.Entry<CTPreparedRuleSet, CTConformanceStatement> e : conformance.result().getStatementsByRuleSet().entrySet()) {
             statements.add(shortRef(e.getKey()) + " → " + e.getValue().getResult());
         }
         final boolean conformant = !conformance.result().hasNonConformantTarget();
-        final List<CTDetection> findings = all.stream().filter(d -> d.getSeverity() != CTStandardSeverity.NONE).toList();
+        final List<CTDetection> findings = applied.detections().getAll(d -> d.getSeverity() != CTStandardSeverity.NONE);
         return new InstanceResult(name, conformant ? "CONFORMANT" : "NON_CONFORMANT", scenarioName, prepared.ruleSets().size(), infos,
                 warnings, errors, statements, findings, null, hash, trace);
     }
@@ -293,10 +292,6 @@ public final class XRechnungE2ERunner {
     private static InstanceResult failed(final String name, final String step, final List<CTDetection> detections) {
         final List<CTDetection> findings = detections.stream().filter(d -> d.getSeverity() != CTStandardSeverity.NONE).toList();
         return new InstanceResult(name, "FAILED@" + step, "-", 0, 0, 0, findings.size(), List.of(), findings, step, "-", detections);
-    }
-
-    private static long count(final List<CTDetection> detections, final CTStandardSeverity severity) {
-        return detections.stream().filter(d -> d.getSeverity() == severity).count();
     }
 
     private static String shortRef(final CTPreparedRuleSet ruleSet) {
@@ -328,8 +323,8 @@ public final class XRechnungE2ERunner {
             out.println("| Instanz | Ergebnis | Szenario | RuleSets | INFO | WARN | ERROR+ | Conformance je RuleSet |");
             out.println("|---|---|---|---|---|---|---|---|");
             for (final InstanceResult r : results) {
-                out.printf("| %s | %s | %s | %d | %d | %d | %d | %s |%n", r.instance(), r.outcome(), r.scenario(), r.ruleSets(), r.infos(),
-                        r.warnings(), r.errors(), String.join("<br>", r.conformance()));
+                out.println("| " + r.instance() + " | " + r.outcome() + " | " + r.scenario() + " | " + r.ruleSets() + " | " + r.infos()
+                        + " | " + r.warnings() + " | " + r.errors() + " | " + String.join("<br>", r.conformance()) + " |");
             }
         }
     }

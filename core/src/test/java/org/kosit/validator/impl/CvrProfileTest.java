@@ -6,21 +6,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 
+import org.conformatron.api.model.detection.CTDetectionList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.kosit.validator.impl.CvrlProfile;
-import org.kosit.validator.impl.CvrlProfile.CvrlValidationResult;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
+import org.kosit.cvr.report.CvrProfile;
+import org.kosit.xvrl.impl.XvrlConverter;
 
 /**
  * Tests the CVRL profile against hand written reports: the two shapes a run can produce (a cancelled and a completed
  * one) have to pass, and every rule has to catch the mistake it is there for. The fixtures are deliberately minimal -
  * each invalid one differs from a valid report in exactly the one respect its rule is about.
  */
-public class CvrlProfileTest {
+public class CvrProfileTest {
 
     private static byte[] read(final String name) {
-        try ( InputStream input = CvrlProfileTest.class.getResourceAsStream("/cvrl/" + name) ) {
+        try ( InputStream input = CvrProfileTest.class.getResourceAsStream("/cvrl/" + name) ) {
             if (input == null) {
                 throw new IllegalStateException("Test fixture '" + name + "' is not on the test classpath");
             }
@@ -30,21 +33,21 @@ public class CvrlProfileTest {
         }
     }
 
-    private static CvrlValidationResult validate(final String name) {
-        return CvrlProfile.validate(name, read(name));
+    private static CTDetectionList validate(final String name) {
+        return CvrProfile.validate(ReadResource.inMemoryUnchecked(Resource.of(name, read(name))));
     }
 
     @Test
     public void testTheProfileArtifactsAreOnTheClasspath() {
-        assertThat(CvrlProfile.getSchematronUri()).isNotNull();
-        assertThat(CvrlProfile.getXvrlSchema()).isNotNull();
-        assertThat(CvrlProfile.class.getResource(CvrlProfile.CVRL_XSD_PATH)).isNotNull();
+        assertThat(CvrProfile.getSchematronUri()).isNotNull();
+        assertThat(XvrlConverter.getXvrlSchema()).isNotNull();
+        assertThat(CvrProfile.class.getResource(CvrProfile.CVR_XSD_PATH)).isNotNull();
     }
 
     @ParameterizedTest
     @CsvSource({ "valid-cancelled.xml", "valid-completed.xml" })
     public void testAValidReportPassesBothChecks(final String fixture) {
-        final CvrlValidationResult result = validate(fixture);
+        final CTDetectionList result = validate(fixture);
 
         assertThat(result.schemaViolations()).isEmpty();
         assertThat(result.getViolations()).isEmpty();
@@ -58,8 +61,8 @@ public class CvrlProfileTest {
             "invalid-digest-count-mismatch.xml, digest-error-count-matches", "invalid-unknown-cvrl-attribute.xml, known-cvrl-attribute",
             "invalid-dom-payload-with-source-encoding.xml, payload-source-encoding",
             "invalid-schema-outside-apply-rules.xml, schema-only-on-apply-rules", "invalid-hash-outside-context.xml, hash-in-context" })
-    public void testAProfileViolationIsCaughtByItsOwnRule(final String fixture, final String assertionId) {
-        final CvrlValidationResult result = validate(fixture);
+    public void testAProfileViolationIsCaughtByItsOwnRule(final String filename, final String assertionId) {
+        final CTDetectionList result = validate(filename);
 
         // the fixtures are valid XVRL - what they violate is the profile, not the format
         assertThat(result.schemaViolations()).isEmpty();
@@ -69,8 +72,8 @@ public class CvrlProfileTest {
 
     @Test
     public void testAReportThatIsNotXvrlIsRejectedByTheSchema() {
-        final byte[] notXvrl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><nonsense/>".getBytes(java.nio.charset.StandardCharsets.UTF_8);
-        final CvrlValidationResult result = CvrlProfile.validate("not-xvrl.xml", notXvrl);
+        final String notXvrl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><nonsense/>";
+        final CTDetectionList result = CvrProfile.validate(ReadResource.inMemoryUnchecked(Resource.utf8("not-xvrl.xml", notXvrl)));
 
         assertThat(result.schemaViolations()).isNotEmpty();
         assertThat(result.isValid()).isFalse();

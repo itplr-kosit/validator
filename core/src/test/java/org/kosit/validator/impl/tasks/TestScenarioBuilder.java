@@ -11,7 +11,6 @@ import javax.xml.validation.Schema;
 import org.kosit.base.xml.SchemaResolver;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
-import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.Scenario;
@@ -22,6 +21,7 @@ import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
 import org.kosit.validator.testdata.TestResources;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 public class TestScenarioBuilder {
 

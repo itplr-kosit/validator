@@ -17,6 +17,7 @@ package org.kosit.conformatron.source;
 
 import java.util.Objects;
 
+import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTValidationSource;
 import org.jspecify.annotations.NonNull;
@@ -27,10 +28,9 @@ import org.w3c.dom.Document;
  * Validator implementation of {@link CTParsedValidationSource} carrying the document as a W3C DOM (conformatron-api
  * ADR-002). The DOM is built without line numbering (ADR-001).
  * <p>
- * Instances are immutable: the source bytes are defensively copied on construction and cloned on access, the hash is
- * computed once from the retained bytes via the central {@link SourceDigest} helper (ADR-003). On a well-formedness
- * failure the instance is created {@link #unparsed(CTValidationSource, byte[]) without a DOM} — bytes and hash are
- * retained so the partial CVRL can identify the document ({@link #isParsed()} returns {@code false}).
+ * Instances are immutable: the source bytes are defensively copied on construction and cloned on access. On a
+ * well-formedness failure the instance is created {@link #unparsed(CTValidationSource) without a DOM} — bytes and hash
+ * are retained so the partial CVRL can identify the document ({@link #isParsed()} returns {@code false}).
  * </p>
  *
  * @author Andreas Schmitz

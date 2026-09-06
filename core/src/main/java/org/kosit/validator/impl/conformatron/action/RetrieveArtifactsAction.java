@@ -6,21 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.jspecify.annotations.Nullable;
 import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.CTValidationType;
+import org.jspecify.annotations.Nullable;
+import org.kosit.base.string.StringHelper;
 import org.kosit.conformatron.detection.Detection;
 import org.kosit.conformatron.detection.DetectionList;
-import org.kosit.conformatron.detection.DetectionLocation;
 import org.kosit.conformatron.detection.SubjectDetection;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.validation.ResolvedValidationArtifact;
@@ -168,7 +167,8 @@ public class RetrieveArtifactsAction implements CTAction {
             final Detection detection) {
         return SubjectDetection.about(detection).identifiedBy(SubjectDetection.ATTR_ARTIFACT_ID, href).locatedAt(href)
                 .describingLocation(SubjectDetection.ATTR_ARTIFACT_TYPE, artifactType)
-                .hashed(content == null ? null : ReadResource.HASH_ALGORITHM_NAME, content == null ? null : ReadResource.hashHex(content))
+                .hashed(content == null ? null : ReadResource.HASH_ALGORITHM_NAME,
+                        content == null ? null : StringHelper.hashHex(content, ReadResource.HASH_ALGORITHM_NAME))
                 .build();
     }
 
@@ -181,29 +181,24 @@ public class RetrieveArtifactsAction implements CTAction {
             final CTValidationType validationType = determineValidationType(reference);
             final byte[] content = this.resolver.read(resolved);
             if (content.length == 0) {
-                detections.add(about(href, null, Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_ARTIFACT_CORRUPT)
-                        .location(DetectionLocation.builder().resourceId(resourceId).build()).text("Artifact is empty").build()));
+                detections.add(about(href, null,
+                        Detection.builderError().code(CODE_ARTIFACT_CORRUPT).location(resourceId).text("Artifact is empty").build()));
                 return;
             }
             artifacts.add(ResolvedValidationArtifact.loaded(reference, validationType, content));
             detections.add(about(href, validationType.getID(), content,
-                    Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_ARTIFACTS_RETRIEVED)
-                            .location(DetectionLocation.builder().resourceId(resourceId).build()).text("Artifact retrieved").build()));
+                    Detection.builderNone().code(CODE_ARTIFACTS_RETRIEVED).location(resourceId).text("Artifact retrieved").build()));
         } catch (final ArtifactResolver.AccessDeniedException e) {
             LOGGER.error("Rejected artifact reference {}", href, e);
-            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_ACCESS_DENIED)
-                    .location(DetectionLocation.builder().resourceId(resourceId).build()).text(e.getMessage()).linkedException(e).build()));
+            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_ACCESS_DENIED).location(resourceId)
+                    .text(e.getMessage()).linkedException(e).build()));
         } catch (final IOException e) {
-            LOGGER.error("Could not read artifact {}", href, e);
-            detections.add(about(href, null,
-                    Detection.builderError().code(CODE_ARTIFACT_MISSING)
-                            .location(DetectionLocation.builder().resourceId(resourceId).build())
-                            .text("Artifact could not be read: " + e.getMessage()).linkedException(e).build()));
+            LOGGER.error("Could not read artifact " + href, e);
+            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_MISSING).location(resourceId)
+                    .text("Artifact could not be read: " + e.getMessage()).linkedException(e).build()));
         } catch (final IllegalArgumentException e) {
-            detections.add(about(href, null,
-                    Detection.builderError().code(CODE_ARTIFACT_CORRUPT)
-                            .location(DetectionLocation.builder().resourceId(resourceId).build())
-                            .text("Artifact is not usable: " + e.getMessage()).linkedException(e).build()));
+            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_CORRUPT).location(resourceId)
+                    .text("Artifact is not usable: " + e.getMessage()).linkedException(e).build()));
         }
     }
 

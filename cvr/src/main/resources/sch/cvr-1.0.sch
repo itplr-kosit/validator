@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    CVRL - Conformatron Validation Result - the XVRL profile of the KoSIT validator.
+    CVR - Conformatron Validation Result - the XVRL profile of the KoSIT validator.
 
-    The structure of a report is XVRL's business (xvrl-1.0.xsd). These rules add what makes an XVRL report a CVRL
+    The structure of a report is XVRL's business (xvrl-1.0.xsd). These rules add what makes an XVRL report a CVR
     report: the canonical pipeline steps it is built from, the extension vocabulary it may use, and the internal
     consistency the producer guarantees. Every rule states which decision of the draft format it enforces.
 -->
-<sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2">
+<sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt3">
 
-    <sch:title>CVRL - Conformatron Validation Result (draft profile of XVRL)</sch:title>
+    <sch:title>CVR - Conformatron Validation Result (draft profile of XVRL)</sch:title>
 
     <sch:ns prefix="xvrl" uri="http://www.xproc.org/ns/xvrl"/>
-    <sch:ns prefix="cvrl" uri="urn:conformatron:cvrl:draft"/>
+    <sch:ns prefix="cvr" uri="urn:conformatron:cvr:draft"/>
     <sch:ns prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
 
     <!-- D2: the canonical action names are normative for creator/@name, in pipeline order -->
     <sch:let name="steps"
              value="('parse-document', 'detect-scenarios', 'select-scenario', 'retrieve-artifacts', 'prepare-rules', 'apply-rules', 'compute-conformance')"/>
     <sch:let name="severities" value="('info', 'warning', 'error', 'unspecified')"/>
-    <sch:let name="cvrl-attributes"
+    <sch:let name="cvr-attributes"
              value="('conformant', 'status', 'phase', 'original-severity', 'scenario-id', 'artifact-id', 'target-id', 'conformance', 'artifact-type', 'mime-type', 'encoding', 'source-encoding', 'role', 'algorithm')"/>
 
-    <sch:pattern id="cvrl-root">
+    <sch:pattern id="cvr-root">
         <sch:rule context="/*">
-            <sch:assert id="root-is-xvrl-reports" test="self::xvrl:reports">The document element of a CVRL report is
+            <sch:assert id="root-is-xvrl-reports" test="self::xvrl:reports">The document element of a CVR report is
                 xvrl:reports, found '<sch:value-of select="name()"/>'.</sch:assert>
-            <sch:assert id="root-conformant" test="@cvrl:conformant">D5: the root states the overall verdict in
-                cvrl:conformant.</sch:assert>
-            <sch:assert id="root-status" test="@cvrl:status">D5: the root states the run status in
-                cvrl:status.</sch:assert>
-            <sch:assert id="root-status-value" test="not(@cvrl:status) or @cvrl:status = ('COMPLETED', 'CANCELLED')">D5:
-                cvrl:status is COMPLETED or CANCELLED, found '<sch:value-of select="@cvrl:status"/>'.</sch:assert>
-            <sch:assert id="root-conformant-value" test="not(@cvrl:conformant) or @cvrl:conformant = ('true', 'false')">
-                cvrl:conformant is a boolean, found '<sch:value-of select="@cvrl:conformant"/>'.</sch:assert>
+            <sch:assert id="root-conformant" test="@cvr:conformant">D5: the root states the overall verdict in
+                cvr:conformant.</sch:assert>
+            <sch:assert id="root-status" test="@cvr:status">D5: the root states the run status in
+                cvr:status.</sch:assert>
+            <sch:assert id="root-status-value" test="not(@cvr:status) or @cvr:status = ('COMPLETED', 'CANCELLED')">D5:
+                cvr:status is COMPLETED or CANCELLED, found '<sch:value-of select="@cvr:status"/>'.</sch:assert>
+            <sch:assert id="root-conformant-value" test="not(@cvr:conformant) or @cvr:conformant = ('true', 'false')">
+                cvr:conformant is a boolean, found '<sch:value-of select="@cvr:conformant"/>'.</sch:assert>
             <sch:assert id="cancelled-is-not-conformant"
-                        test="not(@cvrl:conformant = 'true') or @cvrl:status = 'COMPLETED'">D5: a cancelled run is never
+                        test="not(@cvr:conformant = 'true') or @cvr:status = 'COMPLETED'">D5: a cancelled run is never
                 conformant - the pipeline never reached the conformance statement.</sch:assert>
             <sch:assert id="root-has-metadata" test="xvrl:metadata">The root carries the metadata of the
                 run.</sch:assert>
-            <sch:assert id="root-has-report" test="xvrl:report">A CVRL report contains at least the parse-document step
+            <sch:assert id="root-has-report" test="xvrl:report">A CVR report contains at least the parse-document step
                 report.</sch:assert>
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-root-metadata">
+    <sch:pattern id="cvr-root-metadata">
         <sch:rule context="/xvrl:reports/xvrl:metadata">
             <sch:assert id="run-timestamp" test="xvrl:timestamp">The run metadata carries the timestamp of the
                 run.</sch:assert>
@@ -56,14 +56,14 @@
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-run-status">
-        <sch:rule context="/xvrl:reports[@cvrl:status = 'COMPLETED']">
+    <sch:pattern id="cvr-run-status">
+        <sch:rule context="/xvrl:reports[@cvr:status = 'COMPLETED']">
             <sch:assert id="completed-ends-with-conformance"
                         test="xvrl:report[last()]/xvrl:metadata/xvrl:creator/@name = 'compute-conformance'">D5: a
                 completed run ends with the compute-conformance step, found '<sch:value-of
                         select="xvrl:report[last()]/xvrl:metadata/xvrl:creator/@name"/>'.</sch:assert>
         </sch:rule>
-        <sch:rule context="/xvrl:reports[@cvrl:status = 'CANCELLED']">
+        <sch:rule context="/xvrl:reports[@cvr:status = 'CANCELLED']">
             <sch:assert id="cancelled-has-no-conformance"
                         test="not(xvrl:report/xvrl:metadata/xvrl:creator/@name = 'compute-conformance')">D5: a cancelled
                 run stopped before the conformance statement, so it carries no compute-conformance
@@ -71,7 +71,7 @@
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-step-report">
+    <sch:pattern id="cvr-step-report">
         <sch:rule context="/xvrl:reports/xvrl:report">
             <sch:assert id="step-single-creator" test="count(xvrl:metadata/xvrl:creator) = 1">Every step report names
                 exactly one creator.</sch:assert>
@@ -95,7 +95,7 @@
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-step-order">
+    <sch:pattern id="cvr-step-order">
         <sch:rule context="/xvrl:reports/xvrl:report[not(preceding-sibling::xvrl:report)]">
             <sch:assert id="first-step-is-parse-document"
                         test="xvrl:metadata/xvrl:creator/@name = 'parse-document'">The first step report is
@@ -112,7 +112,7 @@
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-rule-set">
+    <sch:pattern id="cvr-rule-set">
         <sch:rule context="/xvrl:reports/xvrl:report/xvrl:metadata/xvrl:schema">
             <sch:assert id="schema-href" test="@href">D8: the rule set is identified by its href.</sch:assert>
             <sch:assert id="schema-typens"
@@ -122,7 +122,7 @@
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-digest">
+    <sch:pattern id="cvr-digest">
         <sch:rule context="/xvrl:reports/xvrl:report/xvrl:digest">
             <sch:let name="detections" value="../xvrl:detection"/>
             <sch:let name="errors" value="count($detections[@severity = 'error'])"/>
@@ -156,24 +156,24 @@
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-detection">
+    <sch:pattern id="cvr-detection">
         <sch:rule context="xvrl:detection">
             <sch:assert id="detection-severity-value" test="not(@severity) or @severity = $severities">The severity is
                 an XVRL severity token, found '<sch:value-of select="@severity"/>'.</sch:assert>
             <sch:assert id="detection-original-severity-value"
-                        test="not(@cvrl:original-severity) or @cvrl:original-severity = $severities">
-                cvrl:original-severity is an XVRL severity token, found '<sch:value-of
-                        select="@cvrl:original-severity"/>'.</sch:assert>
+                        test="not(@cvr:original-severity) or @cvr:original-severity = $severities">
+                cvr:original-severity is an XVRL severity token, found '<sch:value-of
+                        select="@cvr:original-severity"/>'.</sch:assert>
             <sch:assert id="detection-code-with-severity"
                         test="not(@severity = ('error', 'warning')) or @code">D11: a detection that reports a finding
                 names it - the code says what failed, and the digest lists it for triage.</sch:assert>
             <sch:assert id="detection-one-subject"
-                        test="count(@cvrl:scenario-id | @cvrl:artifact-id | @cvrl:target-id) &lt;= 1">D13: a detection
+                        test="count(@cvr:scenario-id | @cvr:artifact-id | @cvr:target-id) &lt;= 1">D13: a detection
                 is about one identified subject at most.</sch:assert>
             <sch:assert id="detection-conformance-value"
-                        test="not(@cvrl:conformance) or @cvrl:conformance = ('CONFORMANT', 'NON_CONFORMANT', 'INCONCLUSIVE')">
-                D13: cvrl:conformance carries a conformance verdict, found '<sch:value-of
-                        select="@cvrl:conformance"/>'.</sch:assert>
+                        test="not(@cvr:conformance) or @cvr:conformance = ('CONFORMANT', 'NON_CONFORMANT', 'INCONCLUSIVE')">
+                D13: cvr:conformance carries a conformance verdict, found '<sch:value-of
+                        select="@cvr:conformance"/>'.</sch:assert>
             <sch:assert id="detection-single-context" test="count(xvrl:context) &lt;= 1">A detection is about one
                 context.</sch:assert>
             <sch:assert id="detection-says-something" test="xvrl:message or xvrl:context">A detection carries a message,
@@ -181,65 +181,65 @@
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-context">
-        <sch:rule context="cvrl:hash">
+    <sch:pattern id="cvr-context">
+        <sch:rule context="cvr:hash">
             <sch:assert id="hash-in-context" test="parent::xvrl:context">D16: the fingerprint of what a detection is
                 about lives in its context.</sch:assert>
-            <sch:assert id="hash-algorithm" test="@cvrl:algorithm">A hash without its algorithm cannot be
+            <sch:assert id="hash-algorithm" test="@cvr:algorithm">A hash without its algorithm cannot be
                 reproduced.</sch:assert>
             <sch:assert id="hash-is-hex" test="matches(normalize-space(.), '^[0-9a-f]+$')">A hash is written as lower
                 case hex.</sch:assert>
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-location">
+    <sch:pattern id="cvr-location">
         <sch:rule context="xvrl:location">
             <sch:assert id="location-locates" test="@xpath or @line or @column or @href">D9: everything positional lives
                 in the location element, so a location that states nothing is an empty promise.</sch:assert>
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-payload">
-        <sch:rule context="xvrl:message[@cvrl:encoding]">
-            <sch:assert id="payload-encoding-value" test="@cvrl:encoding = ('dom', 'base64')">D6: an embedded payload is
-                a dom fragment or base64, found '<sch:value-of select="@cvrl:encoding"/>'.</sch:assert>
-            <sch:assert id="payload-mime-type" test="@cvrl:mime-type">D6: an embedded payload states its media
+    <sch:pattern id="cvr-payload">
+        <sch:rule context="xvrl:message[@cvr:encoding]">
+            <sch:assert id="payload-encoding-value" test="@cvr:encoding = ('dom', 'base64')">D6: an embedded payload is
+                a dom fragment or base64, found '<sch:value-of select="@cvr:encoding"/>'.</sch:assert>
+            <sch:assert id="payload-mime-type" test="@cvr:mime-type">D6: an embedded payload states its media
                 type.</sch:assert>
             <sch:assert id="payload-source-encoding"
-                        test="(@cvrl:encoding = 'base64') = exists(@cvrl:source-encoding)">D6: only a base64 payload
+                        test="(@cvr:encoding = 'base64') = exists(@cvr:source-encoding)">D6: only a base64 payload
                 needs the source encoding to be written back out - a dom fragment is by construction in the report's own
                 encoding.</sch:assert>
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-payload-identity">
+    <sch:pattern id="cvr-payload-identity">
         <sch:rule context="xvrl:message[@xml:id]">
             <sch:assert id="payload-known-id"
                         test="@xml:id = ('parse-document-content', 'select-scenario-content')">D14: a message is
                 identified by xml:id so consumers never depend on its position; '<sch:value-of select="@xml:id"/>' is
                 not one of the identities the profile defines.</sch:assert>
-            <sch:assert id="payload-id-implies-payload" test="@cvrl:encoding">D14: the identified messages are the ones
+            <sch:assert id="payload-id-implies-payload" test="@cvr:encoding">D14: the identified messages are the ones
                 carrying a payload, so they state how it is encoded.</sch:assert>
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-supplemental">
+    <sch:pattern id="cvr-supplemental">
         <sch:rule context="xvrl:supplemental">
-            <sch:assert id="supplemental-role" test="@cvrl:role">D17: a supplemental states what it carries, so a
+            <sch:assert id="supplemental-role" test="@cvr:role">D17: a supplemental states what it carries, so a
                 consumer can ignore it.</sch:assert>
             <sch:assert id="supplemental-not-empty" test="normalize-space(.) != '' or *">An empty supplemental
                 supplements nothing.</sch:assert>
         </sch:rule>
     </sch:pattern>
 
-    <sch:pattern id="cvrl-vocabulary">
-        <sch:rule context="*[namespace-uri() = 'urn:conformatron:cvrl:draft']">
-            <sch:assert id="known-cvrl-element" test="local-name() = 'hash'">hash is the only element the CVRL
+    <sch:pattern id="cvr-vocabulary">
+        <sch:rule context="*[namespace-uri() = 'urn:conformatron:cvr:draft']">
+            <sch:assert id="known-cvr-element" test="local-name() = 'hash'">hash is the only element the CVR
                 extension namespace defines, found '<sch:value-of select="local-name()"/>'.</sch:assert>
         </sch:rule>
-        <sch:rule context="@*[namespace-uri() = 'urn:conformatron:cvrl:draft']">
-            <sch:assert id="known-cvrl-attribute" test="local-name() = $cvrl-attributes">'<sch:value-of
-                    select="local-name()"/>' is not a CVRL extension attribute.</sch:assert>
+        <sch:rule context="@*[namespace-uri() = 'urn:conformatron:cvr:draft']">
+            <sch:assert id="known-cvr-attribute" test="local-name() = $cvr-attributes">'<sch:value-of
+                    select="local-name()"/>' is not a CVR extension attribute.</sch:assert>
         </sch:rule>
     </sch:pattern>
 

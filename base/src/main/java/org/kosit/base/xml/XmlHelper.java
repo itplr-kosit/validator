@@ -94,6 +94,10 @@ public final class XmlHelper {
         return factory;
     }
 
+    /**
+     *
+     * @return A JDK {@link DocumentBuilder}
+     */
     public static DocumentBuilder createSafeDocumentBuilder() {
         try {
             return createSafeDocumentBuilderFactory().newDocumentBuilder();

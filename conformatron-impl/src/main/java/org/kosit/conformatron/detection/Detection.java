@@ -39,7 +39,6 @@ public final class Detection implements CTDetection {
 
     private final CTSeverity severity;
 
-    /** The severity declared by the rule when {@link #severity} is a scenario override. */
     private final CTSeverity originalSeverity;
 
     private final String id;
@@ -54,23 +53,7 @@ public final class Detection implements CTDetection {
 
     private final CTDetectionText summary;
 
-    private final Exception linkedException;
-
-    /**
-     * Derives a detection whose severity was overridden by the scenario ({@code customLevel}): same code, location,
-     * text and linked exception, but the effective severity — the declared one stays retrievable via
-     * {@link #getOriginalSeverity()} for auditability.
-     *
-     * @param base the detection as produced by the rules
-     * @param effectiveSeverity the severity after applying the scenario override
-     * @return the overridden detection
-     */
-    public static Detection overridden(final @NonNull CTDetection base, final @NonNull CTSeverity effectiveSeverity) {
-        Objects.requireNonNull(base);
-        return builder().dateTimeUTC(base.getDateTimeUtc()).severity(effectiveSeverity).originalSeverity(base.getSeverity())
-                .id(base.getId()).code(base.getCode()).field(base.getField()).location(base.getLocation()).text(base.getText())
-                .summary(base.getSummary()).linkedException(base.getLinkedException()).build();
-    }
+    private final Throwable linkedException;
 
     private Detection(final Builder builder) {
         Objects.requireNonNull(builder.severity, "severity must not be null");
@@ -87,14 +70,6 @@ public final class Detection implements CTDetection {
         this.linkedException = builder.linkedException;
     }
 
-    /**
-     * The severity declared by the rule, when the effective {@link #getSeverity()} is a scenario {@code customLevel}
-     * override; {@code null} when no override was applied.
-     */
-    public @Nullable CTSeverity getOriginalSeverity() {
-        return this.originalSeverity;
-    }
-
     @Override
     public OffsetDateTime getDateTimeUtc() {
         return this.dateTimeUTC;
@@ -103,6 +78,10 @@ public final class Detection implements CTDetection {
     @Override
     public CTSeverity getSeverity() {
         return this.severity;
+    }
+
+    public @Nullable CTSeverity getOriginalSeverity() {
+        return this.originalSeverity;
     }
 
     @Override
@@ -136,7 +115,7 @@ public final class Detection implements CTDetection {
     }
 
     @Override
-    public Exception getLinkedException() {
+    public Throwable getLinkedException() {
         return this.linkedException;
     }
 
@@ -167,6 +146,14 @@ public final class Detection implements CTDetection {
     }
 
     /**
+     * @param base Base object to copy the values from.
+     * @return a new builder prefilled with the state of the provided object. Never <code>null</code>.
+     */
+    public static Builder builder(final @NonNull CTDetection base) {
+        return new Builder(base);
+    }
+
+    /**
      * Builder for {@link Detection}.
      */
     public static final class Builder {
@@ -189,12 +176,12 @@ public final class Detection implements CTDetection {
 
         private @Nullable CTDetectionText summary;
 
-        private @Nullable Exception linkedException;
+        private @Nullable Throwable linkedException;
 
         private Builder() {
         }
 
-        private Builder(final Detection src) {
+        private Builder(final @NonNull Detection src) {
             this.dateTimeUTC = src.dateTimeUTC;
             this.severity = src.severity;
             this.originalSeverity = src.originalSeverity;
@@ -205,6 +192,19 @@ public final class Detection implements CTDetection {
             this.text = src.text;
             this.summary = src.summary;
             this.linkedException = src.linkedException;
+        }
+
+        private Builder(final @NonNull CTDetection src) {
+            this.dateTimeUTC = src.getDateTimeUtc();
+            this.severity = src.getSeverity();
+            this.originalSeverity = src.getSeverity();
+            this.id = src.getId();
+            this.code = src.getCode();
+            this.field = src.getField();
+            this.location = src.getLocation();
+            this.text = src.getText();
+            this.summary = src.getSummary();
+            this.linkedException = src.getLinkedException();
         }
 
         /**
@@ -254,6 +254,10 @@ public final class Detection implements CTDetection {
             return this;
         }
 
+        public Builder location(final String resourceId) {
+            return location(resourceId == null ? null : DetectionLocation.builder().resourceId(resourceId));
+        }
+
         public Builder location(final DetectionLocation.@Nullable Builder builder) {
             return location(builder == null ? null : builder.build());
         }
@@ -289,7 +293,7 @@ public final class Detection implements CTDetection {
             return summary(summary == null ? null : new DetectionText(summary));
         }
 
-        public Builder linkedException(final @Nullable Exception linkedException) {
+        public Builder linkedException(final @Nullable Throwable linkedException) {
             this.linkedException = linkedException;
             return this;
         }

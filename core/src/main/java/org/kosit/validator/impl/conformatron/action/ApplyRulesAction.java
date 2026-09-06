@@ -143,20 +143,17 @@ public class ApplyRulesAction implements CTAction {
         }
         final String documentName = parsedSource.getSource().getName();
         if (ruleSets.isEmpty()) {
-            final CTDetection skipped = Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_STEP_SKIPPED)
-                    .location(DetectionLocation.builder().resourceId(documentName).build())
+            final CTDetection skipped = Detection.builderNone().code(CODE_STEP_SKIPPED).location(documentName)
                     .text("No rule sets prepared (reason: no-rule-sets)").build();
-            return new ApplyRulesActionResult(CTStepResult.SKIPPED, ApplyRulesResult.empty(parsedSource), DetectionList.of(skipped));
+            return new ApplyRulesActionResult(CTStepResult.SKIPPED, ApplyRulesResult.empty(parsedSource), new DetectionList(skipped));
         }
         final LinkedHashMap<CTPreparedRuleSet, CTDetectionList> results = new LinkedHashMap<>();
         boolean failed = false;
         for (final CTPreparedRuleSet ruleSet : ruleSets) {
             if (failed) {
                 // fail-fast per spec: executions after an engine failure are skipped, but keep their key
-                results.put(ruleSet,
-                        DetectionList.of(Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_STEP_SKIPPED)
-                                .location(DetectionLocation.builder().resourceId(documentName).build())
-                                .text("Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)").build()));
+                results.put(ruleSet, new DetectionList(Detection.builderNone().code(CODE_STEP_SKIPPED).location(documentName)
+                        .text("Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)").build()));
                 continue;
             }
             final CTDetectionList detections = applyOne(parsedSource, ruleSet, documentName, overrides);
@@ -180,15 +177,13 @@ public class ApplyRulesAction implements CTAction {
                         "Unsupported engine type " + ruleSet.getEngineType().getID() + " for rule application");
             }, overrides);
             if (findings.getCount() == 0) {
-                return DetectionList.of(Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_RULES_APPLIED)
-                        .location(DetectionLocation.builder().resourceId(documentName).build())
+                return new DetectionList(Detection.builderNone().code(CODE_RULES_APPLIED).location(documentName)
                         .text("Rule set '" + href(ruleSet) + "' applied without findings").build());
             }
             return findings;
         } catch (final SaxonApiException | IOException | RuntimeException e) {
             LOGGER.error("Rule engine error applying {}", href(ruleSet), e);
-            return DetectionList.of(Detection.builderError().code(CODE_RULE_ENGINE_ERROR)
-                    .location(DetectionLocation.builder().resourceId(documentName).build())
+            return new DetectionList(Detection.builderError().code(CODE_RULE_ENGINE_ERROR).location(documentName)
                     .text("Rule set '" + href(ruleSet) + "' could not be applied: " + e.getMessage()).linkedException(e).build());
         }
     }
@@ -239,15 +234,18 @@ public class ApplyRulesAction implements CTAction {
      * instance. Overridden detections retain the declared severity ({@link Detection#getOriginalSeverity()}).
      */
     private static CTDetectionList applyOverrides(final CTDetectionList findings, final SeverityOverrides overrides) {
-        if (overrides.isEmpty() || findings.getCount() == 0) {
+        if (overrides.isEmpty() || findings.isEmpty()) {
             return findings;
         }
+
         final List<CTDetection> result = new ArrayList<>(findings.getAll().size());
         boolean changed = false;
         for (final CTDetection detection : findings.getAll()) {
             final CTStandardSeverity effective = overrides.effectiveFor(detection.getCode());
             if (effective != null && effective != detection.getSeverity()) {
-                result.add(Detection.overridden(detection, effective));
+                // Override severity
+                // TODO add log
+                result.add(Detection.builder(detection).severity(effective).build());
                 changed = true;
             } else {
                 result.add(detection);
@@ -288,9 +286,9 @@ public class ApplyRulesAction implements CTAction {
         }
 
         private void add(final CTStandardSeverity severity, final SAXParseException exception) {
-            this.violations.add(Detection.builder().severity(severity).code(CODE_SCHEMA_VIOLATION)
-                    .location(DetectionLocation.builder().resourceId(this.documentName).lineNumber(exception.getLineNumber())
-                            .columnNumber(exception.getColumnNumber()).build())
+            this.violations.add(Detection
+                    .builder().severity(severity).code(CODE_SCHEMA_VIOLATION).location(DetectionLocation.builder()
+                            .resourceId(this.documentName).lineNumber(exception.getLineNumber()).columnNumber(exception.getColumnNumber()))
                     .text(exception.getMessage()).linkedException(exception).build());
         }
     }

@@ -2,14 +2,13 @@ package org.kosit.validator.impl;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 
 import org.conformatron.api.model.action.CTStepResult;
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.base.uri.UriHelper;
 import org.kosit.conformatron.detection.Detection;
 import org.kosit.conformatron.detection.DetectionList;
-import org.kosit.conformatron.detection.DetectionLocation;
 import org.kosit.conformatron.validation.ValidationArtifactReference;
 import org.kosit.cvr.report.AdHocValidationResult;
 import org.kosit.cvr.util.ArtifactResolver;
@@ -54,18 +53,7 @@ public class SchematronValidation implements ValidationEngine<AdHocValidationRes
     private final boolean resolveInArchive;
 
     public SchematronValidation(final Processor processor) {
-        this(processor, null);
-    }
-
-    /**
-     * Creates an engine instance fixed to the given Schematron, which may not live inside an archive, see
-     * {@link #SchematronValidation(Processor, URI, boolean)}.
-     *
-     * @param processor the Saxon processor
-     * @param schematron URI of the Schematron file this engine validates against
-     */
-    public SchematronValidation(final Processor processor, final URI schematron) {
-        this(processor, schematron, false);
+        this(processor, null, false);
     }
 
     /**
@@ -78,9 +66,8 @@ public class SchematronValidation implements ValidationEngine<AdHocValidationRes
      *            {@link ArtifactResolver#ArtifactResolver(URI, boolean)}
      */
     public SchematronValidation(final Processor processor, final URI schematron, final boolean resolveInArchive) {
-        if (processor == null) {
-            throw new IllegalArgumentException("processor may not be null");
-        }
+        Objects.requireNonNull(processor);
+
         this.processor = processor;
         this.schematron = schematron;
         this.resolveInArchive = resolveInArchive;
@@ -124,9 +111,9 @@ public class SchematronValidation implements ValidationEngine<AdHocValidationRes
      * @return the result including all detections
      */
     public AdHocValidationResult validate(final CTReadResource document, final URI schematron, final boolean resolveInArchive) {
-        if (schematron == null) {
-            throw new IllegalArgumentException("schematron may not be null");
-        }
+        Objects.requireNonNull(document);
+        Objects.requireNonNull(schematron);
+
         // step 2 (PARSE_DOCUMENT): reference action, retains bytes + hash
         final ParseXmlResult parsed = new ParseXmlAction().execute(document);
         if (parsed.isFailure()) {
@@ -139,12 +126,11 @@ public class SchematronValidation implements ValidationEngine<AdHocValidationRes
         if (!base.isAbsolute()) {
             // no parent could be derived: the URI is relative, or it addresses an archive that may not be resolved in
             return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(),
-                    new DetectionList(List.of(Detection.builder().severity(CTStandardSeverity.ERROR)
-                            .code(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED)
-                            .location(DetectionLocation.builder().resourceId(documentName).build())
+                    new DetectionList(Detection.builderError().code(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED)
+                            .location(documentName)
                             .text("Can not derive an artifact repository from the Schematron '" + schematron + "'"
                                     + (UriHelper.isArchiveUri(schematron) ? ", because resolving inside an archive is not enabled" : ""))
-                            .build())));
+                            .build()));
         }
         final ValidationArtifactReference reference = ValidationArtifactReference.of(UriHelper.relativize(base, schematron).toString());
 

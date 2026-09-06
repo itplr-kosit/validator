@@ -27,10 +27,10 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
 import org.kosit.validator.testdata.TestResources;
+import org.kost.validator.api.xml.XmlDetection;
 
 /**
  * <b>End-to-end walkthrough of the canonical pipeline, steps 2–8</b>, composed exclusively from the new-API actions —

@@ -2,10 +2,12 @@ package org.kosit.validator.impl.conformatron.report;
 
 import static org.assertj.core.api.Assertions.fail;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Locale;
 
-import org.kosit.validator.impl.CvrlProfile;
-import org.kosit.validator.impl.CvrlProfile.CvrlValidationResult;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
+import org.kosit.cvr.report.CvrProfile;
 
 /**
  * Checks a generated report against the CVRL profile of {@code validator-cvr} - the XVRL schema for the structure, the
@@ -27,14 +29,20 @@ final class CvrlAssert {
      * one structural mistake usually produces several, and seeing them together is what makes them fixable.
      *
      * @param name the name the report is reported under
-     * @param cvrl the serialized report
+     * @param cvr the serialized report
      */
-    static void assertValid(final String name, final byte[] cvrl) {
-        final CvrlValidationResult result = CvrlProfile.validate(name, cvrl);
-        if (result.isValid()) {
-            return;
+    static void assertValid(final String name, final byte[] cvr) {
+        try {
+            final var cvrRes = ReadResource.inMemory(Resource.of(name, cvr));
+
+            final var detections = CvrProfile.validate(cvrRes);
+            if (detections.containsNoError()) {
+                return;
+            }
+            fail("The report does not satisfy the CVRL profile:\n  "
+                    + String.join("\n", detections.getAll().stream().map(x -> x.getAsString(Locale.ROOT)).toList()));
+        } catch (final IOException ex) {
+            fail("IOException in reading resource", ex);
         }
-        final List<String> violations = result.getViolations();
-        fail("The report does not satisfy the CVRL profile:%n  %s", String.join(String.format("%n  "), violations));
     }
 }

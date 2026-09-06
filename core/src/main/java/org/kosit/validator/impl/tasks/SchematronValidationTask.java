@@ -8,7 +8,6 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.kosit.base.error.SimpleError;
 import org.kosit.svrl.impl.SvrlConverter;
-import org.kosit.schematron.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.Scenario.Transformation;
 import org.kosit.validator.impl.model.ProcessStepResult;
@@ -19,6 +18,7 @@ import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
 import org.kosit.xvrl.model.XvrlSchema;
+import org.kost.validator.api.xml.CollectingErrorEventHandler;
 import org.oclc.purl.dsdl.svrl.FailedAssert;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.oclc.purl.dsdl.svrl.Text;

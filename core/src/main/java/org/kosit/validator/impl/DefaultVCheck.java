@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.cvr.report.AdHocValidationResult;
-import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
@@ -23,6 +22,7 @@ import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.xvrl.model.XvrlMetadata;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 

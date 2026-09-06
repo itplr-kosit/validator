@@ -8,15 +8,13 @@ import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
-import org.conformatron.api.model.detection.CTStandardSeverity;
-import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.kosit.conformatron.detection.Detection;
 import org.kosit.conformatron.detection.DetectionList;
-import org.kosit.conformatron.detection.DetectionLocation;
 import org.kosit.conformatron.detection.SubjectDetection;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,41 +135,38 @@ public class DetectScenariosAction implements CTAction {
         final Scenario scenario = repository.getScenarios().stream().filter(s -> requestedScenarioId.equals(s.getName()) && !s.isFallback())
                 .findFirst().orElse(null);
         if (scenario == null) {
-            final CTDetection detection = Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_SCENARIO_UNKNOWN_ID)
-                    .location(DetectionLocation.builder().resourceId(resourceId).build())
+            final CTDetection detection = Detection.builderError().code(CODE_SCENARIO_UNKNOWN_ID).location(resourceId)
                     .text("Requested scenario '" + requestedScenarioId + "' is not configured").build();
-            return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
+            return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), new DetectionList(detection));
         }
 
         final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource, this.definitionFile);
         final CTDetection detection = SubjectDetection
-                .about(Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_SCENARIO_USER_SELECTED)
-                        .location(DetectionLocation.builder().resourceId(resourceId).build())
+                .about(Detection.builderNone().code(CODE_SCENARIO_USER_SELECTED).location(resourceId)
                         .text("Scenario '" + scenario.getName() + "' fixed by user input").build())
                 .identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID()).locatedByXPath(match.getConfigurationLocation())
                 .inFile(match.getDefinitionFile()).build();
-        return new DetectScenariosResult(CTStepResult.SUCCESS, List.of(match), DetectionList.of(detection));
+        return new DetectScenariosResult(CTStepResult.SUCCESS, List.of(match), new DetectionList(detection));
     }
 
     private DetectScenariosResult detectByMatchExpressions(final CTParsedValidationSource parsedSource, final XdmNode document) {
         final String resourceId = parsedSource.getSource().getName();
         final List<Scenario> matching = repository.findMatches(document);
         if (matching.isEmpty()) {
-            final CTDetection detection = Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_NO_SCENARIO_MATCHED)
-                    .location(DetectionLocation.builder().resourceId(resourceId).build())
+            final CTDetection detection = Detection.builderError().code(CODE_NO_SCENARIO_MATCHED).location(resourceId)
                     .text("None of the configured scenarios matches the document").build();
-            return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), DetectionList.of(detection));
+            return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), new DetectionList(detection));
         }
 
-        LOGGER.debug("{} scenario(s) matched for {}", matching.size(), resourceId);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug(matching.size() + " scenario(s) matched for " + resourceId);
         final List<ScenarioMatch> matches = matching.stream().map(scenario -> ScenarioMatch.of(scenario, parsedSource, this.definitionFile))
                 .toList();
         final List<CTDetection> detections = new ArrayList<>();
         for (final ScenarioMatch match : matches) {
             // scenario id and the pointer into the configuration travel with every candidate
             detections.add(SubjectDetection
-                    .about(Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_SCENARIO_MATCHED)
-                            .location(DetectionLocation.builder().resourceId(resourceId).build())
+                    .about(Detection.builderNone().code(CODE_SCENARIO_MATCHED).location(resourceId)
                             .text("Scenario '" + match.getScenarioName() + "' matched").build())
                     .identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID()).locatedByXPath(match.getConfigurationLocation())
                     .inFile(match.getDefinitionFile()).build());

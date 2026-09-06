@@ -1,6 +1,7 @@
 package org.conformatron.api.model.detection;
 
 import org.conformatron.api.annotation.CheckForSigned;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -16,6 +17,11 @@ public interface CTDetectionLocation {
      */
     @Nullable
     String getResourceId();
+
+    default boolean hasResourceId() {
+        final var s = getResourceId();
+        return s != null && !s.isEmpty();
+    }
 
     /**
      * @return The 1-based line number {@link #ILLEGAL_NUMBER} if no line number is present.
@@ -35,5 +41,34 @@ public interface CTDetectionLocation {
 
     default boolean hasColumnNumber() {
         return getColumnNumber() != ILLEGAL_NUMBER;
+    }
+
+    /**
+     * Simple method to check if resource ID, line number, column number or field name is present.
+     *
+     * @return <code>true</code> if at least one field is set, <code>false</code> otherwise.
+     */
+    default boolean hasAnyInformation() {
+        return hasResourceId() || hasLineNumber() || hasColumnNumber();
+    }
+
+    @NonNull
+    default String getAsString() {
+        final StringBuilder ret = new StringBuilder();
+
+        if (hasResourceId())
+            ret.append(getResourceId());
+
+        if (hasLineNumber()) {
+            if (hasColumnNumber())
+                ret.append("(").append(getLineNumber()).append(":").append(getColumnNumber()).append(")");
+            else
+                ret.append("(").append(getLineNumber()).append(":?)");
+        } else {
+            if (hasColumnNumber())
+                ret.append("(?:").append(getColumnNumber()).append(")");
+            // else: neither nor
+        }
+        return ret.toString();
     }
 }

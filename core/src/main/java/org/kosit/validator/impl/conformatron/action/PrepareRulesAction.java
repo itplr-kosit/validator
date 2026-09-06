@@ -11,7 +11,6 @@ import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
@@ -19,7 +18,6 @@ import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.kosit.base.string.StringHelper;
 import org.kosit.conformatron.detection.Detection;
 import org.kosit.conformatron.detection.DetectionList;
-import org.kosit.conformatron.detection.DetectionLocation;
 import org.kosit.conformatron.detection.SubjectDetection;
 import org.kosit.conformatron.rule.PreparedRuleSet;
 import org.kosit.conformatron.validation.CompiledValidationArtifact;
@@ -128,10 +126,9 @@ public class PrepareRulesAction implements CTAction {
             throw new IllegalArgumentException("artifacts may not be null");
         }
         if (artifacts.isEmpty()) {
-            final CTDetection skipped = Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_STEP_SKIPPED)
-                    .location(DetectionLocation.builder().resourceId(resourceId).build())
+            final CTDetection skipped = Detection.builderNone().code(CODE_STEP_SKIPPED).location(resourceId)
                     .text("No artifacts retrieved (reason: no-artifacts)").build();
-            return new PrepareRulesResult(CTStepResult.SKIPPED, List.of(), DetectionList.of(skipped));
+            return new PrepareRulesResult(CTStepResult.SKIPPED, List.of(), new DetectionList(skipped));
         }
         final List<CTPreparedRuleSet> ruleSets = new ArrayList<>();
         final List<CTDetection> detections = new ArrayList<>();
@@ -175,20 +172,16 @@ public class PrepareRulesAction implements CTAction {
                     // nothing to report: an artifact that was transpiled ahead of time needed no preparation here
                 }
                 default -> {
-                    detections.add(about(href,
-                            Detection.builder().severity(CTStandardSeverity.ERROR).code(CODE_RULE_PREPARE_ERROR)
-                                    .location(DetectionLocation.builder().resourceId(resourceId).build())
-                                    .text("Unsupported validation type " + artifact.getValidationType().getID()).build()));
+                    detections.add(about(href, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(resourceId)
+                            .text("Unsupported validation type " + artifact.getValidationType().getID()).build()));
                     return false;
                 }
             }
             return true;
         } catch (final RuntimeException e) {
             LOGGER.error("Could not prepare artifact {}", href, e);
-            detections.add(about(href,
-                    Detection.builderError().code(CODE_RULE_PREPARE_ERROR)
-                            .location(DetectionLocation.builder().resourceId(resourceId).build())
-                            .text("Artifact could not be prepared: " + e.getMessage()).linkedException(e).build()));
+            detections.add(about(href, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(resourceId)
+                    .text("Artifact could not be prepared: " + e.getMessage()).linkedException(e).build()));
             return false;
         }
     }
@@ -198,8 +191,7 @@ public class PrepareRulesAction implements CTAction {
     }
 
     private static CTDetection compiled(final String href, final String resourceId, final String what) {
-        return about(href, Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_RULE_COMPILED)
-                .location(DetectionLocation.builder().resourceId(resourceId).build()).text("Compiled (" + what + ")").build());
+        return about(href, Detection.builderNone().code(CODE_RULE_COMPILED).location(resourceId).text("Compiled (" + what + ")").build());
     }
 
     /**

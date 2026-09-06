@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.action.CTActionType;
@@ -13,13 +14,11 @@ import org.conformatron.api.model.conformance.CTConformanceResult;
 import org.conformatron.api.model.conformance.CTConformanceStatement;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTApplyRulesResult;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.scenario.CTConformanceTarget;
 import org.kosit.conformatron.detection.Detection;
 import org.kosit.conformatron.detection.DetectionList;
-import org.kosit.conformatron.detection.DetectionLocation;
 import org.kosit.conformatron.detection.SubjectDetection;
 import org.kosit.validator.impl.conformatron.model.ComputeConformanceResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceStatement;
@@ -88,10 +87,9 @@ public class ComputeConformanceAction implements CTAction {
      * @return the result including one statement per rule set
      */
     public ComputeConformanceActionResult execute(final CTApplyRulesResult applyRulesResult, final List<CTConformanceTarget> targets) {
-        if (applyRulesResult == null) {
-            throw new IllegalArgumentException("applyRulesResult may not be null");
-        }
-        if (targets == null || targets.isEmpty()) {
+        Objects.requireNonNull(applyRulesResult);
+        Objects.requireNonNull(targets);
+        if (targets.isEmpty()) {
             throw new IllegalArgumentException("targets may not be null or empty");
         }
         targets.stream().filter(CTConformanceTarget::hasAcceptSelector).findFirst().ifPresent(t -> {
@@ -100,11 +98,10 @@ public class ComputeConformanceAction implements CTAction {
         });
         final String resourceId = applyRulesResult.getParsedSource().getSource().getName();
         if (applyRulesResult.isEmpty()) {
-            final CTDetection skipped = Detection.builder().severity(CTStandardSeverity.NONE).code(CODE_STEP_SKIPPED)
-                    .location(DetectionLocation.builder().resourceId(resourceId).build())
+            final CTDetection skipped = Detection.builderNone().code(CODE_STEP_SKIPPED).location(resourceId)
                     .text("No rule results to evaluate (reason: no-rule-results)").build();
             return new ComputeConformanceActionResult(CTStepResult.SKIPPED, ComputeConformanceResult.empty(applyRulesResult),
-                    DetectionList.of(skipped));
+                    new DetectionList(skipped));
         }
         final LinkedHashMap<CTPreparedRuleSet, CTConformanceStatement> statements = new LinkedHashMap<>();
         final List<CTDetection> detections = new ArrayList<>();
@@ -155,9 +152,9 @@ public class ComputeConformanceAction implements CTAction {
         final boolean conformant = statement.getResult().isConformant();
 
         final Detection plain = conformant
-                ? Detection.builderNone().code(CODE_TARGET_CONFORMANT).location(DetectionLocation.builder().resourceId(resourceId))
-                        .text("Target '" + targetName + "' conformant").build()
-                : Detection.builderError().code(CODE_TARGET_NON_CONFORMANT).location(DetectionLocation.builder().resourceId(resourceId))
+                ? Detection.builderNone().code(CODE_TARGET_CONFORMANT).location(resourceId).text("Target '" + targetName + "' conformant")
+                        .build()
+                : Detection.builderError().code(CODE_TARGET_NON_CONFORMANT).location(resourceId)
                         .text("Target '" + targetName + "' non-conformant: " + statement.getRationale()).build();
         return SubjectDetection.about(plain).identifiedBy(SubjectDetection.ATTR_TARGET_ID, statement.getTarget().getTargetID())
                 .locatedAt(href).with(SubjectDetection.ATTR_CONFORMANCE, statement.getResult().name()).build();

@@ -26,7 +26,6 @@ import org.kosit.base.io.ResourceHelper;
 import org.kosit.base.string.StringHelper;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.kosit.schematron.saxon.ProcessorProvider;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
@@ -35,6 +34,7 @@ import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
 import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kost.validator.api.saxon.ProcessorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

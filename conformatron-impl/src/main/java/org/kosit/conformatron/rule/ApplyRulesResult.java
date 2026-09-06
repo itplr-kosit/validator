@@ -1,6 +1,7 @@
 package org.kosit.conformatron.rule;
 
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTApplyRulesResult;
@@ -20,24 +21,21 @@ public final class ApplyRulesResult implements CTApplyRulesResult {
 
     private final LinkedHashMap<CTPreparedRuleSet, CTDetectionList> resultsByRuleSet;
 
-    public ApplyRulesResult(final CTParsedValidationSource parsedSource,
-            final LinkedHashMap<CTPreparedRuleSet, CTDetectionList> resultsByRuleSet) {
-        if (parsedSource == null) {
-            throw new IllegalArgumentException("parsedSource may not be null");
-        }
-        if (resultsByRuleSet == null) {
-            throw new IllegalArgumentException("resultsByRuleSet may not be null");
-        }
-        this.parsedSource = parsedSource;
-        this.resultsByRuleSet = new LinkedHashMap<>(resultsByRuleSet);
-    }
-
     /**
      * @param parsedSource the parsed source from step 2
      * @return an empty result (no rule sets were executed)
      */
     public static ApplyRulesResult empty(final CTParsedValidationSource parsedSource) {
         return new ApplyRulesResult(parsedSource, new LinkedHashMap<>());
+    }
+
+    public ApplyRulesResult(final CTParsedValidationSource parsedSource,
+            final LinkedHashMap<CTPreparedRuleSet, CTDetectionList> resultsByRuleSet) {
+        Objects.requireNonNull(parsedSource);
+        Objects.requireNonNull(resultsByRuleSet);
+
+        this.parsedSource = parsedSource;
+        this.resultsByRuleSet = new LinkedHashMap<>(resultsByRuleSet);
     }
 
     @Override
