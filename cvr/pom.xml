@@ -10,8 +10,8 @@
     </parent>
 
     <artifactId>validator-cvr</artifactId>
-    <name>KoSIT CVRL profile</name>
-    <description>The Conformatron Validation Result Language - the XVRL profile of the validator, as an XSD for the extension vocabulary and a Schematron for the profile constraints.</description>
+    <name>KoSIT CVR profile</name>
+    <description>The Conformatron Validation Result - the XVRL profile of the validator, as an XSD for the extension vocabulary and a Schematron for the profile constraints.</description>
 
     <dependencies>
         <!-- The XVRL schema a CVRL report is validated against structurally -->
