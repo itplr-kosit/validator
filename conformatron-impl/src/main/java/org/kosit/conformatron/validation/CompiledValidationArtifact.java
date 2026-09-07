@@ -1,7 +1,10 @@
 package org.kosit.conformatron.validation;
 
+import java.util.Objects;
+
 import org.conformatron.api.model.validation.CTCompiledValidationArtifact;
 import org.conformatron.api.model.validation.CTValidationType;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Validator implementation of {@link CTCompiledValidationArtifact}: an engine-ready compilation together with the
@@ -10,42 +13,23 @@ import org.conformatron.api.model.validation.CTValidationType;
  *
  * @param <T> the engine-specific compilation type
  *
+ * @param validationType validation type
+ * @param compilation compilation object
  * @author Andreas Schmitz
  */
-public final class CompiledValidationArtifact<T> implements CTCompiledValidationArtifact<T> {
+public final record CompiledValidationArtifact<T>(CTValidationType validationType, T compilation)
+        implements CTCompiledValidationArtifact<T> {
 
-    private final CTValidationType validationType;
-
-    private final T compilation;
-
-    /**
-     * @param validationType the validation type this compilation belongs to
-     * @param compilation the engine-specific compilation
-     * @param <T> the engine-specific compilation type
-     * @return the typed compiled artifact
-     */
-    public static <T> CompiledValidationArtifact<T> of(final CTValidationType validationType, final T compilation) {
-        if (validationType == null) {
-            throw new IllegalArgumentException("validationType may not be null");
-        }
-        if (compilation == null) {
-            throw new IllegalArgumentException("compilation may not be null");
-        }
-        return new CompiledValidationArtifact<>(validationType, compilation);
+    public CompiledValidationArtifact {
+        Objects.requireNonNull(validationType);
+        Objects.requireNonNull(compilation);
     }
 
-    private CompiledValidationArtifact(final CTValidationType validationType, final T compilation) {
-        this.validationType = validationType;
-        this.compilation = compilation;
-    }
-
-    @Override
-    public CTValidationType getValidationType() {
+    public @NonNull CTValidationType getValidationType() {
         return validationType;
     }
 
-    @Override
-    public T getCompilation() {
+    public @NonNull T getCompilation() {
         return compilation;
     }
 }

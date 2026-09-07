@@ -32,16 +32,6 @@ public final class ResolvedValidationArtifact implements CTResolvedValidationArt
 
     private final CTCompiledValidationArtifact<?> compiledArtifact;
 
-    private ResolvedValidationArtifact(final CTValidationArtifactReference reference, final CTValidationType validationType,
-            final byte[] content, final CTCompiledValidationArtifact<?> compiledArtifact) {
-        Objects.requireNonNull(reference);
-        Objects.requireNonNull(validationType);
-        this.reference = reference;
-        this.validationType = validationType;
-        this.content = content == null ? null : content.clone();
-        this.compiledArtifact = compiledArtifact;
-    }
-
     /**
      * Creates an artifact in source form, as loaded from the repository by step 5.
      *
@@ -68,6 +58,16 @@ public final class ResolvedValidationArtifact implements CTResolvedValidationArt
             final CTCompiledValidationArtifact<?> compiledArtifact) {
         Objects.requireNonNull(compiledArtifact);
         return new ResolvedValidationArtifact(reference, compiledArtifact.getValidationType(), null, compiledArtifact);
+    }
+
+    private ResolvedValidationArtifact(final CTValidationArtifactReference reference, final CTValidationType validationType,
+            final byte[] content, final CTCompiledValidationArtifact<?> compiledArtifact) {
+        Objects.requireNonNull(reference);
+        Objects.requireNonNull(validationType);
+        this.reference = reference;
+        this.validationType = validationType;
+        this.content = content == null ? null : content.clone();
+        this.compiledArtifact = compiledArtifact;
     }
 
     @Override

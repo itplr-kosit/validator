@@ -353,7 +353,7 @@ public final class SubjectDetection implements CTDetection {
     }
 
     @Override
-    public Exception getLinkedException() {
+    public Throwable getLinkedException() {
         return this.delegate.getLinkedException();
     }
 }
