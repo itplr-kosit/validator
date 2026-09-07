@@ -26,7 +26,7 @@
                 <location>simple.xsd</location>
             </resource>
         </validateWithXmlSchema>
-        <validateWithSchematron>
+        <validateWithSchematron compiler="schxslt">
             <resource>
                 <name>Sample Schematron</name>
                 <location>does-not-compile.sch</location>

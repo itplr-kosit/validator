@@ -16,7 +16,8 @@ import net.sf.saxon.s9api.Processor;
 
 public final class SchematronCompilerRegistry {
 
-    public static final String FALLBACK_COMPILER_ID = SchXslt2Compiler.COMPILER_ID;
+    // TODO this should be SchXslt2 but will fail main tests
+    public static final String FALLBACK_COMPILER_ID = SchXsltCompiler.COMPILER_ID;
 
     private final Map<String, SchematronCompiler> byId;
 

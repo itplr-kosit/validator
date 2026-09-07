@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.compiler.IsoSchematronCompiler;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.Scenario;
@@ -70,12 +71,14 @@ public class SchematronValidationTaskTest {
         final ContentRepository repo = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
                 TestResources.Simple.REPOSITORY_URI);
         final ValidateWithSchematron validateWithSchematron = new ValidateWithSchematron();
-        final ResourceType resource = new ResourceType();
-        resource.setName("runtime error schematron");
-        resource.setLocation("simple-runtime-error.sch");
-        validateWithSchematron.setResource(resource);
-        scenario.setSchematronValidations(
-                Collections.singletonList(ScenarioArtifacts.createSchematronTransformation(repo, validateWithSchematron)));
+        {
+            validateWithSchematron.setCompiler(IsoSchematronCompiler.COMPILER_ID);
+            final ResourceType resource = new ResourceType();
+            resource.setName("runtime error schematron");
+            resource.setLocation("simple-runtime-error.sch");
+            validateWithSchematron.setResource(resource);
+        }
+        scenario.setSchematronValidations(List.of(ScenarioArtifacts.createSchematronTransformation(repo, validateWithSchematron)));
 
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final SingleProcessingResult<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
