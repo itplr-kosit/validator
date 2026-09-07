@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-03T22:37:31+02:00</timestamp>
+        <timestamp>2026-09-07T14:44:20+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="simple.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:20+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
-            <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+            <message xml:id="parse-document-content" cvr:mime-type="application/xml" cvr:encoding="dom">
                 <simple xmlns="http://validator.kosit.de/test-sample">
     <inner>asldkfj</inner>
     <content>
@@ -27,17 +27,17 @@
 </simple>
             </message>
             <context>
-                <cvrl:hash cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
             </context>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:20+02:00</timestamp>
             <creator name="detect-scenarios"/>
         </metadata>
-        <detection cvrl:scenario-id="Simple">
+        <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
                 <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-with-sch.xml"/>
@@ -47,12 +47,12 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:20+02:00</timestamp>
             <creator name="select-scenario"/>
         </metadata>
-        <detection cvrl:scenario-id="Simple">
+        <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' selected</message>
-            <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+            <message xml:id="select-scenario-content" cvr:mime-type="application/xml" cvr:encoding="dom">
                 <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
                     <name>Simple</name>
                     <description>
@@ -101,17 +101,17 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:20+02:00</timestamp>
             <creator name="retrieve-artifacts"/>
         </metadata>
-        <detection cvrl:artifact-id="simple.xsd">
+        <detection cvr:artifact-id="simple.xsd">
             <message>Artifact retrieved</message>
             <context>
-                <location href="simple.xsd" cvrl:artifact-type="xsd"/>
-                <cvrl:hash cvrl:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvrl:hash>
+                <location href="simple.xsd" cvr:artifact-type="xsd"/>
+                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvrl:hash>
             </context>
         </detection>
-        <detection severity="error" code="artifact-missing" cvrl:artifact-id="does-not-exist.sch">
+        <detection severity="error" code="artifact-missing" cvr:artifact-id="does-not-exist.sch">
             <message>Artifact could not be read: C:\Users\49157\grendor\KoSIT\KoSIT_Architecture\validator_architecture\validator\core\target\test-classes\examples\simple\repository\does-not-exist.sch (Das System kann die angegebene Datei nicht finden)</message>
             <supplemental role="java-trace">java.io.FileNotFoundException: C:\Users\49157\grendor\KoSIT\KoSIT_Architecture\validator_architecture\validator\core\target\test-classes\examples\simple\repository\does-not-exist.sch (Das System kann die angegebene Datei nicht finden)&#13;
 	at java.base/java.io.FileInputStream.open0(Native Method)&#13;
@@ -121,11 +121,11 @@
 	at java.base/sun.net.www.protocol.file.FileURLConnection.connect(FileURLConnection.java:86)&#13;
 	at java.base/sun.net.www.protocol.file.FileURLConnection.getInputStream(FileURLConnection.java:183)&#13;
 	at java.base/java.net.URL.openStream(URL.java:1263)&#13;
-	at org.kosit.validator.impl.conformatron.util.ArtifactResolver.read(ArtifactResolver.java:94)&#13;
-	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java:170)&#13;
-	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java:135)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:124)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step5ArtifactIsMissing(CvrlUnhappyPathTest.java:282)&#13;
+	at org.kosit.cvr.util.ArtifactResolver.read(ArtifactResolver.java:140)&#13;
+	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java:182)&#13;
+	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java:146)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:133)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step5ArtifactIsMissing(CvrlUnhappyPathTest.java:291)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;
@@ -216,10 +216,10 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:31+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:20+02:00</timestamp>
             <creator name="decision-recommendation"/>
         </metadata>
-        <detection severity="error" code="decision-reject" cvrl:decision="REJECT">
+        <detection severity="error" code="decision-reject" cvr:decision="REJECT">
             <message>Run cancelled at retrieve-artifacts: artifact-missing</message>
         </detection>
         <digest valid="false" error-count="1" error-codes="decision-reject"/>

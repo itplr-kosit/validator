@@ -12,8 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.validator.TestHelper;
+import org.kosit.validator.testdata.TestResources;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
@@ -30,9 +30,9 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
+import org.kost.validator.api.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
+import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
 
 /**
  * <b>End-to-end walkthrough of the canonical pipeline, steps 2–9</b>, composed exclusively from the new-API actions —
@@ -55,7 +55,8 @@ public class CanonicalPipelineTest {
 
     @BeforeEach
     public void setup() {
-        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI).build(TestHelper.getTestProcessor());
+        this.configuration = VConfiguration.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
 
@@ -78,7 +79,8 @@ public class CanonicalPipelineTest {
         trace.addAll(codes(selected.detections().getAll()));
 
         // step 5: RETRIEVE_ARTIFACTS — repository-confined resolution of the scenario's references
-        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(selected.selected());
+        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI, true)
+                .execute(selected.selected());
         assertThat(retrieved.isSuccess()).isTrue();
         trace.addAll(codes(retrieved.detections().getAll()));
 
@@ -90,7 +92,7 @@ public class CanonicalPipelineTest {
 
         // step 7: APPLY_RULES — on the retained bytes; findings do not fail the step; scenario overrides applied
         final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets(),
-                SeverityOverrides.of(selected.selected()));
+                ScenarioSeverityOverrides.of(selected.selected()));
         assertThat(applied.isSuccess()).isTrue();
         trace.addAll(codes(applied.detections().getAll()));
 
@@ -114,7 +116,7 @@ public class CanonicalPipelineTest {
     @Test
     public void testConformantDocumentPassesAllSteps() {
         final List<String> trace = new ArrayList<>();
-        final ComputeConformanceActionResult conformance = runPipeline(Simple.SIMPLE_VALID, trace);
+        final ComputeConformanceActionResult conformance = runPipeline(TestResources.Simple.SIMPLE_VALID, trace);
 
         assertThat(conformance.result().hasNonConformantTarget()).isFalse();
         assertThat(conformance.result().getAllStatements()).extracting("result").containsOnly(CTConformanceResult.CONFORMANT);
@@ -136,7 +138,7 @@ public class CanonicalPipelineTest {
     @Test
     public void testNonConformantDocumentIsTraceableToTheDrivingRuleSet() {
         final List<String> trace = new ArrayList<>();
-        final ComputeConformanceActionResult conformance = runPipeline(Simple.SCHEMATRON_INVALID, trace);
+        final ComputeConformanceActionResult conformance = runPipeline(TestResources.Simple.SCHEMATRON_INVALID, trace);
 
         assertThat(conformance.result().hasNonConformantTarget()).isTrue();
         // XSD passed, the schematron drove the non-conformance — per-rule-set traceability

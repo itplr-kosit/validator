@@ -9,10 +9,12 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.config.TestConfiguration;
-import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.testdata.TestResources;
 
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XdmNode;
@@ -32,8 +34,8 @@ public class ScenarioRepositoryTest {
     @BeforeEach
     public void setup() {
         this.configInstance = new TestConfiguration();
-        this.configInstance.setContentRepository(
-                new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null));
+        this.configInstance
+                .setContentRepository(new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(), null));
 
         final Scenario s = createScenario();
         this.configInstance.setScenarios(new ArrayList<>());
@@ -49,7 +51,7 @@ public class ScenarioRepositoryTest {
 
     @Test
     public void testHappyCase() throws Exception {
-        final SingleProcessingResult<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
+        final SingleProcessingResult<Scenario, String> scenario = this.repository.selectScenario(load(TestResources.Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isTrue();
     }
@@ -59,7 +61,7 @@ public class ScenarioRepositoryTest {
         this.configInstance.setScenarios(new ArrayList<>());
         final Scenario fallback = createFallback();
         this.configInstance.setFallbackScenario(fallback);
-        final SingleProcessingResult<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
+        final SingleProcessingResult<Scenario, String> scenario = this.repository.selectScenario(load(TestResources.Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");
@@ -78,7 +80,7 @@ public class ScenarioRepositoryTest {
     public void testMultiMatch() throws Exception {
         this.configInstance.getScenarios().add(createScenario());
         this.configInstance.setFallbackScenario(createFallback());
-        final SingleProcessingResult<Scenario, String> scenario = this.repository.selectScenario(load(Simple.SCENARIOS));
+        final SingleProcessingResult<Scenario, String> scenario = this.repository.selectScenario(load(TestResources.Simple.SCENARIOS));
         assertThat(scenario).isNotNull();
         assertThat(scenario.isValid()).isFalse();
         assertThat(scenario.getObject().getName()).isEqualTo("fallback");
@@ -102,7 +104,7 @@ public class ScenarioRepositoryTest {
     }
 
     private XdmNode load(final URI uri) {
-        return TestHelper.parseDocument(this.configInstance.getContentRepository().getProcessor(), TestHelper.read(uri)).getObject();
+        return TestObjectFactory.parseDocument(this.configInstance.getContentRepository().getProcessor(), TestHelper.read(uri)).getObject();
     }
 
     private XPathExecutable createXpath(final String expression) {

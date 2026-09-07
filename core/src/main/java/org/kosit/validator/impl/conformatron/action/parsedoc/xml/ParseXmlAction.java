@@ -15,27 +15,19 @@
  */
 package org.kosit.validator.impl.conformatron.action.parsedoc.xml;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
-import javax.xml.parsers.DocumentBuilder;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.conformatron.api.model.action.CTStepResult;
-import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.source.CTValidationSource;
-import org.kosit.base.xml.XmlHelper;
+import org.kosit.conformatron.detection.DetectionList;
+import org.kosit.conformatron.source.DomValidationSource;
+import org.kosit.conformatron.source.ValidationSource;
 import org.kosit.validator.impl.conformatron.action.parsedoc.AbstractParseDocumentAction;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.source.DomValidationSource;
-import org.kosit.validator.impl.conformatron.source.ValidationSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kost.validator.api.xml.XmlDetection;
+import org.kost.validator.api.xml.XmlParser;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * First validator action built against the conformatron-api: step 2 of the canonical pipeline, {@code PARSE_DOCUMENT}
@@ -59,8 +51,6 @@ import org.xml.sax.SAXParseException;
  */
 public class ParseXmlAction extends AbstractParseDocumentAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParseXmlAction.class);
-
     @Override
     public String getName() {
         return "ParseXML";
@@ -76,37 +66,15 @@ public class ParseXmlAction extends AbstractParseDocumentAction {
         Objects.requireNonNull(input);
 
         final CTValidationSource validationSource = ValidationSource.completeXml(input);
-        final List<CTDetection> errors = new ArrayList<>();
-        try {
-            // Setup XML reader
-            final DocumentBuilder builder = XmlHelper.createSafeDocumentBuilder();
-            builder.setErrorHandler(new CollectingErrorHandler(validationSource.getName(), errors));
 
-            // Main reading
-            final Document document = builder.parse(input.getSourceStream(), validationSource.getName());
-            if (errors.isEmpty()) {
-                // Parsing succeeded
-                return new ParseXmlResult(CTStepResult.SUCCESS, DetectionList.of(XmlDetection.success(validationSource)),
-                        new DomValidationSource(validationSource, document));
-            }
-        } catch (final SAXParseException e) {
-            // already collected by CollectingErrorHandler#fatalError unless thrown directly
-            if (errors.stream().noneMatch(d -> d.getLinkedException() == e)) {
-                errors.add(XmlDetection.errorNotWellformed(validationSource.getName(), e));
-            }
-        } catch (final SAXException e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Exception while parsing {}", validationSource.getName(), e);
-            }
-            errors.add(XmlDetection.errorNotWellformed(validationSource.getName(), e));
-        } catch (final IOException e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("IOException while parsing {}", validationSource.getName(), e);
-            }
-            errors.add(XmlDetection.ioError(validationSource.getName(), e));
+        final AtomicReference<Document> docHolder = new AtomicReference<>();
+        final DetectionList detections = XmlParser.parseXmlDom(input, docHolder::set);
+        if (detections.containsNoError()) {
+            // Parsing succeeded
+            return new ParseXmlResult(CTStepResult.SUCCESS, new DetectionList(XmlDetection.success(validationSource)),
+                    new DomValidationSource(validationSource, docHolder.get()));
         }
-
         // Parsing failed (for whatever reason)
-        return new ParseXmlResult(CTStepResult.FAILURE, new DetectionList(errors), DomValidationSource.unparsed(validationSource));
+        return new ParseXmlResult(CTStepResult.FAILURE, detections, DomValidationSource.unparsed(validationSource));
     }
 }

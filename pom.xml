@@ -8,11 +8,14 @@
         <module>test-data</module>
         <module>conformatron</module>
         <module>base</module>
+        <module>conformatron-impl</module>
+        <module>api</module>
         <module>jaxb</module>
         <module>svrl</module>
+        <module>schematron</module>
         <module>xvrl</module>
+        <module>cvr</module>
         <module>scenario</module>
-        <module>api</module>
         <module>core</module>
         <module>cli</module>
         <module>server</module>
@@ -81,12 +84,6 @@
     </properties>
 
     <repositories>
-        <repository>
-            <id>project.local</id>
-            <name>project</name>
-            <url>file:${project.basedir}/libs</url>
-        </repository>
-
         <repository>
             <name>Central Portal Snapshots</name>
             <id>central-portal-snapshots</id>
@@ -209,12 +206,6 @@
                 <version>${version.mockito}</version>
             </dependency>
             <dependency>
-                <groupId>de.kosit.validationtool</groupId>
-                <artifactId>packaged-test-scenarios</artifactId>
-                <version>1.0.3</version>
-            </dependency>
-            
-            <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli</artifactId>
                 <version>${version.picocli}</version>
@@ -227,7 +218,22 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>validator-test-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>validator-conformatron</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-conformatron-impl</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -237,21 +243,38 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>validator-core</artifactId>
+                <artifactId>validator-jaxb</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-svrl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-xvrl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-schematron</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-cvr</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-scenario</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-core</artifactId>
                 <version>${project.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>validator-test-data</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -511,6 +534,19 @@
                         <id>attach-sources</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- Required to create the test JARs -->
+                            <goal>test-jar</goal>
                         </goals>
                     </execution>
                 </executions>

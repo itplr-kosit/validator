@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    CVR - Conformance Validation Report - the XVRL profile of the KoSIT validator.
+
+    A CVR report IS an XVRL report: its structure is defined by xvrl-1.0.xsd and nothing here repeats that.
+    This schema types the CVR extension namespace on top of it - the attributes and the one element that the
+    profile adds to XVRL.
+
+    Note on strictness: XVRL admits foreign attributes through <xs:anyAttribute processContents="skip"/>, so a
+    validating parser will not apply the declarations below while it validates a report against xvrl-1.0.xsd.
+    They are the normative statement of the vocabulary and its value spaces, and they are what tooling reads;
+    the constraints that have to hold in an actual report live in sch/cvr-1.0.sch.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cvr="urn:conformatron:cvr:draft"
+           targetNamespace="urn:conformatron:cvr:draft"
+           elementFormDefault="qualified"
+           attributeFormDefault="qualified"
+           version="draft">
+
+    <!-- ==================== simple types ==================== -->
+
+    <xs:simpleType name="RunStatus">
+        <xs:annotation>
+            <xs:documentation>Whether the pipeline ran to the end or was cancelled at a failing step.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="COMPLETED"/>
+            <xs:enumeration value="CANCELLED"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="Severity">
+        <xs:annotation>
+            <xs:documentation>The XVRL severity tokens, repeated here for the CVR attributes that carry one.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="info"/>
+            <xs:enumeration value="warning"/>
+            <xs:enumeration value="error"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="Conformance">
+        <xs:annotation>
+            <xs:documentation>The verdict a conformance statement reached for one target.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="CONFORMANT"/>
+            <xs:enumeration value="NON_CONFORMANT"/>
+            <xs:enumeration value="INCONCLUSIVE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="Encoding">
+        <xs:annotation>
+            <xs:documentation>
+                How an embedded payload is carried: "dom" as an XML fragment - readable, and byte faithful because
+                the report itself is UTF-8 - or "base64", which is byte faithful for any encoding and any syntax.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="dom"/>
+            <xs:enumeration value="base64"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="HexHash">
+        <xs:restriction base="xs:token">
+            <xs:pattern value="[0-9a-f]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- ==================== elements ==================== -->
+
+    <xs:element name="hash">
+        <xs:annotation>
+            <xs:documentation>
+                The fingerprint of the thing a detection is about, inside the XVRL context element - the bytes that
+                were validated, or the rule set version that ran. Lower case hex.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="cvr:HexHash">
+                    <xs:attribute ref="cvr:algorithm" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ==================== attributes ==================== -->
+
+    <!-- on xvrl:reports -->
+    <xs:attribute name="conformant" type="xs:boolean">
+        <xs:annotation>
+            <xs:documentation>The overall verdict of the run. A cancelled run is never conformant.</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="status" type="cvr:RunStatus"/>
+
+    <!-- on xvrl:schema, inside the metadata of an apply-rules report -->
+    <xs:attribute name="phase" type="xs:token">
+        <xs:annotation>
+            <xs:documentation>The Schematron phase the rule set was prepared for.</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <!-- on xvrl:detection -->
+    <xs:attribute name="original-severity" type="cvr:Severity">
+        <xs:annotation>
+            <xs:documentation>
+                The severity the rule itself declared, kept auditable when a scenario customLevel override changed
+                the effective one.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="scenario-id" type="xs:string"/>
+    <xs:attribute name="artifact-id" type="xs:string"/>
+    <xs:attribute name="target-id" type="xs:string"/>
+    <xs:attribute name="conformance" type="cvr:Conformance"/>
+
+    <!-- on xvrl:detection of the decision-recommendation step (step 9) -->
+    <xs:simpleType name="Decision">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="ACCEPT"/>
+            <xs:enumeration value="REJECT"/>
+            <xs:enumeration value="EVALUATE_FURTHER"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:attribute name="decision" type="cvr:Decision"/>
+
+    <!-- on xvrl:location -->
+    <xs:attribute name="artifact-type" type="xs:token">
+        <xs:annotation>
+            <xs:documentation>The kind of validation artifact found at a location, e.g. xsd or schematron-xslt2.</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <!-- on xvrl:message -->
+    <xs:attribute name="mime-type" type="xs:token"/>
+    <xs:attribute name="encoding" type="cvr:Encoding"/>
+    <xs:attribute name="source-encoding" type="xs:token">
+        <xs:annotation>
+            <xs:documentation>
+                The encoding the embedded source document declares. Required for a base64 payload, because writing
+                it back out needs it; meaningless for a dom payload, which is in the report's own encoding.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <!-- on xvrl:supplemental -->
+    <xs:attribute name="role" type="xs:token">
+        <xs:annotation>
+            <xs:documentation>What a supplemental carries, e.g. java-trace for a stack trace.</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <!-- on cvr:hash -->
+    <xs:attribute name="algorithm" type="xs:token"/>
+
+</xs:schema>

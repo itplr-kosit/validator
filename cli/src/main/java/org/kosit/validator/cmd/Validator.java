@@ -22,7 +22,10 @@ import org.conformatron.api.annotation.Nonempty;
 import org.conformatron.api.model.source.CTReadResource;
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.jspecify.annotations.NonNull;
+import org.kosit.base.io.ResourceHelper;
 import org.kosit.base.string.StringHelper;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
@@ -31,10 +34,7 @@ import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
 import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.impl.conformatron.source.ResourceHelper;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
+import org.kost.validator.api.saxon.ProcessorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ import net.sf.saxon.s9api.Processor;
 
 /**
  * Actual evaluation and processing of CommandLineOptions arguments.
- * 
+ *
  * @author Andreas Penski
  */
 public class Validator {

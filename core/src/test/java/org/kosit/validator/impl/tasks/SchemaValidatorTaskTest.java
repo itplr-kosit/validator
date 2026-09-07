@@ -18,16 +18,16 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.error.SimpleError;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.SchemaProvider;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.TestObjectFactory;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.source.Resource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
+import org.kosit.validator.testdata.TestResources;
 import org.xml.sax.SAXException;
 
 /**
@@ -46,7 +46,7 @@ public class SchemaValidatorTaskTest {
 
     @Test
     public void testSimple() {
-        final Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
+        final Process process = TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_VALID)).build();
         final ProcessStepResult<Boolean, SimpleError> processStepResult = this.service.check(process);
         final SingleProcessingResult<?, ?> result = processStepResult.getResult();
         assertThat(result).isNotNull();
@@ -55,7 +55,7 @@ public class SchemaValidatorTaskTest {
 
     @Test
     public void testValidationFailure() {
-        final CTReadResource input = TestHelper.read(Simple.SCHEMA_INVALID);
+        final CTReadResource input = TestHelper.read(TestResources.Simple.SCHEMA_INVALID);
         final Process process = TestProcessBuilder.create(input).build();
         final ProcessStepResult<Boolean, SimpleError> processStepResult = this.service.check(process);
         final SingleProcessingResult<Boolean, SimpleError> result = processStepResult.getResult();
@@ -75,11 +75,11 @@ public class SchemaValidatorTaskTest {
 
     @Test
     public void testNoRepeatableRead() throws Exception {
-        try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream() ) {
+        try ( final InputStream inputStream = TestResources.Simple.SIMPLE_VALID.toURL().openStream() ) {
             // don't read the real inputstream here, use a dummy result!
             final Process process = TestProcessBuilder
-                    .create(ReadResource.inMemory(Resource.of(Simple.SIMPLE_VALID.toASCIIString(), inputStream)), false)
-                    .setParseResult(TestHelper.read(Simple.SIMPLE_VALID)).build();
+                    .create(ReadResource.inMemory(Resource.of(TestResources.Simple.SIMPLE_VALID.toASCIIString(), inputStream)), false)
+                    .setParseResult(TestHelper.read(TestResources.Simple.SIMPLE_VALID)).build();
             final SingleProcessingResult<Boolean, SimpleError> result = this.service.check(process).getResult();
             assertThat(result).isNotNull();
             assertThat(result.isValid()).isTrue();
@@ -88,9 +88,9 @@ public class SchemaValidatorTaskTest {
 
     @Test
     public void testNoRepeatableReadBigFile() throws Exception {
-        try ( final InputStream inputStream = Simple.SIMPLE_VALID.toURL().openStream();
+        try ( final InputStream inputStream = TestResources.Simple.SIMPLE_VALID.toURL().openStream();
               final InputStream lis = BoundedInputStream.builder().setInputStream(inputStream).setCount(6).get() ) {
-            final ReadResource input = ReadResource.inMemory(Resource.of(Simple.SIMPLE_VALID.toASCIIString(), lis));
+            final ReadResource input = ReadResource.inMemory(Resource.of(TestResources.Simple.SIMPLE_VALID.toASCIIString(), lis));
             final Process process = TestProcessBuilder.create(input).build();
             // process.addStepResult(Helper.createParseResult(Simple.SIMPLE_VALID));
 
@@ -105,7 +105,7 @@ public class SchemaValidatorTaskTest {
 
     @Test
     public void testProcessingError() throws IOException, SAXException {
-        final Process process = TestProcessBuilder.create(TestHelper.read(Simple.SIMPLE_VALID)).build();
+        final Process process = TestProcessBuilder.create(TestHelper.read(TestResources.Simple.SIMPLE_VALID)).build();
         final SingleProcessingResult<Scenario, String> scenarioCheckResult = process.getResult(ScenarioSelectionTask.KEY);
         final Scenario scenario = scenarioCheckResult.getObject();
         final Schema schema = mock(Schema.class);

@@ -8,15 +8,15 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.base.string.StringHelper;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 
 import net.sf.saxon.s9api.XPathExecutable;
 
 /**
  * Tests {@link XPathBuilder}.
- * 
+ *
  * @author Andreas Penski
  */
 public class XPathBuilderTest {
@@ -26,7 +26,7 @@ public class XPathBuilderTest {
         final String name = StringHelper.randomString(5);
         final XPathBuilder b = new XPathBuilder(name);
         b.setXpath("//*");
-        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(TestHelper.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
         assertThat(b.getNamespaces()).isNotNull();
@@ -43,7 +43,7 @@ public class XPathBuilderTest {
         ns.put("p", "http://somens");
         b.setNamespaces(ns);
         b.setXpath("//p:*");
-        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(TestHelper.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
         assertThat(b.getNamespaces()).isNotEmpty();
@@ -58,7 +58,7 @@ public class XPathBuilderTest {
         ns.put("p", "http://somens");
         b.setNamespaces(ns);
         b.setXpath("//u:*");
-        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(TestHelper.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isFalse();
     }
@@ -66,7 +66,7 @@ public class XPathBuilderTest {
     @Test
     public void testExecutable() {
         final String name = StringHelper.randomString(5);
-        final ContentRepository repository = Simple.createContentRepository();
+        final ContentRepository repository = TestHelper.createContentRepository();
         final XPathExecutable xpath = repository.createXPath("//*", Collections.emptyMap());
         final XPathBuilder b = new XPathBuilder(name);
         b.setExecutable(xpath);
@@ -80,7 +80,7 @@ public class XPathBuilderTest {
     @Test
     public void testExecutableWithNamespace() {
         final String name = StringHelper.randomString(5);
-        final ContentRepository repository = Simple.createContentRepository();
+        final ContentRepository repository = TestHelper.createContentRepository();
         final Map<String, String> ns = new HashMap<>();
         ns.put("p", "http://somens");
         final XPathExecutable xpath = repository.createXPath("//p:*", ns);
@@ -98,7 +98,7 @@ public class XPathBuilderTest {
     public void testNoName() {
         final XPathBuilder b = new XPathBuilder(null);
         b.setXpath("//*");
-        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(TestHelper.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isTrue();
         assertThat(b.getName()).isNull();
@@ -108,7 +108,7 @@ public class XPathBuilderTest {
     public void testNoConfig() {
         final String name = StringHelper.randomString(5);
         final XPathBuilder b = new XPathBuilder(name);
-        final SingleProcessingResult<XPathExecutable, String> result = b.build(Simple.createContentRepository());
+        final SingleProcessingResult<XPathExecutable, String> result = b.build(TestHelper.createContentRepository());
         assertThat(result).isNotNull();
         assertThat(result.isValid()).isFalse();
     }

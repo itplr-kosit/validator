@@ -10,38 +10,43 @@
     </parent>
 
     <artifactId>validator-api</artifactId>
-    
+    <name>KoSIT Validator API</name>
+    <description>The KoSIT Validator API.</description>
+
     <dependencies>
         <dependency>
-            <groupId>org.kosit</groupId>
-            <artifactId>validator-svrl</artifactId>
-            <version>${project.version}</version>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-jaxb</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kosit</groupId>
-            <artifactId>validator-xvrl</artifactId>
-            <version>${project.version}</version>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-conformatron-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.kosit</groupId>
-            <artifactId>validator-scenario</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
-        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
-            <!-- Embed CycloneDX SBOM in the deployable jar (config inherited from parent pluginManagement). -->
-            <plugin>
-                <groupId>org.cyclonedx</groupId>
-                <artifactId>cyclonedx-maven-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 </project>

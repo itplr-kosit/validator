@@ -9,9 +9,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.base.string.StringHelper;
-import org.kosit.validator.impl.ContentRepository;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.NamespaceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
@@ -20,14 +20,14 @@ import net.sf.saxon.s9api.XPathExecutable;
 
 /**
  * Test {@link ScenarioBuilder}.
- * 
+ *
  * @author Andreas Penski
  */
 public class ScenarioBuilderTest {
 
     @Test
     public void simpleValid() {
-        final SingleProcessingResult<Scenario, String> result = createScenario().build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = createScenario().build(TestHelper.createContentRepository());
         assertThat(result.isValid()).isTrue();
         assertThat(result.getObject().getConfiguration()).isNotNull();
     }
@@ -36,7 +36,7 @@ public class ScenarioBuilderTest {
     public void testNoSchema() {
         final ScenarioBuilder builder = createScenario();
         builder.validate((SchemaBuilder) null);
-        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(TestHelper.createContentRepository());
         assertThat(result.isValid()).isFalse();
         assertThat(result.getErrors()).anyMatch(e -> e.contains("schema"));
     }
@@ -45,7 +45,7 @@ public class ScenarioBuilderTest {
     public void testNoMatch() {
         final ScenarioBuilder builder = createScenario();
         builder.match((String) null);
-        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(TestHelper.createContentRepository());
         assertThat(result.isValid()).isFalse();
         assertThat(result.getErrors()).anyMatch(e -> e.contains("match"));
     }
@@ -54,7 +54,7 @@ public class ScenarioBuilderTest {
     public void testInvalidMatch() {
         final ScenarioBuilder builder = createScenario();
         builder.match("/////");
-        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(TestHelper.createContentRepository());
         assertThat(result.isValid()).isFalse();
         assertThat(result.getErrors()).anyMatch(e -> e.contains("match"));
     }
@@ -63,7 +63,7 @@ public class ScenarioBuilderTest {
     public void testNoAccept() {
         final ScenarioBuilder builder = createScenario();
         builder.acceptWith((String) null);
-        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(TestHelper.createContentRepository());
         assertThat(result.isValid()).isTrue();
     }
 
@@ -71,14 +71,14 @@ public class ScenarioBuilderTest {
     public void testInvalidAccept() {
         final ScenarioBuilder builder = createScenario();
         builder.acceptWith("/////");
-        final SingleProcessingResult<Scenario, String> result = builder.build(Simple.createContentRepository());
+        final SingleProcessingResult<Scenario, String> result = builder.build(TestHelper.createContentRepository());
         assertThat(result.isValid()).isFalse();
         assertThat(result.getErrors()).anyMatch(e -> e.contains("accept"));
     }
 
     @Test
     public void testCombinedNamespaces() {
-        final ContentRepository repository = Simple.createContentRepository();
+        final ContentRepository repository = TestHelper.createContentRepository();
         final Map<String, String> ns1 = new HashMap<>();
         ns1.put("n1", "http://n1.org");
         final XPathExecutable match = repository.createXPath("//n1:*", ns1);
@@ -102,7 +102,7 @@ public class ScenarioBuilderTest {
 
     @Test
     public void testConfigureWithExecutable() {
-        final ContentRepository repository = Simple.createContentRepository();
+        final ContentRepository repository = TestHelper.createContentRepository();
         final XPathExecutable match = repository.createXPath("//*", null);
         final XPathExecutable accept = repository.createXPath("//*", null);
         final ScenarioBuilder builder = createScenario();
@@ -120,7 +120,7 @@ public class ScenarioBuilderTest {
 
     @Test
     public void testConfigureWithSchematron() {
-        final ContentRepository repository = Simple.createContentRepository();
+        final ContentRepository repository = TestHelper.createContentRepository();
         final XPathExecutable match = repository.createXPath("//*", null);
         final XPathExecutable accept = repository.createXPath("//*", null);
         final ScenarioBuilder builder = createScenario();
@@ -139,7 +139,7 @@ public class ScenarioBuilderTest {
 
     @Test
     public void testBasicAttributes() {
-        final ContentRepository repository = Simple.createContentRepository();
+        final ContentRepository repository = TestHelper.createContentRepository();
         final String random = StringHelper.randomString(5);
         final ScenarioBuilder builder = createScenario();
         builder.name(random).description(random);
@@ -153,7 +153,7 @@ public class ScenarioBuilderTest {
 
     @Test
     public void testNoBasicAttributes() {
-        final ContentRepository repository = Simple.createContentRepository();
+        final ContentRepository repository = TestHelper.createContentRepository();
         final ScenarioBuilder builder = createScenario();
         builder.name(null);
         final SingleProcessingResult<Scenario, String> result = builder.build(repository);

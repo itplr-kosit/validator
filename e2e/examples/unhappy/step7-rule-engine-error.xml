@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-03T22:37:30+02:00</timestamp>
+        <timestamp>2026-09-07T14:44:19+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="simple.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:30+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
-            <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+            <message xml:id="parse-document-content" cvr:mime-type="application/xml" cvr:encoding="dom">
                 <simple xmlns="http://validator.kosit.de/test-sample">
     <inner>asldkfj</inner>
     <content>
@@ -27,17 +27,17 @@
 </simple>
             </message>
             <context>
-                <cvrl:hash cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
             </context>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:30+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
             <creator name="detect-scenarios"/>
         </metadata>
-        <detection cvrl:scenario-id="Simple">
+        <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
                 <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-engine-error.xml"/>
@@ -47,12 +47,12 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:30+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
             <creator name="select-scenario"/>
         </metadata>
-        <detection cvrl:scenario-id="Simple">
+        <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' selected</message>
-            <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+            <message xml:id="select-scenario-content" cvr:mime-type="application/xml" cvr:encoding="dom">
                 <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
                     <name>Simple</name>
                     <description>
@@ -101,39 +101,39 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:30+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
             <creator name="retrieve-artifacts"/>
         </metadata>
-        <detection cvrl:artifact-id="simple.xsd">
+        <detection cvr:artifact-id="simple.xsd">
             <message>Artifact retrieved</message>
             <context>
-                <location href="simple.xsd" cvrl:artifact-type="xsd"/>
-                <cvrl:hash cvrl:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvrl:hash>
+                <location href="simple.xsd" cvr:artifact-type="xsd"/>
+                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvrl:hash>
             </context>
         </detection>
-        <detection cvrl:artifact-id="simple-runtime-error.sch">
+        <detection cvr:artifact-id="simple-runtime-error.sch">
             <message>Artifact retrieved</message>
             <context>
-                <location href="simple-runtime-error.sch" cvrl:artifact-type="schematron-schxslt2-xslt3"/>
-                <cvrl:hash cvrl:algorithm="SHA-512">3695478cdf445280e6efbd5ed251c1ea46fcf6d1c48dc560b3a648bc3bb9b789b3951f83fb03f2ffbc6b3ecab6d1b188055acac8040a6ac51a49bdee0e4dae53</cvrl:hash>
+                <location href="simple-runtime-error.sch" cvr:artifact-type="schematron-schxslt2-xslt3"/>
+                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3695478cdf445280e6efbd5ed251c1ea46fcf6d1c48dc560b3a648bc3bb9b789b3951f83fb03f2ffbc6b3ecab6d1b188055acac8040a6ac51a49bdee0e4dae53</cvrl:hash>
             </context>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:30+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
             <validator name="schxslt"/>
             <validator name="Saxon" version="12.10"/>
             <creator name="prepare-rules"/>
         </metadata>
-        <detection cvrl:artifact-id="simple.xsd">
+        <detection cvr:artifact-id="simple.xsd">
             <message>Compiled (XML Schema)</message>
             <context>
                 <location href="simple.xsd"/>
             </context>
         </detection>
-        <detection cvrl:artifact-id="simple-runtime-error.sch">
+        <detection cvr:artifact-id="simple-runtime-error.sch">
             <message>Compiled (Schematron via schxslt)</message>
             <context>
                 <location href="simple-runtime-error.sch"/>
@@ -143,7 +143,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:30+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
             <creator name="apply-rules"/>
             <schema href="simple.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
         </metadata>
@@ -154,20 +154,20 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:30+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
             <creator name="apply-rules"/>
-            <schema href="simple-runtime-error.sch" schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+            <schema href="simple-runtime-error.sch" schematypens="http://purl.oclc.org/dsdl/schematron" cvr:phase="#ALL"/>
         </metadata>
         <detection severity="error" code="rule-engine-error">
             <message>Rule set 'simple-runtime-error.sch' could not be applied: Cannot convert string "asldkfj" to an integer</message>
             <supplemental role="java-trace">net.sf.saxon.s9api.SaxonApiException: Cannot convert string "asldkfj" to an integer&#13;
 	at net.sf.saxon.s9api.XsltTransformer.transform(XsltTransformer.java:371)&#13;
-	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applySchematron(ApplyRulesAction.java:200)&#13;
-	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java:175)&#13;
-	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java:160)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:92)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:156)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step7RuleEngineFails(CvrlUnhappyPathTest.java:306)&#13;
+	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applySchematron(ApplyRulesAction.java:199)&#13;
+	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java:174)&#13;
+	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java:159)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:91)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:164)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step7RuleEngineFails(CvrlUnhappyPathTest.java:315)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;
@@ -290,10 +290,10 @@ Caused by: ValidationException: Cannot convert string "asldkfj" to an integer&#1
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:37:30+02:00</timestamp>
+            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
             <creator name="decision-recommendation"/>
         </metadata>
-        <detection severity="error" code="decision-reject" cvrl:decision="REJECT">
+        <detection severity="error" code="decision-reject" cvr:decision="REJECT">
             <message>Run cancelled at apply-rules: rule-engine-error</message>
         </detection>
         <digest valid="false" error-count="1" error-codes="decision-reject"/>

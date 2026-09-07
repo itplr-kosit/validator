@@ -14,15 +14,14 @@ import org.conformatron.api.model.scenario.CTConformanceTarget;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.conformatron.rule.ApplyRulesResult;
+import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.validator.impl.conformatron.model.ApplyRulesResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
+import org.kosit.validator.testdata.TestResources;
 
 /**
  * Tests {@link ComputeConformanceAction} (step 8) on real step-7 results.
@@ -31,8 +30,8 @@ public class ComputeConformanceActionTest {
 
     private final ComputeConformanceAction action = new ComputeConformanceAction();
 
-    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
-            ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
+    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
+            TestResources.Simple.REPOSITORY_URI);
 
     private static final CTConformanceTarget TARGET = ConformanceTarget.of("simple-target", "Simple Target",
             List.of("simple.xsd", "simple.sch", "simple-runtime-error.sch"), null);
@@ -41,16 +40,16 @@ public class ComputeConformanceActionTest {
         final CTParsedValidationSource parsed = new ParseXmlAction().execute(TestHelper.read(document)).getParsedSource();
         final List<CTValidationArtifactReference> refs = List.of(references).stream()
                 .map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(refs,
-                "test");
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
+                true).execute(refs, "test");
         final List<CTPreparedRuleSet> ruleSets = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(), "test").ruleSets();
         return new ApplyRulesAction().execute(parsed, ruleSets).result();
     }
 
     @Test
     public void testConformantDocument() {
-        final ComputeConformanceActionResult result = this.action.execute(applyRules(Simple.SIMPLE_VALID, "simple.xsd", "simple.sch"),
-                List.of(TARGET));
+        final ComputeConformanceActionResult result = this.action
+                .execute(applyRules(TestResources.Simple.SIMPLE_VALID, "simple.xsd", "simple.sch"), List.of(TARGET));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.result().hasNonConformantTarget()).isFalse();
@@ -62,8 +61,8 @@ public class ComputeConformanceActionTest {
 
     @Test
     public void testFindingsMakeTheTargetNonConformant() {
-        final ComputeConformanceActionResult result = this.action.execute(applyRules(Simple.SCHEMATRON_INVALID, "simple.xsd", "simple.sch"),
-                List.of(TARGET));
+        final ComputeConformanceActionResult result = this.action
+                .execute(applyRules(TestResources.Simple.SCHEMATRON_INVALID, "simple.xsd", "simple.sch"), List.of(TARGET));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.result().hasNonConformantTarget()).isTrue();
@@ -77,7 +76,7 @@ public class ComputeConformanceActionTest {
     public void testSkippedRuleSetIsNotConformant() {
         // engine error on the first rule set -> second one is skipped by step 7; neither may look conformant
         final ComputeConformanceActionResult result = this.action
-                .execute(applyRules(Simple.SIMPLE_VALID, "simple-runtime-error.sch", "simple.sch"), List.of(TARGET));
+                .execute(applyRules(TestResources.Simple.SIMPLE_VALID, "simple-runtime-error.sch", "simple.sch"), List.of(TARGET));
 
         assertThat(result.result().getAllStatements()).extracting("result").containsExactly(CTConformanceResult.NON_CONFORMANT,
                 CTConformanceResult.NON_CONFORMANT);
@@ -85,7 +84,8 @@ public class ComputeConformanceActionTest {
 
     @Test
     public void testEmptyApplyRulesResultSkipsTheStepButForwardsAResult() {
-        final CTParsedValidationSource parsed = new ParseXmlAction().execute(TestHelper.read(Simple.SIMPLE_VALID)).getParsedSource();
+        final CTParsedValidationSource parsed = new ParseXmlAction().execute(TestHelper.read(TestResources.Simple.SIMPLE_VALID))
+                .getParsedSource();
         final ComputeConformanceActionResult result = this.action.execute(ApplyRulesResult.empty(parsed), List.of(TARGET));
 
         assertThat(result.status()).isEqualTo(CTStepResult.SKIPPED);
@@ -97,7 +97,7 @@ public class ComputeConformanceActionTest {
     @Test
     public void testAcceptSelectorTargetsAreRejectedForNow() {
         final CTConformanceTarget withSelector = ConformanceTarget.of("t", "T", List.of("simple.sch"), "count(//x) = 0");
-        final CTApplyRulesResult applied = applyRules(Simple.SIMPLE_VALID, "simple.sch");
+        final CTApplyRulesResult applied = applyRules(TestResources.Simple.SIMPLE_VALID, "simple.sch");
 
         assertThrows(IllegalArgumentException.class, () -> this.action.execute(applied, List.of(withSelector)));
     }

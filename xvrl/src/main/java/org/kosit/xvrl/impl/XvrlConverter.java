@@ -15,6 +15,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.ObjectHelper;
 import org.kosit.base.xml.SchemaResolver;
@@ -40,6 +41,18 @@ import jakarta.xml.bind.ValidationEventHandler;
  */
 public final class XvrlConverter {
 
+    /**
+     * The JAXB level converter for the generated XVRL model.
+     */
+    private static final class JaxbConverter extends AbstractJaxbConverter<XvrlReportsType> {
+
+        JaxbConverter() {
+            super(JAXB_CTX, XvrlReportsType.class, new ObjectFactory()::createReports);
+            withSchema(SCHEMA);
+            withNamespacePrefixMap(NS_PREFIX);
+        }
+    }
+
     public static final String NS_URI = "http://www.xproc.org/ns/xvrl";
 
     public static final String XSD_PATH = "/xsd";
@@ -62,16 +75,14 @@ public final class XvrlConverter {
         SCHEMA = SchemaResolver.createParsedSchema(XvrlConverter.class.getResource(XVRL_XSD_PATH));
     }
 
-    /**
-     * The JAXB level converter for the generated XVRL model.
-     */
-    private static final class JaxbConverter extends AbstractJaxbConverter<XvrlReportsType> {
+    @NonNull
+    public static Source getXvrlSchemaSource() {
+        return SchemaResolver.resolve(XvrlConverter.class.getResource(XVRL_XSD_PATH));
+    }
 
-        JaxbConverter() {
-            super(JAXB_CTX, XvrlReportsType.class, new ObjectFactory()::createReports);
-            withSchema(SCHEMA);
-            withNamespacePrefixMap(NS_PREFIX);
-        }
+    @NonNull
+    public static Schema getXvrlSchema() {
+        return SCHEMA;
     }
 
     private static XvrlReportsType toJaxb(final XvrlReports reports) {

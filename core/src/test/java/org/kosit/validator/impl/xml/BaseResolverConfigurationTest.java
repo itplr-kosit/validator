@@ -11,14 +11,15 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.SchemaFactory;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
-import org.kosit.validator.xml.resolve.StrictRelativeResolvingStrategy;
+import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
+import org.kosit.validator.TestHelper;
+import org.kosit.validator.testdata.TestResources;
 import org.kosit.validator.xvrl.XvrlSerializer;
 import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlReport;
 import org.kosit.xvrl.model.XvrlReports;
 import org.kosit.xvrl.model.XvrlSupplemental;
+import org.kost.validator.api.saxon.ProcessorProvider;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
@@ -30,7 +31,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 /**
  * Tests the internal functions used to create a secure resolver
- * 
+ *
  * @author Andreas Penski
  */
 public class BaseResolverConfigurationTest {
@@ -38,7 +39,7 @@ public class BaseResolverConfigurationTest {
     public static final String NOT_EXISTING_SCHEME = "not-existing-scheme";
 
     public static void main(final String[] args) throws JAXBException, SaxonApiException {
-        final XdmNode node = TestHelper.load(TestHelper.Simple.SIMPLE_VALID);
+        final XdmNode node = TestHelper.load(TestResources.Simple.SIMPLE_VALID);
         final XvrlSupplemental s = XvrlSupplemental.builder().id("bla")
                 .addContent(NodeOverNodeInfo.wrap(node.getUnderlyingNode()).getOwnerDocument().getDocumentElement()).build();
         final XvrlReports report = XvrlReports.builder()

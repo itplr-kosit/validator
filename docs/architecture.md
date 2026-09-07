@@ -22,9 +22,15 @@ graph TD
 
     subgraph "Validator Core (`validator-core`)"
         Core -->|selects| Scenario[Szenario Definition]
-        Core -->|executes| XSD[XSD Validation]
-        Core -->|executes| Schematron[Schematron Validation]
         Core -->|creates| XVRL[XVRL Report]
+    end
+
+    Core -->|uses| Engine[Validation Engine]
+
+    subgraph "Schematron Engine (`validator-schematron`)"
+        Engine -->|executes| XSD[XSD Validation]
+        Engine -->|executes| Schematron[Schematron Validation]
+        Engine -->|creates| CVR[Detections / SVRL]
     end
 ```
 

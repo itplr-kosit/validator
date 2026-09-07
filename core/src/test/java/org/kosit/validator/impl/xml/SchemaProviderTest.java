@@ -2,7 +2,7 @@ package org.kosit.validator.impl.xml;
 
 import javax.xml.validation.SchemaFactory;
 
-import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.schematron.resolve.ResolvingMode;
 
 /**
  * @author Andreas Penski

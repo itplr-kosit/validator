@@ -10,15 +10,14 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.conformatron.rule.PreparedRuleSet;
+import org.kosit.conformatron.validation.ResolvedValidationArtifact;
+import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
-import org.kosit.validator.impl.conformatron.model.PreparedRuleSet;
-import org.kosit.validator.impl.conformatron.model.ResolvedValidationArtifact;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
+import org.kosit.validator.testdata.TestResources;
 
 import net.sf.saxon.s9api.XsltExecutable;
 
@@ -29,13 +28,13 @@ public class PrepareRulesActionTest {
 
     private static final String DOCUMENT = "simple.xml";
 
-    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
-            ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
+    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
+            TestResources.Simple.REPOSITORY_URI);
 
     private final PrepareRulesAction action = new PrepareRulesAction(this.repository);
 
     private static List<CTResolvedValidationArtifact> retrieve(final String... references) {
-        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI)
+        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI, true)
                 .execute(List.of(references).stream().map(ValidationArtifactReference::of).toList(), DOCUMENT);
         assertThat(retrieved.isSuccess()).isTrue();
         return retrieved.artifacts();
@@ -58,7 +57,7 @@ public class PrepareRulesActionTest {
         assertThat(schematron.getEngineType()).isEqualTo(CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3);
         assertThat(schematron.getCompiledArtifact().getCompilation()).isInstanceOf(XsltExecutable.class);
         assertThat(schematron.getOutputFormatName()).isEqualTo(PreparedRuleSet.OUTPUT_FORMAT_SVRL);
-        assertThat(schematron.getPhase()).isEqualTo(PreparedRuleSet.PHASE_ALL);
+        assertThat(schematron.getPhase()).isEqualTo(PreparedRuleSet.SCHEMATRON_PHASE_ALL);
         assertThat(schematron.getEngineVersion()).isNotBlank();
         assertThat(schematron.getArtifactReference().getValidationArtifactReference().toString()).isEqualTo("simple.sch");
 

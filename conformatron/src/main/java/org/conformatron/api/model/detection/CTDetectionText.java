@@ -30,6 +30,11 @@ public interface CTDetectionText {
         return getDisplayText(Locale.ROOT);
     }
 
+    default String getDisplayTextOrFallback(final Locale locale) {
+        final var ret = getDisplayText(locale);
+        return ret != null ? ret : getDisplayTextLocaleIndependent();
+    }
+
     /**
      * @return <code>true</code> if the detection text is multilingual, <code>false</code> otherwise.
      */

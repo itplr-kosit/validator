@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-03T22:38:18+02:00</timestamp>
+        <timestamp>2026-09-07T14:45:01+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="config-cases/instances/processing-error/bin001.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:38:18+02:00</timestamp>
+            <timestamp>2026-09-07T14:45:01+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection severity="error" code="not-wellformed">
@@ -27,8 +27,8 @@
 	at java.xml/com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:137)&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(DOMParser.java:248)&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)&#13;
-	at java.xml/javax.xml.parsers.DocumentBuilder.parse(DocumentBuilder.java:151)&#13;
-	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:86)&#13;
+	at org.kost.validator.api.xml.XmlParser.parseXmlDom(XmlParser.java:54)&#13;
+	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:71)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.runSteps(XRechnungE2ERunner.java:190)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:176)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.main(XRechnungE2ERunner.java:131)&#13;
@@ -41,10 +41,10 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-03T22:38:18+02:00</timestamp>
+            <timestamp>2026-09-07T14:45:01+02:00</timestamp>
             <creator name="decision-recommendation"/>
         </metadata>
-        <detection severity="error" code="decision-reject" cvrl:decision="REJECT">
+        <detection severity="error" code="decision-reject" cvr:decision="REJECT">
             <message>Run cancelled at parse-document: not-wellformed</message>
         </detection>
         <digest valid="false" error-count="1" error-codes="decision-reject"/>

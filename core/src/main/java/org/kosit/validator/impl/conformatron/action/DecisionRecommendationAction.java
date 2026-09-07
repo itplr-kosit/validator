@@ -16,10 +16,9 @@ import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.SubjectDetection;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionList;
+import org.kosit.conformatron.detection.SubjectDetection;
 
 /**
  * Step 9 of the canonical pipeline, {@code DECISION_RECOMMENDATION}: turns the per-target conformance statements of
@@ -131,9 +130,9 @@ public class DecisionRecommendationAction implements CTAction {
 
     private static DecisionRecommendationResult result(final CTDecision decision, final String code, final CTStandardSeverity severity,
             final String rationale, final String resourceId) {
-        final Detection plain = Detection.of(severity, code, DetectionLocation.of(resourceId), rationale);
+        final Detection plain = Detection.builder().severity(severity).code(code).location(resourceId).text(rationale).build();
         final CTDetection detection = SubjectDetection.about(plain).with(SubjectDetection.ATTR_DECISION, decision.name()).build();
-        return new DecisionRecommendationResult(CTStepResult.SUCCESS, decision, rationale, DetectionList.of(detection));
+        return new DecisionRecommendationResult(CTStepResult.SUCCESS, decision, rationale, new DetectionList(detection));
     }
 
     /**

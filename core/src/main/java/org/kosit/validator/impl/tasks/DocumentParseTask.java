@@ -8,8 +8,7 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.NonNull;
 import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.impl.conformatron.source.ValidationSource;
-import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
+import org.kosit.conformatron.source.ValidationSource;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.saxon.SaxonHelper;
@@ -19,6 +18,7 @@ import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
 import org.kosit.xvrl.model.XvrlSupplemental;
 import org.kosit.xvrl.model.XvrlValidator;
+import org.kost.validator.api.saxon.XdmNodeValidationSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

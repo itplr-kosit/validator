@@ -1,7 +1,10 @@
 package org.kosit.base.string;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -11,7 +14,7 @@ import org.jspecify.annotations.Nullable;
 
 public final class StringHelper {
 
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+    private static final String[] EMPTY_STRING_ARRAY = {};
 
     public static boolean isEmpty(final String s) {
         return s == null || s.isEmpty();
@@ -388,6 +391,22 @@ public final class StringHelper {
             }
         }
         return null;
+    }
+
+    /**
+     * Hashes an already-read byte array with the same algorithm the read resources use, so a hash in a report always
+     * means the same thing no matter which step produced it (ADR-003).
+     *
+     * @param content the bytes to hash. May not be <code>null</code>.
+     * @param hasAlgorithm hash algorithm to use. May not be <code>null</code>.
+     * @return the hash as lower-case hex. Never <code>null</code>.
+     */
+    public static @NonNull String hashHex(final byte @NonNull [] content, final @NonNull String hasAlgorithm) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance(hasAlgorithm).digest(content));
+        } catch (final NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Unknown hash algorithm name '" + hasAlgorithm + "'", e);
+        }
     }
 
     private StringHelper() {

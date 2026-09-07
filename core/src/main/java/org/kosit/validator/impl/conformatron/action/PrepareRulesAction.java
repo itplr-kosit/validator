@@ -3,6 +3,7 @@ package org.kosit.validator.impl.conformatron.action;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.validation.Schema;
 
@@ -11,20 +12,18 @@ import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.kosit.base.string.StringHelper;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.SchXsltCompiler;
-import org.kosit.validator.impl.conformatron.model.CompiledValidationArtifact;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.SubjectDetection;
-import org.kosit.validator.impl.conformatron.model.PreparedRuleSet;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionList;
+import org.kosit.conformatron.detection.SubjectDetection;
+import org.kosit.conformatron.rule.PreparedRuleSet;
+import org.kosit.conformatron.validation.CompiledValidationArtifact;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.SchematronCompilerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +76,7 @@ public class PrepareRulesAction implements CTAction {
      * @param repository the content repository doing the compilation (compiler registry, cache, secured resolvers)
      */
     public PrepareRulesAction(final ContentRepository repository) {
-        this(repository, SchXsltCompiler.COMPILER_ID);
+        this(repository, null);
     }
 
     /**
@@ -85,11 +84,9 @@ public class PrepareRulesAction implements CTAction {
      * @param compilerId id of the Schematron compiler to use (e.g. {@code schxslt}, {@code iso-schematron})
      */
     public PrepareRulesAction(final ContentRepository repository, final String compilerId) {
-        if (repository == null) {
-            throw new IllegalArgumentException("repository may not be null");
-        }
+        Objects.requireNonNull(repository);
         this.repository = repository;
-        this.compilerId = StringHelper.blankToDefault(compilerId, SchXsltCompiler.COMPILER_ID);
+        this.compilerId = StringHelper.blankToDefault(compilerId, SchematronCompilerRegistry.FALLBACK_COMPILER_ID);
     }
 
     /**
@@ -128,9 +125,9 @@ public class PrepareRulesAction implements CTAction {
             throw new IllegalArgumentException("artifacts may not be null");
         }
         if (artifacts.isEmpty()) {
-            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.of(resourceId),
-                    "No artifacts retrieved (reason: no-artifacts)");
-            return new PrepareRulesResult(CTStepResult.SKIPPED, List.of(), DetectionList.of(skipped));
+            final CTDetection skipped = Detection.builderNone().code(CODE_STEP_SKIPPED).location(resourceId)
+                    .text("No artifacts retrieved (reason: no-artifacts)").build();
+            return new PrepareRulesResult(CTStepResult.SKIPPED, List.of(), new DetectionList(skipped));
         }
         final List<CTPreparedRuleSet> ruleSets = new ArrayList<>();
         final List<CTDetection> detections = new ArrayList<>();
@@ -157,33 +154,33 @@ public class PrepareRulesAction implements CTAction {
             switch (artifact.getValidationType()) {
                 case CTStandardValidationType.XSD -> {
                     final Schema schema = this.repository.createSchema(uri);
-                    ruleSets.add(PreparedRuleSet.xsd(reference, CompiledValidationArtifact.of(artifact.getValidationType(), schema)));
+                    ruleSets.add(PreparedRuleSet.xsd(reference, new CompiledValidationArtifact<>(artifact.getValidationType(), schema)));
                     detections.add(compiled(href, resourceId, "XML Schema"));
                 }
                 case CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3 -> {
-                    final XsltExecutable executable = this.repository.loadSchematronXslt(uri, this.compilerId);
-                    ruleSets.add(PreparedRuleSet
-                            .schematron(reference, CompiledValidationArtifact.of(artifact.getValidationType(), executable), engineVersion())
+                    final XsltExecutable executable = this.repository.loadSchematronXslt(this.compilerId, uri);
+                    ruleSets.add(PreparedRuleSet.schematron(reference,
+                            new CompiledValidationArtifact<>(artifact.getValidationType(), executable), engineVersion())
                             .withTranspilerId(this.compilerId));
                     detections.add(compiled(href, resourceId, "Schematron via " + this.compilerId));
                 }
                 case CTStandardValidationType.SCHEMATRON_XSLT2 -> {
                     final XsltExecutable executable = this.repository.loadXsltScript(uri);
                     ruleSets.add(PreparedRuleSet.schematron(reference,
-                            CompiledValidationArtifact.of(artifact.getValidationType(), executable), engineVersion()));
+                            new CompiledValidationArtifact<>(artifact.getValidationType(), executable), engineVersion()));
                     // nothing to report: an artifact that was transpiled ahead of time needed no preparation here
                 }
                 default -> {
-                    detections.add(about(href, Detection.of(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR,
-                            DetectionLocation.of(resourceId), "Unsupported validation type " + artifact.getValidationType().getID())));
+                    detections.add(about(href, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(resourceId)
+                            .text("Unsupported validation type " + artifact.getValidationType().getID()).build()));
                     return false;
                 }
             }
             return true;
         } catch (final RuntimeException e) {
             LOGGER.error("Could not prepare artifact {}", href, e);
-            detections.add(about(href, new Detection(CTStandardSeverity.ERROR, CODE_RULE_PREPARE_ERROR, DetectionLocation.of(resourceId),
-                    "Artifact could not be prepared: " + e.getMessage(), e)));
+            detections.add(about(href, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(resourceId)
+                    .text("Artifact could not be prepared: " + e.getMessage()).linkedException(e).build()));
             return false;
         }
     }
@@ -193,8 +190,7 @@ public class PrepareRulesAction implements CTAction {
     }
 
     private static CTDetection compiled(final String href, final String resourceId, final String what) {
-        return about(href,
-                Detection.of(CTStandardSeverity.NONE, CODE_RULE_COMPILED, DetectionLocation.of(resourceId), "Compiled (" + what + ")"));
+        return about(href, Detection.builderNone().code(CODE_RULE_COMPILED).location(resourceId).text("Compiled (" + what + ")").build());
     }
 
     /**

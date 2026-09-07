@@ -8,6 +8,8 @@ import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.kosit.validator.impl.Scenario;
+import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.cvr.model.SeverityOverrides;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithSchematron;
@@ -93,8 +95,8 @@ public final class ScenarioMatch implements CTScenarioMatch {
         }
         final ScenarioType configuration = scenario.getConfiguration();
         return new ScenarioMatch(scenario.getName(), scenario.getName(), configuration.getMatch(), false,
-                collectArtifactReferences(configuration), parsedSource, SeverityOverrides.fromConfiguration(configuration), configuration,
-                definitionFile);
+                collectArtifactReferences(configuration), parsedSource, ScenarioSeverityOverrides.fromConfiguration(configuration),
+                configuration, definitionFile);
     }
 
     /**
@@ -130,7 +132,7 @@ public final class ScenarioMatch implements CTScenarioMatch {
             throw new IllegalArgumentException("parsedSource may not be null");
         }
         return new ScenarioMatch(scenario.getName(), scenario.getName(), null, true, collectArtifactReferences(scenario.getConfiguration()),
-                parsedSource, SeverityOverrides.fromConfiguration(scenario.getConfiguration()), scenario.getConfiguration(),
+                parsedSource, ScenarioSeverityOverrides.fromConfiguration(scenario.getConfiguration()), scenario.getConfiguration(),
                 definitionFile);
     }
 

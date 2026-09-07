@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Individual class per validator design philosophy: the {@code ValidationEngine} interface is a pure contract, the mode
  * behavior lives here. Counterpart for the technical ad-hoc mode:
- * {@link org.kosit.validator.impl.conformatron.SchematronValidation}.
+ * {@link org.kosit.org.kosit.validator.impl.SchematronValidation}.
  * </p>
  *
  * @author Andreas Schmitz

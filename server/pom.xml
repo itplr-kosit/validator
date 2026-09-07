@@ -91,6 +91,7 @@
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-test-data</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

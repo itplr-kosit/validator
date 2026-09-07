@@ -7,12 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.cvr.report.AdHocValidationResult;
 import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
-import org.kosit.validator.impl.conformatron.engine.SchematronValidation;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.impl.tasks.ComputeAcceptanceTask;
@@ -23,6 +22,7 @@ import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
 import org.kosit.xvrl.model.XvrlMetadata;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -105,7 +105,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
      * {@link SchematronValidation} engine (see {@link ValidationEngine}).
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
-    public SchematronValidation.AdHocValidationResult validateAdHoc(final CTReadResource input, final URI schematron) {
+    public AdHocValidationResult validateAdHoc(final CTReadResource input, final URI schematron) {
         return this.adHocValidation.validate(input, schematron);
     }
 

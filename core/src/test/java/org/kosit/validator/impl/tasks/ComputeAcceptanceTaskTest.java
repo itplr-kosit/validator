@@ -7,11 +7,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.base.error.SimpleError;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.TestHelper;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
@@ -21,7 +20,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 
 /**
  * Tests the 'acceptMatch' functionality.
- * 
+ *
  * @author Andreas Penski
  */
 public class ComputeAcceptanceTaskTest {
@@ -31,8 +30,8 @@ public class ComputeAcceptanceTaskTest {
     private final ComputeAcceptanceTask action = new ComputeAcceptanceTask();
 
     private static XPathExecutable createXpath(final String expression) {
-        return new ContentRepository(TestHelper.getTestProcessor(), ResolvingMode.STRICT_RELATIVE.getStrategy(), null)
-                .createXPath(expression, new HashMap<>());
+        return new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(), null).createXPath(expression,
+                new HashMap<>());
     }
 
     @Test

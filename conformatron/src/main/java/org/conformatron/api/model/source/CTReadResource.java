@@ -9,24 +9,25 @@ import javax.xml.transform.stream.StreamSource;
 import org.conformatron.api.annotation.Nonempty;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.xml.sax.InputSource;
 
 /**
  * Defines a single resource that was once completely read and can be read again. This is a repeatable representation of
  * a {@link CTResource} which also includes a hash digest.
- * 
+ *
  * @author Philip Helger
  */
 public interface CTReadResource {
 
     /**
-     * 
+     *
      * @return The underlying source resource description.
      */
     @NonNull
     CTResource getSource();
 
     /**
-     * 
+     *
      * @return The underlying source resource name.
      */
     @NonNull
@@ -79,7 +80,26 @@ public interface CTReadResource {
     }
 
     /**
-     * 
+     * @return A new {@link InputSource} based on the {@link InputStream} of this object.
+     * @throws IOException if opening the stream fails
+     */
+    default @NonNull InputSource getAsInputSource() throws IOException {
+        return getAsInputSource(getName());
+    }
+
+    /**
+     * @param systemId The systemID to be used for resolving to or from this source. May be <code>null</code>.
+     * @return A new {@link InputSource} based on the {@link InputStream} of this object.
+     * @throws IOException if opening the stream fails
+     */
+    default @NonNull InputSource getAsInputSource(final @Nullable String systemId) throws IOException {
+        final InputSource ret = new InputSource(getSourceStream());
+        ret.setSystemId(systemId);
+        return ret;
+    }
+
+    /**
+     *
      * @return The name of the used hash algorithm.
      */
     @NonNull

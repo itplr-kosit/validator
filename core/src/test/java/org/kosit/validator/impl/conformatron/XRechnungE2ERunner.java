@@ -21,7 +21,7 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.TestHelper;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
@@ -37,9 +37,9 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosRe
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
+import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
 import org.kosit.validator.impl.conformatron.report.CvrlWriter;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -162,7 +162,7 @@ public final class XRechnungE2ERunner {
             out.println("| Severity | Code | Meldung |");
             out.println("|---|---|---|");
             for (final CTDetection d : result.allDetections()) {
-                out.printf("| %s | `%s` | %s |%n", d.getSeverity().getID(), d.getCode(),
+                out.printf("| %s | `%s` | %s |%n", d.getSeverity().getId(), d.getCode(),
                         d.getText().getDisplayTextLocaleIndependent().replace("|", "\\|").replace("\n", " "));
             }
         }
@@ -215,7 +215,7 @@ public final class XRechnungE2ERunner {
         }
         // step 7: APPLY_RULES (with the scenario's customLevel severity overrides)
         final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets(),
-                SeverityOverrides.of(selected.selected()));
+                ScenarioSeverityOverrides.of(selected.selected()));
         if (!applied.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
         }
@@ -354,7 +354,7 @@ public final class XRechnungE2ERunner {
                     out.println("Runner/Step-Fehler: " + r.failedStep());
                 }
                 for (final CTDetection d : r.findings()) {
-                    out.println("- `" + d.getSeverity().getID() + "` **" + d.getCode() + "** — "
+                    out.println("- `" + d.getSeverity().getId() + "` **" + d.getCode() + "** — "
                             + d.getText().getDisplayTextLocaleIndependent());
                 }
             }

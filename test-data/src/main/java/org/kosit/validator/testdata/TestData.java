@@ -15,9 +15,19 @@
  */
 package org.kosit.validator.testdata;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.CodeSource;
+import java.util.List;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.jspecify.annotations.NonNull;
 
@@ -86,5 +96,81 @@ public final class TestData {
         // Deliberately not URI.resolve: that fails for the opaque "jar:" URIs returned when the test data is read
         // straight from the artifact instead of from an unpacked directory.
         return URI.create(dir(dirPath).toASCIIString() + name);
+    }
+
+    private static Path codeSource() {
+        final CodeSource source = TestData.class.getProtectionDomain().getCodeSource();
+        if (source == null) {
+            throw new IllegalStateException("The test data does not report a code source to build an archive from");
+        }
+        try {
+            return Paths.get(source.getLocation().toURI());
+        } catch (final URISyntaxException e) {
+            throw new IllegalStateException("The test data has a malformed code source: " + source.getLocation(), e);
+        }
+    }
+
+    /**
+     * Packs the compiled test data into a temporary jar, including the directory entries, so that the result is laid
+     * out like the artifact this module produces.
+     *
+     * @param directory the directory the test data was compiled into
+     * @return the path of the temporary jar, never {@code null}
+     */
+    private static Path pack(final Path directory) {
+        try {
+            final Path archive = Files.createTempFile("validator-test-data", ".jar");
+            archive.toFile().deleteOnExit();
+            final List<Path> entries;
+            try ( final Stream<Path> walk = Files.walk(directory) ) {
+                entries = walk.filter(path -> !path.equals(directory)).toList();
+            }
+            try ( final ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(archive)) ) {
+                for (final Path entry : entries) {
+                    final boolean isDirectory = Files.isDirectory(entry);
+                    final String name = directory.relativize(entry).toString().replace('\\', '/');
+                    out.putNextEntry(new ZipEntry(isDirectory ? name + "/" : name));
+                    if (!isDirectory) {
+                        Files.copy(entry, out);
+                    }
+                    out.closeEntry();
+                }
+            }
+            return archive;
+        } catch (final IOException e) {
+            throw new UncheckedIOException("Can not pack the test data into an archive", e);
+        }
+    }
+
+    /**
+     * Holds the archive of the test data, created on first use only.
+     */
+    private static final class Archive {
+
+        static final Path PATH;
+
+        static {
+            final Path source = codeSource();
+            PATH = Files.isDirectory(source) ? pack(source) : source;
+        }
+
+        private Archive() {
+        }
+    }
+
+    /**
+     * Locates test data inside an archive. Reaching into an archive is a separate code path of the resolving
+     * strategies, and the tests covering it need artifacts that really live in a jar. Whether this module itself is a
+     * jar on the class path depends on the Maven goal - {@code mvn verify} packages it, {@code mvn test} and the IDE
+     * hand out the plain output directory - so the test data is packed on demand instead.
+     *
+     * @param path the path relative to the root of the test data, e.g. {@code simple/packaged/repository/}
+     * @return the {@code jar:} URI of the artifact, never {@code null}
+     * @throws IllegalStateException if the resource is not on the classpath
+     */
+    public static URI inArchive(final String path) {
+        // resolved against the class path as well, so that a typo fails here instead of somewhere down the line
+        toUri(path);
+        return URI.create("jar:" + Archive.PATH.toUri() + "!/" + path);
     }
 }

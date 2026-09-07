@@ -33,7 +33,7 @@ public interface ValidationConfig {
 
     /**
      * The ScenarioBundle represents a configuration tuple of paths for the {@link org.kosit.validator.impl.Scenario}
-     * XML file and the associated {@link org.kosit.validator.impl.ContentRepository}.
+     * XML file and the associated {@link org.kosit.schematron.ContentRepository}.
      */
     interface ScenarioBundle {
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="true" cvr:status="COMPLETED">
+  <metadata>
+    <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+    <document href="simple.xml"/>
+  </metadata>
+  <report>
+    <metadata>
+      <creator name="parse-document"/>
+      <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+    </metadata>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="prepare-rules"/>
+      <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+      <validator name="schxslt"/>
+      <validator name="Saxon" version="12.10"/>
+    </metadata>
+    <detection cvr:artifact-id="simple.sch">
+      <context>
+        <location href="simple.sch"/>
+      </context>
+      <message>Compiled (Schematron via schxslt)</message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="apply-rules"/>
+      <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+      <schema href="simple.sch" schematypens="http://purl.oclc.org/dsdl/schematron" cvr:phase="#ALL"/>
+    </metadata>
+    <detection severity="info" code="content-1">
+      <context>
+        <location xpath="/*:simple[1]"/>
+      </context>
+      <message>Downgraded finding</message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="compute-conformance"/>
+      <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+    </metadata>
+    <detection cvr:target-id="Simple" cvr:conformance="CONFORMANT">
+      <message>Target 'Simple' conformant</message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+  <report>
+    <metadata>
+      <creator name="decision-recommendation"/>
+      <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+    </metadata>
+    <detection cvr:decision="ACCEPT">
+      <message>All 1 conformance target(s) conformant: Simple</message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+</reports>

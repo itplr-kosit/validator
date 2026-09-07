@@ -6,25 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.jspecify.annotations.Nullable;
 import org.conformatron.api.model.action.CTAction;
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.CTValidationType;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.SubjectDetection;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.model.ResolvedValidationArtifact;
-import org.kosit.validator.impl.conformatron.util.ArtifactResolver;
+import org.jspecify.annotations.Nullable;
+import org.kosit.base.string.StringHelper;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionList;
+import org.kosit.conformatron.detection.SubjectDetection;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.validation.ResolvedValidationArtifact;
+import org.kosit.cvr.util.ArtifactResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,10 +67,22 @@ public class RetrieveArtifactsAction implements CTAction {
     private final ArtifactResolver resolver;
 
     /**
+     * Creates an action that does not resolve into an archive repository, see
+     * {@link #RetrieveArtifactsAction(URI, boolean)}.
+     *
      * @param repository base URI of the artifact repository; resolution is confined to this location
      */
     public RetrieveArtifactsAction(final URI repository) {
         this(new ArtifactResolver(repository));
+    }
+
+    /**
+     * @param repository base URI of the artifact repository; resolution is confined to this location
+     * @param resolveInArchive {@code true} to resolve references inside a repository that lives in an archive, see
+     *            {@link ArtifactResolver#ArtifactResolver(URI, boolean)}
+     */
+    public RetrieveArtifactsAction(final URI repository, final boolean resolveInArchive) {
+        this(new ArtifactResolver(repository, resolveInArchive));
     }
 
     public RetrieveArtifactsAction(final ArtifactResolver resolver) {
@@ -156,7 +167,8 @@ public class RetrieveArtifactsAction implements CTAction {
             final Detection detection) {
         return SubjectDetection.about(detection).identifiedBy(SubjectDetection.ATTR_ARTIFACT_ID, href).locatedAt(href)
                 .describingLocation(SubjectDetection.ATTR_ARTIFACT_TYPE, artifactType)
-                .hashed(content == null ? null : ReadResource.HASH_ALGORITHM_NAME, content == null ? null : ReadResource.hashHex(content))
+                .hashed(content == null ? null : ReadResource.HASH_ALGORITHM_NAME,
+                        content == null ? null : StringHelper.hashHex(content, ReadResource.HASH_ALGORITHM_NAME))
                 .build();
     }
 
@@ -169,24 +181,24 @@ public class RetrieveArtifactsAction implements CTAction {
             final CTValidationType validationType = determineValidationType(reference);
             final byte[] content = this.resolver.read(resolved);
             if (content.length == 0) {
-                detections.add(about(href, null, Detection.of(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT,
-                        DetectionLocation.of(resourceId), "Artifact is empty")));
+                detections.add(about(href, null,
+                        Detection.builderError().code(CODE_ARTIFACT_CORRUPT).location(resourceId).text("Artifact is empty").build()));
                 return;
             }
             artifacts.add(ResolvedValidationArtifact.loaded(reference, validationType, content));
-            detections.add(about(href, validationType.getID(), content, Detection.of(CTStandardSeverity.NONE, CODE_ARTIFACTS_RETRIEVED,
-                    DetectionLocation.of(resourceId), "Artifact retrieved")));
+            detections.add(about(href, validationType.getID(), content,
+                    Detection.builderNone().code(CODE_ARTIFACTS_RETRIEVED).location(resourceId).text("Artifact retrieved").build()));
         } catch (final ArtifactResolver.AccessDeniedException e) {
             LOGGER.error("Rejected artifact reference {}", href, e);
-            detections.add(about(href, null, new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_ACCESS_DENIED,
-                    DetectionLocation.of(resourceId), e.getMessage(), e)));
+            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_ACCESS_DENIED).location(resourceId)
+                    .text(e.getMessage()).linkedException(e).build()));
         } catch (final IOException e) {
-            LOGGER.error("Could not read artifact {}", href, e);
-            detections.add(about(href, null, new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_MISSING,
-                    DetectionLocation.of(resourceId), "Artifact could not be read: " + e.getMessage(), e)));
+            LOGGER.error("Could not read artifact " + href, e);
+            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_MISSING).location(resourceId)
+                    .text("Artifact could not be read: " + e.getMessage()).linkedException(e).build()));
         } catch (final IllegalArgumentException e) {
-            detections.add(about(href, null, new Detection(CTStandardSeverity.ERROR, CODE_ARTIFACT_CORRUPT,
-                    DetectionLocation.of(resourceId), "Artifact is not usable: " + e.getMessage(), e)));
+            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_CORRUPT).location(resourceId)
+                    .text("Artifact is not usable: " + e.getMessage()).linkedException(e).build()));
         }
     }
 

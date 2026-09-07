@@ -9,6 +9,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
+import org.jspecify.annotations.NonNull;
 import org.xml.sax.SAXException;
 
 /**
@@ -16,7 +17,7 @@ import org.xml.sax.SAXException;
  */
 public final class SchemaResolver {
 
-    public static Source resolve(final URL resource) {
+    public static @NonNull Source resolve(final @NonNull URL resource) {
         Objects.requireNonNull(resource);
 
         try {
@@ -33,14 +34,24 @@ public final class SchemaResolver {
      * @param schemaUrl the schema URL to read
      * @return scenario schema
      */
-    public static Schema createParsedSchema(final URL schemaUrl) {
+    public static @NonNull Schema createParsedSchema(final @NonNull URL schemaUrl) {
         final Source source = resolve(schemaUrl);
+        return createParsedSchema(new Source[] { source });
+    }
+
+    /**
+     * Returns the parsed XML schema for the provided XSD.
+     *
+     * @param schemaSources the schema Sources to read
+     * @return scenario schema
+     */
+    public static @NonNull Schema createParsedSchema(final @NonNull Source @NonNull [] schemaSources) {
         try {
             final var factory = XmlHelper.createSafeSchemaFactory();
             factory.setErrorHandler(new LoggingSaxErrorHandler());
-            return factory.newSchema(source);
+            return factory.newSchema(schemaSources);
         } catch (final SAXException e) {
-            throw new IllegalArgumentException("Can not load schema from source '" + source.getSystemId() + "'", e);
+            throw new IllegalArgumentException("Can not load schema from sources " + schemaSources, e);
         }
     }
 

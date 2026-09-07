@@ -19,21 +19,20 @@ import org.conformatron.api.model.scenario.CTConformanceTarget;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.resolve.ResolvingMode;
+import org.kosit.validator.TestHelper;
+import org.kosit.validator.testdata.TestResources;
 import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction.DecisionRecommendationResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.XmlDetection;
+import org.kost.validator.api.xml.XmlDetection;
 import org.kosit.validator.impl.conformatron.model.ComputeConformanceResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceStatement;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.SubjectDetection;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionList;
+import org.kosit.conformatron.detection.SubjectDetection;
+import org.kosit.conformatron.validation.ValidationArtifactReference;
 
 /**
  * Tests {@link DecisionRecommendationAction} (step 9) on real step-8 results — one test per specified path.
@@ -43,7 +42,7 @@ public class DecisionRecommendationActionTest {
     private final DecisionRecommendationAction action = new DecisionRecommendationAction();
 
     private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
-            ResolvingMode.STRICT_RELATIVE.getStrategy(), Simple.REPOSITORY_URI);
+            ResolvingMode.STRICT_RELATIVE.getStrategy(), TestResources.Simple.REPOSITORY_URI);
 
     private static final CTConformanceTarget TARGET = ConformanceTarget.of("simple-target", "Simple Target",
             List.of("simple.xsd", "simple.sch"), null);
@@ -52,8 +51,8 @@ public class DecisionRecommendationActionTest {
         final CTParsedValidationSource parsed = new ParseXmlAction().execute(TestHelper.read(document)).getParsedSource();
         final List<CTValidationArtifactReference> refs = List.of(references).stream()
                 .map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI).execute(refs,
-                "test");
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI)
+                .execute(refs, "test");
         final List<CTPreparedRuleSet> ruleSets = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(), "test").ruleSets();
         return new ApplyRulesAction().execute(parsed, ruleSets).result();
     }
@@ -66,7 +65,7 @@ public class DecisionRecommendationActionTest {
     @Test
     public void testAllTargetsConformantIsAccepted() {
         final DecisionRecommendationResult result = this.action.execute(new ComputeConformanceAction()
-                .execute(applyRules(Simple.SIMPLE_VALID, "simple.xsd", "simple.sch"), List.of(TARGET)).result());
+                .execute(applyRules(TestResources.Simple.SIMPLE_VALID, "simple.xsd", "simple.sch"), List.of(TARGET)).result());
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.decision()).isEqualTo(CTDecision.ACCEPT);
@@ -81,7 +80,7 @@ public class DecisionRecommendationActionTest {
     @Test
     public void testNonConformantTargetIsRejectedNamingTheRuleSet() {
         final DecisionRecommendationResult result = this.action.execute(new ComputeConformanceAction()
-                .execute(applyRules(Simple.SCHEMATRON_INVALID, "simple.xsd", "simple.sch"), List.of(TARGET)).result());
+                .execute(applyRules(TestResources.Simple.SCHEMATRON_INVALID, "simple.xsd", "simple.sch"), List.of(TARGET)).result());
 
         assertThat(result.decision()).isEqualTo(CTDecision.REJECT);
         final CTDetection detection = only(result);
@@ -93,11 +92,11 @@ public class DecisionRecommendationActionTest {
 
     @Test
     public void testCancelledRunIsRejectedNamingTheStep() {
-        final CTDetection notWellformed = Detection.of(CTStandardSeverity.ERROR, XmlDetection.CODE_NOT_WELLFORMED,
-                DetectionLocation.of("broken.xml"), "not well-formed");
+        final CTDetection notWellformed = Detection.builderError().code(XmlDetection.CODE_NOT_WELLFORMED).location("broken.xml")
+                .text("not well-formed").build();
 
         final DecisionRecommendationResult result = this.action.executeCancelled(CTActionType.PARSE_DOCUMENT,
-                DetectionList.of(notWellformed), "broken.xml");
+                new DetectionList(notWellformed), "broken.xml");
 
         assertThat(result.status()).isEqualTo(CTStepResult.SUCCESS);
         assertThat(result.decision()).isEqualTo(CTDecision.REJECT);
@@ -108,7 +107,7 @@ public class DecisionRecommendationActionTest {
     @Test
     public void testInconclusiveTargetAsksForFurtherEvaluation() {
         // INCONCLUSIVE is not producible by step 8 yet (issue 04a), so the statement is built by hand
-        final CTApplyRulesResult applied = applyRules(Simple.SIMPLE_VALID, "simple.xsd");
+        final CTApplyRulesResult applied = applyRules(TestResources.Simple.SIMPLE_VALID, "simple.xsd");
         final LinkedHashMap<CTPreparedRuleSet, CTConformanceStatement> statements = new LinkedHashMap<>();
         statements.put(applied.getResultsByRuleSet().keySet().iterator().next(),
                 ConformanceStatement.of(TARGET, CTConformanceResult.INCONCLUSIVE, "acceptSelector could not be evaluated"));
@@ -125,7 +124,8 @@ public class DecisionRecommendationActionTest {
     @Test
     public void testEmptyConformanceIsRejected() {
         // step 8 skipped (nothing to evaluate) must not end in an acceptance
-        final DecisionRecommendationResult result = this.action.execute(ComputeConformanceResult.empty(applyRules(Simple.SIMPLE_VALID)));
+        final DecisionRecommendationResult result = this.action
+                .execute(ComputeConformanceResult.empty(applyRules(TestResources.Simple.SIMPLE_VALID)));
 
         assertThat(result.decision()).isEqualTo(CTDecision.REJECT);
         assertThat(result.rationale()).contains("No conformance statement");
