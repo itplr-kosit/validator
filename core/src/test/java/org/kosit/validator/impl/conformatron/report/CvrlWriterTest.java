@@ -22,6 +22,7 @@ import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.testdata.TestResources;
+import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
@@ -60,10 +61,10 @@ public class CvrlWriterTest {
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
 
-    private CvrlWriter.PipelineResults runPipeline(final URI document) {
+    private PipelineResults runPipeline(final URI document) {
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         if (!parsed.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
+            return new PipelineResults(parsed, null, null, null, null, null, null);
         }
         final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, TestHelper.getTestProcessor())
                 .execute(parsed.getParsedSource());
@@ -76,7 +77,7 @@ public class CvrlWriterTest {
                 prepared.ruleSets());
         final ComputeConformanceAction.ComputeConformanceActionResult conformance = new ComputeConformanceAction().execute(applied.result(),
                 List.of(ConformanceTarget.ofScenario(selected.selected())));
-        return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, conformance);
+        return new PipelineResults(parsed, detected, selected, retrieved, prepared, applied, conformance);
     }
 
     private Document serialize(final URI document) throws Exception {

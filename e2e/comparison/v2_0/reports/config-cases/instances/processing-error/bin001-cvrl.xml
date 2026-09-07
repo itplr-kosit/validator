@@ -12,7 +12,7 @@
         </metadata>
         <detection severity="error" code="not-wellformed">
             <message>Content ist nicht zulässig in Prolog.</message>
-            <supplemental role="java-trace">org.xml.sax.SAXParseException; systemId: file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/instances/config-cases/instances/processing-error/bin001.xml; lineNumber: 1; columnNumber: 1; Content ist nicht zulässig in Prolog.&#13;
+            <supplemental role="java-trace">org.xml.sax.SAXParseException; systemId: file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/config-cases/instances/processing-error/bin001.xml; lineNumber: 1; columnNumber: 1; Content ist nicht zulässig in Prolog.&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:204)&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(ErrorHandlerWrapper.java:178)&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:400)&#13;
@@ -29,8 +29,10 @@
 	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)&#13;
 	at org.kost.validator.api.xml.XmlParser.parseXmlDom(XmlParser.java:54)&#13;
 	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:71)&#13;
-	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.runSteps(XRechnungE2ERunner.java:190)&#13;
-	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:176)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:168)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:152)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:136)&#13;
+	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:177)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.main(XRechnungE2ERunner.java:131)&#13;
 	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:279)&#13;
 	at java.base/java.lang.Thread.run(Thread.java:1474)&#13;

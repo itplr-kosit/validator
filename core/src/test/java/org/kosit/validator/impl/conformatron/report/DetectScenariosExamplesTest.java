@@ -18,6 +18,7 @@ import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.FixedTimestamps;
+import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
@@ -60,7 +61,7 @@ public class DetectScenariosExamplesTest {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final String path = UriHelper.getPath(document);
         this.writer.write(path.substring(path.lastIndexOf('/') + 1),
-                new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null), out);
+                new PipelineResults(parsed, detected, selected, null, null, null, null), out);
         writeExample(exampleName, out.toByteArray());
 
         // CVRL is a profile of XVRL: a report that does not satisfy the profile is not a CVRL report

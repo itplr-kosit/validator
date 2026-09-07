@@ -672,7 +672,7 @@
         </metadata>
         <detection severity="error" code="schema-violation">
             <message>cvc-complex-type.2.4.a: Ungültiger Content wurde beginnend mit Element '{"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":DueDate}' gefunden. '{"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":CopyIndicator, "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":UUID, "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":IssueDate}' wird erwartet.</message>
-            <supplemental role="java-trace">org.xml.sax.SAXParseException; systemId: file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/instances/config-cases/instances/processing-valid/ubl005.xml; lineNumber: 15; columnNumber: 18; cvc-complex-type.2.4.a: Ungültiger Content wurde beginnend mit Element '{"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":DueDate}' gefunden. '{"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":CopyIndicator, "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":UUID, "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":IssueDate}' wird erwartet.&#13;
+            <supplemental role="java-trace">org.xml.sax.SAXParseException; systemId: file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/config-cases/instances/processing-valid/ubl005.xml; lineNumber: 15; columnNumber: 18; cvc-complex-type.2.4.a: Ungültiger Content wurde beginnend mit Element '{"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":DueDate}' gefunden. '{"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":CopyIndicator, "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":UUID, "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2":IssueDate}' wird erwartet.&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:204)&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.error(ErrorHandlerWrapper.java:135)&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:396)&#13;
@@ -695,8 +695,10 @@
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applySchema(ApplyRulesAction.java:213)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java:175)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java:159)&#13;
-	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.runSteps(XRechnungE2ERunner.java:217)&#13;
-	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:176)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:202)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:152)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:136)&#13;
+	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:177)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.main(XRechnungE2ERunner.java:131)&#13;
 	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:279)&#13;
 	at java.base/java.lang.Thread.run(Thread.java:1474)&#13;

@@ -3,7 +3,6 @@ package org.kosit.validator.impl.conformatron;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,26 +18,17 @@ import org.conformatron.api.model.conformance.CTConformanceStatement;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.TestHelper;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.validator.impl.ConformanceValidation;
+import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
-import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
-import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
-import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
-import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
-import org.kosit.validator.impl.conformatron.report.CvrlWriter;
 import org.kost.validator.api.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
@@ -77,23 +67,34 @@ public final class XRechnungE2ERunner {
             List<CTDetection> allDetections) {
     }
 
-    private final ScenarioRepository scenarioRepository;
+    /** The engine identity the comparison reports are written with. */
+    private static final EngineInformation ENGINE = new EngineInformation() {
 
-    private final VConfiguration configuration;
+        @Override
+        public String getName() {
+            return "KoSIT XML Validator (canonical pipeline)";
+        }
 
-    private final Processor processor;
+        @Override
+        public String getVersion() {
+            return "2.0.0-SNAPSHOT";
+        }
 
-    private final URI repository;
+        @Override
+        public String getFrameworkVersion() {
+            return "2.0.0";
+        }
 
-    private final String scenarioDefinition;
+        @Override
+        public String getBuild() {
+            return "e2e";
+        }
+    };
 
-    private XRechnungE2ERunner(final VConfiguration configuration, final Processor processor, final URI repository,
-            final String scenarioDefinition) {
-        this.configuration = configuration;
-        this.processor = processor;
-        this.repository = repository;
-        this.scenarioDefinition = scenarioDefinition;
-        this.scenarioRepository = new ScenarioRepository(configuration);
+    private final ConformanceValidation engine;
+
+    private XRechnungE2ERunner(final VConfiguration configuration, final Processor processor) {
+        this.engine = new ConformanceValidation(ENGINE, processor, configuration);
     }
 
     public static void main(final String[] args) throws IOException {
@@ -117,8 +118,7 @@ public final class XRechnungE2ERunner {
         System.out.println("Configuration loaded in " + (System.currentTimeMillis() - t0) + " ms (" + configuration.getScenarios().size()
                 + " scenarios)");
 
-        final XRechnungE2ERunner runner = new XRechnungE2ERunner(configuration, processor, repository.toUri(),
-                scenarios.toUri().toString());
+        final XRechnungE2ERunner runner = new XRechnungE2ERunner(configuration, processor);
         final List<Path> files;
         try ( Stream<Path> stream = Files.walk(instances) ) {
             files = stream.filter(p -> p.toString().endsWith(".xml")).filter(p -> !p.toString().contains(".idea")).sorted().toList();
@@ -168,70 +168,30 @@ public final class XRechnungE2ERunner {
         }
     }
 
-    /** Runs steps 2–9 for one instance; never throws — every outcome becomes a result row plus a (partial) CVRL. */
+    /** Runs steps 2–9 for one instance; never throws — every outcome becomes a result row plus a (partial) CVR. */
     private InstanceResult run(final Path file, final Path instancesRoot, final Path reportsDir) {
         final String name = instancesRoot.relativize(file).toString().replace('\\', '/');
-        final CvrlWriter.PipelineResults results;
+        final ConformanceValidationResult result;
         try {
-            results = runSteps(file, name);
-        } catch (final RuntimeException e) {
+            // the caller names the document: the corpus-relative path, not where it happens to sit on this machine
+            result = this.engine.validate(ReadResource.inMemory(Resource.of(name, Files.readAllBytes(file))));
+        } catch (final IOException | RuntimeException e) {
             return new InstanceResult(name, "RUNNER_ERROR: " + e.getClass().getSimpleName(), "-", "-", 0, 0, 0, 0, List.of(), List.of(),
                     e.getMessage(), "-", List.of());
         }
         if (reportsDir != null) {
-            writeCvrl(reportsDir, name, results);
+            writeCvrl(reportsDir, name, result);
         }
-        return toInstanceResult(name, results);
-    }
-
-    /** Executes the pipeline; fields from the cancellation point onwards stay {@code null} (partial CVRL). */
-    private CvrlWriter.PipelineResults runSteps(final Path file, final String name) {
-        // step 2: PARSE_DOCUMENT
-        final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(file.toFile()));
-        if (!parsed.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
-        }
-        // step 3: DETECT_SCENARIOS (DOM wrapped into the Saxon model)
-        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, this.processor)
-                .withDefinitionFile(this.scenarioDefinition).execute(parsed.getParsedSource());
-        if (!detected.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, null, null, null, null, null);
-        }
-        // step 4: SELECT_SCENARIO
-        final SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
-        if (!selected.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null);
-        }
-        // step 5: RETRIEVE_ARTIFACTS
-        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(this.repository).execute(selected.selected());
-        if (!retrieved.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, null, null, null);
-        }
-        // step 6: PREPARE_RULES (compile cache inside the ContentRepository keeps this fast across instances)
-        final PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getContentRepository()).execute(retrieved.artifacts(),
-                name);
-        if (!prepared.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
-        }
-        // step 7: APPLY_RULES (with the scenario's customLevel severity overrides)
-        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets(),
-                ScenarioSeverityOverrides.of(selected.selected()));
-        if (!applied.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
-        }
-        // step 8: COMPUTE_CONFORMANCE (scenario-wide default target)
-        final ComputeConformanceActionResult conformance = new ComputeConformanceAction().execute(applied.result(),
-                List.of(ConformanceTarget.ofScenario(selected.selected())));
-        return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, conformance);
+        return toInstanceResult(name, result.getRun());
     }
 
     /** Serializes the (partial) run as CVRL draft report next to the Markdown report. */
-    private static void writeCvrl(final Path reportsDir, final String name, final CvrlWriter.PipelineResults results) {
+    private static void writeCvrl(final Path reportsDir, final String name, final ConformanceValidationResult result) {
         try {
             final Path file = reportsDir.resolve(name.replace(".xml", "-cvrl.xml"));
             Files.createDirectories(file.getParent());
             final ByteArrayOutputStream cvrl = new ByteArrayOutputStream();
-            new CvrlWriter("KoSIT XML Validator (canonical pipeline)", "2.0.0-SNAPSHOT").write(name, results, cvrl);
+            result.writeCvr(cvrl);
             // the reports are kept in the repository, so their timestamps are fixed — see FixedTimestamps
             Files.write(file, FixedTimestamps.apply(cvrl.toByteArray()));
         } catch (final IOException e) {
@@ -240,27 +200,12 @@ public final class XRechnungE2ERunner {
     }
 
     /** Derives the summary row from the (partial) pipeline results. */
-    private static InstanceResult toInstanceResult(final String name, final CvrlWriter.PipelineResults r) {
+    private static InstanceResult toInstanceResult(final String name, final PipelineResults r) {
         // step 9 always runs, so every row has a decision — a cancelled run is a rejection with the step in the
         // rationale
         final String decision = r.decision().decision().name();
-        if (!r.parse().isSuccess()) {
-            return failed(name, "PARSE_DOCUMENT", decision, r.parse().getDetectionList().getAll());
-        }
-        if (r.detect() != null && !r.detect().isSuccess()) {
-            return failed(name, "DETECT_SCENARIOS", decision, r.detect().detections().getAll());
-        }
-        if (r.select() != null && !r.select().isSuccess()) {
-            return failed(name, "SELECT_SCENARIO", decision, r.select().detections().getAll());
-        }
-        if (r.retrieve() != null && !r.retrieve().isSuccess()) {
-            return failed(name, "RETRIEVE_ARTIFACTS", decision, r.retrieve().detections().getAll());
-        }
-        if (r.prepare() != null && !r.prepare().isSuccess()) {
-            return failed(name, "PREPARE_RULES", decision, r.prepare().detections().getAll());
-        }
-        if (r.apply() != null && !r.apply().isSuccess()) {
-            return failed(name, "APPLY_RULES", decision, r.apply().detections().getAll());
+        if (!r.isCompleted()) {
+            return failed(name, r.cancelledAt().name(), decision, r.cancelDetections().getAll());
         }
         final ParseXmlResult parsed = r.parse();
         final SelectScenarioResult selected = r.select();
@@ -270,15 +215,7 @@ public final class XRechnungE2ERunner {
         final String scenarioName = selected.selected().getScenarioName();
 
         // complete detection trace across all steps, in pipeline order (for the per-instance report)
-        final List<CTDetection> trace = new ArrayList<>();
-        trace.addAll(parsed.getDetectionList().getAll());
-        trace.addAll(r.detect().detections().getAll());
-        trace.addAll(selected.detections().getAll());
-        trace.addAll(r.retrieve().detections().getAll());
-        trace.addAll(prepared.detections().getAll());
-        trace.addAll(applied.detections().getAll());
-        trace.addAll(conformance.detections().getAll());
-        trace.addAll(r.decision().detections().getAll());
+        final List<CTDetection> trace = r.allDetections();
 
         final String hash = parsed.getParsedSource().getSource().getReadResource().getHashAlgorithmName() + "="
                 + HexFormat.of().formatHex(parsed.getParsedSource().getSource().getReadResource().getHashBytes());

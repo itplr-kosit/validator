@@ -34,9 +34,10 @@
 	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)&#13;
 	at org.kost.validator.api.xml.XmlParser.parseXmlDom(XmlParser.java:54)&#13;
 	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:71)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:68)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:165)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step2NotWellformed(CvrlUnhappyPathTest.java:247)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:165)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:71)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:136)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step2NotWellformed(CvrlUnhappyPathTest.java:218)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;

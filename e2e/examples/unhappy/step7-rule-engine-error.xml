@@ -165,9 +165,10 @@
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applySchematron(ApplyRulesAction.java:199)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java:174)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java:159)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:92)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:165)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step7RuleEngineFails(CvrlUnhappyPathTest.java:317)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:203)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:71)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:136)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step7RuleEngineFails(CvrlUnhappyPathTest.java:288)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;
@@ -283,7 +284,7 @@ Caused by: ValidationException: Cannot convert string "asldkfj" to an integer&#1
 	at net.sf.saxon.trans.XsltController.applyTemplates(XsltController.java:684)&#13;
 	at net.sf.saxon.s9api.AbstractXsltTransformer.applyTemplatesToSource(AbstractXsltTransformer.java:431)&#13;
 	at net.sf.saxon.s9api.XsltTransformer.transform(XsltTransformer.java:359)&#13;
-	... 87 more&#13;
+	... 88 more&#13;
 </supplemental>
         </detection>
         <digest valid="false" error-count="1" error-codes="rule-engine-error"/>

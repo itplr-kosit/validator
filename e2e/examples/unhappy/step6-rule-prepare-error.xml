@@ -121,11 +121,11 @@
         <detection severity="error" code="rule-prepare-error" cvr:artifact-id="does-not-compile.sch">
             <message>Artifact could not be prepared: Can not compile xslt executable for uri does-not-compile.sch</message>
             <supplemental role="java-trace">java.lang.IllegalStateException: Can not compile xslt executable for uri does-not-compile.sch&#13;
-	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:163)&#13;
+	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:170)&#13;
 	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.prepare(PrepareRulesAction.java:161)&#13;
 	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.execute(PrepareRulesAction.java:135)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:141)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step6RulesDoNotCompile(CvrlUnhappyPathTest.java:306)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:113)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step6RulesDoNotCompile(CvrlUnhappyPathTest.java:277)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;
@@ -209,7 +209,7 @@
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)&#13;
 Caused by: net.sf.saxon.s9api.SaxonApiException: No stylesheet element found at file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/repository/does-not-compile.sch&#13;
 	at net.sf.saxon.s9api.XsltCompiler.compile(XsltCompiler.java:985)&#13;
-	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:161)&#13;
+	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:168)&#13;
 	... 85 more&#13;
 Caused by: net.sf.saxon.trans.XPathException: No stylesheet element found at file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/repository/does-not-compile.sch&#13;
 	at net.sf.saxon.style.Compilation.compilePackage(Compilation.java:257)&#13;
