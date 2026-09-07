@@ -132,7 +132,7 @@ public class SchematronValidation implements ValidationEngine<AdHocValidationRes
                                     + (UriHelper.isArchiveUri(schematron) ? ", because resolving inside an archive is not enabled" : ""))
                             .build()));
         }
-        final ValidationArtifactReference reference = ValidationArtifactReference.of(UriHelper.relativize(base, schematron));
+        final ValidationArtifactReference reference = new ValidationArtifactReference(UriHelper.relativize(base, schematron));
 
         // step 5 (RETRIEVE_ARTIFACTS): resolve confined to that directory
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(base, resolveInArchive)

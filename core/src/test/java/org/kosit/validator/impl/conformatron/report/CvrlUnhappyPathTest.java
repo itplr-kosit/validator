@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.conformatron.api.model.action.CTActionType;
-import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.uri.UriHelper;
 import org.kosit.base.xml.XmlHelper;
@@ -110,30 +109,38 @@ public class CvrlUnhappyPathTest {
      * </p>
      */
     private CvrlWriter.PipelineResults runWithReferences(final URI document, final String... references) {
+        assertThat(document).isNotNull();
+        assertThat(references).isNotNull().doesNotContainNull();
+
         final VConfiguration configuration = VConfiguration
                 .load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
+
         final DetectScenariosResult detected = new DetectScenariosAction(new ScenarioRepository(configuration),
                 TestHelper.getTestProcessor()).withDefinitionFile(TestResources.Simple.SCENARIOS_WITH_SCH.toString())
                         .execute(parsed.getParsedSource());
         assertThat(detected.isSuccess()).isTrue();
+
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         assertThat(selected.isSuccess()).isTrue();
 
+        // the name of the parsed source, exactly like the pipeline does it: URI.getPath() is null for the opaque
+        // "jar:" URIs the test data has when the build packaged it, and a detection without a location does not build
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
-                true).execute(
-                        Arrays.stream(references).map(ValidationArtifactReference::of).map(r -> (CTValidationArtifactReference) r).toList(),
-                        document.getPath());
+                true).execute(Arrays.stream(references).map(ValidationArtifactReference::of).toList(),
+                        parsed.getParsedSource().getSource().getName());
         if (!retrieved.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, null, null, null);
         }
+
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(configuration.getContentRepository())
                 .execute(retrieved.artifacts(), "test");
         if (!prepared.isSuccess()) {
             return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
         }
+
         final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
                 prepared.ruleSets(), ScenarioSeverityOverrides.of(selected.selected()));
         return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
@@ -157,7 +164,7 @@ public class CvrlUnhappyPathTest {
             writeExample(exampleName, out.toByteArray());
 
             // CVRL is a profile of XVRL: a report that does not satisfy the profile is not a CVRL report
-            CvrlAssert.assertValid(exampleName, out.toByteArray());
+            CvrAssert.assertValidCvr(exampleName, out.toByteArray());
 
             // a broken report would already fail here
             return XmlHelper.createSafeDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));

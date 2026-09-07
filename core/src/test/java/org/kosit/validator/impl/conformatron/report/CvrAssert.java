@@ -18,9 +18,9 @@ import org.kosit.cvr.report.CvrProfile;
  * the rules by hand finds those late; this finds them on every test run.
  * </p>
  */
-final class CvrlAssert {
+final class CvrAssert {
 
-    private CvrlAssert() {
+    private CvrAssert() {
         // static utility
     }
 
@@ -31,7 +31,7 @@ final class CvrlAssert {
      * @param name the name the report is reported under
      * @param cvr the serialized report
      */
-    static void assertValid(final String name, final byte[] cvr) {
+    static void assertValidCvr(final String name, final byte[] cvr) {
         try {
             final var cvrRes = ReadResource.inMemory(Resource.of(name, cvr));
 

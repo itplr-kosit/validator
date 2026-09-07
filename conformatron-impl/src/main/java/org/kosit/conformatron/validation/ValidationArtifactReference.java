@@ -12,23 +12,22 @@ import org.kosit.base.string.StringHelper;
  * artifact (XSD, Schematron, precompiled XSLT), typically relative to the artifact repository.
  * <p>
  * The reference makes no promise about resolvability — turning it into a readable resource is the job of
- * {@link ArtifactResolver}, which confines resolution to the configured repository (security concern, see step-05
+ * {@code ArtifactResolver}, which confines resolution to the configured repository (security concern, see step-05
  * spec).
  * </p>
  *
+ * @param reference the artifact reference; must not be {@code null}
  * @author Andreas Schmitz
  */
-public final class ValidationArtifactReference implements CTValidationArtifactReference {
+public final record ValidationArtifactReference(URI reference) implements CTValidationArtifactReference {
 
-    private final URI reference;
-
-    /**
-     * @param reference the artifact reference; must not be {@code null}
-     * @return the carrier for this reference
-     */
-    public static ValidationArtifactReference of(final URI reference) {
+    public ValidationArtifactReference {
         Objects.requireNonNull(reference);
-        return new ValidationArtifactReference(reference);
+    }
+
+    @Override
+    public URI getValidationArtifactReference() {
+        return reference;
     }
 
     /**
@@ -39,35 +38,6 @@ public final class ValidationArtifactReference implements CTValidationArtifactRe
         if (StringHelper.isBlank(reference)) {
             throw new IllegalArgumentException("reference may not be null or blank");
         }
-        return of(URI.create(reference));
-    }
-
-    private ValidationArtifactReference(final URI reference) {
-        this.reference = reference;
-    }
-
-    @Override
-    public URI getValidationArtifactReference() {
-        return this.reference;
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-        if (other == this)
-            return true;
-        if (other == null || !other.getClass().equals(ValidationArtifactReference.class))
-            return false;
-        final ValidationArtifactReference rhs = (ValidationArtifactReference) other;
-        return this.reference.equals(rhs.reference);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.reference);
-    }
-
-    @Override
-    public String toString() {
-        return this.reference.toString();
+        return new ValidationArtifactReference(URI.create(reference));
     }
 }

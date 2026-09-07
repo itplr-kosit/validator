@@ -63,7 +63,7 @@ public class DetectScenariosExamplesTest {
         writeExample(exampleName, out.toByteArray());
 
         // CVRL is a profile of XVRL: a report that does not satisfy the profile is not a CVRL report
-        CvrlAssert.assertValid(exampleName, out.toByteArray());
+        CvrAssert.assertValidCvr(exampleName, out.toByteArray());
 
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
