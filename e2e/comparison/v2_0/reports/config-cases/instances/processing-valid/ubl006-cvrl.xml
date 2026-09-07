@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
   <metadata>
     <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
     <timestamp>2026-08-31T16:15:24+02:00</timestamp>
@@ -13,9 +13,9 @@
     </metadata>
     <detection>
       <context>
-        <cvrl:hash cvrl:algorithm="SHA-512">6d0df0658068e0b6a63e8a828221a1dc3d312d4d6dd02507ff51f5255aff5c96e963d0b78ae787a6d69fcac0c0cadc376bc2ffca54cad4c4aa0d8c3a44ed867f</cvrl:hash>
+        <cvr:hash cvr:algorithm="SHA-512">6d0df0658068e0b6a63e8a828221a1dc3d312d4d6dd02507ff51f5255aff5c96e963d0b78ae787a6d69fcac0c0cadc376bc2ffca54cad4c4aa0d8c3a44ed867f</cvr:hash>
       </context>
-      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+      <message xml:id="parse-document-content" cvr:mime-type="application/xml" cvr:encoding="dom"><Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
   <!-- No scenario matches without CustomizationID -->
   <!--<cbc:CustomizationID>urn:cen.eu:en16931:2017</cbc:CustomizationID>-->
   <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>

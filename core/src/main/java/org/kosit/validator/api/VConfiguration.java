@@ -4,9 +4,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.config.ConfigurationBuilder;
 import org.kosit.validator.config.ConfigurationLoader;
-import org.kosit.validator.impl.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 
 /**
@@ -23,10 +23,10 @@ import org.kosit.validator.impl.Scenario;
  *
  * @author Andreas Penski
  */
-@Deprecated(since = "2.0.0", forRemoval = true)
+@Deprecated(since = "2.0.0")
 public interface VConfiguration {
 
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     /**
      * Returns a list of configured scenarios.
      *
@@ -34,7 +34,7 @@ public interface VConfiguration {
      */
     List<Scenario> getScenarios();
 
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     /**
      * Returns the configured fallback scenario to use, in case no configured scenario match.
      *
@@ -42,7 +42,7 @@ public interface VConfiguration {
      */
     Scenario getFallbackScenario();
 
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     /**
      * Returns the author of this configuration.
      *
@@ -50,7 +50,7 @@ public interface VConfiguration {
      */
     String getAuthor();
 
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     /**
      * Returns the name of the specification
      *
@@ -58,7 +58,7 @@ public interface VConfiguration {
      */
     String getName();
 
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     /**
      * The creation date of the config
      *
@@ -66,7 +66,7 @@ public interface VConfiguration {
      */
     String getDate();
 
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     /**
      * Add some additional parameters to the validator configuration. Parameter usage depends on actual implementation
      * of {@link VCheck}
@@ -75,7 +75,7 @@ public interface VConfiguration {
      */
     Map<String, Object> getAdditionalParameters();
 
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     /**
      * The content repository including resolving strategies.
      *
@@ -89,7 +89,7 @@ public interface VConfiguration {
      * @param scenarioDefinition the XML file with scenario definition
      * @return the loaded configuration
      */
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     static ConfigurationLoader load(final URI scenarioDefinition) {
         return load(scenarioDefinition, null);
     }
@@ -101,7 +101,7 @@ public interface VConfiguration {
      * @param scenarioDefinition the XML file with scenario definition
      * @return the loaded configuration
      */
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     static ConfigurationLoader load(final URI scenarioDefinition, final URI repository) {
         return new ConfigurationLoader(scenarioDefinition, repository);
     }
@@ -111,7 +111,7 @@ public interface VConfiguration {
      *
      * @return the Builder
      */
-    @Deprecated(since = "2.0.0", forRemoval = true)
+    @Deprecated(since = "2.0.0")
     static ConfigurationBuilder create() {
         return new ConfigurationBuilder();
     }

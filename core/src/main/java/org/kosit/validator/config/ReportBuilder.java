@@ -6,8 +6,9 @@ import java.util.Collections;
 
 import org.kosit.base.string.StringHelper;
 import org.kosit.validator.config.ReportBuilder.ReportBuilderResult;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.Scenario.Transformation;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.validator.impl.Scenario.VTransformation;
+import org.kosit.validator.impl.ScenarioArtifacts;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.ResourceType;
@@ -23,7 +24,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  */
 public class ReportBuilder implements SingleProcessingResultBuilder<ReportBuilderResult> {
 
-    public static record ReportBuilderResult(CreateReportType createReport, Transformation transformation) {
+    public static record ReportBuilderResult(CreateReportType createReport, VTransformation transformation) {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportBuilder.class);
@@ -51,10 +52,10 @@ public class ReportBuilder implements SingleProcessingResultBuilder<ReportBuilde
         SingleProcessingResult<ReportBuilderResult, String> result;
         try {
             if (this.executable == null) {
-                this.executable = repository.createTransformation(object.getResource()).getExecutable();
+                this.executable = ScenarioArtifacts.createTransformation(repository, object.getResource()).getExecutable();
             }
             result = new SingleProcessingResult<>(
-                    new ReportBuilderResult(object, new Transformation(this.executable, object.getResource())));
+                    new ReportBuilderResult(object, new VTransformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
             LOGGER.error(e.getMessage(), e);
             result = createError(" Can not create report configuration based on " + this.source + ". Exception is " + e.getMessage());

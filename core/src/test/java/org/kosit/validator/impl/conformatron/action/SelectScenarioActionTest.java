@@ -10,19 +10,19 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTReadResource;
 import org.junit.jupiter.api.Test;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
-import org.kosit.validator.impl.conformatron.source.XdmNodeValidationSource;
-import org.kosit.validator.impl.saxon.ProcessorProvider;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.TestScenarioBuilder;
+import org.kosit.validator.testdata.TestResources;
+import org.kost.validator.api.saxon.ProcessorProvider;
+import org.kost.validator.api.saxon.XdmNodeValidationSource;
 
 /**
  * Tests {@link DetectScenariosAction} (step 3) and {@link SelectScenarioAction} (step 4) against the legacy scenario
@@ -33,7 +33,7 @@ public class SelectScenarioActionTest {
     private final SelectScenarioAction selectAction = new SelectScenarioAction();
 
     private static XdmNodeValidationSource parseSimple() {
-        final CTReadResource input = TestHelper.read(Simple.SIMPLE_VALID);
+        final CTReadResource input = TestHelper.read(TestResources.Simple.SIMPLE_VALID);
         // same processor as the scenario match executables (Saxon configuration compatibility)
         final DocumentParseTask.ParseOutcome outcome = new DocumentParseTask(ProcessorProvider.getProcessor()).parseRetaining(input);
         return outcome.parsedSource();
@@ -55,7 +55,7 @@ public class SelectScenarioActionTest {
     @Test
     public void testDetectAcceptsDomParsedContentViaWrapping() {
         // the step-2 reference action produces a DOM source; a configured processor wraps it for the XPath matching
-        final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(Simple.SIMPLE_VALID));
+        final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
         final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
 
         final DetectScenariosResult result = new DetectScenariosAction(repository, ProcessorProvider.getProcessor())

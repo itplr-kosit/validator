@@ -6,9 +6,9 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.jspecify.annotations.Nullable;
+import org.kosit.conformatron.detection.DetectionList;
+import org.kosit.conformatron.source.DomValidationSource;
 import org.kosit.validator.impl.conformatron.action.parsedoc.ParseDocumentActionResult;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.source.DomValidationSource;
 
 /**
  * Single XML parsing result

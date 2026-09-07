@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
   <metadata>
     <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
     <timestamp>2026-08-31T16:15:13+02:00</timestamp>
@@ -16,7 +16,7 @@
         <location line="1" column="1"/>
       </context>
       <message>Content ist nicht zulässig in Prolog.</message>
-      <supplemental cvrl:role="java-trace">org.xml.sax.SAXParseException; systemId: file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/instances/config-cases/instances/processing-error/bin001.xml; lineNumber: 1; columnNumber: 1; Content ist nicht zulässig in Prolog.
+      <supplemental cvr:role="java-trace">org.xml.sax.SAXParseException; systemId: file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/instances/config-cases/instances/processing-error/bin001.xml; lineNumber: 1; columnNumber: 1; Content ist nicht zulässig in Prolog.
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:204)
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(ErrorHandlerWrapper.java:178)
 	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:400)

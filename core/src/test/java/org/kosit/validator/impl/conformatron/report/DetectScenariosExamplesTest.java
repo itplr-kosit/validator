@@ -14,15 +14,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.base.uri.UriHelper;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.testdata.TestResources;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -36,7 +36,7 @@ public class DetectScenariosExamplesTest {
 
     private static final String NS = CvrlWriter.NS_XVRL;
 
-    private static final String NS_CVRL = CvrlWriter.NS_CVRL;
+    private static final String NS_CVR = CvrlWriter.NS_CVR;
 
     private final CvrlWriter writer = new CvrlWriter("KoSIT XML Validator (canonical pipeline)", "2.0.0-SNAPSHOT");
 
@@ -45,7 +45,7 @@ public class DetectScenariosExamplesTest {
      * readable.
      */
     private Document serialize(final URI scenarios, final URI document, final String exampleName) throws Exception {
-        final VConfiguration configuration = VConfiguration.load(scenarios, Simple.REPOSITORY_URI)
+        final VConfiguration configuration = VConfiguration.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
@@ -62,8 +62,8 @@ public class DetectScenariosExamplesTest {
                 new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null), out);
         writeExample(exampleName, out.toByteArray());
 
-        // CVRL is a profile of XVRL: a report that does not validate against it is not a CVRL report
-        CvrlSchema.assertValid(out.toByteArray());
+        // CVRL is a profile of XVRL: a report that does not satisfy the profile is not a CVRL report
+        CvrAssert.assertValidCvr(exampleName, out.toByteArray());
 
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -100,10 +100,11 @@ public class DetectScenariosExamplesTest {
 
     @Test
     public void testNoScenarioMatches() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_WITH_SCH, Simple.UNKNOWN, "detect-scenarios-no-match.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.UNKNOWN,
+                "detect-scenarios-no-match.xml");
 
         // no match cancels the process — the run is reported as such, and the step reports an error
-        assertThat(cvrl.getDocumentElement().getAttributeNS(NS_CVRL, "status")).isEqualTo("CANCELLED");
+        assertThat(cvrl.getDocumentElement().getAttributeNS(NS_CVR, "status")).isEqualTo("CANCELLED");
         final Element detect = report(cvrl, "detect-scenarios");
         final Element digest = (Element) detect.getElementsByTagNameNS(NS, "digest").item(0);
         assertThat(digest.getAttribute("valid")).isEqualTo("false");
@@ -114,19 +115,20 @@ public class DetectScenariosExamplesTest {
         // an error keeps its severity even though scenario detection otherwise omits it
         assertThat(detection.getAttribute("severity")).isEqualTo("error");
         // no scenario, hence no scenario id and no location
-        assertThat(detection.hasAttributeNS(NS_CVRL, "scenario-id")).isFalse();
+        assertThat(detection.hasAttributeNS(NS_CVR, "scenario-id")).isFalse();
         // select-scenario never ran
         assertThat(report(cvrl, "select-scenario")).isNull();
     }
 
     @Test
     public void testExactlyOneScenarioMatches() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_WITH_SCH, Simple.SIMPLE_VALID, "detect-scenarios-single-match.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.SIMPLE_VALID,
+                "detect-scenarios-single-match.xml");
 
         final Element detect = report(cvrl, "detect-scenarios");
         assertThat(detections(detect).getLength()).isEqualTo(1);
         final Element detection = (Element) detections(detect).item(0);
-        assertThat(detection.getAttributeNS(NS_CVRL, "scenario-id")).isEqualTo("Simple");
+        assertThat(detection.getAttributeNS(NS_CVR, "scenario-id")).isEqualTo("Simple");
         assertThat(detection.getElementsByTagNameNS(NS, "location").getLength()).isEqualTo(1);
         // selection is a pass-through and embeds the selected scenario
         final Element select = report(cvrl, "select-scenario");
@@ -136,20 +138,21 @@ public class DetectScenariosExamplesTest {
 
     @Test
     public void testSeveralScenariosMatch() throws Exception {
-        final Document cvrl = serialize(Simple.SCENARIOS_AMBIGUOUS, Simple.SIMPLE_VALID, "detect-scenarios-multiple-matches.xml");
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_AMBIGUOUS, TestResources.Simple.SIMPLE_VALID,
+                "detect-scenarios-multiple-matches.xml");
 
         // detection succeeds with one detection per candidate ...
         final Element detect = report(cvrl, "detect-scenarios");
         assertThat((Element) detect.getElementsByTagNameNS(NS, "digest").item(0)).extracting(d -> d.getAttribute("valid"))
                 .isEqualTo("true");
         assertThat(detections(detect).getLength()).isEqualTo(2);
-        assertThat(((Element) detections(detect).item(0)).getAttributeNS(NS_CVRL, "scenario-id")).isEqualTo("Simple");
-        assertThat(((Element) detections(detect).item(1)).getAttributeNS(NS_CVRL, "scenario-id")).isEqualTo("Simple (second opinion)");
+        assertThat(((Element) detections(detect).item(0)).getAttributeNS(NS_CVR, "scenario-id")).isEqualTo("Simple");
+        assertThat(((Element) detections(detect).item(1)).getAttributeNS(NS_CVR, "scenario-id")).isEqualTo("Simple (second opinion)");
         // ... and selection is where the ambiguity becomes a reportable failure
         final Element select = report(cvrl, "select-scenario");
         final Element detection = (Element) detections(select).item(0);
         assertThat(detection.getAttribute("code")).isEqualTo(SelectScenarioAction.CODE_SCENARIO_AMBIGUOUS);
         assertThat(detection.getAttribute("severity")).isEqualTo("error");
-        assertThat(cvrl.getDocumentElement().getAttributeNS(NS_CVRL, "status")).isEqualTo("CANCELLED");
+        assertThat(cvrl.getDocumentElement().getAttributeNS(NS_CVR, "status")).isEqualTo("CANCELLED");
     }
 }

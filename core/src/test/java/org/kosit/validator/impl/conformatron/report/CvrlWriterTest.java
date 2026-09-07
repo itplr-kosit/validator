@@ -18,10 +18,9 @@ import org.conformatron.api.model.action.CTActionType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.xml.XmlHelper;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
@@ -33,6 +32,7 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.testdata.TestResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -47,7 +47,7 @@ public class CvrlWriterTest {
 
     private static final String NS = CvrlWriter.NS_XVRL;
 
-    private static final String NS_CVRL = CvrlWriter.NS_CVRL;
+    private static final String NS_CVR = CvrlWriter.NS_CVR;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CvrlWriterTest.class);
 
@@ -59,7 +59,7 @@ public class CvrlWriterTest {
 
     @BeforeEach
     public void setup() {
-        this.configuration = VConfiguration.load(Simple.SCENARIOS_WITH_SCH, Simple.REPOSITORY_URI)
+        this.configuration = VConfiguration.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
@@ -72,8 +72,8 @@ public class CvrlWriterTest {
         final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, TestHelper.getTestProcessor())
                 .execute(parsed.getParsedSource());
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true)
-                .execute(selected.selected());
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
+                true).execute(selected.selected());
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getContentRepository())
                 .execute(retrieved.artifacts(), "test");
         final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
@@ -86,6 +86,8 @@ public class CvrlWriterTest {
     private Document serialize(final URI document) throws Exception {
         try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
             this.writer.write("test-document.xml", runPipeline(document), out);
+            // CVRL is a profile of XVRL: a report that does not satisfy the profile is not a CVRL report
+            CvrAssert.assertValidCvr("test-document.xml", out.toByteArray());
             // well-formedness is the first assertion: parsing fails on broken output
             return XmlHelper.createSafeDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));
         }
@@ -112,20 +114,20 @@ public class CvrlWriterTest {
 
     @Test
     public void testCompletedRunSerializesOneReportPerStepExecution() throws Exception {
-        final Document cvrl = serialize(Simple.SIMPLE_VALID);
+        final Document cvrl = serialize(TestResources.Simple.SIMPLE_VALID);
         final Element root = cvrl.getDocumentElement();
 
         if (false)
             LOGGER.info(XmlHelper.getXmlAsString(cvrl));
 
         assertThat(root.getLocalName()).isEqualTo("reports");
-        assertThat(root.getAttributeNS(NS_CVRL, "conformant")).isEqualTo("true");
-        assertThat(root.getAttributeNS(NS_CVRL, "status")).isEqualTo("COMPLETED");
+        assertThat(root.getAttributeNS(NS_CVR, "conformant")).isEqualTo("true");
+        assertThat(root.getAttributeNS(NS_CVR, "status")).isEqualTo("COMPLETED");
 
         // document by reference only — no checksum attributes in the root metadata
         final Element document = (Element) root.getElementsByTagNameNS(NS, "document").item(0);
         assertThat(document.getAttribute("href")).isEqualTo("test-document.xml");
-        assertThat(document.getAttributeNS(NS_CVRL, "checksum")).isEmpty();
+        assertThat(document.getAttributeNS(NS_CVR, "checksum")).isEmpty();
 
         // document-parsed carries two messages — hash first, then the embedded payload
         final Element parseReport = reports(cvrl).get(0);
@@ -136,16 +138,16 @@ public class CvrlWriterTest {
             // messages are identified by xml:id so consumers never depend on their order
             final Element hashMessage = (Element) messages.item(0);
             assertThat(hashMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_DOCUMENT_HASH);
-            assertThat(hashMessage.getAttributeNS(NS_CVRL, "algorithm")).isEqualTo("SHA-512");
+            assertThat(hashMessage.getAttributeNS(NS_CVR, "algorithm")).isEqualTo("SHA-512");
             assertThat(hashMessage.getTextContent()).matches("[0-9a-f]{128}");
         }
 
         final Element payloadMessage = (Element) messages.item(0);
         assertThat(payloadMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_DOCUMENT_CONTENT);
-        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "mime-type")).isEqualTo("application/xml");
+        assertThat(payloadMessage.getAttributeNS(NS_CVR, "mime-type")).isEqualTo("application/xml");
 
         // UTF-8 XML is embedded as a DOM fragment, and the declared encoding is always reported
-        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "encoding")).isEqualTo(CvrlWriter.ENCODING_DOM);
+        assertThat(payloadMessage.getAttributeNS(NS_CVR, "encoding")).isEqualTo(CvrlWriter.ENCODING_DOM);
 
         // the parsed document is embedded as element content, not as escaped text
         assertThat(payloadMessage.getElementsByTagName("*").getLength()).isGreaterThan(0);
@@ -166,12 +168,12 @@ public class CvrlWriterTest {
         assertThat(schema.getAttribute("href")).isEqualTo("simple.sch");
         // XVRL has no "language" attribute — the rule language is stated by its namespace, and it is required
         assertThat(schema.getAttribute("schematypens")).isEqualTo(CvrlWriter.SCHEMATYPENS_SCHEMATRON);
-        assertThat(schema.getAttributeNS(NS_CVRL, "phase")).isEqualTo("#ALL");
+        assertThat(schema.getAttributeNS(NS_CVR, "phase")).isEqualTo("#ALL");
     }
 
     @Test
     public void testNonUtf8SourceIsEmbeddedAsBase64() throws Exception {
-        final Document cvrl = serialize(Simple.SIMPLE_LATIN1);
+        final Document cvrl = serialize(TestResources.Simple.SIMPLE_LATIN1);
 
         if (false)
             LOGGER.info(XmlHelper.getXmlAsString(cvrl));
@@ -179,8 +181,8 @@ public class CvrlWriterTest {
         final NodeList messages = reports(cvrl).get(0).getElementsByTagNameNS(NS, "message");
         final Element payloadMessage = (Element) messages.item(0);
         // transcoding into the UTF-8 report would lose the original bytes, so the source travels base64
-        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "encoding")).isEqualTo(CvrlWriter.ENCODING_BASE64);
-        assertThat(payloadMessage.getAttributeNS(NS_CVRL, "source-encoding")).isEqualTo("ISO-8859-1");
+        assertThat(payloadMessage.getAttributeNS(NS_CVR, "encoding")).isEqualTo(CvrlWriter.ENCODING_BASE64);
+        assertThat(payloadMessage.getAttributeNS(NS_CVR, "source-encoding")).isEqualTo("ISO-8859-1");
         assertThat(payloadMessage.getElementsByTagName("*").getLength()).isZero();
         final byte[] decoded = Base64.getMimeDecoder().decode(payloadMessage.getTextContent());
         assertThat(new String(decoded, StandardCharsets.ISO_8859_1)).contains("encoding=\"ISO-8859-1\"").contains("Maßnahme");
@@ -188,11 +190,11 @@ public class CvrlWriterTest {
 
     @Test
     public void testScenarioDetectionsCarryIdAndLocation() throws Exception {
-        final Document cvrl = serialize(Simple.SIMPLE_VALID);
+        final Document cvrl = serialize(TestResources.Simple.SIMPLE_VALID);
 
         final Element detectReport = reports(cvrl).get(1);
         final Element detection = (Element) detectReport.getElementsByTagNameNS(NS, "detection").item(0);
-        assertThat(detection.getAttributeNS(NS_CVRL, "scenario-id")).isEqualTo("Simple");
+        assertThat(detection.getAttributeNS(NS_CVR, "scenario-id")).isEqualTo("Simple");
         // severity is omitted for scenario detection, the code would only restate the creator
         assertThat(detection.hasAttribute("severity")).isFalse();
         assertThat(detection.hasAttribute("code")).isFalse();
@@ -203,7 +205,7 @@ public class CvrlWriterTest {
 
     @Test
     public void testSelectedScenarioIsEmbeddedInFull() throws Exception {
-        final Document cvrl = serialize(Simple.SIMPLE_VALID);
+        final Document cvrl = serialize(TestResources.Simple.SIMPLE_VALID);
 
         final Element selectReport = reports(cvrl).get(2);
         final NodeList messages = selectReport.getElementsByTagNameNS(NS, "message");
@@ -212,7 +214,7 @@ public class CvrlWriterTest {
         assertThat(scenarioMessage.getAttributeNS(XMLConstants.XML_NS_URI, "id")).isEqualTo(CvrlWriter.ID_SCENARIO_CONTENT);
 
         // scenario configurations are UTF-8 by definition, so the scenario is always embedded as a DOM fragment
-        assertThat(scenarioMessage.getAttributeNS(NS_CVRL, "encoding")).isEqualTo(CvrlWriter.ENCODING_DOM);
+        assertThat(scenarioMessage.getAttributeNS(NS_CVR, "encoding")).isEqualTo(CvrlWriter.ENCODING_DOM);
         final Element scenario = (Element) scenarioMessage.getElementsByTagName("*").item(0);
         assertThat(scenario.getLocalName()).isEqualTo("scenario");
         assertThat(scenario.getElementsByTagNameNS(ScenarioXml.NS_SCENARIOS, "name").item(0).getTextContent()).isEqualTo("Simple");
@@ -220,9 +222,9 @@ public class CvrlWriterTest {
 
     @Test
     public void testFindingsAppearWithDigestAndCodes() throws Exception {
-        final Document cvrl = serialize(Simple.SCHEMATRON_INVALID);
+        final Document cvrl = serialize(TestResources.Simple.SCHEMATRON_INVALID);
 
-        assertThat(cvrl.getDocumentElement().getAttributeNS(NS_CVRL, "conformant")).isEqualTo("false");
+        assertThat(cvrl.getDocumentElement().getAttributeNS(NS_CVR, "conformant")).isEqualTo("false");
         final Element schematronReport = reports(cvrl).get(6);
         final Element digest = (Element) schematronReport.getElementsByTagNameNS(NS, "digest").item(0);
         assertThat(digest.getAttribute("valid")).isEqualTo("false");
@@ -232,17 +234,17 @@ public class CvrlWriterTest {
 
     @Test
     public void testCancelledRunStillSerializesAsPartialCvrl() throws Exception {
-        final Document cvrl = serialize(Simple.NOT_WELLFORMED);
+        final Document cvrl = serialize(TestResources.Simple.NOT_WELLFORMED);
         final Element root = cvrl.getDocumentElement();
 
-        assertThat(root.getAttributeNS(NS_CVRL, "status")).isEqualTo("CANCELLED");
-        assertThat(root.getAttributeNS(NS_CVRL, "conformant")).isEqualTo("false");
+        assertThat(root.getAttributeNS(NS_CVR, "status")).isEqualTo("CANCELLED");
+        assertThat(root.getAttributeNS(NS_CVR, "conformant")).isEqualTo("false");
         // only the executed step is reported
         assertThat(reports(cvrl)).extracting(CvrlWriterTest::creator).containsExactly("parse-document");
         // failed content is never echoed into the report (injection safety)
         final NodeList messages = cvrl.getElementsByTagNameNS(NS, "message");
         for (int i = 0; i < messages.getLength(); i++) {
-            assertThat(((Element) messages.item(i)).getAttributeNS(NS_CVRL, "mime-type")).isEmpty();
+            assertThat(((Element) messages.item(i)).getAttributeNS(NS_CVR, "mime-type")).isEmpty();
         }
         final Element digest = (Element) cvrl.getElementsByTagNameNS(NS, "digest").item(0);
         assertThat(digest.getAttribute("valid")).isEqualTo("false");

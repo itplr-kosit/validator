@@ -11,11 +11,11 @@ import org.jspecify.annotations.NonNull;
 public enum CTStandardSeverity implements CTSeverity {
 
     /** For objects without severity */
-    NONE("none", 0),
+    NONE("none", 0, "INFO"),
     /** Warning level. */
-    WARNING("warn", 100),
+    WARNING("warn", 100, "WARN"),
     /** Error level */
-    ERROR("error", 200);
+    ERROR("error", 200, "ERROR");
 
     /** Lowest error level within this enum */
     public static final CTStandardSeverity LOWEST = NONE;
@@ -27,14 +27,17 @@ public enum CTStandardSeverity implements CTSeverity {
 
     private final int numericLevel;
 
-    CTStandardSeverity(@NonNull @Nonempty final String id, @Nonnegative final int numericLevel) {
+    private final String logText;
+
+    CTStandardSeverity(@NonNull @Nonempty final String id, @Nonnegative final int numericLevel, @NonNull @Nonempty final String logText) {
         this.id = id;
         this.numericLevel = numericLevel;
+        this.logText = logText;
     }
 
     @NonNull
     @Nonempty
-    public String getID() {
+    public String getId() {
         return id;
     }
 
@@ -49,6 +52,12 @@ public enum CTStandardSeverity implements CTSeverity {
 
     public boolean isError() {
         return this == ERROR;
+    }
+
+    @NonNull
+    @Nonempty
+    public String getLogText() {
+        return logText;
     }
 
     @NonNull

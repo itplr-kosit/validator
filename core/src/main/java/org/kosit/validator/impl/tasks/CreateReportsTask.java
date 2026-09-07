@@ -5,7 +5,6 @@ import java.util.List;
 import org.kosit.base.error.DefaultSimpleError;
 import org.kosit.base.error.SimpleError;
 import org.kosit.validator.impl.ActionMetadata;
-import org.kosit.validator.impl.CollectingErrorEventHandler;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
@@ -17,6 +16,7 @@ import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlMetadata;
 import org.kosit.xvrl.model.XvrlReport;
 import org.kosit.xvrl.model.XvrlSupplemental;
+import org.kost.validator.api.xml.CollectingErrorEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class CreateReportsTask implements CheckTask {
         this.xvrlSerializer = new XvrlSerializer(processor);
     }
 
-    private static List<Scenario.Transformation> getTransformations(final Process results) {
+    private static List<Scenario.VTransformation> getTransformations(final Process results) {
         final SingleProcessingResult<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionTask.KEY);
         return scenarioSelection.getObject().getReportTransformations();
     }
@@ -78,7 +78,7 @@ public class CreateReportsTask implements CheckTask {
         return processStepResult;
     }
 
-    private BusinessReport createReport(final Scenario.Transformation transformation, final Process process, final Scenario scenario,
+    private BusinessReport createReport(final Scenario.VTransformation transformation, final Process process, final Scenario scenario,
             final XdmNode parsedDocument) {
         final BusinessReport r = new BusinessReport();
         r.setName(transformation.getResourceType().getName());

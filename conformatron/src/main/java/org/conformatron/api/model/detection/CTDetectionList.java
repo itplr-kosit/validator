@@ -1,6 +1,7 @@
 package org.conformatron.api.model.detection;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.conformatron.api.annotation.Nonnegative;
@@ -14,14 +15,18 @@ public interface CTDetectionList {
     @NonNull
     List<CTDetection> getAll();
 
+    void forEach(@NonNull Consumer<? super CTDetection> consumer);
+
+    boolean isEmpty();
+
     @Nonnegative
     int getCount();
 
     @NonNull
-    List<CTDetection> getAll(@NonNull Predicate<? super CTDetection> aFilter);
+    List<CTDetection> getAll(@NonNull Predicate<? super CTDetection> filter);
 
     @Nonnegative
-    int getCount(@NonNull Predicate<? super CTDetection> aFilter);
+    int getCount(@NonNull Predicate<? super CTDetection> filter);
 
     @NonNull
     default List<CTDetection> getAllErrors() {
@@ -31,6 +36,11 @@ public interface CTDetectionList {
     @NonNull
     default List<CTDetection> getAllWarnings() {
         return getAll(x -> x.getSeverity().isWarning());
+    }
+
+    @NonNull
+    default List<CTDetection> getAllNones() {
+        return getAll(x -> x.getSeverity().isNone());
     }
 
     @Nonnegative
@@ -43,12 +53,21 @@ public interface CTDetectionList {
         return getCount(x -> x.getSeverity().isWarning());
     }
 
+    @Nonnegative
+    default int getNoneCount() {
+        return getCount(x -> x.getSeverity().isNone());
+    }
+
     default boolean containsOnlyError() {
         return getCount() == getErrorCount();
     }
 
     default boolean containsOnlyWarning() {
         return getCount() == getWarningCount();
+    }
+
+    default boolean containsOnlyNone() {
+        return getCount() == getNoneCount();
     }
 
     default boolean containsAtLeastOneError() {
@@ -65,6 +84,10 @@ public interface CTDetectionList {
 
     default boolean containsNoWarning() {
         return getWarningCount() == 0;
+    }
+
+    default boolean containsNoNone() {
+        return getNoneCount() == 0;
     }
 
     @NonNull

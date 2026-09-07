@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="false" cvrl:status="CANCELLED">
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
   <metadata>
     <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
-    <timestamp>2026-09-03T10:54:58+02:00</timestamp>
+    <timestamp>2026-09-06T17:06:35+02:00</timestamp>
     <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
     <document href="simple.xml"/>
   </metadata>
   <report>
     <metadata>
       <creator name="parse-document"/>
-      <timestamp>2026-09-03T10:54:58+02:00</timestamp>
+      <timestamp>2026-09-06T17:06:35+02:00</timestamp>
     </metadata>
     <detection>
       <context>
-        <cvrl:hash cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+        <cvr:hash cvr:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvr:hash>
       </context>
-      <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><simple xmlns="http://validator.kosit.de/test-sample">
+      <message xml:id="parse-document-content" cvr:mime-type="application/xml" cvr:encoding="dom"><simple xmlns="http://validator.kosit.de/test-sample">
     <inner>asldkfj</inner>
     <content>
         <html xmlns="http://www.w3.org/1999/xhtml">
@@ -34,11 +34,11 @@
   <report>
     <metadata>
       <creator name="detect-scenarios"/>
-      <timestamp>2026-09-03T10:54:58+02:00</timestamp>
+      <timestamp>2026-09-06T17:06:35+02:00</timestamp>
     </metadata>
-    <detection cvrl:scenario-id="Simple">
+    <detection cvr:scenario-id="Simple">
       <context>
-        <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-with-sch.xml"/>
+        <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/Users/philip/dev/git-kosit/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
       </context>
       <message>Scenario 'Simple' matched</message>
     </detection>
@@ -47,14 +47,14 @@
   <report>
     <metadata>
       <creator name="select-scenario"/>
-      <timestamp>2026-09-03T10:54:58+02:00</timestamp>
+      <timestamp>2026-09-06T17:06:35+02:00</timestamp>
     </metadata>
-    <detection cvrl:scenario-id="Simple">
+    <detection cvr:scenario-id="Simple">
       <context>
-        <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-with-sch.xml"/>
+        <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/Users/philip/dev/git-kosit/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
       </context>
       <message>Scenario 'Simple' selected</message>
-      <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>Simple</name><description><p>Nur Schemaprüfung.</p></description><namespace prefix="xvrl">http://www.xproc.org/ns/xvrl
+      <message xml:id="select-scenario-content" cvr:mime-type="application/xml" cvr:encoding="dom"><scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios"><name>Simple</name><description><p>Nur Schemaprüfung.</p></description><namespace prefix="xvrl">http://www.xproc.org/ns/xvrl
         </namespace><namespace prefix="test">
             http://validator.kosit.de/test-sample</namespace><namespace prefix="rpt">http://validator.kosit.de/test-report</namespace><match>/test:simple</match><validateWithXmlSchema><resource><name>Sample Schema</name><location>simple.xsd</location></resource></validateWithXmlSchema><validateWithSchematron><resource><name>Sample Schematron</name><location>simple.sch</location></resource></validateWithSchematron><createReport><id>Report for eInvoice</id><resource><name>Report for eInvoice</name><location>report.xsl</location></resource></createReport><createReport><id>Report for eInvoice2</id><resource><name>Report for eInvoice</name><location>report.xsl</location></resource></createReport><acceptMatch>count(//test:rejected) = 0</acceptMatch></scenario></message>
     </detection>
@@ -63,33 +63,29 @@
   <report>
     <metadata>
       <creator name="retrieve-artifacts"/>
-      <timestamp>2026-09-03T10:54:58+02:00</timestamp>
+      <timestamp>2026-09-06T17:06:35+02:00</timestamp>
     </metadata>
-    <detection cvrl:artifact-id="simple.xsd">
+    <detection cvr:artifact-id="simple.xsd">
       <context>
-        <location href="simple.xsd" cvrl:artifact-type="xsd"/>
-        <cvrl:hash cvrl:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvrl:hash>
+        <location href="simple.xsd" cvr:artifact-type="xsd"/>
+        <cvr:hash cvr:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvr:hash>
       </context>
       <message>Artifact retrieved</message>
     </detection>
-    <detection severity="error" code="artifact-missing" cvrl:artifact-id="does-not-exist.sch">
+    <detection severity="error" code="artifact-missing" cvr:artifact-id="does-not-exist.sch">
       <context>
         <location href="does-not-exist.sch"/>
       </context>
-      <message>Artifact could not be read: C:\Users\49157\grendor\KoSIT\KoSIT_Architecture\validator_architecture\validator\core\target\test-classes\examples\simple\repository\does-not-exist.sch (Das System kann die angegebene Datei nicht finden)</message>
-      <supplemental cvrl:role="java-trace">java.io.FileNotFoundException: C:\Users\49157\grendor\KoSIT\KoSIT_Architecture\validator_architecture\validator\core\target\test-classes\examples\simple\repository\does-not-exist.sch (Das System kann die angegebene Datei nicht finden)
-	at java.base/java.io.FileInputStream.open0(Native Method)
-	at java.base/java.io.FileInputStream.open(FileInputStream.java:185)
-	at java.base/java.io.FileInputStream.&lt;init&gt;(FileInputStream.java:139)
-	at java.base/java.io.FileInputStream.&lt;init&gt;(FileInputStream.java:109)
-	at java.base/sun.net.www.protocol.file.FileURLConnection.connect(FileURLConnection.java:86)
-	at java.base/sun.net.www.protocol.file.FileURLConnection.getInputStream(FileURLConnection.java:183)
+      <message>Artifact could not be read: JAR entry not found in jar file</message>
+      <supplemental cvr:role="java-trace">java.io.FileNotFoundException: JAR entry not found in jar file
+	at java.base/sun.net.www.protocol.jar.JarURLConnection.connect(JarURLConnection.java:136)
+	at java.base/sun.net.www.protocol.jar.JarURLConnection.getInputStream(JarURLConnection.java:167)
 	at java.base/java.net.URL.openStream(URL.java:1263)
-	at org.kosit.validator.impl.conformatron.util.ArtifactResolver.read(ArtifactResolver.java:94)
-	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java:170)
-	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java:135)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:123)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step5ArtifactIsMissing(CvrlUnhappyPathTest.java:272)
+	at org.kosit.cvr.util.ArtifactResolver.read(ArtifactResolver.java:140)
+	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java:182)
+	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java:147)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:126)
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step5ArtifactIsMissing(CvrlUnhappyPathTest.java:274)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)

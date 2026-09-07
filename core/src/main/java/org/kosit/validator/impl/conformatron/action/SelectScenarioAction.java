@@ -8,14 +8,13 @@ import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.SubjectDetection;
-import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionList;
+import org.kosit.conformatron.detection.SubjectDetection;
+import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
+import org.kosit.validator.impl.conformatron.util.ScenarioXml;
 
 /**
  * Step 4 of the canonical pipeline, {@code SELECT_SCENARIO} (see
@@ -75,19 +74,21 @@ public class SelectScenarioAction implements CTAction {
         final String resourceId = detectedScenarios.get(0).getParsedSource().getSource().getName();
         if (detectedScenarios.size() > 1) {
             final String candidates = detectedScenarios.stream().map(CTScenarioMatch::getScenarioID).collect(Collectors.joining(", "));
-            final CTDetection detection = Detection.of(CTStandardSeverity.ERROR, CODE_SCENARIO_AMBIGUOUS, DetectionLocation.of(resourceId),
-                    "More than one scenario matches the document: " + candidates);
-            return new SelectScenarioResult(CTStepResult.FAILURE, null, DetectionList.of(detection));
+            final CTDetection detection = Detection.builderError().code(CODE_SCENARIO_AMBIGUOUS).location(resourceId)
+                    .text("More than one scenario matches the document: " + candidates).build();
+            return new SelectScenarioResult(CTStepResult.FAILURE, null, new DetectionList(detection));
         }
+
         final CTScenarioMatch selected = detectedScenarios.get(0);
-        final Detection plain = Detection.of(CTStandardSeverity.NONE, CODE_SCENARIO_SELECTED, DetectionLocation.of(resourceId),
-                "Scenario '" + selected.getScenarioID() + "' selected");
+        final Detection plain = Detection.builderNone().code(CODE_SCENARIO_SELECTED).location(resourceId)
+                .text("Scenario '" + selected.getScenarioID() + "' selected").build();
+
         // the selected scenario additionally carries its own XML, so the report shows which rules were applied
         final CTDetection detection = selected instanceof final ScenarioMatch match
                 ? SubjectDetection.about(plain).identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID())
                         .locatedByXPath(match.getConfigurationLocation()).inFile(match.getDefinitionFile())
                         .embedding(match.getConfiguration() == null ? null : ScenarioXml.toXmlBytes(match.getConfiguration())).build()
                 : plain;
-        return new SelectScenarioResult(CTStepResult.SUCCESS, selected, DetectionList.of(detection));
+        return new SelectScenarioResult(CTStepResult.SUCCESS, selected, new DetectionList(detection));
     }
 }

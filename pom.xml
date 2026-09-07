@@ -8,9 +8,13 @@
         <module>test-data</module>
         <module>conformatron</module>
         <module>base</module>
+        <module>conformatron-impl</module>
+        <module>api</module>
         <module>jaxb</module>
         <module>svrl</module>
+        <module>schematron</module>
         <module>xvrl</module>
+        <module>cvr</module>
         <module>scenario</module>
         <module>core</module>
         <module>cli</module>
@@ -229,6 +233,16 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>validator-conformatron-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>validator-jaxb</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -240,6 +254,16 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-xvrl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-schematron</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>validator-cvr</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

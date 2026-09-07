@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
+  <metadata>
+    <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+    <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+    <document href="simple.xml"/>
+  </metadata>
+  <report>
+    <metadata>
+      <creator name="parse-document"/>
+      <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+    </metadata>
+    <detection>
+      <message xml:id="parse-document-content" cvr:mime-type="application/xml" cvr:encoding="dom" cvr:source-encoding="ISO-8859-1"><simple xmlns="urn:example"/></message>
+    </detection>
+    <digest valid="true"/>
+  </report>
+</reports>

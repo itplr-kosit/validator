@@ -13,7 +13,7 @@ public interface CTSeverity {
 
     @NonNull
     @Nonempty
-    String getID();
+    String getId();
 
     /**
      * @return The numeric level of this error level. Must be &ge; 0. The higher the numeric level, the higher the
@@ -21,6 +21,13 @@ public interface CTSeverity {
      */
     @Nonnegative
     int getNumericLevel();
+
+    /**
+     * @return {@code true} if this severity is <code>NONE</code>.
+     */
+    default boolean isNone() {
+        return getNumericLevel() == CTStandardSeverity.NONE.getNumericLevel();
+    }
 
     /**
      * @return {@code true} if this severity is <code>WARNING</code>.

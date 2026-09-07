@@ -14,6 +14,10 @@
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-svrl</artifactId>
         </dependency>
         <dependency>
@@ -23,6 +27,18 @@
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-scenario</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-schematron</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-cvr</artifactId>
         </dependency>
         
         <dependency>

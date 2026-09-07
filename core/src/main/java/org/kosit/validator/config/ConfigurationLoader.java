@@ -6,21 +6,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.base.error.SimpleError;
-import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.resolve.RelativeUriResolver;
+import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
+import org.kosit.schematron.resolve.ResolvingMode;
+import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.CollectingErrorEventHandler;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.source.Resource;
+import org.kosit.validator.impl.ScenarioArtifacts;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;
-import org.kosit.validator.xml.resolve.RelativeUriResolver;
+import org.kost.validator.api.xml.CollectingErrorEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +35,7 @@ import net.sf.saxon.s9api.XdmNodeKind;
 /**
  * Configuration class that loads necessary {@link VCheck} configuration from an existing scenario.xml specification.
  * This is the recommended option when an official configuration exists as is the case with 'xrechnung'.
- * 
+ *
  * @author Andreas Penski
  */
 public class ConfigurationLoader {
@@ -41,7 +44,7 @@ public class ConfigurationLoader {
 
     private static final String SUPPORTED_MAJOR_VERSION = "2";
 
-    private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = "http://www.xoev.de/de/validator/framework/2/scenarios";
+    private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = Scenario1Converter.NS_URI;
 
     protected final Map<String, Object> parameters = new HashMap<>();
 
@@ -85,7 +88,7 @@ public class ConfigurationLoader {
         final XdmNode root = findRoot(doc);
         final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
         return frameworkVersion != null && frameworkVersion.startsWith(SUPPORTED_MAJOR_VERSION)
-                && root.getNodeName().getNamespaceURI().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
+                && root.getNodeName().getNamespace().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
     }
 
     private static Scenario createFallback(final ContentRepository repository) {
@@ -93,21 +96,22 @@ public class ConfigurationLoader {
         return new FallbackBuilder().build(repository).getObject();
     }
 
+    @ReturnsImmutableObject
     private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
         return def.getScenario().stream().map(s -> initialize(s, contentRepository)).toList();
     }
 
     private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
         final Scenario s = new Scenario(def);
-        s.setMatchExecutable(repository.createMatchExecutable(def));
-        s.setSchema(repository.createSchema(def));
-        s.setSchematronValidations(repository.createSchematronTransformations(def));
-        s.setReportTransformations(repository.createReportTransformations(def));
+        s.setMatchExecutable(ScenarioArtifacts.createMatchExecutable(repository, def));
+        s.setSchema(ScenarioArtifacts.createSchema(repository, def));
+        s.setSchematronValidations(ScenarioArtifacts.createSchematronTransformations(repository, def));
+        s.setReportTransformations(ScenarioArtifacts.createReportTransformations(repository, def));
         s.setFactory(repository.getResolvingConfigurationStrategy());
         s.setUriResolver(repository.getResolver());
         s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
         if (def.getAcceptMatch() != null) {
-            s.setAcceptExecutable(repository.createAccepptExecutable(def));
+            s.setAcceptExecutable(ScenarioArtifacts.createAcceptExecutable(repository, def));
         }
         return s;
     }
@@ -161,8 +165,7 @@ public class ConfigurationLoader {
         checkVersion(this.scenarioDefinition, processor);
         LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        final Scenario1Converter conversionService = new Scenario1Converter();
-        final Scenarios scenarios = conversionService.withEventHandler(handler).readXml(this.scenarioDefinition);
+        final Scenarios scenarios = new Scenario1Converter().withEventHandler(handler).readXml(this.scenarioDefinition);
         if (handler.hasErrors()) {
             throw new IllegalStateException(
                     "Can not load scenarios from " + this.scenarioDefinition + " due to " + handler.getErrorDescription());
@@ -173,7 +176,7 @@ public class ConfigurationLoader {
 
     /**
      * Sets actual {@link ResolvingMode}, when the validator needs to resolve stuff on startup.
-     * 
+     *
      * @param mode the resolving mode
      * @return this
      */
@@ -192,7 +195,7 @@ public class ConfigurationLoader {
 
     /**
      * Add a parameter to the configuration.
-     * 
+     *
      * @param name the name of the parameter
      * @param value the parameter value object
      * @return this

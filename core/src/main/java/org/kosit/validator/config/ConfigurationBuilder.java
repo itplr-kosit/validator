@@ -14,10 +14,10 @@ import javax.xml.validation.Schema;
 
 import org.kosit.base.string.StringHelper;
 import org.kosit.jaxb.JaxbHelper;
-import org.kosit.validator.api.ResolvingConfigurationStrategy;
+import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.resolve.ResolvingMode;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.DescriptionType;

@@ -8,33 +8,29 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.conformatron.api.model.action.CTStepResult;
+import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
+import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.kosit.validator.helper.ResourceHelperExtension;
-import org.kosit.validator.impl.ContentRepository;
-import org.kosit.validator.impl.ResolvingMode;
-import org.kosit.validator.impl.TestHelper;
-import org.kosit.validator.impl.TestHelper.Simple;
+import org.kosit.base.io.mock.ResourceHelperExtension;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
+import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.cvr.model.SeverityOverrides;
+import org.kosit.schematron.ContentRepository;
+import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
-import org.conformatron.api.model.detection.CTDetection;
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
-import org.kosit.validator.impl.conformatron.model.ValidationArtifactReference;
-import org.kosit.validator.impl.conformatron.source.ReadResource;
-import org.kosit.validator.impl.conformatron.source.Resource;
-import org.kosit.validator.scenario.v1.CreateReportType;
-import org.kosit.validator.scenario.v1.CustomErrorLevel;
-import org.kosit.validator.scenario.v1.ErrorLevelType;
-import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.testdata.TestResources;
 
 /**
  * Tests {@link ApplyRulesAction} (step 7) with real rule sets prepared by steps 5+6.
@@ -47,7 +43,7 @@ public class ApplyRulesActionTest {
     private final ApplyRulesAction action = new ApplyRulesAction();
 
     private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
-            Simple.REPOSITORY_URI);
+            TestResources.Simple.REPOSITORY_URI);
 
     private @NonNull CTParsedValidationSource parse(final @NonNull URI document) throws IOException {
         final ParseXmlResult parsed = new ParseXmlAction().execute(ReadResource.of(Resource.of(document), resHelper.get()));
@@ -59,8 +55,8 @@ public class ApplyRulesActionTest {
     }
 
     private List<CTPreparedRuleSet> prepare(final String... references) {
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(Simple.REPOSITORY_URI, true)
-                .execute(Arrays.stream(references).map(ValidationArtifactReference::of).toList(), "test");
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
+                true).execute(Arrays.stream(references).map(ValidationArtifactReference::of).toList(), "test");
         assertThat(retrieved.isSuccess()).isTrue();
 
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(),
@@ -71,7 +67,7 @@ public class ApplyRulesActionTest {
 
     @Test
     public void testCleanRunAppliesAllRuleSetsInOrder() throws IOException {
-        final var step1 = parse(Simple.SIMPLE_VALID);
+        final var step1 = parse(TestResources.Simple.SIMPLE_VALID);
         assertNotNull(step1);
 
         final var step2 = prepare("simple.xsd", "simple.sch");
@@ -89,7 +85,8 @@ public class ApplyRulesActionTest {
 
     @Test
     public void testFindingsAreANegativeButValidResult() throws IOException {
-        final ApplyRulesActionResult result = this.action.execute(parse(Simple.SCHEMATRON_INVALID), prepare("simple.xsd", "simple.sch"));
+        final ApplyRulesActionResult result = this.action.execute(parse(TestResources.Simple.SCHEMATRON_INVALID),
+                prepare("simple.xsd", "simple.sch"));
 
         // the step succeeded even though the document has findings
         assertThat(result.isSuccess()).isTrue();
@@ -100,7 +97,7 @@ public class ApplyRulesActionTest {
 
     @Test
     public void testSchemaViolationsAreReportedWithLocation() throws IOException {
-        final ApplyRulesActionResult result = this.action.execute(parse(Simple.SCHEMA_INVALID), prepare("simple.xsd"));
+        final ApplyRulesActionResult result = this.action.execute(parse(TestResources.Simple.SCHEMA_INVALID), prepare("simple.xsd"));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.result().hasErrors()).isTrue();
@@ -110,7 +107,7 @@ public class ApplyRulesActionTest {
 
     @Test
     public void testEngineFailureFailsFastAndSkipsRemaining() throws IOException {
-        final ApplyRulesActionResult result = this.action.execute(parse(Simple.SIMPLE_VALID),
+        final ApplyRulesActionResult result = this.action.execute(parse(TestResources.Simple.SIMPLE_VALID),
                 prepare("simple-runtime-error.sch", "simple.sch"));
 
         assertThat(result.isSuccess()).isFalse();
@@ -125,9 +122,9 @@ public class ApplyRulesActionTest {
     @Test
     public void testCustomLevelOverrideDowngradesFinding() throws IOException {
         // the scenario demotes the failing rule to information -> the finding is no longer an error
-        final SeverityOverrides overrides = overridesFor("content-1", ErrorLevelType.INFORMATION);
-        final ApplyRulesActionResult result = this.action.execute(parse(Simple.SCHEMATRON_INVALID), prepare("simple.xsd", "simple.sch"),
-                overrides);
+        final SeverityOverrides overrides = overridesFor("content-1", CTStandardSeverity.NONE);
+        final ApplyRulesActionResult result = this.action.execute(parse(TestResources.Simple.SCHEMATRON_INVALID),
+                prepare("simple.xsd", "simple.sch"), overrides);
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.result().hasErrors()).isFalse();
@@ -141,8 +138,8 @@ public class ApplyRulesActionTest {
     @Test
     public void testEngineErrorAndSkipMarkersAreNeverOverridable() throws IOException {
         // 1.x PROCESSING_ERROR exemption, enforced structurally: overrides only reach rule findings
-        final SeverityOverrides overrides = overridesFor(ApplyRulesAction.CODE_RULE_ENGINE_ERROR, ErrorLevelType.INFORMATION);
-        final ApplyRulesActionResult result = this.action.execute(parse(Simple.SIMPLE_VALID),
+        final SeverityOverrides overrides = overridesFor(ApplyRulesAction.CODE_RULE_ENGINE_ERROR, CTStandardSeverity.NONE);
+        final ApplyRulesActionResult result = this.action.execute(parse(TestResources.Simple.SIMPLE_VALID),
                 prepare("simple-runtime-error.sch", "simple.sch"), overrides);
 
         assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
@@ -152,20 +149,13 @@ public class ApplyRulesActionTest {
         assertThat(((Detection) engineError).getOriginalSeverity()).isNull();
     }
 
-    private static SeverityOverrides overridesFor(final String code, final ErrorLevelType level) {
-        final CustomErrorLevel custom = new CustomErrorLevel();
-        custom.setLevel(level);
-        custom.getValue().add(code);
-        final CreateReportType report = new CreateReportType();
-        report.getCustomLevel().add(custom);
-        final ScenarioType scenario = new ScenarioType();
-        scenario.getCreateReport().add(report);
-        return SeverityOverrides.fromConfiguration(scenario);
+    private static SeverityOverrides overridesFor(final String code, final CTStandardSeverity severity) {
+        return SeverityOverrides.of(Map.of(code, severity));
     }
 
     @Test
     public void testNoRuleSetsSkipsTheStep() throws IOException {
-        final ApplyRulesActionResult result = this.action.execute(parse(Simple.SIMPLE_VALID), List.of());
+        final ApplyRulesActionResult result = this.action.execute(parse(TestResources.Simple.SIMPLE_VALID), List.of());
 
         assertThat(result.status()).isEqualTo(CTStepResult.SKIPPED);
         assertThat(result.result().isEmpty()).isTrue();

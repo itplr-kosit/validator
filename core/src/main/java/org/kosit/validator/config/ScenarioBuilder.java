@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kosit.base.string.StringHelper;
-import org.kosit.validator.impl.ContentRepository;
+import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.DescriptionType;

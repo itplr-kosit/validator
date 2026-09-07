@@ -19,13 +19,13 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTApplyRulesResult;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.source.CTParsedValidationSource;
+import org.kosit.conformatron.detection.Detection;
+import org.kosit.conformatron.detection.DetectionList;
+import org.kosit.conformatron.detection.DetectionLocation;
+import org.kosit.conformatron.rule.ApplyRulesResult;
+import org.kosit.cvr.model.SeverityOverrides;
+import org.kosit.schematron.util.SvrlDetections;
 import org.kosit.svrl.impl.SvrlConverter;
-import org.kosit.validator.impl.conformatron.model.ApplyRulesResult;
-import org.kosit.validator.impl.conformatron.model.Detection;
-import org.kosit.validator.impl.conformatron.model.DetectionList;
-import org.kosit.validator.impl.conformatron.model.DetectionLocation;
-import org.kosit.validator.impl.conformatron.model.SeverityOverrides;
-import org.kosit.validator.impl.conformatron.util.SvrlDetections;
 import org.oclc.purl.dsdl.svrl.SchematronOutputType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,18 +143,17 @@ public class ApplyRulesAction implements CTAction {
         }
         final String documentName = parsedSource.getSource().getName();
         if (ruleSets.isEmpty()) {
-            final CTDetection skipped = Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.of(documentName),
-                    "No rule sets prepared (reason: no-rule-sets)");
-            return new ApplyRulesActionResult(CTStepResult.SKIPPED, ApplyRulesResult.empty(parsedSource), DetectionList.of(skipped));
+            final CTDetection skipped = Detection.builderNone().code(CODE_STEP_SKIPPED).location(documentName)
+                    .text("No rule sets prepared (reason: no-rule-sets)").build();
+            return new ApplyRulesActionResult(CTStepResult.SKIPPED, ApplyRulesResult.empty(parsedSource), new DetectionList(skipped));
         }
         final LinkedHashMap<CTPreparedRuleSet, CTDetectionList> results = new LinkedHashMap<>();
         boolean failed = false;
         for (final CTPreparedRuleSet ruleSet : ruleSets) {
             if (failed) {
                 // fail-fast per spec: executions after an engine failure are skipped, but keep their key
-                results.put(ruleSet,
-                        DetectionList.of(Detection.of(CTStandardSeverity.NONE, CODE_STEP_SKIPPED, DetectionLocation.of(documentName),
-                                "Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)")));
+                results.put(ruleSet, new DetectionList(Detection.builderNone().code(CODE_STEP_SKIPPED).location(documentName)
+                        .text("Rule set '" + href(ruleSet) + "' skipped (reason: previous-execution-failed)").build()));
                 continue;
             }
             final CTDetectionList detections = applyOne(parsedSource, ruleSet, documentName, overrides);
@@ -178,14 +177,14 @@ public class ApplyRulesAction implements CTAction {
                         "Unsupported engine type " + ruleSet.getEngineType().getID() + " for rule application");
             }, overrides);
             if (findings.getCount() == 0) {
-                return DetectionList.of(Detection.of(CTStandardSeverity.NONE, CODE_RULES_APPLIED, DetectionLocation.of(documentName),
-                        "Rule set '" + href(ruleSet) + "' applied without findings"));
+                return new DetectionList(Detection.builderNone().code(CODE_RULES_APPLIED).location(documentName)
+                        .text("Rule set '" + href(ruleSet) + "' applied without findings").build());
             }
             return findings;
         } catch (final SaxonApiException | IOException | RuntimeException e) {
             LOGGER.error("Rule engine error applying {}", href(ruleSet), e);
-            return DetectionList.of(new Detection(CTStandardSeverity.ERROR, CODE_RULE_ENGINE_ERROR, DetectionLocation.of(documentName),
-                    "Rule set '" + href(ruleSet) + "' could not be applied: " + e.getMessage(), e));
+            return new DetectionList(Detection.builderError().code(CODE_RULE_ENGINE_ERROR).location(documentName)
+                    .text("Rule set '" + href(ruleSet) + "' could not be applied: " + e.getMessage()).linkedException(e).build());
         }
     }
 
@@ -235,15 +234,18 @@ public class ApplyRulesAction implements CTAction {
      * instance. Overridden detections retain the declared severity ({@link Detection#getOriginalSeverity()}).
      */
     private static CTDetectionList applyOverrides(final CTDetectionList findings, final SeverityOverrides overrides) {
-        if (overrides.isEmpty() || findings.getCount() == 0) {
+        if (overrides.isEmpty() || findings.isEmpty()) {
             return findings;
         }
+
         final List<CTDetection> result = new ArrayList<>(findings.getAll().size());
         boolean changed = false;
         for (final CTDetection detection : findings.getAll()) {
             final CTStandardSeverity effective = overrides.effectiveFor(detection.getCode());
             if (effective != null && effective != detection.getSeverity()) {
-                result.add(Detection.overridden(detection, effective));
+                // Override severity
+                // TODO add log
+                result.add(Detection.builder(detection).severity(effective).build());
                 changed = true;
             } else {
                 result.add(detection);
@@ -284,9 +286,10 @@ public class ApplyRulesAction implements CTAction {
         }
 
         private void add(final CTStandardSeverity severity, final SAXParseException exception) {
-            this.violations.add(new Detection(severity, CODE_SCHEMA_VIOLATION,
-                    new DetectionLocation(this.documentName, exception.getLineNumber(), exception.getColumnNumber()),
-                    exception.getMessage(), exception));
+            this.violations.add(Detection
+                    .builder().severity(severity).code(CODE_SCHEMA_VIOLATION).location(DetectionLocation.builder()
+                            .resourceId(this.documentName).lineNumber(exception.getLineNumber()).columnNumber(exception.getColumnNumber()))
+                    .text(exception.getMessage()).linkedException(exception).build());
         }
     }
 }

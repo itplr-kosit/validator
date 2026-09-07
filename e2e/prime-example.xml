@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvrl="urn:conformatron:cvrl:draft" cvrl:conformant="true"
-         cvrl:status="COMPLETED">
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="true"
+         cvr:status="COMPLETED">
     <metadata>
         <!-- TODO: ggf. UUID pro Validierungslauf ergaenzen -->
         <!-- OFFEN: Serialisierungszeit, nicht Ausfuehrungszeit - mit CTActionExecution waeren Start und Dauer je Schritt moeglich -->
@@ -15,11 +15,11 @@
         </metadata>
         <detection>
             <context>
-                <cvrl:hash cvrl:algorithm="SHA-512">
+                <cvr:hash cvr:algorithm="SHA-512">
                     7f59f9d544f46a38e4feb3c6f9afe72f28233a12c31dda40abc24bfa25e96bdf25ab080445f9ffeff8d28e64507243c4065855fbec9804eb55153b5775c04c98
-                </cvrl:hash>
+                </cvr:hash>
             </context>
-            <message xml:id="parse-document-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+            <message xml:id="parse-document-content" cvr:mime-type="application/xml" cvr:encoding="dom">
                 <ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
                              xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
                              xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
@@ -419,7 +419,7 @@
         <!-- OFFEN: doch ein code an der scenario-detection? Vorschlag aus der Runde: code="detected" oder code="matched" - waere eine Ausnahme von "codes erstmal alle weg" -->
         <!-- OFFEN: scenario-id soll eine Koordinate sein (xse:xrechnung:3.0.2); heute liefert die Fassade den Namen, echte IDs brauchen Szenario-Config V2 -->
         <!-- OFFEN: das href ist ein absoluter lokaler Pfad - fuer ausgelieferte Reports unschoen (Aufrufer-Frage: welchen URI gibt man der Pipeline?) -->
-        <detection cvrl:scenario-id="EN16931 XRechnung Extension (UBL Invoice)">
+        <detection cvr:scenario-id="EN16931 XRechnung Extension (UBL Invoice)">
             <context>
                 <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (UBL Invoice)']"
                           href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
@@ -434,13 +434,13 @@
             <creator name="select-scenario"/>
             <timestamp>2026-08-31T16:13:29+02:00</timestamp>
         </metadata>
-        <detection cvrl:scenario-id="EN16931 XRechnung Extension (UBL Invoice)">
+        <detection cvr:scenario-id="EN16931 XRechnung Extension (UBL Invoice)">
             <context>
                 <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung Extension (UBL Invoice)']"
                           href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
             </context>
             <message>Scenario 'EN16931 XRechnung Extension (UBL Invoice)' selected</message>
-            <message xml:id="select-scenario-content" cvrl:mime-type="application/xml" cvrl:encoding="dom">
+            <message xml:id="select-scenario-content" cvr:mime-type="application/xml" cvr:encoding="dom">
                 <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
                     <name>EN16931 XRechnung Extension (UBL Invoice)</name>
                     <description>
@@ -509,36 +509,36 @@
             <creator name="retrieve-artifacts"/>
             <timestamp>2026-08-31T16:13:29+02:00</timestamp>
         </metadata>
-        <!-- OFFEN: cvrl:artifact-id und location/@href tragen dieselbe Kennung - bewusst beides, streichbar wenn gewuenscht (gilt genauso fuer cvrl:target-id weiter unten) -->
-        <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
+        <!-- OFFEN: cvr:artifact-id und location/@href tragen dieselbe Kennung - bewusst beides, streichbar wenn gewuenscht (gilt genauso fuer cvr:target-id weiter unten) -->
+        <detection cvr:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
             <context>
-                <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" cvrl:artifact-type="xsd"/>
+                <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" cvr:artifact-type="xsd"/>
                 <!-- ADR: Hashwerte müssen immer nach Linux convetion erstellt werden um Interoperabilität zwischen Win und Mac gewährleistet ist
                 Oder kein whitespace oder line break am Ende erlaubt -> Als attribute
                 Normalisierung vor der Hash-Generierung muss klar geregelt werden -->
-                <cvrl:hash cvrl:algorithm="SHA-512">
+                <cvr:hash cvr:algorithm="SHA-512">
                     94d388e6003abb89c51be2e46ce2937d88b311482299d5725c789fdcd58f3fb0abf33743d7684b1384ba0b6c78ad9e24c255fb7a8e37cb0f550fdd256d0cdf32
-                </cvrl:hash>
+                </cvr:hash>
             </context>
             <message>Artifact retrieved</message>
         </detection>
-        <detection cvrl:artifact-id="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl">
+        <detection cvr:artifact-id="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl">
             <context>
                 <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl"
-                          cvrl:artifact-type="schematron-xslt2"/>
-                <cvrl:hash cvrl:algorithm="SHA-512">
+                          cvr:artifact-type="schematron-xslt2"/>
+                <cvr:hash cvr:algorithm="SHA-512">
                     e310d4c6eda333800727111dcdf37f73a119c1c54041f133abe96b6b7a6d99439c30f0e1080fcd8589d0eea811955b205591c553ee14a65eefb7f20ffdf45696
-                </cvrl:hash>
+                </cvr:hash>
             </context>
             <message>Artifact retrieved</message>
         </detection>
-        <detection cvrl:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl">
+        <detection cvr:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl">
             <context>
                 <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"
-                          cvrl:artifact-type="schematron-xslt2"/>
-                <cvrl:hash cvrl:algorithm="SHA-512">
+                          cvr:artifact-type="schematron-xslt2"/>
+                <cvr:hash cvr:algorithm="SHA-512">
                     ee48549b0e794ddd8aa7728896e5420702b1d3c400d7289b73ed1f424d37e3e54a5da37e2b06ce572bcf822ff516c42f443175d5ae2e84dc91699fe2dd0afb9c
-                </cvrl:hash>
+                </cvr:hash>
             </context>
             <message>Artifact retrieved</message>
         </detection>
@@ -548,14 +548,14 @@
         <metadata>
             <!-- OFFEN: ggf. zu viel fuer einen eigenen Schritt - verschoben -->
             <!-- OFFEN: pass-throughs erzeugen keine detection mehr, daher steht hier nur das echte Kompilat -->
-            <!-- OFFEN: cvrl:compilation="compiled|passed-through" erst nach dem Workshop -->
+            <!-- OFFEN: cvr:compilation="compiled|passed-through" erst nach dem Workshop -->
             <creator name="prepare-rules"/>
             <timestamp>2026-08-31T16:13:29+02:00</timestamp>
             <!-- OFFEN: der Transpiler (schxslt/iso) erscheint nur, wenn wirklich transpiliert wurde - hier sind alle Schematrons vorkompilierte .xsl -->
             <!-- OFFEN: Hier sind keine zwei Validator Elemente zulässig. Von daher muss noch verortet werden, wo mehrere Angaben wenn nötig gemacht werden bpsw. saxon und schxslt -->
             <validator name="Saxon" version="12.10"/>
         </metadata>
-        <detection cvrl:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
+        <detection cvr:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
             <context>
                 <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd"/>
             </context>
@@ -582,9 +582,9 @@
             <timestamp>2026-08-31T16:13:29+02:00</timestamp>
             <!-- schema sollte einen ID (coordinates pending) der verwendeten Scenarios angeben -->
             <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl"
-                    schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+                    schematypens="http://purl.oclc.org/dsdl/schematron" cvr:phase="#ALL"/>
         </metadata>
-        <detection severity="info" code="UBL-CR-646" cvrl:original-severity="warning">
+        <detection severity="info" code="UBL-CR-646" cvr:original-severity="warning">
             <context>
                 <location xpath="/Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1]"/>
             </context>
@@ -597,7 +597,7 @@
             <creator name="apply-rules"/>
             <timestamp>2026-08-31T16:13:29+02:00</timestamp>
             <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"
-                    schematypens="http://purl.oclc.org/dsdl/schematron" cvrl:phase="#ALL"/>
+                    schematypens="http://purl.oclc.org/dsdl/schematron" cvr:phase="#ALL"/>
         </metadata>
         <detection>
             <message>Rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' applied without findings
@@ -611,19 +611,19 @@
             <timestamp>2026-08-31T16:13:29+02:00</timestamp>
         </metadata>
         <!-- Enum Werte in IDs übersetzen dammit der Report nicht auf konkrete Enum Werte depended -->
-        <detection cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)" cvrl:conformance="CONFORMANT">
+        <detection cvr:target-id="EN16931 XRechnung Extension (UBL Invoice)" cvr:conformance="CONFORMANT">
             <context>
                 <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd"/>
             </context>
             <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant</message>
         </detection>
-        <detection cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)" cvrl:conformance="CONFORMANT">
+        <detection cvr:target-id="EN16931 XRechnung Extension (UBL Invoice)" cvr:conformance="CONFORMANT">
             <context>
                 <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl"/>
             </context>
             <message>Target 'EN16931 XRechnung Extension (UBL Invoice)' conformant</message>
         </detection>
-        <detection cvrl:target-id="EN16931 XRechnung Extension (UBL Invoice)" cvrl:conformance="CONFORMANT">
+        <detection cvr:target-id="EN16931 XRechnung Extension (UBL Invoice)" cvr:conformance="CONFORMANT">
             <context>
                 <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl"/>
             </context>
@@ -631,7 +631,7 @@
         </detection>
         <digest valid="true"/>
     </report>
-    <!-- OFFEN: decision-recommendation (Schritt 9) fehlt noch: cvrl:decision (accept/reject) plus die
+    <!-- OFFEN: decision-recommendation (Schritt 9) fehlt noch: cvr:decision (accept/reject) plus die
          Begruendung als <summary>. Hier landet acceptMatch/acceptSelector - der letzte 1.x-Mechanismus,
          der in der kanonischen Pipeline noch fehlt (heute ist das Verdikt rein detection-basiert). -->
 </reports>

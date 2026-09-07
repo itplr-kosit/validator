@@ -5,6 +5,7 @@ import java.util.List;
 import org.conformatron.api.model.scenario.CTConformanceTarget;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
+import org.kosit.base.string.StringHelper;
 
 /**
  * Validator implementation of {@link CTConformanceTarget} (conformatron-api step 8, {@code COMPUTE_CONFORMANCE}): a
@@ -30,10 +31,10 @@ public final class ConformanceTarget implements CTConformanceTarget {
 
     private ConformanceTarget(final String targetId, final String targetName, final List<String> ruleSetReferences,
             final String acceptSelector) {
-        if (targetId == null || targetId.isBlank()) {
+        if (StringHelper.isBlank(targetId)) {
             throw new IllegalArgumentException("targetId may not be null or blank");
         }
-        if (targetName == null || targetName.isBlank()) {
+        if (StringHelper.isBlank(targetName)) {
             throw new IllegalArgumentException("targetName may not be null or blank");
         }
         if (ruleSetReferences == null) {
