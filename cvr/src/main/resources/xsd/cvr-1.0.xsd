@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    CVRL - Conformatron Validation Result - the XVRL profile of the KoSIT validator.
+    CVR - Conformatron Validation Result - the XVRL profile of the KoSIT validator.
 
-    A CVRL report IS an XVRL report: its structure is defined by xvrl-1.0.xsd and nothing here repeats that.
-    This schema types the CVRL extension namespace on top of it - the attributes and the one element that the
+    A CVR report IS an XVRL report: its structure is defined by xvrl-1.0.xsd and nothing here repeats that.
+    This schema types the CVR extension namespace on top of it - the attributes and the one element that the
     profile adds to XVRL.
 
     Note on strictness: XVRL admits foreign attributes through <xs:anyAttribute processContents="skip"/>, so a
     validating parser will not apply the declarations below while it validates a report against xvrl-1.0.xsd.
     They are the normative statement of the vocabulary and its value spaces, and they are what tooling reads;
-    the constraints that have to hold in an actual report live in sch/cvrl.sch.
+    the constraints that have to hold in an actual report live in sch/cvr-1.0.sch.
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:cvrl="urn:conformatron:cvrl:draft"
-           targetNamespace="urn:conformatron:cvrl:draft"
+           xmlns:cvr="urn:conformatron:cvr:draft"
+           targetNamespace="urn:conformatron:cvr:draft"
            elementFormDefault="qualified"
            attributeFormDefault="qualified"
            version="draft">
@@ -32,7 +32,7 @@
 
     <xs:simpleType name="Severity">
         <xs:annotation>
-            <xs:documentation>The XVRL severity tokens, repeated here for the CVRL attributes that carry one.</xs:documentation>
+            <xs:documentation>The XVRL severity tokens, repeated here for the CVR attributes that carry one.</xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:token">
             <xs:enumeration value="info"/>
@@ -83,8 +83,8 @@
         </xs:annotation>
         <xs:complexType>
             <xs:simpleContent>
-                <xs:extension base="cvrl:HexHash">
-                    <xs:attribute ref="cvrl:algorithm" use="required"/>
+                <xs:extension base="cvr:HexHash">
+                    <xs:attribute ref="cvr:algorithm" use="required"/>
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>
@@ -98,7 +98,7 @@
             <xs:documentation>The overall verdict of the run. A cancelled run is never conformant.</xs:documentation>
         </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="status" type="cvrl:RunStatus"/>
+    <xs:attribute name="status" type="cvr:RunStatus"/>
 
     <!-- on xvrl:schema, inside the metadata of an apply-rules report -->
     <xs:attribute name="phase" type="xs:token">
@@ -108,7 +108,7 @@
     </xs:attribute>
 
     <!-- on xvrl:detection -->
-    <xs:attribute name="original-severity" type="cvrl:Severity">
+    <xs:attribute name="original-severity" type="cvr:Severity">
         <xs:annotation>
             <xs:documentation>
                 The severity the rule itself declared, kept auditable when a scenario customLevel override changed
@@ -119,7 +119,7 @@
     <xs:attribute name="scenario-id" type="xs:string"/>
     <xs:attribute name="artifact-id" type="xs:string"/>
     <xs:attribute name="target-id" type="xs:string"/>
-    <xs:attribute name="conformance" type="cvrl:Conformance"/>
+    <xs:attribute name="conformance" type="cvr:Conformance"/>
 
     <!-- on xvrl:location -->
     <xs:attribute name="artifact-type" type="xs:token">
@@ -130,7 +130,7 @@
 
     <!-- on xvrl:message -->
     <xs:attribute name="mime-type" type="xs:token"/>
-    <xs:attribute name="encoding" type="cvrl:Encoding"/>
+    <xs:attribute name="encoding" type="cvr:Encoding"/>
     <xs:attribute name="source-encoding" type="xs:token">
         <xs:annotation>
             <xs:documentation>
@@ -147,7 +147,7 @@
         </xs:annotation>
     </xs:attribute>
 
-    <!-- on cvrl:hash -->
+    <!-- on cvr:hash -->
     <xs:attribute name="algorithm" type="xs:token"/>
 
 </xs:schema>
