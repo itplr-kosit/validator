@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-07T18:39:39+02:00</timestamp>
+        <timestamp>2026-01-01T00:00:00Z</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="simple-not-wellformed.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-07T18:39:39+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection severity="error" code="not-wellformed">
@@ -34,9 +34,9 @@
 	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)&#13;
 	at org.kost.validator.api.xml.XmlParser.parseXmlDom(XmlParser.java:54)&#13;
 	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:71)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:67)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:164)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step2NotWellformed(CvrlUnhappyPathTest.java:245)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:68)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:165)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step2NotWellformed(CvrlUnhappyPathTest.java:247)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;
@@ -127,7 +127,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T18:39:39+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="decision-recommendation"/>
         </metadata>
         <detection severity="error" code="decision-reject" cvr:decision="REJECT">

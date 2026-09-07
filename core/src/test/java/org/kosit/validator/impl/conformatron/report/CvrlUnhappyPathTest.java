@@ -20,6 +20,7 @@ import org.kosit.conformatron.validation.ValidationArtifactReference;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.FixedTimestamps;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction;
@@ -180,7 +181,8 @@ public class CvrlUnhappyPathTest {
             return;
         }
         Files.createDirectories(examples);
-        Files.write(examples.resolve(name), cvrl);
+        // the examples are kept in the repository, so their timestamps are fixed — see FixedTimestamps
+        Files.write(examples.resolve(name), FixedTimestamps.apply(cvrl));
     }
 
     private static List<Element> reports(final Document cvrl) {

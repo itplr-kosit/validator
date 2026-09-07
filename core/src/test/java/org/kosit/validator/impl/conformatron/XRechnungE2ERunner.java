@@ -1,5 +1,6 @@
 package org.kosit.validator.impl.conformatron;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
@@ -7,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
@@ -230,9 +230,10 @@ public final class XRechnungE2ERunner {
         try {
             final Path file = reportsDir.resolve(name.replace(".xml", "-cvrl.xml"));
             Files.createDirectories(file.getParent());
-            try ( var out = Files.newOutputStream(file) ) {
-                new CvrlWriter("KoSIT XML Validator (canonical pipeline)", "2.0.0-SNAPSHOT").write(name, results, out);
-            }
+            final ByteArrayOutputStream cvrl = new ByteArrayOutputStream();
+            new CvrlWriter("KoSIT XML Validator (canonical pipeline)", "2.0.0-SNAPSHOT").write(name, results, cvrl);
+            // the reports are kept in the repository, so their timestamps are fixed — see FixedTimestamps
+            Files.write(file, FixedTimestamps.apply(cvrl.toByteArray()));
         } catch (final IOException e) {
             throw new IllegalStateException("Can not write CVRL for " + name, e);
         }
@@ -314,7 +315,8 @@ public final class XRechnungE2ERunner {
         try ( PrintWriter out = new PrintWriter(Files.newBufferedWriter(file, StandardCharsets.UTF_8)) ) {
             out.println("# XRechnung E2E — kanonische Pipeline Steps 2–9");
             out.println();
-            out.println("Erzeugt: " + LocalDateTime.now() + " · Instanzen: " + total);
+            // kein Erzeugungszeitpunkt: die Datei liegt im Repository, und wann sie erzeugt wurde sagt der Commit
+            out.println("Instanzen: " + total);
             out.println();
             out.println("**Bekannte Lücken dieses Laufs** (bei der Bewertung berücksichtigen):");
             out.println(

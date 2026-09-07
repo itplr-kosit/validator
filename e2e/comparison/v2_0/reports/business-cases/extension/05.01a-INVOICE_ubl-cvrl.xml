@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="true" cvr:status="COMPLETED">
     <metadata>
-        <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+        <timestamp>2026-01-01T00:00:00Z</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="business-cases/extension/05.01a-INVOICE_ubl.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
@@ -185,7 +185,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="detect-scenarios"/>
         </metadata>
         <detection cvr:scenario-id="EN16931 XRechnung Extension (UBL Invoice)">
@@ -198,7 +198,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="select-scenario"/>
         </metadata>
         <detection cvr:scenario-id="EN16931 XRechnung Extension (UBL Invoice)">
@@ -263,7 +263,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="retrieve-artifacts"/>
         </metadata>
         <detection cvr:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
@@ -291,7 +291,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <validator name="Saxon" version="12.10"/>
             <creator name="prepare-rules"/>
         </metadata>
@@ -305,7 +305,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="apply-rules"/>
             <schema href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
         </metadata>
@@ -316,7 +316,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="apply-rules"/>
             <schema href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvr:phase="#ALL"/>
         </metadata>
@@ -336,7 +336,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="apply-rules"/>
             <schema href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvr:phase="#ALL"/>
         </metadata>
@@ -350,7 +350,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="compute-conformance"/>
         </metadata>
         <detection cvr:conformance="CONFORMANT" cvr:target-id="EN16931 XRechnung Extension (UBL Invoice)">
@@ -375,7 +375,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:42+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="decision-recommendation"/>
         </metadata>
         <detection cvr:decision="ACCEPT">

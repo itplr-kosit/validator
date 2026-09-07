@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-07T14:45:01+02:00</timestamp>
+        <timestamp>2026-01-01T00:00:00Z</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="config-cases/instances/processing-error/bin001.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:45:01+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection severity="error" code="not-wellformed">
@@ -32,6 +32,8 @@
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.runSteps(XRechnungE2ERunner.java:190)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:176)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.main(XRechnungE2ERunner.java:131)&#13;
+	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:279)&#13;
+	at java.base/java.lang.Thread.run(Thread.java:1474)&#13;
 </supplemental>
             <context>
                 <location line="1" column="1"/>
@@ -41,7 +43,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:45:01+02:00</timestamp>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="decision-recommendation"/>
         </metadata>
         <detection severity="error" code="decision-reject" cvr:decision="REJECT">
