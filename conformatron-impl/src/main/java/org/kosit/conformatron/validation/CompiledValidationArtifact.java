@@ -17,8 +17,8 @@ import org.jspecify.annotations.NonNull;
  * @param compilation compilation object
  * @author Andreas Schmitz
  */
-public final record CompiledValidationArtifact<T>(CTValidationType validationType, T compilation)
-        implements CTCompiledValidationArtifact<T> {
+public final record CompiledValidationArtifact<T> (CTValidationType validationType,
+        T compilation) implements CTCompiledValidationArtifact<T> {
 
     public CompiledValidationArtifact {
         Objects.requireNonNull(validationType);
