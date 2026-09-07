@@ -7,7 +7,7 @@ import java.util.Collections;
 import org.kosit.base.string.StringHelper;
 import org.kosit.validator.config.SchematronBuilder.SchematronBuilderResult;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.validator.impl.Scenario.Transformation;
+import org.kosit.validator.impl.Scenario.VTransformation;
 import org.kosit.validator.impl.ScenarioArtifacts;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.scenario.v1.ResourceType;
@@ -24,7 +24,7 @@ import net.sf.saxon.s9api.XsltExecutable;
  */
 public class SchematronBuilder implements SingleProcessingResultBuilder<SchematronBuilderResult> {
 
-    public static record SchematronBuilderResult(ValidateWithSchematron validateResult, Transformation transformation) {
+    public static record SchematronBuilderResult(ValidateWithSchematron validateResult, VTransformation transformation) {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchematronBuilder.class);
@@ -53,7 +53,7 @@ public class SchematronBuilder implements SingleProcessingResultBuilder<Schematr
                 this.executable = ScenarioArtifacts.createSchematronTransformation(repository, object).getExecutable();
             }
             result = new SingleProcessingResult<>(
-                    new SchematronBuilderResult(object, new Transformation(this.executable, object.getResource())));
+                    new SchematronBuilderResult(object, new VTransformation(this.executable, object.getResource())));
         } catch (final IllegalStateException e) {
             LOGGER.error(e.getMessage(), e);
             result = createError("Can not create schematron configuration based  on " + this.source + ". Exception is " + e.getMessage());

@@ -57,8 +57,8 @@ import org.w3c.dom.Document;
  * explicit decision point; nothing here is final until the team confirms.
  *
  * <ul>
- * <li><b>D1</b> extension namespace: {@code urn:conformatron:cvrl:draft} (spec placeholder was
- * {@code xmlns:cvrl="my"})</li>
+ * <li><b>D1</b> extension namespace: {@code urn:conformatron:cvr:draft} (spec placeholder was
+ * {@code xmlns:cvr="my"})</li>
  * <li><b>D2</b> canonical creator names come from {@code ECTCanonicalAction} (the spec's {@code document-loader} etc.
  * are treated as outdated)</li>
  * <li><b>D3</b> one {@code <report>} per step execution; APPLY_RULES emits one report <b>per rule set</b> (sequential,
@@ -66,15 +66,15 @@ import org.w3c.dom.Document;
  * <li><b>D4</b> consistent digest attribute set: {@code valid}, {@code worst-severity}, {@code error-count},
  * {@code warning-count}, {@code error-codes} (distinct, space-separated). No {@code fatal-error-count} — the severity
  * model has no separate fatal band, so it would only duplicate {@code error-count}</li>
- * <li><b>D5</b> root carries {@code cvrl:conformant} and {@code cvrl:status} (COMPLETED | CANCELLED); a cancelled run
+ * <li><b>D5</b> root carries {@code cvr:conformant} and {@code cvr:status} (COMPLETED | CANCELLED); a cancelled run
  * still serializes — partial CVRL per ADR-004</li>
  * <li><b>D6</b> verbosity: full only. Document by reference in the root metadata; hash and parsed document are
  * <b>output</b> of the parse step and travel as two messages of the {@code document-parsed} detection — message 1
- * carries the hash (algorithm as {@code cvrl:algorithm}, hash over the retained source bytes), message 2 embeds the
- * parsed document ({@code cvrl:mime-type}). The payload is only written on parse success — failed content is never
+ * carries the hash (algorithm as {@code cvr:algorithm}, hash over the retained source bytes), message 2 embeds the
+ * parsed document ({@code cvr:mime-type}). The payload is only written on parse success — failed content is never
  * echoed (injection safety). Open point: a failed parse currently loses the document hash in the report.</li>
  * <li><b>D7</b> scenario identity travels as detections (no {@code metadata/document} scenario embedding)</li>
- * <li><b>D8</b> APPLY_RULES reports carry {@code <schema href language>} plus {@code cvrl:phase} from the prepared rule
+ * <li><b>D8</b> APPLY_RULES reports carry {@code <schema href language>} plus {@code cvr:phase} from the prepared rule
  * set; the engine identity sits on PREPARE_RULES instead, see D15</li>
  * <li><b>D9</b> everything positional lives in the XVRL {@code location} element — {@code xpath} for the node a rule
  * finding applies to, {@code line}/{@code column} for a schema violation, {@code href} for the subject the detection is
@@ -87,17 +87,17 @@ import org.w3c.dom.Document;
  * info) — it is optional in XVRL. Errors keep it: dropping it there would leave the detection "unspecified" while the
  * digest counts an error. Open consistency question across all steps</li>
  * <li><b>D13</b> a detection about an identified subject (scenario, artifact, conformance target) names it as
- * {@code cvrl:scenario-id} / {@code cvrl:artifact-id} / {@code cvrl:target-id}, adds what is known about it
- * ({@code cvrl:artifact-type}, {@code cvrl:conformance}) as attributes, and locates it. The selected scenario is
+ * {@code cvr:scenario-id} / {@code cvr:artifact-id} / {@code cvr:target-id}, adds what is known about it
+ * ({@code cvr:artifact-type}, {@code cvr:conformance}) as attributes, and locates it. The selected scenario is
  * additionally embedded in full as a second message</li>
  * <li><b>D14</b> messages that belong to the same detection are identified by {@code xml:id}
  * ({@code parse-document-hash}, {@code parse-document-content}, {@code select-scenario-content}) so consumers never
  * depend on their order</li>
  * <li><b>D15</b> the engine that transpiled/compiled the rules is reported on PREPARE_RULES as the XVRL standard
  * element {@code <validator name version/>} — it is a property of that step, not of rule application</li>
- * <li><b>D16</b> what a detection is about goes into {@code context}: {@code location} plus {@code cvrl:hash}, the
+ * <li><b>D16</b> what a detection is about goes into {@code context}: {@code location} plus {@code cvr:hash}, the
  * latter proving which bytes were validated and which rule-set version ran</li>
- * <li><b>D17</b> messages stay short; full stack traces go to {@code supplemental cvrl:role="java-trace"}</li>
+ * <li><b>D17</b> messages stay short; full stack traces go to {@code supplemental cvr:role="java-trace"}</li>
  * <li><b>D18</b> the digest omits what says nothing: zero counts, and {@code worst-severity} while everything is valid
  * or a single detection already carries its severity</li>
  * </ul>
@@ -110,7 +110,7 @@ public final class CvrlWriter {
     public static final String NS_XVRL = XvrlConverter.NS_URI;
 
     /** D1: draft namespace for the CVRL extension attributes. */
-    public static final String NS_CVRL = "urn:conformatron:cvrl:draft";
+    public static final String NS_CVR = "urn:conformatron:cvr:draft";
 
     /** {@code xml:id} of the message carrying the document hash. */
     public static final String ID_DOCUMENT_HASH = "parse-document-hash";
@@ -121,10 +121,10 @@ public final class CvrlWriter {
     /** {@code xml:id} of the message carrying the selected scenario. */
     public static final String ID_SCENARIO_CONTENT = "select-scenario-content";
 
-    /** {@code cvrl:encoding}: embedded as an XML fragment, readable and processable. */
+    /** {@code cvr:encoding}: embedded as an XML fragment, readable and processable. */
     public static final String ENCODING_DOM = "dom";
 
-    /** {@code cvrl:encoding}: embedded base64-encoded, byte-faithful for any encoding and syntax. */
+    /** {@code cvr:encoding}: embedded base64-encoded, byte-faithful for any encoding and syntax. */
     public static final String ENCODING_BASE64 = "base64";
 
     private static final String MIME_TYPE_XML = "application/xml";
@@ -142,12 +142,12 @@ public final class CvrlWriter {
     /** Name reported for the XSLT processor that runs the prepared rules. */
     private static final String XSLT_PROCESSOR_NAME = "Saxon";
 
-    /** {@code cvrl:role} of the supplemental carrying a Java stack trace. */
+    /** {@code cvr:role} of the supplemental carrying a Java stack trace. */
     public static final String ROLE_JAVA_TRACE = "java-trace";
 
     /**
      * The results of one canonical pipeline run. Fields from the cancellation point onwards are {@code null} — the
-     * report then contains only the executed steps and {@code cvrl:status="CANCELLED"} (partial CVRL, ADR-004).
+     * report then contains only the executed steps and {@code cvr:status="CANCELLED"} (partial CVRL, ADR-004).
      */
     public record PipelineResults(ParseXmlResult parse, DetectScenariosResult detect, SelectScenarioAction.SelectScenarioResult select,
             RetrieveArtifactsAction.RetrieveArtifactsResult retrieve, PrepareRulesAction.PrepareRulesResult prepare,
@@ -188,10 +188,10 @@ public final class CvrlWriter {
             newline(writer, 0);
             writer.writeStartElement("reports");
             writer.writeDefaultNamespace(NS_XVRL);
-            writer.writeNamespace("cvrl", NS_CVRL);
+            writer.writeNamespace("cvr", NS_CVR);
             // D5: overall verdict + run status on the root
-            writer.writeAttribute(NS_CVRL, "conformant", String.valueOf(results.isConformant()));
-            writer.writeAttribute(NS_CVRL, "status", results.isCompleted() ? "COMPLETED" : "CANCELLED");
+            writer.writeAttribute(NS_CVR, "conformant", String.valueOf(results.isConformant()));
+            writer.writeAttribute(NS_CVR, "status", results.isCompleted() ? "COMPLETED" : "CANCELLED");
 
             writeRootMetadata(writer, documentName);
             writeStepReport(writer, CTActionType.PARSE_DOCUMENT, results.parse().getDetectionList(), null,
@@ -290,7 +290,7 @@ public final class CvrlWriter {
             writer.writeAttribute("schematypens",
                     ruleSet.getEngineType().getStandard() == CTValidationStandard.XSD ? SCHEMATYPENS_XSD : SCHEMATYPENS_SCHEMATRON);
             if (ruleSet.getPhase() != null) {
-                writer.writeAttribute(NS_CVRL, "phase", ruleSet.getPhase());
+                writer.writeAttribute(NS_CVR, "phase", ruleSet.getPhase());
             }
         }
         newline(writer, 2);
@@ -347,16 +347,16 @@ public final class CvrlWriter {
         }
         // customLevel: severity is the effective one; the declared severity stays auditable
         if (detection instanceof final Detection impl && impl.getOriginalSeverity() != null) {
-            writer.writeAttribute(NS_CVRL, "original-severity", xvrlSeverity(impl.getOriginalSeverity()));
+            writer.writeAttribute(NS_CVR, "original-severity", xvrlSeverity(impl.getOriginalSeverity()));
         }
         final SubjectDetection subject = detection instanceof final SubjectDetection sd ? sd : null;
         if (subject != null) {
             // D13: what the detection is about, and what is known about it, as attributes rather than prose
             if (subject.getSubjectId() != null) {
-                writer.writeAttribute(NS_CVRL, subject.getSubjectAttribute(), subject.getSubjectId());
+                writer.writeAttribute(NS_CVR, subject.getSubjectAttribute(), subject.getSubjectId());
             }
             for (final Map.Entry<String, String> attribute : subject.getAttributes().entrySet()) {
-                writer.writeAttribute(NS_CVRL, attribute.getKey(), attribute.getValue());
+                writer.writeAttribute(NS_CVR, attribute.getKey(), attribute.getValue());
             }
         }
         writeContext(writer, detection, subject, parseEvidence);
@@ -378,7 +378,7 @@ public final class CvrlWriter {
 
     /**
      * D17: the message stays short and readable; the full technical trace goes to {@code supplemental}, where a
-     * consumer can ignore it. {@code cvrl:role} carries the kind until XVRL's own {@code role} attribute is available.
+     * consumer can ignore it. {@code cvr:role} carries the kind until XVRL's own {@code role} attribute is available.
      */
     private static void writeTrace(final XMLStreamWriter writer, final CTDetection detection) throws XMLStreamException {
         if (detection.getLinkedException() == null) {
@@ -390,14 +390,14 @@ public final class CvrlWriter {
         }
         newline(writer, 3);
         writer.writeStartElement(NS_XVRL, "supplemental");
-        writer.writeAttribute(NS_CVRL, "role", ROLE_JAVA_TRACE);
+        writer.writeAttribute(NS_CVR, "role", ROLE_JAVA_TRACE);
         writer.writeCharacters(trace.toString());
         writer.writeEndElement();
     }
 
     /**
      * D9/D16: what a detection is <i>about</i> goes into {@code context}: where it applies or can be looked up
-     * ({@code location}) and the fingerprint of the thing it concerns ({@code cvrl:hash}). Both are structure rather
+     * ({@code location}) and the fingerprint of the thing it concerns ({@code cvr:hash}). Both are structure rather
      * than prose, so a consumer can navigate and verify without parsing message text.
      */
     private static void writeContext(final XMLStreamWriter writer, final CTDetection detection, final SubjectDetection subject,
@@ -426,8 +426,8 @@ public final class CvrlWriter {
 
     private static void writeHash(final XMLStreamWriter writer, final String algorithm, final String value) throws XMLStreamException {
         newline(writer, 4);
-        writer.writeStartElement(NS_CVRL, "hash");
-        writer.writeAttribute(NS_CVRL, "algorithm", algorithm);
+        writer.writeStartElement(NS_CVR, "hash");
+        writer.writeAttribute(NS_CVR, "algorithm", algorithm);
         writer.writeCharacters(value);
         writer.writeEndElement();
     }
@@ -468,7 +468,7 @@ public final class CvrlWriter {
             writer.writeAttribute("href", subject.getSecondaryLocation());
         }
         for (final Map.Entry<String, String> attribute : subject.getLocationAttributes().entrySet()) {
-            writer.writeAttribute(NS_CVRL, attribute.getKey(), attribute.getValue());
+            writer.writeAttribute(NS_CVR, attribute.getKey(), attribute.getValue());
         }
     }
 
@@ -529,8 +529,8 @@ public final class CvrlWriter {
         newline(writer, 3);
         writer.writeStartElement(NS_XVRL, "message");
         writer.writeAttribute(XMLConstants.XML_NS_URI, "id", ID_SCENARIO_CONTENT);
-        writer.writeAttribute(NS_CVRL, "mime-type", MIME_TYPE_XML);
-        writer.writeAttribute(NS_CVRL, "encoding", ENCODING_DOM);
+        writer.writeAttribute(NS_CVR, "mime-type", MIME_TYPE_XML);
+        writer.writeAttribute(NS_CVR, "encoding", ENCODING_DOM);
         embedXml(writer, new ByteArrayInputStream(subject.getEmbeddedXml()));
         writer.writeEndElement();
     }
@@ -538,14 +538,14 @@ public final class CvrlWriter {
     /**
      * The {@code document-parsed} detection carries two messages, each identified by its own {@code xml:id} so a
      * consumer never has to rely on their order — first the document hash (over the retained source bytes, algorithm as
-     * {@code cvrl:algorithm}), then the source document itself. Separate elements so a streaming consumer can skip the
+     * {@code cvr:algorithm}), then the source document itself. Separate elements so a streaming consumer can skip the
      * payload. The payload is only ever written for a successfully parsed document — failed content is not echoed
      * (injection safety).
      * <p>
-     * <b>Embedding rule</b> ({@code cvrl:encoding}): an XML document declared as UTF-8 is embedded as a DOM fragment —
+     * <b>Embedding rule</b> ({@code cvr:encoding}): an XML document declared as UTF-8 is embedded as a DOM fragment —
      * readable, and byte-faithful because the report itself is UTF-8. Any other encoding is embedded as {@code base64},
      * because serializing the fragment into the UTF-8 report would silently transcode it and lose the original XML
-     * declaration. The declared encoding is always reported as {@code cvrl:source-encoding} (needed to write a base64
+     * declaration. The declared encoding is always reported as {@code cvr:source-encoding} (needed to write a base64
      * payload back out). Non-XML sources are always base64.
      * </p>
      */
@@ -557,12 +557,12 @@ public final class CvrlWriter {
         newline(writer, 3);
         writer.writeStartElement(NS_XVRL, "message");
         writer.writeAttribute(XMLConstants.XML_NS_URI, "id", ID_DOCUMENT_CONTENT);
-        writer.writeAttribute(NS_CVRL, "mime-type", isXml(source) ? MIME_TYPE_XML : MIME_TYPE_OCTET_STREAM);
-        writer.writeAttribute(NS_CVRL, "encoding", asDom ? ENCODING_DOM : ENCODING_BASE64);
+        writer.writeAttribute(NS_CVR, "mime-type", isXml(source) ? MIME_TYPE_XML : MIME_TYPE_OCTET_STREAM);
+        writer.writeAttribute(NS_CVR, "encoding", asDom ? ENCODING_DOM : ENCODING_BASE64);
         if (!asDom) {
             // only a base64 payload needs it — writing the source document back out requires the encoding, whereas a
             // DOM fragment is by construction in the report's own encoding
-            writer.writeAttribute(NS_CVRL, "source-encoding", sourceEncoding);
+            writer.writeAttribute(NS_CVR, "source-encoding", sourceEncoding);
         }
         if (asDom) {
             embedXml(writer, resource.getSourceStream());

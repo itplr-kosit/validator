@@ -120,35 +120,37 @@ public class SchematronValidation implements ValidationEngine<AdHocValidationRes
             return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(), parsed.getDetectionList());
         }
 
-        final String documentName = parsed.getParsedSource().getSource().getName();
+        final String resourceId = document.getName();
         // the parent directory of the schematron is the artifact repository of this ad-hoc run
         final URI base = UriHelper.resolve(schematron, ".", resolveInArchive);
         if (!base.isAbsolute()) {
             // no parent could be derived: the URI is relative, or it addresses an archive that may not be resolved in
             return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(),
                     new DetectionList(Detection.builderError().code(RetrieveArtifactsAction.CODE_ARTIFACT_ACCESS_DENIED)
-                            .location(documentName)
+                            .location(resourceId)
                             .text("Can not derive an artifact repository from the Schematron '" + schematron + "'"
                                     + (UriHelper.isArchiveUri(schematron) ? ", because resolving inside an archive is not enabled" : ""))
                             .build()));
         }
-        final ValidationArtifactReference reference = ValidationArtifactReference.of(UriHelper.relativize(base, schematron).toString());
+        final ValidationArtifactReference reference = ValidationArtifactReference.of(UriHelper.relativize(base, schematron));
 
         // step 5 (RETRIEVE_ARTIFACTS): resolve confined to that directory
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(base, resolveInArchive)
-                .execute(List.of(reference), documentName);
+                .execute(List.of(reference), resourceId);
         if (!retrieved.isSuccess()) {
             return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(), retrieved.detections());
         }
+
         // step 6 (PREPARE_RULES): transpile + compile
         // the strategy of ResolvingMode.STRICT_RELATIVE, but with the archive permission of this run
         final ContentRepository repository = new ContentRepository(this.processor, new StrictRelativeResolvingStrategy(resolveInArchive),
                 base);
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(repository).execute(retrieved.artifacts(),
-                documentName);
+                resourceId);
         if (!prepared.isSuccess()) {
             return new AdHocValidationResult(CTStepResult.FAILURE, parsed.getParsedSource(), prepared.detections());
         }
+
         // step 7 (APPLY_RULES): findings do not fail the run, only engine errors do
         final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
                 prepared.ruleSets());

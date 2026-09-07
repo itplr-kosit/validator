@@ -111,7 +111,7 @@ public class ConfigurationLoader {
         s.setUriResolver(repository.getResolver());
         s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
         if (def.getAcceptMatch() != null) {
-            s.setAcceptExecutable(ScenarioArtifacts.createAccepptExecutable(repository, def));
+            s.setAcceptExecutable(ScenarioArtifacts.createAcceptExecutable(repository, def));
         }
         return s;
     }

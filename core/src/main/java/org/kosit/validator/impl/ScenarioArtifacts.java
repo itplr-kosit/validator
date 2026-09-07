@@ -12,11 +12,12 @@ import java.util.stream.Collectors;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
+import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.base.string.StringHelper;
 import org.kosit.jaxb.adapter.StringTrimAdapter;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.validator.impl.Scenario.Transformation;
-import org.kosit.schematron.SchXsltCompiler;
+import org.kosit.schematron.SchematronCompilerRegistry;
+import org.kosit.validator.impl.Scenario.VTransformation;
 import org.kosit.validator.scenario.v1.NamespaceType;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
@@ -76,45 +77,47 @@ public final class ScenarioArtifacts {
      * @param t the scenario configuration
      * @return initialized transformation
      */
-    public static List<Transformation> createReportTransformations(final ContentRepository repository, final ScenarioType t) {
+    public static List<VTransformation> createReportTransformations(final ContentRepository repository, final ScenarioType t) {
         LOGGER.info("Create Report Transformations:");
         return t.getCreateReport().stream().map(createReportType -> createTransformation(repository, createReportType.getResource()))
                 .toList();
     }
 
-    public static Transformation createTransformation(final ContentRepository repository, final ResourceType resource) {
+    public static VTransformation createTransformation(final ContentRepository repository, final ResourceType resource) {
         final XsltExecutable executable = repository.loadXsltScript(URI.create(resource.getLocation()));
-        return new Transformation(executable, resource);
+        return new VTransformation(executable, resource);
     }
 
     public static XPathExecutable createMatchExecutable(final ContentRepository repository, final ScenarioType s) {
         return repository.createXPath(s.getMatch(), namespaces(s));
     }
 
-    public static XPathExecutable createAccepptExecutable(final ContentRepository repository, final ScenarioType s) {
+    public static XPathExecutable createAcceptExecutable(final ContentRepository repository, final ScenarioType s) {
         return repository.createXPath(s.getAcceptMatch(), namespaces(s));
     }
 
-    public static List<Transformation> createSchematronTransformations(final ContentRepository repository, final ScenarioType s) {
+    @ReturnsImmutableObject
+    public static List<VTransformation> createSchematronTransformations(final ContentRepository repository, final ScenarioType s) {
         return s.getValidateWithSchematron().isEmpty() ? Collections.emptyList()
                 : s.getValidateWithSchematron().stream().map(v -> createSchematronTransformation(repository, v)).toList();
     }
 
-    public static Transformation createSchematronTransformation(final ContentRepository repository,
+    public static VTransformation createSchematronTransformation(final ContentRepository repository,
             final ValidateWithSchematron validateWithSchematron) {
         LOGGER.info("Create Schematron Transformation:");
         final ResourceType resource = validateWithSchematron.getResource();
         final URI uri = URI.create(resource.getLocation());
         final String path = uri.getPath();
-        final String compilerId = StringHelper.blankToDefault(validateWithSchematron.getCompiler(), SchXsltCompiler.COMPILER_ID);
+        final String compilerId = StringHelper.blankToDefault(validateWithSchematron.getCompiler(),
+                SchematronCompilerRegistry.FALLBACK_COMPILER_ID);
         if (path != null && path.endsWith(".sch")) {
             final XsltExecutable executable = repository.loadSchematronXslt(compilerId, uri);
-            return new Transformation(executable, resource);
+            return new VTransformation(executable, resource);
         }
         return createTransformation(repository, validateWithSchematron.getResource());
     }
 
-    public static Transformation createIdentityTransformation(final ContentRepository repository) {
+    public static VTransformation createIdentityTransformation(final ContentRepository repository) {
         final URL url = ScenarioArtifacts.class.getClassLoader().getResource("transform/identity.xsl");
         try ( InputStream input = url.openStream() ) {
             final XsltCompiler xsltCompiler = repository.getProcessor().newXsltCompiler();
@@ -122,7 +125,7 @@ public final class ScenarioArtifacts {
             final ResourceType resource = new ResourceType();
             resource.setName("identity");
             resource.setLocation(url.toString());
-            return new Transformation(executable, resource);
+            return new VTransformation(executable, resource);
         } catch (final IOException | SaxonApiException e) {
             throw new IllegalStateException("Error creating identity transformation", e);
         }

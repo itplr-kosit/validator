@@ -3,6 +3,7 @@ package org.kosit.validator.impl.conformatron.action;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.validation.Schema;
 
@@ -22,7 +23,7 @@ import org.kosit.conformatron.detection.SubjectDetection;
 import org.kosit.conformatron.rule.PreparedRuleSet;
 import org.kosit.conformatron.validation.CompiledValidationArtifact;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.SchXsltCompiler;
+import org.kosit.schematron.SchematronCompilerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class PrepareRulesAction implements CTAction {
      * @param repository the content repository doing the compilation (compiler registry, cache, secured resolvers)
      */
     public PrepareRulesAction(final ContentRepository repository) {
-        this(repository, SchXsltCompiler.COMPILER_ID);
+        this(repository, null);
     }
 
     /**
@@ -83,11 +84,9 @@ public class PrepareRulesAction implements CTAction {
      * @param compilerId id of the Schematron compiler to use (e.g. {@code schxslt}, {@code iso-schematron})
      */
     public PrepareRulesAction(final ContentRepository repository, final String compilerId) {
-        if (repository == null) {
-            throw new IllegalArgumentException("repository may not be null");
-        }
+        Objects.requireNonNull(repository);
         this.repository = repository;
-        this.compilerId = StringHelper.blankToDefault(compilerId, SchXsltCompiler.COMPILER_ID);
+        this.compilerId = StringHelper.blankToDefault(compilerId, SchematronCompilerRegistry.FALLBACK_COMPILER_ID);
     }
 
     /**
@@ -155,20 +154,20 @@ public class PrepareRulesAction implements CTAction {
             switch (artifact.getValidationType()) {
                 case CTStandardValidationType.XSD -> {
                     final Schema schema = this.repository.createSchema(uri);
-                    ruleSets.add(PreparedRuleSet.xsd(reference, CompiledValidationArtifact.of(artifact.getValidationType(), schema)));
+                    ruleSets.add(PreparedRuleSet.xsd(reference, new CompiledValidationArtifact<>(artifact.getValidationType(), schema)));
                     detections.add(compiled(href, resourceId, "XML Schema"));
                 }
                 case CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3 -> {
                     final XsltExecutable executable = this.repository.loadSchematronXslt(this.compilerId, uri);
-                    ruleSets.add(PreparedRuleSet
-                            .schematron(reference, CompiledValidationArtifact.of(artifact.getValidationType(), executable), engineVersion())
+                    ruleSets.add(PreparedRuleSet.schematron(reference,
+                            new CompiledValidationArtifact<>(artifact.getValidationType(), executable), engineVersion())
                             .withTranspilerId(this.compilerId));
                     detections.add(compiled(href, resourceId, "Schematron via " + this.compilerId));
                 }
                 case CTStandardValidationType.SCHEMATRON_XSLT2 -> {
                     final XsltExecutable executable = this.repository.loadXsltScript(uri);
                     ruleSets.add(PreparedRuleSet.schematron(reference,
-                            CompiledValidationArtifact.of(artifact.getValidationType(), executable), engineVersion()));
+                            new CompiledValidationArtifact<>(artifact.getValidationType(), executable), engineVersion()));
                     // nothing to report: an artifact that was transpiled ahead of time needed no preparation here
                 }
                 default -> {

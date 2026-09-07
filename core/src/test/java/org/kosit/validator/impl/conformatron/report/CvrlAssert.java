@@ -35,12 +35,12 @@ final class CvrlAssert {
         try {
             final var cvrRes = ReadResource.inMemory(Resource.of(name, cvr));
 
-            final var detections = CvrProfile.validate(cvrRes);
-            if (detections.containsNoError()) {
+            final var valResult = CvrProfile.validate(cvrRes);
+            if (valResult.containsNoError()) {
                 return;
             }
             fail("The report does not satisfy the CVRL profile:\n  "
-                    + String.join("\n", detections.getAll().stream().map(x -> x.getAsString(Locale.ROOT)).toList()));
+                    + String.join("\n", valResult.getMergedDetections().stream().map(x -> x.getAsString(Locale.ROOT)).toList()));
         } catch (final IOException ex) {
             fail("IOException in reading resource", ex);
         }

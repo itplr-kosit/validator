@@ -48,7 +48,7 @@ public class CreateReportsTask implements CheckTask {
         this.xvrlSerializer = new XvrlSerializer(processor);
     }
 
-    private static List<Scenario.Transformation> getTransformations(final Process results) {
+    private static List<Scenario.VTransformation> getTransformations(final Process results) {
         final SingleProcessingResult<Scenario, String> scenarioSelection = results.getResult(ScenarioSelectionTask.KEY);
         return scenarioSelection.getObject().getReportTransformations();
     }
@@ -78,7 +78,7 @@ public class CreateReportsTask implements CheckTask {
         return processStepResult;
     }
 
-    private BusinessReport createReport(final Scenario.Transformation transformation, final Process process, final Scenario scenario,
+    private BusinessReport createReport(final Scenario.VTransformation transformation, final Process process, final Scenario scenario,
             final XdmNode parsedDocument) {
         final BusinessReport r = new BusinessReport();
         r.setName(transformation.getResourceType().getName());

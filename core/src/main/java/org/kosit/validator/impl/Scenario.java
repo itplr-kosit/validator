@@ -24,7 +24,7 @@ public class Scenario {
     /**
      * Runtime objects for a transformation e.g. schematron or report.
      */
-    public static class Transformation {
+    public static class VTransformation {
 
         private XsltExecutable executable;
 
@@ -46,7 +46,7 @@ public class Scenario {
             this.resourceType = resourceType;
         }
 
-        public Transformation(final XsltExecutable executable, final ResourceType resourceType) {
+        public VTransformation(final XsltExecutable executable, final ResourceType resourceType) {
             this.executable = executable;
             this.resourceType = resourceType;
         }
@@ -68,18 +68,18 @@ public class Scenario {
 
     private UnparsedTextURIResolver unparsedTextURIResolver;
 
-    private List<Transformation> schematronValidations;
+    private List<VTransformation> schematronValidations;
 
-    private List<Transformation> reportTransformations;
+    private List<VTransformation> reportTransformations;
 
-    public List<Transformation> getReportTransformations() {
+    public List<VTransformation> getReportTransformations() {
         if (this.reportTransformations == null) {
             this.reportTransformations = new ArrayList<>();
         }
         return this.reportTransformations;
     }
 
-    public List<Transformation> getSchematronValidations() {
+    public List<VTransformation> getSchematronValidations() {
         if (this.schematronValidations == null) {
             this.schematronValidations = new ArrayList<>();
         }
@@ -139,7 +139,7 @@ public class Scenario {
         this.unparsedTextURIResolver = unparsedTextURIResolver;
     }
 
-    public void setReportTransformations(final List<Transformation> reportTransformations) {
+    public void setReportTransformations(final List<VTransformation> reportTransformations) {
         this.reportTransformations = reportTransformations;
     }
 
@@ -175,7 +175,7 @@ public class Scenario {
         return this.unparsedTextURIResolver;
     }
 
-    public void setSchematronValidations(final List<Transformation> schematronValidations) {
+    public void setSchematronValidations(final List<VTransformation> schematronValidations) {
         this.schematronValidations = schematronValidations;
     }
 }

@@ -9,7 +9,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.kosit.base.error.SimpleError;
 import org.kosit.svrl.impl.SvrlConverter;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.Scenario.Transformation;
+import org.kosit.validator.impl.Scenario.VTransformation;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.model.ValidationResultsSchematron;
@@ -93,7 +93,7 @@ public class SchematronValidationTask implements CheckTask {
     }
 
     private ValidationResultsSchematron validate(final Scenario scenario, final Process process, final XdmNode document,
-            final Transformation validation) {
+            final VTransformation validation) {
         final ValidationResultsSchematron validationResultsSchematron = new ValidationResultsSchematron();
         validationResultsSchematron.setResource(validation.getResourceType());
         try {

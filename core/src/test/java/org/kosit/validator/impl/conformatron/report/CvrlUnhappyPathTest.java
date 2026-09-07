@@ -53,7 +53,7 @@ public class CvrlUnhappyPathTest {
 
     private static final String NS = CvrlWriter.NS_XVRL;
 
-    private static final String NS_CVRL = CvrlWriter.NS_CVRL;
+    private static final String NS_CVR = CvrlWriter.NS_CVR;
 
     private final CvrlWriter writer = new CvrlWriter("KoSIT XML Validator (canonical pipeline)", "2.0.0-SNAPSHOT");
 
@@ -200,8 +200,8 @@ public class CvrlUnhappyPathTest {
      */
     private static void assertCancelledAt(final Document cvrl, final CTActionType failingStep, final String expectedCode) {
         final Element root = cvrl.getDocumentElement();
-        assertThat(root.getAttributeNS(NS_CVRL, "status")).as("run status").isEqualTo("CANCELLED");
-        assertThat(root.getAttributeNS(NS_CVRL, "conformant")).as("a cancelled run must never look conformant").isEqualTo("false");
+        assertThat(root.getAttributeNS(NS_CVR, "status")).as("run status").isEqualTo("CANCELLED");
+        assertThat(root.getAttributeNS(NS_CVR, "conformant")).as("a cancelled run must never look conformant").isEqualTo("false");
 
         final List<Element> reports = reports(cvrl);
         assertThat(reports).as("the report must not be empty").isNotEmpty();
@@ -232,7 +232,7 @@ public class CvrlUnhappyPathTest {
         // security: content that failed to parse is never echoed back into the report
         final NodeList messages = cvrl.getElementsByTagNameNS(NS, "message");
         for (int i = 0; i < messages.getLength(); i++) {
-            assertThat(((Element) messages.item(i)).getAttributeNS(NS_CVRL, "mime-type")).isEmpty();
+            assertThat(((Element) messages.item(i)).getAttributeNS(NS_CVR, "mime-type")).isEmpty();
         }
     }
 
@@ -244,7 +244,7 @@ public class CvrlUnhappyPathTest {
         assertCancelledAt(cvrl, CTActionType.DETECT_SCENARIOS, DetectScenariosAction.CODE_NO_SCENARIO_MATCHED);
         // without a scenario there is nothing to identify or locate
         final Element detection = (Element) reports(cvrl).get(1).getElementsByTagNameNS(NS, "detection").item(0);
-        assertThat(detection.hasAttributeNS(NS_CVRL, "scenario-id")).isFalse();
+        assertThat(detection.hasAttributeNS(NS_CVR, "scenario-id")).isFalse();
         assertThat(detection.getElementsByTagNameNS(NS, "location").getLength()).isZero();
     }
 
@@ -277,7 +277,7 @@ public class CvrlUnhappyPathTest {
         assertCancelledAt(cvrl, CTActionType.RETRIEVE_ARTIFACTS, RetrieveArtifactsAction.CODE_ARTIFACT_MISSING);
         // knowing *which* artifact is missing is the whole point, so it is named and located on the detection
         final Element failing = lastDetectionWithCode(cvrl, RetrieveArtifactsAction.CODE_ARTIFACT_MISSING);
-        assertThat(failing.getAttributeNS(NS_CVRL, "artifact-id")).contains("does-not-exist.sch");
+        assertThat(failing.getAttributeNS(NS_CVR, "artifact-id")).contains("does-not-exist.sch");
         final Element location = (Element) failing.getElementsByTagNameNS(NS, "location").item(0);
         assertThat(location.getAttribute("href")).contains("does-not-exist.sch");
     }

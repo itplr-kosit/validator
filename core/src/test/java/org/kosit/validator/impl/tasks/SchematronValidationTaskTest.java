@@ -14,7 +14,7 @@ import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.Scenario.Transformation;
+import org.kosit.validator.impl.Scenario.VTransformation;
 import org.kosit.validator.impl.ScenarioArtifacts;
 import org.kosit.validator.impl.model.ProcessStepResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
@@ -53,7 +53,7 @@ public class SchematronValidationTaskTest {
         when(exec.load()).thenReturn(transformer);
         final ResourceType resourceType = new ResourceType();
         resourceType.setName("invalid internal");
-        scenario.setSchematronValidations(Collections.singletonList(new Transformation(exec, resourceType)));
+        scenario.setSchematronValidations(Collections.singletonList(new VTransformation(exec, resourceType)));
         final ProcessStepResult<List<ValidationResultsSchematron>, String> processStepResult = this.action.check(process);
         final SingleProcessingResult<List<ValidationResultsSchematron>, String> result = processStepResult.getResult();
         assertThat(result.getObject()).isNotNull();
