@@ -12,6 +12,9 @@ import javax.xml.validation.Schema;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kosit.schematron.compiler.IsoSchematronCompiler;
+import org.kosit.schematron.compiler.SchXslt2Compiler;
+import org.kosit.schematron.compiler.SchXsltCompiler;
 import org.kosit.validator.testdata.TestResources;
 
 import net.sf.saxon.s9api.XPathExecutable;

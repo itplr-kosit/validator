@@ -2,7 +2,6 @@ package org.kosit.schematron;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,6 +16,7 @@ import javax.xml.validation.SchemaFactory;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.string.StringHelper;
+import org.kosit.schematron.compiler.SchematronCompiler;
 import org.kosit.schematron.resolve.RelativeUriResolver;
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kost.validator.api.xml.CollectingErrorEventHandler;
@@ -41,10 +41,10 @@ import net.sf.saxon.s9api.XsltExecutable;
  */
 public class ContentRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContentRepository.class);
-
     private static final record CacheKey(String compilerId, URI uri) {
     }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContentRepository.class);
 
     private final Processor processor;
 
@@ -62,10 +62,6 @@ public class ContentRepository {
 
     private final SchematronCompilerRegistry compilerRegistry;
 
-    private static SchematronCompilerRegistry defaultSchematronCompilerRegistry(final Processor processor) {
-        return new SchematronCompilerRegistry(List.of(new SchXsltCompiler(), new SchXslt2Compiler(), new IsoSchematronCompiler(processor)));
-    }
-
     /**
      * Creates a new {@link ContentRepository} based on configured security and resolving strategy and the specified
      * repository location.
@@ -76,7 +72,7 @@ public class ContentRepository {
      */
     public ContentRepository(final Processor processor, final ResolvingConfigurationStrategy strategy, final URI repository) {
         this(processor, repository, strategy.createResourceResolver(repository), strategy.createUnparsedTextURIResolver(repository),
-                strategy.createSchemaFactory(), strategy, defaultSchematronCompilerRegistry(processor));
+                strategy.createSchemaFactory(), strategy, SchematronCompilerRegistry.defaultSchematronCompilerRegistry(processor));
     }
 
     protected ContentRepository(final Processor processor, final URI repository, final ResourceResolver resolver,
@@ -152,7 +148,7 @@ public class ContentRepository {
     }
 
     public XsltExecutable loadSchematronXslt(final String compilerId, final URI schUri) {
-        LOGGER.info("Loading or compiling Schematron {} using compiler {}", schUri, compilerId);
+        LOGGER.info("Loading or compiling Schematron " + schUri + " using compiler " + compilerId);
 
         final SchematronCompiler compiler = compilerRegistry.get(compilerId);
         if (compiler == null)

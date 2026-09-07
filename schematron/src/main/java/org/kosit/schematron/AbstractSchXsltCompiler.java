@@ -9,6 +9,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.jspecify.annotations.NonNull;
+import org.kosit.schematron.compiler.SchematronCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -30,7 +31,7 @@ public abstract class AbstractSchXsltCompiler implements SchematronCompiler {
     }
 
     @Override
-    public Source compileToXslt(final URI schematronUri, final Function<URI, Source> rawResolver) {
+    public DOMSource compileToXslt(final URI schematronUri, final Function<URI, Source> rawResolver) {
         LOGGER.info("Trying to compile Schematron file '" + schematronUri + "' using " + compilerName);
         try {
             final Source schSource = rawResolver.apply(schematronUri);

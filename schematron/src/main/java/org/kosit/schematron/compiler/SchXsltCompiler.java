@@ -1,10 +1,11 @@
-package org.kosit.schematron;
+package org.kosit.schematron.compiler;
 
 import javax.xml.transform.dom.DOMSource;
 
+import org.kosit.schematron.AbstractSchXsltCompiler;
+
 import name.dmaus.schxslt.Compiler;
 import name.dmaus.schxslt.adapter.SchXslt;
-import name.dmaus.schxslt.adapter.SchXslt2;
 import net.sf.saxon.s9api.XsltExecutable;
 
 /**
@@ -13,8 +14,9 @@ import net.sf.saxon.s9api.XsltExecutable;
  *
  * <p>
  * This compiler delegates the actual transformation from Schematron schema ({@code .sch}) to XSLT stylesheet to the
- * {@link Compiler} class from the {@code schxslt-java} module, using the {@link SchXslt} adapter. The resulting XSLT is
- * returned as a {@link DOMSource} so that callers can compile it into an {@link XsltExecutable} with Saxon.
+ * {@link name.dmaus.schxslt.Compiler} class from the {@code schxslt-java} module, using the {@link SchXslt} adapter.
+ * The resulting XSLT is returned as a {@link DOMSource} so that callers can compile it into an {@link XsltExecutable}
+ * with Saxon.
  * </p>
  *
  * <p>
@@ -22,16 +24,16 @@ import net.sf.saxon.s9api.XsltExecutable;
  * designed to be used safely from multiple threads.
  * </p>
  */
-public class SchXslt2Compiler extends AbstractSchXsltCompiler {
+public class SchXsltCompiler extends AbstractSchXsltCompiler {
 
-    public static final String COMPILER_ID = "schxslt2";
+    public static final String COMPILER_ID = "schxslt";
 
-    public SchXslt2Compiler() {
-        super(new Compiler(new SchXslt2()), "SchXslt2");
+    public SchXsltCompiler() {
+        super(new Compiler(new SchXslt()), "SchXslt1");
     }
 
     @Override
     public String getId() {
-        return SchXslt2Compiler.COMPILER_ID;
+        return SchXsltCompiler.COMPILER_ID;
     }
 }

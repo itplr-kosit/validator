@@ -1,4 +1,4 @@
-package org.kosit.schematron;
+package org.kosit.schematron.compiler;
 
 import java.io.InputStream;
 import java.net.URI;

@@ -1,4 +1,4 @@
-package org.kosit.schematron;
+package org.kosit.schematron.compiler;
 
 import java.net.URI;
 import java.util.function.Function;
