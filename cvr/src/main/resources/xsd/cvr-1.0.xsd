@@ -150,13 +150,6 @@
         </xs:annotation>
     </xs:attribute>
 
-    <!-- on xvrl:supplemental -->
-    <xs:attribute name="role" type="xs:token">
-        <xs:annotation>
-            <xs:documentation>What a supplemental carries, e.g. java-trace for a stack trace.</xs:documentation>
-        </xs:annotation>
-    </xs:attribute>
-
     <!-- on cvr:hash -->
     <xs:attribute name="algorithm" type="xs:token"/>
 

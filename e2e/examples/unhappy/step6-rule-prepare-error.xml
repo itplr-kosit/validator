@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
     <metadata>
-        <timestamp>2026-09-07T14:44:19+02:00</timestamp>
+        <timestamp>2026-09-07T18:39:38+02:00</timestamp>
         <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
         <document href="simple.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
+            <timestamp>2026-09-07T18:39:38+02:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
@@ -34,7 +34,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
+            <timestamp>2026-09-07T18:39:38+02:00</timestamp>
             <creator name="detect-scenarios"/>
         </metadata>
         <detection cvr:scenario-id="Simple">
@@ -47,7 +47,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
+            <timestamp>2026-09-07T18:39:38+02:00</timestamp>
             <creator name="select-scenario"/>
         </metadata>
         <detection cvr:scenario-id="Simple">
@@ -101,7 +101,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
+            <timestamp>2026-09-07T18:39:38+02:00</timestamp>
             <creator name="retrieve-artifacts"/>
         </metadata>
         <detection cvr:artifact-id="does-not-compile.sch">
@@ -115,7 +115,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
+            <timestamp>2026-09-07T18:39:38+02:00</timestamp>
             <creator name="prepare-rules"/>
         </metadata>
         <detection severity="error" code="rule-prepare-error" cvr:artifact-id="does-not-compile.sch">
@@ -226,7 +226,7 @@ Caused by: net.sf.saxon.trans.XPathException: No stylesheet element found at fil
     </report>
     <report>
         <metadata>
-            <timestamp>2026-09-07T14:44:19+02:00</timestamp>
+            <timestamp>2026-09-07T18:39:38+02:00</timestamp>
             <creator name="decision-recommendation"/>
         </metadata>
         <detection severity="error" code="decision-reject" cvr:decision="REJECT">
