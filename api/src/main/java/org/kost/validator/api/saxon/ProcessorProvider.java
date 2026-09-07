@@ -27,9 +27,12 @@ import net.sf.saxon.trans.XPathException;
  */
 public class ProcessorProvider {
 
-    private static class SecureUriResolver implements CollectionFinder, OutputURIResolver, UnparsedTextURIResolver {
+    public static class SecureUriResolver implements CollectionFinder, OutputURIResolver, UnparsedTextURIResolver {
 
         public static final String MESSAGE = "Configuration error. Resolving is not allowed";
+
+        private SecureUriResolver() {
+        }
 
         @Override
         public Reader resolve(final URI absoluteURI, final String encoding, final Configuration config) throws XPathException {
