@@ -12,7 +12,7 @@
         </metadata>
         <detection severity="error" code="not-wellformed">
             <message>XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.</message>
-            <supplemental role="java-trace">org.xml.sax.SAXParseException; systemId: file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/input/simple-not-wellformed.xml; lineNumber: 4; columnNumber: 27; XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.&#13;
+            <supplemental role="java-trace">org.xml.sax.SAXParseException; systemId: jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/input/simple-not-wellformed.xml; lineNumber: 4; columnNumber: 27; XML-Dokumentstrukturen müssen innerhalb derselben Entity beginnen und enden.&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:204)&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(ErrorHandlerWrapper.java:178)&#13;
 	at java.xml/com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:400)&#13;

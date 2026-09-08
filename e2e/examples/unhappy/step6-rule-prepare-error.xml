@@ -40,7 +40,7 @@
         <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-with-sch.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -70,7 +70,7 @@
                             <location>simple.xsd</location>
                         </resource>
                     </validateWithXmlSchema>
-                    <validateWithSchematron>
+                    <validateWithSchematron compiler="iso-schematron">
                         <resource>
                             <name>Sample Schematron</name>
                             <location>simple.sch</location>
@@ -94,7 +94,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-with-sch.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -207,11 +207,11 @@
 	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)&#13;
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)&#13;
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)&#13;
-Caused by: net.sf.saxon.s9api.SaxonApiException: No stylesheet element found at file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/repository/does-not-compile.sch&#13;
+Caused by: net.sf.saxon.s9api.SaxonApiException: No stylesheet element found at jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/repository/does-not-compile.sch&#13;
 	at net.sf.saxon.s9api.XsltCompiler.compile(XsltCompiler.java:985)&#13;
 	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:168)&#13;
 	... 85 more&#13;
-Caused by: net.sf.saxon.trans.XPathException: No stylesheet element found at file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/repository/does-not-compile.sch&#13;
+Caused by: net.sf.saxon.trans.XPathException: No stylesheet element found at jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/repository/does-not-compile.sch&#13;
 	at net.sf.saxon.style.Compilation.compilePackage(Compilation.java:257)&#13;
 	at net.sf.saxon.style.StylesheetModule.loadStylesheet(StylesheetModule.java:254)&#13;
 	at net.sf.saxon.style.Compilation.compileSingletonPackage(Compilation.java:115)&#13;

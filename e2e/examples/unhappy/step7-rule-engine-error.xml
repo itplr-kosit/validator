@@ -40,7 +40,7 @@
         <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-engine-error.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-engine-error.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -70,7 +70,7 @@
                             <location>simple.xsd</location>
                         </resource>
                     </validateWithXmlSchema>
-                    <validateWithSchematron>
+                    <validateWithSchematron compiler="schxslt">
                         <resource>
                             <name>Sample Schematron</name>
                             <location>simple-runtime-error.sch</location>
@@ -94,7 +94,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-engine-error.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-engine-error.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
