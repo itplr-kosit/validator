@@ -24,6 +24,7 @@ import org.kosit.conformatron.rule.PreparedRuleSet;
 import org.kosit.conformatron.validation.CompiledValidationArtifact;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.SchematronCompilerRegistry;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +82,8 @@ public class PrepareRulesAction implements CTAction {
 
     /**
      * @param repository the content repository doing the compilation
-     * @param compilerId id of the Schematron compiler to use (e.g. {@code schxslt}, {@code iso-schematron})
+     * @param compilerId id of the Schematron compiler to use (e.g. {@code schxslt}, {@code iso-schematron}) for rule
+     *            sets whose reference does not name one itself ({@link ScenarioRuleSetReference})
      */
     public PrepareRulesAction(final ContentRepository repository, final String compilerId) {
         Objects.requireNonNull(repository);
@@ -158,17 +160,24 @@ public class PrepareRulesAction implements CTAction {
                     detections.add(compiled(href, resourceId, "XML Schema"));
                 }
                 case CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3 -> {
-                    final XsltExecutable executable = this.repository.loadSchematronXslt(this.compilerId, uri);
+                    // the processor the scenario names for this rule set wins over the default of this action
+                    final String compiler = StringHelper.blankToDefault(ScenarioRuleSetReference.declaredCompiler(reference),
+                            this.compilerId);
+                    final XsltExecutable executable = this.repository.loadSchematronXslt(compiler, uri);
                     ruleSets.add(PreparedRuleSet.schematron(reference,
                             new CompiledValidationArtifact<>(artifact.getValidationType(), executable), engineVersion())
-                            .withTranspilerId(this.compilerId));
-                    detections.add(compiled(href, resourceId, "Schematron via " + this.compilerId));
+                            .withTranspilerId(compiler));
+                    detections.add(compiled(href, resourceId, "Schematron via " + compiler));
                 }
                 case CTStandardValidationType.SCHEMATRON_XSLT2 -> {
                     final XsltExecutable executable = this.repository.loadXsltScript(uri);
+                    // nothing to report: an artifact that was transpiled ahead of time needed no preparation here - but
+                    // the
+                    // scenario may name the processor that produced it, so the report can state how the rule set was
+                    // built
                     ruleSets.add(PreparedRuleSet.schematron(reference,
-                            new CompiledValidationArtifact<>(artifact.getValidationType(), executable), engineVersion()));
-                    // nothing to report: an artifact that was transpiled ahead of time needed no preparation here
+                            new CompiledValidationArtifact<>(artifact.getValidationType(), executable), engineVersion())
+                            .withTranspilerId(ScenarioRuleSetReference.declaredCompiler(reference)));
                 }
                 default -> {
                     detections.add(about(href, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(resourceId)

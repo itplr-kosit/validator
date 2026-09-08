@@ -47,6 +47,9 @@ public final class TestResources {
 
         public static final URI SCENARIOS_WITH_SCH = TestData.file("examples/simple/scenarios-with-sch.xml");
 
+        /** compiler at the rule set, customLevel below validateWithSchematron, no createReport, empty acceptMatch */
+        public static final URI SCENARIOS_WRITTEN_FOR_2_0 = TestData.file("examples/simple/scenarios-accept-match-empty.xml");
+
         /** Configuration with two scenarios matching the same document, for the ambiguity path. */
         public static final URI SCENARIOS_AMBIGUOUS = TestData.file("examples/simple/scenarios-ambiguous.xml");
 

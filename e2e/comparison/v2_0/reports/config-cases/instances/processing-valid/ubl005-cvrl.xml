@@ -583,7 +583,6 @@
                     </description>
                     <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
                     <namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace>
-                    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
                     <match>exists(/invoice:Invoice/cbc:CustomizationID[ . = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match>
                     <validateWithXmlSchema>
                         <resource>
@@ -591,29 +590,22 @@
                             <location>resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd</location>
                         </resource>
                     </validateWithXmlSchema>
-                    <validateWithSchematron>
+                    <validateWithSchematron compiler="schxslt">
                         <resource>
                             <name>Schematron rules for EN16931 (UBL)</name>
                             <location>resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location>
                         </resource>
+                        <customLevel level="warning">BR-CL-23</customLevel>
+                        <customLevel level="warning">BR-CL-21</customLevel>
+                        <customLevel level="error">UBL-CR-646</customLevel>
                     </validateWithSchematron>
-                    <validateWithSchematron>
+                    <validateWithSchematron compiler="schxslt">
                         <resource>
                             <name>Schematron rules for Invoice - CIUS XRechnung (UBL)</name>
                             <location>resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl</location>
                         </resource>
                     </validateWithSchematron>
-                    <createReport>
-                        <id>report-1</id>
-                        <resource>
-                            <name>Validation report for XRechnung</name>
-                            <location>resources/xrechnung-report.xsl</location>
-                        </resource>
-                        <customLevel level="warning">BR-CL-23</customLevel>
-                        <customLevel level="warning">BR-CL-21</customLevel>
-                        <customLevel level="error">UBL-CR-646</customLevel>
-                    </createReport>
-                    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+                    <acceptMatch/>
                 </scenario>
             </message>
             <context>
@@ -653,6 +645,7 @@
     <report>
         <metadata>
             <timestamp>2026-01-01T00:00:00Z</timestamp>
+            <validator name="schxslt"/>
             <validator name="Saxon" version="12.10"/>
             <creator name="prepare-rules"/>
         </metadata>
@@ -695,9 +688,9 @@
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applySchema(ApplyRulesAction.java:213)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java:175)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java:159)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:202)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:152)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:136)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:204)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:150)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:134)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:177)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.main(XRechnungE2ERunner.java:131)&#13;
 	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:279)&#13;

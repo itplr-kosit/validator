@@ -9,14 +9,17 @@ import javax.xml.validation.Schema;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.conformatron.rule.PreparedRuleSet;
 import org.kosit.conformatron.validation.ResolvedValidationArtifact;
 import org.kosit.conformatron.validation.ValidationArtifactReference;
 import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.compiler.IsoSchematronCompiler;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.kosit.validator.testdata.TestResources;
 
 import net.sf.saxon.s9api.XsltExecutable;
@@ -65,6 +68,19 @@ public class PrepareRulesActionTest {
                 PrepareRulesAction.CODE_RULE_COMPILED);
     }
 
+    private static List<CTResolvedValidationArtifact> retrieveDeclared(final CTValidationArtifactReference... references) {
+        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI, true)
+                .execute(List.of(references), DOCUMENT);
+        assertThat(retrieved.isSuccess()).isTrue();
+        return retrieved.artifacts();
+    }
+
+    private static PreparedRuleSet single(final PrepareRulesResult result) {
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.ruleSets()).hasSize(1);
+        return (PreparedRuleSet) result.ruleSets().get(0);
+    }
+
     @Test
     public void testAheadOfTimeTranspiledXsltIsPassThrough() {
         final PrepareRulesResult result = this.action.execute(retrieve("simple.xsl"), DOCUMENT);
@@ -73,6 +89,28 @@ public class PrepareRulesActionTest {
         assertThat(result.ruleSets()).hasSize(1);
         // an artifact that needed no preparation is not worth a report entry
         assertThat(result.detections().getAll()).isEmpty();
+        // and without a declaration nothing is claimed about the processor that produced it
+        assertThat(single(result).getTranspilerId()).isNull();
+    }
+
+    @Test
+    public void testTheDeclaredProcessorOfAPrecompiledXsltIsRecorded() {
+        final PrepareRulesResult result = this.action.execute(retrieveDeclared(ScenarioRuleSetReference.of("simple.xsl", "schxslt")),
+                DOCUMENT);
+
+        // still nothing to prepare, but the report can now state how the rule set was built
+        assertThat(result.detections().getAll()).isEmpty();
+        assertThat(single(result).getTranspilerId()).isEqualTo("schxslt");
+    }
+
+    @Test
+    public void testTheDeclaredProcessorCompilesTheSchematron() {
+        // the action defaults to schxslt; the scenario names another processor for this rule set
+        final PrepareRulesResult result = this.action
+                .execute(retrieveDeclared(ScenarioRuleSetReference.of("simple.sch", IsoSchematronCompiler.COMPILER_ID)), DOCUMENT);
+
+        assertThat(single(result).getTranspilerId()).isEqualTo(IsoSchematronCompiler.COMPILER_ID);
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(PrepareRulesAction.CODE_RULE_COMPILED);
     }
 
     @Test

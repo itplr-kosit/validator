@@ -175,7 +175,8 @@ public final class ScenarioMatch implements CTScenarioMatch {
         }
         for (final ValidateWithSchematron schematron : configuration.getValidateWithSchematron()) {
             if (schematron.getResource() != null) {
-                references.add(ValidationArtifactReference.of(schematron.getResource().getLocation()));
+                // the rule set carries the processor the scenario names for it, step 6 honours it
+                references.add(ScenarioRuleSetReference.of(schematron.getResource().getLocation(), schematron.getCompiler()));
             }
         }
         return references;

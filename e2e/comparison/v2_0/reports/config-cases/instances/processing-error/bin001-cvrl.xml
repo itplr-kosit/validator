@@ -29,9 +29,9 @@
 	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)&#13;
 	at org.kost.validator.api.xml.XmlParser.parseXmlDom(XmlParser.java:54)&#13;
 	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:71)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:168)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:152)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:136)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:166)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:150)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:134)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:177)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.main(XRechnungE2ERunner.java:131)&#13;
 	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:279)&#13;

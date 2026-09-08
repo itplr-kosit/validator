@@ -9,6 +9,7 @@ import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.CustomErrorLevel;
 import org.kosit.validator.scenario.v1.ErrorLevelType;
 import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v1.ValidateWithSchematron;
 
 /**
  * Tests {@link ScenarioSeverityOverrides}: the customLevel semantics carried over from 1.x (token lists, both
@@ -58,6 +59,31 @@ public class ScenarioSeverityOverridesTest {
         assertThat(overrides.effectiveFor("BR-CL-21")).isEqualTo(CTStandardSeverity.WARNING);
         assertThat(overrides.effectiveFor("BR-CL-23")).isEqualTo(CTStandardSeverity.WARNING);
         assertThat(overrides.effectiveFor("BR-CL-24")).isEqualTo(CTStandardSeverity.WARNING);
+    }
+
+    @Test
+    public void testOverridesDeclaredAtTheRuleSetAreRead() {
+        final ValidateWithSchematron schematron = new ValidateWithSchematron();
+        schematron.getCustomLevel().add(level(ErrorLevelType.WARNING, "BR-CL-23"));
+        schematron.getCustomLevel().add(level(ErrorLevelType.ERROR, "UBL-CR-646"));
+        final ScenarioType scenario = new ScenarioType();
+        scenario.getValidateWithSchematron().add(schematron);
+
+        final SeverityOverrides overrides = ScenarioSeverityOverrides.fromConfiguration(scenario);
+
+        assertThat(overrides.effectiveFor("BR-CL-23")).isEqualTo(CTStandardSeverity.WARNING);
+        assertThat(overrides.effectiveFor("UBL-CR-646")).isEqualTo(CTStandardSeverity.ERROR);
+    }
+
+    @Test
+    public void testTheRuleSetWinsOverTheLegacyPlace() {
+        // the same code below createReport (1.x) and at the rule set (2.0): the rule set decides
+        final ScenarioType scenario = configuration(level(ErrorLevelType.INFORMATION, "BR-CL-21"));
+        final ValidateWithSchematron schematron = new ValidateWithSchematron();
+        schematron.getCustomLevel().add(level(ErrorLevelType.WARNING, "BR-CL-21"));
+        scenario.getValidateWithSchematron().add(schematron);
+
+        assertThat(ScenarioSeverityOverrides.fromConfiguration(scenario).effectiveFor("BR-CL-21")).isEqualTo(CTStandardSeverity.WARNING);
     }
 
     @Test
