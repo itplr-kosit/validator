@@ -9,9 +9,10 @@ Validatoren, alle Ausgaben gespeichert.
 comparison/
 ├── input/                              ← EXAKTE EINGABEN (für beide Läufe identisch)
 │   ├── scenarios-v1.6.xml              ← Original XRechnung 3.0.2 Konfiguration (Framework 1)
-│   ├── scenarios-v2.0-framework2.xml   ← Konvertierung für 2.0 (Namespace-Swap, frameworkVersion,
-│   │                                      <id> je createReport, noScenarioReport entfernt —
-│   │                                      Szenarien/Matches/Artefakte/customLevel unverändert)
+│   ├── scenarios-v2.0-framework2.xml   ← Konvertierung für 2.0 (Namespace-Swap, frameworkVersion, createReport entfernt,
+│   │                                      noScenarioReport entfernt, compiler="schxslt" je Regelwerk, customLevel am
+│   │                                      Regelwerk statt unter createReport, acceptMatch leer —
+│   │                                      Szenarien/Matches/Artefakte/Override-Codes unverändert)
 │   ├── repository/resources/           ← Artefakt-Repository (XSDs, kompilierte Schematron-XSLs,
 │   │                                      Report-XSLs) — Kopie aus validator-configuration-xrechnung/build
 │   └── instances/                      ← 86 Testinstanzen der XRechnung-Testsuite

@@ -432,7 +432,6 @@
                     </description>
                     <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
                     <namespace prefix="invoice">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace>
-                    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
                     <match>exists(/invoice:Invoice/cbc:CustomizationID[ . = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0'])</match>
                     <validateWithXmlSchema>
                         <resource>
@@ -440,23 +439,10 @@
                             <location>resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd</location>
                         </resource>
                     </validateWithXmlSchema>
-                    <validateWithSchematron>
+                    <validateWithSchematron compiler="schxslt">
                         <resource>
                             <name>Schematron rules for EN16931 (UBL)</name>
                             <location>resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location>
-                        </resource>
-                    </validateWithSchematron>
-                    <validateWithSchematron>
-                        <resource>
-                            <name>Schematron rules for Invoice - XRechnung (UBL)</name>
-                            <location>resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl</location>
-                        </resource>
-                    </validateWithSchematron>
-                    <createReport>
-                        <id>report-2</id>
-                        <resource>
-                            <name>Validation report for XRechnung</name>
-                            <location>resources/xrechnung-report.xsl</location>
                         </resource>
                         <customLevel level="information">BR-CL-21</customLevel>
                         <customLevel level="warning">BR-CL-23</customLevel>
@@ -468,8 +454,14 @@
                         <customLevel level="information">BR-CO-16</customLevel>
                         <customLevel level="information">UBL-CR-470</customLevel>
                         <customLevel level="information">UBL-CR-646</customLevel>
-                    </createReport>
-                    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+                    </validateWithSchematron>
+                    <validateWithSchematron compiler="schxslt">
+                        <resource>
+                            <name>Schematron rules for Invoice - XRechnung (UBL)</name>
+                            <location>resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl</location>
+                        </resource>
+                    </validateWithSchematron>
+                    <acceptMatch/>
                 </scenario>
             </message>
             <context>
@@ -509,6 +501,7 @@
     <report>
         <metadata>
             <timestamp>2026-01-01T00:00:00Z</timestamp>
+            <validator name="schxslt"/>
             <validator name="Saxon" version="12.10"/>
             <creator name="prepare-rules"/>
         </metadata>

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.kosit.base.annotation.ReturnsImmutableObject;
 import org.kosit.base.error.SimpleError;
+import org.kosit.base.string.StringHelper;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
 import org.kosit.schematron.ContentRepository;
@@ -113,7 +114,8 @@ public class ConfigurationLoader {
         s.setFactory(repository.getResolvingConfigurationStrategy());
         s.setUriResolver(repository.getResolver());
         s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
-        if (def.getAcceptMatch() != null) {
+        // an empty acceptMatch is a placeholder, not an XPath - 2.0 configurations keep the element empty
+        if (!StringHelper.isBlank(def.getAcceptMatch())) {
             s.setAcceptExecutable(ScenarioArtifacts.createAcceptExecutable(repository, def));
         }
         return s;
