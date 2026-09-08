@@ -30,7 +30,7 @@ public class CommandlineApplicationTest {
 
     public static final String RESULT_OUTPUT = "Processing 1 object(s) completed";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InternalVCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandlineApplicationTest.class);
 
     private final Path output = Paths.get("target/test-output");
 
@@ -218,8 +218,10 @@ public class CommandlineApplicationTest {
                 Paths.get(TestResources.Simple.SIMPLE_VALID).toString() };
         commandLine.execute(args);
         assertThat(testWriter.getErrorOutput()).contains(RESULT_OUTPUT);
-        assertThat(testWriter.getOutputLines()).haveAtLeastOne(
-                new Condition<>(s -> s.contains("<?xml version=\"1.0\" " + "encoding=\"UTF-8\"?>"), "Must " + "contain xml preambel"));
+        // the printed report is the CVR now, whose preamble carries standalone="yes" — the assertion is that a report
+        // is printed at all, not which serializer wrote it
+        assertThat(testWriter.getOutputLines())
+                .haveAtLeastOne(new Condition<>(s -> s.contains("<?xml version=\"1.0\" encoding=\"UTF-8\""), "Must contain xml preambel"));
     }
 
     @Test

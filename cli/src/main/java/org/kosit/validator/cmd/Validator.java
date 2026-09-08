@@ -1,8 +1,12 @@
 package org.kosit.validator.cmd;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,12 +31,13 @@ import org.kosit.base.string.StringHelper;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VResult;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
 import org.kosit.validator.cmd.report.Line;
+import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.EngineInformation;
+import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.impl.ScenarioRepository;
 import org.kost.validator.api.saxon.ProcessorProvider;
 import org.slf4j.Logger;
@@ -48,6 +53,9 @@ import net.sf.saxon.s9api.Processor;
 public class Validator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Validator.class);
+
+    /** Divisor of the memory figures the {@code --memory-stats} option logs. */
+    private static final long BYTES_PER_K = 1024L * 1024L;
 
     private Validator() {
         // hide
@@ -89,28 +97,33 @@ public class Validator {
         long start = System.currentTimeMillis();
         final Processor processor = ProcessorProvider.getProcessor();
         final List<VConfiguration> config = getConfiguration(cmd);
-        final InternalVCheck check = new InternalVCheck(cmd.getEngineInformation(), processor, config.toArray(new VConfiguration[0]));
+        final ConformanceValidation engine = new ConformanceValidation(cmd.getEngineInformation(), processor,
+                config.toArray(new VConfiguration[0]));
         final CommandLineOptions.CliOptions cliOptions = Objects.requireNonNullElse(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
+        final NamingStrategy namingStrategy = determineNamingStrategy(cliOptions);
         if (cliOptions.isExtractReport()) {
-            check.getCheckSteps().add(new ExtractReportContentAction(processor, outputDirectory));
-        }
-        check.getCheckSteps().add(new SerializeReportAction(outputDirectory, determineNamingStrategy(cliOptions)));
-        if (cliOptions.isPrintReport()) {
-            check.getCheckSteps().add(new PrintReportAction(processor));
-        }
-        if (cliOptions.isPrintMemoryStats()) {
-            check.getCheckSteps().add(new PrintMemoryStats());
+            // the reports a scenario declared via createReport were rendered from the 1.x report input, which the
+            // canonical pipeline does not produce - there is nothing left to extract
+            LOGGER.warn("--extract-reports has no effect: scenario report transformations are not part of 2.0");
         }
         try ( ResourceHelper resHelper = new ResourceHelper() ) {
-            LOGGER.info("Setup completed in {}ms\n", System.currentTimeMillis() - start);
+            LOGGER.info("Setup completed in {}ms" + System.lineSeparator(), System.currentTimeMillis() - start);
             final Collection<CTReadResource> targets = determineTestTargets(cliOptions, resHelper);
             start = System.currentTimeMillis();
-            final Map<String, VResult> results = new HashMap<>();
-            Printer.writeOut("\nProcessing of {0} object(s) started", targets.size());
+            final Map<String, ConformanceValidationResult> results = new HashMap<>();
+            Printer.writeOut(System.lineSeparator() + "Processing of {0} object(s) started", targets.size());
             long tick = System.currentTimeMillis();
             for (final CTReadResource input : targets) {
-                results.put(input.getName(), check.checkInput(input));
+                final ConformanceValidationResult result = engine.validate(input);
+                results.put(input.getName(), result);
+                writeReport(outputDirectory, namingStrategy, input, result);
+                if (cliOptions.isPrintReport()) {
+                    printReport(result);
+                }
+                if (cliOptions.isPrintMemoryStats()) {
+                    logMemoryStats();
+                }
                 if (((System.currentTimeMillis() - tick) / 1000) > 5) {
                     tick = System.currentTimeMillis();
                     Printer.writeOut("{0}/{1} object(s) processed", results.size(), targets.size());
@@ -118,9 +131,10 @@ public class Validator {
             }
             final long processingTime = System.currentTimeMillis() - start;
             Printer.writeOut("Processing of {0} object(s) completed in {1}ms", targets.size(), processingTime);
-            check.printResults(results);
+            ResultTable.print(results);
             LOGGER.info("Processing {} object(s) completed in {}ms", targets.size(), processingTime);
-            return check.isSuccessful(results) ? ReturnValue.SUCCESS : ReturnValue.createFailed(check.getNotAcceptableCount(results));
+            final int notAcceptable = ResultTable.notAcceptableCount(results);
+            return notAcceptable == 0 ? ReturnValue.SUCCESS : ReturnValue.createFailed(notAcceptable);
         }
     }
 
@@ -276,5 +290,40 @@ public class Validator {
         if (!Files.isRegularFile(f)) {
             throw new IllegalArgumentException("Not a valid path for " + type + " definition specified: '" + f.toAbsolutePath() + "'");
         }
+    }
+
+    /** Writes the CVR of one run next to the other output, named by the configured strategy. */
+    private static void writeReport(final Path outputDirectory, final NamingStrategy namingStrategy, final CTReadResource input,
+            final ConformanceValidationResult result) {
+        final Path file = outputDirectory.resolve(namingStrategy.createName(input.getName()));
+        try ( OutputStream out = Files.newOutputStream(file) ) {
+            LOGGER.info("Serializing result to {}", file.toAbsolutePath());
+            result.writeCvr(out);
+        } catch (final IOException e) {
+            LOGGER.error("Can not serialize result report to {}", file.toAbsolutePath(), e);
+        }
+    }
+
+    /** {@code --print}: the report itself on standard output. */
+    private static void printReport(final ConformanceValidationResult result) {
+        try ( ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
+            result.writeCvr(out);
+            Printer.writeRaw(out.toString(StandardCharsets.UTF_8));
+        } catch (final IOException e) {
+            LOGGER.error("Can not print the result report", e);
+        }
+    }
+
+    /** {@code --memory-stats}: the same two lines the former check step logged, unchanged in wording. */
+    private static void logMemoryStats() {
+        final Runtime runtime = Runtime.getRuntime();
+        final long maxMemory = runtime.maxMemory();
+        final long allocatedMemory = runtime.totalMemory();
+        final long freeMemory = runtime.freeMemory();
+        final NumberFormat format = NumberFormat.getInstance();
+        LOGGER.info("free memory: {}MB; allocated memory: {}MB", format.format(freeMemory / BYTES_PER_K),
+                format.format(allocatedMemory / BYTES_PER_K));
+        LOGGER.info("max memory: {}MB; total free memory: {}MB", format.format(maxMemory / BYTES_PER_K),
+                format.format((freeMemory + (maxMemory - allocatedMemory)) / BYTES_PER_K));
     }
 }
