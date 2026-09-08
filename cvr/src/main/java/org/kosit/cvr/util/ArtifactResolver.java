@@ -1,6 +1,7 @@
 package org.kosit.cvr.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Objects;
 
@@ -137,6 +138,10 @@ public final class ArtifactResolver {
      * @throws IOException if the artifact can not be read (missing or unreadable)
      */
     public byte[] read(final URI resolved) throws IOException {
-        return resolved.toURL().openStream().readAllBytes();
+        // the stream must be closed: on Windows an open handle to a file: URL keeps the file from being deleted, which
+        // is how this surfaced — @TempDir could not clean up after a run
+        try ( final InputStream in = resolved.toURL().openStream() ) {
+            return in.readAllBytes();
+        }
     }
 }

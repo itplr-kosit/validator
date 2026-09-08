@@ -20,7 +20,6 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.resolve.ResolvingMode;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.testdata.TestResources;
 import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction.DecisionRecommendationResult;
@@ -41,8 +40,9 @@ public class DecisionRecommendationActionTest {
 
     private final DecisionRecommendationAction action = new DecisionRecommendationAction();
 
-    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(),
-            ResolvingMode.STRICT_RELATIVE.getStrategy(), TestResources.Simple.REPOSITORY_URI);
+    // the shared test repository is a jar once the module is packaged, so both steps must be allowed into an archive
+    private final ContentRepository repository = new ContentRepository(TestHelper.getTestProcessor(), TestHelper.getTestResolvingStrategy(),
+            TestResources.Simple.REPOSITORY_URI);
 
     private static final CTConformanceTarget TARGET = ConformanceTarget.of("simple-target", "Simple Target",
             List.of("simple.xsd", "simple.sch"), null);
@@ -51,8 +51,8 @@ public class DecisionRecommendationActionTest {
         final CTParsedValidationSource parsed = new ParseXmlAction().execute(TestHelper.read(document)).getParsedSource();
         final List<CTValidationArtifactReference> refs = List.of(references).stream()
                 .map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI)
-                .execute(refs, "test");
+        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
+                true).execute(refs, "test");
         final List<CTPreparedRuleSet> ruleSets = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(), "test").ruleSets();
         return new ApplyRulesAction().execute(parsed, ruleSets).result();
     }
