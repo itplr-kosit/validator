@@ -10,13 +10,14 @@ import org.kosit.validator.config.ConfigurationLoader;
 import org.kosit.validator.impl.Scenario;
 
 /**
- * Configuration of the actual {@link VCheck} instance. This is an interface and can be implemented by custom
+ * Configuration of the actual {@link ValidationEngine} instance. This is an interface and can be implemented by custom
  * configuration classes. There are two implementations supported out of the box:
  *
  * <ol>
- * <li>{@link ConfigurationLoader} implements loading {@link VCheck} configurations from a scenario.xml file</li>
+ * <li>{@link ConfigurationLoader} implements loading {@link ValidationEngine} configurations from a scenario.xml
+ * file</li>
  * <li>Using a builder style api {@link org.kosit.validator.config.ConfigurationBuilder}to configure the
- * {@link VCheck}</li>
+ * {@link ValidationEngine}</li>
  * </ol>
  * <p>
  * Both methods can be used via convinience methods. See below.
@@ -69,7 +70,7 @@ public interface VConfiguration {
     @Deprecated(since = "2.0.0")
     /**
      * Add some additional parameters to the validator configuration. Parameter usage depends on actual implementation
-     * of {@link VCheck}
+     * of {@link ValidationEngine}
      *
      * @return A Map containing the additional Parameters to be added.
      */

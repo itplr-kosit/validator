@@ -7,46 +7,40 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.conformatron.api.model.conformance.CTDecision;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.kosit.base.uri.UriHelper;
 import org.kosit.cvr.report.AdHocValidationResult;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
+import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.testdata.TestResources;
 
 /**
- * Tests the {@link ValidationEngine} contract: {@link ConformanceValidation} (via {@link DefaultVCheck}) and
- * {@link SchematronValidation} as individual engine implementations, plus the legacy {@link VCheck} equivalence.
+ * The {@link ValidationEngine} contract with its two implementations: {@link ConformanceValidation} (the full pipeline
+ * along the configured scenarios) and {@link SchematronValidation} (ad hoc against one Schematron). Both are used
+ * through the contract here, not through their own API.
  */
 public class ValidationEngineTest {
 
-    private DefaultVCheck createEngine() {
-        final VConfiguration config = VConfiguration.load(TestResources.Simple.SCENARIOS, TestResources.Simple.REPOSITORY_URI)
+    private static VConfiguration simpleConfiguration() {
+        return VConfiguration.load(TestResources.Simple.SCENARIOS, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
-        return new DefaultVCheck(new TestEngineInformation(), TestHelper.getTestProcessor(), config);
     }
 
     @Test
-    public void testFullConformanceValidation() {
-        final ValidationEngine<VResult> engine = createEngine();
-        final VResult result = engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
+    public void testConformanceValidationIsAnEngine() {
+        // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
+        final ValidationEngine<ConformanceValidationResult> engine = new ConformanceValidation(new TestEngineInformation(),
+                TestHelper.getTestProcessor(), true, simpleConfiguration());
+
+        final ConformanceValidationResult result = engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
 
         assertThat(result).isNotNull();
-        assertThat(result.isProcessingSuccessful()).isTrue();
-    }
-
-    @Test
-    public void testValidateMatchesLegacyCheckInput() {
-        final DefaultVCheck engine = createEngine();
-        final VResult viaEngine = engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
-        final VResult viaLegacy = engine.checkInput(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
-
-        assertThat(viaEngine.isProcessingSuccessful()).isEqualTo(viaLegacy.isProcessingSuccessful());
-        assertThat(viaEngine.getAcceptRecommendation()).isEqualTo(viaLegacy.getAcceptRecommendation());
+        assertThat(result.isCompleted()).isTrue();
+        assertThat(result.getDecision()).isEqualTo(CTDecision.ACCEPT);
     }
 
     @Test
@@ -59,15 +53,15 @@ public class ValidationEngineTest {
     }
 
     @Test
-    public void testAdHocConvenienceOnDefaultCheck(@TempDir final Path tempDir) throws IOException {
-        // the convenience does not reach into an archive, so the schematron is materialized as a real file
+    public void testSchematronValidationAgainstAFileSystemSchematron(@TempDir final Path tempDir) throws IOException {
+        // the two-argument validate does not reach into an archive, so the schematron is materialized as a real file
         final Path schematron = tempDir.resolve("simple.sch");
         try ( final InputStream in = UriHelper.resolve(TestResources.Simple.REPOSITORY_URI, "simple.sch", true).toURL().openStream() ) {
             Files.write(schematron, in.readAllBytes());
         }
 
-        final DefaultVCheck engine = createEngine();
-        final AdHocValidationResult result = engine.validateAdHoc(TestHelper.read(TestResources.Simple.SIMPLE_VALID), schematron.toUri());
+        final AdHocValidationResult result = new SchematronValidation(TestHelper.getTestProcessor())
+                .validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID), schematron.toUri());
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.isConformant()).isTrue();

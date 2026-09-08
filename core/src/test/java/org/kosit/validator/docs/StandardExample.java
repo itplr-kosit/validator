@@ -1,25 +1,27 @@
 package org.kosit.validator.docs;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.conformatron.api.model.source.CTReadResource;
-import org.kosit.validator.api.VCheck;
-import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VResult;
-import org.kosit.validator.impl.DefaultVCheck;
-import org.kosit.validator.impl.TestEngineInformation;
-import org.kost.validator.api.saxon.ProcessorProvider;
 import org.kosit.base.io.ResourceHelper;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.w3c.dom.Document;
+import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.ValidationEngine;
+import org.kosit.validator.impl.ConformanceValidation;
+import org.kosit.validator.impl.TestEngineInformation;
+import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 /**
- * Example code that is used in the docs/api.md file
+ * Example code that is used in the docs/api.md file: load a configuration, build the engine, validate a document, read
+ * the verdict and write the report.
  */
 public class StandardExample {
 
@@ -28,19 +30,19 @@ public class StandardExample {
         final URL scenarios = this.getClass().getClassLoader().getResource("examples/simple/scenarios-with-relative-paths.xml");
         // Load the rest of the specific Validator configuration from classpath
         final VConfiguration config = VConfiguration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
-        // Use the default validation procedure
-        final VCheck validator = new DefaultVCheck(new TestEngineInformation(), config);
+        // The engine over that configuration - the canonical pipeline, steps 2 to 9
+        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(new TestEngineInformation(),
+                ProcessorProvider.getProcessor(), config);
         // Temporary file helper
         try ( ResourceHelper resHelper = new ResourceHelper() ) {
             // Validate a single document
             final CTReadResource document = ReadResource.of(Resource.of(testDocument), resHelper);
-            // Get Result including information about the whole validation
-            final VResult report = validator.checkInput(document);
-            System.out.println("Is processing successful=" + report.isProcessingSuccessful());
-            // Get report document if processing was successful
-            Document result = null;
-            if (report.isProcessingSuccessful()) {
-                result = report.getReportDocument();
+            // The result: the verdict of step 9, and the run behind it
+            final ConformanceValidationResult result = validator.validate(document);
+            System.out.println("Completed=" + result.isCompleted() + " decision=" + result.getDecision() + " - " + result.getRationale());
+            // The report is a CVR - also for a cancelled run, which yields a partial report
+            try ( OutputStream out = Files.newOutputStream(testDocument.resolveSibling(testDocument.getFileName() + "-cvr.xml")) ) {
+                result.writeCvr(out);
             }
             // continue processing results...
         }

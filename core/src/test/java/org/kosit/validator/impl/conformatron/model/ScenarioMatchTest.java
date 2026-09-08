@@ -8,7 +8,7 @@ import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.impl.tasks.TestScenarioBuilder;
+import org.kosit.validator.impl.TestScenarioBuilder;
 import org.kosit.validator.testdata.TestResources;
 
 /**

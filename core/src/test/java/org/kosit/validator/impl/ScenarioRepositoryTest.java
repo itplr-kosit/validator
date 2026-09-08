@@ -104,7 +104,7 @@ public class ScenarioRepositoryTest {
     }
 
     private XdmNode load(final URI uri) {
-        return TestObjectFactory.parseDocument(this.configInstance.getContentRepository().getProcessor(), TestHelper.read(uri)).getObject();
+        return TestObjectFactory.parse(this.configInstance.getContentRepository().getProcessor(), TestHelper.read(uri));
     }
 
     private XPathExecutable createXpath(final String expression) {

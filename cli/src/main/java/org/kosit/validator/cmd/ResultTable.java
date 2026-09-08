@@ -12,7 +12,6 @@ import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.validation.CTValidationStandard;
 import org.fusesource.jansi.AnsiRenderer.Code;
-import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
 import org.kosit.validator.cmd.report.Grid;
 import org.kosit.validator.cmd.report.Grid.ColumnDefinition;
 import org.kosit.validator.cmd.report.Justify;

@@ -14,12 +14,12 @@ import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.resolve.RelativeUriResolver;
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.schematron.resolve.ResolvingMode;
-import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.ScenarioArtifacts;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.impl.tasks.DocumentParseTask;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.scenario.v1.Scenario1Converter;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;
@@ -33,8 +33,9 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
 
 /**
- * Configuration class that loads necessary {@link VCheck} configuration from an existing scenario.xml specification.
- * This is the recommended option when an official configuration exists as is the case with 'xrechnung'.
+ * Configuration class that loads the necessary {@link org.kosit.validator.impl.ConformanceValidation engine}
+ * configuration from an existing scenario.xml specification. This is the recommended option when an official
+ * configuration exists as is the case with 'xrechnung'.
  *
  * @author Andreas Penski
  */
@@ -64,9 +65,11 @@ public class ConfigurationLoader {
 
     private static void checkVersion(final URI scenarioDefinition, final Processor processor) {
         try {
-            final SingleProcessingResult<XdmNode, SimpleError> result = new DocumentParseTask(processor)
-                    .parseDocument(ReadResource.inMemory(Resource.of(scenarioDefinition.toURL())));
-            if (result.isValid() && !isSupportedDocument(result.getObject())) {
+            // the same secured parse as step 2 of the pipeline; the scenario file is configuration, not input, but the
+            // parser hardening applies to it just the same
+            final ParseXmlResult result = new ParseXmlAction().execute(ReadResource.inMemory(Resource.of(scenarioDefinition.toURL())));
+            if (result.isSuccess()
+                    && !isSupportedDocument(processor.newDocumentBuilder().wrap(result.getParsedSource().getParsedContent()))) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition
                         + " is not supported.\nThis version only supports definitions of '" + SUPPORTED_MAJOR_VERSION_SCHEMA + "'");
             }

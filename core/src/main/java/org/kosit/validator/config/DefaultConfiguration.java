@@ -9,7 +9,7 @@ import org.kosit.validator.impl.Scenario;
 
 /**
  * Default implementation class for {@link VConfiguration}. This class contains all information to run a
- * {@link DefaultVCheck}.
+ * {@link org.kosit.validator.impl.ConformanceValidation}.
  * 
  * @author Andreas Penski
  */

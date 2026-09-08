@@ -1,13 +1,12 @@
 # Validator Client
 
-The `validator-client` module provides a lightweight Java client for interacting with the **Validator Server**. It is based on the **MicroProfile REST Client** and handles all low-level communication and data conversion.
+The `validator-client` module provides a lightweight Java client for interacting with the **Validator Server**. It is based on the **MicroProfile REST Client**, generated from the OpenAPI contract of the server, and handles the two-step protocol of the server for you.
 
 ## Features
 
-- **Typed API**: Use Java objects instead of raw XML/JSON.
+- **The protocol of the server in one call**: `POST /api/validation` creates a validation run (`201 Created`), `GET /api/validation/result/{id}` fetches its report - the client offers both steps and a `validate` combining them.
+- **Typed API**: The report comes back as `XvrlReports`, the data model of the CVR (the Conformance Validation Report of the validator, an XVRL profile) - or as a raw file.
 - **MicroProfile Integration**: Easy integration into any Quarkus or MicroProfile application.
-- **Format Negotiation**: Support for both full XVRL (XML) and compact formats (XML/JSON).
-- **Error Handling**: Transformation of HTTP errors and validation issues into manageable Java exceptions.
 
 ## Maven Dependency
 
@@ -40,7 +39,7 @@ quarkus.rest-client.validator.url=http://localhost:8080
 
 ```java
 import org.kosit.validator.client.ValidationClient;
-import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
+import org.kosit.xvrl.model.XvrlReports;
 import jakarta.inject.Inject;
 import java.io.File;
 
@@ -50,94 +49,48 @@ public class MyService {
     ValidationClient client;
 
     public void validateDocument(File xmlFile) {
-        // Minimal/Compact validation
-        CompactXvrlReportSummary result = client.validateMinimal(xmlFile);
-        
-        System.out.println("Acceptable: " + result.getAcceptable());
-        System.out.println("Scenario: " + result.getReports().get(0).getScenario());
+        // creates the run and fetches its report
+        XvrlReports report = client.validate(xmlFile);
+
+        System.out.println("Errors: " + report.getAllErrors().size());
     }
 }
 ```
 
 ### 2. Manual Setup
 
-If you are not using CDI, you can instantiate the client manually using the MicroProfile Rest Client Builder (see MicroProfile documentation for specific builder patterns).
+If you are not using CDI, you can instantiate the client manually using the MicroProfile Rest Client Builder for the generated `ValidationApi` and pass it to `new ValidationClient(api)`.
 
 ## API Overview
 
-The `ValidationClient` offers various methods for validating XML documents. These differ in the level of detail of the result (Full vs. Minimal/Compact) and the return format (Java object vs. raw file).
-
-### Validation Methods
-
-The methods are divided into three categories: Base methods (returning Java objects), Raw methods (returning files), and Metadata methods (returning with HTTP metadata).
-
-#### 1. Base Methods (Java Objects)
-
-These methods unmarshal the server response directly into Java objects from the `validator-api` module.
+The `ValidationClient` follows the two steps of the server protocol and offers them combined:
 
 | Method | Description | Return Type |
 | :--- | :--- | :--- |
-| `validate(File)` | Performs a full validation and returns the XVRL report. | `XvrlReportsType` |
-| `validateMinimal(File)` | Performs a minimal validation and returns the compact report. | `CompactXvrlReportSummary` |
+| `createRun(File)` | Posts the document; the server answers `201 Created`. The status carries the `id` of the run, its `status` (`completed`) and `result`, the reference of the report. | `ValidationRunStatus` |
+| `fetchResult(UUID)` | Fetches the report of a run and parses it into the CVR data model. | `XvrlReports` |
+| `fetchResultRaw(UUID)` | Fetches the report of a run as a temporary `File`. Useful if the report should be saved or processed further manually. | `File` |
+| `validate(File)` | `createRun` followed by `fetchResult`. | `XvrlReports` |
+| `validateRaw(File)` | `createRun` followed by `fetchResultRaw`. | `File` |
 
-#### 2. Raw Methods (File Return)
-
-These methods return the server response as a temporary `File`. This is useful if the report should be saved or processed further manually.
-
-| Method | Description | Return Type |
-| :--- | :--- | :--- |
-| `validateRaw(File)` | Performs a full validation and returns the XVRL report as an XML file. | `File` |
-| `validateMinimalRaw(File)` | Performs a minimal validation and returns the compact report as an XML file. | `File` |
-| `validateMinimalRawAsJson(File)` | Performs a minimal validation and returns the compact report as a JSON file. | `File` |
-
-#### 3. Methods with Metadata (`ValidationResponse`)
-
-These methods return a `ValidationResponse<T>`, which contains HTTP metadata such as the status code and content type in addition to the actual result (`T`).
-
-| Method | Description | Return Type |
-| :--- | :--- | :--- |
-| `validateWithMetadata(File)` | Full validation with metadata. | `ValidationResponse<XvrlReportsType>` |
-| `validateMinimalWithMetadata(File)` | Minimal validation with metadata. | `ValidationResponse<CompactXvrlReportSummary>` |
-| `validateRawWithMetadata(File)` | Full validation (Raw XML) with metadata. | `ValidationResponse<File>` |
-| `validateMinimalRawWithMetadata(File)` | Minimal validation (Raw XML) with metadata. | `ValidationResponse<File>` |
-| `validateMinimalRawAsJsonWithMetadata(File)` | Minimal validation (Raw JSON) with metadata. | `ValidationResponse<File>` |
-
-### The `ValidationResponse<T>` Class
-
-The `ValidationResponse` encapsulates the result and provides access to HTTP information:
-- `getBody()`: The actual result (e.g., `XvrlReportsType` or `File`).
-- `getStatusCode()`: The HTTP status code of the server response.
-- `getContentType()`: The `MediaType` of the response.
+The server keeps a result for a limited time only (10 minutes and 500 runs by default, see the [server documentation](server.md)). Fetching an unknown or expired run answers `404 Not Found`, which the generated REST client raises as a `jakarta.ws.rs.WebApplicationException`.
 
 ### Working with the Results
 
-The client uses the models from `validator-api`, which allow easy access to the validation status:
+The report is a CVR: an XVRL report following the profile of the validator. The client hands it over as `XvrlReports` from the module `xvrl`:
 
 ```java
-XvrlReportsType summary = client.validate(xmlFile);
+XvrlReports report = client.validate(xmlFile);
 
-// Check if there are errors in the full report
-List<String> allErrors = summary.getAllErrors();
+// the detections of all reports with severity error
+List<String> allErrors = report.getAllErrors();
 if (allErrors.isEmpty()) {
     System.out.println("The document is valid!");
 }
 ```
-```java
-CompactXvrlReportSummary summary = client.validateMinimal(xmlFile);
-CompactXvrlReport report = summary.getReports().get(0);
 
-if (report.isAcceptable()) {
-    System.out.println("The document is acceptable!");
-}
-if (report.isSchemaValid() && report.isSchematronValid()) {
-        System.out.println("The document is valid!");
-}
-```
-
+The verdict of the run - `ACCEPT`, `REJECT` or `EVALUATE_FURTHER` - is the decision of the last step report of the CVR (`DECISION_RECOMMENDATION`); see the CVR documentation for the structure of the report.
 
 ## Supported Output Formats
 
-The client handles the unmarshalling of server responses:
-- **XML (XVRL)**: Automatically converted into JAXB objects (`XvrlReportsType` or `CompactXvrlReportSummary`).
-- **JSON (Compact)**: Supported via raw methods or by manual processing of the JSON file.
-- **Compact Report**: Encapsulated in `CompactXvrlReportSummary` to allow easier access to attributes. It facilitates the xvrl-schema as xml marshalling format. Elements are used as a subset arranged in a more compact form. Ist is enriched by custom attributes using the `compactvrl` namespace-refix.
+The server answers with the CVR as XML (`application/xml`); the client parses it with `XvrlConverter` or hands the XML over as file. There is no compact or JSON variant of the report in 2.0.

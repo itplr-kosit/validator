@@ -52,6 +52,7 @@
       </resource>
     </validateWithXmlSchema>
     <validateWithSchematron>
+        <!-- TODO Angabe des SCH Processors fehlt hier -->
       <resource>
         <name>Schematron rules for EN16931 (UBL)</name>
         <location>resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location>
@@ -62,8 +63,9 @@
         <name>Schematron rules for Invoice - CIUS XRechnung (UBL)</name>
         <location>resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl</location>
       </resource>
-
     </validateWithSchematron>
+
+      <!-- TODO CreateReport raus -->
     <createReport>
       <id>report-1</id>
       <resource>
@@ -72,12 +74,14 @@
       </resource>
       <!-- custom level "information" for BR-CL-01 was removed as construction codes were added to Codelist 1001 with CEN 1.3.8 (see CEN issue https://github.com/ConnectingEurope/eInvoicing-EN16931/issues/309) --> 
       <!-- overwrites CEN severity level "fatal" for codelist values of BT-130 "Invoiced quantity unit of measure code" and BT-150 "Item price base quantity unit of measure code" -->
-      <customLevel level="warning">BR-CL-23</customLevel>
+        <!-- TODO Move to SCH resource -->
+        <customLevel level="warning">BR-CL-23</customLevel>
       <!-- overwrites CEN severity level "fatal" for ISO 6523 values of BT-157 "Item standard identifier" scheme identifier -->
       <customLevel level="warning">BR-CL-21</customLevel>
       <!-- overwrites CEN severity level "warning" to prevent Sub Invoice Lines (BG-DEX-01) -->
       <customLevel level="error">UBL-CR-646</customLevel>
     </createReport>
+      <!-- TODO Bleibt aber vorerst leer -->
     <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
   </scenario>
 
