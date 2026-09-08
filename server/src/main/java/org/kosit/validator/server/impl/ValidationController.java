@@ -1,86 +1,67 @@
 package org.kosit.validator.server.impl;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
+import java.util.Optional;
+import java.util.UUID;
 
-import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationResource;
-import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
-import org.kosit.validator.server.api.CompactValidationResultsDto;
-import org.kosit.xvrl.impl.XvrlConverter;
+import org.kosit.validator.api.model.ApiValidationRunStatus;
 
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
+/**
+ * The REST resource of the validator: a validation is something you create, and its result is something you fetch.
+ * <p>
+ * {@code POST /api/validation} runs the pipeline and answers {@code 201 Created} with a {@code Location} header that
+ * identifies the result and a body that describes the run (RFC 9110, section 9.3.3). {@code GET
+ * /api/validation/result/{id}} hands the result out — the CVR, byte for byte as the engine wrote it. A document that
+ * fails to parse is not a bad request: it is a run that cancelled, and its partial report is the answer.
+ * </p>
+ */
 public class ValidationController implements ValidationResource {
 
     private final ValidationService service;
 
     @Context
-    HttpHeaders headers;
+    UriInfo uriInfo;
 
     public ValidationController(final ValidationService service) {
         this.service = service;
     }
 
-    public Response validate(final File xmlFile) {
-        VResult result;
+    @Override
+    public Response createValidation(final File xmlFile) {
+        final UUID id;
         try {
-            result = service.validate(ReadResource.inMemory(Resource.of(xmlFile)));
+            id = this.service.createRun(ReadResource.inMemory(Resource.of(xmlFile)));
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }
-        final XvrlConverter conversionService = new XvrlConverter();
-        final byte[] resultBytes = conversionService.writeXml(result.getReportSummary()).getBytes(StandardCharsets.UTF_8);
-        return addHeaders(result, Response.ok(resultBytes).type(MediaType.APPLICATION_XML).header("Content-Disposition",
-                "attachment; filename=validation-result.xml")).build();
+        final URI result = resultLocation(id);
+        final ApiValidationRunStatus status = new ApiValidationRunStatus().id(id).status(ApiValidationRunStatus.StatusEnum.COMPLETED)
+                .result(result.toString());
+        return Response.created(result).type(MediaType.APPLICATION_JSON).entity(status).build();
     }
 
     @Override
-    public Response validateMinimal(final File xmlFile) {
-        CTReadResource input;
-        try {
-            input = ReadResource.inMemory(Resource.of(xmlFile));
-        } catch (final IOException e) {
-            throw new UncheckedIOException(e);
+    public Response getValidationResult(final UUID id) {
+        final Optional<byte[]> cvr = this.service.getResult(id);
+        if (cvr.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-        final VResult result = service.validate(input);
-
-        final CompactXvrlReportSummary compactReport = service.convertMinimalXvrl(input, result);
-
-        final MediaType best = headers.getAcceptableMediaTypes().stream()
-                .filter(mt -> mt.isCompatible(APPLICATION_JSON_TYPE) || mt.isCompatible(APPLICATION_XML_TYPE)).findFirst()
-                .orElse(APPLICATION_XML_TYPE); // Default: XML
-
-        if (best.isCompatible(APPLICATION_JSON_TYPE)) {
-            final CompactValidationResultsDto compactJson = CompactXvrlReportSummaryMapper.toDto(compactReport);
-            return addHeaders(result, Response.ok(compactJson).type(MediaType.APPLICATION_JSON).header("Content-Disposition",
-                    "attachment; filename=compact-validation-result.json")).build();
-        }
-
-        final XvrlConverter conversionService = new XvrlConverter();
-        final byte[] resultBytes = conversionService.writeXml(compactReport.getOriginal()).getBytes(StandardCharsets.UTF_8);
-        return addHeaders(result, Response.ok(resultBytes).type(MediaType.APPLICATION_XML).header("Content-Disposition",
-                "attachment; filename=compact-validation-result.xml")).build();
+        return Response.ok(cvr.get()).type(MediaType.APPLICATION_XML).build();
     }
 
-    private Response.ResponseBuilder addHeaders(final VResult result, final Response.ResponseBuilder responseBuilder) {
-        final String headerPrefix = "X-VALIDATOR-";
-
-        responseBuilder.header(headerPrefix + "Schema-Valid", Boolean.valueOf(result.isSchemaValid()))
-                .header(headerPrefix + "Schematron-Valid", Boolean.valueOf(result.isSchematronValid()))
-                .header(headerPrefix + "Acceptance", result.getAcceptRecommendation());
-        return responseBuilder;
+    /** The result URI, relative to the request so that it holds behind any proxy or path prefix. */
+    private URI resultLocation(final UUID id) {
+        return this.uriInfo.getBaseUriBuilder().path("api").path("validation").path("result").path(id.toString()).build();
     }
-
 }

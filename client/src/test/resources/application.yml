@@ -5,6 +5,10 @@ validator:
       repositoryPath: ../test-data/src/main/resources/examples/simple/repository
 
 quarkus:
+  # the client under test talks to the server booted by the same @QuarkusTest
+  rest-client:
+    validator:
+      url: http://localhost:${quarkus.http.test-port}
   index-dependency:
     validator-server:
       group-id: org.kosit

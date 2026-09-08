@@ -5,6 +5,7 @@ import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,20 @@ public interface ValidationConfig {
     }
 
     List<ScenarioBundle> scenarios();
+
+    /** How the results of validation runs are kept for GET /api/validation/result/{id}. */
+    Results results();
+
+    interface Results {
+
+        /** How long a result stays fetchable after its run. */
+        @WithDefault("PT10M")
+        Duration retention();
+
+        /** How many results are kept at most; beyond that the oldest is evicted. */
+        @WithDefault("500")
+        int capacity();
+    }
 
     /**
      * The ScenarioBundle represents a configuration tuple of paths for the {@link org.kosit.validator.impl.Scenario}

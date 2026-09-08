@@ -2,14 +2,24 @@ openapi: 3.1.0
 info:
   title: validator-server API
   version: 2.0.0-SNAPSHOT
+  description: >
+    A validation is a resource. POST the document to create one; the server answers 201 Created with the identifier
+    of the run and where its result lives (RFC 9110, section 9.3.3). GET the result under that identifier.
+    Every result is a Conformance Validation Report (CVR), the XVRL profile of the validator — a cancelled run
+    yields a partial report, never an HTTP error.
 
 paths:
-  /api/validate:
-    description: "Main Validation endpoint"
+  /api/validation:
+    description: "The validation runs of this server"
 
     post:
-      summary: Validate XML-Input
-      operationId: validate
+      summary: Create a validation run for the given document
+      description: >
+        Runs the canonical pipeline over the document and stores the resulting CVR under a new identifier. The
+        response describes the run and refers to the result; the Location header carries the same reference. A
+        document that can not be parsed still creates a run — its report is the partial CVR of the cancelled
+        pipeline.
+      operationId: createValidation
       tags:
         - Validation
       requestBody:
@@ -19,46 +29,55 @@ paths:
               $ref: "#/components/schemas/InputDocument"
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/xml:
+        "201":
+          description: The validation run was created; its result is available at the referenced location.
+          headers:
+            Location:
+              description: Where the result of this run can be fetched.
               schema:
-                $ref: "#/components/schemas/ResultDocument"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-
-  /api/validate/minimal:
-    description: "Validation endpoint with minimized result format"
-
-    post:
-      summary: Validate XML-Input (minimal result)
-      operationId: validateMinimal
-      tags:
-        - Validation
-      requestBody:
-        content:
-          application/xml:
-            schema:
-              $ref: "#/components/schemas/InputDocument"
-        required: true
-      responses:
-        "200":
-          description: OK (minimized validation result)
+                type: string
+                format: uri-reference
           content:
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/MinimalResultDocument"
             application/json:
               schema:
-                $ref: "#/components/schemas/MinimalResultDocumentJson"
+                $ref: "#/components/schemas/ValidationRunStatus"
         "400":
           $ref: "#/components/responses/BadRequest"
+
+  /api/validation/result/{id}:
+    description: "The result of a validation run"
+
+    get:
+      summary: Fetch the result of a validation run
+      description: >
+        The CVR of the run. Results are kept for a limited time (validator.results.retention) and up to a limited
+        number (validator.results.capacity); a result that has been evicted is reported as 404, like one that never
+        existed.
+      operationId: getValidationResult
+      tags:
+        - Validation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The identifier of the run, as returned on creation.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: The Conformance Validation Report of the run.
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ConformanceValidationReport"
+        "404":
+          description: No result under this identifier — unknown, or already evicted.
 
 components:
   responses:
     BadRequest:
-      description: Request enthält Fehler
+      description: The request itself is malformed (not the document — a document that fails to parse creates a run)
       content:
         application/json:
           schema: { $ref: '#/components/schemas/Error' }
@@ -78,23 +97,33 @@ components:
     InputDocument:
       type: string
       format: binary
-      description: Arbitrary XML-Document
+      description: The XML document to validate
 
-    ResultDocument:
-      type: string
-      format: binary
-      description: Plain KoSIT Validator response in xml based XVRL-Format
-
-    MinimalResultDocument:
-      type: string
-      format: binary
-      description: >
-        Minimized KoSIT Validator response in xml based XVRL-Format.
-        Contains only a reduced subset of result information.
-
-    MinimalResultDocumentJson:
+    ValidationRunStatus:
       type: object
       description: >
-        Minimized KoSIT Validator response as JSON. Contains e.g. overall
-        validity and condensed list of issues, but omits detailed metadata.
-      additionalProperties: true
+        Describes a validation run. Today every run is completed when this is returned, because validation happens
+        synchronously; the status field exists so that a deferred execution can be introduced without changing the
+        contract.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The identifier of the run
+        status:
+          type: string
+          enum: [ completed ]
+          description: The state of the run
+        result:
+          type: string
+          format: uri-reference
+          description: Where the result can be fetched — the same reference as the Location header
+      required: [ id, status, result ]
+
+    ConformanceValidationReport:
+      type: string
+      format: binary
+      description: >
+        The Conformance Validation Report (CVR): xvrl:reports in the namespace http://www.xproc.org/ns/xvrl with the
+        extension namespace urn:conformatron:cvr:draft. One report per executed pipeline step, the decision of step 9
+        last. Validates against xvrl-1.0.xsd and the CVR profile.
