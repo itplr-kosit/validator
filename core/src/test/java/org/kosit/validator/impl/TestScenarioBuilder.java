@@ -1,4 +1,4 @@
-package org.kosit.validator.impl.tasks;
+package org.kosit.validator.impl;
 
 import java.net.URI;
 import java.net.URL;

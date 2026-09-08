@@ -74,13 +74,15 @@ The Validator can also be used in own Java Applications via the API. An example 
 
 ```java
 Path scenarios = Paths.get("scenarios.xml");
-Configuration config = Configuration.load(scenarios.toUri());
-Input document = InputFactory.read(testDocument);
+VConfiguration config = VConfiguration.load(scenarios.toUri()).build(ProcessorProvider.getProcessor());
 
-Check validator = new DefaultCheck(config);
-Result validationResult = validator.checkInput(document);
+// the engine runs the canonical pipeline along the configured scenarios; engineInformation names your application
+ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(engineInformation, ProcessorProvider.getProcessor(), config);
 
-// examine the result here
+CTReadResource document = ReadResource.of(Resource.of(testDocument), resourceHelper);
+ConformanceValidationResult result = validator.validate(document);
+
+// examine the result here: result.getDecision(), result.getRationale(), result.writeCvr(out)
 ```
 
 The  [API documentation](./docs/api.md) shows further configuration options.

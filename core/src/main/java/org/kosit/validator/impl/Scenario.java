@@ -98,7 +98,7 @@ public class Scenario {
     }
 
     /**
-     * Returns a new XPath selector for evaluating the {@link org.kosit.validator.api.AcceptRecommendation}.
+     * Returns a new XPath selector for evaluating the acceptance recommendation of 1.x ({@code acceptMatch}).
      *
      * @return new selector
      */

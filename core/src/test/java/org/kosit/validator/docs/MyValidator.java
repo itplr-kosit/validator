@@ -9,14 +9,15 @@ import static org.kosit.validator.config.ConfigurationBuilder.schematron;
 import java.net.URI;
 import java.nio.file.Paths;
 
-import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.DefaultVCheck;
+import org.kosit.validator.api.ValidationEngine;
+import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.TestEngineInformation;
+import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kost.validator.api.saxon.ProcessorProvider;
 
 /**
- * Example code that is used in the docs/api.md file
+ * Example code that is used in the docs/api.md file: a configuration assembled in Java, and the engine built over it.
  */
 public class MyValidator {
 
@@ -27,7 +28,9 @@ public class MyValidator {
                         .validate(schematron("my rules").source("myRules.xsl")).with(report("my report").source("report.xsl")))
                 .with(fallback().name("default-report").source("fallback.xsl")).useRepository(Paths.get("/opt/myrepository"))
                 .build(ProcessorProvider.getProcessor());
-        final VCheck validator = new DefaultVCheck(new TestEngineInformation(), config);
+        // the engine: configuration is a construction concern, validate(...) takes nothing but the document
+        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(new TestEngineInformation(),
+                ProcessorProvider.getProcessor(), config);
         // .. run your checks
     }
 }

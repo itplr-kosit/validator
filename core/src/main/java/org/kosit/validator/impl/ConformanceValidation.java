@@ -84,6 +84,7 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
      * @param processor the Saxon processor
      * @param configuration the scenario configurations; at least one
      */
+    // Processor klar umbennen zu saxonProcessor
     public ConformanceValidation(final EngineInformation engineInformation, final Processor processor,
             final VConfiguration... configuration) {
         this(engineInformation, processor, false, configuration);
