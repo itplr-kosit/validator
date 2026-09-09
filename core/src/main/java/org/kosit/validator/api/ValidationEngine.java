@@ -4,22 +4,20 @@ import org.conformatron.api.model.source.CTReadResource;
 
 /**
  * The validation engine contract of the validator (successor of the legacy {@code VCheck} interface, see ADR-008): an
- * engine validates a document and returns its engine-specific result. This interface is a <b>pure contract</b> —
- * behavior lives in the individual implementing classes (validator design philosophy):
- *
- * <ol>
- * <li>{@code org.kosit.validator.impl.ConformanceValidation} — <b>full conformance validation</b>: the complete
- * pipeline (all steps) along the configured scenarios — scenario detection/selection, schema and schematron validation,
- * report generation and acceptance recommendation.</li>
- * <li>{@link org.kosit.validator.impl.SchematronValidation} — <b>ad-hoc validation</b>: the pure technical validation
- * engine — the document is validated directly against a single Schematron, without scenario configuration, repository
- * setup or report transformation. No conformance statement is derived; the result answers only whether the document
- * satisfies the given rules.</li>
- * </ol>
- *
- * How an engine instance is assembled (scenarios and pipeline steps, or the fixed Schematron) is a construction concern
- * of the implementing class and deliberately not part of this contract (ADR-008). The result types converge on the CVRL
- * model once it exists (ADR-004).
+ * engine validates a document and returns its result. This interface is a <b>pure contract</b> — behavior lives in the
+ * implementing class.
+ * <p>
+ * There is one engine, {@code org.kosit.validator.impl.ConformanceValidation}: the canonical pipeline along its
+ * scenarios — scenario detection and selection, retrieval and preparation of the validation artifacts, schema and
+ * Schematron validation, conformance statement and decision recommendation, reported as a CVR. What differs is how it
+ * is assembled: over the scenarios of a configuration ({@link ScenarioSet}), or over one scenario built at runtime from
+ * a single Schematron ({@code ConformanceValidation.adHoc}) — the ad hoc validation of a rule set against a document is
+ * not a second engine but the same pipeline with a scenario that applies unconditionally.
+ * </p>
+ * <p>
+ * How an engine instance is assembled is a construction concern of the implementing class and deliberately not part of
+ * this contract (ADR-008).
+ * </p>
  *
  * @param <R> the engine-specific result type
  *

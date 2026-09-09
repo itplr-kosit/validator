@@ -1,42 +1,35 @@
 package org.kosit.validator.impl.conformatron.model;
 
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
-import org.kosit.validator.impl.Scenario;
-import org.kosit.conformatron.validation.ValidationArtifactReference;
 import org.kosit.cvr.model.SeverityOverrides;
+import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithSchematron;
 
 /**
- * Validator implementation of {@link CTScenarioMatch} (conformatron-api steps 3+4). Facade: wraps the legacy
- * {@link Scenario} selected by the existing {@code ScenarioSelectionAction} so downstream steps can consume the
- * conformatron handshake type while the legacy scenario machinery keeps doing the heavy lifting.
+ * Validator implementation of {@link CTScenarioMatch} (conformatron-api steps 3+4): a {@link Scenario} that applies to
+ * the document, as the handshake object the downstream steps consume. The scenario itself stays reachable through
+ * {@link #getScenario()}, because steps 5 and 6 need its artifact repository.
  * <p>
- * Known facade limitations (to be resolved when the scenario steps are fully migrated):
+ * Known limitations of the framework/2 scenario model:
  * </p>
  * <ul>
- * <li>The legacy scenario model has no separate ID — {@link #getScenarioID()} falls back to the scenario name.</li>
- * <li>The legacy XPath selector does not expose the matched value — {@link #getMatchedValue()} is {@code null}.</li>
- * <li>Fallback scenarios are not representable as a match (neither auto-detected nor user-selected) and must not be
- * wrapped; callers keep the handshake object {@code null} in that case.</li>
+ * <li>A scenario has no separate ID — {@link #getScenarioID()} falls back to the scenario name.</li>
+ * <li>The XPath match does not expose the matched value — {@link #getMatchedValue()} is {@code null}.</li>
  * </ul>
  *
  * @author Andreas Schmitz
  */
 public final class ScenarioMatch implements CTScenarioMatch {
 
-    private final String scenarioId;
-
-    private final String scenarioName;
-
-    private final String matchExpression;
+    private final Scenario scenario;
 
     private final boolean userSelected;
 
@@ -46,94 +39,53 @@ public final class ScenarioMatch implements CTScenarioMatch {
 
     private final SeverityOverrides severityOverrides;
 
-    private final ScenarioType configuration;
-
-    private final String definitionFile;
-
-    private ScenarioMatch(final String scenarioId, final String scenarioName, final String matchExpression, final boolean userSelected,
-            final List<CTValidationArtifactReference> artifactReferences, final CTParsedValidationSource parsedSource,
-            final SeverityOverrides severityOverrides, final ScenarioType configuration, final String definitionFile) {
-        this.scenarioId = scenarioId;
-        this.scenarioName = scenarioName;
-        this.matchExpression = matchExpression;
+    private ScenarioMatch(final Scenario scenario, final boolean userSelected, final CTParsedValidationSource parsedSource) {
+        this.scenario = scenario;
         this.userSelected = userSelected;
-        this.artifactReferences = List.copyOf(artifactReferences);
+        this.artifactReferences = collectArtifactReferences(scenario);
         this.parsedSource = parsedSource;
-        this.severityOverrides = severityOverrides;
-        this.configuration = configuration;
-        this.definitionFile = definitionFile;
+        this.severityOverrides = ScenarioSeverityOverrides.fromConfiguration(scenario.getConfiguration());
     }
 
     /**
-     * Wraps a legacy auto-detected scenario as conformatron handshake object.
+     * Wraps an auto-detected scenario as conformatron handshake object.
      *
-     * @param scenario the matched legacy scenario; must not be a fallback scenario (see class Javadoc)
+     * @param scenario the matched scenario
      * @param parsedSource the parsed source from step 2, carried through per specification
      * @return the wrapped match
      */
     public static ScenarioMatch of(final Scenario scenario, final CTParsedValidationSource parsedSource) {
-        return of(scenario, parsedSource, null);
-    }
-
-    /**
-     * Wraps a legacy auto-detected scenario, additionally recording which configuration file it came from.
-     *
-     * @param scenario the matched legacy scenario; must not be a fallback scenario (see class Javadoc)
-     * @param parsedSource the parsed source from step 2, carried through per specification
-     * @param definitionFile the scenario configuration this scenario was read from. May be <code>null</code>.
-     * @return the wrapped match
-     */
-    public static ScenarioMatch of(final Scenario scenario, final CTParsedValidationSource parsedSource, final String definitionFile) {
         if (scenario == null) {
             throw new IllegalArgumentException("scenario may not be null");
-        }
-        if (scenario.isFallback()) {
-            throw new IllegalArgumentException("A fallback scenario is not a match and can not be wrapped");
         }
         if (parsedSource == null) {
             throw new IllegalArgumentException("parsedSource may not be null");
         }
-        final ScenarioType configuration = scenario.getConfiguration();
-        return new ScenarioMatch(scenario.getName(), scenario.getName(), configuration.getMatch(), false,
-                collectArtifactReferences(configuration), parsedSource, ScenarioSeverityOverrides.fromConfiguration(configuration),
-                configuration, definitionFile);
+        return new ScenarioMatch(scenario, false, parsedSource);
     }
 
     /**
-     * Wraps a legacy scenario that was fixed by explicit user input (conformatron-api step 3,
-     * {@code requestedScenarioId} path): no XPath evaluation happened, so match expression and matched value are
-     * {@code null} per {@link CTScenarioMatch} contract.
+     * Wraps a scenario that was fixed by explicit user input (conformatron-api step 3, {@code requestedScenarioId}
+     * path): no XPath evaluation happened, so match expression and matched value are {@code null} per
+     * {@link CTScenarioMatch} contract.
      *
-     * @param scenario the user-requested legacy scenario; must not be a fallback scenario (see class Javadoc)
+     * @param scenario the user-requested scenario
      * @param parsedSource the parsed source from step 2, carried through per specification
      * @return the wrapped match with {@link #isUserSelected()} {@code == true}
      */
     public static ScenarioMatch userSelected(final Scenario scenario, final CTParsedValidationSource parsedSource) {
-        return userSelected(scenario, parsedSource, null);
-    }
-
-    /**
-     * Wraps a user-fixed legacy scenario, additionally recording which configuration file it came from.
-     *
-     * @param scenario the user-requested legacy scenario; must not be a fallback scenario (see class Javadoc)
-     * @param parsedSource the parsed source from step 2, carried through per specification
-     * @param definitionFile the scenario configuration this scenario was read from. May be <code>null</code>.
-     * @return the wrapped match with {@link #isUserSelected()} {@code == true}
-     */
-    public static ScenarioMatch userSelected(final Scenario scenario, final CTParsedValidationSource parsedSource,
-            final String definitionFile) {
         if (scenario == null) {
             throw new IllegalArgumentException("scenario may not be null");
-        }
-        if (scenario.isFallback()) {
-            throw new IllegalArgumentException("A fallback scenario is not a match and can not be wrapped");
         }
         if (parsedSource == null) {
             throw new IllegalArgumentException("parsedSource may not be null");
         }
-        return new ScenarioMatch(scenario.getName(), scenario.getName(), null, true, collectArtifactReferences(scenario.getConfiguration()),
-                parsedSource, ScenarioSeverityOverrides.fromConfiguration(scenario.getConfiguration()), scenario.getConfiguration(),
-                definitionFile);
+        return new ScenarioMatch(scenario, true, parsedSource);
+    }
+
+    /** @return the scenario that matched, with its artifact repository */
+    public Scenario getScenario() {
+        return this.scenario;
     }
 
     /**
@@ -144,62 +96,69 @@ public final class ScenarioMatch implements CTScenarioMatch {
         return this.severityOverrides;
     }
 
-    /** The configuration file this scenario was read from. May be <code>null</code> when the caller did not say. */
+    /**
+     * The configuration file this scenario was read from. May be <code>null</code> for a scenario assembled in code.
+     */
     public String getDefinitionFile() {
-        return this.definitionFile;
+        return this.scenario.getDefinitionFile();
     }
 
     /** The wrapped scenario configuration, for embedding the individual scenario into the report. */
     public ScenarioType getConfiguration() {
-        return this.configuration;
+        return this.scenario.getConfiguration();
     }
 
     /**
      * A pointer into the scenario configuration that locates this scenario, so a report consumer can look it up
-     * quickly. The legacy scenario model has no separate id, so the pointer selects by name.
+     * quickly. The framework/2 scenario model has no separate id, so the pointer selects by name.
      *
      * @return an XPath expression selecting this scenario within the scenario configuration
      */
     public String getConfigurationLocation() {
-        return "/*:scenarios/*:scenario[*:name='" + this.scenarioName + "']";
+        return "/*:scenarios/*:scenario[*:name='" + this.scenario.getName() + "']";
     }
 
-    private static List<CTValidationArtifactReference> collectArtifactReferences(final ScenarioType configuration) {
-        if (configuration == null) {
-            return Collections.emptyList();
-        }
+    private static List<CTValidationArtifactReference> collectArtifactReferences(final Scenario scenario) {
+        final ScenarioType configuration = scenario.getConfiguration();
         final List<CTValidationArtifactReference> references = new ArrayList<>();
         if (configuration.getValidateWithXmlSchema() != null) {
-            configuration.getValidateWithXmlSchema().getResource().stream().map(ResourceType::getLocation)
-                    .map(ValidationArtifactReference::of).forEach(references::add);
+            for (final ResourceType resource : configuration.getValidateWithXmlSchema().getResource()) {
+                references.add(ScenarioRuleSetReference.of(resource.getLocation(), null, handedOver(scenario, resource.getLocation())));
+            }
         }
         for (final ValidateWithSchematron schematron : configuration.getValidateWithSchematron()) {
             if (schematron.getResource() != null) {
                 // the rule set carries the processor the scenario names for it, step 6 honours it
-                references.add(ScenarioRuleSetReference.of(schematron.getResource().getLocation(), schematron.getCompiler()));
+                references.add(ScenarioRuleSetReference.of(schematron.getResource().getLocation(), schematron.getCompiler(),
+                        handedOver(scenario, schematron.getResource().getLocation())));
             }
         }
-        return references;
+        return List.copyOf(references);
+    }
+
+    private static org.conformatron.api.model.validation.CTCompiledValidationArtifact<?> handedOver(final Scenario scenario,
+            final String location) {
+        return scenario.precompiled(URI.create(location)).orElse(null);
     }
 
     @Override
     public String getScenarioID() {
-        return this.scenarioId;
+        return this.scenario.getName();
     }
 
     @Override
     public String getScenarioName() {
-        return this.scenarioName;
+        return this.scenario.getName();
     }
 
     @Override
     public String getMatchExpression() {
-        return this.matchExpression;
+        return this.userSelected ? null : this.scenario.getConfiguration().getMatch();
     }
 
     @Override
     public String getMatchedValue() {
-        // the legacy XPath selector does not expose the matched document value
+        // the XPath match does not expose the matched document value
         return null;
     }
 

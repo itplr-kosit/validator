@@ -3,6 +3,7 @@ package org.kosit.validator.config;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kosit.validator.config.TestConfigurationFactory.createScenario;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,21 +34,35 @@ public class ScenarioBuilderTest {
     }
 
     @Test
-    public void testNoSchema() {
+    public void testNoSchemaValidatesWithSchematronAlone() {
         final ScenarioBuilder builder = createScenario();
         builder.validate((SchemaBuilder) null);
         final SingleProcessingResult<Scenario, String> result = builder.build(TestHelper.createContentRepository());
-        assertThat(result.isValid()).isFalse();
-        assertThat(result.getErrors()).anyMatch(e -> e.contains("schema"));
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getObject().getConfiguration().getValidateWithXmlSchema()).isNull();
     }
 
     @Test
-    public void testNoMatch() {
+    public void testNoMatchAppliesUnconditionally() {
         final ScenarioBuilder builder = createScenario();
         builder.match((String) null);
         final SingleProcessingResult<Scenario, String> result = builder.build(TestHelper.createContentRepository());
-        assertThat(result.isValid()).isFalse();
-        assertThat(result.getErrors()).anyMatch(e -> e.contains("match"));
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getObject().isUnconditional()).isTrue();
+        assertThat(result.getObject().getMatchExecutable()).isNull();
+        assertThat(result.getObject().getConfiguration().getMatch()).isNull();
+    }
+
+    @Test
+    public void testArtifactsHandedOverCompiledArePassedOn() {
+        final ContentRepository repository = TestHelper.createContentRepository();
+        final ScenarioBuilder builder = createScenario();
+        builder.validate(ConfigurationBuilder.schematron("compiled").executable(repository.loadXsltScript(URI.create("simple.xsl"))));
+        final SingleProcessingResult<Scenario, String> result = builder.build(repository);
+        assertThat(result.isValid()).isTrue();
+        // the location is synthetic, the compilation travels with the scenario
+        assertThat(result.getObject().getPrecompiled()).hasSize(1);
+        assertThat(result.getObject().getPrecompiled().keySet().iterator().next().toString()).startsWith("precompiled:");
     }
 
     @Test

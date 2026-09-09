@@ -2,27 +2,20 @@ package org.kosit.validator.config;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.kosit.base.annotation.ReturnsImmutableObject;
-import org.kosit.base.error.SimpleError;
-import org.kosit.base.string.StringHelper;
+import org.jspecify.annotations.Nullable;
+import org.kosit.base.uri.UriHelper;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.resolve.RelativeUriResolver;
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.schematron.resolve.ResolvingMode;
-import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.ScenarioArtifacts;
-import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.scenario.v1.Scenario1Converter;
-import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.Scenarios;
 import org.kost.validator.api.xml.CollectingErrorEventHandler;
 import org.slf4j.Logger;
@@ -34,9 +27,14 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
 
 /**
- * Configuration class that loads the necessary {@link org.kosit.validator.impl.ConformanceValidation engine}
- * configuration from an existing scenario.xml specification. This is the recommended option when an official
- * configuration exists as is the case with 'xrechnung'.
+ * Loads a {@link ScenarioSet} from an existing scenario.xml specification. This is the recommended option when an
+ * official configuration exists as is the case with 'xrechnung'.
+ * <p>
+ * Loading validates the file against the scenario schema and compiles the match expressions; the validation artifacts
+ * the scenarios refer to are <b>not</b> touched - they are resolved and compiled by the pipeline (steps 5 and 6), so
+ * that a missing or broken artifact shows up in the report of the document instead of failing the start of the
+ * validator.
+ * </p>
  *
  * @author Andreas Penski
  */
@@ -47,8 +45,6 @@ public class ConfigurationLoader {
     private static final String SUPPORTED_MAJOR_VERSION = "2";
 
     private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = Scenario1Converter.NS_URI;
-
-    protected final Map<String, Object> parameters = new HashMap<>();
 
     /**
      * URL pointing to the scenario.xml file.
@@ -95,66 +91,46 @@ public class ConfigurationLoader {
                 && root.getNodeName().getNamespace().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
     }
 
-    private static Scenario createFallback(final ContentRepository repository) {
-        LOGGER.info("create Fallback: ");
-        return new FallbackBuilder().build(repository).getObject();
-    }
-
-    @ReturnsImmutableObject
-    private static List<Scenario> initializeScenarios(final Scenarios def, final ContentRepository contentRepository) {
-        return def.getScenario().stream().map(s -> initialize(s, contentRepository)).toList();
-    }
-
-    private static Scenario initialize(final ScenarioType def, final ContentRepository repository) {
-        final Scenario s = new Scenario(def);
-        s.setMatchExecutable(ScenarioArtifacts.createMatchExecutable(repository, def));
-        s.setSchema(ScenarioArtifacts.createSchema(repository, def));
-        s.setSchematronValidations(ScenarioArtifacts.createSchematronTransformations(repository, def));
-        s.setReportTransformations(ScenarioArtifacts.createReportTransformations(repository, def));
-        s.setFactory(repository.getResolvingConfigurationStrategy());
-        s.setUriResolver(repository.getResolver());
-        s.setUnparsedTextURIResolver(repository.getUnparsedTextURIResolver());
-        // an empty acceptMatch is a placeholder, not an XPath - 2.0 configurations keep the element empty
-        if (!StringHelper.isBlank(def.getAcceptMatch())) {
-            s.setAcceptExecutable(ScenarioArtifacts.createAcceptExecutable(repository, def));
-        }
-        return s;
-    }
-
     /**
      * Creates a new {@code ConfigurationLoader} instance.
      *
      * @param scenarioDefinition URL pointing to scenario.xml
-     * @param scenarioRepository root folder with the scenario specific files
+     * @param scenarioRepository root folder with the scenario specific files; {@code null} for the directory of the
+     *            scenario.xml, also when that is inside an archive
      */
-    public ConfigurationLoader(final URI scenarioDefinition, final URI scenarioRepository) {
+    public ConfigurationLoader(final URI scenarioDefinition, final @Nullable URI scenarioRepository) {
+        if (scenarioDefinition == null) {
+            throw new IllegalArgumentException("scenarioDefinition may not be null");
+        }
+        this.scenarioDefinition = scenarioDefinition;
         if (scenarioRepository == null) {
             LOGGER.info("Creating default scenario repository (alongside scenario definition)");
-            this.scenarioDefinition = RelativeUriResolver.resolve(URI.create("."), null);
-        } else
-            this.scenarioDefinition = scenarioDefinition;
-        this.scenarioRepository = scenarioRepository;
+            this.scenarioRepository = UriHelper.resolve(scenarioDefinition, ".", true);
+        } else {
+            this.scenarioRepository = scenarioRepository;
+        }
     }
 
     URI getScenarioRepository() {
         return this.scenarioRepository;
     }
 
-    public VConfiguration build(final Processor processor) {
+    /**
+     * Loads the scenarios.
+     *
+     * @param processor the Saxon processor the scenarios are compiled with - the same the engine runs with
+     * @return the loaded scenarios with the identity of their configuration
+     * @throws IllegalStateException if the file cannot be read, is not a supported scenario configuration, or a match
+     *             expression does not compile
+     */
+    public ScenarioSet build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
         final Scenarios def = loadScenarios(processor);
-        final List<Scenario> scenarios = initializeScenarios(def, contentRepository);
-        final Scenario fallbackScenario = createFallback(contentRepository);
-        final DefaultConfiguration configuration = new DefaultConfiguration(scenarios, fallbackScenario);
-        configuration.setAdditionalParameters(this.parameters);
-        configuration.setAuthor(def.getAuthor());
-        configuration.setDate(def.getDate().toString());
-        configuration.setName(def.getName());
-        configuration.setContentRepository(contentRepository);
-        configuration.getAdditionalParameters().put(ConfigurationKeys.SCENARIOS_FILE, this.scenarioDefinition);
-        configuration.getAdditionalParameters().put(ConfigurationKeys.SCENARIOS_DEFINITION, def);
-        return (configuration);
+        final String definitionFile = this.scenarioDefinition.toString();
+        final List<Scenario> scenarios = def.getScenario().stream().map(s -> Scenario.of(s, contentRepository, definitionFile)).toList();
+        return new ScenarioSet(def.getName(), def.getAuthor(), def.getDate() == null ? null : def.getDate().toString(), definitionFile,
+                scenarios);
     }
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
@@ -175,7 +151,7 @@ public class ConfigurationLoader {
             throw new IllegalStateException(
                     "Can not load scenarios from " + this.scenarioDefinition + " due to " + handler.getErrorDescription());
         }
-        LOGGER.info("Loading scenario content from {}", this.getScenarioRepository());
+        LOGGER.info("Scenario content is resolved from {}", this.getScenarioRepository());
         return scenarios;
     }
 
@@ -195,18 +171,6 @@ public class ConfigurationLoader {
 
     public ConfigurationLoader setResolvingStrategy(final ResolvingConfigurationStrategy strategy) {
         this.resolvingConfigurationStrategy = strategy;
-        return this;
-    }
-
-    /**
-     * Add a parameter to the configuration.
-     *
-     * @param name the name of the parameter
-     * @param value the parameter value object
-     * @return this
-     */
-    public ConfigurationLoader addParameter(final String name, final Object value) {
-        this.parameters.put(name, value);
         return this;
     }
 }

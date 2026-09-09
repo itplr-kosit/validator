@@ -12,6 +12,7 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
+import org.conformatron.api.model.validation.CTCompiledValidationArtifact;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
@@ -24,6 +25,7 @@ import org.kosit.conformatron.detection.SubjectDetection;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.validation.ResolvedValidationArtifact;
 import org.kosit.cvr.util.ArtifactResolver;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,6 +177,15 @@ public class RetrieveArtifactsAction implements CTAction {
     private void retrieve(final CTValidationArtifactReference reference, final String resourceId,
             final List<CTResolvedValidationArtifact> artifacts, final List<CTDetection> detections) {
         final String href = reference.getValidationArtifactReference().toString();
+        final CTCompiledValidationArtifact<?> handedOver = ScenarioRuleSetReference.handedOverCompiled(reference);
+        if (handedOver != null) {
+            // the scenario was assembled in code and the caller handed the artifact over compiled: nothing to resolve,
+            // nothing to fingerprint - step 6 passes it through
+            artifacts.add(ResolvedValidationArtifact.precompiled(reference, handedOver));
+            detections.add(about(href, handedOver.getValidationType().getID(), Detection.builderNone().code(CODE_ARTIFACTS_RETRIEVED)
+                    .location(resourceId).text("Artifact handed over compiled").build()));
+            return;
+        }
         try {
             // security first: a reference escaping the repository is rejected before it is interpreted or read
             final URI resolved = this.resolver.resolve(reference);
