@@ -688,9 +688,9 @@
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applySchema(ApplyRulesAction.java:213)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java:175)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java:159)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:204)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:150)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:134)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:292)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:219)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.validate(ConformanceValidation.java:203)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.run(XRechnungE2ERunner.java:177)&#13;
 	at org.kosit.validator.impl.conformatron.XRechnungE2ERunner.main(XRechnungE2ERunner.java:131)&#13;
 	at org.codehaus.mojo.exec.ExecJavaMojo$1.run(ExecJavaMojo.java:279)&#13;

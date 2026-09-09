@@ -30,7 +30,7 @@ import org.kosit.base.io.ResourceHelper;
 import org.kosit.base.string.StringHelper;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.cmd.CommandLineOptions.CliOptions;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
@@ -38,7 +38,6 @@ import org.kosit.validator.cmd.report.Line;
 import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
-import org.kosit.validator.impl.ScenarioRepository;
 import org.kost.validator.api.saxon.ProcessorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +48,7 @@ import net.sf.saxon.s9api.Processor;
  * Actual evaluation and processing of CommandLineOptions arguments.
  *
  * @author Andreas Penski
+ * @author Andreas Schmitz
  */
 public class Validator {
 
@@ -96,9 +96,7 @@ public class Validator {
     private static ReturnValue processActions(final CommandLineOptions cmd) throws IOException {
         long start = System.currentTimeMillis();
         final Processor processor = ProcessorProvider.getProcessor();
-        final List<VConfiguration> config = getConfiguration(cmd);
-        final ConformanceValidation engine = new ConformanceValidation(cmd.getEngineInformation(), processor,
-                config.toArray(new VConfiguration[0]));
+        final ConformanceValidation engine = createEngine(cmd, processor);
         final CommandLineOptions.CliOptions cliOptions = Objects.requireNonNullElse(cmd.getCliOptions(), new CliOptions());
         final Path outputDirectory = determineOutputDirectory(cliOptions);
         final NamingStrategy namingStrategy = determineNamingStrategy(cliOptions);
@@ -139,11 +137,54 @@ public class Validator {
     }
 
     /**
+     * The engine as the command line asks for it: over the scenario configurations of {@code -s}, or - for an ad hoc
+     * validation - over the single Schematron of {@code -S}.
+     *
+     * @param cmd the Command Line Options
+     * @param processor the Saxon processor
+     * @return the engine
+     */
+    private static ConformanceValidation createEngine(final CommandLineOptions cmd, final Processor processor) {
+        final boolean scenarios = cmd.getScenarios() != null && !cmd.getScenarios().isEmpty();
+        if (cmd.getArtifacts() != null && !cmd.getArtifacts().isEmpty()) {
+            if (scenarios) {
+                // no quotes: the message ends up as a MessageFormat template in Printer.writeErr
+                throw new IllegalArgumentException("Specify either --scenarios or --artifact, not both");
+            }
+            final List<URI> artifacts = new ArrayList<>();
+            for (final Path artifact : cmd.getArtifacts()) {
+                assertFileExistance(artifact, "artifact");
+                artifacts.add(artifact.toAbsolutePath().normalize().toUri());
+            }
+            // -r names the repository root of the ad hoc scenario; without it the common directory of the artifacts
+            URI repository = null;
+            final List<RepositoryDefinition> repositories = Objects.requireNonNullElse(cmd.getRepositories(), Collections.emptyList());
+            if (!repositories.isEmpty()) {
+                if (repositories.size() > 1) {
+                    Printer.writeErr("Warning: an ad hoc validation has one repository, the first definition is used");
+                }
+                repository = determineRepository(repositories.get(0).getPath());
+            }
+            Printer.writeOut("Ad hoc validation against {0}", String.join(", ", cmd.getArtifacts().stream().map(Path::toString).toList()));
+            if (repository != null) {
+                Printer.writeOut("Using repository  {0}", repository);
+            }
+            Printer.writeOut("");
+            return ConformanceValidation.adHoc(cmd.getEngineInformation(), processor, artifacts, repository, false);
+        }
+        if (!scenarios) {
+            throw new IllegalArgumentException("Missing required option: --scenarios=<scenario.xml> or --artifact=<artifact>");
+        }
+        final List<ScenarioSet> config = getConfiguration(cmd);
+        return new ConformanceValidation(cmd.getEngineInformation(), processor, config.toArray(new ScenarioSet[0]));
+    }
+
+    /**
      * @param cmd the Command Line Options
      *
      * @return a list of configurations of the scenarios and repositories passed in cmd
      */
-    private static List<VConfiguration> getConfiguration(final CommandLineOptions cmd) {
+    private static List<ScenarioSet> getConfiguration(final CommandLineOptions cmd) {
         final List<ScenarioDefinition> scenarios = Objects.requireNonNullElse(cmd.getScenarios(), Collections.emptyList());
         // Map from scenario name to scenario path
         final Map<String, Path> mappedScenarios = scenarios.stream()
@@ -157,7 +198,7 @@ public class Validator {
             final URI scenarioLocation = e.getValue().toUri();
             final URI repositoryLocation = findRepository(scenarioLocation, e.getKey(), mappedRepos);
             reportLoading(scenarioLocation, repositoryLocation);
-            final VConfiguration configuration = VConfiguration.load(scenarioLocation, repositoryLocation)
+            final ScenarioSet configuration = ScenarioSet.load(scenarioLocation, repositoryLocation)
                     .build(ProcessorProvider.getProcessor());
             reportConfiguration(configuration);
             return configuration;
@@ -168,15 +209,15 @@ public class Validator {
         // Must use collect for a mutable
         final List<Entry<String, Path>> unused = repositories.entrySet().stream().filter(e -> scenarios.get(e.getKey()) == null)
                 .collect(Collectors.toList());
-        unused.removeIf(e -> e.getKey().equals(ScenarioRepository.DEFAULT_ID));
+        unused.removeIf(e -> e.getKey().equals(ScenarioDefinition.DEFAULT_ID));
         unused.forEach(e -> Printer.writeErr("Warning: repository definition \"{0}\" is not used", e.getKey()));
     }
 
     private static URI findRepository(final URI scenarioLocation, final String key, final Map<String, Path> repositories) {
-        final Path path = repositories.getOrDefault(key, repositories.get(ScenarioRepository.DEFAULT_ID));
+        final Path path = repositories.getOrDefault(key, repositories.get(ScenarioDefinition.DEFAULT_ID));
         if (path == null) {
             // If it is an unnamed scenario, use the CWD instead
-            if (key.startsWith(ScenarioRepository.DEFAULT)) {
+            if (key.startsWith(ScenarioDefinition.DEFAULT)) {
                 // Assume directory of scenario location instead
                 return Paths.get(scenarioLocation).getParent().toUri();
             }
@@ -191,7 +232,7 @@ public class Validator {
         Printer.writeOut("");
     }
 
-    private static void reportConfiguration(final VConfiguration configuration) {
+    private static void reportConfiguration(final ScenarioSet configuration) {
         Printer.writeOut("Loaded \"{0}\" by {1} from {2} ", configuration.getName(), configuration.getAuthor(), configuration.getDate());
         Printer.writeOut("The following scenarios are available:");
         configuration.getScenarios().forEach(e -> {

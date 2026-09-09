@@ -72,6 +72,12 @@ The `ValidationClient` follows the two steps of the server protocol and offers t
 | `fetchResultRaw(UUID)` | Fetches the report of a run as a temporary `File`. Useful if the report should be saved or processed further manually. | `File` |
 | `validate(File)` | `createRun` followed by `fetchResult`. | `XvrlReports` |
 | `validateRaw(File)` | `createRun` followed by `fetchResultRaw`. | `File` |
+| `createAdHocRun(File, File)` | Posts the document and a Schematron (`.sch` or precompiled `.xsl`) to `/api/validation/adhoc`: the document is validated against that rule set alone, no scenario configuration of the server involved. | `ValidationRunStatus` |
+| `createAdHocRun(File, List<File>)` | The same against a set of artifacts — XML Schemas (`.xsd`), Schematrons (`.sch`), precompiled Schematron XSLTs (`.xsl`) — applied in this order as one scenario. The files travel as one ZIP repository under their names, so includes between them resolve. | `ValidationRunStatus` |
+| `createAdHocRun(File, File, List<String>)` | The same against a ZIP you built yourself: its entries keep their paths (imports and includes resolve), the list names the entries to apply. | `ValidationRunStatus` |
+| `validateAdHoc(File, File)`, `validateAdHoc(File, List<File>)` | `createAdHocRun` followed by `fetchResult`. | `XvrlReports` |
+
+The ad hoc operation is not driven through the generated `AdHocApi`: the generator sends every part under a fixed file name and turns the repeatable `resource` part into a text part, so `ValidationClient` uses the hand-written `AdHocMultipartApi` over a `ClientMultipartForm` instead. It posts a set of files as a repository ZIP rather than as several `resource` parts, because the REST client groups parts of the same name into a nested `multipart/mixed` body that the server does not unwrap.
 
 The server keeps a result for a limited time only (10 minutes and 500 runs by default, see the [server documentation](server.md)). Fetching an unknown or expired run answers `404 Not Found`, which the generated REST client raises as a `jakarta.ws.rs.WebApplicationException`.
 

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,54 @@ class ValidationClientTest {
         assertThat(run.getId()).isNotNull();
         assertThat(run.getStatus()).isEqualTo(ValidationRunStatus.StatusEnum.COMPLETED);
         assertThat(run.getResult()).endsWith("/api/validation/result/" + run.getId());
+    }
+
+    @Test
+    void testAnAdHocRunValidatesAgainstThePostedSchematron() throws IOException {
+        final File schematron = new File(TestData.file("examples/simple/repository/simple.sch"));
+
+        final ValidationRunStatus run = this.client.createAdHocRun(document("simple.xml"), schematron);
+        assertThat(run.getStatus()).isEqualTo(ValidationRunStatus.StatusEnum.COMPLETED);
+        final String content = Files.readString(this.client.fetchResultRaw(run.getId()).toPath());
+        // the client sends the real file names, so the scenario is named after the rule set
+        assertThat(content).contains("cvr:decision=\"ACCEPT\"").contains("scenario-id=\"simple.sch\"");
+
+        // the one-call form, and a document the rule set rejects
+        final XvrlReports rejected = this.client.validateAdHoc(document("simple-schematron-invalid.xml"), schematron);
+        assertThat(rejected.getReports()).isNotEmpty();
+        assertThat(Files.readString(this.client.validateRaw(document("simple.xml")).toPath())).contains("cvr:decision=\"ACCEPT\"");
+    }
+
+    @Test
+    void testAnAdHocRunAgainstASetOfArtifacts() throws IOException {
+        final File schema = new File(TestData.file("examples/simple/repository/simple.xsd"));
+        final File schematron = new File(TestData.file("examples/simple/repository/simple.sch"));
+
+        // schema and rules together: the schema rejects what the rules alone would accept
+        final ValidationRunStatus run = this.client.createAdHocRun(document("simple-schema-invalid.xml"), List.of(schema, schematron));
+        final String content = Files.readString(this.client.fetchResultRaw(run.getId()).toPath());
+        assertThat(content).contains("scenario-id=\"simple.xsd, simple.sch\"").contains("cvr:decision=\"REJECT\"")
+                .contains("code=\"schema-violation\"");
+    }
+
+    @Test
+    void testAnAdHocRunAgainstARepositoryZip() throws IOException {
+        // a modular Schematron: the only rule lives in an included file, which the ZIP carries next to it
+        final java.nio.file.Path rules = java.nio.file.Paths.get("..", "e2e", "adhoc", "rules");
+        final File zip = File.createTempFile("adhoc-rules", ".zip");
+        zip.deleteOnExit();
+        try ( java.util.zip.ZipOutputStream out = new java.util.zip.ZipOutputStream(new java.io.FileOutputStream(zip)) ) {
+            for (final String entry : List.of("with-include.sch", "abstracts.sch")) {
+                out.putNextEntry(new java.util.zip.ZipEntry(entry));
+                out.write(Files.readAllBytes(rules.resolve(entry)));
+                out.closeEntry();
+            }
+        }
+
+        final ValidationRunStatus run = this.client.createAdHocRun(document("foo.xml"), zip, List.of("with-include.sch"));
+        final String content = Files.readString(this.client.fetchResultRaw(run.getId()).toPath());
+        // the included rule fired: the root of foo.xml is not 'simple'
+        assertThat(content).contains("scenario-id=\"with-include.sch\"").contains("cvr:decision=\"REJECT\"").contains("inc-1");
     }
 
     @Test
