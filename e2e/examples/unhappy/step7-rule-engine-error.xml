@@ -76,20 +76,6 @@
                             <location>simple-runtime-error.sch</location>
                         </resource>
                     </validateWithSchematron>
-                    <createReport>
-                        <id>Report for eInvoice</id>
-                        <resource>
-                            <name>Report for eInvoice</name>
-                            <location>report.xsl</location>
-                        </resource>
-                    </createReport>
-                    <createReport>
-                        <id>Report for eInvoice2</id>
-                        <resource>
-                            <name>Report for eInvoice</name>
-                            <location>report.xsl</location>
-                        </resource>
-                    </createReport>
                     <acceptMatch>count(//test:rejected) = 0</acceptMatch>
                 </scenario>
             </message>
@@ -165,10 +151,10 @@
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applySchematron(ApplyRulesAction.java:199)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java:174)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java:159)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:203)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:71)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:136)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step7RuleEngineFails(CvrlUnhappyPathTest.java:288)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:292)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:70)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:133)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step7RuleEngineFails(CvrlUnhappyPathTest.java:285)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;

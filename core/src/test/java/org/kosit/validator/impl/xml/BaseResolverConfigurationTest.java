@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.testdata.TestResources;
-import org.kosit.validator.xvrl.XvrlSerializer;
+import org.kosit.xvrl.impl.XvrlConverter;
 import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlReport;
 import org.kosit.xvrl.model.XvrlReports;
@@ -44,11 +44,7 @@ public class BaseResolverConfigurationTest {
                 .addContent(NodeOverNodeInfo.wrap(node.getUnderlyingNode()).getOwnerDocument().getDocumentElement()).build();
         final XvrlReports report = XvrlReports.builder()
                 .addReport(XvrlReport.builder().addDetection(XvrlDetection.builder().addSupplemental(s))).build();
-        final XvrlSerializer ser = new XvrlSerializer(ProcessorProvider.getProcessor());
-        final XdmNode result = ser.marshalToXdmNode(report);
-        final Serializer serialize = ProcessorProvider.getProcessor().newSerializer();
-        final String string = serialize.serializeNodeToString(result);
-        System.out.println(string);
+        System.out.println(new XvrlConverter().writeXml(report));
     }
 
     @Test

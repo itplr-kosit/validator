@@ -12,14 +12,13 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.junit.jupiter.api.Test;
-import org.kosit.base.error.SimpleError;
 import org.kosit.base.string.StringHelper;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
 import org.kosit.schematron.resolve.RelativeUriResolver;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.TestObjectFactory;
-import org.kosit.validator.impl.model.SingleProcessingResult;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.testdata.TestResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,10 +72,10 @@ public class SaxonSecurityTest {
     @Test
     public void testXxe() throws URISyntaxException {
         final URL resource = SaxonSecurityTest.class.getResource("/evil/xxe.xml");
-        final SingleProcessingResult<XdmNode, SimpleError> result = TestObjectFactory.parseDocument(TestHelper.read(resource.toURI()));
-        assertThat(result.isValid()).isFalse();
-        assertThat(result.getObject()).isNull();
-        assertThat(result.getErrors().stream().map(SimpleError::getMessage).collect(Collectors.joining()))
-                .contains("http://apache.org/xml/features/disallow-doctype-dec");
+        final ParseXmlResult result = TestObjectFactory.parseDocument(TestHelper.read(resource.toURI()));
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getParsedSource() == null || result.getParsedSource().getParsedContent() == null).isTrue();
+        assertThat(result.getDetectionList().getAll().stream().map(d -> d.getText().getDisplayTextLocaleIndependent())
+                .collect(Collectors.joining())).contains("http://apache.org/xml/features/disallow-doctype-dec");
     }
 }

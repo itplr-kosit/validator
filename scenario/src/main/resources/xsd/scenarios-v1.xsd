@@ -59,14 +59,23 @@
             <xs:element name="name" type="xs:token" />
             <xs:element minOccurs="0" name="description" type="s:DescriptionType" />
             <xs:element minOccurs="0" maxOccurs="unbounded" name="namespace" type="s:NamespaceType" />
-            <xs:element name="match" type="xs:string" />
-            <xs:element name="validateWithXmlSchema" type="s:ValidateWithXmlSchema" />
+            <xs:element name="match" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        An XPath expression over the document; the scenario applies when it is true. A scenario without
+                        match applies unconditionally, in addition to the scenario detected by its match. That is the shape
+                        of a scenario assembled at runtime from validation artifacts; a declared scenario should normally
+                        carry a match.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="validateWithXmlSchema" type="s:ValidateWithXmlSchema" minOccurs="0" />
             <xs:element name="validateWithSchematron" maxOccurs="unbounded" minOccurs="0" type="s:ValidateWithSchematron" />
-            <xs:element name="createReport" type="s:CreateReportType" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="acceptMatch" type="xs:string" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>
-                        Optional: An XPATH expression to be applied to a generated validation report as defined in the createReport element
+                        Kept from 1.x, not evaluated by 2.0: the decision is computed from the conformance statements of the
+                        rule sets. Configurations written for 2.0 leave the element empty.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
@@ -99,19 +108,27 @@
     <xs:complexType name="ValidateWithSchematron">
         <xs:sequence>
             <xs:element ref="s:resource" />
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="customLevel" type="s:CustomErrorLevel">
+                <xs:annotation>
+                    <xs:documentation>
+                        Optional: rule codes of this rule set whose severity the configuration overrides, declared with the
+                        rule set they belong to (1.x declared them below the report transformation, which 2.0 does not have).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
         <xs:attribute name="psvi" type="xs:boolean" default="false" use="optional" />
-        <xs:attribute name="compiler" type="xs:string" />
+        <xs:attribute name="compiler" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Optional: id of the Schematron processor of this rule set (e.g. schxslt, schxslt2, iso-schematron). For a
+                    .sch it is the processor the validator compiles it with; for a precompiled .xsl it names the processor
+                    that produced it, so the report can state how the rule set was built.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
-
-    <xs:complexType name="CreateReportType">
-        <xs:sequence>
-            <xs:element name="id" type="xs:string" />
-            <xs:element ref="s:resource" />
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="customLevel" type="s:CustomErrorLevel" />
-        </xs:sequence>
-    </xs:complexType>
 
     <xs:complexType name="CustomErrorLevel">
         <xs:simpleContent>

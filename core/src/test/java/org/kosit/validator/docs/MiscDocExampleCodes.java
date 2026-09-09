@@ -7,7 +7,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
-import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.ScenarioSet;
 import org.kost.validator.api.saxon.ProcessorProvider;
 import org.kosit.schematron.resolve.ResolvingMode;
 
@@ -17,7 +17,7 @@ import net.sf.saxon.lib.UnparsedTextURIResolver;
 public class MiscDocExampleCodes {
 
     void m1() {
-        final VConfiguration config = VConfiguration.load(URI.create("myscenarios.xml")).setResolvingMode(ResolvingMode.STRICT_LOCAL)
+        final ScenarioSet config = ScenarioSet.load(URI.create("myscenarios.xml")).setResolvingMode(ResolvingMode.STRICT_LOCAL)
                 .build(ProcessorProvider.getProcessor());
     }
 
@@ -44,7 +44,7 @@ public class MiscDocExampleCodes {
     }
 
     void m2() {
-        final VConfiguration config = VConfiguration.load(URI.create("myscenarios.xml"))
+        final ScenarioSet config = ScenarioSet.load(URI.create("myscenarios.xml"))
                 .setResolvingStrategy(new MyCustomResolvingConfigurationStrategy()).build(ProcessorProvider.getProcessor());
     }
 

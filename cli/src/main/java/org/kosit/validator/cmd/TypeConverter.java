@@ -9,7 +9,6 @@ import org.kosit.base.string.StringHelper;
 import org.kosit.validator.cmd.CommandLineOptions.AbstractDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.RepositoryDefinition;
 import org.kosit.validator.cmd.CommandLineOptions.ScenarioDefinition;
-import org.kosit.validator.impl.ScenarioRepository;
 
 import picocli.CommandLine.ITypeConverter;
 
@@ -53,7 +52,7 @@ class TypeConverter {
 
     private static String getDefaultName(final Class<?> type) {
         final AtomicInteger current = counter.computeIfAbsent(type, a -> new AtomicInteger(1));
-        return ScenarioRepository.DEFAULT + "_" + current.getAndIncrement();
+        return ScenarioDefinition.DEFAULT + "_" + current.getAndIncrement();
     }
 
     private static <T extends AbstractDefinition> T convert(final Class<T> type, final String value) {

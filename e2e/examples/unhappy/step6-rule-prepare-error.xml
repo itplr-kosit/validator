@@ -76,20 +76,6 @@
                             <location>simple.sch</location>
                         </resource>
                     </validateWithSchematron>
-                    <createReport>
-                        <id>Report for eInvoice</id>
-                        <resource>
-                            <name>Report for eInvoice</name>
-                            <location>report.xsl</location>
-                        </resource>
-                    </createReport>
-                    <createReport>
-                        <id>Report for eInvoice2</id>
-                        <resource>
-                            <name>Report for eInvoice</name>
-                            <location>report.xsl</location>
-                        </resource>
-                    </createReport>
                     <acceptMatch>count(//test:rejected) = 0</acceptMatch>
                 </scenario>
             </message>
@@ -122,10 +108,10 @@
             <message>Artifact could not be prepared: Can not compile xslt executable for uri does-not-compile.sch</message>
             <supplemental role="java-trace">java.lang.IllegalStateException: Can not compile xslt executable for uri does-not-compile.sch&#13;
 	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:170)&#13;
-	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.prepare(PrepareRulesAction.java:161)&#13;
-	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.execute(PrepareRulesAction.java:135)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:113)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step6RulesDoNotCompile(CvrlUnhappyPathTest.java:277)&#13;
+	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.prepare(PrepareRulesAction.java:166)&#13;
+	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.execute(PrepareRulesAction.java:137)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:110)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step6RulesDoNotCompile(CvrlUnhappyPathTest.java:274)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;

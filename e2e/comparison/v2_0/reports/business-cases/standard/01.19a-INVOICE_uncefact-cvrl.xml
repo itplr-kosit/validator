@@ -267,7 +267,6 @@
                     </description>
                     <namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace>
                     <namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace>
-                    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
                     <match>exists(/rsm:CrossIndustryInvoice[rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'])</match>
                     <validateWithXmlSchema>
                         <resource>
@@ -275,23 +274,10 @@
                             <location>resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd</location>
                         </resource>
                     </validateWithXmlSchema>
-                    <validateWithSchematron>
+                    <validateWithSchematron compiler="schxslt">
                         <resource>
                             <name>Schematron rules for EN16931 (CII)</name>
                             <location>resources/cii/16b/xsl/EN16931-CII-validation.xsl</location>
-                        </resource>
-                    </validateWithSchematron>
-                    <validateWithSchematron>
-                        <resource>
-                            <name>Schematron rules for CIUS XRechnung (CII)</name>
-                            <location>resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl</location>
-                        </resource>
-                    </validateWithSchematron>
-                    <createReport>
-                        <id>report-6</id>
-                        <resource>
-                            <name>Validation report for XRechnung</name>
-                            <location>resources/xrechnung-report.xsl</location>
                         </resource>
                         <customLevel level="warning">BR-CL-23</customLevel>
                         <customLevel level="warning">BR-CL-21</customLevel>
@@ -300,8 +286,14 @@
                         <customLevel level="error">CII-SR-454</customLevel>
                         <customLevel level="error">CII-SR-465</customLevel>
                         <customLevel level="error">CII-SR-466</customLevel>
-                    </createReport>
-                    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+                    </validateWithSchematron>
+                    <validateWithSchematron compiler="schxslt">
+                        <resource>
+                            <name>Schematron rules for CIUS XRechnung (CII)</name>
+                            <location>resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl</location>
+                        </resource>
+                    </validateWithSchematron>
+                    <acceptMatch/>
                 </scenario>
             </message>
             <context>
@@ -341,6 +333,7 @@
     <report>
         <metadata>
             <timestamp>2026-01-01T00:00:00Z</timestamp>
+            <validator name="schxslt"/>
             <validator name="Saxon" version="12.10"/>
             <creator name="prepare-rules"/>
         </metadata>

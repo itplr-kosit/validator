@@ -5,24 +5,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.junit.jupiter.api.Test;
 import org.kosit.cvr.model.SeverityOverrides;
-import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.CustomErrorLevel;
 import org.kosit.validator.scenario.v1.ErrorLevelType;
 import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v1.ValidateWithSchematron;
 
 /**
  * Tests {@link ScenarioSeverityOverrides}: the customLevel semantics carried over from 1.x (token lists, both
- * directions, level mapping into the severity model).
+ * directions, level mapping into the severity model), declared with the rule set.
  */
 public class ScenarioSeverityOverridesTest {
 
     private static ScenarioType configuration(final CustomErrorLevel... levels) {
-        final CreateReportType report = new CreateReportType();
+        final ValidateWithSchematron schematron = new ValidateWithSchematron();
         for (final CustomErrorLevel level : levels) {
-            report.getCustomLevel().add(level);
+            schematron.getCustomLevel().add(level);
         }
         final ScenarioType scenario = new ScenarioType();
-        scenario.getCreateReport().add(report);
+        scenario.getValidateWithSchematron().add(schematron);
         return scenario;
     }
 
@@ -58,6 +58,19 @@ public class ScenarioSeverityOverridesTest {
         assertThat(overrides.effectiveFor("BR-CL-21")).isEqualTo(CTStandardSeverity.WARNING);
         assertThat(overrides.effectiveFor("BR-CL-23")).isEqualTo(CTStandardSeverity.WARNING);
         assertThat(overrides.effectiveFor("BR-CL-24")).isEqualTo(CTStandardSeverity.WARNING);
+    }
+
+    @Test
+    public void testOverridesOfAllRuleSetsAreCollected() {
+        final ScenarioType scenario = configuration(level(ErrorLevelType.WARNING, "BR-CL-23"));
+        final ValidateWithSchematron second = new ValidateWithSchematron();
+        second.getCustomLevel().add(level(ErrorLevelType.ERROR, "UBL-CR-646"));
+        scenario.getValidateWithSchematron().add(second);
+
+        final SeverityOverrides overrides = ScenarioSeverityOverrides.fromConfiguration(scenario);
+
+        assertThat(overrides.effectiveFor("BR-CL-23")).isEqualTo(CTStandardSeverity.WARNING);
+        assertThat(overrides.effectiveFor("UBL-CR-646")).isEqualTo(CTStandardSeverity.ERROR);
     }
 
     @Test

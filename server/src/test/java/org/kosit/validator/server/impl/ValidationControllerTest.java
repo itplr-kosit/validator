@@ -8,8 +8,16 @@ import static org.hamcrest.Matchers.matchesRegex;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -71,6 +79,141 @@ class ValidationControllerTest {
         given().when().get(location).then().statusCode(200).contentType(ContentType.XML).body(containsString("cvr:status=\"CANCELLED\""))
                 .body(containsString("cvr:conformant=\"false\"")).body(containsString("cvr:decision=\"REJECT\""))
                 .body(not(containsString("<creator name=\"detect-scenarios\"/>")));
+    }
+
+    private static final String ADHOC = "/api/validation/adhoc";
+
+    private static File testFile(final String name) {
+        return new File(TestData.file(name));
+    }
+
+    /** An ad hoc request with the document and the given resources as single files. */
+    private static Response createAdHoc(final String xmlFile, final String... resources) {
+        io.restassured.specification.RequestSpecification request = given().multiPart("document", testFile(xmlFile), "application/xml");
+        for (final String resource : resources) {
+            request = request.multiPart("resource", testFile(resource), "application/xml");
+        }
+        return request.when().post(ADHOC);
+    }
+
+    private static String resultOf(final Response created) {
+        return created.then().statusCode(201).contentType(ContentType.JSON).body("status", is("completed")).extract().header("Location");
+    }
+
+    @Test
+    void testAnAdHocRunValidatesAgainstThePostedSchematron() {
+        final String location = resultOf(createAdHoc("examples/simple/input/simple.xml", "examples/simple/repository/simple.sch"));
+
+        // the report is a CVR like for every other run; its scenario is named after the posted rule set
+        given().when().get(location).then().statusCode(200).contentType(ContentType.XML).body(containsString("cvr:decision=\"ACCEPT\""))
+                .body(containsString("scenario-id=\"simple.sch\""));
+    }
+
+    @Test
+    void testTheSchematronPartOfTheFirstVersionIsStillAccepted() {
+        final String location = resultOf(given().multiPart("document", testFile("examples/simple/input/simple.xml"), "application/xml")
+                .multiPart("schematron", testFile("examples/simple/repository/simple.sch"), "application/xml").when().post(ADHOC));
+
+        given().when().get(location).then().statusCode(200).body(containsString("scenario-id=\"simple.sch\""));
+    }
+
+    @Test
+    void testAnAdHocRunAcceptsAPrecompiledSchematron() {
+        final String location = resultOf(createAdHoc("examples/simple/input/simple.xml", "examples/simple/repository/simple.xsl"));
+
+        given().when().get(location).then().statusCode(200).body(containsString("cvr:decision=\"ACCEPT\""))
+                .body(containsString("scenario-id=\"simple.xsl\""));
+    }
+
+    @Test
+    void testAnAdHocRunReportsTheViolations() {
+        final String location = resultOf(
+                createAdHoc("examples/simple/input/simple-schematron-invalid.xml", "examples/simple/repository/simple.sch"));
+
+        given().when().get(location).then().statusCode(200).body(containsString("cvr:decision=\"REJECT\""));
+    }
+
+    @Test
+    void testAnAdHocRunAppliesASetOfArtifacts() {
+        // schema and rules together: the schema rejects what the rules alone would accept
+        final String location = resultOf(createAdHoc("examples/simple/input/simple-schema-invalid.xml",
+                "examples/simple/repository/simple.xsd", "examples/simple/repository/simple.sch"));
+
+        given().when().get(location).then().statusCode(200).body(containsString("scenario-id=\"simple.xsd, simple.sch\""))
+                .body(containsString("cvr:decision=\"REJECT\"")).body(containsString("code=\"schema-violation\""));
+    }
+
+    @Test
+    void testAResourceWithoutUsableNameIsTypedByItsRootElement() {
+        // no file name on the part: the kind is read from the root element, the name generated
+        final String location = resultOf(given().multiPart("document", testFile("examples/simple/input/simple.xml"), "application/xml")
+                .multiPart("resource", "rules", readBytes("examples/simple/repository/simple.sch"), "application/xml").when().post(ADHOC));
+
+        given().when().get(location).then().statusCode(200).body(containsString("scenario-id=\"resource-1.sch\""))
+                .body(containsString("cvr:decision=\"ACCEPT\""));
+    }
+
+    @Test
+    void testARepositoryZipResolvesIncludes() throws IOException {
+        // the modular Schematron of e2e/adhoc/rules: the only rule lives in an included file
+        final Path rules = Paths.get("..", "e2e", "adhoc", "rules");
+        final byte[] zip = zipOf(rules, "with-include.sch", "abstracts.sch");
+
+        final String accepted = resultOf(given().multiPart("document", testFile("examples/simple/input/simple.xml"), "application/xml")
+                .multiPart("repository", "rules.zip", zip, "application/zip").multiPart("artifact", "with-include.sch").when().post(ADHOC));
+        given().when().get(accepted).then().statusCode(200).body(containsString("cvr:decision=\"ACCEPT\""))
+                .body(containsString("scenario-id=\"with-include.sch\""));
+
+        // the included rule fires for a document with another root
+        final String rejected = resultOf(given().multiPart("document", testFile("examples/simple/input/foo.xml"), "application/xml")
+                .multiPart("repository", "rules.zip", zip, "application/zip").multiPart("artifact", "with-include.sch").when().post(ADHOC));
+        given().when().get(rejected).then().statusCode(200).body(containsString("cvr:decision=\"REJECT\"")).body(containsString("inc-1"));
+    }
+
+    @Test
+    void testAnAdHocRunNeedsTheDocumentAndAtLeastOneArtifact() {
+        given().multiPart("document", testFile("examples/simple/input/simple.xml"), "application/xml").when().post(ADHOC).then()
+                .statusCode(400).body("message", containsString("at least one artifact"));
+        given().multiPart("resource", testFile("examples/simple/repository/simple.sch"), "application/xml").when().post(ADHOC).then()
+                .statusCode(400).body("message", containsString("document"));
+    }
+
+    @Test
+    void testAnArtifactOfUnknownKindIsABadRequest() {
+        // not XML at all, and an unknown entry of a repository
+        createAdHoc("examples/simple/input/simple.xml", "examples/simple/repository/some.txt").then().statusCode(400).body("message",
+                containsString("Unsupported artifact"));
+        given().multiPart("document", testFile("examples/simple/input/simple.xml"), "application/xml")
+                .multiPart("repository", "rules.zip", zipOfNothing(), "application/zip").multiPart("artifact", "missing.sch").when()
+                .post(ADHOC).then().statusCode(400).body("message", containsString("no entry"));
+    }
+
+    private static byte[] readBytes(final String name) {
+        try {
+            return Files.readAllBytes(testFile(name).toPath());
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static byte[] zipOf(final Path directory, final String... entries) throws IOException {
+        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try ( ZipOutputStream zip = new ZipOutputStream(bytes) ) {
+            for (final String entry : entries) {
+                zip.putNextEntry(new ZipEntry(entry));
+                zip.write(Files.readAllBytes(directory.resolve(entry)));
+                zip.closeEntry();
+            }
+        }
+        return bytes.toByteArray();
+    }
+
+    private static byte[] zipOfNothing() {
+        try {
+            return zipOf(Paths.get("."));
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Test

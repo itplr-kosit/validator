@@ -18,8 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.conformatron.api.model.action.CTActionType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.testdata.TestResources;
 import org.kosit.validator.impl.conformatron.PipelineResults;
@@ -48,17 +47,14 @@ public class CvrlWriterTest {
 
     private static final String NS_CVR = CvrlWriter.NS_CVR;
 
-    private ScenarioRepository scenarioRepository;
-
-    private VConfiguration configuration;
+    private ScenarioSet configuration;
 
     private final CvrlWriter writer = new CvrlWriter("KoSIT XML Validator (canonical pipeline)", "2.0.0-SNAPSHOT");
 
     @BeforeEach
     public void setup() {
-        this.configuration = VConfiguration.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
+        this.configuration = ScenarioSet.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
-        this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
 
     private PipelineResults runPipeline(final URI document) {
@@ -66,13 +62,13 @@ public class CvrlWriterTest {
         if (!parsed.isSuccess()) {
             return new PipelineResults(parsed, null, null, null, null, null, null);
         }
-        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, TestHelper.getTestProcessor())
+        final DetectScenariosResult detected = new DetectScenariosAction(this.configuration.getScenarios(), TestHelper.getTestProcessor())
                 .execute(parsed.getParsedSource());
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
                 true).execute(selected.selected());
-        final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getContentRepository())
-                .execute(retrieved.artifacts(), "test");
+        final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(
+                this.configuration.getScenarios().get(0).getRepository()).execute(retrieved.artifacts(), "test");
         final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
                 prepared.ruleSets());
         final ComputeConformanceAction.ComputeConformanceActionResult conformance = new ComputeConformanceAction().execute(applied.result(),

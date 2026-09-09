@@ -9,8 +9,10 @@ import org.kosit.validator.impl.EngineInformation;
 
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.Spec;
 
 /**
  * Commandline Interface definition.
@@ -133,10 +135,18 @@ public class CommandLineOptions implements Callable<ReturnValue> {
      * @author Andreas Penski
      */
     public static class ScenarioDefinition extends AbstractDefinition {
-        // just for type safety
+
+        /** Name prefix of an unnamed scenario or repository definition, numbered in order of appearance. */
+        public static final String DEFAULT = "default";
+
+        /** The name of the first unnamed definition: the one an unnamed repository is paired with. */
+        public static final String DEFAULT_ID = DEFAULT + "_1";
     }
 
     private EngineInformation engineInformation;
+
+    @Spec
+    private CommandSpec spec;
 
     @ArgGroup(exclusive = false, heading = "CLI usage options\n")
     private CliOptions cliOptions;
@@ -157,12 +167,24 @@ public class CommandLineOptions implements Callable<ReturnValue> {
             converter = TypeConverter.RepositoryConverter.class)
     private List<RepositoryDefinition> repositories;
 
-    @Option(names = { "-s", "--scenarios" }, description = "Location of scenarios.xml", paramLabel = "scenario.xml", required = true,
-            converter = TypeConverter.ScenarioConverter.class)
+    @Option(names = { "-s", "--scenarios" }, description = "Location of scenarios.xml. Either this or --artifact is required",
+            paramLabel = "scenario.xml", converter = TypeConverter.ScenarioConverter.class)
     private List<ScenarioDefinition> scenarios;
+
+    @Option(names = { "-S", "--artifact", "--schematron" }, paramLabel = "artifact",
+            description = "Ad hoc validation: a validation artifact (.xsd, .sch, or a precompiled .xsl) applied to every document, "
+                    + "no scenarios.xml needed. May be given several times; applied in this order. The repository is -r, "
+                    + "or the common directory of the artifacts")
+    private List<Path> artifacts;
 
     @Override
     public ReturnValue call() throws Exception {
+        if ((this.scenarios == null || this.scenarios.isEmpty()) && (this.artifacts == null || this.artifacts.isEmpty())) {
+            // picocli enforced -s as required before -S became the alternative; the check moved here, same wording
+            Printer.writeErrRaw("Missing required option: '--scenarios=<scenario.xml>' or '--artifact=<artifact>'");
+            Printer.writeErrRaw(this.spec.commandLine().getUsageMessage());
+            return ReturnValue.CONFIGURATION_ERROR;
+        }
         configureLogging(this);
         return Validator.mainProgram(this);
     }
@@ -213,5 +235,10 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     public List<ScenarioDefinition> getScenarios() {
         return this.scenarios;
+    }
+
+    /** @return the artifacts of an ad hoc validation, {@code null} or empty when scenario configurations are used */
+    public List<Path> getArtifacts() {
+        return this.artifacts;
     }
 }

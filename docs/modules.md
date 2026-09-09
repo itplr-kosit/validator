@@ -33,18 +33,6 @@ The `validator-api` module includes several model classes that are automatically
 - **Assertions** (`org.kosit.validator.cmd.assertions`): Model for defining validation assertions (from `assertions.xsd`).
 - **General Models** (`org.kosit.validator.model`): General data structures like XML syntax errors (from `model.xsd`).
 
-### Compact Model (`org.kosit.validator.api.xvrl.compact`)
-
-For use cases requiring a simplified view of the complex XVRL results, the `compact` package offers wrapper classes:
-
-- `CompactXvrlReportSummary`: Summary of multiple validation results.
-- `CompactXvrlReport`: Detailed but essential information about an individual report. It provides direct access to:
-  - Selected scenario
-  - Acceptance recommendation (`AcceptRecommendation`)
-  - Error summary
-  - Validation layers (Schema, Schematron)
-- `ValidatorEngineInformation`: Provides name and version of the used validator engine.
-
 ## Schematron Module (`validator-schematron`)
 
 The schematron module is the technical validation engine. It validates a document against XML Schema and Schematron and
@@ -64,7 +52,7 @@ It carries the canonical pipeline steps that need no scenario configuration:
 ### Package Roots
 
 - `org.kosit.schematron`: the engine itself - `ContentRepository`, the Schematron compilers and the compiler registry,
-  and `SchematronValidation`, the ad-hoc engine that validates a document against a single Schematron.
+  the ad-hoc validation against a single Schematron is the same engine over a scenario assembled at runtime (`ConformanceValidation.adHoc`).
 - `org.kosit.schematron.resolve`: the resolving strategies and `ResolvingMode`.
 - `org.kosit.schematron.saxon`: `ProcessorProvider`, the secured Saxon processor.
 - `org.kosit.cvr`: the Conformance Validation Report model - the `ValidationEngine` contract plus the `action`,
@@ -111,8 +99,8 @@ The server module provides the validator as a microservice, leveraging the Quark
 
 The server exposes a REST API. An OpenAPI specification is provided by default.
 
-- `/validate`: Performs a full validation and returns the complete XVRL report.
-- `/validateMinimal`: Returns the compact model, which is much easier to process for typical UI applications.
+- `POST /api/validation`: Runs the validation of the posted document and answers `201 Created` with the run id and the `Location` of the result (RFC 9110, §9.3.3).
+- `GET /api/validation/result/{id}`: Returns the report of that run - the CVR, the Conformance Validation Report of the validator.
 
 ### Configuration
 

@@ -15,8 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.uri.UriHelper;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.conformatron.FixedTimestamps;
 import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
@@ -47,13 +46,13 @@ public class DetectScenariosExamplesTest {
      * readable.
      */
     private Document serialize(final URI scenarios, final URI document, final String exampleName) throws Exception {
-        final VConfiguration configuration = VConfiguration.load(scenarios, TestResources.Simple.REPOSITORY_URI)
+        final ScenarioSet configuration = ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
 
-        final DetectScenariosResult detected = new DetectScenariosAction(new ScenarioRepository(configuration),
-                TestHelper.getTestProcessor()).withDefinitionFile(scenarios.toString()).execute(parsed.getParsedSource());
+        final DetectScenariosResult detected = new DetectScenariosAction(configuration.getScenarios(), TestHelper.getTestProcessor())
+                .execute(parsed.getParsedSource());
         final SelectScenarioAction.SelectScenarioResult selected = detected.isSuccess()
                 ? new SelectScenarioAction().execute(detected.matches())
                 : null;
@@ -137,6 +136,24 @@ public class DetectScenariosExamplesTest {
         final Element select = report(cvrl, "select-scenario");
         assertThat(detections(select).getLength()).isEqualTo(1);
         assertThat(select.getElementsByTagNameNS(NS, "message").getLength()).isEqualTo(2);
+    }
+
+    @Test
+    public void testAScenarioWithoutMatchIsAppliedInAddition() throws Exception {
+        final Document cvrl = serialize(TestResources.Simple.SCENARIOS_WITH_UNCONDITIONAL, TestResources.Simple.SIMPLE_VALID,
+                "detect-scenarios-with-unconditional.xml");
+
+        // detection lists the matched scenario and the unconditional one ...
+        final Element detect = report(cvrl, "detect-scenarios");
+        assertThat(detections(detect).getLength()).isEqualTo(2);
+        assertThat(((Element) detections(detect).item(0)).getAttributeNS(NS_CVR, "scenario-id")).isEqualTo("Simple");
+        assertThat(((Element) detections(detect).item(1)).getAttributeNS(NS_CVR, "scenario-id")).isEqualTo("Always");
+        // ... and selection applies both, the matched one first, each with its embedded declaration - no ambiguity
+        final Element select = report(cvrl, "select-scenario");
+        assertThat(detections(select).getLength()).isEqualTo(2);
+        assertThat(((Element) detections(select).item(0)).getAttributeNS(NS_CVR, "scenario-id")).isEqualTo("Simple");
+        assertThat(((Element) detections(select).item(1)).getAttributeNS(NS_CVR, "scenario-id")).isEqualTo("Always");
+        assertThat(select.getElementsByTagNameNS(NS, "message").getLength()).isEqualTo(4);
     }
 
     @Test

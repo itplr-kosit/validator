@@ -2,7 +2,6 @@ package org.kosit.validator.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kosit.validator.config.ConfigurationBuilder.report;
 import static org.kosit.validator.config.ConfigurationBuilder.schematron;
 import static org.kosit.validator.config.TestConfigurationFactory.createSimpleConfiguration;
 
@@ -12,6 +11,7 @@ import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.TestHelper;
+import org.kosit.validator.api.ScenarioSet;
 
 /**
  * Test {@link ConfigurationBuilder}.
@@ -28,19 +28,13 @@ public class ConfigurationBuilderTest {
     }
 
     @Test
-    public void testNoFallback() {
-        final ConfigurationBuilder builder = createSimpleConfiguration();
-        builder.with((FallbackBuilder) null);
-        final Throwable t = assertThrows(IllegalStateException.class, () -> builder.build(TestHelper.getTestProcessor()));
-        assertThat(t.getMessage()).contains("fallback");
-    }
-
-    @Test
-    public void testNoSchema() {
+    public void testNoSchemaIsAllowed() {
+        // a scenario may validate with Schematron alone
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).validate((SchemaBuilder) null);
-        final Throwable t = assertThrows(IllegalStateException.class, () -> builder.build(TestHelper.getTestProcessor()));
-        assertThat(t.getMessage()).contains("schema");
+        final ScenarioSet set = builder.build(TestHelper.getTestProcessor());
+        assertThat(set.getScenarios().get(0).getConfiguration().getValidateWithXmlSchema()).isNull();
+        assertThat(set.getScenarios().get(0).getConfiguration().getValidateWithSchematron()).isNotEmpty();
     }
 
     @Test
@@ -60,11 +54,14 @@ public class ConfigurationBuilderTest {
     }
 
     @Test
-    public void testNoReport() {
-        final ConfigurationBuilder builder = createSimpleConfiguration();
-        builder.getScenarios().get(0).with(report("invalid"));
-        final Throwable t = assertThrows(IllegalStateException.class, () -> builder.build(TestHelper.getTestProcessor()));
-        assertThat(t.getMessage()).contains("report");
+    public void testIdentity() {
+        final ScenarioSet set = createSimpleConfiguration().build(TestHelper.getTestProcessor());
+        assertThat(set.getName()).isEqualTo("Simple-API");
+        assertThat(set.getAuthor()).isEqualTo("me");
+        // assembled in code, read from no file
+        assertThat(set.getDefinitionFile()).isNull();
+        assertThat(set.getScenarios()).hasSize(1);
+        assertThat(set.getScenarios().get(0).getDefinitionFile()).isNull();
     }
 
     @Test

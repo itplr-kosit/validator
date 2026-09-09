@@ -20,7 +20,7 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
@@ -93,7 +93,7 @@ public final class XRechnungE2ERunner {
 
     private final ConformanceValidation engine;
 
-    private XRechnungE2ERunner(final VConfiguration configuration, final Processor processor) {
+    private XRechnungE2ERunner(final ScenarioSet configuration, final Processor processor) {
         this.engine = new ConformanceValidation(ENGINE, processor, configuration);
     }
 
@@ -114,7 +114,7 @@ public final class XRechnungE2ERunner {
 
         final Processor processor = ProcessorProvider.getProcessor();
         final long t0 = System.currentTimeMillis();
-        final VConfiguration configuration = VConfiguration.load(scenarios.toUri(), repository.toUri()).build(processor);
+        final ScenarioSet configuration = ScenarioSet.load(scenarios.toUri(), repository.toUri()).build(processor);
         System.out.println("Configuration loaded in " + (System.currentTimeMillis() - t0) + " ms (" + configuration.getScenarios().size()
                 + " scenarios)");
 

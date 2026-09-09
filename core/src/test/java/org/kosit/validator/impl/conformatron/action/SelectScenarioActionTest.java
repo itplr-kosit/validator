@@ -8,42 +8,37 @@ import java.util.List;
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
-import org.conformatron.api.model.source.CTReadResource;
+import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.junit.jupiter.api.Test;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.TestScenarioBuilder;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
-import org.kosit.validator.impl.tasks.DocumentParseTask;
-import org.kosit.validator.impl.tasks.TestScenarioBuilder;
 import org.kosit.validator.testdata.TestResources;
 import org.kost.validator.api.saxon.ProcessorProvider;
-import org.kost.validator.api.saxon.XdmNodeValidationSource;
 
 /**
- * Tests {@link DetectScenariosAction} (step 3) and {@link SelectScenarioAction} (step 4) against the legacy scenario
- * machinery via the facade types.
+ * Tests {@link DetectScenariosAction} (step 3) and {@link SelectScenarioAction} (step 4).
  */
 public class SelectScenarioActionTest {
 
     private final SelectScenarioAction selectAction = new SelectScenarioAction();
 
-    private static XdmNodeValidationSource parseSimple() {
-        final CTReadResource input = TestHelper.read(TestResources.Simple.SIMPLE_VALID);
-        // same processor as the scenario match executables (Saxon configuration compatibility)
-        final DocumentParseTask.ParseOutcome outcome = new DocumentParseTask(ProcessorProvider.getProcessor()).parseRetaining(input);
-        return outcome.parsedSource();
+    private static CTParsedValidationSource parseSimple() {
+        // step 2 as the engine runs it; detection wraps the DOM into the model of the processor it is given
+        return new ParseXmlAction().execute(TestHelper.read(TestResources.Simple.SIMPLE_VALID)).getParsedSource();
     }
 
     private static Scenario createScenario(final String name, final String match) {
-        final Scenario scenario = TestScenarioBuilder.createDefault();
-        scenario.getConfiguration().setName(name);
-        scenario.getConfiguration().setMatch(match);
-        return scenario;
+        return TestScenarioBuilder.createScenario(name, match);
+    }
+
+    private static DetectScenariosAction detect(final Scenario... scenarios) {
+        return new DetectScenariosAction(List.of(scenarios), ProcessorProvider.getProcessor());
     }
 
     private static CTScenarioMatch match(final String name) {
@@ -56,10 +51,8 @@ public class SelectScenarioActionTest {
     public void testDetectAcceptsDomParsedContentViaWrapping() {
         // the step-2 reference action produces a DOM source; a configured processor wraps it for the XPath matching
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
-        final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
 
-        final DetectScenariosResult result = new DetectScenariosAction(repository, ProcessorProvider.getProcessor())
-                .execute(parsed.getParsedSource());
+        final DetectScenariosResult result = detect(createScenario("simple", "/*")).execute(parsed.getParsedSource());
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.matches()).hasSize(1);
@@ -68,15 +61,18 @@ public class SelectScenarioActionTest {
 
     @Test
     public void testDetectRequiresXdmNodeContent() {
-        final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
-        final DetectScenariosAction action = new DetectScenariosAction(repository);
+        final DetectScenariosAction action = detect(createScenario("simple", "/*"));
         assertThrows(NullPointerException.class, () -> action.execute(null));
     }
 
     @Test
+    public void testDetectNeedsScenarios() {
+        assertThrows(IllegalArgumentException.class, () -> new DetectScenariosAction(List.of()));
+    }
+
+    @Test
     public void testDetectSingleMatch() {
-        final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
-        final DetectScenariosResult result = new DetectScenariosAction(repository).execute(parseSimple());
+        final DetectScenariosResult result = detect(createScenario("simple", "/*")).execute(parseSimple());
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.matches()).hasSize(1);
@@ -87,8 +83,7 @@ public class SelectScenarioActionTest {
 
     @Test
     public void testDetectNoMatchFails() {
-        final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("other", "/no-such-element"));
-        final DetectScenariosResult result = new DetectScenariosAction(repository).execute(parseSimple());
+        final DetectScenariosResult result = detect(createScenario("other", "/no-such-element")).execute(parseSimple());
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
@@ -99,9 +94,7 @@ public class SelectScenarioActionTest {
 
     @Test
     public void testDetectMultipleMatches() {
-        final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("first", "/*"),
-                createScenario("second", "/*"));
-        final DetectScenariosResult result = new DetectScenariosAction(repository).execute(parseSimple());
+        final DetectScenariosResult result = detect(createScenario("first", "/*"), createScenario("second", "/*")).execute(parseSimple());
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.matches()).hasSize(2);
@@ -109,9 +102,21 @@ public class SelectScenarioActionTest {
     }
 
     @Test
+    public void testAScenarioWithoutMatchAppliesUnconditionally() {
+        // the conditional scenario does not match the document, the unconditional one is a candidate anyway
+        final DetectScenariosResult result = detect(createScenario("other", "/no-such-element"), createScenario("always", null))
+                .execute(parseSimple());
+
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.matches()).hasSize(1);
+        assertThat(result.matches().get(0).getScenarioID()).isEqualTo("always");
+        assertThat(result.matches().get(0).getMatchExpression()).isNull();
+        assertThat(result.detections().getAll().get(0).getText().getDisplayTextLocaleIndependent()).contains("unconditionally");
+    }
+
+    @Test
     public void testDetectRequestedScenarioId() {
-        final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/no-such-element"));
-        final DetectScenariosResult result = new DetectScenariosAction(repository).execute(parseSimple(), "simple");
+        final DetectScenariosResult result = detect(createScenario("simple", "/no-such-element")).execute(parseSimple(), "simple");
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.matches()).hasSize(1);
@@ -122,8 +127,7 @@ public class SelectScenarioActionTest {
 
     @Test
     public void testDetectUnknownRequestedIdFails() {
-        final ScenarioRepository repository = TestScenarioBuilder.createRepository(createScenario("simple", "/*"));
-        final DetectScenariosResult result = new DetectScenariosAction(repository).execute(parseSimple(), "does-not-exist");
+        final DetectScenariosResult result = detect(createScenario("simple", "/*")).execute(parseSimple(), "does-not-exist");
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.matches()).isEmpty();
@@ -156,5 +160,50 @@ public class SelectScenarioActionTest {
     public void testSelectRejectsEmptyInput() {
         assertThrows(IllegalArgumentException.class, () -> this.selectAction.execute(List.of()));
         assertThrows(IllegalArgumentException.class, () -> this.selectAction.execute(null));
+    }
+
+    private static CTScenarioMatch unconditional(final String name) {
+        return ScenarioMatch.of(createScenario(name, null), parseSimple());
+    }
+
+    @Test
+    public void testUnconditionalScenariosAreAppliedInAddition() {
+        final CTScenarioMatch matched = match("simple");
+        final CTScenarioMatch always = unconditional("always");
+        final SelectScenarioAction.SelectScenarioResult result = this.selectAction.execute(List.of(always, matched));
+
+        assertThat(result.isSuccess()).isTrue();
+        // the matched scenario leads, whatever the candidate order was
+        assertThat(result.selected()).isSameAs(matched);
+        assertThat(result.applied()).containsExactly(matched, always);
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(SelectScenarioAction.CODE_SCENARIO_SELECTED,
+                SelectScenarioAction.CODE_SCENARIO_SELECTED);
+        assertThat(result.detections().getAll().get(1).getText().getDisplayTextLocaleIndependent()).contains("in addition");
+    }
+
+    @Test
+    public void testUnconditionalScenariosAloneAreSelected() {
+        final CTScenarioMatch always = unconditional("always");
+        final SelectScenarioAction.SelectScenarioResult result = this.selectAction.execute(List.of(always));
+
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.selected()).isSameAs(always);
+        assertThat(result.applied()).containsExactly(always);
+    }
+
+    @Test
+    public void testUnconditionalScenariosDoNotMakeTheMatchAmbiguous() {
+        // two matched candidates are ambiguous; the unconditional ones are not part of that question
+        final SelectScenarioAction.SelectScenarioResult ambiguous = this.selectAction
+                .execute(List.of(match("first"), unconditional("always"), match("second")));
+        assertThat(ambiguous.isSuccess()).isFalse();
+        assertThat(ambiguous.applied()).isEmpty();
+        assertThat(ambiguous.detections().getAll().get(0).getText().getDisplayTextLocaleIndependent()).contains("first").contains("second")
+                .doesNotContain("always");
+
+        final SelectScenarioAction.SelectScenarioResult two = this.selectAction
+                .execute(List.of(match("simple"), unconditional("always"), unconditional("also")));
+        assertThat(two.isSuccess()).isTrue();
+        assertThat(two.applied()).hasSize(3);
     }
 }

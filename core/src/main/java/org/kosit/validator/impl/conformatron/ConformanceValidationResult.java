@@ -97,10 +97,20 @@ public final class ConformanceValidationResult {
     }
 
     /**
-     * @return the name of the scenario the run validated against, or {@code null} when it cancelled before step 4
+     * @return the name of the scenario the run validated against - the one matched by expression, or the first one that
+     *         applies unconditionally - or {@code null} when it cancelled before step 4
      */
     public String getSelectedScenarioName() {
         return this.run.select() == null || this.run.select().selected() == null ? null : this.run.select().selected().getScenarioName();
+    }
+
+    /**
+     * @return the names of every scenario the run applied, the selected one first: the scenario matched by expression
+     *         plus the scenarios applying unconditionally. Empty when the run cancelled before step 4
+     */
+    public List<String> getAppliedScenarioNames() {
+        return this.run.select() == null ? List.of()
+                : this.run.select().applied().stream().map(org.conformatron.api.model.scenario.CTScenarioMatch::getScenarioName).toList();
     }
 
     /**

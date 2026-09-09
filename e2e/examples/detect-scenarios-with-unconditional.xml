@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="false" cvr:status="CANCELLED">
+    <metadata>
+        <timestamp>2026-01-01T00:00:00Z</timestamp>
+        <validator name="KoSIT XML Validator (canonical pipeline)" version="2.0.0-SNAPSHOT"/>
+        <document href="simple.xml"/>
+    </metadata>
+    <report>
+        <metadata>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
+            <creator name="parse-document"/>
+        </metadata>
+        <detection>
+            <message xml:id="parse-document-content" cvr:mime-type="application/xml" cvr:encoding="dom">
+                <simple xmlns="http://validator.kosit.de/test-sample">
+    <inner>asldkfj</inner>
+    <content>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                
+            </head>
+            <body>
+                <div>some data</div>
+            </body>
+        </html>
+    </content>
+</simple>
+            </message>
+            <context>
+                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
+            <creator name="detect-scenarios"/>
+        </metadata>
+        <detection cvr:scenario-id="Simple">
+            <message>Scenario 'Simple' matched</message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+            </context>
+        </detection>
+        <detection cvr:scenario-id="Always">
+            <message>Scenario 'Always' applies unconditionally</message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='Always']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
+            <creator name="select-scenario"/>
+        </metadata>
+        <detection cvr:scenario-id="Simple">
+            <message>Scenario 'Simple' selected</message>
+            <message xml:id="select-scenario-content" cvr:mime-type="application/xml" cvr:encoding="dom">
+                <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
+                    <name>Simple</name>
+                    <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+                    <match>/test:simple</match>
+                    <validateWithXmlSchema>
+                        <resource>
+                            <name>Sample Schema</name>
+                            <location>simple.xsd</location>
+                        </resource>
+                    </validateWithXmlSchema>
+                    <validateWithSchematron compiler="schxslt">
+                        <resource>
+                            <name>Sample Schematron</name>
+                            <location>simple.xsl</location>
+                        </resource>
+                    </validateWithSchematron>
+                    <acceptMatch/>
+                </scenario>
+            </message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+            </context>
+        </detection>
+        <detection cvr:scenario-id="Always">
+            <message>Scenario 'Always' applies unconditionally and is selected in addition</message>
+            <message xml:id="select-scenario-content" cvr:mime-type="application/xml" cvr:encoding="dom">
+                <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
+                    <name>Always</name>
+                    <description>
+                        <p>No match: applies to every document, in addition to the scenario detected by its match.</p>
+                    </description>
+                    <validateWithSchematron compiler="schxslt">
+                        <resource>
+                            <name>Sample Schematron, compiled at runtime</name>
+                            <location>simple.sch</location>
+                        </resource>
+                    </validateWithSchematron>
+                </scenario>
+            </message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='Always']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+            </context>
+        </detection>
+        <digest valid="true"/>
+    </report>
+    <report>
+        <metadata>
+            <timestamp>2026-01-01T00:00:00Z</timestamp>
+            <creator name="decision-recommendation"/>
+        </metadata>
+        <detection severity="error" code="decision-reject" cvr:decision="REJECT">
+            <message>Run cancelled at compute-conformance</message>
+        </detection>
+        <digest valid="false" error-count="1" error-codes="decision-reject"/>
+    </report>
+</reports>

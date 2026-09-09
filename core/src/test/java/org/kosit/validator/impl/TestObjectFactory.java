@@ -1,22 +1,16 @@
 package org.kosit.validator.impl;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.List;
-
 import org.conformatron.api.model.source.CTReadResource;
-import org.kosit.base.error.SimpleError;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.impl.tasks.BusinessReport;
-import org.kosit.validator.impl.tasks.DocumentParseTask;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 
 import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
+ * Shared objects of the engine tests: the test processor, and parsing the way step 2 does it.
+ *
  * @author Andreas Penski
  */
 public class TestObjectFactory {
@@ -30,24 +24,29 @@ public class TestObjectFactory {
         return processor;
     }
 
-    public static String serialize(final List<BusinessReport> reports) {
-        try ( final StringWriter writer = new StringWriter() ) {
-            final Serializer serializer = getProcessor().newSerializer(writer);
-            for (final BusinessReport report : reports) {
-                final XdmNode node = report.getContent();
-                serializer.serializeNode(node);
-            }
-            return writer.toString();
-        } catch (final SaxonApiException | IOException e) {
-            throw new IllegalStateException("Can not serialize document", e);
+    /**
+     * Parses like step 2 of the pipeline — the secured parser, a result that carries the detections of a failure.
+     *
+     * @param input the document
+     * @return the step-2 result
+     */
+    public static ParseXmlResult parseDocument(final CTReadResource input) {
+        return new ParseXmlAction().execute(input);
+    }
+
+    /**
+     * Parses like step 2 and wraps the DOM into the Saxon model of the given processor — what the scenario matching
+     * works on.
+     *
+     * @param processor the processor whose model the node belongs to
+     * @param input the document; must parse
+     * @return the document as an XdmNode
+     */
+    public static XdmNode parse(final Processor processor, final CTReadResource input) {
+        final ParseXmlResult result = parseDocument(input);
+        if (!result.isSuccess()) {
+            throw new IllegalStateException("Test document does not parse: " + input.getName());
         }
-    }
-
-    public static SingleProcessingResult<XdmNode, SimpleError> parseDocument(final Processor processor, final CTReadResource input) {
-        return new DocumentParseTask(processor).parseDocument(input);
-    }
-
-    public static SingleProcessingResult<XdmNode, SimpleError> parseDocument(final CTReadResource input) {
-        return new DocumentParseTask(TestHelper.getTestProcessor()).parseDocument(input);
+        return processor.newDocumentBuilder().wrap(result.getParsedSource().getParsedContent());
     }
 }

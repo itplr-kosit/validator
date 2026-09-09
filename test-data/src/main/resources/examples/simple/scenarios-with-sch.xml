@@ -32,20 +32,6 @@
                 <location>simple.sch</location>
             </resource>
         </validateWithSchematron>
-        <createReport>
-            <id>Report for eInvoice</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>report.xsl</location>
-            </resource>
-        </createReport>
-        <createReport>
-            <id>Report for eInvoice2</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>report.xsl</location>
-            </resource>
-        </createReport>
         <acceptMatch>count(//test:rejected) = 0</acceptMatch>
     </scenario>
 
@@ -73,20 +59,6 @@
                 <location>simple.sch</location>
             </resource>
         </validateWithSchematron>
-        <createReport>
-            <id>Report for eInvoice</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>report.xsl</location>
-            </resource>
-        </createReport>
-        <createReport>
-            <id>Report for eInvoice2</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>report.xsl</location>
-            </resource>
-        </createReport>
         <acceptMatch>count(//test:rejected) = 0</acceptMatch>
     </scenario>
 
@@ -110,13 +82,6 @@
                 <location>simple.sch</location>
             </resource>
         </validateWithSchematron>
-        <createReport>
-            <id>Report for eInvoice</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>report.xsl</location>
-            </resource>
-        </createReport>
     </scenario>
 
 </scenarios>

@@ -12,7 +12,7 @@ import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
 import org.kosit.cvr.report.CvrProfile;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.testdata.TestResources;
 
@@ -27,7 +27,7 @@ import org.kosit.validator.testdata.TestResources;
 public class ConformanceValidationTest {
 
     private static ConformanceValidationResult validate(final URI scenarios, final URI document) {
-        final VConfiguration configuration = VConfiguration.load(scenarios, TestResources.Simple.REPOSITORY_URI)
+        final ScenarioSet configuration = ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
         return new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true, configuration)
@@ -105,8 +105,7 @@ public class ConformanceValidationTest {
 
     @Test
     public void testTheCallerCanFixTheScenario() {
-        final VConfiguration configuration = VConfiguration
-                .load(TestResources.Simple.SCENARIOS_AMBIGUOUS, TestResources.Simple.REPOSITORY_URI)
+        final ScenarioSet configuration = ScenarioSet.load(TestResources.Simple.SCENARIOS_AMBIGUOUS, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ConformanceValidation engine = new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true,
                 configuration);
@@ -128,7 +127,7 @@ public class ConformanceValidationTest {
     }
 
     private static ConformanceValidationResult validateWithScenarioId(final URI scenarios, final URI document, final String scenarioId) {
-        final VConfiguration configuration = VConfiguration.load(scenarios, TestResources.Simple.REPOSITORY_URI)
+        final ScenarioSet configuration = ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         return new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true, configuration)
                 .validate(TestHelper.read(document), scenarioId);

@@ -13,7 +13,7 @@ Then you can declare the dependency as follows:
 ```xml
 <dependency>
    <groupId>org.kosit</groupId>
-   <artifactId>validator</artifactId>
+   <artifactId>validator-core</artifactId>
    <version>${validator.version}</version>
 </dependency>
 ```
@@ -22,59 +22,67 @@ Then you can declare the dependency as follows:
 
 ```js
 dependencies {
-    compile group: 'org.kosit', name: 'validator', version: '1.5.1'
+    compile group: 'org.kosit', name: 'validator-core', version: '2.0.0-SNAPSHOT'
 }
 ```
 
-Hint: prior to v1.5.1 the group ID was `de.kosit` and the artifact ID was `validationtool`.
+Hint: prior to v1.5.1 the group ID was `de.kosit` and the artifact ID was `validationtool`. Up to 1.6 the library was the single artifact `validator`; since 2.0 it is the module `validator-core` (see [modules](modules.md)).
 
 ## Usage
 
 Prerequisite for use is a valid [scenario definition](configurations.md) and the a folder with all necessary artifacts for validation (repository) either on the filesystem or on the classpath.
 
-The following example demonstrates loading scenario.xml and whole configuration from classpath and validating one XML document:
+The validation is done by a `ValidationEngine` - the contract of the validator since 2.0 (ADR-008). `ConformanceValidation` is the engine over a scenario configuration: it runs the canonical pipeline of the conformatron API from parsing the document up to the decision recommendation and answers with a `ConformanceValidationResult`. The following example demonstrates loading scenario.xml and whole configuration from classpath and validating one XML document:
 
 ```java
-package de.kosit.validationtool.docs;
+package org.kosit.validator.docs;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.w3c.dom.Document;
-
-import de.kosit.validationtool.api.Check;
-import de.kosit.validationtool.api.Configuration;
-import de.kosit.validationtool.api.Input;
-import de.kosit.validationtool.api.InputFactory;
-import de.kosit.validationtool.api.Result;
-import de.kosit.validationtool.impl.DefaultCheck;
-import de.kosit.validationtool.impl.xml.ProcessorProvider;
+import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.base.io.ResourceHelper;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
+import org.kosit.validator.api.ScenarioSet;
+import org.kosit.validator.api.ValidationEngine;
+import org.kosit.validator.impl.ConformanceValidation;
+import org.kosit.validator.impl.TestEngineInformation;
+import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 /**
- * Example code that is used in the docs/api.md file
+ * Example code that is used in the docs/api.md file: load a configuration, build the engine, validate a document, read
+ * the verdict and write the report.
  */
 public class StandardExample {
 
-    public void run(final Path testDocument) throws URISyntaxException {
+    public void run(final Path testDocument) throws URISyntaxException, IOException {
         // Load scenarios.xml from classpath
         final URL scenarios = this.getClass().getClassLoader().getResource("examples/simple/scenarios-with-relative-paths.xml");
         // Load the rest of the specific Validator configuration from classpath
-        final Configuration config = Configuration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
-        // Use the default validation procedure
-        final Check validator = new DefaultCheck(config);
-        // Validate a single document
-        final Input document = InputFactory.read(testDocument);
-        // Get Result including information about the whole validation
-        final Result report = validator.checkInput(document);
-        System.out.println("Is processing succesful=" + report.isProcessingSuccessful());
-        // Get report document if processing was successful
-        Document result = null;
-        if (report.isProcessingSuccessful()) {
-            result = report.getReportDocument();
+        final ScenarioSet config = ScenarioSet.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
+        // The engine over that configuration - the canonical pipeline, steps 2 to 9
+        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(new TestEngineInformation(),
+                ProcessorProvider.getProcessor(), config);
+        // Temporary file helper
+        try ( ResourceHelper resHelper = new ResourceHelper() ) {
+            // Validate a single document
+            final CTReadResource document = ReadResource.of(Resource.of(testDocument), resHelper);
+            // The result: the verdict of step 9, and the run behind it
+            final ConformanceValidationResult result = validator.validate(document);
+            System.out.println("Completed=" + result.isCompleted() + " decision=" + result.getDecision() + " - " + result.getRationale());
+            // The report is a CVR - also for a cancelled run, which yields a partial report
+            try ( OutputStream out = Files.newOutputStream(testDocument.resolveSibling(testDocument.getFileName() + "-cvr.xml")) ) {
+                result.writeCvr(out);
+            }
+            // continue processing results...
         }
-        // continue processing results...
     }
 
     public static void main(final String[] args) throws Exception {
@@ -91,88 +99,90 @@ public class StandardExample {
 }
 ```
 
-The `Result` interface has convenience methods to retrieve details about XSD validation errors and Schematron messages and other processing results. See
-[Result.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Result.java) for details.
+`TestEngineInformation` stands for your own implementation of `EngineInformation`: it names the application that ran the validation in the report.
 
+The `ConformanceValidationResult` has convenience methods to retrieve details about the run:
 
-Initializing all XML artifacts and XSLT-executables is expensive. The `Check` instance is *threadsafe* and keeps all artifacts. Therefore,
-we recommend the re-use of a `Check` instance.
+* `getDecision()` and `getRationale()` - the verdict of the decision recommendation and the text explaining it (see below)
+* `isConformant()` - whether the conformance targets of the selected scenario are met
+* `isCompleted()` and `getCancelledAt()` - whether the pipeline ran to the end, or the step at which it was cancelled (e.g. because the document is not well formed or matched no scenario)
+* `getSelectedScenarioName()`, `getFindingsByRuleSet()`, `getAllDetections()` and `getProcessingErrors()` - the details behind the verdict
+* `toCvr()` and `writeCvr(OutputStream)` - the report, a CVR (Conformance Validation Report, the XVRL profile of the validator). A cancelled run yields a partial report
 
-Beside the validator's configuration the only input are instances of [Input](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Input.java)
-which can be created by various methods of the [InputFactory](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/InputFactory.java).
-The [InputFactory](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/InputFactory.java)
- calculates a hash sum for each Input which is also written to the Report. _SHA-256_ from the JDK is the default algorithm.
-It can be changed using other `read`-methods of [InputFactory](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/InputFactory.java).
+A `ScenarioSet` is the result of loading a configuration: its scenarios plus the identity of the configuration (name, author, date, where it was read from). The engine works on the scenarios alone; it can be built over one or more `ScenarioSet`s or directly over a `List<Scenario>`, and every `Scenario` carries its own artifact repository. Loading validates the scenarios.xml and compiles the match expressions, nothing else: the validation artifacts are resolved and compiled by the pipeline on first use (steps 5 and 6) and cached in the repository of the scenario, so a missing or broken artifact is a finding in the report of the document rather than an exception at start. Compiling is expensive, therefore we recommend to create one `ConformanceValidation` instance per configuration and re-use it.
 
-The main interface [Check.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Check.java)
-allows using a batch interface (processing list of [Inputs](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Input.java)).
-However, there is no parallel processing implemented at the moment.
+Beside the validator's configuration the only input is a `CTReadResource` of the conformatron API, created through `ReadResource` - from a file (`ReadResource.of(Resource.of(path), resourceHelper)`) or from bytes already in memory (`ReadResource.inMemory(Resource.of(name, bytes))`). The report carries a digest of the document. The engine validates one document per call; there is no batch interface.
 
-## Accept Recommendation and Accept Match
+## The decision
 
-A tri-state object [AcceptRecommendation](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/AcceptRecommendation.java)
-can be retrieved from the [Result](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/api/Result.java) using `getAcceptRecommendation()`.
+The verdict of a run is a `CTDecision` of the conformatron API, retrieved from the `ConformanceValidationResult` using `getDecision()`. The three defined states are:
 
-The three defined states are:
-
-1. `ACCEPTABLE` i.e. the recommendation is to accept input based on the evaluation of the overall validation.
+1. `ACCEPT` i.e. the recommendation is to accept input based on the evaluation of the overall validation.
 1. `REJECT` i.e. the recommendation is to reject input based on the evaluation of the overall validation.
-1. `UNDEFINED` i.e. the evaluation of the overall validation could not be computed (overall processing is incomplete)
+1. `EVALUATE_FURTHER` i.e. the evaluation of the overall validation could not be computed (overall processing is incomplete, the run was cancelled)
 
-The accept recommendation is based on either:
+The decision is computed from the XML Schema and Schematron findings of the selected scenario, the way 1.6 computed its accept recommendation: schema errors and Schematron errors lead to `REJECT`, warnings and information do not. The `acceptMatch` of a scenario configuration is *not* evaluated by the 2.0 engine - it was an XPath over the rendered 1.6 report, which does not exist in the canonical pipeline (ADR-004 follow-up). The CLI maps the decision onto the familiar words of its result table (`ACCEPTABLE`, `REJECT`, `UNDEFINED`).
 
-1. Schema and Schematron validation results
-1. or on _acceptMatch_ configuration of the scenario (see below)
+## Scenarios that apply unconditionally
 
-### Accept match in scenario configuration
+A scenario without `match` applies to every document, in addition to the scenario detected by its match: step 4 selects the one scenario matched by expression (several are still `scenario-ambiguous`) plus every unconditional scenario, steps 5 to 7 run the rule sets of all of them - each from its own repository - and step 8 states the conformance per scenario, so the decision of step 9 covers all of them (one non-conformant target rejects). `ConformanceValidationResult.getAppliedScenarioNames()` lists them, the selected one first. A scenario the caller names (`validate(document, scenarioName)`) is applied alone.
 
-For your own configuration you can add an `acceptMatch` element in each scenario. It can contain an XPATH expression over your own defined `Report` to compute a boolean value. An XPATH expression evaluating to true will lead to an `ACCEPTABLE` and otherwise to a `REJECT` recommendation.
+## Ad hoc validation of a single Schematron
 
-This allows to have control over what validation result is to be considered _acceptable_ for your own application context. E.g. you can overrule Schematron validation errors with _acceptMatch_ configuration and consider certain errors as _acceptable_. Nevertheless you can *not* overrule schema errors with accept match.
+"Run this Schematron against this document" is the same engine over one scenario assembled at runtime:
+
+```java
+final ValidationEngine<ConformanceValidationResult> engine = ConformanceValidation.adHoc(engineInformation,
+        ProcessorProvider.getProcessor(), Paths.get("rules/my-rules.sch").toUri(), false);
+final ConformanceValidationResult result = engine.validate(document);
+```
+
+The scenario (`Scenario.adHoc`) has no match, no XML schema and exactly one rule set; the directory of the Schematron is its repository, so relative includes resolve there and nowhere else. The result and the report are the same as for a configured scenario. A Schematron URI no repository can be derived from - a relative URI, or one inside an archive without `resolveInArchive` - is an `IllegalArgumentException` when the engine is built, not a finding.
 
 ## Building scenario configurations with the Builder API
 
-Instead of pre-configured [scenario files](configurations.md) it is possible to create a validator configuration using a builder API. A valid configuration consists of the following:
+Instead of pre-configured [scenario files](configurations.md) it is possible to create a validator configuration using a builder API. A configuration consists of at least one scenario, and a scenario consists of
 
-* at least one valid scenario configuration, this includes
-  * a valid match configuration to identify/activate this scenario
-  * a valid XML schema configuration
-  * a valid report transformation configuration
-  * valid schematron validation configurations (optional)
-  * a valid accept match configuration to compute acceptance information (optional)
-* a valid fallback scenario configuration
+* a match configuration to identify/activate this scenario - a scenario without one applies unconditionally, which is the shape of a scenario assembled at runtime from validation artifacts ("run this Schematron against this file")
+* an XML schema configuration (optional)
+* schematron validation configurations (optional), each naming the Schematron processor of its rule set (`compiler`) and the severity overrides of its rules (`customLevel`)
+* an `acceptMatch` expression (optional, kept in the declaration; 2.0 does not evaluate it)
+
+There is no fallback scenario: a document no scenario applies to is a cancelled run with a partial report (`no-scenario-matched`), not a run along a fallback.
 
 A simple configuration looks like this:
 
 ```java
-package de.kosit.validationtool.docs;
+package org.kosit.validator.docs;
 
-import static de.kosit.validationtool.config.ConfigurationBuilder.fallback;
-import static de.kosit.validationtool.config.ConfigurationBuilder.report;
-import static de.kosit.validationtool.config.ConfigurationBuilder.scenario;
-import static de.kosit.validationtool.config.ConfigurationBuilder.schema;
-import static de.kosit.validationtool.config.ConfigurationBuilder.schematron;
+import static org.kosit.validator.config.ConfigurationBuilder.scenario;
+import static org.kosit.validator.config.ConfigurationBuilder.schema;
+import static org.kosit.validator.config.ConfigurationBuilder.schematron;
 
 import java.net.URI;
 import java.nio.file.Paths;
 
-import de.kosit.validationtool.api.Check;
-import de.kosit.validationtool.api.Configuration;
-import de.kosit.validationtool.impl.DefaultCheck;
-import de.kosit.validationtool.impl.xml.ProcessorProvider;
+import org.kosit.validator.api.ScenarioSet;
+import org.kosit.validator.api.ValidationEngine;
+import org.kosit.validator.impl.ConformanceValidation;
+import org.kosit.validator.impl.TestEngineInformation;
+import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
+import org.kost.validator.api.saxon.ProcessorProvider;
 
 /**
- * Example code that is used in the docs/api.md file
+ * Example code that is used in the docs/api.md file: a configuration assembled in Java, and the engine built over it.
  */
 public class MyValidator {
 
+    @SuppressWarnings("unused")
     public static void main(final String[] args) {
-        final Configuration config = Configuration.create().name("myconfiguration")
+        final ScenarioSet config = ScenarioSet.create().name("myconfiguration")
                 .with(scenario("firstScenario").match("//myNode").validate(schema("Sample Schema").schemaLocation(URI.create("simple.xsd")))
-                        .validate(schematron("my rules").source("myRules.xsl")).with(report("my report").source("report.xsl")))
-                .with(fallback().name("default-report").source("fallback.xsl")).useRepository(Paths.get("/opt/myrepository"))
-                .build(ProcessorProvider.getProcessor());
-        final Check validator = new DefaultCheck(config);
+                        .validate(schematron("my rules").source("myRules.xsl").compiler("schxslt")))
+                .useRepository(Paths.get("/opt/myrepository")).build(ProcessorProvider.getProcessor());
+        // the engine: configuration is a construction concern, validate(...) takes nothing but the document
+        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(new TestEngineInformation(),
+                ProcessorProvider.getProcessor(), config);
         // .. run your checks
     }
 }
@@ -196,33 +206,33 @@ When using XML related technologies you are supposed to handle certain security 
 * allows loading/resolving only from a configured local content repository (a specific folder)
 * tries to prevent known XML security issues (see [OWASP XML_Security_Cheat_Sheet.html](https://cheatsheetseries.owasp.org/cheatsheets/XML_Security_Cheat_Sheet.html))
 
-However, you can configure certain aspects related to resolving and security yourself. The validator uses a single interface for accessing or creating the necessary XML API objects like `SchemaFactory`, `Validator`,`URIResolver` or `Processor`:  [ResolvingConfigurationStrategy.java](https://github.com/itplr-kosit/validator/tree/main/src/main/java/de/kosit/validationtool/api/ResolvingConfigurationStrategy.java)
+However, you can configure certain aspects related to resolving and security yourself. The validator uses a single interface for accessing or creating the necessary XML API objects like `SchemaFactory`, `Validator`,`URIResolver` or `Processor`: `org.kosit.schematron.resolve.ResolvingConfigurationStrategy` (module `schematron`).
 
 There are 3 implementations available out of the box:
 
-1. [StrictRelativeResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/main/src/main/java/de/kosit/validationtool/impl/xml/StrictRelativeResolvingStrategy.java)
+1. `StrictRelativeResolvingStrategy`
 which is the **default**, prevents known XML attacks and only allows loading from a specific local repository location
-1. [StrictLocalResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/main/src/main/java/de/kosit/validationtool/impl/xml/StrictLocalResolvingStrategy.java)
+1. `StrictLocalResolvingStrategy`
 which opens the first strategy to load resources from local locations
-1. [RemoteResolvingStrategy.java](https://github.com/itplr-kosit/validator/tree/main/src/main/java/de/kosit/validationtool/impl/xml/RemoteResolvingStrategy.java)
+1. `RemoteResolvingStrategy`
 which further opens the second to load resources also from remote locations via http and https
 
 You can configure usage of one of these implementations using the `ResolvingMode` via
 
 ```java
-final Configuration config = Configuration.load(URI.create("myscenarios.xml")).setResolvingMode(ResolvingMode.STRICT_LOCAL)
+final ScenarioSet config = ScenarioSet.load(URI.create("myscenarios.xml")).setResolvingMode(ResolvingMode.STRICT_LOCAL)
         .build(ProcessorProvider.getProcessor());
 ```
 
 If you decide to implement your own strategy, you can configure this via:
 
 ```java
-final Configuration config = Configuration.load(URI.create("myscenarios.xml"))
+final ScenarioSet config = ScenarioSet.load(URI.create("myscenarios.xml"))
         .setResolvingStrategy(new MyCustomResolvingConfigurationStrategy()).build(ProcessorProvider.getProcessor());
 ```
 
 ---
 
-:warning: **Attention:** If you decide to implement a custom strategy you need to handle XML security risks on your own. Please make sure, that you prevent XXE and other kind of attacks. Consider using [BaseResolvingStrategy.java](https://github.com/itplr-kosit/validator/blob/main/src/main/java/de/kosit/validationtool/impl/xml/BaseResolvingStrategy.java) and the protected methods within to disable certain features.
+:warning: **Attention:** If you decide to implement a custom strategy you need to handle XML security risks on your own. Please make sure, that you prevent XXE and other kind of attacks. Consider using `BaseResolvingStrategy` and the protected methods within to disable certain features.
 
 ---
