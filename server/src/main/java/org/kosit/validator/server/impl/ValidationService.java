@@ -1,29 +1,24 @@
 package org.kosit.validator.server.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.HexFormat;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 import org.conformatron.api.model.source.CTReadResource;
-import org.kosit.base.error.SimpleError;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.api.VResult;
-import org.kosit.validator.api.xvrl.compact.CompactXvrlReport;
-import org.kosit.validator.api.xvrl.compact.CompactXvrlReportSummary;
-import org.kosit.validator.api.xvrl.compact.ValidatorEngineInformation;
-import org.kosit.validator.impl.DefaultVCheck;
+import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
+import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.server.config.ValidationConfig;
-import org.kosit.xvrl.model.XvrlDetection;
 import org.kost.validator.api.saxon.ProcessorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +28,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import net.sf.saxon.s9api.Processor;
 
+/**
+ * The validator behind the REST resource: runs the canonical pipeline over a document and keeps the resulting CVR so
+ * that it can be fetched by the identifier of its run.
+ * <p>
+ * The engine is {@link ConformanceValidation} — the same one the CLI drives. What this service adds is the resource
+ * semantics: a run has an identity, its result outlives the request that created it, and the report is the report the
+ * engine wrote, byte for byte.
+ * </p>
+ */
 @ApplicationScoped
 @Startup
 @Named("validationService")
@@ -44,84 +48,48 @@ public class ValidationService {
 
     private final List<VConfiguration> configuration;
 
-    private final EngineInformation engineInformation;
+    private final ConformanceValidation engine;
 
-    private final DefaultVCheck check;
+    private final ValidationRunStore results;
 
-    public ValidationService(final ValidationConfig cfg, final EngineInformation engineInformation) {
-        this.configuration = getConfiguration(cfg, processor);
-        this.engineInformation = engineInformation;
-        check = new DefaultVCheck(engineInformation, processor, configuration.toArray(new VConfiguration[0]));
+    public ValidationService(final ValidationConfig cfg, final EngineInformation engineInformation, final ValidationRunStore results) {
+        this.configuration = getConfiguration(cfg, this.processor);
+        this.engine = new ConformanceValidation(engineInformation, this.processor, this.configuration.toArray(new VConfiguration[0]));
+        this.results = results;
         LOGGER.info("Validator started");
     }
 
     public List<Scenario> getScenarios() {
-        return configuration != null ? configuration.stream().flatMap(c -> c.getScenarios().stream()).toList() : Collections.emptyList();
+        return this.configuration != null ? this.configuration.stream().flatMap(c -> c.getScenarios().stream()).toList()
+                : Collections.emptyList();
     }
 
-    public VResult validate(final CTReadResource input) {
+    /**
+     * Creates a validation run: validates the document and keeps its CVR.
+     *
+     * @param input the document to validate
+     * @return the identifier of the run, under which the result can be fetched
+     */
+    public UUID createRun(final CTReadResource input) {
         final long t0 = System.currentTimeMillis();
-        final VResult result = check.checkInput(input);
-        LOGGER.info("Validated {} input in {} ms", input.getName(), System.currentTimeMillis() - t0);
-        return result;
-    }
-
-    public CompactXvrlReportSummary convertMinimalXvrl(final CTReadResource input, final VResult defaultResult) {
-        return convertMinimalXvrl(Map.of(input, defaultResult));
-    }
-
-    public CompactXvrlReportSummary convertMinimalXvrl(final Map<CTReadResource, VResult> defaultResults) {
-        final CompactXvrlReportSummary summary = CompactXvrlReportSummary.create();
-        defaultResults.forEach((input, result) -> {
-            final CompactXvrlReport report = CompactXvrlReport.create();
-            report.setFilename(input.getName());
-            report.setCreator("compact-report");
-            report.setScenario(detectSelectedScenario(result));
-            report.setAcceptance(result.getAcceptRecommendation());
-            report.setErrorSummary(joinErrors(result));
-            report.addSchemaValidationResult(result.getSchemaViolations());
-            /*
-             * report.addSchemaReference("xsd", "XSD"); if (!result.isSchemaValid()) {
-             * result.getSchemaViolations().forEach(report::addSchemaViolation); }
-             */
-
-            // Schematron outputs and their titles as schema references
-            report.addSchematronValidationResults(result.getSchematronResult());
-            /*
-             * if (result.getSchematronResult() != null) { result.getSchematronResult().forEach(so -> { String title =
-             * so.getTitle() != null ? so.getTitle() : "Schematron"; report.addSchemaReference(title, "Schematron");
-             * so.getFailedAsserts().forEach(fa -> report.addSchematronViolation(fa, title)); }); }
-             */
-            report.setChecksum(HexFormat.of().formatHex(input.getHashBytes()));
-            summary.addReport(report);
-        });
-        summary.setAcceptable(defaultResults.values().stream().filter(VResult::isAcceptable).count());
-        summary.setRejected(defaultResults.values().stream().filter(r -> !r.isAcceptable()).count());
-        summary.setProcessingErrors(defaultResults.values().stream().filter(r -> !r.isProcessingSuccessful()).count());
-        summary.setValidatorInformation(new ValidatorEngineInformation(engineInformation.getName(), engineInformation.getVersion()));
-        return summary;
-    }
-
-    private String detectSelectedScenario(final VResult defaultResult) {
-        return defaultResult.getReportSummary().getReports().stream()
-                .filter(rep -> ScenarioSelectionTask.REPORT_NAME.equals(rep.getMetadata().getFirstValidator().getName())).findFirst()
-                .map(rep -> rep.getDetections().stream().filter(d -> "scenario".equals(d.getID())).findFirst().map(XvrlDetection::getCode)
-                        .orElse("null"))
-                .orElse("null");
-    }
-
-    private static String joinErrors(final VResult value) {
-        final StringBuilder b = new StringBuilder();
-        b.append(String.join(";", value.getProcessingErrors()));
-        if (value.getSchemaViolations() != null && !value.getSchemaViolations().isEmpty()) {
-            b.append(b.length() > 0 ? ";" : "");
-            b.append(value.getSchemaViolations().stream().map(SimpleError::getMessage).collect(Collectors.joining(";")));
+        final ConformanceValidationResult result = this.engine.validate(input);
+        final ByteArrayOutputStream cvr = new ByteArrayOutputStream();
+        try {
+            result.writeCvr(cvr);
+        } catch (final IOException e) {
+            throw new UncheckedIOException("Can not serialize the report of " + input.getName(), e);
         }
-        if (value.getSchematronResult() != null && !value.getSchematronResult().isEmpty()) {
-            b.append(b.length() > 0 ? ";" : "");
-            b.append(value.getSchematronResult().stream().flatMap(e -> e.getMessages().stream()).collect(Collectors.joining(";")));
-        }
-        return b.toString();
+        final UUID id = this.results.put(cvr.toByteArray());
+        LOGGER.info("Validated {} in {} ms — {} — run {}", input.getName(), System.currentTimeMillis() - t0, result.getDecision(), id);
+        return id;
+    }
+
+    /**
+     * @param id the identifier of a run
+     * @return its CVR, if the run is known and its result has not expired
+     */
+    public Optional<byte[]> getResult(final UUID id) {
+        return this.results.get(id);
     }
 
     private static List<VConfiguration> getConfiguration(final ValidationConfig cfg, final Processor processor) {
@@ -157,19 +125,19 @@ public class ValidationService {
 
     /**
      * Is used for Readiness Healthcheck.
-     * 
+     *
      * @return if at least 1 configuration available and loaded
      */
     public boolean isReady() {
-        return configuration != null && !configuration.isEmpty();
+        return this.configuration != null && !this.configuration.isEmpty();
     }
 
     /**
      * Is used for Readiness Healthcheck.
-     * 
+     *
      * @return amount of configurations available and loaded
      */
     public int getConfigurationCount() {
-        return configuration != null ? configuration.size() : 0;
+        return this.configuration != null ? this.configuration.size() : 0;
     }
 }

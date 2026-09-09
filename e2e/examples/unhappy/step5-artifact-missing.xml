@@ -40,7 +40,7 @@
         <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-with-sch.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -70,7 +70,7 @@
                             <location>simple.xsd</location>
                         </resource>
                     </validateWithXmlSchema>
-                    <validateWithSchematron>
+                    <validateWithSchematron compiler="iso-schematron">
                         <resource>
                             <name>Sample Schematron</name>
                             <location>simple.sch</location>
@@ -94,7 +94,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/core/target/test-classes/examples/simple/scenarios-with-sch.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -112,16 +112,12 @@
             </context>
         </detection>
         <detection severity="error" code="artifact-missing" cvr:artifact-id="does-not-exist.sch">
-            <message>Artifact could not be read: C:\Users\49157\grendor\KoSIT\KoSIT_Architecture\validator_architecture\validator\core\target\test-classes\examples\simple\repository\does-not-exist.sch (Das System kann die angegebene Datei nicht finden)</message>
-            <supplemental role="java-trace">java.io.FileNotFoundException: C:\Users\49157\grendor\KoSIT\KoSIT_Architecture\validator_architecture\validator\core\target\test-classes\examples\simple\repository\does-not-exist.sch (Das System kann die angegebene Datei nicht finden)&#13;
-	at java.base/java.io.FileInputStream.open0(Native Method)&#13;
-	at java.base/java.io.FileInputStream.open(FileInputStream.java:185)&#13;
-	at java.base/java.io.FileInputStream.&lt;init&gt;(FileInputStream.java:139)&#13;
-	at java.base/java.io.FileInputStream.&lt;init&gt;(FileInputStream.java:109)&#13;
-	at java.base/sun.net.www.protocol.file.FileURLConnection.connect(FileURLConnection.java:86)&#13;
-	at java.base/sun.net.www.protocol.file.FileURLConnection.getInputStream(FileURLConnection.java:183)&#13;
+            <message>Artifact could not be read: JAR entry not found in jar file</message>
+            <supplemental role="java-trace">java.io.FileNotFoundException: JAR entry not found in jar file&#13;
+	at java.base/sun.net.www.protocol.jar.JarURLConnection.connect(JarURLConnection.java:136)&#13;
+	at java.base/sun.net.www.protocol.jar.JarURLConnection.getInputStream(JarURLConnection.java:167)&#13;
 	at java.base/java.net.URL.openStream(URL.java:1263)&#13;
-	at org.kosit.cvr.util.ArtifactResolver.read(ArtifactResolver.java:140)&#13;
+	at org.kosit.cvr.util.ArtifactResolver.read(ArtifactResolver.java:143)&#13;
 	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java:182)&#13;
 	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java:146)&#13;
 	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:106)&#13;

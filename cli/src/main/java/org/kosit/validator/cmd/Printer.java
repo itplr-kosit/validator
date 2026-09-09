@@ -36,6 +36,16 @@ public class Printer {
     }
 
     /**
+     * Writes content verbatim to standard output — no placeholder substitution. For anything that is content rather
+     * than a message template: a report may legitimately contain braces, which {@link MessageFormat} would choke on.
+     *
+     * @param content the content to write
+     */
+    public static void writeRaw(final String content) {
+        OUT.println(content);
+    }
+
+    /**
      * Writes to standard output channel.
      * 
      * @param message the message with placeholders
