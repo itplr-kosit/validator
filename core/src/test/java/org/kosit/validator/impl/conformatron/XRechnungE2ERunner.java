@@ -1,13 +1,12 @@
 package org.kosit.validator.impl.conformatron;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
@@ -19,32 +18,23 @@ import org.conformatron.api.model.conformance.CTConformanceStatement;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
-import org.kosit.validator.TestHelper;
+import org.kosit.conformatron.source.ReadResource;
+import org.kosit.conformatron.source.Resource;
 import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
+import org.kosit.validator.impl.ConformanceValidation;
+import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
-import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
-import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
-import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
-import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
-import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
-import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
-import org.kosit.validator.impl.conformatron.report.CvrlWriter;
 import org.kost.validator.api.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 
 /**
- * <b>E2E runner</b>: walks the canonical pipeline (steps 2–8) over the real XRechnung testsuite instances against the
+ * <b>E2E runner</b>: walks the canonical pipeline (steps 2–9) over the real XRechnung testsuite instances against the
  * real XRechnung validator configuration and writes human-readable Markdown reports for manual evaluation.
  * <p>
  * Not a JUnit test — run it via:
@@ -72,27 +62,39 @@ import net.sf.saxon.s9api.Processor;
 public final class XRechnungE2ERunner {
 
     /** Result row of one instance run. */
-    private record InstanceResult(String instance, String outcome, String scenario, int ruleSets, long infos, long warnings, long errors,
-            List<String> conformance, List<CTDetection> findings, String failedStep, String hash, List<CTDetection> allDetections) {
+    private record InstanceResult(String instance, String outcome, String decision, String scenario, int ruleSets, long infos,
+            long warnings, long errors, List<String> conformance, List<CTDetection> findings, String failedStep, String hash,
+            List<CTDetection> allDetections) {
     }
 
-    private final ScenarioRepository scenarioRepository;
+    /** The engine identity the comparison reports are written with. */
+    private static final EngineInformation ENGINE = new EngineInformation() {
 
-    private final VConfiguration configuration;
+        @Override
+        public String getName() {
+            return "KoSIT XML Validator (canonical pipeline)";
+        }
 
-    private final Processor processor;
+        @Override
+        public String getVersion() {
+            return "2.0.0-SNAPSHOT";
+        }
 
-    private final URI repository;
+        @Override
+        public String getFrameworkVersion() {
+            return "2.0.0";
+        }
 
-    private final String scenarioDefinition;
+        @Override
+        public String getBuild() {
+            return "e2e";
+        }
+    };
 
-    private XRechnungE2ERunner(final VConfiguration configuration, final Processor processor, final URI repository,
-            final String scenarioDefinition) {
-        this.configuration = configuration;
-        this.processor = processor;
-        this.repository = repository;
-        this.scenarioDefinition = scenarioDefinition;
-        this.scenarioRepository = new ScenarioRepository(configuration);
+    private final ConformanceValidation engine;
+
+    private XRechnungE2ERunner(final VConfiguration configuration, final Processor processor) {
+        this.engine = new ConformanceValidation(ENGINE, processor, configuration);
     }
 
     public static void main(final String[] args) throws IOException {
@@ -116,8 +118,7 @@ public final class XRechnungE2ERunner {
         System.out.println("Configuration loaded in " + (System.currentTimeMillis() - t0) + " ms (" + configuration.getScenarios().size()
                 + " scenarios)");
 
-        final XRechnungE2ERunner runner = new XRechnungE2ERunner(configuration, processor, repository.toUri(),
-                scenarios.toUri().toString());
+        final XRechnungE2ERunner runner = new XRechnungE2ERunner(configuration, processor);
         final List<Path> files;
         try ( Stream<Path> stream = Files.walk(instances) ) {
             files = stream.filter(p -> p.toString().endsWith(".xml")).filter(p -> !p.toString().contains(".idea")).sorted().toList();
@@ -161,101 +162,50 @@ public final class XRechnungE2ERunner {
             out.println("| Severity | Code | Meldung |");
             out.println("|---|---|---|");
             for (final CTDetection d : result.allDetections()) {
-                out.println("| " + d.getSeverity().getId() + " | `" + d.getCode() + "` | "
-                        + d.getText().getDisplayTextLocaleIndependent().replace("|", "\\|").replace("\n", " ") + " |");
+                out.printf("| %s | `%s` | %s |%n", d.getSeverity().getId(), d.getCode(),
+                        d.getText().getDisplayTextLocaleIndependent().replace("|", "\\|").replace("\n", " "));
             }
         }
     }
 
-    /** Runs steps 2–8 for one instance; never throws — every outcome becomes a result row plus a (partial) CVRL. */
+    /** Runs steps 2–9 for one instance; never throws — every outcome becomes a result row plus a (partial) CVR. */
     private InstanceResult run(final Path file, final Path instancesRoot, final Path reportsDir) {
         final String name = instancesRoot.relativize(file).toString().replace('\\', '/');
-        final CvrlWriter.PipelineResults results;
+        final ConformanceValidationResult result;
         try {
-            results = runSteps(file, name);
-        } catch (final RuntimeException e) {
-            return new InstanceResult(name, "RUNNER_ERROR: " + e.getClass().getSimpleName(), "-", 0, 0, 0, 0, List.of(), List.of(),
+            // the caller names the document: the corpus-relative path, not where it happens to sit on this machine
+            result = this.engine.validate(ReadResource.inMemory(Resource.of(name, Files.readAllBytes(file))));
+        } catch (final IOException | RuntimeException e) {
+            return new InstanceResult(name, "RUNNER_ERROR: " + e.getClass().getSimpleName(), "-", "-", 0, 0, 0, 0, List.of(), List.of(),
                     e.getMessage(), "-", List.of());
         }
         if (reportsDir != null) {
-            writeCvrl(reportsDir, name, results);
+            writeCvrl(reportsDir, name, result);
         }
-        return toInstanceResult(name, results);
-    }
-
-    /** Executes the pipeline; fields from the cancellation point onwards stay {@code null} (partial CVRL). */
-    private CvrlWriter.PipelineResults runSteps(final Path file, final String name) {
-        // step 2: PARSE_DOCUMENT
-        final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(file.toFile()));
-        if (!parsed.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
-        }
-        // step 3: DETECT_SCENARIOS (DOM wrapped into the Saxon model)
-        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, this.processor)
-                .withDefinitionFile(this.scenarioDefinition).execute(parsed.getParsedSource());
-        if (!detected.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, null, null, null, null, null);
-        }
-        // step 4: SELECT_SCENARIO
-        final SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
-        if (!selected.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null);
-        }
-        // step 5: RETRIEVE_ARTIFACTS
-        final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(this.repository).execute(selected.selected());
-        if (!retrieved.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, null, null, null);
-        }
-        // step 6: PREPARE_RULES (compile cache inside the ContentRepository keeps this fast across instances)
-        final PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getContentRepository()).execute(retrieved.artifacts(),
-                name);
-        if (!prepared.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
-        }
-        // step 7: APPLY_RULES (with the scenario's customLevel severity overrides)
-        final ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(), prepared.ruleSets(),
-                ScenarioSeverityOverrides.of(selected.selected()));
-        if (!applied.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
-        }
-        // step 8: COMPUTE_CONFORMANCE (scenario-wide default target)
-        final ComputeConformanceActionResult conformance = new ComputeConformanceAction().execute(applied.result(),
-                List.of(ConformanceTarget.ofScenario(selected.selected())));
-        return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, conformance);
+        return toInstanceResult(name, result.getRun());
     }
 
     /** Serializes the (partial) run as CVRL draft report next to the Markdown report. */
-    private static void writeCvrl(final Path reportsDir, final String name, final CvrlWriter.PipelineResults results) {
+    private static void writeCvrl(final Path reportsDir, final String name, final ConformanceValidationResult result) {
         try {
             final Path file = reportsDir.resolve(name.replace(".xml", "-cvrl.xml"));
             Files.createDirectories(file.getParent());
-            try ( var out = Files.newOutputStream(file) ) {
-                new CvrlWriter("KoSIT XML Validator (canonical pipeline)", "2.0.0-SNAPSHOT").write(name, results, out);
-            }
+            final ByteArrayOutputStream cvrl = new ByteArrayOutputStream();
+            result.writeCvr(cvrl);
+            // the reports are kept in the repository, so their timestamps are fixed — see FixedTimestamps
+            Files.write(file, FixedTimestamps.apply(cvrl.toByteArray()));
         } catch (final IOException e) {
             throw new IllegalStateException("Can not write CVRL for " + name, e);
         }
     }
 
     /** Derives the summary row from the (partial) pipeline results. */
-    private static InstanceResult toInstanceResult(final String name, final CvrlWriter.PipelineResults r) {
-        if (!r.parse().isSuccess()) {
-            return failed(name, "PARSE_DOCUMENT", r.parse().getDetectionList().getAll());
-        }
-        if (r.detect() != null && !r.detect().isSuccess()) {
-            return failed(name, "DETECT_SCENARIOS", r.detect().detections().getAll());
-        }
-        if (r.select() != null && !r.select().isSuccess()) {
-            return failed(name, "SELECT_SCENARIO", r.select().detections().getAll());
-        }
-        if (r.retrieve() != null && !r.retrieve().isSuccess()) {
-            return failed(name, "RETRIEVE_ARTIFACTS", r.retrieve().detections().getAll());
-        }
-        if (r.prepare() != null && !r.prepare().isSuccess()) {
-            return failed(name, "PREPARE_RULES", r.prepare().detections().getAll());
-        }
-        if (r.apply() != null && !r.apply().isSuccess()) {
-            return failed(name, "APPLY_RULES", r.apply().detections().getAll());
+    private static InstanceResult toInstanceResult(final String name, final PipelineResults r) {
+        // step 9 always runs, so every row has a decision — a cancelled run is a rejection with the step in the
+        // rationale
+        final String decision = r.decision().decision().name();
+        if (!r.isCompleted()) {
+            return failed(name, r.cancelledAt().name(), decision, r.cancelDetections().getAll());
         }
         final ParseXmlResult parsed = r.parse();
         final SelectScenarioResult selected = r.select();
@@ -265,33 +215,32 @@ public final class XRechnungE2ERunner {
         final String scenarioName = selected.selected().getScenarioName();
 
         // complete detection trace across all steps, in pipeline order (for the per-instance report)
-        final List<CTDetection> trace = new ArrayList<>();
-        trace.addAll(parsed.getDetectionList().getAll());
-        trace.addAll(r.detect().detections().getAll());
-        trace.addAll(selected.detections().getAll());
-        trace.addAll(r.retrieve().detections().getAll());
-        trace.addAll(prepared.detections().getAll());
-        trace.addAll(applied.detections().getAll());
-        trace.addAll(conformance.detections().getAll());
+        final List<CTDetection> trace = r.allDetections();
 
         final String hash = parsed.getParsedSource().getSource().getReadResource().getHashAlgorithmName() + "="
                 + HexFormat.of().formatHex(parsed.getParsedSource().getSource().getReadResource().getHashBytes());
-        final long infos = applied.detections().getNoneCount();
-        final long warnings = applied.detections().getWarningCount();
-        final long errors = applied.detections().getErrorCount();
+        final List<CTDetection> all = applied.detections().getAll();
+        final long infos = count(all, CTStandardSeverity.NONE);
+        final long warnings = count(all, CTStandardSeverity.WARNING);
+        final long errors = all.stream().filter(d -> d.getSeverity().isError()).count();
         final List<String> statements = new ArrayList<>();
         for (final Map.Entry<CTPreparedRuleSet, CTConformanceStatement> e : conformance.result().getStatementsByRuleSet().entrySet()) {
             statements.add(shortRef(e.getKey()) + " → " + e.getValue().getResult());
         }
         final boolean conformant = !conformance.result().hasNonConformantTarget();
-        final List<CTDetection> findings = applied.detections().getAll(d -> d.getSeverity() != CTStandardSeverity.NONE);
-        return new InstanceResult(name, conformant ? "CONFORMANT" : "NON_CONFORMANT", scenarioName, prepared.ruleSets().size(), infos,
-                warnings, errors, statements, findings, null, hash, trace);
+        final List<CTDetection> findings = all.stream().filter(d -> d.getSeverity() != CTStandardSeverity.NONE).toList();
+        return new InstanceResult(name, conformant ? "CONFORMANT" : "NON_CONFORMANT", decision, scenarioName, prepared.ruleSets().size(),
+                infos, warnings, errors, statements, findings, null, hash, trace);
     }
 
-    private static InstanceResult failed(final String name, final String step, final List<CTDetection> detections) {
+    private static InstanceResult failed(final String name, final String step, final String decision, final List<CTDetection> detections) {
         final List<CTDetection> findings = detections.stream().filter(d -> d.getSeverity() != CTStandardSeverity.NONE).toList();
-        return new InstanceResult(name, "FAILED@" + step, "-", 0, 0, 0, findings.size(), List.of(), findings, step, "-", detections);
+        return new InstanceResult(name, "FAILED@" + step, decision, "-", 0, 0, 0, findings.size(), List.of(), findings, step, "-",
+                detections);
+    }
+
+    private static long count(final List<CTDetection> detections, final CTStandardSeverity severity) {
+        return detections.stream().filter(d -> d.getSeverity() == severity).count();
     }
 
     private static String shortRef(final CTPreparedRuleSet ruleSet) {
@@ -301,15 +250,16 @@ public final class XRechnungE2ERunner {
 
     private static void writeSummary(final Path file, final List<InstanceResult> results, final int total) throws IOException {
         try ( PrintWriter out = new PrintWriter(Files.newBufferedWriter(file, StandardCharsets.UTF_8)) ) {
-            out.println("# XRechnung E2E — kanonische Pipeline Steps 2–8");
+            out.println("# XRechnung E2E — kanonische Pipeline Steps 2–9");
             out.println();
-            out.println("Erzeugt: " + LocalDateTime.now() + " · Instanzen: " + total);
+            // kein Erzeugungszeitpunkt: die Datei liegt im Repository, und wann sie erzeugt wurde sagt der Commit
+            out.println("Instanzen: " + total);
             out.println();
             out.println("**Bekannte Lücken dieses Laufs** (bei der Bewertung berücksichtigen):");
             out.println(
                     "- `customLevel`-Overrides werden von Step 7 angewandt (effektive Severity; Original als `cvrl:original-severity`).");
             out.println(
-                    "- `acceptMatch` der Szenarien wird nicht ausgewertet (läuft auf dem Report; ADR-004 Follow-up) — Verdikt ist rein detection-basiert.");
+                    "- `acceptMatch` der Szenarien wird nicht ausgewertet (läuft auf dem Report; ADR-004 Follow-up) — die Entscheidung (Step 9) folgt allein aus den Konformitätsaussagen von Step 8.");
             out.println("- Step 8 nutzt ein szenarioweites Default-Target (`ConformanceTarget.ofScenario`).");
             out.println();
             final Map<String, Long> byOutcome = new LinkedHashMap<>();
@@ -320,11 +270,11 @@ public final class XRechnungE2ERunner {
             out.println();
             out.println("## Übersicht");
             out.println();
-            out.println("| Instanz | Ergebnis | Szenario | RuleSets | INFO | WARN | ERROR+ | Conformance je RuleSet |");
-            out.println("|---|---|---|---|---|---|---|---|");
+            out.println("| Instanz | Ergebnis | Entscheidung | Szenario | RuleSets | INFO | WARN | ERROR+ | Conformance je RuleSet |");
+            out.println("|---|---|---|---|---|---|---|---|---|");
             for (final InstanceResult r : results) {
-                out.println("| " + r.instance() + " | " + r.outcome() + " | " + r.scenario() + " | " + r.ruleSets() + " | " + r.infos()
-                        + " | " + r.warnings() + " | " + r.errors() + " | " + String.join("<br>", r.conformance()) + " |");
+                out.printf("| %s | %s | %s | %s | %d | %d | %d | %d | %s |%n", r.instance(), r.outcome(), r.decision(), r.scenario(),
+                        r.ruleSets(), r.infos(), r.warnings(), r.errors(), String.join("<br>", r.conformance()));
             }
         }
     }

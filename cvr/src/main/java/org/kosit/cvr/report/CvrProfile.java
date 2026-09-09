@@ -43,7 +43,7 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
 
 /**
- * CVR - <b>Conformatron Validation Result</b> - is the XVRL profile of the validator. This class is the profile: it
+ * CVR - <b>Conformance Validation Report</b> - is the XVRL profile of the validator. This class is the profile: it
  * locates its two artifacts and checks a report against both of them.
  * <p>
  * A report is checked in two steps, because the two questions are different:

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    CVR - Conformatron Validation Result - the XVRL profile of the KoSIT validator.
+    CVR - Conformance Validation Report - the XVRL profile of the KoSIT validator.
 
     The structure of a report is XVRL's business (xvrl-1.0.xsd). These rules add what makes an XVRL report a CVR
     report: the canonical pipeline steps it is built from, the extension vocabulary it may use, and the internal
@@ -8,7 +8,7 @@
 -->
 <sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt3">
 
-    <sch:title>CVR - Conformatron Validation Result (draft profile of XVRL)</sch:title>
+    <sch:title>CVR - Conformance Validation Report (draft profile of XVRL)</sch:title>
 
     <sch:ns prefix="xvrl" uri="http://www.xproc.org/ns/xvrl"/>
     <sch:ns prefix="cvr" uri="urn:conformatron:cvr:draft"/>
@@ -16,10 +16,10 @@
 
     <!-- D2: the canonical action names are normative for creator/@name, in pipeline order -->
     <sch:let name="steps"
-             value="('parse-document', 'detect-scenarios', 'select-scenario', 'retrieve-artifacts', 'prepare-rules', 'apply-rules', 'compute-conformance')"/>
+             value="('parse-document', 'detect-scenarios', 'select-scenario', 'retrieve-artifacts', 'prepare-rules', 'apply-rules', 'compute-conformance', 'decision-recommendation')"/>
     <sch:let name="severities" value="('info', 'warning', 'error', 'unspecified')"/>
     <sch:let name="cvr-attributes"
-             value="('conformant', 'status', 'phase', 'original-severity', 'scenario-id', 'artifact-id', 'target-id', 'conformance', 'artifact-type', 'mime-type', 'encoding', 'source-encoding', 'role', 'algorithm')"/>
+             value="('conformant', 'status', 'phase', 'original-severity', 'scenario-id', 'artifact-id', 'target-id', 'conformance', 'decision', 'artifact-type', 'mime-type', 'encoding', 'source-encoding', 'algorithm')"/>
 
     <sch:pattern id="cvr-root">
         <sch:rule context="/*">
@@ -58,16 +58,18 @@
 
     <sch:pattern id="cvr-run-status">
         <sch:rule context="/xvrl:reports[@cvr:status = 'COMPLETED']">
-            <sch:assert id="completed-ends-with-conformance"
-                        test="xvrl:report[last()]/xvrl:metadata/xvrl:creator/@name = 'compute-conformance'">D5: a
-                completed run ends with the compute-conformance step, found '<sch:value-of
-                        select="xvrl:report[last()]/xvrl:metadata/xvrl:creator/@name"/>'.</sch:assert>
+            <sch:assert id="completed-has-conformance"
+                        test="xvrl:report/xvrl:metadata/xvrl:creator/@name = 'compute-conformance'">D5: a completed run
+                reached the conformance statement, so it carries a compute-conformance report.</sch:assert>
         </sch:rule>
         <sch:rule context="/xvrl:reports[@cvr:status = 'CANCELLED']">
             <sch:assert id="cancelled-has-no-conformance"
                         test="not(xvrl:report/xvrl:metadata/xvrl:creator/@name = 'compute-conformance')">D5: a cancelled
                 run stopped before the conformance statement, so it carries no compute-conformance
                 report.</sch:assert>
+            <sch:assert id="cancelled-is-rejected"
+                        test="xvrl:report[last()]/xvrl:detection/@cvr:decision = 'REJECT'">A cancelled run proves
+                nothing, so its decision is REJECT.</sch:assert>
         </sch:rule>
     </sch:pattern>
 
@@ -142,10 +144,12 @@
                 of zero says nothing and is omitted.</sch:assert>
             <sch:assert id="digest-omits-zero-warning-count" test="($warnings &gt; 0) = exists(@warning-count)">D18: a
                 count of zero says nothing and is omitted.</sch:assert>
-            <sch:assert id="digest-worst-severity-when-it-informs"
-                        test="exists(@worst-severity) = (@valid = 'false' and count($detections) &gt; 1)">D18:
-                worst-severity is written exactly when it informs - the step is invalid and has more than one detection,
-                so no single detection already states it.</sch:assert>
+            <sch:assert id="digest-worst-when-it-informs"
+                        test="exists(@worst) = (@valid = 'false' and count($detections) &gt; 1)">D18: worst (the XVRL
+                attribute) is written exactly when it informs - the step is invalid and has more than one detection, so
+                no single detection already states it.</sch:assert>
+            <sch:assert id="digest-has-no-worst-severity" test="not(@worst-severity)">worst-severity is not an XVRL
+                attribute; the digest's worst severity is @worst.</sch:assert>
             <sch:assert id="digest-error-codes-presence" test="($errors &gt; 0) = exists(@error-codes)">D4: error-codes
                 lists the codes of the error detections, and is omitted when there are none.</sch:assert>
             <sch:assert id="digest-error-codes-are-detection-codes"
@@ -199,6 +203,38 @@
         </sch:rule>
     </sch:pattern>
 
+    <!-- own pattern: within a pattern only the first matching rule fires, and the run-status rules above are also
+         anchored on /xvrl:reports -->
+    <sch:pattern id="cvr-terminal-step">
+        <sch:rule context="/xvrl:reports">
+            <sch:assert id="run-ends-with-decision"
+                        test="xvrl:report[last()]/xvrl:metadata/xvrl:creator/@name = 'decision-recommendation'">Step 9
+                always runs, so every run - completed or cancelled - ends with the decision-recommendation step, found
+                '<sch:value-of select="xvrl:report[last()]/xvrl:metadata/xvrl:creator/@name"/>'.</sch:assert>
+        </sch:rule>
+    </sch:pattern>
+
+    <sch:pattern id="cvr-decision">
+        <sch:rule context="xvrl:detection[@cvr:decision]">
+            <sch:assert id="decision-value" test="@cvr:decision = ('ACCEPT', 'REJECT', 'EVALUATE_FURTHER')">Step 9: the
+                decision is ACCEPT, REJECT or EVALUATE_FURTHER, found '<sch:value-of select="@cvr:decision"/>'.</sch:assert>
+            <sch:assert id="decision-only-on-decision-step"
+                        test="../xvrl:metadata/xvrl:creator/@name = 'decision-recommendation'">Step 9: the decision is
+                stated by the decision-recommendation step, not by '<sch:value-of
+                        select="../xvrl:metadata/xvrl:creator/@name"/>'.</sch:assert>
+            <sch:assert id="decision-has-rationale" test="normalize-space(xvrl:message) != ''">Step 9: the decision
+                carries its rationale as message.</sch:assert>
+            <sch:assert id="reject-is-an-error"
+                        test="(@cvr:decision = 'REJECT') = (@severity = 'error' and @code = 'decision-reject')">Step 9: a
+                rejection is an error detection with code decision-reject; an acceptance carries neither severity nor
+                code (D11).</sch:assert>
+        </sch:rule>
+        <sch:rule context="xvrl:report[xvrl:metadata/xvrl:creator/@name = 'decision-recommendation']">
+            <sch:assert id="decision-step-decides" test="count(xvrl:detection[@cvr:decision]) = 1">Step 9: the
+                decision-recommendation step states exactly one decision.</sch:assert>
+        </sch:rule>
+    </sch:pattern>
+
     <sch:pattern id="cvr-payload">
         <sch:rule context="xvrl:message[@cvr:encoding]">
             <sch:assert id="payload-encoding-value" test="@cvr:encoding = ('dom', 'base64')">D6: an embedded payload is
@@ -225,8 +261,8 @@
 
     <sch:pattern id="cvr-supplemental">
         <sch:rule context="xvrl:supplemental">
-            <sch:assert id="supplemental-role" test="@cvr:role">D17: a supplemental states what it carries, so a
-                consumer can ignore it.</sch:assert>
+            <sch:assert id="supplemental-role" test="@role">D17: a supplemental states what it carries in the XVRL role
+                attribute, so a consumer can ignore it.</sch:assert>
             <sch:assert id="supplemental-not-empty" test="normalize-space(.) != '' or *">An empty supplemental
                 supplements nothing.</sch:assert>
         </sch:rule>

@@ -19,9 +19,13 @@ import org.kosit.base.xml.XmlHelper;
 import org.kosit.conformatron.validation.ValidationArtifactReference;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.TestEngineInformation;
+import org.kosit.validator.impl.conformatron.FixedTimestamps;
+import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
+import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
@@ -29,7 +33,6 @@ import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAc
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
 import org.kosit.validator.testdata.TestResources;
 import org.kost.validator.api.xml.XmlDetection;
@@ -57,44 +60,15 @@ public class CvrlUnhappyPathTest {
     private final CvrlWriter writer = new CvrlWriter("KoSIT XML Validator (canonical pipeline)", "2.0.0-SNAPSHOT");
 
     /**
-     * Runs the canonical pipeline until it cancels, exactly as the E2E runner does, and serializes whatever was
-     * reached. Nothing here short-circuits on failure beyond what the pipeline itself does — that is the point.
+     * Runs the canonical pipeline until it cancels and hands back whatever was reached — through the engine, so that
+     * these tests check the report of a real run rather than of a cascade rebuilt in the test.
      */
-    private CvrlWriter.PipelineResults run(final URI scenarios, final URI document, final String requestedScenarioId) {
+    private PipelineResults run(final URI scenarios, final URI document, final String requestedScenarioId) {
         final VConfiguration configuration = VConfiguration.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
-        final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
-        if (!parsed.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, null, null, null, null, null, null);
-        }
-        final DetectScenariosResult detected = new DetectScenariosAction(new ScenarioRepository(configuration),
-                TestHelper.getTestProcessor()).withDefinitionFile(scenarios.toString()).execute(parsed.getParsedSource(),
-                        requestedScenarioId);
-        if (!detected.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, null, null, null, null, null);
-        }
-        final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
-        if (!selected.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null);
-        }
-        final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
-                true).execute(selected.selected());
-        if (!retrieved.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, null, null, null);
-        }
-        final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(configuration.getContentRepository())
-                .execute(retrieved.artifacts(), "test");
-        if (!prepared.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
-        }
-        final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
-                prepared.ruleSets(), ScenarioSeverityOverrides.of(selected.selected()));
-        if (!applied.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
-        }
-        final ComputeConformanceAction.ComputeConformanceActionResult conformance = new ComputeConformanceAction().execute(applied.result(),
-                List.of(ConformanceTarget.ofScenario(selected.selected())));
-        return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, conformance);
+        // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
+        return new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true, configuration)
+                .run(TestHelper.read(document), requestedScenarioId);
     }
 
     /**
@@ -108,7 +82,7 @@ public class CvrlUnhappyPathTest {
      * way to exercise those reports is to call the steps directly.
      * </p>
      */
-    private CvrlWriter.PipelineResults runWithReferences(final URI document, final String... references) {
+    private PipelineResults runWithReferences(final URI document, final String... references) {
         assertThat(document).isNotNull();
         assertThat(references).isNotNull().doesNotContainNull();
 
@@ -132,22 +106,21 @@ public class CvrlUnhappyPathTest {
                 true).execute(Arrays.stream(references).map(ValidationArtifactReference::of).toList(),
                         parsed.getParsedSource().getSource().getName());
         if (!retrieved.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, null, null, null);
+            return new PipelineResults(parsed, detected, selected, retrieved, null, null, null);
         }
 
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(configuration.getContentRepository())
                 .execute(retrieved.artifacts(), "test");
         if (!prepared.isSuccess()) {
-            return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
+            return new PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);
         }
 
         final ApplyRulesAction.ApplyRulesActionResult applied = new ApplyRulesAction().execute(parsed.getParsedSource(),
                 prepared.ruleSets(), ScenarioSeverityOverrides.of(selected.selected()));
-        return new CvrlWriter.PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
+        return new PipelineResults(parsed, detected, selected, retrieved, prepared, applied, null);
     }
 
-    private Document serialize(final CvrlWriter.PipelineResults results, final String documentName, final String exampleName)
-            throws Exception {
+    private Document serialize(final PipelineResults results, final String documentName, final String exampleName) throws Exception {
         try ( final ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
             this.writer.write(documentName, results, out);
             writeExample(exampleName, out.toByteArray());
@@ -179,7 +152,8 @@ public class CvrlUnhappyPathTest {
             return;
         }
         Files.createDirectories(examples);
-        Files.write(examples.resolve(name), cvrl);
+        // the examples are kept in the repository, so their timestamps are fixed — see FixedTimestamps
+        Files.write(examples.resolve(name), FixedTimestamps.apply(cvrl));
     }
 
     private static List<Element> reports(final Document cvrl) {
@@ -211,10 +185,19 @@ public class CvrlUnhappyPathTest {
         assertThat(root.getAttributeNS(NS_CVR, "conformant")).as("a cancelled run must never look conformant").isEqualTo("false");
 
         final List<Element> reports = reports(cvrl);
-        assertThat(reports).as("the report must not be empty").isNotEmpty();
-        final Element last = reports.get(reports.size() - 1);
-        assertThat(creator(last)).as("the failing step is the last report — nothing runs after a cancellation")
-                .isEqualTo(failingStep.getName());
+        assertThat(reports).as("the report must not be empty").hasSizeGreaterThanOrEqualTo(2);
+        // step 9 always runs, so the last report is the decision — and a cancelled run is always rejected
+        final Element decision = reports.get(reports.size() - 1);
+        assertThat(creator(decision)).as("the decision is the last report").isEqualTo(CTActionType.DECISION_RECOMMENDATION.getName());
+        assertThat(digest(decision).getAttribute("error-codes")).contains(DecisionRecommendationAction.CODE_REJECT);
+        final Element verdict = (Element) decision.getElementsByTagNameNS(NS, "detection").item(0);
+        assertThat(verdict.getAttributeNS(NS_CVR, "decision")).isEqualTo("REJECT");
+        assertThat(verdict.getElementsByTagNameNS(NS, "message").item(0).getTextContent()).as("the rationale names the cancelling step")
+                .contains(failingStep.getName());
+
+        // the failing step is the last one that did real work — nothing else runs after a cancellation
+        final Element last = reports.get(reports.size() - 2);
+        assertThat(creator(last)).as("the failing step is the last step before the decision").isEqualTo(failingStep.getName());
 
         assertThat(digest(last).getAttribute("valid")).as("the failing step's digest").isEqualTo("false");
         assertThat(Integer.parseInt(digest(last).getAttribute("error-count"))).as("errors counted").isPositive();
@@ -225,7 +208,7 @@ public class CvrlUnhappyPathTest {
                 .as("the spec's code for this path").contains(expectedCode);
 
         // every step before the failure ran cleanly and stays in the report
-        for (final Element earlier : reports.subList(0, reports.size() - 1)) {
+        for (final Element earlier : reports.subList(0, reports.size() - 2)) {
             assertThat(digest(earlier).getAttribute("valid")).as("earlier step " + creator(earlier)).isEqualTo("true");
         }
     }
@@ -262,7 +245,7 @@ public class CvrlUnhappyPathTest {
 
         assertCancelledAt(cvrl, CTActionType.DETECT_SCENARIOS, DetectScenariosAction.CODE_SCENARIO_UNKNOWN_ID);
         // the requested id belongs in the message so the caller sees what was asked for
-        final Element failing = reports(cvrl).get(reports(cvrl).size() - 1);
+        final Element failing = reports(cvrl).get(reports(cvrl).size() - 2);
         assertThat(failing.getElementsByTagNameNS(NS, "message").item(0).getTextContent()).contains("no-such-scenario");
     }
 

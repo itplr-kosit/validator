@@ -27,3 +27,4 @@
 | none | `target-conformant` | Target 'EN16931 XRechnung (UBL Invoice)' conformant |
 | none | `target-conformant` | Target 'EN16931 XRechnung (UBL Invoice)' conformant |
 | error | `target-non-conformant` | Target 'EN16931 XRechnung (UBL Invoice)' non-conformant: 1 error detection(s) from rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl' |
+| error | `decision-reject` | Target 'EN16931 XRechnung (UBL Invoice)' non-conformant (rule set resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl — 1 error detection(s) from rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl') |

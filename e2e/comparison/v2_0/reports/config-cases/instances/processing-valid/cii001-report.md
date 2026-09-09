@@ -30,3 +30,4 @@
 | none | `target-conformant` | Target 'EN16931 XRechnung (CII)' conformant |
 | error | `target-non-conformant` | Target 'EN16931 XRechnung (CII)' non-conformant: 1 error detection(s) from rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl' |
 | error | `target-non-conformant` | Target 'EN16931 XRechnung (CII)' non-conformant: 2 error detection(s) from rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl' |
+| error | `decision-reject` | Target 'EN16931 XRechnung (CII)' non-conformant (rule set resources/cii/16b/xsl/EN16931-CII-validation.xsl — 1 error detection(s) from rule set 'resources/cii/16b/xsl/EN16931-CII-validation.xsl'); Target 'EN16931 XRechnung (CII)' non-conformant (rule set resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl — 2 error detection(s) from rule set 'resources/xrechnung/3.0.2/xsl/XRechnung-CII-validation.xsl') |

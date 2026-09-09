@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.base.error.SimpleError;
 import org.kosit.cvr.report.AdHocValidationResult;
 import org.kosit.validator.api.VCheck;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.api.VResult;
 import org.kosit.validator.api.ValidationEngine;
+import org.kosit.validator.api.xvrl.compact.AcceptRecommendation;
+import org.kosit.validator.impl.model.SingleProcessingResult;
 import org.kosit.validator.impl.tasks.CheckTask;
 import org.kosit.validator.impl.tasks.CheckTask.Process;
 import org.kosit.validator.impl.tasks.ComputeAcceptanceTask;
@@ -21,8 +24,13 @@ import org.kosit.validator.impl.tasks.DocumentParseTask;
 import org.kosit.validator.impl.tasks.ScenarioSelectionTask;
 import org.kosit.validator.impl.tasks.SchemaValidationTask;
 import org.kosit.validator.impl.tasks.SchematronValidationTask;
+import org.kosit.validator.model.ValidationResultsSchematron;
 import org.kosit.xvrl.model.XvrlMetadata;
+import org.kosit.xvrl.model.XvrlTimestamp;
+import org.kosit.xvrl.model.XvrlValidator;
 import org.kost.validator.api.saxon.ProcessorProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.Processor;
 
@@ -35,6 +43,8 @@ import net.sf.saxon.s9api.Processor;
 @Deprecated(since = "2.0.0", forRemoval = true)
 public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultVCheck.class);
+
     private final List<VConfiguration> configuration;
 
     private final List<CheckTask> checkSteps;
@@ -43,7 +53,7 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
 
     private final SchematronValidation adHocValidation;
 
-    private final ConformanceValidation conformanceValidation;
+    private final EngineInformation engineInformation;
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     public DefaultVCheck(final EngineInformation engineInformation, final VConfiguration... configuration) {
@@ -70,12 +80,13 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
         this.checkSteps.add(new SchematronValidationTask());
         this.checkSteps.add(new CreateReportsTask(processor));
         this.checkSteps.add(new ComputeAcceptanceTask());
-        this.conformanceValidation = new ConformanceValidation(engineInformation, this.checkSteps);
+        this.engineInformation = engineInformation;
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     protected XvrlMetadata createXvrlMetadata() {
-        return this.conformanceValidation.createMetadata();
+        return XvrlMetadata.builder().addTimestamp(XvrlTimestamp.builderNow())
+                .addValidator(XvrlValidator.builder(this.engineInformation.getName()).version(this.engineInformation.getVersion())).build();
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
@@ -109,9 +120,46 @@ public class DefaultVCheck implements VCheck, ValidationEngine<VResult> {
         return this.adHocValidation.validate(input, schematron);
     }
 
+    /**
+     * The legacy task chain. It used to live in {@link ConformanceValidation}, which is now the canonical pipeline
+     * engine; the chain moved here so that it retires together with this class rather than outliving it inside the
+     * engine.
+     */
     @Deprecated(since = "2.0.0", forRemoval = true)
     protected VResult runCheckInternal(final Process checkProcess) {
-        return this.conformanceValidation.run(checkProcess);
+        final long started = System.currentTimeMillis();
+        LOGGER.info("Checking content of {}", checkProcess.getInput().getName());
+        for (final CheckTask action : this.checkSteps) {
+            final long start = System.currentTimeMillis();
+            if (!action.isSkipped(checkProcess)) {
+                checkProcess.addStepResult(action.check(checkProcess));
+            }
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Step {} finished in {}ms", action.getClass().getSimpleName(), System.currentTimeMillis() - start);
+        }
+        checkProcess.setFinished(true);
+        LOGGER.info("Finished check of {} in {}ms\n", checkProcess.getInput().getName(), System.currentTimeMillis() - started);
+        return createResult(checkProcess);
+    }
+
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    private static VResult createResult(final Process process) {
+        final SingleProcessingResult<AcceptRecommendation, SimpleError> acceptStatusResult = process.getResult(ComputeAcceptanceTask.KEY);
+        final DefaultResult defaultResult = new DefaultResult(acceptStatusResult.getObject());
+        defaultResult.setWellformed(process.getResult(DocumentParseTask.KEY).isValid());
+        defaultResult.setReportSummary(process.getXvrlReportSummary());
+        final SingleProcessingResult<Boolean, SimpleError> schemaValidationResult = process.getResult(SchemaValidationTask.KEY);
+        if (schemaValidationResult != null) {
+            defaultResult.setSchemaViolations(schemaValidationResult.getErrors());
+        }
+        final SingleProcessingResult<List<ValidationResultsSchematron>, String> schematronValidationResult = process
+                .getResult(SchematronValidationTask.KEY);
+        if (schematronValidationResult != null) {
+            defaultResult.setSchematronResult(
+                    schematronValidationResult.getObject().stream().map(ValidationResultsSchematron::getResults).toList());
+        }
+        defaultResult.setProcessingSuccessful(!process.isStopped() && process.isFinished());
+        return defaultResult;
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)

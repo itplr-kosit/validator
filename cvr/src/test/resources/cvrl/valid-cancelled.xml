@@ -31,4 +31,14 @@
     </detection>
     <digest valid="false" error-count="1" error-codes="no-scenario-matched"/>
   </report>
+  <report>
+    <metadata>
+      <creator name="decision-recommendation"/>
+      <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+    </metadata>
+    <detection severity="error" code="decision-reject" cvr:decision="REJECT">
+      <message>Run cancelled at detect-scenarios: no-scenario-matched</message>
+    </detection>
+    <digest valid="false" error-count="1" error-codes="decision-reject"/>
+  </report>
 </reports>

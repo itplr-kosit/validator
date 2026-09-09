@@ -17,6 +17,8 @@ import org.kosit.base.uri.UriHelper;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.VConfiguration;
 import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.impl.conformatron.FixedTimestamps;
+import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
@@ -59,7 +61,7 @@ public class DetectScenariosExamplesTest {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final String path = UriHelper.getPath(document);
         this.writer.write(path.substring(path.lastIndexOf('/') + 1),
-                new CvrlWriter.PipelineResults(parsed, detected, selected, null, null, null, null), out);
+                new PipelineResults(parsed, detected, selected, null, null, null, null), out);
         writeExample(exampleName, out.toByteArray());
 
         // CVRL is a profile of XVRL: a report that does not satisfy the profile is not a CVRL report
@@ -79,7 +81,8 @@ public class DetectScenariosExamplesTest {
             return;
         }
         Files.createDirectories(examples);
-        Files.write(examples.resolve(name), cvrl);
+        // the examples are kept in the repository, so their timestamps are fixed — see FixedTimestamps
+        Files.write(examples.resolve(name), FixedTimestamps.apply(cvrl));
     }
 
     private static Element report(final Document cvrl, final String creator) {

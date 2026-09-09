@@ -56,9 +56,9 @@ public class CvrProfileTest {
 
     @ParameterizedTest
     @CsvSource({ "invalid-cancelled-but-conformant.xml, cancelled-is-not-conformant",
-            "invalid-completed-without-conformance.xml, completed-ends-with-conformance",
-            "invalid-unknown-creator.xml, step-canonical-creator", "invalid-steps-out-of-order.xml, steps-in-pipeline-order",
-            "invalid-digest-count-mismatch.xml, digest-error-count-matches", "invalid-unknown-cvrl-attribute.xml, known-cvr-attribute",
+            "invalid-completed-without-conformance.xml, completed-has-conformance", "invalid-unknown-creator.xml, step-canonical-creator",
+            "invalid-steps-out-of-order.xml, steps-in-pipeline-order", "invalid-digest-count-mismatch.xml, digest-error-count-matches",
+            "invalid-unknown-cvrl-attribute.xml, known-cvr-attribute",
             "invalid-dom-payload-with-source-encoding.xml, payload-source-encoding",
             "invalid-schema-outside-apply-rules.xml, schema-only-on-apply-rules", "invalid-hash-outside-context.xml, hash-in-context" })
     public void testAProfileViolationIsCaughtByItsOwnRule(final String filename, final String assertionId) {

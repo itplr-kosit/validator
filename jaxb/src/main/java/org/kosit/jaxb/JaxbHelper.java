@@ -45,7 +45,11 @@ public final class JaxbHelper {
      * @return the converted value. Never <code>null</code>.
      */
     public static @NonNull XMLGregorianCalendar createTimestamp(final @NonNull GregorianCalendar calendar) {
-        return DATATYPE_FACTORY.newXMLGregorianCalendar(calendar);
+        final XMLGregorianCalendar ret = DATATYPE_FACTORY.newXMLGregorianCalendar(calendar);
+        if (calendar.get(GregorianCalendar.MILLISECOND) == 0) {
+            ret.setFractionalSecond(null);
+        }
+        return ret;
     }
 
     private JaxbHelper() {

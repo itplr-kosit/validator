@@ -51,4 +51,14 @@
     </detection>
     <digest valid="true"/>
   </report>
+  <report>
+    <metadata>
+      <creator name="decision-recommendation"/>
+      <timestamp>2026-09-06T00:00:00+02:00</timestamp>
+    </metadata>
+    <detection cvr:decision="ACCEPT">
+      <message>All 1 conformance target(s) conformant: Simple</message>
+    </detection>
+    <digest valid="true"/>
+  </report>
 </reports>

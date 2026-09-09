@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    CVR - Conformatron Validation Result - the XVRL profile of the KoSIT validator.
+    CVR - Conformance Validation Report - the XVRL profile of the KoSIT validator.
 
     A CVR report IS an XVRL report: its structure is defined by xvrl-1.0.xsd and nothing here repeats that.
     This schema types the CVR extension namespace on top of it - the attributes and the one element that the
@@ -121,6 +121,16 @@
     <xs:attribute name="target-id" type="xs:string"/>
     <xs:attribute name="conformance" type="cvr:Conformance"/>
 
+    <!-- on xvrl:detection of the decision-recommendation step (step 9) -->
+    <xs:simpleType name="Decision">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="ACCEPT"/>
+            <xs:enumeration value="REJECT"/>
+            <xs:enumeration value="EVALUATE_FURTHER"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:attribute name="decision" type="cvr:Decision"/>
+
     <!-- on xvrl:location -->
     <xs:attribute name="artifact-type" type="xs:token">
         <xs:annotation>
@@ -137,13 +147,6 @@
                 The encoding the embedded source document declares. Required for a base64 payload, because writing
                 it back out needs it; meaningless for a dom payload, which is in the report's own encoding.
             </xs:documentation>
-        </xs:annotation>
-    </xs:attribute>
-
-    <!-- on xvrl:supplemental -->
-    <xs:attribute name="role" type="xs:token">
-        <xs:annotation>
-            <xs:documentation>What a supplemental carries, e.g. java-trace for a stack trace.</xs:documentation>
         </xs:annotation>
     </xs:attribute>
 

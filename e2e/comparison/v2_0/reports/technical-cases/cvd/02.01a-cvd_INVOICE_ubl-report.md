@@ -26,3 +26,4 @@
 | none | `target-conformant` | Target 'EN16931 XRechnung CVD (UBL Invoice)' conformant |
 | none | `target-conformant` | Target 'EN16931 XRechnung CVD (UBL Invoice)' conformant |
 | none | `target-conformant` | Target 'EN16931 XRechnung CVD (UBL Invoice)' conformant |
+| none | `decision-accept` | All 1 conformance target(s) conformant: EN16931 XRechnung CVD (UBL Invoice) |

@@ -92,6 +92,13 @@ public class ContentRepository {
     }
 
     /**
+     * @return the base URI this repository resolves artifacts against. Never {@code null}.
+     */
+    public final URI getRepository() {
+        return this.repository;
+    }
+
+    /**
      * Returns the {@link URIResolver} to use for resolving xml artifacts.
      *
      * @return the resolver
