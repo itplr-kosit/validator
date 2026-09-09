@@ -47,11 +47,11 @@ public class Scenario1ConversionServiceTest {
         assertThat(simple.getValidateWithXmlSchema().getResource().get(0).getLocation()).isEqualTo("simple.xsd");
         assertThat(simple.getValidateWithSchematron()).hasSize(1);
 
-        final CreateReportType report = simple.getCreateReport().get(0);
-        assertThat(report.getId()).isEqualTo("Report for eInvoice");
-        assertThat(report.getCustomLevel()).hasSize(1);
-        assertThat(report.getCustomLevel().get(0).getLevel()).isEqualTo(ErrorLevelType.WARNING);
-        assertThat(report.getCustomLevel().get(0).getValue()).containsExactly("BR-01", "BR-02");
+        // the severity overrides are declared with the rule set
+        final ValidateWithSchematron rules = simple.getValidateWithSchematron().get(0);
+        assertThat(rules.getCustomLevel()).hasSize(1);
+        assertThat(rules.getCustomLevel().get(0).getLevel()).isEqualTo(ErrorLevelType.WARNING);
+        assertThat(rules.getCustomLevel().get(0).getValue()).containsExactly("BR-01", "BR-02");
 
         final ScenarioType schemaOnly = scenarios.getScenario().get(1);
         assertThat(schemaOnly.getName()).isEqualTo("SchemaOnly");

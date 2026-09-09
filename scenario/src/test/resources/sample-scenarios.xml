@@ -26,15 +26,8 @@
                 <name>Sample Schematron</name>
                 <location>simple.xsl</location>
             </resource>
-        </validateWithSchematron>
-        <createReport>
-            <id>Report for eInvoice</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>report.xsl</location>
-            </resource>
             <customLevel level="warning">BR-01 BR-02</customLevel>
-        </createReport>
+        </validateWithSchematron>
         <acceptMatch>count(//test:rejected) = 0</acceptMatch>
     </scenario>
 

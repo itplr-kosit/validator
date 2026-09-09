@@ -31,12 +31,6 @@
                 <location>resources/eRechnung/UBL-2.1/xsl/OPENPEPPOL-UBL-T10.xsl</location>
             </resource>
         </validateWithSchematron>
-        <createReport>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>resources/eRechnung/report.xsl</location>
-            </resource>
-        </createReport>
     </scenario>
 
 </scenarios>

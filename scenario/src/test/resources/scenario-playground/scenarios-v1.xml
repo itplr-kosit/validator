@@ -40,12 +40,6 @@
         <location>resources/peppol/billing-bis/3.0.21/PEPPOL-EN16931-UBL.xslt</location>
       </resource>
     </validateWithSchematron>
-    <createReport>
-      <resource>
-        <name>Validation report for Peppol Billing BIS</name>
-        <location>resources/xrechnung-report.xsl</location>
-      </resource>
-    </createReport>
   </scenario>
   
   <scenario>
@@ -79,12 +73,6 @@
         <location>resources/peppol/billing-bis/3.0.21/PEPPOL-EN16931-UBL.xslt</location>
       </resource>
     </validateWithSchematron>
-    <createReport>
-      <resource>
-        <name>Prüfbericht für Peppol Billing BIS</name>
-        <location>resources/xrechnung-report.xsl</location>
-      </resource>
-    </createReport>
   </scenario>
 	
 	<!-- end peppol billing bis -->

@@ -32,20 +32,6 @@
                 <location>repository/simple.xsl</location>
             </resource>
         </validateWithSchematron>
-        <createReport>
-            <id>Report for eInvoice</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>repository/report.xsl</location>
-            </resource>
-        </createReport>
-        <createReport>
-            <id>Report for eInvoice2</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>repository/report.xsl</location>
-            </resource>
-        </createReport>
         <acceptMatch>count(//test:rejected) = 0</acceptMatch>
     </scenario>
 
@@ -69,13 +55,6 @@
                 <location>repository/simple.xsl</location>
             </resource>
         </validateWithSchematron>
-        <createReport>
-            <id>Report for eInvoice</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>repository/report.xsl</location>
-            </resource>
-        </createReport>
     </scenario>
 
 </scenarios>
