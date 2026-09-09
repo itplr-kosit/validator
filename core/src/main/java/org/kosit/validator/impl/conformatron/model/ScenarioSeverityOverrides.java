@@ -8,20 +8,14 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.jspecify.annotations.Nullable;
 import org.kosit.cvr.model.SeverityOverrides;
-import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.CustomErrorLevel;
 import org.kosit.validator.scenario.v1.ErrorLevelType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithSchematron;
 
 /**
- * Reads the {@link SeverityOverrides} out of a scenario configuration (the {@code customLevel} elements of
- * {@code scenarios-v1.xsd}).
- * <p>
- * The overrides belong to the rule set and are declared with it since 2.0 ({@code validateWithSchematron/customLevel});
- * the place 1.x used, {@code createReport/customLevel}, is still read. A code named in both places takes the level of
- * its rule set.
- * </p>
+ * Reads the {@link SeverityOverrides} out of a scenario configuration: the {@code customLevel} elements declared with
+ * the rule sets ({@code validateWithSchematron/customLevel}, {@code scenarios-v1.xsd}).
  * <p>
  * {@link SeverityOverrides} itself is a plain detection-code → severity map and therefore lives in the
  * {@code validator-schematron} module; knowing that a scenario declares them is a concern of this module.
@@ -43,17 +37,9 @@ public final class ScenarioSeverityOverrides {
         };
     }
 
-    private static void collect(final List<CustomErrorLevel> levels, final Map<String, CTStandardSeverity> map) {
-        for (final CustomErrorLevel level : levels) {
-            for (final String code : level.getValue()) {
-                map.put(code, toSeverity(level.getLevel()));
-            }
-        }
-    }
-
     /**
-     * Collects all {@code customLevel} overrides declared by the given scenario configuration (across all rule sets and
-     * all legacy {@code createReport} elements, token lists expanded).
+     * Collects all {@code customLevel} overrides declared by the given scenario configuration (across all rule sets,
+     * token lists expanded).
      *
      * @param configuration the scenario configuration; {@code null} yields {@link SeverityOverrides#NONE}
      * @return the overrides, {@link SeverityOverrides#NONE} when the scenario declares none
@@ -63,14 +49,18 @@ public final class ScenarioSeverityOverrides {
             return SeverityOverrides.NONE;
         }
         final Map<String, CTStandardSeverity> map = new LinkedHashMap<>();
-        // the place of 1.x first, so that the declaration at the rule set wins for a code named in both
-        for (final CreateReportType report : configuration.getCreateReport()) {
-            collect(report.getCustomLevel(), map);
-        }
-        for (final ValidateWithSchematron schematron : configuration.getValidateWithSchematron()) {
-            collect(schematron.getCustomLevel(), map);
-        }
+        collect(configuration, map);
         return SeverityOverrides.of(map);
+    }
+
+    private static void collect(final ScenarioType configuration, final Map<String, CTStandardSeverity> map) {
+        for (final ValidateWithSchematron schematron : configuration.getValidateWithSchematron()) {
+            for (final CustomErrorLevel level : schematron.getCustomLevel()) {
+                for (final String code : level.getValue()) {
+                    map.put(code, toSeverity(level.getLevel()));
+                }
+            }
+        }
     }
 
     /**
@@ -81,5 +71,23 @@ public final class ScenarioSeverityOverrides {
      */
     public static SeverityOverrides of(final @Nullable CTScenarioMatch match) {
         return match instanceof final ScenarioMatch scenarioMatch ? scenarioMatch.getSeverityOverrides() : SeverityOverrides.NONE;
+    }
+
+    /**
+     * The overrides of every scenario a run applies, in one map for step 7: a code declared by several scenarios takes
+     * the level of the last one in application order. Scoping the overrides to the rule sets of their own scenario is a
+     * follow-up of the conformance targets per rule set.
+     *
+     * @param applied the scenarios step 4 selected; foreign implementations contribute nothing
+     * @return the combined overrides, {@link SeverityOverrides#NONE} when none of them declares any
+     */
+    public static SeverityOverrides ofAll(final List<? extends CTScenarioMatch> applied) {
+        final Map<String, CTStandardSeverity> map = new LinkedHashMap<>();
+        for (final CTScenarioMatch match : applied) {
+            if (match instanceof final ScenarioMatch scenarioMatch && scenarioMatch.getConfiguration() != null) {
+                collect(scenarioMatch.getConfiguration(), map);
+            }
+        }
+        return map.isEmpty() ? SeverityOverrides.NONE : SeverityOverrides.of(map);
     }
 }

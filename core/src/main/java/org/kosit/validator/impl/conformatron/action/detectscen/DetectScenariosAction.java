@@ -13,7 +13,6 @@ import org.kosit.conformatron.detection.Detection;
 import org.kosit.conformatron.detection.DetectionList;
 import org.kosit.conformatron.detection.SubjectDetection;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 import org.slf4j.Logger;
@@ -29,9 +28,9 @@ import net.sf.saxon.s9api.XdmNode;
  * XPath match expressions of the configured scenarios. Picking exactly one is the job of {@link SelectScenarioAction}
  * (step 4).
  * <p>
- * Facade strategy: the legacy {@link ScenarioRepository} keeps doing the heavy lifting
- * ({@link ScenarioRepository#findMatches(XdmNode)}). Note the spec'd behavioral difference to the legacy pipeline: "no
- * match" is a <b>failure</b> (cancel + partial CVRL), not a fallback-scenario continuation.
+ * The candidates are the scenarios whose match expression is true for the document, plus every scenario that applies
+ * unconditionally ({@link Scenario#isUnconditional()}). Note the behavioral difference to 1.x: "no match" is a
+ * <b>failure</b> (cancel + partial CVRL), not a fallback-scenario continuation.
  * </p>
  * <p>
  * XPath evaluation requires the Saxon representation: the parsed content of the supplied
@@ -59,39 +58,30 @@ public class DetectScenariosAction implements CTAction {
     /** Detection code when the requested scenario id is not configured (ERROR, cancels the process). */
     public static final String CODE_SCENARIO_UNKNOWN_ID = "scenario-unknown-id";
 
-    private final ScenarioRepository repository;
+    private final List<Scenario> scenarios;
 
     private final Processor processor;
 
-    private String definitionFile;
-
-    public DetectScenariosAction(final ScenarioRepository repository) {
-        this(repository, null);
-    }
-
     /**
-     * The scenario configuration the repository was built from. The report locates a matched scenario both by an XPath
-     * inside the configuration and by the file itself, and the file is not derivable from the legacy scenario model —
-     * so whoever assembles the pipeline has to say.
-     *
-     * @param definitionFile the configuration file, e.g. its URI
-     * @return this for chaining
+     * @param scenarios the configured scenarios, in configuration order; the match runs over all of them
      */
-    public DetectScenariosAction withDefinitionFile(final String definitionFile) {
-        this.definitionFile = definitionFile;
-        return this;
+    public DetectScenariosAction(final List<Scenario> scenarios) {
+        this(scenarios, null);
     }
 
     /**
-     * @param repository the scenario repository providing the match expressions
+     * @param scenarios the configured scenarios, in configuration order; the match runs over all of them
      * @param processor optional Saxon processor used to wrap non-Saxon parsed content (e.g. the W3C DOM produced by the
      *            step-2 reference action) into the {@link XdmNode} the match evaluation needs. Must be the same
      *            processor the match executables were compiled with. If {@code null}, only {@link XdmNode} parsed
      *            content is accepted
      */
-    public DetectScenariosAction(final ScenarioRepository repository, final Processor processor) {
-        Objects.requireNonNull(repository);
-        this.repository = repository;
+    public DetectScenariosAction(final List<Scenario> scenarios, final Processor processor) {
+        Objects.requireNonNull(scenarios);
+        if (scenarios.isEmpty()) {
+            throw new IllegalArgumentException("At least one scenario is required");
+        }
+        this.scenarios = List.copyOf(scenarios);
         this.processor = processor;
     }
 
@@ -132,15 +122,14 @@ public class DetectScenariosAction implements CTAction {
 
     private DetectScenariosResult detectByRequestedId(final CTParsedValidationSource parsedSource, final String requestedScenarioId) {
         final String resourceId = parsedSource.getSource().getName();
-        final Scenario scenario = repository.getScenarios().stream().filter(s -> requestedScenarioId.equals(s.getName()) && !s.isFallback())
-                .findFirst().orElse(null);
+        final Scenario scenario = this.scenarios.stream().filter(s -> requestedScenarioId.equals(s.getName())).findFirst().orElse(null);
         if (scenario == null) {
             final CTDetection detection = Detection.builderError().code(CODE_SCENARIO_UNKNOWN_ID).location(resourceId)
                     .text("Requested scenario '" + requestedScenarioId + "' is not configured").build();
             return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), new DetectionList(detection));
         }
 
-        final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource, this.definitionFile);
+        final ScenarioMatch match = ScenarioMatch.userSelected(scenario, parsedSource);
         final CTDetection detection = SubjectDetection
                 .about(Detection.builderNone().code(CODE_SCENARIO_USER_SELECTED).location(resourceId)
                         .text("Scenario '" + scenario.getName() + "' fixed by user input").build())
@@ -151,7 +140,8 @@ public class DetectScenariosAction implements CTAction {
 
     private DetectScenariosResult detectByMatchExpressions(final CTParsedValidationSource parsedSource, final XdmNode document) {
         final String resourceId = parsedSource.getSource().getName();
-        final List<Scenario> matching = repository.findMatches(document);
+        // a scenario without a match expression applies unconditionally and is always among the candidates
+        final List<Scenario> matching = this.scenarios.stream().filter(s -> s.matches(document)).toList();
         if (matching.isEmpty()) {
             final CTDetection detection = Detection.builderError().code(CODE_NO_SCENARIO_MATCHED).location(resourceId)
                     .text("None of the configured scenarios matches the document").build();
@@ -160,16 +150,16 @@ public class DetectScenariosAction implements CTAction {
 
         if (LOGGER.isDebugEnabled())
             LOGGER.debug(matching.size() + " scenario(s) matched for " + resourceId);
-        final List<ScenarioMatch> matches = matching.stream().map(scenario -> ScenarioMatch.of(scenario, parsedSource, this.definitionFile))
-                .toList();
+        final List<ScenarioMatch> matches = matching.stream().map(scenario -> ScenarioMatch.of(scenario, parsedSource)).toList();
         final List<CTDetection> detections = new ArrayList<>();
         for (final ScenarioMatch match : matches) {
             // scenario id and the pointer into the configuration travel with every candidate
-            detections.add(SubjectDetection
-                    .about(Detection.builderNone().code(CODE_SCENARIO_MATCHED).location(resourceId)
-                            .text("Scenario '" + match.getScenarioName() + "' matched").build())
-                    .identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID()).locatedByXPath(match.getConfigurationLocation())
-                    .inFile(match.getDefinitionFile()).build());
+            final String text = match.getScenario().isUnconditional() ? "Scenario '" + match.getScenarioName() + "' applies unconditionally"
+                    : "Scenario '" + match.getScenarioName() + "' matched";
+            detections
+                    .add(SubjectDetection.about(Detection.builderNone().code(CODE_SCENARIO_MATCHED).location(resourceId).text(text).build())
+                            .identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID())
+                            .locatedByXPath(match.getConfigurationLocation()).inFile(match.getDefinitionFile()).build());
         }
         return new DetectScenariosResult(CTStepResult.SUCCESS, List.copyOf(matches), new DetectionList(detections));
     }

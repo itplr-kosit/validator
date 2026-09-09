@@ -18,9 +18,8 @@ import org.kosit.base.uri.UriHelper;
 import org.kosit.base.xml.XmlHelper;
 import org.kosit.conformatron.validation.ValidationArtifactReference;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.ConformanceValidation;
-import org.kosit.validator.impl.ScenarioRepository;
 import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.conformatron.FixedTimestamps;
 import org.kosit.validator.impl.conformatron.PipelineResults;
@@ -64,7 +63,7 @@ public class CvrlUnhappyPathTest {
      * these tests check the report of a real run rather than of a cascade rebuilt in the test.
      */
     private PipelineResults run(final URI scenarios, final URI document, final String requestedScenarioId) {
-        final VConfiguration configuration = VConfiguration.load(scenarios, TestResources.Simple.REPOSITORY_URI)
+        final ScenarioSet configuration = ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
         return new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true, configuration)
@@ -74,8 +73,8 @@ public class CvrlUnhappyPathTest {
     /**
      * Runs steps 2–4 against a working configuration and then feeds step 5 the given artifact references directly.
      * <p>
-     * This deliberately bypasses {@code VConfiguration.load}: the legacy {@code ConfigurationLoader} resolves and
-     * compiles every scenario resource eagerly at load time and throws {@link IllegalStateException} when that fails
+     * This deliberately bypasses {@code ScenarioSet.load}: the legacy {@code ConfigurationLoader} resolves and compiles
+     * every scenario resource eagerly at load time and throws {@link IllegalStateException} when that fails
      * ({@code ContentRepository}). A configuration with a missing or non-compiling rule set therefore never reaches
      * step 5 or 6 at all — their spec'd failure paths are unreachable through the normal entry point, and no partial
      * CVRL is produced for them. Until artifact resolution and rule preparation belong to the pipeline alone, the only
@@ -86,15 +85,13 @@ public class CvrlUnhappyPathTest {
         assertThat(document).isNotNull();
         assertThat(references).isNotNull().doesNotContainNull();
 
-        final VConfiguration configuration = VConfiguration
-                .load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
+        final ScenarioSet configuration = ScenarioSet.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         final ParseXmlResult parsed = new ParseXmlAction().execute(TestHelper.read(document));
         assertThat(parsed.isSuccess()).isTrue();
 
-        final DetectScenariosResult detected = new DetectScenariosAction(new ScenarioRepository(configuration),
-                TestHelper.getTestProcessor()).withDefinitionFile(TestResources.Simple.SCENARIOS_WITH_SCH.toString())
-                        .execute(parsed.getParsedSource());
+        final DetectScenariosResult detected = new DetectScenariosAction(configuration.getScenarios(), TestHelper.getTestProcessor())
+                .execute(parsed.getParsedSource());
         assertThat(detected.isSuccess()).isTrue();
 
         final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
@@ -109,7 +106,7 @@ public class CvrlUnhappyPathTest {
             return new PipelineResults(parsed, detected, selected, retrieved, null, null, null);
         }
 
-        final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(configuration.getContentRepository())
+        final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(configuration.getScenarios().get(0).getRepository())
                 .execute(retrieved.artifacts(), "test");
         if (!prepared.isSuccess()) {
             return new PipelineResults(parsed, detected, selected, retrieved, prepared, null, null);

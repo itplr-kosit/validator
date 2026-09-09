@@ -40,7 +40,13 @@
         <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+            </context>
+        </detection>
+        <detection cvr:scenario-id="Always">
+            <message>Scenario 'Always' applies unconditionally</message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='Always']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -55,14 +61,7 @@
             <message xml:id="select-scenario-content" cvr:mime-type="application/xml" cvr:encoding="dom">
                 <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
                     <name>Simple</name>
-                    <description>
-                        <p>Nur Schemaprüfung.</p>
-                    </description>
-                    <namespace prefix="xvrl">http://www.xproc.org/ns/xvrl
-        </namespace>
-                    <namespace prefix="test">
-            http://validator.kosit.de/test-sample</namespace>
-                    <namespace prefix="rpt">http://validator.kosit.de/test-report</namespace>
+                    <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
                     <match>/test:simple</match>
                     <validateWithXmlSchema>
                         <resource>
@@ -70,17 +69,37 @@
                             <location>simple.xsd</location>
                         </resource>
                     </validateWithXmlSchema>
-                    <validateWithSchematron compiler="iso-schematron">
+                    <validateWithSchematron compiler="schxslt">
                         <resource>
                             <name>Sample Schematron</name>
-                            <location>simple.sch</location>
+                            <location>simple.xsl</location>
                         </resource>
                     </validateWithSchematron>
-                    <acceptMatch>count(//test:rejected) = 0</acceptMatch>
+                    <acceptMatch/>
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+            </context>
+        </detection>
+        <detection cvr:scenario-id="Always">
+            <message>Scenario 'Always' applies unconditionally and is selected in addition</message>
+            <message xml:id="select-scenario-content" cvr:mime-type="application/xml" cvr:encoding="dom">
+                <scenario xmlns="http://www.xoev.de/de/validator/framework/2/scenarios">
+                    <name>Always</name>
+                    <description>
+                        <p>No match: applies to every document, in addition to the scenario detected by its match.</p>
+                    </description>
+                    <validateWithSchematron compiler="schxslt">
+                        <resource>
+                            <name>Sample Schematron, compiled at runtime</name>
+                            <location>simple.sch</location>
+                        </resource>
+                    </validateWithSchematron>
+                </scenario>
+            </message>
+            <context>
+                <location xpath="/*:scenarios/*:scenario[*:name='Always']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
             </context>
         </detection>
         <digest valid="true"/>

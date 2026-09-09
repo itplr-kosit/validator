@@ -12,7 +12,7 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.base.io.ResourceHelper;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.kosit.validator.api.VConfiguration;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.TestEngineInformation;
@@ -29,7 +29,7 @@ public class StandardExample {
         // Load scenarios.xml from classpath
         final URL scenarios = this.getClass().getClassLoader().getResource("examples/simple/scenarios-with-relative-paths.xml");
         // Load the rest of the specific Validator configuration from classpath
-        final VConfiguration config = VConfiguration.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
+        final ScenarioSet config = ScenarioSet.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
         // The engine over that configuration - the canonical pipeline, steps 2 to 9
         final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(new TestEngineInformation(),
                 ProcessorProvider.getProcessor(), config);

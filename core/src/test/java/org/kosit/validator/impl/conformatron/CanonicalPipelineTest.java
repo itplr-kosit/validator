@@ -10,8 +10,7 @@ import org.conformatron.api.model.conformance.CTConformanceResult;
 import org.conformatron.api.model.detection.CTDetection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.ScenarioRepository;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.testdata.TestResources;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
@@ -49,15 +48,12 @@ import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
  */
 public class CanonicalPipelineTest {
 
-    private ScenarioRepository scenarioRepository;
-
-    private VConfiguration configuration;
+    private ScenarioSet configuration;
 
     @BeforeEach
     public void setup() {
-        this.configuration = VConfiguration.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
+        this.configuration = ScenarioSet.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
-        this.scenarioRepository = new ScenarioRepository(this.configuration);
     }
 
     /** Runs the full chain 2–9 and returns the step-8 result; asserts every intermediate step succeeded. */
@@ -68,7 +64,7 @@ public class CanonicalPipelineTest {
         trace.addAll(codes(parsed.getDetectionList().getAll()));
 
         // step 3: DETECT_SCENARIOS — the DOM is wrapped into the Saxon model for the XPath matching
-        final DetectScenariosResult detected = new DetectScenariosAction(this.scenarioRepository, TestHelper.getTestProcessor())
+        final DetectScenariosResult detected = new DetectScenariosAction(this.configuration.getScenarios(), TestHelper.getTestProcessor())
                 .execute(parsed.getParsedSource());
         assertThat(detected.isSuccess()).isTrue();
         trace.addAll(codes(detected.detections().getAll()));
@@ -85,8 +81,8 @@ public class CanonicalPipelineTest {
         trace.addAll(codes(retrieved.detections().getAll()));
 
         // step 6: PREPARE_RULES — transpile + compile into engine-ready rule sets
-        final PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getContentRepository()).execute(retrieved.artifacts(),
-                selected.selected().getParsedSource().getSource().getName());
+        final PrepareRulesResult prepared = new PrepareRulesAction(this.configuration.getScenarios().get(0).getRepository())
+                .execute(retrieved.artifacts(), selected.selected().getParsedSource().getSource().getName());
         assertThat(prepared.isSuccess()).isTrue();
         trace.addAll(codes(prepared.detections().getAll()));
 

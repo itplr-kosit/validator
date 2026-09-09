@@ -2,35 +2,36 @@ package org.kosit.validator.config;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.validation.Schema;
 
-import org.kosit.base.string.StringHelper;
-import org.kosit.jaxb.JaxbHelper;
-import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
-import org.kosit.validator.api.VConfiguration;
 import org.kosit.schematron.ContentRepository;
+import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.schematron.resolve.ResolvingMode;
+import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.scenario.v1.DescriptionType;
-import org.kosit.validator.scenario.v1.ObjectFactory;
-import org.kosit.validator.scenario.v1.Scenarios;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.Processor;
 
 /**
- * Implements a builder style creation of a {@link VConfiguration}.
- * 
+ * Implements a builder style creation of a {@link ScenarioSet}: the scenarios assembled in code instead of read from a
+ * scenarios.xml.
+ * <p>
+ * Unlike the {@link ConfigurationLoader}, the builder checks the artifacts it is given right away - a location that
+ * does not resolve or compile is an error of the code that assembles the configuration, and it is reported as such when
+ * {@link #build(Processor)} is called. The compiled artifacts stay in the cache of the content repository, so the
+ * pipeline does not compile them a second time.
+ * </p>
+ *
  * @author Andreas Penski
  */
 public class ConfigurationBuilder {
@@ -38,10 +39,6 @@ public class ConfigurationBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationBuilder.class);
 
     private final List<ScenarioBuilder> scenarios = new ArrayList<>();
-
-    private final Map<String, Object> parameters = new HashMap<>();
-
-    private FallbackBuilder fallbackBuilder;
 
     private ResolvingConfigurationStrategy resolvingConfigurationStrategy;
 
@@ -60,29 +57,10 @@ public class ConfigurationBuilder {
     private String description;
 
     /**
-     * Create a fallback scenario configuration.
-     *
-     * @return the builder
-     */
-    public static FallbackBuilder fallback() {
-        return new FallbackBuilder();
-    }
-
-    /**
-     * Create the default fallback configuration if new scenario match. Note: this is public for explicit usage. If no
-     * fallback is configured, this is the still default fallback.
-     *
-     * @return a fallback configuration
-     */
-    public static FallbackBuilder defaultFallback() {
-        throw new UnsupportedOperationException("Not yet defined");
-    }
-
-    /**
      * Create a named schematron configuration.
      *
      * @param name the name of the schematron configuration
-     * @return new {@link SchemaBuilder}
+     * @return new {@link SchematronBuilder}
      */
     public static SchematronBuilder schematron(final String name) {
         return new SchematronBuilder().name(name);
@@ -148,16 +126,6 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Create named report configuration.
-     *
-     * @param name the name of the report
-     * @return the report configuration builder
-     */
-    public static ReportBuilder report(final String name) {
-        return new ReportBuilder().name(name);
-    }
-
-    /**
      * Add a specific author name to this configuration.
      *
      * @param authorName the name of the author
@@ -215,21 +183,6 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Sets a specific fallback scenario configuration. Note: calling this more than once is possible, but the last call
-     * will define the actual fallback scenario used. There can be only one
-     *
-     * @param builder the {@link FallbackBuilder}
-     * @return this
-     */
-    public ConfigurationBuilder with(final FallbackBuilder builder) {
-        if (this.fallbackBuilder != null) {
-            LOGGER.warn("Overriding previously created fallback scenario");
-        }
-        this.fallbackBuilder = builder;
-        return this;
-    }
-
-    /**
      * Adds a description to this configuration.
      *
      * @param description the descriptioin
@@ -241,68 +194,30 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Add a parameter to the configuration.
-     * 
-     * @param key the key of the parameter
-     * @param value the value of the parameter
-     * @return this
-     */
-    public ConfigurationBuilder parameter(final String key, final Object value) {
-        this.parameters.put(key, value);
-        return this;
-    }
-
-    /**
-     * Builds the actual {@link VConfiguration} by validating all builder inputs and constructing necessary objects.
+     * Builds the actual {@link ScenarioSet} by validating all builder inputs and constructing necessary objects.
      *
+     * @param processor the Saxon processor the scenarios are compiled with - the same the engine runs with
      * @return a valid configuration
      * @throws IllegalStateException when the configuration is not valid/complete
      */
-    public VConfiguration build(final Processor processor) {
+    public ScenarioSet build(final Processor processor) {
         final ContentRepository contentRepository = resolveContentRepository(processor);
         final List<Scenario> list = initializeScenarios(contentRepository);
-        final Scenario fallbackScenario = initializeFallback(contentRepository);
-        final DefaultConfiguration configuration = new DefaultConfiguration(list, fallbackScenario);
-        configuration.setAdditionalParameters(this.parameters);
-        configuration.setAuthor(this.author);
-        configuration.setDate(this.date);
-        configuration.setName(this.name);
-        configuration.setContentRepository(contentRepository);
-        configuration.getAdditionalParameters().put(ConfigurationKeys.SCENARIOS_DEFINITION, createDefinition(configuration));
-        return (configuration);
+        return new ScenarioSet(this.name, this.author, this.date, null, list);
     }
 
     private ContentRepository resolveContentRepository(final Processor processor) {
         if (this.contentRepository == null) {
+            if (this.repository == null) {
+                this.repository = Paths.get("").toAbsolutePath().toUri();
+                LOGGER.warn("No repository configured, resolving artifacts relative to the working directory {}", this.repository);
+            }
             final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
             this.contentRepository = new ContentRepository(processor, resolving, this.repository);
         } else if (this.resolvingConfigurationStrategy != null) {
             LOGGER.warn("Ignore definition of resolve strategy since a custom ContentRepository is supplied");
         }
         return this.contentRepository;
-    }
-
-    private Scenarios createDefinition(final DefaultConfiguration configuration) {
-        final Scenarios s = new Scenarios();
-        s.setAuthor(configuration.getAuthor());
-        s.setDate(JaxbHelper.createTimestamp());
-        final DescriptionType d = new DescriptionType();
-        d.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP(StringHelper.blankToDefault(this.description, "")));
-        s.setDescription(d);
-        s.setName(configuration.getName());
-        s.getScenario().addAll(configuration.getScenarios().stream().map(Scenario::getConfiguration).toList());
-        return s;
-    }
-
-    private Scenario initializeFallback(final ContentRepository contentRepository) {
-        if (this.fallbackBuilder == null) {
-            throw new IllegalStateException("No fallback configuration specified");
-        }
-        final SingleProcessingResult<Scenario, String> result = this.fallbackBuilder.build(contentRepository);
-        if (result.isInvalid()) {
-            throw new IllegalStateException("Invalid fallback configuration: " + String.join(",", result.getErrors()));
-        }
-        return result.getObject();
     }
 
     private List<Scenario> initializeScenarios(final ContentRepository contentRepository) {
@@ -331,7 +246,7 @@ public class ConfigurationBuilder {
     /**
      * Sets a specific resolving mode, for resolving xml artifacts for this configuration. See {@link ResolvingMode} for
      * details.
-     * 
+     *
      * @param mode the mode
      * @return this
      */
@@ -342,7 +257,7 @@ public class ConfigurationBuilder {
 
     /**
      * Sets a specific strategy to use for resolving artefacts for scenarios.
-     * 
+     *
      * @param strategy the strategy
      * @return this
      */
@@ -353,7 +268,7 @@ public class ConfigurationBuilder {
 
     /**
      * Set a specific repository location for resolving artifacts for scenarios.
-     * 
+     *
      * @param repository the repository location
      * @return this
      */
@@ -385,14 +300,6 @@ public class ConfigurationBuilder {
 
     List<ScenarioBuilder> getScenarios() {
         return this.scenarios;
-    }
-
-    Map<String, Object> getParameters() {
-        return this.parameters;
-    }
-
-    FallbackBuilder getFallbackBuilder() {
-        return this.fallbackBuilder;
     }
 
     ResolvingMode getResolvingMode() {

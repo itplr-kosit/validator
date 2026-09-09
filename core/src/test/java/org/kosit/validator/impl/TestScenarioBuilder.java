@@ -1,134 +1,44 @@
 package org.kosit.validator.impl;
 
 import java.net.URI;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
 
-import javax.xml.transform.Source;
-import javax.xml.validation.Schema;
-
-import org.kosit.base.xml.SchemaResolver;
+import org.jspecify.annotations.Nullable;
 import org.kosit.schematron.ContentRepository;
-import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.api.VConfiguration;
-import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.ScenarioArtifacts;
-import org.kosit.validator.impl.ScenarioRepository;
-import org.kosit.validator.scenario.v1.CreateReportType;
 import org.kosit.validator.scenario.v1.ResourceType;
 import org.kosit.validator.scenario.v1.ScenarioType;
 import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
 import org.kosit.validator.testdata.TestResources;
 import org.kost.validator.api.saxon.ProcessorProvider;
 
+/**
+ * Scenarios for tests that need one without a scenarios.xml: schema validation against {@code simple.xsd} of the shared
+ * test repository, name and match as the test says.
+ */
 public class TestScenarioBuilder {
 
+    /** @return the artifact repository of the shared simple test data */
+    public static ContentRepository createRepository() {
+        return new ContentRepository(ProcessorProvider.getProcessor(), TestHelper.getTestResolvingStrategy(),
+                TestResources.Simple.REPOSITORY_URI);
+    }
+
+    /** @return the scenario "simple" matching every document root */
     public static Scenario createDefault() {
-        return createScenario(TestResources.Simple.SCHEMA, TestResources.Simple.REPORT_XSL);
+        return createScenario("simple", "/*");
     }
 
     /**
-     * Creates a {@link ScenarioRepository} around the given scenarios (match executables are compiled from the
-     * configured match expressions) with a synthetic fallback scenario.
-     *
-     * @param scenarios scenarios to create
-     * @return The scenario repository
+     * @param name the scenario name
+     * @param match the match expression; {@code null} for a scenario that applies unconditionally
+     * @return a scenario validating against {@code simple.xsd} of the shared test repository
      */
-    public static ScenarioRepository createRepository(final Scenario... scenarios) {
-        final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), TestHelper.getTestResolvingStrategy(),
-                TestResources.Simple.REPOSITORY_URI);
-        for (final Scenario scenario : scenarios) {
-            scenario.setMatchExecutable(ScenarioArtifacts.createMatchExecutable(repo, scenario.getConfiguration()));
-        }
-        final Scenario fallback = createDefault();
-        fallback.getConfiguration().setName("fallback");
-        fallback.setFallback(true);
-        final VConfiguration configuration = new VConfiguration() {
-
-            @Override
-            public List<Scenario> getScenarios() {
-                return List.of(scenarios);
-            }
-
-            @Override
-            public Scenario getFallbackScenario() {
-                return fallback;
-            }
-
-            @Override
-            public String getAuthor() {
-                return "test";
-            }
-
-            @Override
-            public String getName() {
-                return "test-configuration";
-            }
-
-            @Override
-            public String getDate() {
-                return "2026-08-11";
-            }
-
-            @Override
-            public Map<String, Object> getAdditionalParameters() {
-                return Map.of();
-            }
-
-            @Override
-            public ContentRepository getContentRepository() {
-                return repo;
-            }
-        };
-        return new ScenarioRepository(configuration);
-    }
-
-    private static Schema createSchema(final URL url) {
-        final ContentRepository contentRepository = new ContentRepository(TestHelper.getTestProcessor(),
-                TestHelper.getTestResolvingStrategy(), null);
-
-        // we resolve without a repository
-        final var resolved = SchemaResolver.resolve(url);
-        if (resolved == null)
-            throw new IllegalStateException("Failed to resolve URL " + url);
-
-        return contentRepository.createSchema(new Source[] { resolved });
-    }
-
-    public static Scenario createScenario(final URI schemafile, final URI reportTransformation) {
-
-        try {
-            final ContentRepository repo = new ContentRepository(ProcessorProvider.getProcessor(), TestHelper.getTestResolvingStrategy(),
-                    TestResources.Simple.REPOSITORY_URI);
-            final ScenarioType t = new ScenarioType();
-            final Scenario scenario = new Scenario(t);
-            scenario.setUnparsedTextURIResolver(repo.getUnparsedTextURIResolver());
-            scenario.setUriResolver(repo.getResolver());
-            // schema validation
-            t.setValidateWithXmlSchema(createSchemaValidation(schemafile));
-            if (reportTransformation != null) {
-
-                t.getCreateReport().add(createReportTransformation(reportTransformation));
-                // final XsltCompiler xsltCompiler = ProcessorProvider.getProcessor().newXsltCompiler();
-                // xsltCompiler.setURIResolver(new RelativeUriResolver(Helper.Simple.REPOSITORY_URI));
-                // scenario.setUriResolver(new RelativeUriResolver(Helper.Simple.REPOSITORY_URI));
-                // scenario.setUnparsedTextURIResolver(new RelativeUriResolver(Helper.Simple.REPOSITORY_URI));
-                // final XsltExecutable executable = xsltCompiler.compile(new
-                // StreamSource(reportTransformation.toURL().openStream()));
-                // final Scenario.Transformation ts = new Scenario.Transformation(executable,
-                // t.getCreateReport().get(0).getResource());
-                scenario.setReportTransformations(ScenarioArtifacts.createReportTransformations(repo, t));
-            }
-
-            scenario.setSchema(createSchema(schemafile.toURL()));
-            final ResolvingConfigurationStrategy strategy = TestHelper.getTestResolvingStrategy();
-            scenario.setFactory(strategy);
-            return scenario;
-        } catch (final Exception e) {
-            throw new IllegalArgumentException(e);
-        }
+    public static Scenario createScenario(final String name, final @Nullable String match) {
+        final ScenarioType t = new ScenarioType();
+        t.setName(name);
+        t.setMatch(match);
+        t.setValidateWithXmlSchema(createSchemaValidation(TestResources.Simple.SCHEMA));
+        return Scenario.of(t, createRepository(), null);
     }
 
     /**
@@ -144,16 +54,6 @@ public class TestScenarioBuilder {
         return uri.substring(uri.lastIndexOf('/') + 1);
     }
 
-    private static CreateReportType createReportTransformation(final URI reportTransformation) {
-        final CreateReportType report = new CreateReportType();
-        final ResourceType reporResource = new ResourceType();
-        reporResource.setLocation(getRepositoryLocation(reportTransformation));
-        reporResource.setName("default");
-        report.setResource(reporResource);
-        report.setId("default");
-        return report;
-    }
-
     private static ValidateWithXmlSchema createSchemaValidation(final URI schemafile) {
         final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
         final ResourceType r = new ResourceType();
@@ -162,5 +62,4 @@ public class TestScenarioBuilder {
         v.getResource().add(r);
         return v;
     }
-
 }
