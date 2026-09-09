@@ -29,13 +29,6 @@
                 <location>simple-schematron-error.xsl</location>
             </resource>
         </validateWithSchematron>
-        <createReport>
-            <id>Report for eInvoice</id>
-            <resource>
-                <name>Report for eInvoice</name>
-                <location>report.xsl</location>
-            </resource>
-        </createReport>
     </scenario>
 
 </scenarios>
