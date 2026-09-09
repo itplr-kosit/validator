@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" frameworkVersion="2.0.0">
+    <name>Matched plus unconditional</name>
+    <author>QA</author>
+    <date>2026-09-08</date>
+    <description>
+        <p>A scenario matched by expression and a scenario without match, which applies unconditionally and is run in
+            addition - one conformance target each.</p>
+    </description>
+
+    <scenario>
+        <name>Simple</name>
+        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <match>/test:simple</match>
+        <validateWithXmlSchema>
+            <resource>
+                <name>Sample Schema</name>
+                <location>simple.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+        <validateWithSchematron compiler="schxslt">
+            <resource>
+                <name>Sample Schematron</name>
+                <location>simple.xsl</location>
+            </resource>
+        </validateWithSchematron>
+        <acceptMatch/>
+    </scenario>
+
+    <scenario>
+        <name>Always</name>
+        <description>
+            <p>No match: applies to every document, in addition to the scenario detected by its match.</p>
+        </description>
+        <validateWithSchematron compiler="schxslt">
+            <resource>
+                <name>Sample Schematron, compiled at runtime</name>
+                <location>simple.sch</location>
+            </resource>
+        </validateWithSchematron>
+    </scenario>
+
+</scenarios>

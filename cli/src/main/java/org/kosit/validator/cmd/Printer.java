@@ -46,6 +46,16 @@ public class Printer {
     }
 
     /**
+     * Writes content to the standard error channel as it is - for text that is not a message template, like a usage
+     * message with its quotes and placeholders.
+     *
+     * @param content the content to write
+     */
+    public static void writeErrRaw(final String content) {
+        ERR.println(content);
+    }
+
+    /**
      * Writes to standard output channel.
      * 
      * @param message the message with placeholders

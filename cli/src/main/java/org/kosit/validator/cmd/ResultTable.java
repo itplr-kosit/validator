@@ -63,10 +63,21 @@ final class ResultTable {
      * rule application shows {@code N}, as in 1.6: its report carries no {@code validationStepResult} for the step at
      * all, and "no rule set complained" is not the same statement as "no rule set ran".
      */
-    private static boolean isValid(final ConformanceValidationResult result, final CTValidationStandard standard) {
+    /**
+     * The mark of one rule set kind in the table: {@code Y} if rule sets of that kind ran without an error, {@code N}
+     * if one found an error or the run cancelled, {@code -} if the run completed without any rule set of that kind (an
+     * ad hoc validation has no XML Schema).
+     */
+    private static String mark(final ConformanceValidationResult result, final CTValidationStandard standard) {
+        if (!result.isCompleted()) {
+            return "N";
+        }
         final List<CTDetectionList> ofKind = result.getFindingsByRuleSet().entrySet().stream().filter(e -> standard(e.getKey()) == standard)
                 .map(Entry::getValue).toList();
-        return !ofKind.isEmpty() && ofKind.stream().noneMatch(CTDetectionList::containsAtLeastOneError);
+        if (ofKind.isEmpty()) {
+            return "-";
+        }
+        return ofKind.stream().noneMatch(CTDetectionList::containsAtLeastOneError) ? "Y" : "N";
     }
 
     private static CTValidationStandard standard(final CTPreparedRuleSet ruleSet) {
@@ -96,8 +107,8 @@ final class ResultTable {
             final ConformanceValidationResult value = e.getValue();
             final Code textcolor = isAcceptable(value) ? Code.GREEN : Code.RED;
             grid.addCell(e.getKey(), textcolor);
-            grid.addCell(isValid(value, CTValidationStandard.XSD) ? "Y" : "N", textcolor);
-            grid.addCell(isValid(value, CTValidationStandard.SCHEMATRON) ? "Y" : "N", textcolor);
+            grid.addCell(mark(value, CTValidationStandard.XSD), textcolor);
+            grid.addCell(mark(value, CTValidationStandard.SCHEMATRON), textcolor);
             grid.addCell(recommendation(value), textcolor);
             grid.addCell(describe(value));
         });

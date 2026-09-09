@@ -17,6 +17,15 @@ It enables:
 - **OpenAPI, contract first**: the API is `META-INF/openapi.yml`; the JAX-RS interface is generated from it.
 - **Health checks**: `/q/health/ready` for Kubernetes and other orchestrators.
 - **Multiple configurations**: several scenario files, each with its own repository.
+- **Ad hoc validation**: a document against a set of posted artifacts — XML Schemas, Schematrons, precompiled
+  Schematron XSLTs, as single files or as a ZIP repository — without any scenario configuration
+  (`POST /api/validation/adhoc`).
+
+| Operation | Request | Answer |
+|---|---|---|
+| `POST /api/validation` | the document as body, `application/xml` | `201 Created`, `Location` of the result, run description as JSON |
+| `POST /api/validation/adhoc` | `multipart/form-data`: `document` + `resource`… and/or `repository` + `artifact`… | as above; `400` without document or artifact, or for an artifact of unknown kind |
+| `GET /api/validation/result/{id}` | — | `200` the CVR (`application/xml`), or `404` when unknown or evicted |
 
 ## Starting the Server
 
@@ -65,6 +74,43 @@ there so that a deferred execution can be introduced later without changing the 
 A document that can not be parsed is **not** a bad request. It creates a run like any other document; the pipeline
 cancels at `parse-document`, and the result is the partial CVR that says so (`cvr:status="CANCELLED"`). `400` is
 reserved for a malformed request itself, e.g. an empty body.
+
+### Create an ad hoc validation run — `POST /api/validation/adhoc`
+
+Validate a document against a set of posted artifacts instead of the configured scenarios: the same pipeline over one
+scenario assembled from them — no match (it applies to the document), the XML Schemas as its schema step, every
+Schematron or precompiled Schematron XSLT as one rule set, in the order posted — and the same result resource.
+
+- **Consumes**: `multipart/form-data`
+    - `document` (required): the XML document
+    - `resource` (repeatable): an artifact as a single file — XML Schema (`.xsd`), Schematron (`.sch`) or precompiled
+      Schematron XSLT (`.xsl`). The file name of the part decides the kind; a part without a usable name is typed by its
+      root element (`xs:schema`, `sch:schema`, `xsl:stylesheet`) and named `resource-N`. One part per file.
+    - `repository`: a ZIP archive that becomes the artifact repository of the run. Its entries keep their paths, so
+      `xs:import`, `sch:include` and `xsl:import` between them resolve (limit: 256 MB unpacked).
+    - `artifact` (repeatable): the entries of the ZIP to apply as artifacts, in this order.
+    - `schematron`: the part of the first version of this operation — still accepted as one `resource`.
+- **Answers**: `201 Created`, exactly like `POST /api/validation`; `400` without `document`, without any artifact, for a
+  `resource` that is neither XSD, Schematron nor XSLT, for an `artifact` the ZIP does not contain
+
+Both forms may be combined; the repository entries are applied first, then the resources. In the report the scenario is
+named after the artifacts (`simple.xsd, simple.sch`, or `with-include.sch`). A rule set that does not compile is not a
+`400` — it is a run that cancels at `prepare-rules`, like with a configured scenario.
+
+```bash
+# one Schematron
+curl -s -i -X POST -F document=@rechnung.xml -F resource=@rules.sch http://localhost:8080/api/validation/adhoc
+
+# schema and rules as single files
+curl -s -i -X POST -F document=@rechnung.xml -F resource=@UBL-Invoice-2.1.xsd -F resource=@XRechnung-UBL-validation.xsl \
+     http://localhost:8080/api/validation/adhoc
+
+# a modular Schematron: the ZIP carries the included files, "artifact" names the entry to apply
+curl -s -i -X POST -F document=@rechnung.xml -F repository=@rules.zip -F artifact=XRechnung-UBL-validation.sch \
+     http://localhost:8080/api/validation/adhoc
+```
+
+RELAX NG (`.rnc`) is not supported yet.
 
 ### Fetch the result — `GET /api/validation/result/{id}`
 

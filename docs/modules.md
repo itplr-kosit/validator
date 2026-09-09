@@ -52,7 +52,7 @@ It carries the canonical pipeline steps that need no scenario configuration:
 ### Package Roots
 
 - `org.kosit.schematron`: the engine itself - `ContentRepository`, the Schematron compilers and the compiler registry,
-  and `SchematronValidation`, the ad-hoc engine that validates a document against a single Schematron.
+  the ad-hoc validation against a single Schematron is the same engine over a scenario assembled at runtime (`ConformanceValidation.adHoc`).
 - `org.kosit.schematron.resolve`: the resolving strategies and `ResolvingMode`.
 - `org.kosit.schematron.saxon`: `ProcessorProvider`, the secured Saxon processor.
 - `org.kosit.cvr`: the Conformance Validation Report model - the `ValidationEngine` contract plus the `action`,

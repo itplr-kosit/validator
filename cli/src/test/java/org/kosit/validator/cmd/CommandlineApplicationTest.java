@@ -17,6 +17,7 @@ import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kosit.base.uri.UriHelper;
 import org.kosit.validator.testdata.TestResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +107,45 @@ public class CommandlineApplicationTest {
         commandLine.execute(args);
         assertThat(testWriter.getErrorOutput()).isNotEmpty();
         assertThat(testWriter.getErrorOutput()).contains("Missing required option: \'--scenarios");
+    }
+
+    @Test
+    public void testAdHocSchematronAccepts() {
+        final String[] args = { "-S", Paths.get(UriHelper.resolve(TestResources.Simple.REPOSITORY_URI, "simple.sch", true)).toString(),
+                Paths.get(TestResources.Simple.SIMPLE_VALID).toString() };
+        commandLine.execute(args);
+        assertThat(commandLine.<ReturnValue> getExecutionResult().getCode()).isZero();
+        assertThat(testWriter.getOutput()).contains("Ad hoc validation against").contains("Processing of 1 object(s) completed");
+    }
+
+    @Test
+    public void testAdHocSchematronRejects() {
+        final String[] args = { "-S", Paths.get(UriHelper.resolve(TestResources.Simple.REPOSITORY_URI, "simple.sch", true)).toString(),
+                Paths.get(TestResources.Simple.SCHEMATRON_INVALID).toString() };
+        commandLine.execute(args);
+        // the exit code is the number of documents that are not acceptable
+        assertThat(commandLine.<ReturnValue> getExecutionResult().getCode()).isEqualTo(1);
+        assertThat(testWriter.getOutput()).contains("Processing of 1 object(s) completed");
+    }
+
+    @Test
+    public void testAdHocSetOfArtifacts() {
+        // schema and rules together: the schema rejects what the rules alone would accept
+        final String[] set = { "-S", Paths.get(UriHelper.resolve(TestResources.Simple.REPOSITORY_URI, "simple.xsd", true)).toString(), "-S",
+                Paths.get(UriHelper.resolve(TestResources.Simple.REPOSITORY_URI, "simple.sch", true)).toString(), "-r",
+                Paths.get(TestResources.Simple.REPOSITORY_URI).toString(), Paths.get(TestResources.Simple.SCHEMA_INVALID).toString() };
+        commandLine.execute(set);
+        assertThat(commandLine.<ReturnValue> getExecutionResult().getCode()).isEqualTo(1);
+        assertThat(testWriter.getOutput()).contains("simple.xsd").contains("simple.sch").contains("Using repository");
+    }
+
+    @Test
+    public void testScenariosAndSchematronExcludeEachOther() {
+        final String[] args = { "-s", Paths.get(TestResources.Simple.SCENARIOS).toString(), "-S",
+                Paths.get(UriHelper.resolve(TestResources.Simple.REPOSITORY_URI, "simple.sch", true)).toString(),
+                Paths.get(TestResources.Simple.SIMPLE_VALID).toString() };
+        commandLine.execute(args);
+        assertThat(testWriter.getErrorOutput()).contains("not both");
     }
 
     @Test

@@ -8,6 +8,16 @@ info:
     Every result is a Conformance Validation Report (CVR), the XVRL profile of the validator — a cancelled run
     yields a partial report, never an HTTP error.
 
+    Two ways to create a run: POST /api/validation validates the document along the scenarios the server was
+    configured with (the document is the request body); POST /api/validation/adhoc validates it against a set of
+    artifacts posted along with it — XML Schemas, Schematrons, precompiled Schematron XSLTs — as single files or as a
+    ZIP repository (multipart, no scenario configuration involved). Both answer alike, and both results live under
+    /api/validation/result/{id}.
+
+servers:
+  - url: http://localhost:8080
+    description: A locally started validator-server (java -jar validator-server-*-runner.jar, or mvn quarkus:dev -pl server)
+
 paths:
   /api/validation:
     description: "The validation runs of this server"
@@ -27,6 +37,44 @@ paths:
           application/xml:
             schema:
               $ref: "#/components/schemas/InputDocument"
+        required: true
+      responses:
+        "201":
+          description: The validation run was created; its result is available at the referenced location.
+          headers:
+            Location:
+              description: Where the result of this run can be fetched.
+              schema:
+                type: string
+                format: uri-reference
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationRunStatus"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /api/validation/adhoc:
+    description: "Ad hoc validation runs: a document against a set of posted artifacts, no scenario configuration"
+
+    post:
+      summary: Create an ad hoc validation run of the document against the posted artifacts
+      description: >
+        Runs the same pipeline as /api/validation, but over one scenario assembled from the posted artifacts
+        instead of the configured scenarios: no match (the scenario applies to every document), the XML Schemas
+        (.xsd) as the schema step, every Schematron (.sch) or precompiled Schematron XSLT (.xsl) as one rule set,
+        in the order posted. Artifacts arrive either as single 'resource' parts — the file name of the part decides
+        the kind, a part without a usable name is typed by its root element — or as a ZIP 'repository' whose
+        entries keep their paths, so that imports and includes between them resolve; 'artifact' then names the
+        entries to apply. The result is a CVR like for every other run and lives under the same result resource.
+      operationId: createAdHocValidation
+      tags:
+        - AdHoc
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/AdHocValidationRequest"
         required: true
       responses:
         "201":
@@ -98,6 +146,49 @@ components:
       type: string
       format: binary
       description: The XML document to validate
+
+    AdHocValidationRequest:
+      type: object
+      description: >
+        The parts of an ad hoc validation: the document, and the artifacts it is validated against - either as single
+        files (resource, repeatable) whose kind is read from their root element, or as a ZIP (repository) whose named
+        entries (artifact) are the rule sets while everything else in it stays resolvable for includes and imports.
+        Both ways may be combined; at least one artifact is required.
+      properties:
+        document:
+          type: string
+          format: binary
+          description: The XML document to validate
+        resource:
+          type: array
+          description: >
+            Validation artifacts as single files, applied in this order: an XML Schema (.xsd), a Schematron (.sch) or a
+            precompiled Schematron XSLT (.xsl); the file name of the part decides, a part without a usable name is typed
+            by its root element (xs:schema, sch:schema, xsl:stylesheet/xsl:transform) and named resource-N. One part
+            per file, as browsers and curl send them - a client that groups files of the same name into a nested
+            multipart/mixed body (RFC 1738 encoding) should use the repository instead. Includes and imports of a
+            single file cannot be resolved - use the repository for those.
+          items:
+            type: string
+            format: binary
+        schematron:
+          type: string
+          format: binary
+          deprecated: true
+          description: Alias of one resource part, kept for clients of the first version of this operation
+        repository:
+          type: string
+          format: binary
+          description: >
+            A ZIP archive that becomes the artifact repository of the run. Its entries keep their names and paths, so
+            xs:import, sch:include and xsl:import between them resolve. Which entries are the rule sets says the
+            artifact part.
+        artifact:
+          type: array
+          description: Entry names within the repository ZIP that are applied as rule sets, in this order (.xsd, .sch, .xsl)
+          items:
+            type: string
+      required: [ document ]
 
     ValidationRunStatus:
       type: object

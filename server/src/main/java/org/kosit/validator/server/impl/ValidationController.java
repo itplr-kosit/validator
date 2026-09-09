@@ -51,6 +51,13 @@ public class ValidationController implements ValidationResource {
         return Response.created(result).type(MediaType.APPLICATION_JSON).entity(status).build();
     }
 
+    private Response created(final UUID id) {
+        final URI result = resultLocation(id);
+        final ApiValidationRunStatus status = new ApiValidationRunStatus().id(id).status(ApiValidationRunStatus.StatusEnum.COMPLETED)
+                .result(result.toString());
+        return Response.created(result).type(MediaType.APPLICATION_JSON).entity(status).build();
+    }
+
     @Override
     public Response getValidationResult(final UUID id) {
         final Optional<byte[]> cvr = this.service.getResult(id);

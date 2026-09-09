@@ -12,7 +12,9 @@ Within a scenario you can define the XML Schema and several Schematrons against 
 
 Each `validateWithSchematron` names the Schematron processor of its rule set in the `compiler` attribute (`schxslt`, `schxslt2` or `iso-schematron`). For a `.sch` this is the processor the validator compiles it with; for a precompiled `.xsl` it states the processor that produced it, and the report names it as the transpiler of the rule set.
 
-A `<createReport>` element - an XSLT over the report of 1.x - may still be declared by configurations shared with 1.x, but 2.0 does not execute it: the report of 2.0 is the CVR. The same holds for `<acceptMatch>`, which 2.0 does not evaluate; configurations written for 2.0 keep the element empty.
+The `<createReport>` element of 1.x - an XSLT over the report - does not exist in the scenario schema of 2.0: the report of 2.0 is the CVR. `<acceptMatch>` is still allowed but not evaluated; configurations written for 2.0 keep the element empty.
+
+The `<match>` is optional. A scenario without match applies unconditionally, in addition to the scenario detected by its match, and gets its own conformance statement in the report. That is the shape of a scenario assembled at runtime from validation artifacts (ad hoc validation); a declared scenario normally carries a match.
 
 ## Validators Report
 
