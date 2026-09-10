@@ -34,7 +34,7 @@
 	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:335)&#13;
 	at org.kost.validator.api.xml.XmlParser.parseXmlDom(XmlParser.java:54)&#13;
 	at org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction.execute(ParseXmlAction.java:71)&#13;
-	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:235)&#13;
+	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:241)&#13;
 	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.run(CvrUnhappyPathTest.java:71)&#13;
 	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.serialize(CvrUnhappyPathTest.java:134)&#13;
 	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step2NotWellformed(CvrUnhappyPathTest.java:217)&#13;
