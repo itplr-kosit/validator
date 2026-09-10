@@ -23,6 +23,22 @@ import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.trans.XPathException;
 
 /**
+ * The one Saxon {@link Processor} of this runtime, configured so that a stylesheet or XPath expression can not reach
+ * outside the document it is given: no external functions, no DTDs, no XInclude, and every resolving strategy Saxon
+ * offers replaced by one that refuses.
+ * <p>
+ * The instance is built in the class initializer and handed out as is. That matters for more than tidiness: the
+ * processor is shared by every thread of a server, and it is only secure once {@link #createProcessor()} has run to its
+ * last line. A lazily assigned, non-volatile field would let one thread publish the reference before the hardening
+ * behind it becomes visible to another, which is the textbook unsafe publication - a thread could then work with a
+ * processor on which {@code ALLOW_EXTERNAL_FUNCTIONS} is still at its default. Class initialization gives that
+ * guarantee for free and needs no lock on the hot path.
+ * </p>
+ * <p>
+ * A processor that can not be configured is a fatal condition of the runtime, not of a single call, so a failure in the
+ * initializer surfaces as an {@link ExceptionInInitializerError} when the class is first used.
+ * </p>
+ *
  * @author Andreas Penski
  */
 public class ProcessorProvider {
@@ -57,16 +73,16 @@ public class ProcessorProvider {
         }
     }
 
-    private static Processor processor;
+    private static final Processor PROCESSOR = createProcessor();
 
+    /**
+     * @return the shared, hardened Saxon processor; the same instance for every caller and every thread
+     */
     public static Processor getProcessor() {
-        if (processor == null) {
-            processor = createProcessor();
-        }
-        return processor;
+        return PROCESSOR;
     }
 
-    private static final Processor createProcessor() {
+    private static Processor createProcessor() {
         final Processor processor = new Processor(false);
 
         // globally disable basically all resolving strategies
