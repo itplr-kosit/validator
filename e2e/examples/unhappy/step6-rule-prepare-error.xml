@@ -111,7 +111,7 @@
 	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.prepare(PrepareRulesAction.java:166)&#13;
 	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.execute(PrepareRulesAction.java:137)&#13;
 	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.runWithReferences(CvrUnhappyPathTest.java:111)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step6RulesDoNotCompile(CvrUnhappyPathTest.java:276)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step6RulesDoNotCompile(CvrUnhappyPathTest.java:287)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;

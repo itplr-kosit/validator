@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 
 /**
@@ -31,6 +32,12 @@ import net.sf.saxon.s9api.XdmNode;
  * The candidates are the scenarios whose match expression is true for the document, plus every scenario that applies
  * unconditionally ({@link Scenario#isUnconditional()}). Note the behavioral difference to 1.x: "no match" is a
  * <b>failure</b> (cancel + partial CVR), not a fallback-scenario continuation.
+ * </p>
+ * <p>
+ * A match expression that can not be evaluated over the document is a failure of its own
+ * ({@value #CODE_SCENARIO_MATCH_ERROR}) and cancels the run. It is not counted as a non-match: the step would then
+ * select a different scenario, or none, on the strength of a question it never answered, and the report would not say
+ * so. All scenarios are evaluated before the run is cancelled, so the report names every broken expression at once.
  * </p>
  * <p>
  * XPath evaluation requires the Saxon representation: the parsed content of the supplied
@@ -57,6 +64,9 @@ public class DetectScenariosAction implements CTAction {
 
     /** Detection code when the requested scenario id is not configured (ERROR, cancels the process). */
     public static final String CODE_SCENARIO_UNKNOWN_ID = "scenario-unknown-id";
+
+    /** Detection code when a match expression can not be evaluated over the document (ERROR, cancels the process). */
+    public static final String CODE_SCENARIO_MATCH_ERROR = "scenario-match-error";
 
     private final List<Scenario> scenarios;
 
@@ -145,7 +155,27 @@ public class DetectScenariosAction implements CTAction {
     private DetectScenariosResult detectByMatchExpressions(final CTParsedValidationSource parsedSource, final XdmNode document) {
         final String resourceId = parsedSource.getSource().getName();
         // a scenario without a match expression applies unconditionally and is always among the candidates
-        final List<Scenario> matching = this.scenarios.stream().filter(s -> s.matches(document)).toList();
+        final List<Scenario> matching = new ArrayList<>();
+        final List<CTDetection> matchErrors = new ArrayList<>();
+        for (final Scenario scenario : this.scenarios) {
+            try {
+                if (scenario.matches(document)) {
+                    matching.add(scenario);
+                }
+            } catch (final SaxonApiException e) {
+                // deliberately not a non-match: the engine can not tell whether this scenario applies, so it must not
+                // answer as if it could. Reported here and the run is cancelled - see Scenario#matches
+                LOGGER.error("Error evaluating the match expression of scenario '{}'", scenario.getName(), e);
+                matchErrors.add(Detection.builderError().code(CODE_SCENARIO_MATCH_ERROR).location(resourceId)
+                        .text("The match expression of scenario '" + scenario.getName() + "' could not be evaluated: " + e.getMessage())
+                        .build());
+            }
+        }
+        if (!matchErrors.isEmpty()) {
+            // every scenario is evaluated before the run is cancelled, so the report names every broken expression
+            return new DetectScenariosResult(CTStepResult.FAILURE, List.of(), new DetectionList(matchErrors));
+        }
+
         if (matching.isEmpty()) {
             final CTDetection detection = Detection.builderError().code(CODE_NO_SCENARIO_MATCHED).location(resourceId)
                     .text("None of the configured scenarios matches the document").build();
