@@ -50,6 +50,9 @@ public final class TestResources {
         /** compiler at the rule set, customLevel below validateWithSchematron, no createReport, empty acceptMatch */
         public static final URI SCENARIOS_WRITTEN_FOR_2_0 = TestData.file("examples/simple/scenarios-accept-match-empty.xml");
 
+        /** {@link #SCENARIOS_WRITTEN_FOR_2_0} without the ids and identical in everything else. */
+        public static final URI SCENARIOS_WITHOUT_IDS = TestData.file("examples/simple/scenarios-without-ids.xml");
+
         /** a scenario matched by expression plus a scenario without match, which applies unconditionally */
         public static final URI SCENARIOS_WITH_UNCONDITIONAL = TestData.file("examples/simple/scenarios-with-unconditional.xml");
 

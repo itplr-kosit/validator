@@ -13,6 +13,10 @@ comparison/
 │   │                                      noScenarioReport entfernt, compiler="schxslt" je Regelwerk, customLevel am
 │   │                                      Regelwerk statt unter createReport, acceptMatch leer —
 │   │                                      Szenarien/Matches/Artefakte/Override-Codes unverändert)
+│   ├── scenarios-v2.0-framework2-with-ids.xml ← dieselbe Konfiguration mit id an allen 11 Szenarien und
+│   │                                      30 Ressourcen, nur für die Prüfung der Berichtsidentität. Die
+│   │                                      Koordinaten sind Platzhalter, keine abgestimmten Werte —
+│   │                                      die echten gehören in validator-configuration-xrechnung
 │   ├── repository/resources/           ← Artefakt-Repository (XSDs, kompilierte Schematron-XSLs,
 │   │                                      Report-XSLs) — Kopie aus validator-configuration-xrechnung/build
 │   └── instances/                      ← 86 Testinstanzen der XRechnung-Testsuite
@@ -49,6 +53,28 @@ mvn -f validator/pom.xml -pl core test-compile org.codehaus.mojo:exec-maven-plug
 # Vergleich:
 bash build-comparison.sh
 ```
+
+## Berichtsidentität gegen den Korpus prüfen
+
+Wo eine Konfiguration `id` deklariert, tragen `cvr:scenario-id`, `cvr:artifact-id` und `cvr:target-id`
+die Kennung statt Name und Pfad. Der Rückfall auf Name und Pfad ist die Zusicherung, dass eine
+Konfiguration ohne Kennungen unverändert berichtet. Beides prüft `ReportIdentityExamplesTest` bei
+jedem Build an den Beispielen unter `e2e/examples/report-identity-*.xml`; gegen den Korpus lässt es
+sich so nachrechnen:
+
+```bash
+# derselbe Lauf zweimal, einmal ohne und einmal mit Kennungen
+for cfg in scenarios-v2.0-framework2 scenarios-v2.0-framework2-with-ids; do
+  mvn -f validator/pom.xml -pl core test-compile org.codehaus.mojo:exec-maven-plugin:3.1.0:java       -Dexec.mainClass=org.kosit.validator.impl.conformatron.XRechnungE2ERunner -Dexec.classpathScope=test       -De2e.scenarios=.../input/$cfg.xml -De2e.output=/tmp/$cfg -De2e.reports=/tmp/$cfg/reports
+done
+diff -r /tmp/scenarios-v2.0-framework2/reports /tmp/scenarios-v2.0-framework2-with-ids/reports
+```
+
+Erwartung, geprüft am 10.09.2026 über alle 150 Instanzen: Verteilung beidseitig 118 CONFORMANT,
+29 NON_CONFORMANT, 2 FAILED@PARSE_DOCUMENT, 1 FAILED@DETECT_SCENARIOS; Verdikt und Entscheidung je
+Instanz identisch; die Instanzberichte (`*-report.md`) bytegleich, weil sie Namen und Meldungstexte
+zeigen; in den CVR-Dateien unterscheiden sich ausschließlich die drei Identitätsattribute und das
+`id` am eingebetteten `scenario`/`resource`. Alle 150 CVR erfüllen weiterhin das CVR-Profil.
 
 ## Ergebnis auf einen Blick
 

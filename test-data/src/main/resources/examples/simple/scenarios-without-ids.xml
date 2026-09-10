@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/2/scenarios" frameworkVersion="2.0.0">
+    <name>Scenario written for 2.0</name>
+    <author>QA</author>
+    <date>2026-09-08</date>
+    <description>
+        <p>The twin of scenarios-accept-match-empty.xml without the ids, and identical to it in everything else. The
+            two are the reference pair of the report identity examples under e2e/examples: a diff of the reports of the
+            two runs shows what declaring an id changes and nothing else.</p>
+    </description>
+
+    <scenario>
+        <name>Simple</name>
+        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <match>/test:simple</match>
+        <validateWithXmlSchema>
+            <resource>
+                <name>Sample Schema</name>
+                <location>simple.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+        <validateWithSchematron compiler="schxslt">
+            <resource>
+                <name>Sample Schematron</name>
+                <location>simple.xsl</location>
+            </resource>
+            <customLevel level="warning">rejected</customLevel>
+        </validateWithSchematron>
+        <acceptMatch/>
+    </scenario>
+
+</scenarios>

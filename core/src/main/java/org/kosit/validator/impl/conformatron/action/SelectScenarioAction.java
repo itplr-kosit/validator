@@ -101,7 +101,8 @@ public class SelectScenarioAction implements CTAction {
         final String resourceId = detectedScenarios.get(0).getParsedSource().getSource().getName();
         final List<CTScenarioMatch> matched = detectedScenarios.stream().filter(c -> !isUnconditional(c)).toList();
         if (matched.size() > 1) {
-            final String candidates = matched.stream().map(CTScenarioMatch::getScenarioID).collect(Collectors.joining(", "));
+            // the display names, as step 3 printed them; the id is what the detection attribute carries
+            final String candidates = matched.stream().map(CTScenarioMatch::getScenarioName).collect(Collectors.joining(", "));
             final CTDetection detection = Detection.builderError().code(CODE_SCENARIO_AMBIGUOUS).location(resourceId)
                     .text("More than one scenario matches the document: " + candidates).build();
             return new SelectScenarioResult(CTStepResult.FAILURE, null, null, new DetectionList(detection));
@@ -115,9 +116,9 @@ public class SelectScenarioAction implements CTAction {
         final List<CTDetection> detections = new ArrayList<>();
         for (final CTScenarioMatch scenario : applied) {
             final String text = isUnconditional(scenario)
-                    ? "Scenario '" + scenario.getScenarioID() + "' applies unconditionally and is selected"
+                    ? "Scenario '" + scenario.getScenarioName() + "' applies unconditionally and is selected"
                             + (scenario == selected ? "" : " in addition")
-                    : "Scenario '" + scenario.getScenarioID() + "' selected";
+                    : "Scenario '" + scenario.getScenarioName() + "' selected";
             detections.add(selectedDetection(scenario, resourceId, text));
         }
         return new SelectScenarioResult(CTStepResult.SUCCESS, selected, applied, new DetectionList(detections));

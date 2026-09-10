@@ -28,12 +28,40 @@ public final class FixedTimestamps {
             .compile("<timestamp>\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:Z|[+-]\\d{2}:\\d{2})</timestamp>");
 
     /**
+     * Matches an absolute {@code file:} or {@code jar:file:} URI in an {@code href}, so that a generated artifact does
+     * not carry the checkout path of the machine that generated it.
+     */
+    private static final Pattern ABSOLUTE_HREF = Pattern.compile("href=\"(?:jar:)?file:[^\"]*/([^/\"!]+)\"");
+
+    /**
      * @param report the serialized report
      * @return the same report with every timestamp set to {@link #GENERATED_AT}
      */
     public static byte[] apply(final byte[] report) {
         final String xml = new String(report, StandardCharsets.UTF_8);
         return TIMESTAMP.matcher(xml).replaceAll("<timestamp>" + GENERATED_AT + "</timestamp>").getBytes(StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Shortens every absolute {@code href} of a generated report to the file name it ends in — the configuration file
+     * of the applied scenario, and the document and artifact URIs of a run over packaged test data.
+     * <p>
+     * Those URIs hold the checkout path of the machine that generated the report and the layout of its build
+     * ({@code test-data/target/…jar} for a reactor build, {@code .m2/…jar} for a single module), so a committed report
+     * that keeps them differs per machine and per invocation without anything having changed. What a consumer needs is
+     * the file, and the file name says it.
+     * </p>
+     * <p>
+     * Applied by the generators of the report identity examples. The older generators under {@code e2e/} still commit
+     * absolute hrefs; normalizing those rewrites every artifact they own and is a change of its own.
+     * </p>
+     *
+     * @param report the serialized report
+     * @return the same report with every absolute href reduced to a file name
+     */
+    public static byte[] withoutAbsoluteHrefs(final byte[] report) {
+        final String xml = new String(report, StandardCharsets.UTF_8);
+        return ABSOLUTE_HREF.matcher(xml).replaceAll("href=\"$1\"").getBytes(StandardCharsets.UTF_8);
     }
 
     private FixedTimestamps() {
