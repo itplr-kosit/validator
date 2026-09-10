@@ -79,7 +79,7 @@ schema cannot tighten them, and most of the constraints relate one part of the r
 types the vocabulary for tooling and for the reader, and `cvr-1.0.sch` is what an actual report is held to.
 
 The module depends on `validator-xvrl` for the XVRL schema and on `validator-schematron` to run its own rules. The
-writer that produces CVR (`CvrlWriter`) lives in `validator-core`, because it serializes the results of the full
+writer that produces CVR (`CvrWriter`) lives in `validator-core`, because it serializes the results of the full
 pipeline including scenario detection and selection.
 
 ## Core Module (`validator-core`)

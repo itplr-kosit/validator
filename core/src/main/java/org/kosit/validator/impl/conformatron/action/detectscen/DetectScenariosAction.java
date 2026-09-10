@@ -30,7 +30,7 @@ import net.sf.saxon.s9api.XdmNode;
  * <p>
  * The candidates are the scenarios whose match expression is true for the document, plus every scenario that applies
  * unconditionally ({@link Scenario#isUnconditional()}). Note the behavioral difference to 1.x: "no match" is a
- * <b>failure</b> (cancel + partial CVRL), not a fallback-scenario continuation.
+ * <b>failure</b> (cancel + partial CVR), not a fallback-scenario continuation.
  * </p>
  * <p>
  * XPath evaluation requires the Saxon representation: the parsed content of the supplied

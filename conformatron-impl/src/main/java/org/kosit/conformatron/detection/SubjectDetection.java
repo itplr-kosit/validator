@@ -17,9 +17,9 @@ import org.jspecify.annotations.Nullable;
  * target — rather than about the document itself. Carries the three things a report consumer needs to act on such a
  * statement, none of which fit into a plain {@link CTDetection}:
  * <ul>
- * <li>the subject's <b>identity</b>, reported as a CVRL extension attribute ({@code cvrl:scenario-id},
- * {@code cvrl:artifact-id}, {@code cvrl:target-id}). Consumers that use the validator for more than plain validation
- * need the id on the element, not buried in a message text they would have to parse.</li>
+ * <li>the subject's <b>identity</b>, reported as a CVR extension attribute ({@code cvr:scenario-id},
+ * {@code cvr:artifact-id}, {@code cvr:target-id}). Consumers that use the validator for more than plain validation need
+ * the id on the element, not buried in a message text they would have to parse.</li>
  * <li>where the subject can be <b>looked up</b> ({@link #getSubjectLocation()}) — an {@code href} for something that
  * lives at a URI, an {@code xpath} for something inside a configuration file.</li>
  * <li>further <b>facts about the subject</b> ({@link #getAttributes()}) such as the artifact type or the conformance
@@ -285,7 +285,7 @@ public final class SubjectDetection implements CTDetection {
         return this.locationAttributes;
     }
 
-    /** Further facts about the subject, as CVRL extension attributes. Never <code>null</code>. */
+    /** Further facts about the subject, as CVR extension attributes. Never <code>null</code>. */
     public @NonNull Map<String, String> getAttributes() {
         return this.attributes;
     }

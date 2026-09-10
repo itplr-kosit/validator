@@ -71,10 +71,10 @@ public final class CvrProfile {
     public static final String NS_CVR = "urn:conformatron:cvr:draft";
 
     /** Classpath location of the schema typing the CVR extension vocabulary. */
-    public static final String CVR_XSD_PATH = "/xsd/cvr-1.0.xsd";
+    public static final String CVR_XSD_PATH = "/xsd/cvr.xsd";
 
     /** Classpath location of the Schematron carrying the profile constraints. */
-    public static final String CVR_SCH_PATH = "/sch/cvr-1.0.sch";
+    public static final String CVR_SCH_PATH = "/sch/cvr.sch";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CvrProfile.class);
 

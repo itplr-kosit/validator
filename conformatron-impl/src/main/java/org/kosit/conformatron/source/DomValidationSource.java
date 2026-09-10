@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * <p>
  * Instances are immutable: the source bytes are defensively copied on construction and cloned on access. On a
  * well-formedness failure the instance is created {@link #unparsed(CTValidationSource) without a DOM} — bytes and hash
- * are retained so the partial CVRL can identify the document ({@link #isParsed()} returns {@code false}).
+ * are retained so the partial CVR can identify the document ({@link #isParsed()} returns {@code false}).
  * </p>
  *
  * @author Andreas Schmitz
@@ -44,7 +44,7 @@ public final class DomValidationSource implements CTParsedValidationSourceXML {
 
     /**
      * Creates the well-formedness-failure representation (step 2 output path 2): source metadata, bytes and hash are
-     * retained for document identity in the partial CVRL, but no parsed content is available.
+     * retained for document identity in the partial CVR, but no parsed content is available.
      *
      * @param source the validation source metadata
      * @return a new source with {@link #isParsed()} {@code == false}

@@ -17,7 +17,7 @@
 </existiertNicht>
             </message>
             <context>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">2a02bfd700de11401b81a0d38d424c2755379b5963e9dba4b4ebe44bd07c49bf42a233025187132841b8756d1de4efd935a4c963dfbc2ac129b2e4188a28e5af</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">2a02bfd700de11401b81a0d38d424c2755379b5963e9dba4b4ebe44bd07c49bf42a233025187132841b8756d1de4efd935a4c963dfbc2ac129b2e4188a28e5af</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>

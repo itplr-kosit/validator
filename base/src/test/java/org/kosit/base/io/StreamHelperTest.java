@@ -77,7 +77,7 @@ public class StreamHelperTest {
     }
 
     @Test
-    public void closeWithoutFlushable() throws IOException {
+    public void closeWithoutFlushable() {
         final ByteArrayInputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
         assertThat(StreamHelper.close(is)).isTrue();
     }

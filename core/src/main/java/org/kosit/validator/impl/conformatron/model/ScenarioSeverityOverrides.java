@@ -8,10 +8,10 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.jspecify.annotations.Nullable;
 import org.kosit.cvr.model.SeverityOverrides;
-import org.kosit.validator.scenario.v1.CustomErrorLevel;
-import org.kosit.validator.scenario.v1.ErrorLevelType;
-import org.kosit.validator.scenario.v1.ScenarioType;
-import org.kosit.validator.scenario.v1.ValidateWithSchematron;
+import org.kosit.validator.scenario.v2.CustomErrorLevel;
+import org.kosit.validator.scenario.v2.ErrorLevelType;
+import org.kosit.validator.scenario.v2.ScenarioType;
+import org.kosit.validator.scenario.v2.ValidateWithSchematron;
 
 /**
  * Reads the {@link SeverityOverrides} out of a scenario configuration: the {@code customLevel} elements declared with

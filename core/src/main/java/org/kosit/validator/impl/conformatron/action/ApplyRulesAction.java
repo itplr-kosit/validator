@@ -56,7 +56,7 @@ import net.sf.saxon.s9api.XsltTransformer;
  * </p>
  * <p>
  * <b>customLevel</b>: the selected scenario's severity overrides ({@link SeverityOverrides}) are applied to the
- * findings right here — the detection carries the <b>effective</b> severity into steps 8/9 and the CVRL, with the
+ * findings right here — the detection carries the <b>effective</b> severity into steps 8/9 and the CVR, with the
  * declared severity preserved on the detection for auditability. This closes the last verdict gap to the 1.x report-XSL
  * mechanism ({@code rep:custom-level()}).
  * </p>

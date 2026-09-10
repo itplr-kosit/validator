@@ -12,8 +12,8 @@ import org.kosit.base.xml.XmlHelper;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.config.SchemaBuilder.SchemaParseResult;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
+import org.kosit.validator.scenario.v2.ResourceType;
+import org.kosit.validator.scenario.v2.ValidateWithXmlSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

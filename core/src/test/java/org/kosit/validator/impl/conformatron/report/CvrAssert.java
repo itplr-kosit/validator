@@ -10,8 +10,8 @@ import org.kosit.conformatron.source.Resource;
 import org.kosit.cvr.report.CvrProfile;
 
 /**
- * Checks a generated report against the CVRL profile of {@code validator-cvr} - the XVRL schema for the structure, the
- * profile Schematron for everything that makes an XVRL report a CVRL report.
+ * Checks a generated report against the CVR profile of {@code validator-cvr} - the XVRL schema for the structure, the
+ * profile Schematron for everything that makes an XVRL report a CVR report.
  * <p>
  * The ways to get this wrong are quiet ones: a required attribute we never knew about, an element in the wrong order,
  * an invented extension attribute, a digest that no longer matches the detections it summarises. Reading the schema and
@@ -39,7 +39,7 @@ public final class CvrAssert {
             if (valResult.containsNoError()) {
                 return;
             }
-            fail("The report does not satisfy the CVRL profile:\n  "
+            fail("The report does not satisfy the CVR profile:\n  "
                     + String.join("\n", valResult.getMergedDetections().stream().map(x -> x.getAsString(Locale.ROOT)).toList()));
         } catch (final IOException ex) {
             fail("IOException in reading resource", ex);

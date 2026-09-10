@@ -41,9 +41,9 @@ import org.w3c.dom.Document;
  * <p>
  * Output paths per step specification: success ({@code document-parsed}, INFO), well-formedness failure
  * ({@code not-wellformed}, one FATAL detection per parser error with line/column) and IO failure
- * ({@code source-read-error}, FATAL). Failures cancel the process; the detections still contribute to the (partial)
- * CVRL report. In the future we need to also cover each other detected syntaxes (e.g. JSON, edfact etc.) (result from
- * Step 1)
+ * ({@code source-read-error}, FATAL). Failures cancel the process; the detections still contribute to the (partial) CVR
+ * report. In the future we need to also cover each other detected syntaxes (e.g. JSON, edfact etc.) (result from Step
+ * 1)
  * </p>
  *
  * @author Andreas Schmitz
