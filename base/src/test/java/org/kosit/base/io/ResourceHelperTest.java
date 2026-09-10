@@ -50,6 +50,7 @@ public class ResourceHelperTest {
         }
     }
 
+    @SuppressWarnings("resource")
     @Test
     public void closeDeletesAllTempFiles() throws IOException {
         final ResourceHelper resHelper = new ResourceHelper();
@@ -65,11 +66,11 @@ public class ResourceHelperTest {
 
     @Test
     public void closeIgnoresAnAlreadyDeletedTempFile() throws IOException {
-        final ResourceHelper resHelper = new ResourceHelper();
-        final File file = resHelper.createTempFile();
-        Files.delete(file.toPath());
-
-        resHelper.close();
+        final File file;
+        try ( final ResourceHelper resHelper = new ResourceHelper() ) {
+            file = resHelper.createTempFile();
+            Files.delete(file.toPath());
+        }
         assertThat(file).doesNotExist();
     }
 
