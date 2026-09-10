@@ -9,9 +9,9 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.kosit.cvr.model.SeverityOverrides;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.validator.scenario.v1.ScenarioType;
-import org.kosit.validator.scenario.v1.ValidateWithSchematron;
+import org.kosit.validator.scenario.v2.ResourceType;
+import org.kosit.validator.scenario.v2.ScenarioType;
+import org.kosit.validator.scenario.v2.ValidateWithSchematron;
 
 /**
  * Validator implementation of {@link CTScenarioMatch} (conformatron-api steps 3+4): a {@link Scenario} that applies to

@@ -5,9 +5,9 @@ import java.net.URI;
 import org.jspecify.annotations.Nullable;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.scenario.v1.ResourceType;
-import org.kosit.validator.scenario.v1.ScenarioType;
-import org.kosit.validator.scenario.v1.ValidateWithXmlSchema;
+import org.kosit.validator.scenario.v2.ResourceType;
+import org.kosit.validator.scenario.v2.ScenarioType;
+import org.kosit.validator.scenario.v2.ValidateWithXmlSchema;
 import org.kosit.validator.testdata.TestResources;
 import org.kost.validator.api.saxon.ProcessorProvider;
 

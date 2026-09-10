@@ -8,8 +8,8 @@ import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kosit.jaxb.JaxbConversionException;
-import org.kosit.validator.scenario.v1.Scenario1Converter;
-import org.kosit.validator.scenario.v1.Scenarios;
+import org.kosit.validator.scenario.v2.Scenario2Converter;
+import org.kosit.validator.scenario.v2.Scenarios;
 import org.kosit.validator.testdata.TestResources;
 import org.kosit.validator.testdata.TestResources.Invalid;
 
@@ -20,11 +20,11 @@ import org.kosit.validator.testdata.TestResources.Invalid;
  */
 public class ConversionServiceTest {
 
-    private Scenario1Converter converter;
+    private Scenario2Converter converter;
 
     @BeforeEach
     public void setup() {
-        this.converter = new Scenario1Converter();
+        this.converter = new Scenario2Converter();
     }
 
     @Test

@@ -1,4 +1,4 @@
-package org.kosit.validator.scenario.v1;
+package org.kosit.validator.scenario.v2;
 
 import javax.xml.namespace.QName;
 import javax.xml.validation.Schema;
@@ -14,12 +14,12 @@ import jakarta.xml.bind.JAXBException;
  * Convenience {@link AbstractJaxbConverter} preconfigured for the scenario JAXB model package
  * ({@code org.kosit.validator.scenario.model}).
  */
-public final class Scenario1Converter extends AbstractJaxbConverter<Scenarios> {
+public final class Scenario2Converter extends AbstractJaxbConverter<Scenarios> {
 
     public static final String NS_URI = "http://www.xoev.de/de/validator/framework/2/scenarios";
 
-    /** XSD for the scenarios.xml definition as used by Validator v1.x */
-    public static final String SCENARIOS_V1_XSD_PATH = "/xsd/scenarios-v1.xsd";
+    /** XSD for the scenarios.xml definition as used by Validator v2.x */
+    public static final String SCENARIOS_V1_XSD_PATH = "/xsd/scenarios-v2.xsd";
 
     private static final JAXBContext JAXB_CTX;
 
@@ -27,12 +27,12 @@ public final class Scenario1Converter extends AbstractJaxbConverter<Scenarios> {
 
     static {
         try {
-            JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(), Scenario1Converter.class.getClassLoader());
+            JAXB_CTX = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName(), Scenario2Converter.class.getClassLoader());
         } catch (final JAXBException e) {
             throw new IllegalStateException("Can not create scenario JAXB context", e);
         }
 
-        SCHEMA = SchemaResolver.createParsedSchema(Scenario1Converter.class.getResource(SCENARIOS_V1_XSD_PATH));
+        SCHEMA = SchemaResolver.createParsedSchema(Scenario2Converter.class.getResource(SCENARIOS_V1_XSD_PATH));
     }
 
     /**
@@ -40,7 +40,7 @@ public final class Scenario1Converter extends AbstractJaxbConverter<Scenarios> {
      *
      * @throws IllegalStateException if the JAXB context for the scenario model package can not be created
      */
-    public Scenario1Converter() {
+    public Scenario2Converter() {
         super(JAXB_CTX, Scenarios.class, x -> new JAXBElement<>(new QName(NS_URI, "scenarios"), Scenarios.class, x));
         // Always use XML Schema
         withSchema(SCHEMA);

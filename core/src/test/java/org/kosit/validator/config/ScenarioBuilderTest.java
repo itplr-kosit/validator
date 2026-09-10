@@ -14,8 +14,8 @@ import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.scenario.v1.NamespaceType;
-import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v2.NamespaceType;
+import org.kosit.validator.scenario.v2.ScenarioType;
 
 import net.sf.saxon.s9api.XPathExecutable;
 

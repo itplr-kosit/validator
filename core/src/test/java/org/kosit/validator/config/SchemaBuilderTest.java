@@ -15,7 +15,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.resolve.ResolvingMode;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.scenario.v1.ResourceType;
+import org.kosit.validator.scenario.v2.ResourceType;
 import org.kosit.validator.testdata.TestResources;
 
 /**
