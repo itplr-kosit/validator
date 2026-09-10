@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +41,8 @@ public class Scenario1ConversionServiceTest {
 
         final ScenarioType simple = scenarios.getScenario().get(0);
         assertThat(simple.getName()).isEqualTo("Simple");
+        // optional id of the validation requirement the scenario stands for, shaped as a coordinate
+        assertThat(simple.getId()).isEqualTo("org.kosit.validator.test:simple:1.0.0");
         assertThat(simple.getMatch()).isEqualTo("/test:simple");
         assertThat(simple.getAcceptMatch()).isEqualTo("count(//test:rejected) = 0");
         assertThat(simple.getNamespace()).hasSize(1);
@@ -49,6 +53,8 @@ public class Scenario1ConversionServiceTest {
 
         // the severity overrides are declared with the rule set
         final ValidateWithSchematron rules = simple.getValidateWithSchematron().get(0);
+        // the artifact says which version it was written for; the location says where that version lies
+        assertThat(rules.getResource().getId()).isEqualTo("org.kosit.validator.test:simple-rules:1.0.0:compiled");
         assertThat(rules.getCustomLevel()).hasSize(1);
         assertThat(rules.getCustomLevel().get(0).getLevel()).isEqualTo(ErrorLevelType.WARNING);
         assertThat(rules.getCustomLevel().get(0).getValue()).containsExactly("BR-01", "BR-02");
@@ -62,7 +68,14 @@ public class Scenario1ConversionServiceTest {
     public void writesScenariosToXml() throws URISyntaxException {
         final String xml = this.converter.writeXml(readSample());
         assertThat(xml).contains("http://www.xoev.de/de/validator/framework/2/scenarios").contains("Sample-TestSuite")
-                .contains("/test:simple");
+                .contains("/test:simple").contains("id=\"org.kosit.validator.test:simple-rules:1.0.0:compiled\"");
+    }
+
+    @Test
+    public void rejectsAnIdThatIsNoCoordinate() throws URISyntaxException, IOException {
+        // three or four parts, each of them letters, digits, underscore, hyphen and dot
+        final String xml = Files.readString(Paths.get(SAMPLE.toURI())).replace("org.kosit.validator.test:simple:1.0.0", "not a coordinate");
+        assertThatThrownBy(() -> this.converter.readXml(xml)).isInstanceOf(JaxbConversionException.class);
     }
 
     @Test

@@ -43,6 +43,51 @@ public class ConformanceValidationTest {
     }
 
     @Test
+    public void testTheIdsOfTheAppliedArtifactsAreInTheReport() throws Exception {
+        // the ids are declared in the configuration, and the report names its subjects by them: the scenario in steps
+        // 3 and 4, each artifact in steps 5 and 6, the conformance target in step 8
+        final ConformanceValidationResult result = validate(TestResources.Simple.SCENARIOS_WRITTEN_FOR_2_0,
+                TestResources.Simple.SIMPLE_VALID);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        result.writeCvr(out);
+        final String cvr = out.toString(java.nio.charset.StandardCharsets.UTF_8);
+
+        assertThat(result.isCompleted()).isTrue();
+        assertThat(cvr).contains("cvr:scenario-id=\"org.kosit.validator.test:simple:1.0.0\"")
+                .contains("cvr:artifact-id=\"org.kosit.validator.test:simple-xsd:1.0.0\"")
+                .contains("cvr:artifact-id=\"org.kosit.validator.test:simple-rules:1.0.0:compiled\"")
+                .contains("cvr:target-id=\"org.kosit.validator.test:simple:1.0.0\"");
+        // the location keeps pointing at the artifact, so a consumer still knows what to fetch
+        assertThat(cvr).contains("<location href=\"simple.xsd\"").contains("<location href=\"simple.xsl\"");
+        // the display name is untouched - it is what people read, not what identifies
+        assertThat(result.getSelectedScenarioName()).isEqualTo("Simple");
+        assertReportIsAValidCvr(result);
+    }
+
+    @Test
+    public void testAConfigurationWithoutIdsIsStillReportedByNameAndLocation() throws Exception {
+        // the switch to ids may not change a report of a configuration that declares none - that is what keeps the
+        // ad hoc scenarios and the configurations of the standards reporting as before
+        final ConformanceValidationResult result = validate(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.SIMPLE_VALID);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        result.writeCvr(out);
+        final String cvr = out.toString(java.nio.charset.StandardCharsets.UTF_8);
+
+        assertThat(cvr).contains("cvr:scenario-id=\"Simple\"").contains("cvr:artifact-id=\"simple.sch\"")
+                .contains("cvr:artifact-id=\"simple.xsd\"").contains("cvr:target-id=\"Simple\"");
+    }
+
+    @Test
+    public void testTheCallerMayNameTheScenarioByItsId() {
+        // the report names the scenario by its id, so handing that id back has to select the same scenario
+        final ConformanceValidationResult result = validateWithScenarioId(TestResources.Simple.SCENARIOS_WRITTEN_FOR_2_0,
+                TestResources.Simple.SIMPLE_VALID, "org.kosit.validator.test:simple:1.0.0");
+
+        assertThat(result.isCompleted()).isTrue();
+        assertThat(result.getSelectedScenarioName()).isEqualTo("Simple");
+    }
+
+    @Test
     public void testAConformantDocumentIsAccepted() throws Exception {
         final ConformanceValidationResult result = validate(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.SIMPLE_VALID);
 

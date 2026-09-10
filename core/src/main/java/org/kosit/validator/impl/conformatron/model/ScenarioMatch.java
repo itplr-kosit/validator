@@ -7,6 +7,7 @@ import java.util.List;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
+import org.kosit.base.string.StringHelper;
 import org.kosit.cvr.model.SeverityOverrides;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.scenario.v1.ResourceType;
@@ -21,7 +22,7 @@ import org.kosit.validator.scenario.v1.ValidateWithSchematron;
  * Known limitations of the framework/2 scenario model:
  * </p>
  * <ul>
- * <li>A scenario has no separate ID — {@link #getScenarioID()} falls back to the scenario name.</li>
+ * <li>A scenario need not carry an id — {@link #getScenarioID()} falls back to the scenario name.</li>
  * <li>The XPath match does not expose the matched value — {@link #getMatchedValue()} is {@code null}.</li>
  * </ul>
  *
@@ -123,14 +124,16 @@ public final class ScenarioMatch implements CTScenarioMatch {
         final List<CTValidationArtifactReference> references = new ArrayList<>();
         if (configuration.getValidateWithXmlSchema() != null) {
             for (final ResourceType resource : configuration.getValidateWithXmlSchema().getResource()) {
-                references.add(ScenarioRuleSetReference.of(resource.getLocation(), null, handedOver(scenario, resource.getLocation())));
+                references.add(ScenarioRuleSetReference.of(resource.getLocation(), resource.getId(), null,
+                        handedOver(scenario, resource.getLocation())));
             }
         }
         for (final ValidateWithSchematron schematron : configuration.getValidateWithSchematron()) {
             if (schematron.getResource() != null) {
-                // the rule set carries the processor the scenario names for it, step 6 honours it
-                references.add(ScenarioRuleSetReference.of(schematron.getResource().getLocation(), schematron.getCompiler(),
-                        handedOver(scenario, schematron.getResource().getLocation())));
+                // the rule set carries the processor the scenario names for it, step 6 honours it, and the id the
+                // scenario declares for it, steps 5 and 6 report it
+                references.add(ScenarioRuleSetReference.of(schematron.getResource().getLocation(), schematron.getResource().getId(),
+                        schematron.getCompiler(), handedOver(scenario, schematron.getResource().getLocation())));
             }
         }
         return List.copyOf(references);
@@ -141,9 +144,16 @@ public final class ScenarioMatch implements CTScenarioMatch {
         return scenario.precompiled(URI.create(location)).orElse(null);
     }
 
+    /**
+     * The id the report names this scenario by ({@code cvr:scenario-id}, and the conformance target of step 8): the id
+     * the configuration declares for the scenario, and the scenario name when it declares none. A configuration that
+     * states its coordinates is therefore identified by them; an ad hoc scenario and every configuration without ids
+     * keep the name they had.
+     */
     @Override
     public String getScenarioID() {
-        return this.scenario.getName();
+        final String declared = this.scenario.getConfiguration().getId();
+        return StringHelper.isBlank(declared) ? this.scenario.getName() : declared;
     }
 
     @Override

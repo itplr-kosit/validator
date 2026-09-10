@@ -157,7 +157,7 @@ public class PrepareRulesAction implements CTAction {
                 case CTStandardValidationType.XSD -> {
                     final Schema schema = this.repository.createSchema(uri);
                     ruleSets.add(PreparedRuleSet.xsd(reference, new CompiledValidationArtifact<>(artifact.getValidationType(), schema)));
-                    detections.add(compiled(href, resourceId, "XML Schema"));
+                    detections.add(compiled(reference, resourceId, "XML Schema"));
                 }
                 case CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3 -> {
                     // the processor the scenario names for this rule set wins over the default of this action
@@ -167,7 +167,7 @@ public class PrepareRulesAction implements CTAction {
                     ruleSets.add(PreparedRuleSet.schematron(reference,
                             new CompiledValidationArtifact<>(artifact.getValidationType(), executable), engineVersion())
                             .withTranspilerId(compiler));
-                    detections.add(compiled(href, resourceId, "Schematron via " + compiler));
+                    detections.add(compiled(reference, resourceId, "Schematron via " + compiler));
                 }
                 case CTStandardValidationType.SCHEMATRON_XSLT2 -> {
                     final XsltExecutable executable = this.repository.loadXsltScript(uri);
@@ -180,7 +180,7 @@ public class PrepareRulesAction implements CTAction {
                             .withTranspilerId(ScenarioRuleSetReference.declaredCompiler(reference)));
                 }
                 default -> {
-                    detections.add(about(href, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(resourceId)
+                    detections.add(about(reference, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(resourceId)
                             .text("Unsupported validation type " + artifact.getValidationType().getID()).build()));
                     return false;
                 }
@@ -188,7 +188,7 @@ public class PrepareRulesAction implements CTAction {
             return true;
         } catch (final RuntimeException e) {
             LOGGER.error("Could not prepare artifact {}", href, e);
-            detections.add(about(href, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(resourceId)
+            detections.add(about(reference, Detection.builderError().code(CODE_RULE_PREPARE_ERROR).location(resourceId)
                     .text("Artifact could not be prepared: " + e.getMessage()).linkedException(e).build()));
             return false;
         }
@@ -198,15 +198,19 @@ public class PrepareRulesAction implements CTAction {
         return this.repository.getProcessor().getSaxonProductVersion();
     }
 
-    private static CTDetection compiled(final String href, final String resourceId, final String what) {
-        return about(href, Detection.builderNone().code(CODE_RULE_COMPILED).location(resourceId).text("Compiled (" + what + ")").build());
+    private static CTDetection compiled(final CTValidationArtifactReference reference, final String resourceId, final String what) {
+        return about(reference,
+                Detection.builderNone().code(CODE_RULE_COMPILED).location(resourceId).text("Compiled (" + what + ")").build());
     }
 
     /**
-     * Names and locates the artifact a detection is about, the same way step 5 does. On the failure path this is the
-     * information that matters most — which of several rule sets did not prepare.
+     * Names and locates the artifact a detection is about, the same way step 5 does — by the id the scenario declares
+     * for it, by its location when it declares none. On the failure path this is the information that matters most —
+     * which of several rule sets did not prepare.
      */
-    private static CTDetection about(final String href, final Detection detection) {
-        return SubjectDetection.about(detection).identifiedBy(SubjectDetection.ATTR_ARTIFACT_ID, href).locatedAt(href).build();
+    private static CTDetection about(final CTValidationArtifactReference reference, final Detection detection) {
+        final String href = reference.getValidationArtifactReference().toString();
+        return SubjectDetection.about(detection)
+                .identifiedBy(SubjectDetection.ATTR_ARTIFACT_ID, ScenarioRuleSetReference.reportedId(reference)).locatedAt(href).build();
     }
 }

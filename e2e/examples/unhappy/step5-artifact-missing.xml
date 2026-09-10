@@ -104,7 +104,7 @@
 	at java.base/sun.net.www.protocol.jar.JarURLConnection.getInputStream(JarURLConnection.java:167)&#13;
 	at java.base/java.net.URL.openStream(URL.java:1263)&#13;
 	at org.kosit.cvr.util.ArtifactResolver.read(ArtifactResolver.java:143)&#13;
-	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java:193)&#13;
+	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java:201)&#13;
 	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java:148)&#13;
 	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:103)&#13;
 	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step5ArtifactIsMissing(CvrlUnhappyPathTest.java:261)&#13;

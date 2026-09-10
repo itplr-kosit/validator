@@ -8,7 +8,7 @@
         <p>Scenario configuration used by the tests of this module</p>
     </description>
 
-    <scenario>
+    <scenario id="org.kosit.validator.test:simple:1.0.0">
         <name>Simple</name>
         <description>
             <p>XML Schema and Schematron validation.</p>
@@ -22,7 +22,7 @@
             </resource>
         </validateWithXmlSchema>
         <validateWithSchematron>
-            <resource>
+            <resource id="org.kosit.validator.test:simple-rules:1.0.0:compiled">
                 <name>Sample Schematron</name>
                 <location>simple.xsl</location>
             </resource>

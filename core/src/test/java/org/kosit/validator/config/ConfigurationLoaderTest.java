@@ -40,6 +40,12 @@ public class ConfigurationLoaderTest {
         assertThat(config.getDefinitionFile()).isEqualTo(TestResources.Simple.SCENARIOS_WRITTEN_FOR_2_0.toString());
         // the processor is named at the rule set, the overrides are declared with it
         assertThat(simple.getConfiguration().getValidateWithSchematron().get(0).getCompiler()).isEqualTo("schxslt");
+        // the ids of the scenario and of its artifacts are read; nothing but the report uses them yet
+        assertThat(simple.getConfiguration().getId()).isEqualTo("org.kosit.validator.test:simple:1.0.0");
+        assertThat(simple.getConfiguration().getValidateWithXmlSchema().getResource().get(0).getId())
+                .isEqualTo("org.kosit.validator.test:simple-xsd:1.0.0");
+        assertThat(simple.getConfiguration().getValidateWithSchematron().get(0).getResource().getId())
+                .isEqualTo("org.kosit.validator.test:simple-rules:1.0.0:compiled");
         assertThat(ScenarioSeverityOverrides.fromConfiguration(simple.getConfiguration()).effectiveFor("rejected"))
                 .isEqualTo(CTStandardSeverity.WARNING);
     }
