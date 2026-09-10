@@ -26,4 +26,10 @@
         </jaxb:schemaBindings>
     </jaxb:bindings>
 
+    <jaxb:bindings schemaLocation="../../resources/xsd/scenarios-v3.xsd">
+        <jaxb:schemaBindings>
+            <jaxb:package name="org.kosit.validator.scenario.v3"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
 </jaxb:bindings>

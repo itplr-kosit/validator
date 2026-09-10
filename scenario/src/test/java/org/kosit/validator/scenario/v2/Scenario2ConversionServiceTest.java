@@ -86,7 +86,7 @@ public class Scenario2ConversionServiceTest {
     @Test
     public void schemaIsResolvableFromTheModuleItself() throws IOException {
         assertThat(SAMPLE).isNotNull();
-        try ( var in = Scenario2ConversionServiceTest.class.getResourceAsStream(Scenario2Converter.SCENARIOS_V1_XSD_PATH) ) {
+        try ( var in = Scenario2ConversionServiceTest.class.getResourceAsStream(Scenario2Converter.SCENARIOS_V2_XSD_PATH) ) {
             assertNotNull(in);
         }
     }

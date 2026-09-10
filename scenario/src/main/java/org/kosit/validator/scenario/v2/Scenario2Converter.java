@@ -11,15 +11,16 @@ import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 
 /**
- * Convenience {@link AbstractJaxbConverter} preconfigured for the scenario JAXB model package
- * ({@code org.kosit.validator.scenario.model}).
+ * Convenience {@link AbstractJaxbConverter} preconfigured for the scenario JAXB model package of version 2
+ * ({@code org.kosit.validator.scenario.v2}).
  */
 public final class Scenario2Converter extends AbstractJaxbConverter<Scenarios> {
 
+    /** The XML namespace URI of the scenario configuration version 2 */
     public static final String NS_URI = "http://www.xoev.de/de/validator/framework/2/scenarios";
 
-    /** XSD for the scenarios.xml definition as used by Validator v2.x */
-    public static final String SCENARIOS_V1_XSD_PATH = "/xsd/scenarios-v2.xsd";
+    /** XSD for the scenarios.xml definition of version 2 */
+    public static final String SCENARIOS_V2_XSD_PATH = "/xsd/scenarios-v2.xsd";
 
     private static final JAXBContext JAXB_CTX;
 
@@ -32,7 +33,7 @@ public final class Scenario2Converter extends AbstractJaxbConverter<Scenarios> {
             throw new IllegalStateException("Can not create scenario JAXB context", e);
         }
 
-        SCHEMA = SchemaResolver.createParsedSchema(Scenario2Converter.class.getResource(SCENARIOS_V1_XSD_PATH));
+        SCHEMA = SchemaResolver.createParsedSchema(Scenario2Converter.class.getResource(SCENARIOS_V2_XSD_PATH));
     }
 
     /**

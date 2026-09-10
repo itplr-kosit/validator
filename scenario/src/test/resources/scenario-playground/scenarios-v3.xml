@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- THIS is the source file for creating scenarios.xml-->
-<scenarios xmlns="urn:kosit:validator:scenario:2">
+<scenarios xmlns="urn:kosit:validator:scenario:3">
   <name>Prüftool-Konfiguration Peppol BIS</name>
   
   <!-- metadata to be copied into each scenario -->
