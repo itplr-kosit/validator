@@ -27,6 +27,7 @@ public class ResourceHelperTest {
         ResourceHelper.setTempDir(null);
     }
 
+    @SuppressWarnings("resource")
     @Test
     public void createTempFileRemembersTheFile() throws IOException {
         final ResourceHelper resHelper = new ResourceHelper();
@@ -41,13 +42,12 @@ public class ResourceHelperTest {
 
     @Test
     public void getAllTempFilesReturnsACopy() throws IOException {
-        final ResourceHelper resHelper = new ResourceHelper();
-        resHelper.createTempFile();
+        try ( final ResourceHelper resHelper = new ResourceHelper() ) {
+            resHelper.createTempFile();
 
-        resHelper.getAllTempFiles().clear();
-        assertThat(resHelper.getAllTempFiles()).hasSize(1);
-
-        resHelper.close();
+            resHelper.getAllTempFiles().clear();
+            assertThat(resHelper.getAllTempFiles()).hasSize(1);
+        }
     }
 
     @Test
@@ -73,6 +73,7 @@ public class ResourceHelperTest {
         assertThat(file).doesNotExist();
     }
 
+    @SuppressWarnings("resource")
     @Test
     public void closeClosesAllCloseables() {
         final ResourceHelper resHelper = new ResourceHelper();
@@ -88,6 +89,7 @@ public class ResourceHelperTest {
         assertThat(resHelper.getAllCloseables()).isEmpty();
     }
 
+    @SuppressWarnings("resource")
     @Test
     public void closeIsIdempotent() {
         final ResourceHelper resHelper = new ResourceHelper();
@@ -106,6 +108,7 @@ public class ResourceHelperTest {
         }
     }
 
+    @SuppressWarnings("resource")
     @Test
     public void nothingCanBeAddedAfterClose() {
         final ResourceHelper resHelper = new ResourceHelper();

@@ -15,14 +15,14 @@ import org.kosit.xvrl.impl.XvrlConverter;
 import org.kost.validator.api.error.DetailedValidationResult;
 
 /**
- * Tests the CVRL profile against hand written reports: the two shapes a run can produce (a cancelled and a completed
+ * Tests the CVR profile against hand written reports: the two shapes a run can produce (a cancelled and a completed
  * one) have to pass, and every rule has to catch the mistake it is there for. The fixtures are deliberately minimal -
  * each invalid one differs from a valid report in exactly the one respect its rule is about.
  */
 public class CvrProfileTest {
 
     private static byte[] read(final String name) {
-        try ( final InputStream input = CvrProfileTest.class.getResourceAsStream("/cvrl/" + name) ) {
+        try ( final InputStream input = CvrProfileTest.class.getResourceAsStream("/cvr/" + name) ) {
             if (input == null) {
                 throw new IllegalStateException("Test fixture '" + name + "' is not on the test classpath");
             }
@@ -58,7 +58,7 @@ public class CvrProfileTest {
     @CsvSource({ "invalid-cancelled-but-conformant.xml, cancelled-is-not-conformant",
             "invalid-completed-without-conformance.xml, completed-has-conformance", "invalid-unknown-creator.xml, step-canonical-creator",
             "invalid-steps-out-of-order.xml, steps-in-pipeline-order", "invalid-digest-count-mismatch.xml, digest-error-count-matches",
-            "invalid-unknown-cvrl-attribute.xml, known-cvr-attribute",
+            "invalid-unknown-cvr-attribute.xml, known-cvr-attribute",
             "invalid-dom-payload-with-source-encoding.xml, payload-source-encoding",
             "invalid-schema-outside-apply-rules.xml, schema-only-on-apply-rules", "invalid-hash-outside-context.xml, hash-in-context" })
     public void testAProfileViolationIsCaughtByItsOwnRule(final String filename, final String assertionId) {

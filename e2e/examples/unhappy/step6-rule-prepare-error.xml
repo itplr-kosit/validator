@@ -27,7 +27,7 @@
 </simple>
             </message>
             <context>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -94,7 +94,7 @@
             <message>Artifact retrieved</message>
             <context>
                 <location href="does-not-compile.sch" cvr:artifact-type="schematron-schxslt2-xslt3"/>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">ea64e14068f4596020320d945f0f778bfbead401e40980a33010503fc7f885fc44d240c4cb537832653565286d322493be7ab0cddb9f29a5f975e73a7c1ae2eb</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">ea64e14068f4596020320d945f0f778bfbead401e40980a33010503fc7f885fc44d240c4cb537832653565286d322493be7ab0cddb9f29a5f975e73a7c1ae2eb</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -110,8 +110,8 @@
 	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java:170)
 	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.prepare(PrepareRulesAction.java:166)
 	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.execute(PrepareRulesAction.java:137)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:111)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step6RulesDoNotCompile(CvrlUnhappyPathTest.java:276)
+	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.runWithReferences(CvrUnhappyPathTest.java:111)
+	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step6RulesDoNotCompile(CvrUnhappyPathTest.java:276)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)

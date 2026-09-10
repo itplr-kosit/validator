@@ -27,7 +27,7 @@
 </simple>
             </message>
             <context>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -94,7 +94,7 @@
             <message>Artifact retrieved</message>
             <context>
                 <location href="simple.xsd" cvr:artifact-type="xsd"/>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvr:hash>
             </context>
         </detection>
         <detection severity="error" code="artifact-missing" cvr:artifact-id="does-not-exist.sch">
@@ -106,8 +106,8 @@
 	at org.kosit.cvr.util.ArtifactResolver.read(ArtifactResolver.java:143)
 	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java:193)
 	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java:148)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.runWithReferences(CvrlUnhappyPathTest.java:104)
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step5ArtifactIsMissing(CvrlUnhappyPathTest.java:263)
+	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.runWithReferences(CvrUnhappyPathTest.java:104)
+	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step5ArtifactIsMissing(CvrUnhappyPathTest.java:263)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)

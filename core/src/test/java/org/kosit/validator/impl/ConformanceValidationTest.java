@@ -19,9 +19,9 @@ import org.kosit.validator.testdata.TestResources;
 /**
  * The engine as a whole: every path a run can take ends in a verdict and in a report that satisfies the CVR profile.
  * <p>
- * The step actions have their own tests, and {@code CvrlUnhappyPathTest} checks what the report of a cancelled run
- * looks like in detail. What is checked here is the engine's own contribution: that it composes the steps in order,
- * stops at the first one that does not succeed, and still returns a result instead of throwing.
+ * The step actions have their own tests, and {@code CvrUnhappyPathTest} checks what the report of a cancelled run looks
+ * like in detail. What is checked here is the engine's own contribution: that it composes the steps in order, stops at
+ * the first one that does not succeed, and still returns a result instead of throwing.
  * </p>
  */
 public class ConformanceValidationTest {

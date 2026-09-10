@@ -14,7 +14,7 @@
     <description>The Conformance Validation Report - the XVRL profile of the validator, as an XSD for the extension vocabulary and a Schematron for the profile constraints.</description>
 
     <dependencies>
-        <!-- The XVRL schema a CVRL report is validated against structurally -->
+        <!-- The XVRL schema a CVR report is validated against structurally -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-xvrl</artifactId>

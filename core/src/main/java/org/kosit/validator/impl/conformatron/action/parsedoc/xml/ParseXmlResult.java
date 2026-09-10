@@ -33,7 +33,7 @@ public class ParseXmlResult implements ParseDocumentActionResult<DomValidationSo
      * @param result success or failure (failure cancels the process)
      * @param detections this execution's contribution to the report; never {@code null}
      * @param parsedSource the parsed source. On a well-formedness failure it still carries source metadata, bytes and
-     *            SHA-512 hash for document identity in the partial CVRL — only without parsed content
+     *            SHA-512 hash for document identity in the partial CVR — only without parsed content
      *            ({@code isParsed() == false}). {@code null} only when the source could not be read at all.
      */
     public ParseXmlResult(CTStepResult result, CTDetectionList detections, @Nullable DomValidationSource parsedSource) {

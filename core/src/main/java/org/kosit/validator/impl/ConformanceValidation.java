@@ -32,7 +32,7 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
-import org.kosit.validator.impl.conformatron.report.CvrlWriter;
+import org.kosit.validator.impl.conformatron.report.CvrWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
 
     private final boolean resolveInArchive;
 
-    private final CvrlWriter writer;
+    private final CvrWriter writer;
 
     /**
      * Creates the engine over the given scenarios, resolving artifacts in the file system.
@@ -145,7 +145,7 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
             this.retrieval.computeIfAbsent(scenario.getRepository().getRepository(),
                     repository -> new RetrieveArtifactsAction(repository, resolveInArchive));
         }
-        this.writer = new CvrlWriter(engineInformation.getName(), engineInformation.getVersion());
+        this.writer = new CvrWriter(engineInformation.getName(), engineInformation.getVersion());
     }
 
     /**

@@ -3,7 +3,7 @@
 Instanzen: 150
 
 **Bekannte Lücken dieses Laufs** (bei der Bewertung berücksichtigen):
-- `customLevel`-Overrides werden von Step 7 angewandt (effektive Severity; Original als `cvrl:original-severity`).
+- `customLevel`-Overrides werden von Step 7 angewandt (effektive Severity; Original als `cvr:original-severity`).
 - `acceptMatch` der Szenarien wird nicht ausgewertet (läuft auf dem Report; ADR-004 Follow-up) — die Entscheidung (Step 9) folgt allein aus den Konformitätsaussagen von Step 8.
 - Step 8 nutzt ein szenarioweites Default-Target (`ConformanceTarget.ofScenario`).
 

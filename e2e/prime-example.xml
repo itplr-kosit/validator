@@ -396,7 +396,7 @@
 </ubl:Invoice>
             </message>
             <context>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">7f59f9d544f46a38e4feb3c6f9afe72f28233a12c31dda40abc24bfa25e96bdf25ab080445f9ffeff8d28e64507243c4065855fbec9804eb55153b5775c04c98</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">7f59f9d544f46a38e4feb3c6f9afe72f28233a12c31dda40abc24bfa25e96bdf25ab080445f9ffeff8d28e64507243c4065855fbec9804eb55153b5775c04c98</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -488,26 +488,26 @@
             <timestamp>2026-01-01T00:00:00Z</timestamp>
             <creator name="retrieve-artifacts"/>
         </metadata>
-        <!-- OFFEN: cvr:artifact-id und location/@href tragen dieselbe Kennung - bewusst beides, streichbar wenn gewuenscht (gilt genauso fuer cvrl:target-id weiter unten) -->
+        <!-- OFFEN: cvr:artifact-id und location/@href tragen dieselbe Kennung - bewusst beides, streichbar wenn gewuenscht (gilt genauso fuer cvr:target-id weiter unten) -->
         <detection cvr:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
             <message>Artifact retrieved</message>
             <context>
                 <location href="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd" cvr:artifact-type="xsd"/>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">94d388e6003abb89c51be2e46ce2937d88b311482299d5725c789fdcd58f3fb0abf33743d7684b1384ba0b6c78ad9e24c255fb7a8e37cb0f550fdd256d0cdf32</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">94d388e6003abb89c51be2e46ce2937d88b311482299d5725c789fdcd58f3fb0abf33743d7684b1384ba0b6c78ad9e24c255fb7a8e37cb0f550fdd256d0cdf32</cvr:hash>
             </context>
         </detection>
         <detection cvr:artifact-id="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl">
             <message>Artifact retrieved</message>
             <context>
                 <location href="resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl" cvr:artifact-type="schematron-xslt2"/>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">e310d4c6eda333800727111dcdf37f73a119c1c54041f133abe96b6b7a6d99439c30f0e1080fcd8589d0eea811955b205591c553ee14a65eefb7f20ffdf45696</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">e310d4c6eda333800727111dcdf37f73a119c1c54041f133abe96b6b7a6d99439c30f0e1080fcd8589d0eea811955b205591c553ee14a65eefb7f20ffdf45696</cvr:hash>
             </context>
         </detection>
         <detection cvr:artifact-id="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl">
             <message>Artifact retrieved</message>
             <context>
                 <location href="resources/xrechnung/3.0.2/xsl/XRechnung-UBL-validation.xsl" cvr:artifact-type="schematron-xslt2"/>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">ee48549b0e794ddd8aa7728896e5420702b1d3c400d7289b73ed1f424d37e3e54a5da37e2b06ce572bcf822ff516c42f443175d5ae2e84dc91699fe2dd0afb9c</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">ee48549b0e794ddd8aa7728896e5420702b1d3c400d7289b73ed1f424d37e3e54a5da37e2b06ce572bcf822ff516c42f443175d5ae2e84dc91699fe2dd0afb9c</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -519,7 +519,7 @@
             <validator name="Saxon" version="12.10"/>
             <!-- OFFEN: ggf. zu viel fuer einen eigenen Schritt - verschoben -->
             <!-- OFFEN: pass-throughs erzeugen keine detection mehr, daher steht hier nur das echte Kompilat -->
-            <!-- OFFEN: cvrl:compilation="compiled|passed-through" erst nach dem Workshop -->
+            <!-- OFFEN: cvr:compilation="compiled|passed-through" erst nach dem Workshop -->
             <creator name="prepare-rules"/>
         </metadata>
         <detection cvr:artifact-id="resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
@@ -596,7 +596,7 @@
         <metadata>
             <timestamp>2026-01-01T00:00:00Z</timestamp>
             <!-- OFFEN: Schritt 9 laeuft immer, auch nach Abbruch (dann REJECT mit dem abbrechenden Schritt in der Begruendung) -->
-            <!-- OFFEN: Spec-Frage offen: cvrl:decision zusaetzlich als Attribut an der Wurzel (neben cvrl:conformant), damit ein Konsument das Verdikt ohne Suche im letzten Report findet? Ein eigenes Wurzel-Element laesst XVRL nicht zu -->
+            <!-- OFFEN: Spec-Frage offen: cvr:decision zusaetzlich als Attribut an der Wurzel (neben cvr:conformant), damit ein Konsument das Verdikt ohne Suche im letzten Report findet? Ein eigenes Wurzel-Element laesst XVRL nicht zu -->
             <!-- OFFEN: acceptMatch/acceptSelector aus 1.x wird hier NICHT ausgewertet - das Verdikt folgt allein aus den Konformitaetsaussagen von Schritt 8 (INCONCLUSIVE -> EVALUATE_FURTHER ist damit heute unerreichbar) -->
             <!-- OFFEN: Andreas 07.09.: Wir brauchen wieder eine Art acceptMatch/acceptSelector im Scenario -->
             <creator name="decision-recommendation"/>
