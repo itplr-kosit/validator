@@ -27,7 +27,7 @@
 </simple>
             </message>
             <context>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -40,13 +40,13 @@
         <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="examples/simple/scenarios-with-unconditional.xml"/>
             </context>
         </detection>
         <detection cvr:scenario-id="Always">
             <message>Scenario 'Always' applies unconditionally</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Always']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Always']" href="examples/simple/scenarios-with-unconditional.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -79,7 +79,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="examples/simple/scenarios-with-unconditional.xml"/>
             </context>
         </detection>
         <detection cvr:scenario-id="Always">
@@ -99,7 +99,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Always']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-unconditional.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Always']" href="examples/simple/scenarios-with-unconditional.xml"/>
             </context>
         </detection>
         <digest valid="true"/>

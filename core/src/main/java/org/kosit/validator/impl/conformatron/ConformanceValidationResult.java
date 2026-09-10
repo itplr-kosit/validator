@@ -10,7 +10,7 @@ import org.conformatron.api.model.conformance.CTDecision;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
-import org.kosit.validator.impl.conformatron.report.CvrlWriter;
+import org.kosit.validator.impl.conformatron.report.CvrWriter;
 import org.kosit.xvrl.model.XvrlReports;
 
 /**
@@ -29,9 +29,9 @@ public final class ConformanceValidationResult {
 
     private final PipelineResults run;
 
-    private final CvrlWriter writer;
+    private final CvrWriter writer;
 
-    public ConformanceValidationResult(final String documentName, final PipelineResults run, final CvrlWriter writer) {
+    public ConformanceValidationResult(final String documentName, final PipelineResults run, final CvrWriter writer) {
         if (run == null || writer == null) {
             throw new IllegalArgumentException("run and writer may not be null");
         }

@@ -3,7 +3,7 @@
     <metadata>
         <timestamp>2026-01-01T00:00:00Z</timestamp>
         <validator name="TestEngine" version="TestVersion"/>
-        <document href="simple.xml"/>
+        <document href="examples/simple/input/simple.xml"/>
     </metadata>
     <report>
         <metadata>
@@ -27,7 +27,7 @@
 </simple>
             </message>
             <context>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -40,7 +40,7 @@
         <detection cvr:scenario-id="org.kosit.validator.test:simple:1.0.0">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="scenarios-accept-match-empty.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="examples/simple/scenarios-accept-match-empty.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -74,7 +74,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="scenarios-accept-match-empty.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="examples/simple/scenarios-accept-match-empty.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -88,14 +88,14 @@
             <message>Artifact retrieved</message>
             <context>
                 <location href="simple.xsd" cvr:artifact-type="xsd"/>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvr:hash>
             </context>
         </detection>
         <detection cvr:artifact-id="org.kosit.validator.test:simple-rules:1.0.0:compiled">
             <message>Artifact retrieved</message>
             <context>
                 <location href="simple.xsl" cvr:artifact-type="schematron-xslt2"/>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">79c34fc5bb5e100e244cb27043ec13ab9b6ae2f63bcf76f3e043209afd3431f1d1dd2e0ef9a3ca27cc0757329f6481d6ccde14ab6204e44bc3b436df70b9edc4</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">79c34fc5bb5e100e244cb27043ec13ab9b6ae2f63bcf76f3e043209afd3431f1d1dd2e0ef9a3ca27cc0757329f6481d6ccde14ab6204e44bc3b436df70b9edc4</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>

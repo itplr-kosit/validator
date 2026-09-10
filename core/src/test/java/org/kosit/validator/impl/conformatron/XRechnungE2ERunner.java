@@ -47,7 +47,7 @@ import net.sf.saxon.s9api.Processor;
  * </pre>
  * <p>
  * All inputs and outputs live in the repository's own {@code e2e/} folder (self-contained): scenarios, repository and
- * instances are read from {@code e2e/comparison/input/}, per-instance reports and CVRLs are written to
+ * instances are read from {@code e2e/comparison/input/}, per-instance reports and CVRs are written to
  * {@code e2e/comparison/v2_0/reports/}, the summary to {@code e2e/results/}. Every default can be overridden with the
  * system properties {@code e2e.scenarios}, {@code e2e.repository}, {@code e2e.instances}, {@code e2e.output},
  * {@code e2e.reports}.
@@ -180,22 +180,23 @@ public final class XRechnungE2ERunner {
                     e.getMessage(), "-", List.of());
         }
         if (reportsDir != null) {
-            writeCvrl(reportsDir, name, result);
+            writeCvr(reportsDir, name, result);
         }
         return toInstanceResult(name, result.getRun());
     }
 
-    /** Serializes the (partial) run as CVRL draft report next to the Markdown report. */
-    private static void writeCvrl(final Path reportsDir, final String name, final ConformanceValidationResult result) {
+    /** Serializes the (partial) run as CVR draft report next to the Markdown report. */
+    private static void writeCvr(final Path reportsDir, final String name, final ConformanceValidationResult result) {
         try {
-            final Path file = reportsDir.resolve(name.replace(".xml", "-cvrl.xml"));
+            final Path file = reportsDir.resolve(name.replace(".xml", "-cvr.xml"));
             Files.createDirectories(file.getParent());
-            final ByteArrayOutputStream cvrl = new ByteArrayOutputStream();
-            result.writeCvr(cvrl);
-            // the reports are kept in the repository, so their timestamps are fixed — see FixedTimestamps
-            Files.write(file, FixedTimestamps.apply(cvrl.toByteArray()));
+            final ByteArrayOutputStream cvr = new ByteArrayOutputStream();
+            result.writeCvr(cvr);
+            // the reports are kept in the repository, so they carry neither the time nor the paths of this run —
+            // see FixedTimestamps and LocalUris
+            Files.write(file, FixedTimestamps.apply(LocalUris.apply(cvr.toByteArray())));
         } catch (final IOException e) {
-            throw new IllegalStateException("Can not write CVRL for " + name, e);
+            throw new IllegalStateException("Can not write CVR for " + name, e);
         }
     }
 
@@ -257,7 +258,7 @@ public final class XRechnungE2ERunner {
             out.println();
             out.println("**Bekannte Lücken dieses Laufs** (bei der Bewertung berücksichtigen):");
             out.println(
-                    "- `customLevel`-Overrides werden von Step 7 angewandt (effektive Severity; Original als `cvrl:original-severity`).");
+                    "- `customLevel`-Overrides werden von Step 7 angewandt (effektive Severity; Original als `cvr:original-severity`).");
             out.println(
                     "- `acceptMatch` der Szenarien wird nicht ausgewertet (läuft auf dem Report; ADR-004 Follow-up) — die Entscheidung (Step 9) folgt allein aus den Konformitätsaussagen von Step 8.");
             out.println("- Step 8 nutzt ein szenarioweites Default-Target (`ConformanceTarget.ofScenario`).");

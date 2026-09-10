@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.junit.jupiter.api.Test;
 import org.kosit.cvr.model.SeverityOverrides;
-import org.kosit.validator.scenario.v1.CustomErrorLevel;
-import org.kosit.validator.scenario.v1.ErrorLevelType;
-import org.kosit.validator.scenario.v1.ScenarioType;
-import org.kosit.validator.scenario.v1.ValidateWithSchematron;
+import org.kosit.validator.scenario.v2.CustomErrorLevel;
+import org.kosit.validator.scenario.v2.ErrorLevelType;
+import org.kosit.validator.scenario.v2.ScenarioType;
+import org.kosit.validator.scenario.v2.ValidateWithSchematron;
 
 /**
  * Tests {@link ScenarioSeverityOverrides}: the customLevel semantics carried over from 1.x (token lists, both

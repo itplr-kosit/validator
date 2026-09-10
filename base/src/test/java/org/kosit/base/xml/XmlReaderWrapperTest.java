@@ -77,7 +77,7 @@ public class XmlReaderWrapperTest {
 
     @Test
     public void handlersAreDelegated() {
-        final EntityResolver entityResolver = (publicId, systemId) -> null;
+        final EntityResolver entityResolver = (_, _) -> null;
         final ErrorHandler errorHandler = new LoggingSaxErrorHandler();
         final DefaultHandler contentHandler = new DefaultHandler();
 

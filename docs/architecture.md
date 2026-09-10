@@ -27,7 +27,7 @@ flowchart TB
         ADHOC["Scenario.adHoc(artifacts, repository)<br/>unconditional; the .xsd as schema, each .sch/.xsl a rule set"]
         ENG["ConformanceValidation<br/>implements ValidationEngine&lt;ConformanceValidationResult&gt;"]
         ACT["canonical actions, steps 2–9<br/>ParseXml · DetectScenarios · SelectScenario · RetrieveArtifacts<br/>PrepareRules · ApplyRules · ComputeConformance · DecisionRecommendation"]
-        WR["CvrlWriter<br/>PipelineResults → CVR"]
+        WR["CvrWriter<br/>PipelineResults → CVR"]
     end
     CLI --> LOAD
     CLI --> ADHOC
@@ -79,7 +79,7 @@ What the modules are for:
 | `schematron` | the technical validation engine: `ContentRepository` (compile cache, resolving confined to one repository), the Schematron compilers `schxslt`, `schxslt2`, `iso-schematron`, the resolving strategies |
 | `svrl`, `xvrl` | the JAXB bindings of SVRL (Schematron output) and XVRL (the report language) plus the XVRL data model |
 | `cvr` | what makes an XVRL report a CVR: the profile (`cvr-1.0.xsd` extension vocabulary, `cvr-1.0.sch` with 63 assertions, `CvrProfile.validate`), the `ArtifactResolver` of step 5 and the `SeverityOverrides` of step 7 |
-| `core` | the engine: `Scenario`, `ScenarioSet`, loader and builders, the eight actions, `ConformanceValidation`, `ConformanceValidationResult`, `CvrlWriter` |
+| `core` | the engine: `Scenario`, `ScenarioSet`, loader and builders, the eight actions, `ConformanceValidation`, `ConformanceValidationResult`, `CvrWriter` |
 | `cli`, `server`, `client` | the entry points — see [CLI](cli.md), [server](server.md), [client](client.md) |
 | `test-data` | the shared fixtures (`examples/simple/…`) every module tests against |
 

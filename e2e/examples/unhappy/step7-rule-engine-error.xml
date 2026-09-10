@@ -27,7 +27,7 @@
 </simple>
             </message>
             <context>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">3bc00fee739ab339e0647e833ca18de69e135a2565ac3292914f58603e050827388c6c1263ca5df63443647ec9d44e5c76897981d42e04ff3947844168953cf4</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -40,7 +40,7 @@
         <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-engine-error.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="examples/simple/scenarios-engine-error.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -80,7 +80,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-engine-error.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="examples/simple/scenarios-engine-error.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -94,14 +94,14 @@
             <message>Artifact retrieved</message>
             <context>
                 <location href="simple.xsd" cvr:artifact-type="xsd"/>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">9ff11ac1f2a541d525cebaa803813f0eb2c056663dd47a869c3cb7ad26f8466778f393173e3a3c731cea385b438d5e9e3a13a860296f17844fbef180a0e18c37</cvr:hash>
             </context>
         </detection>
         <detection cvr:artifact-id="simple-runtime-error.sch">
             <message>Artifact retrieved</message>
             <context>
                 <location href="simple-runtime-error.sch" cvr:artifact-type="schematron-schxslt2-xslt3"/>
-                <cvrl:hash xmlns:cvrl="urn:conformatron:cvr:draft" cvrl:algorithm="SHA-512">3695478cdf445280e6efbd5ed251c1ea46fcf6d1c48dc560b3a648bc3bb9b789b3951f83fb03f2ffbc6b3ecab6d1b188055acac8040a6ac51a49bdee0e4dae53</cvrl:hash>
+                <cvr:hash cvr:algorithm="SHA-512">3695478cdf445280e6efbd5ed251c1ea46fcf6d1c48dc560b3a648bc3bb9b789b3951f83fb03f2ffbc6b3ecab6d1b188055acac8040a6ac51a49bdee0e4dae53</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -152,9 +152,9 @@
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java:174)&#13;
 	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java:159)&#13;
 	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java:292)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.run(CvrlUnhappyPathTest.java:70)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.serialize(CvrlUnhappyPathTest.java:133)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrlUnhappyPathTest.step7RuleEngineFails(CvrlUnhappyPathTest.java:285)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.run(CvrUnhappyPathTest.java:71)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.serialize(CvrUnhappyPathTest.java:134)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step7RuleEngineFails(CvrUnhappyPathTest.java:287)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;

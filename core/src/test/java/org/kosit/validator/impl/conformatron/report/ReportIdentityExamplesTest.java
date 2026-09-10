@@ -21,6 +21,7 @@ import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.impl.conformatron.FixedTimestamps;
+import org.kosit.validator.impl.conformatron.LocalUris;
 import org.kosit.validator.testdata.TestResources;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,9 +42,9 @@ import org.w3c.dom.NodeList;
  */
 public class ReportIdentityExamplesTest {
 
-    private static final String NS = CvrlWriter.NS_XVRL;
+    private static final String NS = CvrWriter.NS_XVRL;
 
-    private static final String NS_CVR = CvrlWriter.NS_CVR;
+    private static final String NS_CVR = CvrWriter.NS_CVR;
 
     /** The ids the configuration written for 2.0 declares. */
     private static final String SCENARIO_ID = "org.kosit.validator.test:simple:1.0.0";
@@ -87,8 +88,9 @@ public class ReportIdentityExamplesTest {
             return;
         }
         Files.createDirectories(examples);
-        // the examples are kept in the repository: fixed timestamps, and no href of the generating machine
-        Files.write(examples.resolve(name), FixedTimestamps.withoutAbsoluteHrefs(FixedTimestamps.apply(cvr)));
+        // the examples are kept in the repository, so their timestamps are fixed and their URLs are local —
+        // see FixedTimestamps and LocalUris
+        Files.write(examples.resolve(name), FixedTimestamps.apply(LocalUris.apply(cvr)));
     }
 
     private static Element report(final Document cvr, final String creator) {

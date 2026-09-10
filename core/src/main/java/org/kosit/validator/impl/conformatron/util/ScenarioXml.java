@@ -21,8 +21,8 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.namespace.QName;
 
 import org.jspecify.annotations.NonNull;
-import org.kosit.validator.scenario.v1.Scenario1Converter;
-import org.kosit.validator.scenario.v1.ScenarioType;
+import org.kosit.validator.scenario.v2.Scenario2Converter;
+import org.kosit.validator.scenario.v2.ScenarioType;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
@@ -37,7 +37,7 @@ import jakarta.xml.bind.Marshaller;
  * to arbitrary source documents.
  * </p>
  * <p>
- * The generated scenario type carries no root element and {@link Scenario1Converter} is bound to the enclosing
+ * The generated scenario type carries no root element and {@link Scenario2Converter} is bound to the enclosing
  * {@code scenarios} document, so this marshals against the converter's JAXB context directly with an explicit element
  * name.
  * </p>
@@ -51,7 +51,7 @@ public final class ScenarioXml {
 
     private static final QName SCENARIO_QNAME = new QName(NS_SCENARIOS, "scenario");
 
-    private static final JAXBContext JAXB_CONTEXT = new Scenario1Converter().getJaxbContext();
+    private static final JAXBContext JAXB_CONTEXT = new Scenario2Converter().getJaxbContext();
 
     private ScenarioXml() {
         // static utility

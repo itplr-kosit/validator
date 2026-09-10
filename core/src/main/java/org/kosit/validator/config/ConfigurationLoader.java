@@ -15,8 +15,8 @@ import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
-import org.kosit.validator.scenario.v1.Scenario1Converter;
-import org.kosit.validator.scenario.v1.Scenarios;
+import org.kosit.validator.scenario.v2.Scenario2Converter;
+import org.kosit.validator.scenario.v2.Scenarios;
 import org.kost.validator.api.xml.CollectingErrorEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class ConfigurationLoader {
 
     private static final String SUPPORTED_MAJOR_VERSION = "2";
 
-    private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = Scenario1Converter.NS_URI;
+    private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = Scenario2Converter.NS_URI;
 
     /**
      * URL pointing to the scenario.xml file.
@@ -146,7 +146,7 @@ public class ConfigurationLoader {
         checkVersion(this.scenarioDefinition, processor);
         LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        final Scenarios scenarios = new Scenario1Converter().withEventHandler(handler).readXml(this.scenarioDefinition);
+        final Scenarios scenarios = new Scenario2Converter().withEventHandler(handler).readXml(this.scenarioDefinition);
         if (handler.hasErrors()) {
             throw new IllegalStateException(
                     "Can not load scenarios from " + this.scenarioDefinition + " due to " + handler.getErrorDescription());

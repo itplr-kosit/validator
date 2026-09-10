@@ -135,7 +135,7 @@ public class PrepareRulesAction implements CTAction {
         final List<CTDetection> detections = new ArrayList<>();
         for (final CTResolvedValidationArtifact artifact : artifacts) {
             if (!prepare(artifact, resourceId, ruleSets, detections)) {
-                // compile failure cancels the process; the partial CVRL keeps what was prepared so far
+                // compile failure cancels the process; the partial CVR keeps what was prepared so far
                 return new PrepareRulesResult(CTStepResult.FAILURE, List.copyOf(ruleSets), new DetectionList(detections));
             }
         }
