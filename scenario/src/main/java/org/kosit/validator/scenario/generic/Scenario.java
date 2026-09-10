@@ -19,7 +19,8 @@ import org.kosit.base.string.StringHelper;
  * <li>{@link EScenarioKind#PDF} uses the requirements and the XML scenario reference. It was introduced with scenario
  * configuration version 3 and is silently dropped when writing version 2.</li>
  * </ul>
- * The {@link #getCoordinate() coordinate} is required by version 3 and has no representation in version 2.
+ * The {@link #getCoordinate() coordinate} is required by version 3 and optional in version 2, which writes it as one
+ * string in the {@code id} attribute.
  *
  * @author Philip Helger
  */

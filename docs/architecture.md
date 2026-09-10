@@ -24,7 +24,7 @@ flowchart TB
 
     subgraph core["validator-core"]
         LOAD["ScenarioSet.load(…) / ScenarioSet.create()<br/>ConfigurationLoader · ConfigurationBuilder<br/>→ Scenario: declaration, repository, match"]
-        ADHOC["Scenario.adHoc(schematron)<br/>unconditional, one rule set"]
+        ADHOC["Scenario.adHoc(artifacts, repository)<br/>unconditional; the .xsd as schema, each .sch/.xsl a rule set"]
         ENG["ConformanceValidation<br/>implements ValidationEngine&lt;ConformanceValidationResult&gt;"]
         ACT["canonical actions, steps 2–9<br/>ParseXml · DetectScenarios · SelectScenario · RetrieveArtifacts<br/>PrepareRules · ApplyRules · ComputeConformance · DecisionRecommendation"]
         WR["CvrWriter<br/>PipelineResults → CVR"]
@@ -115,6 +115,18 @@ The report is written from the results of every step the run reached (`PipelineR
 report: the steps that ran, the detection that cancelled, the decision `REJECT` with the cancellation as rationale — and the
 same profile-valid CVR as a run that went through.
 
+Read as phases, the steps answer seven questions (the vocabulary of the product owner's architecture slides):
+
+| Phase | Steps | Question | Cancels when |
+|---|---|---|---|
+| Structural assurance | 2 | Is the document well-formed XML? Bytes are retained and hashed for the report. | not well-formed |
+| Dynamic validation decision | 3, 4 | Which requirement applies? All match expressions plus every scenario without `match`; exactly one by expression, all unconditional ones in addition. | no scenario, or more than one by expression |
+| Uniform validation artifacts | 5 | Where do schema and rule sets come from? From the repository of the applied scenario and nowhere else, each with its hash. | artifact missing, access denied |
+| Validation | 6, 7 | What do the rules say? Compile (XSD → Schema, `.sch` → XSLT via the declared compiler, `.xsl` as is), then apply every rule set with its `customLevel` overrides. | rule set does not compile, rule engine error |
+| "Standard" conformance | 8 | Does the document meet the requirement? One statement per applied scenario. | — |
+| Decision | 9 | What should the caller do? All targets conformant → `ACCEPT`, one not → `REJECT`; always runs, also after a cancel. | — |
+| Report | CVR | One report per executed step, partial when cancelled, decision always. | — |
+
 ### How the entry points assemble the engine
 
 ```mermaid
@@ -170,6 +182,36 @@ sequenceDiagram
 
 A document that does not parse is **not** a `400`: it creates a run like any other, the pipeline cancels at
 `parse-document`, and the result is the partial CVR that says so.
+
+### Deployment topologies
+
+Where the validation stands depends on the exchange model. Common to all three is the **uniform set of validation
+artifacts** — one scenario configuration with its artifact repository, issued by the standard's owner and identical at
+every validation point, so that two points reach the same verdict and the CVR of one is evidence for the other.
+
+```mermaid
+flowchart LR
+    subgraph four["four corners (Peppol, OSCI): both access points validate"]
+        S1[Sender] --> AP1["sender AP<br/>validation"] --> AP2["receiver AP<br/>validation"] --> R1[Receiver]
+    end
+    subgraph three["three corners (central platform, e.g. ZRE): one validation point"]
+        S2[Sender] --> SP["service provider<br/>validation"] --> R2[Receiver]
+    end
+    subgraph two["two corners (in-house): sender and receiver validate themselves"]
+        S3["Sender<br/>validation"] --> R3["Receiver<br/>validation"]
+    end
+    REPO[("uniform validation artifacts<br/>(scenario configuration + repository)")]
+    REPO -. "per detected scenario" .-> AP1
+    REPO -.-> AP2
+    REPO -.-> SP
+    REPO -.-> S3
+    REPO -.-> R3
+```
+
+The access-point and platform cases run the [server](server.md), one validation per document as a resource and the CVR
+as the evidence attached to it; the in-house case embeds the [library](api.md) or runs the [CLI](cli.md) — one jar, one
+`scenarios.xml`, one repository directory, the same engine. The standard, not the validator, decides at which corner
+validation is mandatory (XRechnung: the receiver; Peppol: both access points).
 
 ## Separation of concerns
 

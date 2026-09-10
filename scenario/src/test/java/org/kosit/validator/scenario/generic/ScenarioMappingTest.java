@@ -70,7 +70,9 @@ public class ScenarioMappingTest {
 
         final Scenario simple = config.getScenarios().get(0);
         assertThat(simple.getKind()).isEqualTo(EScenarioKind.XML);
-        assertThat(simple.hasCoordinate()).isFalse();
+        // the id attribute of version 2 holds the coordinate; the second scenario of the sample declares none
+        assertThat(simple.getCoordinate().getAsSingleID()).isEqualTo("org.kosit.validator.test:simple:1.0.0");
+        assertThat(config.getScenarios().get(1).hasCoordinate()).isFalse();
         assertThat(simple.getName()).isEqualTo("Simple");
         assertThat(simple.getMatch()).isEqualTo("/test:simple");
         assertThat(simple.getAcceptMatch()).isEqualTo("count(//test:rejected) = 0");
@@ -157,9 +159,9 @@ public class ScenarioMappingTest {
                 .contains("framework version");
         assertThat(messagesOf(errors, CTStandardSeverity.WARNING)).singleElement(InstanceOfAssertFactories.STRING)
                 .contains("Dropping the pdf scenario 'Factur-X basic'");
-        assertThat(messagesOf(errors, CTStandardSeverity.NONE)).hasSize(2)
-                .anySatisfy(x -> assertThat(x).contains("Dropping the valid from date '2026-09-20'"))
-                .anySatisfy(x -> assertThat(x).contains("Dropping the DVR coordinates of 1 scenario(s) and of 4 resource(s)"));
+        // the coordinates survive: version 2 writes them into its id attribute, so only the valid from date is lost
+        assertThat(messagesOf(errors, CTStandardSeverity.NONE)).singleElement(InstanceOfAssertFactories.STRING)
+                .contains("Dropping the valid from date '2026-09-20'");
     }
 
     @Test
@@ -185,8 +187,9 @@ public class ScenarioMappingTest {
         final List<SimpleError> errors = new ArrayList<>();
         Scenario3Mapper.fromGeneric(config, errors);
 
-        // 2 scenarios plus 2 XML Schemas and 1 Schematron resource
-        assertThat(messagesOf(errors, CTStandardSeverity.ERROR)).hasSize(5)
+        // of the 2 scenarios plus 2 XML Schemas and 1 Schematron resource of the sample, the second scenario and both
+        // XML Schemas declare no id, and version 3 requires a coordinate for each of them
+        assertThat(messagesOf(errors, CTStandardSeverity.ERROR)).hasSize(3)
                 .allSatisfy(x -> assertThat(x).contains("has no DVR coordinate"));
     }
 

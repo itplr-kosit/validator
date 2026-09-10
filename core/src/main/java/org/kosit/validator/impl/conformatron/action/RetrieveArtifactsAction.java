@@ -157,17 +157,25 @@ public class RetrieveArtifactsAction implements CTAction {
      * Names and locates the artifact a detection is about, so a consumer can identify and fetch it without parsing the
      * message text. Applies to failures too — knowing <i>which</i> artifact is missing is the whole point there.
      */
-    private static CTDetection about(final String href, final @Nullable String artifactType, final Detection detection) {
-        return about(href, artifactType, null, detection);
+    private static CTDetection about(final CTValidationArtifactReference reference, final @Nullable String artifactType,
+            final Detection detection) {
+        return about(reference, artifactType, null, detection);
     }
 
     /**
      * Names, locates and — when the bytes were read — fingerprints the artifact a detection is about. The hash is what
      * makes the report provable: without it nothing shows which version of a rule set the validation ran against.
+     * <p>
+     * The name is the id the scenario declares for the artifact and its location when the scenario declares none, so
+     * that a configuration which states its coordinates is reported by them while every other one keeps the location.
+     * The location is reported either way, next to the digest.
+     * </p>
      */
-    private static CTDetection about(final String href, final @Nullable String artifactType, final byte @Nullable [] content,
-            final Detection detection) {
-        return SubjectDetection.about(detection).identifiedBy(SubjectDetection.ATTR_ARTIFACT_ID, href).locatedAt(href)
+    private static CTDetection about(final CTValidationArtifactReference reference, final @Nullable String artifactType,
+            final byte @Nullable [] content, final Detection detection) {
+        final String href = reference.getValidationArtifactReference().toString();
+        return SubjectDetection.about(detection)
+                .identifiedBy(SubjectDetection.ATTR_ARTIFACT_ID, ScenarioRuleSetReference.reportedId(reference)).locatedAt(href)
                 .describingLocation(SubjectDetection.ATTR_ARTIFACT_TYPE, artifactType)
                 .hashed(content == null ? null : ReadResource.HASH_ALGORITHM_NAME,
                         content == null ? null : StringHelper.hashHex(content, ReadResource.HASH_ALGORITHM_NAME))
@@ -182,7 +190,7 @@ public class RetrieveArtifactsAction implements CTAction {
             // the scenario was assembled in code and the caller handed the artifact over compiled: nothing to resolve,
             // nothing to fingerprint - step 6 passes it through
             artifacts.add(ResolvedValidationArtifact.precompiled(reference, handedOver));
-            detections.add(about(href, handedOver.getValidationType().getID(), Detection.builderNone().code(CODE_ARTIFACTS_RETRIEVED)
+            detections.add(about(reference, handedOver.getValidationType().getID(), Detection.builderNone().code(CODE_ARTIFACTS_RETRIEVED)
                     .location(resourceId).text("Artifact handed over compiled").build()));
             return;
         }
@@ -192,23 +200,23 @@ public class RetrieveArtifactsAction implements CTAction {
             final CTValidationType validationType = determineValidationType(reference);
             final byte[] content = this.resolver.read(resolved);
             if (content.length == 0) {
-                detections.add(about(href, null,
+                detections.add(about(reference, null,
                         Detection.builderError().code(CODE_ARTIFACT_CORRUPT).location(resourceId).text("Artifact is empty").build()));
                 return;
             }
             artifacts.add(ResolvedValidationArtifact.loaded(reference, validationType, content));
-            detections.add(about(href, validationType.getID(), content,
+            detections.add(about(reference, validationType.getID(), content,
                     Detection.builderNone().code(CODE_ARTIFACTS_RETRIEVED).location(resourceId).text("Artifact retrieved").build()));
         } catch (final ArtifactResolver.AccessDeniedException e) {
             LOGGER.error("Rejected artifact reference {}", href, e);
-            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_ACCESS_DENIED).location(resourceId)
+            detections.add(about(reference, null, Detection.builderError().code(CODE_ARTIFACT_ACCESS_DENIED).location(resourceId)
                     .text(e.getMessage()).linkedException(e).build()));
         } catch (final IOException e) {
             LOGGER.error("Could not read artifact " + href, e);
-            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_MISSING).location(resourceId)
+            detections.add(about(reference, null, Detection.builderError().code(CODE_ARTIFACT_MISSING).location(resourceId)
                     .text("Artifact could not be read: " + e.getMessage()).linkedException(e).build()));
         } catch (final IllegalArgumentException e) {
-            detections.add(about(href, null, Detection.builderError().code(CODE_ARTIFACT_CORRUPT).location(resourceId)
+            detections.add(about(reference, null, Detection.builderError().code(CODE_ARTIFACT_CORRUPT).location(resourceId)
                     .text("Artifact is not usable: " + e.getMessage()).linkedException(e).build()));
         }
     }

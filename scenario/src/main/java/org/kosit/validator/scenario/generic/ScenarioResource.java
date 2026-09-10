@@ -12,8 +12,8 @@ import org.kosit.base.string.StringHelper;
  * <p>
  * Version dependent constraints:
  * <ul>
- * <li>Scenario configuration version 2 has no {@link #getCoordinate() coordinate} and requires the
- * {@link #getLocation() location}.</li>
+ * <li>Scenario configuration version 2 carries the {@link #getCoordinate() coordinate} in its optional {@code id}
+ * attribute, as one string, and requires the {@link #getLocation() location}.</li>
  * <li>Scenario configuration version 3 requires the coordinate. The location is optional there - if it is absent, the
  * resource is retrieved from the global repository based on its coordinate.</li>
  * </ul>

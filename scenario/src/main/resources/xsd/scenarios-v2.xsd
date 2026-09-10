@@ -54,6 +54,22 @@
         <xs:list itemType="xs:token" />
     </xs:simpleType>
 
+    <xs:simpleType name="CoordinateType">
+        <xs:annotation>
+            <xs:documentation>
+                A Maven-like coordinate group:artifact:version with an optional fourth part as classifier, e.g.
+                "eu.cen.en16931:en16931-ubl-validation:1.3.15" or "de.xeinkauf:xrechnung-3.0.2-schematron:2.5.0:ubl".
+                Each part carries letters, digits, underscore, hyphen and dot, at most 64 characters; the version part
+                is expected to name an exact version, so that a configuration states which version of an artifact it
+                was written for. Compare "Artifact Addressing" of the conformatron rule repository specification and
+                the DVR coordinate of ph-diver.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:pattern value="[a-zA-Z0-9_\-\.]{1,64}:[a-zA-Z0-9_\-\.]{1,64}:[a-zA-Z0-9_\-\.]{1,64}(:[a-zA-Z0-9_\-\.]{1,64})?" />
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="ScenarioType">
         <xs:sequence>
             <xs:element name="name" type="xs:token" />
@@ -80,6 +96,18 @@
                 </xs:annotation>
             </xs:element>
         </xs:sequence>
+        <xs:attribute name="id" type="s:CoordinateType">
+            <xs:annotation>
+                <xs:documentation>
+                    Optional: the id of the validation requirement this scenario stands for, as a coordinate, e.g.
+                    "de.xeinkauf.xrechnung:ubl-invoice:3.0.2". Declared so that a report states which requirement was
+                    applied, not only its display name. Deliberately not xs:ID: a coordinate carries colons and is no
+                    NCName, and the id is unique per configuration by convention, not by schema. The engine still
+                    identifies a scenario by its name (cvr:scenario-id), so the id is documentation until the scenario
+                    configuration of version 2 makes it the identifier.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:element name="resource" type="s:ResourceType" />
@@ -97,6 +125,18 @@
             <xs:element name="name" type="xs:token" />
             <xs:element name="location" type="xs:anyURI" />
         </xs:sequence>
+        <xs:attribute name="id" type="s:CoordinateType">
+            <xs:annotation>
+                <xs:documentation>
+                    Optional: the id of this validation artifact, a coordinate, e.g.
+                    "de.xeinkauf:xrechnung-3.0.2-schematron:2.5.0:ubl". It states which artifact in which exact version
+                    the configuration was written for, while the location says where that version lies in the artifact
+                    repository. The declaration travels into the report: step 4 embeds the applied scenario, so a
+                    consumer reads the coordinate next to the location and the digest of the bytes that were actually
+                    retrieved (step 5).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="ValidateWithXmlSchema">

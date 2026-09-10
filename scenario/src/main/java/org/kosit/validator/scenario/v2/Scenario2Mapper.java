@@ -2,6 +2,7 @@ package org.kosit.validator.scenario.v2;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.jspecify.annotations.NonNull;
@@ -19,6 +20,7 @@ import org.kosit.validator.scenario.generic.ScenarioCustomErrorLevel;
 import org.kosit.validator.scenario.generic.ScenarioDescription;
 import org.kosit.validator.scenario.generic.ScenarioDescriptionBlock;
 import org.kosit.validator.scenario.generic.ScenarioNamespace;
+import org.kosit.validator.scenario.generic.ScenarioCoordinate;
 import org.kosit.validator.scenario.generic.ScenarioResource;
 import org.kosit.validator.scenario.generic.ScenarioSchematron;
 import org.slf4j.Logger;
@@ -34,7 +36,8 @@ import jakarta.xml.bind.JAXBElement;
  * {@link #fromGeneric(ScenarioConfiguration, List)} reports every dropped value and every value that version 2 requires
  * but that is not set. The following data is lost when writing version 2:
  * <ul>
- * <li>the DVR coordinates of the scenarios and of the resources</li>
+ * <li>a DVR coordinate whose parts version 2 can not write - the {@code id} attribute of version 2 holds the coordinate
+ * as one string and restricts each part to letters, digits, underscore, hyphen and dot</li>
  * <li>the {@code validFromDate} of the configuration</li>
  * <li>all {@link EScenarioKind#PDF} scenarios including their requirements and their XML scenario reference</li>
  * </ul>
@@ -47,6 +50,10 @@ public final class Scenario2Mapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scenario2Mapper.class);
 
     private static final ObjectFactory OF = new ObjectFactory();
+
+    /** The value space of the {@code id} attribute, mirroring {@code CoordinateType} of {@code scenarios-v2.xsd}. */
+    private static final Pattern COORDINATE_ID = Pattern
+            .compile("[a-zA-Z0-9_.-]{1,64}:[a-zA-Z0-9_.-]{1,64}:[a-zA-Z0-9_.-]{1,64}(:[a-zA-Z0-9_.-]{1,64})?");
 
     private Scenario2Mapper() {
     }
@@ -83,7 +90,9 @@ public final class Scenario2Mapper {
     }
 
     private static @NonNull ScenarioResource _toGeneric(@NonNull final ResourceType src) {
-        return new ScenarioResource(src.getName()).setLocation(src.getLocation());
+        // version 2 writes the coordinate as one string in the optional id attribute
+        return new ScenarioResource(src.getName()).setCoordinate(ScenarioCoordinate.parseOrNull(src.getId()))
+                .setLocation(src.getLocation());
     }
 
     private static @NonNull ScenarioSchematron _toGeneric(@NonNull final ValidateWithSchematron src) {
@@ -100,6 +109,7 @@ public final class Scenario2Mapper {
 
     private static @NonNull Scenario _toGeneric(@NonNull final ScenarioType src) {
         final Scenario ret = new Scenario(EScenarioKind.XML, src.getName());
+        ret.setCoordinate(ScenarioCoordinate.parseOrNull(src.getId()));
         ret.setDescription(_toGeneric(src.getDescription()));
         for (final NamespaceType ns : src.getNamespace()) {
             ret.addNamespace(ScenarioNamespace.of(ns.getPrefix(), ns.getValue()));
@@ -182,10 +192,26 @@ public final class Scenario2Mapper {
         } else {
             state.error("The resource '" + src.getName() + "' has no location, but scenario version 2 requires it");
         }
-        if (src.hasCoordinate()) {
-            state.droppedResourceCoordinates++;
-        }
+        ret.setId(_idOf(src.getCoordinate(), state, () -> state.droppedResourceCoordinates++));
         return ret;
+    }
+
+    /**
+     * The coordinate as the {@code id} attribute of version 2 writes it, or {@code null} when there is none or when its
+     * parts do not fit the attribute - the schema restricts each part to letters, digits, underscore, hyphen and dot
+     * with at most 64 characters, so a coordinate from a version that is less strict can be unwritable here.
+     */
+    private static @Nullable String _idOf(final @Nullable ScenarioCoordinate src, @NonNull final ConversionState state,
+            @NonNull final Runnable onDropped) {
+        if (src == null) {
+            return null;
+        }
+        final String id = src.getAsSingleID();
+        if (!COORDINATE_ID.matcher(id).matches()) {
+            onDropped.run();
+            return null;
+        }
+        return id;
     }
 
     private static @NonNull ScenarioType _fromGeneric(@NonNull final Scenario src, @NonNull final ConversionState state) {
@@ -228,9 +254,7 @@ public final class Scenario2Mapper {
         }
         ret.setAcceptMatch(src.getAcceptMatch());
 
-        if (src.hasCoordinate()) {
-            state.droppedScenarioCoordinates++;
-        }
+        ret.setId(_idOf(src.getCoordinate(), state, () -> state.droppedScenarioCoordinates++));
         if (!src.getRequirements().isEmpty()) {
             state.warn("Dropping the " + src.getRequirements().size() + " requirement(s) of scenario '" + src.getName()
                     + "', because scenario version 2 can not express them");
@@ -338,7 +362,8 @@ public final class Scenario2Mapper {
         private void finish() {
             if (this.droppedScenarioCoordinates > 0 || this.droppedResourceCoordinates > 0) {
                 info("Dropping the DVR coordinates of " + this.droppedScenarioCoordinates + " scenario(s) and of "
-                        + this.droppedResourceCoordinates + " resource(s), because scenario version 2 can not express them");
+                        + this.droppedResourceCoordinates + " resource(s), because their parts do not fit the id attribute of"
+                        + " scenario version 2");
             }
         }
     }
