@@ -192,8 +192,9 @@ public final class XRechnungE2ERunner {
             Files.createDirectories(file.getParent());
             final ByteArrayOutputStream cvrl = new ByteArrayOutputStream();
             result.writeCvr(cvrl);
-            // the reports are kept in the repository, so their timestamps are fixed — see FixedTimestamps
-            Files.write(file, FixedTimestamps.apply(cvrl.toByteArray()));
+            // the reports are kept in the repository, so they carry neither the time nor the paths of this run —
+            // see FixedTimestamps and LocalUris
+            Files.write(file, FixedTimestamps.apply(LocalUris.apply(cvrl.toByteArray())));
         } catch (final IOException e) {
             throw new IllegalStateException("Can not write CVRL for " + name, e);
         }

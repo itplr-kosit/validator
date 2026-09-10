@@ -40,7 +40,7 @@
         <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="examples/simple/scenarios-with-sch.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -80,7 +80,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-with-sch.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="examples/simple/scenarios-with-sch.xml"/>
             </context>
         </detection>
         <digest valid="true"/>

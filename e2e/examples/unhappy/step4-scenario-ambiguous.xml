@@ -40,13 +40,13 @@
         <detection cvr:scenario-id="Simple">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-ambiguous.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="examples/simple/scenarios-ambiguous.xml"/>
             </context>
         </detection>
         <detection cvr:scenario-id="Simple (second opinion)">
             <message>Scenario 'Simple (second opinion)' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple (second opinion)']" href="jar:file:/C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/target/validator-test-data-2.0.0-SNAPSHOT.jar!/examples/simple/scenarios-ambiguous.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple (second opinion)']" href="examples/simple/scenarios-ambiguous.xml"/>
             </context>
         </detection>
         <digest valid="true"/>

@@ -17,6 +17,7 @@ import org.kosit.base.uri.UriHelper;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.conformatron.FixedTimestamps;
+import org.kosit.validator.impl.conformatron.LocalUris;
 import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
@@ -80,8 +81,9 @@ public class DetectScenariosExamplesTest {
             return;
         }
         Files.createDirectories(examples);
-        // the examples are kept in the repository, so their timestamps are fixed — see FixedTimestamps
-        Files.write(examples.resolve(name), FixedTimestamps.apply(cvrl));
+        // the examples are kept in the repository, so they carry neither the time nor the paths of this run —
+        // see FixedTimestamps and LocalUris
+        Files.write(examples.resolve(name), FixedTimestamps.apply(LocalUris.apply(cvrl)));
     }
 
     private static Element report(final Document cvrl, final String creator) {
