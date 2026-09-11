@@ -20,6 +20,8 @@
         <module>cli</module>
         <module>server</module>
         <module>client</module>
+        <!-- last: it archives what the other modules built -->
+        <module>distribution</module>
     </modules>
 
     <groupId>org.kosit</groupId>
@@ -320,11 +322,6 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.8.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>3.6.3</version>
                 </plugin>
@@ -505,29 +502,6 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>full_dist</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>${maven.multiModuleProjectDirectory}/src/assembly/assembly-dist.xml</descriptor>
-                            </descriptors>
-                            <attach>true</attach>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <outputDirectory>target/</outputDirectory>
-                            <workDirectory>target/assembly/full</workDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
@@ -633,30 +607,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- TODO remove -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>full_dist</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                                <configuration>
-                                    <descriptors>
-                                        <descriptor>${maven.multiModuleProjectDirectory}/src/assembly/assembly-dist.xml</descriptor>
-                                    </descriptors>
-                                    <attach>true</attach>
-                                    <appendAssemblyId>false</appendAssemblyId>
-                                    <outputDirectory>target/</outputDirectory>
-                                    <workDirectory>target/assembly/full</workDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                 </plugins>
             </build>
         </profile>
