@@ -26,6 +26,11 @@ import org.kost.validator.api.saxon.ProcessorProvider;
  */
 public class SelectScenarioActionTest {
 
+    /**
+     * Casts the text of the first child to an integer; in simple.xml that text is "asldkfj", so it fails at runtime.
+     */
+    private static final String MATCH_FAILING_AT_RUNTIME = "xs:integer(/*/*[1]) = 1";
+
     private final SelectScenarioAction selectAction = new SelectScenarioAction();
 
     private static CTParsedValidationSource parseSimple() {
@@ -90,6 +95,43 @@ public class SelectScenarioActionTest {
         assertThat(result.matches()).isEmpty();
         assertThat(result.detections().getAll()).extracting("code").containsExactly(DetectScenariosAction.CODE_NO_SCENARIO_MATCHED);
         assertThat(result.detections().getWorstSeverity().getNumericLevel()).isEqualTo(CTStandardSeverity.ERROR.getNumericLevel());
+    }
+
+    @Test
+    public void testAMatchThatCannotBeEvaluatedCancelsInsteadOfCountingAsNoMatch() {
+        // the expression compiles - it is checked when the configuration is loaded - and only fails over this document
+        final DetectScenariosResult result = detect(createScenario("broken", MATCH_FAILING_AT_RUNTIME)).execute(parseSimple());
+
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.status()).isEqualTo(CTStepResult.FAILURE);
+        assertThat(result.matches()).isEmpty();
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(DetectScenariosAction.CODE_SCENARIO_MATCH_ERROR);
+        assertThat(result.detections().getWorstSeverity().getNumericLevel()).isEqualTo(CTStandardSeverity.ERROR.getNumericLevel());
+        assertThat(result.detections().getAll().get(0).getText().getDisplayTextLocaleIndependent()).contains("broken");
+    }
+
+    @Test
+    public void testAFailedMatchDoesNotLetAnotherScenarioTakeOver() {
+        // the regression this guards: "could not tell" used to read as "does not apply", so the document was validated
+        // against the next scenario - a verdict from a question the engine never answered, with nothing in the report
+        final DetectScenariosResult result = detect(createScenario("broken", MATCH_FAILING_AT_RUNTIME), createScenario("simple", "/*"))
+                .execute(parseSimple());
+
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.matches()).isEmpty();
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(DetectScenariosAction.CODE_SCENARIO_MATCH_ERROR);
+    }
+
+    @Test
+    public void testEveryBrokenMatchIsReportedNotJustTheFirst() {
+        final DetectScenariosResult result = detect(createScenario("broken-1", MATCH_FAILING_AT_RUNTIME),
+                createScenario("broken-2", MATCH_FAILING_AT_RUNTIME)).execute(parseSimple());
+
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.detections().getAll()).extracting("code").containsExactly(DetectScenariosAction.CODE_SCENARIO_MATCH_ERROR,
+                DetectScenariosAction.CODE_SCENARIO_MATCH_ERROR);
+        final List<String> texts = result.detections().getAll().stream().map(d -> d.getText().getDisplayTextLocaleIndependent()).toList();
+        assertThat(texts).anySatisfy(t -> assertThat(t).contains("broken-1")).anySatisfy(t -> assertThat(t).contains("broken-2"));
     }
 
     @Test

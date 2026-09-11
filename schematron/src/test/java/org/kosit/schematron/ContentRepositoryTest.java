@@ -4,9 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.validation.Schema;
 
@@ -32,6 +39,50 @@ public class ContentRepositoryTest {
     @BeforeEach
     public void setup() {
         this.repository = TestHelper.createContentRepository();
+    }
+
+    @Test
+    public void aSchemaIsCompiledOnceAndThenServedFromTheCache() {
+        final Schema first = this.repository.createSchema(TestResources.Simple.SCHEMA);
+
+        // a JAXP Schema is immutable and thread-safe, so recompiling it per document is pure cost
+        assertThat(this.repository.createSchema(TestResources.Simple.SCHEMA)).isSameAs(first);
+        assertThat(this.repository.createSchema(List.of(TestResources.Simple.SCHEMA.toString()))).isSameAs(first);
+    }
+
+    @Test
+    public void aFailedCompilationIsNotRemembered() {
+        assertThrows(IllegalStateException.class, () -> this.repository.createSchema(TestResources.Simple.NOT_EXISTING));
+
+        // the artifact may be repaired between runs, so the failure must not be cached
+        assertThrows(IllegalStateException.class, () -> this.repository.createSchema(TestResources.Simple.NOT_EXISTING));
+    }
+
+    @Test
+    public void schemasCompileFromManyThreadsThroughOneRepository() throws Exception {
+        // one repository is shared by every request thread of the server. A SchemaFactory is not thread-safe by its
+        // own contract, so it must not be the same instance for two concurrent compilations
+        final int threads = 16;
+        final ExecutorService pool = Executors.newFixedThreadPool(threads);
+        try {
+            final CountDownLatch start = new CountDownLatch(1);
+            final List<Future<Schema>> compiled = new ArrayList<>();
+            for (int i = 0; i < threads; i++) {
+                compiled.add(pool.submit(() -> {
+                    start.await();
+                    return this.repository.createSchema(TestResources.Simple.SCHEMA);
+                }));
+            }
+            start.countDown();
+
+            final List<Schema> schemas = new ArrayList<>();
+            for (final Future<Schema> future : compiled) {
+                schemas.add(future.get(60, TimeUnit.SECONDS));
+            }
+            assertThat(schemas).hasSize(threads).doesNotContainNull().allSatisfy(schema -> assertThat(schema).isSameAs(schemas.get(0)));
+        } finally {
+            pool.shutdownNow();
+        }
     }
 
     @Test

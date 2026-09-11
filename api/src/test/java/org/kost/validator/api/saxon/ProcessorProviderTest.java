@@ -4,6 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +26,34 @@ public class ProcessorProviderTest {
         final Processor processor = ProcessorProvider.getProcessor();
         assertThat(processor).isNotNull();
         assertThat(ProcessorProvider.getProcessor()).isSameAs(processor);
+    }
+
+    @Test
+    public void everyThreadGetsTheSameHardenedProcessor() throws Exception {
+        // the processor is shared across request threads of the server; a lazily assigned field could hand one of them
+        // a reference to a processor whose hardening is not visible yet
+        final int threads = 16;
+        final ExecutorService pool = Executors.newFixedThreadPool(threads);
+        try {
+            final CountDownLatch start = new CountDownLatch(1);
+            final List<Future<Processor>> handed = new ArrayList<>();
+            for (int i = 0; i < threads; i++) {
+                handed.add(pool.submit(() -> {
+                    start.await();
+                    return ProcessorProvider.getProcessor();
+                }));
+            }
+            start.countDown();
+
+            final Processor expected = ProcessorProvider.getProcessor();
+            for (final Future<Processor> future : handed) {
+                final Processor processor = future.get(30, TimeUnit.SECONDS);
+                assertThat(processor).isSameAs(expected);
+                assertThat(processor.getConfigurationProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS)).isFalse();
+            }
+        } finally {
+            pool.shutdownNow();
+        }
     }
 
     @Test

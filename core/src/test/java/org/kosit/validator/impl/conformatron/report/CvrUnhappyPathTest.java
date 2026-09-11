@@ -238,6 +238,17 @@ public class CvrUnhappyPathTest {
     }
 
     @Test
+    public void step3MatchExpressionCanNotBeEvaluated() throws Exception {
+        final Document cvr = serialize(TestResources.Simple.SCENARIOS_MATCH_ERROR, TestResources.Simple.SIMPLE_VALID, null,
+                "step3-scenario-match-error.xml");
+
+        assertCancelledAt(cvr, CTActionType.DETECT_SCENARIOS, DetectScenariosAction.CODE_SCENARIO_MATCH_ERROR);
+        // the scenario whose expression failed belongs in the message, otherwise the author can not find it
+        final Element failing = reports(cvr).get(reports(cvr).size() - 2);
+        assertThat(failing.getElementsByTagNameNS(NS, "message").item(0).getTextContent()).contains("Simple");
+    }
+
+    @Test
     public void step3RequestedScenarioIsUnknown() throws Exception {
         final Document cvr = serialize(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.SIMPLE_VALID, "no-such-scenario",
                 "step3-scenario-unknown-id.xml");

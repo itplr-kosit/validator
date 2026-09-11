@@ -107,7 +107,7 @@
 	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java:201)&#13;
 	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java:148)&#13;
 	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.runWithReferences(CvrUnhappyPathTest.java:104)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step5ArtifactIsMissing(CvrUnhappyPathTest.java:263)&#13;
+	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step5ArtifactIsMissing(CvrUnhappyPathTest.java:274)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)&#13;

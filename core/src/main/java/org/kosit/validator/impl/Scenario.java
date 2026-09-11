@@ -23,8 +23,6 @@ import org.kosit.validator.scenario.v2.ResourceType;
 import org.kosit.validator.scenario.v2.ScenarioType;
 import org.kosit.validator.scenario.v2.ValidateWithSchematron;
 import org.kosit.validator.scenario.v2.ValidateWithXmlSchema;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -53,8 +51,6 @@ import net.sf.saxon.s9api.XdmNode;
  * @author Andreas Schmitz
  */
 public final class Scenario {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Scenario.class);
 
     private final ScenarioType configuration;
 
@@ -265,23 +261,26 @@ public final class Scenario {
 
     /**
      * Whether the scenario applies to the document: unconditionally, or because its match expression is true.
+     * <p>
+     * An expression that can not be evaluated over this document is <b>not</b> answered as {@code false}. "I could not
+     * tell" and "it does not apply" are different statements, and turning the first into the second lets the document
+     * run against another scenario, or against none, without anything saying so - a wrong verdict nobody sees. Step 3
+     * reports the failure and cancels the run instead.
+     * </p>
      *
      * @param document the parsed document
-     * @return {@code true} if the scenario is a candidate for the document; an expression that fails to evaluate counts
-     *         as no match and is logged
+     * @return {@code true} if the scenario is a candidate for the document
+     * @throws SaxonApiException if the match expression can not be evaluated over this document. The expression itself
+     *             compiles - it is checked when the configuration is loaded - so this is a dynamic error raised by the
+     *             shape of the document, e.g. a cast that fails on its content
      */
-    public boolean matches(final XdmNode document) {
+    public boolean matches(final XdmNode document) throws SaxonApiException {
         if (this.match == null) {
             return true;
         }
-        try {
-            final XPathSelector selector = this.match.load();
-            selector.setContextItem(document);
-            return selector.effectiveBooleanValue();
-        } catch (final SaxonApiException e) {
-            LOGGER.error("Error evaluating the match expression of scenario '{}'", getName(), e);
-            return false;
-        }
+        final XPathSelector selector = this.match.load();
+        selector.setContextItem(document);
+        return selector.effectiveBooleanValue();
     }
 
     @Override

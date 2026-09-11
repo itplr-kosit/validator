@@ -3,10 +3,10 @@ package org.kosit.validator.impl;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.scenario.CTConformanceTarget;
@@ -47,8 +47,9 @@ import net.sf.saxon.s9api.Processor;
  * </pre>
  *
  * <p>
- * The engine is a pure composition of the canonical actions — it holds no state of its own beyond its scenarios, and
- * every step is invoked with exactly the output of its predecessor. What it adds over calling the actions by hand is
+ * The engine is a pure composition of the canonical actions — it carries no state of a run, and every step is invoked
+ * with exactly the output of its predecessor. Between runs it keeps only what is derived from its scenarios and does
+ * not change with the document: one artifact retrieval per repository. What it adds over calling the actions by hand is
  * the one thing a caller must not get wrong: <b>the cancel semantics</b>. A step that does not succeed ends the run,
  * the steps after it stay unexecuted, and the run is still assembled into a {@link PipelineResults} — so a cancelled
  * run yields a partial CVR with an explicit verdict rather than an exception (ADR-004, step-09 spec).
@@ -73,8 +74,13 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
 
     /**
      * Artifact retrieval per repository: the resolver is confined to one repository, so there is one per repository.
+     * <p>
+     * Filled on the run path, and one engine serves all request threads of a server, so the map has to tolerate
+     * concurrent writes. What it holds may be shared: a {@link RetrieveArtifactsAction} carries nothing but its
+     * {@code ArtifactResolver}, and that is immutable.
+     * </p>
      */
-    private final Map<URI, RetrieveArtifactsAction> retrieval = new HashMap<>();
+    private final Map<URI, RetrieveArtifactsAction> retrieval = new ConcurrentHashMap<>();
 
     private final boolean resolveInArchive;
 

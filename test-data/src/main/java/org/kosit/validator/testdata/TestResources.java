@@ -60,6 +60,12 @@ public final class TestResources {
         public static final URI SCENARIOS_AMBIGUOUS = TestData.file("examples/simple/scenarios-ambiguous.xml");
 
         /**
+         * Configuration whose match expression compiles but can not be evaluated over {@code simple.xml}: it casts the
+         * text of {@code test:inner} to an integer, and that text is not a number (step 3 failure).
+         */
+        public static final URI SCENARIOS_MATCH_ERROR = TestData.file("examples/simple/scenarios-match-error.xml");
+
+        /**
          * Configuration whose scenario references a rule set that does not resolve (step 5 failure).
          */
         public static final URI SCENARIOS_ARTIFACT_MISSING = TestData.file("examples/simple/scenarios-artifact-missing.xml");

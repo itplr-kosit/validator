@@ -2,6 +2,7 @@ package org.kosit.schematron;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,11 +55,19 @@ public class ContentRepository {
 
     private final UnparsedTextURIResolver unparsedTextURIResolver;
 
-    private final SchemaFactory schemaFactory;
-
     private final ResolvingConfigurationStrategy resolvingConfigurationStrategy;
 
     private final Map<CacheKey, Source> schematronXsltCache = new ConcurrentHashMap<>();
+
+    /**
+     * Compiled XML Schemas of this repository, by the artifact URIs they were built from.
+     * <p>
+     * A {@link Schema} is immutable and thread-safe by the JAXP contract, so one compilation per URI set serves every
+     * document and every thread. Without it each run recompiled the schema from disk, which for a set like UBL or CII
+     * is the most expensive thing the pipeline does.
+     * </p>
+     */
+    private final Map<List<String>, Schema> schemaCache = new ConcurrentHashMap<>();
 
     private final SchematronCompilerRegistry compilerRegistry;
 
@@ -72,17 +81,16 @@ public class ContentRepository {
      */
     public ContentRepository(final Processor processor, final ResolvingConfigurationStrategy strategy, final URI repository) {
         this(processor, repository, strategy.createResourceResolver(repository), strategy.createUnparsedTextURIResolver(repository),
-                strategy.createSchemaFactory(), strategy, SchematronCompilerRegistry.defaultSchematronCompilerRegistry(processor));
+                strategy, SchematronCompilerRegistry.defaultSchematronCompilerRegistry(processor));
     }
 
     protected ContentRepository(final Processor processor, final URI repository, final ResourceResolver resolver,
-            final UnparsedTextURIResolver unparsedTextURIResolver, final SchemaFactory schemaFactory,
-            final ResolvingConfigurationStrategy resolvingConfigurationStrategy, final SchematronCompilerRegistry compilerRegistry) {
+            final UnparsedTextURIResolver unparsedTextURIResolver, final ResolvingConfigurationStrategy resolvingConfigurationStrategy,
+            final SchematronCompilerRegistry compilerRegistry) {
         this.processor = processor;
         this.repository = repository;
         this.resolver = resolver;
         this.unparsedTextURIResolver = unparsedTextURIResolver;
-        this.schemaFactory = schemaFactory;
         this.resolvingConfigurationStrategy = resolvingConfigurationStrategy;
         this.compilerRegistry = compilerRegistry;
     }
@@ -115,12 +123,20 @@ public class ContentRepository {
         return this.resolvingConfigurationStrategy;
     }
 
+    /**
+     * Compiles the given sources into a schema. Not cached - the sources may be streams, which only read once.
+     *
+     * @param schemaSources the schema documents
+     * @return the compiled schema
+     */
     public Schema createSchema(final @NonNull Source @NonNull [] schemaSources) {
         Objects.requireNonNull(schemaSources);
 
+        // a SchemaFactory is not thread-safe by its own contract, and one repository serves every request thread of a
+        // server, so each compilation gets its own. The strategy hands out a fresh, hardened factory per call
+        final SchemaFactory factory = this.resolvingConfigurationStrategy.createSchemaFactory();
         try {
-            this.schemaFactory.setResourceResolver(null);
-            return this.schemaFactory.newSchema(schemaSources);
+            return factory.newSchema(schemaSources);
         } catch (final SAXException e) {
             throw new IllegalArgumentException("Can not load schema from sources " + schemaSources[0].getSystemId(), e);
         }
@@ -171,22 +187,39 @@ public class ContentRepository {
         }
     }
 
+    /**
+     * Creates the schema of the given artifact, resolved in this repository. Compiled once and then served from the
+     * cache.
+     *
+     * @param uri the URI of the schema artifact
+     * @return the compiled schema
+     */
     public Schema createSchema(final @NonNull URI uri) {
-        final var resolved = resolveInRepository(uri);
-        if (resolved == null)
-            throw new IllegalStateException("Failed to resolve URI " + uri);
-
-        return createSchema(new Source[] { resolved });
+        return cachedSchema(List.of(uri.toString()));
     }
 
     /**
-     * Creates a schema based on the given URIs.
+     * Creates a schema based on the given URIs. Compiled once per URI set and then served from the cache.
      *
      * @param uris the uris in string representation
      * @return the schema
      */
     public Schema createSchema(final Collection<String> uris) {
-        return createSchema(uris.stream().map(s -> resolveInRepository(URI.create(s))).toArray(Source[]::new));
+        return cachedSchema(List.copyOf(uris));
+    }
+
+    private Schema cachedSchema(final List<String> uris) {
+        // a failed compilation throws out of the mapping function and is not remembered, so a repaired artifact is
+        // picked up on the next run
+        return this.schemaCache.computeIfAbsent(uris, key -> createSchema(key.stream().map(this::resolveRequired).toArray(Source[]::new)));
+    }
+
+    private Source resolveRequired(final String uri) {
+        final Source resolved = resolveInRepository(URI.create(uri));
+        if (resolved == null) {
+            throw new IllegalStateException("Failed to resolve URI " + uri);
+        }
+        return resolved;
     }
 
     private Source resolveInRepository(final URI source) {
