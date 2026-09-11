@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.kosit</groupId>
+        <artifactId>validator</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>validator-distribution</artifactId>
+    <packaging>pom</packaging>
+    <name>KoSIT Validator distribution</name>
+    <description>
+        The release archive: the two runnable jars at the top, everything they need below libs/. This module exists
+        because an aggregator is built before its modules, so it can not archive their output - the distribution has to
+        be a module of its own, and the last one in the reactor.
+    </description>
+
+    <dependencies>
+        <!-- the command line application, with its runtime dependencies; they go to libs/ -->
+        <dependency>
+            <groupId>org.kosit</groupId>
+            <artifactId>validator-cli</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!--
+            the server as the Quarkus runner: it carries its runtime inside, so its dependencies are deliberately
+            excluded - resolving them would fill libs/ with jars that nothing on the class path ever loads
+        -->
+        <dependency>
+            <groupId>org.kosit</groupId>
+            <artifactId>validator-server</artifactId>
+            <version>${project.version}</version>
+            <classifier>runner</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <!--
+                        the inherited full_dist execution archives the output of the module it runs in, which is
+                        nothing here; this module archives the output of the other modules instead
+                    -->
+                    <execution>
+                        <id>full_dist</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>distribution</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${maven.multiModuleProjectDirectory}/src/assembly/assembly-distribution.xml</descriptor>
+                            </descriptors>
+                            <!-- the name the release job of .gitlab-ci.yml deploys -->
+                            <finalName>validator-${project.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <attach>false</attach>
+                            <workDirectory>${project.build.directory}/assembly/distribution</workDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

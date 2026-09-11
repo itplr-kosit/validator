@@ -29,11 +29,12 @@ cache:
     name: artifacts
     when: on_failure
     paths:
-      - target/*.jar
+      - "*/target/*.jar"
     reports:
       junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
+        # the modules build below their own target, the aggregator has no reports of its own
+        - "*/target/surefire-reports/*.xml"
+        - "*/target/failsafe-reports/*.xml"
 
 java-25:
   extends: .java
@@ -45,12 +46,14 @@ java-25:
     name: java-25
     when: always
     paths:
-      - target/*.jar
-      - target/*.zip
+      # what the deploy job publishes: the release archive and the two jars a user runs
+      - distribution/target/validator-*.zip
+      - cli/target/validator-cli-*-standalone.jar
+      - server/target/validator-server-*-runner.jar
     reports:
       junit:
-        - target/surefire-reports/*.xml
-        - target/failsafe-reports/*.xml
+        - "*/target/surefire-reports/*.xml"
+        - "*/target/failsafe-reports/*.xml"
 
 # Rare Java stuff
 .java_extended:
@@ -72,11 +75,6 @@ deploy:
   script:
     - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip            -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="distribution" -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.jar            -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION}                             -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-javadoc.jar    -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="javadoc"      -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-standalone.jar -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="standalone"   -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}-sources.jar    -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="sources"      -Dpackaging=jar -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
-  when: manual
 
 # Build Docker images and upload to KoSIT registry
 create-build-image:
