@@ -32,6 +32,17 @@
     <developers>
         <!-- In alphabetical order by last name -->
         <developer>
+            <id>andreas.schmitz</id>
+            <name>Andreas Schmitz</name>
+        </developer>
+        <developer>
+            <id>philip.helger</id>
+            <name>Philip Helger</name>
+            <organization>Philip Helger(phax)</organization>
+            <organizationUrl>https://github.com/phax</organizationUrl>
+        </developer>
+
+        <developer>
             <id>fabian.buettner</id>
             <name>Fabian Büttner</name>
             <organization>KoSIT</organization>
