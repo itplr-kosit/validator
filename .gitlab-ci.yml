@@ -46,7 +46,7 @@ java-25:
     name: java-25
     when: always
     paths:
-      # what the deploy job publishes: the release archive and the two jars a user runs
+      # the release archive the deploy job publishes, and the two jars a user runs, to download from the pipeline
       - distribution/target/validator-*.zip
       - cli/target/validator-cli-*-standalone.jar
       - server/target/validator-server-*-runner.jar
@@ -74,7 +74,7 @@ deploy:
     - job: java-25
   script:
     - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=target/validator-${PROJECT_VERSION}.zip            -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="distribution" -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
+    - mvn $MAVEN_CLI_OPTS deploy:deploy-file -Dfile=distribution/target/validator-${PROJECT_VERSION}.zip -DgroupId=kosit -DartifactId=validator -Dversion=${PROJECT_VERSION} -Dclassifier="distribution" -Dpackaging=zip -DrepositoryId="gitlab-maven" -Durl=https://projekte.kosit.org/api/v4/projects/7/packages/maven
 
 # Build Docker images and upload to KoSIT registry
 create-build-image:
