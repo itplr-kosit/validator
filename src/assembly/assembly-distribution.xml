@@ -1,0 +1,58 @@
+<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <!--
+        The release archive of the whole product, built by the distribution module:
+
+        validator-<version>.zip
+        ├── LICENSE, NOTICE, CHANGELOG.md
+        ├── validator-cli-<version>.jar            the command line application, started with java -jar
+        ├── validator-server-<version>-runner.jar  the server, started with java -jar
+        └── libs/                                  everything the command line application loads at runtime
+
+        The server needs no libs: Quarkus packages it as an uber jar. The command line application is the thin jar
+        plus libs, and its manifest points at that directory, so both are started the same way.
+    -->
+    <id>distribution</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>${maven.multiModuleProjectDirectory}</directory>
+            <outputDirectory/>
+            <includes>
+                <include>LICENSE*</include>
+                <include>NOTICE*</include>
+                <include>CHANGELOG.md</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+    <dependencySets>
+        <!-- what a user starts: the two runnable jars, at the top of the archive -->
+        <dependencySet>
+            <outputDirectory/>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <includes>
+                <include>org.kosit:validator-cli:jar</include>
+                <include>org.kosit:validator-server:jar:runner</include>
+            </includes>
+            <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <!-- what the command line application loads: its runtime dependencies, and the validator modules among them -->
+        <dependencySet>
+            <outputDirectory>libs</outputDirectory>
+            <useProjectArtifact>false</useProjectArtifact>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>org.kosit:validator-cli:jar</exclude>
+                <exclude>org.kosit:validator-server:jar:runner</exclude>
+            </excludes>
+            <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+    </dependencySets>
+</assembly>
