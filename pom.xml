@@ -26,7 +26,7 @@
 
     <groupId>org.kosit</groupId>
     <artifactId>validator</artifactId>
-    <version>2.0.0-tp1</version>
+    <version>2.0.0-tp2-SNAPSHOT</version>
 
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
@@ -780,7 +780,7 @@
     <scm>
         <connection>scm:git:https://github.com/itplr-kosit/validator.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>v2.0.0-tp1</tag>
+        <tag>2.x</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
 

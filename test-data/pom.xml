@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.kosit</groupId>
         <artifactId>validator</artifactId>
-        <version>2.0.0-tp1</version>
+        <version>2.0.0-tp2-SNAPSHOT</version>
     </parent>
 
     <artifactId>validator-test-data</artifactId>
-  <version> 2.0.0-tp1</version>
+  <version> 2.0.0-tp2-SNAPSHOT</version>
     <name>KoSIT Validator test data</name>
     <description>Scenario configurations, schemas, stylesheets and sample instances shared by the tests of all modules.</description>
     
