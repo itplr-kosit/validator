@@ -6,17 +6,17 @@
 
 ## Introduction
 
-The Validator is an XML validation engine to validate and process XML files in various formats. It basically does the following in order:
+The KoSIT Validator is an XML validation engine to validate XML files of various formats. It basically does the following in order:
 
-1. identify actual XML format 
-1. validate the XML file (using schema  and schematron rules)
-1. generate a custom report / extract custom data from the XML file
-1. compute an acceptance status (according the supplied schema and rules)
+1. identifies actual XML format and matches it with a scenario 
+1. validates the XML file with the validation artifacts (XML Schema and Schematron rules) defined in the matched scenario 
+1. computes an decision recommendation (according the supplied schema and rules)
+1. generates a Conformance Validation Report (CVR)
 
-The Validator depends on self defined [scenarios](docs/configurations.md) in order to fully configure the whole process.
-It always creates a [validation report in XML](docs/configurations.md#validators-report). The actual content of the report can also be controlled by the scenario.
+The Validator depends on self defined [scenarios](docs/configurations.md) in order to fully configure the whole process in detail.
 
-See [architecture](docs/architecture.md) for information about the whole validation process.
+
+See [architecture](docs/architecture.md) for more information on the whole validation process.
 
 
 ## Validation configurations
@@ -26,6 +26,9 @@ Validation rules and details are defined in [validation scenarios](docs/configur
 All configurations are self-contained modules which are deployed and developed on their own.
 
 ### Example validation configurations
+
+> [!warning]
+> These are links to 1.6 validator configurations and do not yet work for 2.0.
 
 Here are some public validation configurations:
 
@@ -50,17 +53,19 @@ The Validator can be used in three different ways:
 
 **Important hint**: since v2.0.0 the filename has been changed from `validator-*` to `validator-cli-*`
 
+This is due to the separation of validator into distinct cli and server modules.
+
 The general way using the CLI is:
 
 ```shell
-java -jar validator-cli-<version>.jar -s <scenario-config-file> [-r <repository-path>]
+java -jar validator-cli-<version>-standalone.jar -s <scenario-config-file> [-r <repository-path>]
 [OPTIONS] [FILE] [FILE] [FILE] ...
 ```
 
 The help option displays further CLI options to customize the process:
 
 ```shell
-java -jar validator-cli-<version>.jar --help
+java -jar validator-cli-<version>-standalone.jar --help
 ```
 
 A concrete example with a specific Validator configuration can be found on 
@@ -87,23 +92,28 @@ ConformanceValidationResult result = validator.validate(document);
 
 The  [API documentation](./docs/api.md) shows further configuration options.
 
-**Note:** With Java 11+, you need to include a dependency to `org.glassfish.jaxb:jaxb-runtime` in your project explicitly,
+
+> [!note]
+> With Java 11+, you need to include a dependency to `org.glassfish.jaxb:jaxb-runtime` in your project explicitly,
 as that dependency is marked `optional` in this project and will thus not be resolved transitively.
 
 ## Packages
 
-The Validator distribution contains the following artifacts:
+The Validator `distribution` contains the following artifacts:
 
-1. **validator-core-`<version>`.jar**: Java library for embedded use within an application
-1. **validator-cli-`<version>`.jar**: Uber-JAR for standalone usage containing all dependencies in one jar file.
-1. **libs/**: directory containing all (incl. optional) dependencies of the validator
+1. `validator-cli-`<version>`.jar`: Thin-JAR for local execution
+1. `validator-server-`<version>`-runner.jar`: Standalone Validation Server
+1. `libs/`: directory containing all other validator modules and dependencies (incl. optional)
 
-## Installation
+### Installation
 
 Download from the following sources is possible:
 
 * GitHub releases: https://github.com/itplr-kosit/validator/releases
     * This release contains a ZIP file with all the different JAR variants
+
+### Maven 
+
 * Maven Central with the below coordinates (replace `x.y.z` with the actual version to use)
 
 ```xml
@@ -114,30 +124,25 @@ Download from the following sources is possible:
 </dependency>
 ```
 
-To use the standalone version with Maven coordinates:
+To use the standalone CLI version with Maven coordinates:
 
 ```xml
 <dependency>
     <groupId>org.kosit</groupId>
     <artifactId>validator-cli</artifactId>
     <version>x.y.z</version>
-    <classifier>runner</classifier>
+    <classifier>standalone</classifier>
 </dependency>
 ```
 
-## Roadmap
+## 2.x Roadmap
 
-This section describes the next steps planned in the Validator development.
+This section describes the next steps planned in the Validator development for 2.x.
 
-* Release version 1.6.0 based on Java 11 and using Jakarta 4.x. - Autumn 2025
-    * Drop support of version 1.5.x when version 1.6 is released
-* Develop version 2.0.0 which will include major API incompatibilities - Winter 2025 
-    * Rework scenarios.xml
-    * Rework report output engine
-    * Change the output type to [XVRL](https://github.com/xproc/xvrl)-based document types &rarr; this implies that existing XSL templates need to be updated
-    * Consider multi Schematron engine support
-    * Extract the daemon mode into its own submodule
-    * Consider extracting the CLI into its own submodule
+* Finish version 2.0.0 which will include major API incompatibilities - Winter 2026 
+  * Fix API based on Feedback on the technical previews
+  * Finalize  of Validator Specification (v1) incl. Conformance Validation Report
+
 * The release of version 2.0.0 implies a feature-freeze for version 1.6
 
 ## Authors & Acknowledgements
