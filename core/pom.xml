@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.kosit</groupId>
         <artifactId>validator</artifactId>
-        <version>2.0.0-tp1</version>
+        <version>2.0.0-tp2-SNAPSHOT</version>
     </parent>
 
     <name>KoSIT XML Validator Core</name>
 
     <artifactId>validator-core</artifactId>
-    <version>2.0.0-tp1</version>
+    <version>2.0.0-tp2-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
