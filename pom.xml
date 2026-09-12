@@ -75,14 +75,16 @@
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.version>3.38.3</quarkus.platform.version>
-
+       
+        <version.validator>2.0.0-SNAPSHOT</version.validator>
+       
         <version.assertj>3.27.7</version.assertj>
         <version.commons-io>2.22.0</version.commons-io>
         <version.commons-lang>3.20.0</version.commons-lang>
         <version.jacoco>0.8.15</version.jacoco>
         <version.jaxb-api>4.0.5</version.jaxb-api>
         <version.jaxb-impl>4.0.9</version.jaxb-impl>
-        <version.junit>6.1.3</version.junit>
+        <version.junit>6.1.0</version.junit>
         <version.mockito>5.23.0</version.mockito>
         <version.owasp-dependency-check>12.1.8</version.owasp-dependency-check>
         <version.rest-assured>6.0.1</version.rest-assured>
@@ -112,13 +114,16 @@
 
     <dependencyManagement>
         <dependencies>
+ 
+            <!-- Source: https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+           
             <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
                 <version>${version.junit}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+                 <scope>test</scope>
+             </dependency>
+
             <dependency>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>${quarkus.platform.artifact-id}</artifactId>
@@ -232,73 +237,67 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-test-data</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-conformatron</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-base</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-conformatron-impl</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-api</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-jaxb</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-svrl</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-xvrl</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-schematron</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-cvr</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-scenario</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>validator-core</artifactId>
-                <version> 2.0.0-tp1</version>
+                <version>${version.validator}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+   
 
     <build>
         <resources>
@@ -324,7 +323,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.15.0</version>
+                    <version>3.16.0</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <release>${java.version}</release>
