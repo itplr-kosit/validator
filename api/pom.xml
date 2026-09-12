@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.kosit</groupId>
         <artifactId>validator</artifactId>
-        <version>2.0.0-tp2-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>validator-api</artifactId>
-    <version>2.0.0-tp2-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <name>KoSIT Validator API</name>
     <description>The KoSIT Validator API.</description>
 
