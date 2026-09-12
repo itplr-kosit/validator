@@ -26,7 +26,7 @@
 
     <groupId>org.kosit</groupId>
     <artifactId>validator</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.0-tp1</version>
 
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
@@ -76,7 +76,7 @@
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.version>3.38.3</quarkus.platform.version>
        
-        <version.validator>2.0.0-SNAPSHOT</version.validator>
+        <version.validator>2.0.0-tp1</version.validator>
        
         <version.assertj>3.27.7</version.assertj>
         <version.commons-io>2.22.0</version.commons-io>
@@ -779,7 +779,7 @@
     <scm>
         <connection>scm:git:https://github.com/itplr-kosit/validator.git</connection>
         <developerConnection>scm:git:https://projekte.kosit.org/kosit/validator.git</developerConnection>
-        <tag>2.x</tag>
+        <tag>v2.0.0-tp1</tag>
         <url>https://github.com/itplr-kosit/validator</url>
     </scm>
 
