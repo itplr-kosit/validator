@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.kosit</groupId>
         <artifactId>validator</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0-tp1</version>
     </parent>
 
     <artifactId>validator-xvrl</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.0-tp1</version>
     <name>KoSIT XVRL JAXB binding</name>
     <description>Standalone JAXB binding and read/write helper for the XML Validation Report Language (XVRL).</description>
 
