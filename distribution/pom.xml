@@ -4,18 +4,18 @@
 
     <parent>
         <groupId>org.kosit</groupId>
-        <artifactId>validator</artifactId>
+        <artifactId>validator-parent</artifactId>
         <version>2.0.0-tp2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>validator-distribution</artifactId>
- <version>2.0.0-tp2-SNAPSHOT</version>
+    <artifactId>validator</artifactId>
+    <version>2.0.0-tp2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>KoSIT Validator distribution</name>
+
     <description>
-        The release archive: the two runnable jars at the top, everything they need below libs/. This module exists
-        because an aggregator is built before its modules, so it can not archive their output - the distribution has to
-        be a module of its own, and the last one in the reactor.
+        The release distribution: the two runnable jars at the top, everything they need below libs/. This module exists
+        because an aggregator is built before its modules.
     </description>
 
     <dependencies>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.kosit</groupId>
             <artifactId>validator-cli</artifactId>
-            <version>${project.version}</version>
+            <version>${version.validator}</version>
         </dependency>
         <!--
             the server as the Quarkus runner: it carries its runtime inside, so its dependencies are deliberately
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>org.kosit</groupId>
             <artifactId>validator-server</artifactId>
-            <version>${project.version}</version>
+            <version>${version.validator}</version>
             <classifier>runner</classifier>
             <exclusions>
                 <exclusion>
@@ -43,20 +43,15 @@
         </dependency>
     </dependencies>
 
-    <build>
+    <build> 
+    
+        <finalName>validator-${version.validator}</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
-                    <!--
-                        the inherited full_dist execution archives the output of the module it runs in, which is
-                        nothing here; this module archives the output of the other modules instead
-                    -->
-                    <execution>
-                        <id>full_dist</id>
-                        <phase>none</phase>
-                    </execution>
                     <execution>
                         <id>distribution</id>
                         <phase>package</phase>
@@ -65,13 +60,16 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>${maven.multiModuleProjectDirectory}/src/assembly/assembly-distribution.xml</descriptor>
+                                <descriptor>${project.basedir}/src/assembly/assembly-distribution.xml</descriptor>
                             </descriptors>
-                            <!-- the name the release job of .gitlab-ci.yml deploys -->
-                            <finalName>validator-${project.version}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
-                            <attach>false</attach>
-                            <workDirectory>${project.build.directory}/assembly/distribution</workDirectory>
+                            <!-- the name the release job of .gitlab-ci.yml deploys -->
+
+                            <!-- Registers the assembled artifact with Maven so it gets deployed/published along with your main JAR. 
+                                 ZIP becomes part of your release artifacts
+                            -->
+                            <attach>true</attach>
+   
                         </configuration>
                     </execution>
                 </executions>
