@@ -8,7 +8,6 @@
     </parent>
 
     <artifactId>validator-conformatron-impl</artifactId>
-    <version>2.0.0-tp3-SNAPSHOT</version>
     <name>Conformatron API implementation</name>
     <description>The KoSIT Validator implementation of the Conformatron API. Currently empty.</description>
 

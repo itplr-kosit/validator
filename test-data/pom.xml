@@ -8,7 +8,6 @@
     </parent>
 
     <artifactId>validator-test-data</artifactId>
-    <version>2.0.0-tp3-SNAPSHOT</version>
     <name>KoSIT Validator test data</name>
     <description>Scenario configurations, schemas, stylesheets and sample instances shared by the tests of all modules.</description>
     
@@ -27,7 +26,5 @@
                 <filtering>false</filtering>
             </resource>
         </resources>
-        
-
     </build>
 </project>

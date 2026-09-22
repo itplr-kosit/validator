@@ -19,14 +19,12 @@ import org.kosit.xvrl.model.XvrlDetection;
 import org.kosit.xvrl.model.XvrlReport;
 import org.kosit.xvrl.model.XvrlReports;
 import org.kosit.xvrl.model.XvrlSupplemental;
-import org.kost.validator.api.saxon.ProcessorProvider;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
 import jakarta.xml.bind.JAXBException;
 import net.sf.saxon.dom.NodeOverNodeInfo;
 import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmNode;
 
 /**

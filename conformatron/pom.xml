@@ -8,7 +8,6 @@
     </parent>
 
     <artifactId>validator-conformatron</artifactId>
-    <version>2.0.0-tp3-SNAPSHOT</version>
     <name>Conformatron API</name>
     <description>The mandatory public Java API for Conformatron compliant solutions, originally from https://github.com/conformatron/conformatron-api</description>
 

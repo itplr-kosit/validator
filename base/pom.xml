@@ -11,7 +11,6 @@
     <description>Generic, reusable helpers for objects, strings, errors and XML.</description>
 
     <artifactId>validator-base</artifactId>
-    <version>2.0.0-tp3-SNAPSHOT</version>
 
    
     <dependencies>
@@ -31,19 +30,16 @@
         <dependency>
           <groupId>org.junit.jupiter</groupId>
           <artifactId>junit-jupiter-engine</artifactId>
-            <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-             <version>${version.junit}</version>
        <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-           <version>${version.junit}</version>
            <scope>test</scope>
         </dependency>
 

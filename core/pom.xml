@@ -7,10 +7,8 @@
         <version>2.0.0-tp3-SNAPSHOT</version>
     </parent>
 
-    <name>KoSIT XML Validator Core</name>
-
     <artifactId>validator-core</artifactId>
-    <version>2.0.0-tp3-SNAPSHOT</version>
+    <name>KoSIT XML Validator Core</name>
 
     <dependencies>
         <dependency>
