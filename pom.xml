@@ -623,6 +623,13 @@
         <profile>
             <id>release-sign-artifacts</id>
             <activation>
+                <!-- This property is deprecated according to Maven release plugin
+                  Use
+                    -DreleaseProfiles=release-sign-artifacts
+                  to enable the release profile for the release plugin
+                  
+                  Source: https://maven.apache.org/maven-release/maven-release-plugin/perform-mojo.html
+                -->
                 <property>
                     <name>performRelease</name>
                     <value>true</value>
