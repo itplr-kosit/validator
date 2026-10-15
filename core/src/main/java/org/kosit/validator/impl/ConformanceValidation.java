@@ -25,6 +25,7 @@ import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
@@ -252,7 +253,7 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
 
         // step 4: SELECT_SCENARIO — one scenario matched by expression, plus every scenario that applies
         // unconditionally
-        final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
+        final SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         if (!selected.isSuccess()) {
             return new PipelineResults(parsed, detected, selected, null, null, null, null);
         }

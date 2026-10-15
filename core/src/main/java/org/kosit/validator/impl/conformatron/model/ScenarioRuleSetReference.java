@@ -51,6 +51,16 @@ public record ScenarioRuleSetReference(URI reference, @Nullable String artifactI
     }
 
     /**
+     * A reference the scenario declares by location alone, with neither an id nor a processor.
+     *
+     * @param reference the artifact reference as declared in the scenario configuration (e.g. {@code "simple.sch"})
+     * @return the carrier for this reference
+     */
+    public static ScenarioRuleSetReference of(final String reference) {
+        return of(reference, null, null, null);
+    }
+
+    /**
      * @param reference the artifact reference as declared in the scenario configuration
      * @param compilerId the declared Schematron processor; blank counts as none
      * @param compiled the artifact handed over compiled, or {@code null}

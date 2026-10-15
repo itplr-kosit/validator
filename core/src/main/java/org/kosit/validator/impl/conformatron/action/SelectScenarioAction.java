@@ -45,38 +45,6 @@ public class SelectScenarioAction implements CTAction {
     /** Detection code when more than one candidate matched by expression (ERROR, cancels the process). */
     public static final String CODE_SCENARIO_AMBIGUOUS = "scenario-ambiguous";
 
-    /**
-     * Result of a single execution of this action.
-     *
-     * @param status success or failure (failure cancels the process)
-     * @param selected the selected scenario - the one matched by expression, or the first unconditional one;
-     *            {@code null} unless status is {@code SUCCESS}
-     * @param applied every scenario the run applies, the selected one first; empty unless status is {@code SUCCESS}
-     * @param detections this execution's contribution to the report; never {@code null}
-     */
-    public record SelectScenarioResult(CTStepResult status, CTScenarioMatch selected, List<CTScenarioMatch> applied,
-            CTDetectionList detections) {
-
-        public SelectScenarioResult {
-            applied = applied == null ? List.of() : List.copyOf(applied);
-        }
-
-        /**
-         * A result applying the selected scenario alone.
-         *
-         * @param status success or failure
-         * @param selected the selected scenario, or {@code null}
-         * @param detections the detections
-         */
-        public SelectScenarioResult(final CTStepResult status, final CTScenarioMatch selected, final CTDetectionList detections) {
-            this(status, selected, selected == null ? List.of() : List.of(selected), detections);
-        }
-
-        public boolean isSuccess() {
-            return this.status == CTStepResult.SUCCESS;
-        }
-    }
-
     @Override
     public String getName() {
         return CTActionType.SELECT_SCENARIO.getName();

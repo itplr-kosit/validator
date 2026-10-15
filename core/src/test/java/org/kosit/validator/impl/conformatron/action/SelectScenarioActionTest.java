@@ -181,7 +181,7 @@ public class SelectScenarioActionTest {
     @Test
     public void testSelectSingleCandidate() {
         final CTScenarioMatch candidate = match("simple");
-        final SelectScenarioAction.SelectScenarioResult result = this.selectAction.execute(List.of(candidate));
+        final SelectScenarioResult result = this.selectAction.execute(List.of(candidate));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.selected()).isSameAs(candidate);
@@ -190,7 +190,7 @@ public class SelectScenarioActionTest {
 
     @Test
     public void testSelectAmbiguousFails() {
-        final SelectScenarioAction.SelectScenarioResult result = this.selectAction.execute(List.of(match("first"), match("second")));
+        final SelectScenarioResult result = this.selectAction.execute(List.of(match("first"), match("second")));
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.selected()).isNull();
@@ -212,7 +212,7 @@ public class SelectScenarioActionTest {
     public void testUnconditionalScenariosAreAppliedInAddition() {
         final CTScenarioMatch matched = match("simple");
         final CTScenarioMatch always = unconditional("always");
-        final SelectScenarioAction.SelectScenarioResult result = this.selectAction.execute(List.of(always, matched));
+        final SelectScenarioResult result = this.selectAction.execute(List.of(always, matched));
 
         assertThat(result.isSuccess()).isTrue();
         // the matched scenario leads, whatever the candidate order was
@@ -226,7 +226,7 @@ public class SelectScenarioActionTest {
     @Test
     public void testUnconditionalScenariosAloneAreSelected() {
         final CTScenarioMatch always = unconditional("always");
-        final SelectScenarioAction.SelectScenarioResult result = this.selectAction.execute(List.of(always));
+        final SelectScenarioResult result = this.selectAction.execute(List.of(always));
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.selected()).isSameAs(always);
@@ -236,14 +236,13 @@ public class SelectScenarioActionTest {
     @Test
     public void testUnconditionalScenariosDoNotMakeTheMatchAmbiguous() {
         // two matched candidates are ambiguous; the unconditional ones are not part of that question
-        final SelectScenarioAction.SelectScenarioResult ambiguous = this.selectAction
-                .execute(List.of(match("first"), unconditional("always"), match("second")));
+        final SelectScenarioResult ambiguous = this.selectAction.execute(List.of(match("first"), unconditional("always"), match("second")));
         assertThat(ambiguous.isSuccess()).isFalse();
         assertThat(ambiguous.applied()).isEmpty();
         assertThat(ambiguous.detections().getAll().get(0).getText().getDisplayTextLocaleIndependent()).contains("first").contains("second")
                 .doesNotContain("always");
 
-        final SelectScenarioAction.SelectScenarioResult two = this.selectAction
+        final SelectScenarioResult two = this.selectAction
                 .execute(List.of(match("simple"), unconditional("always"), unconditional("also")));
         assertThat(two.isSuccess()).isTrue();
         assertThat(two.applied()).hasSize(3);
