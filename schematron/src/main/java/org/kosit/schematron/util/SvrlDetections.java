@@ -18,13 +18,13 @@ import org.oclc.purl.dsdl.svrl.SuccessfulReport;
 import org.oclc.purl.dsdl.svrl.Text;
 
 /**
- * Maps an SVRL {@link SchematronOutput} to an {@link CTDetectionList} (conformatron-api step 7, {@code APPLY_RULES}).
- * Shared by {@link ApplyRulesAction} and the ad-hoc engine.
+ * Maps an SVRL {@code SchematronOutput} to an {@link CTDetectionList} (conformatron-api step 7, {@code APPLY_RULES}).
+ * Shared by {@code ApplyRulesAction} and the ad-hoc engine.
  * <p>
  * Field mapping per step-07 spec: the assertion {@code @id} becomes the detection <b>code</b> (fallback:
  * {@link #CODE_FAILED_ASSERT} / {@link #CODE_SUCCESSFUL_REPORT}), {@code @role} maps to the severity (default ERROR for
  * asserts), {@code <svrl:text>} becomes the text, and the SVRL {@code @location} XPath becomes the detection's location
- * ({@link DetectionLocation#ofXPath}) — a report consumer can then jump to the node instead of parsing the message
+ * ({@code DetectionLocation.ofXPath}) — a report consumer can then jump to the node instead of parsing the message
  * text.
  * </p>
  *

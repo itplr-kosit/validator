@@ -13,7 +13,7 @@ import org.oclc.purl.dsdl.svrl.SuccessfulReport;
 
 /**
  * Base class for implementing specific extensions to the generated class
- * {@link org.oclc.purl.dsdl.svrl.SchematronOutput}.
+ * {@code org.oclc.purl.dsdl.svrl.SchematronOutput}.
  *
  * @author Andreas Penski
  * @author Philip Helger

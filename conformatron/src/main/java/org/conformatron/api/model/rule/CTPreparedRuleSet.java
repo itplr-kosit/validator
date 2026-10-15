@@ -10,7 +10,7 @@ import org.jspecify.annotations.Nullable;
 /**
  * A compiled / prepared rule set, ready for execution by step 7 ({@code APPLY_RULES}).
  * <p>
- * Produced by step 6 ({@code PREPARE_RULES}) and consumed by steps 7 and 8. The {@link #getCompiledArtifactHandle()} is
+ * Produced by step 6 ({@code PREPARE_RULES}) and consumed by steps 7 and 8. The {@link #getCompiledArtifact()} is
  * intentionally opaque ({@code Object}) so implementations can store a Saxon {@code XsltExecutable}, a JAXP
  * {@code Schema}, or any other engine artifact.
  * </p>

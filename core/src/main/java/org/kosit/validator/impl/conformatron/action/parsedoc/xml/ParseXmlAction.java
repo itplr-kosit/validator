@@ -33,10 +33,9 @@ import org.w3c.dom.Document;
  * First validator action built against the conformatron-api: step 2 of the canonical pipeline, {@code PARSE_DOCUMENT}
  * (see {@code conformatron-api/doc/steps/step-02-parse-document.md}).
  * <p>
- * Facade strategy: the legacy {@link VInput} abstraction keeps doing the heavy lifting of accessing the data. This
- * action retains the entire source document as an immutable byte array, computes the SHA-512 hash (via
- * {@link SourceDigest}, ADR-003) and parses the document into a W3C DOM <b>without line numbering</b>
- * (ADR-001/ADR-002), producing a {@link DomValidationSource}.
+ * The action takes a {@link CTReadResource}, retains the entire source document as an immutable byte array, computes
+ * its SHA-512 hash (ADR-003) and parses it into a W3C DOM <b>without line numbering</b> (ADR-001/ADR-002), producing a
+ * {@link DomValidationSource}.
  * </p>
  * <p>
  * Output paths per step specification: success ({@code document-parsed}, INFO), well-formedness failure
@@ -57,9 +56,9 @@ public class ParseXmlAction extends AbstractParseDocumentAction {
     }
 
     /**
-     * Parses the document supplied by the legacy {@link VInput} and checks well-formedness.
+     * Parses the supplied document and checks well-formedness.
      *
-     * @param input the legacy input carrying the document
+     * @param input the resource carrying the document
      * @return the result including the {@link DomValidationSource} on success and any detections
      */
     public ParseXmlResult execute(final CTReadResource input) {
