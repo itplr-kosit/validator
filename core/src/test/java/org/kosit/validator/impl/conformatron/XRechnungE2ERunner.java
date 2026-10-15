@@ -26,7 +26,7 @@ import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction.ApplyRulesActionResult;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
-import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kost.validator.api.saxon.ProcessorProvider;
@@ -193,8 +193,8 @@ public final class XRechnungE2ERunner {
             final ByteArrayOutputStream cvr = new ByteArrayOutputStream();
             result.writeCvr(cvr);
             // the reports are kept in the repository, so they carry neither the time nor the paths of this run —
-            // see FixedTimestamps and LocalUris
-            Files.write(file, FixedTimestamps.apply(LocalUris.apply(cvr.toByteArray())));
+            // see FixedTimestamps, LocalUris and StableStackTraces
+            Files.write(file, FixedTimestamps.apply(LocalUris.apply(StableStackTraces.apply(cvr.toByteArray()))));
         } catch (final IOException e) {
             throw new IllegalStateException("Can not write CVR for " + name, e);
         }

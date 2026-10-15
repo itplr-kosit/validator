@@ -18,8 +18,10 @@ import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.conformatron.FixedTimestamps;
 import org.kosit.validator.impl.conformatron.LocalUris;
+import org.kosit.validator.impl.conformatron.StableStackTraces;
 import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
@@ -54,9 +56,7 @@ public class DetectScenariosExamplesTest {
 
         final DetectScenariosResult detected = new DetectScenariosAction(configuration.getScenarios(), TestHelper.getTestProcessor())
                 .execute(parsed.getParsedSource());
-        final SelectScenarioAction.SelectScenarioResult selected = detected.isSuccess()
-                ? new SelectScenarioAction().execute(detected.matches())
-                : null;
+        final SelectScenarioResult selected = detected.isSuccess() ? new SelectScenarioAction().execute(detected.matches()) : null;
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final String path = UriHelper.getPath(document);
@@ -82,8 +82,8 @@ public class DetectScenariosExamplesTest {
         }
         Files.createDirectories(examples);
         // the examples are kept in the repository, so they carry neither the time nor the paths of this run —
-        // see FixedTimestamps and LocalUris
-        Files.write(examples.resolve(name), FixedTimestamps.apply(LocalUris.apply(cvr)));
+        // see FixedTimestamps, LocalUris and StableStackTraces
+        Files.write(examples.resolve(name), FixedTimestamps.apply(LocalUris.apply(StableStackTraces.apply(cvr))));
     }
 
     private static Element report(final Document cvr, final String creator) {

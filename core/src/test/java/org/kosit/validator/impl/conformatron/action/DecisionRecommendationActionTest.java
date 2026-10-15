@@ -31,7 +31,7 @@ import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.conformatron.detection.Detection;
 import org.kosit.conformatron.detection.DetectionList;
 import org.kosit.conformatron.detection.SubjectDetection;
-import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 
 /**
  * Tests {@link DecisionRecommendationAction} (step 9) on real step-8 results — one test per specified path.
@@ -50,7 +50,7 @@ public class DecisionRecommendationActionTest {
     private CTApplyRulesResult applyRules(final URI document, final String... references) {
         final CTParsedValidationSource parsed = new ParseXmlAction().execute(TestHelper.read(document)).getParsedSource();
         final List<CTValidationArtifactReference> refs = List.of(references).stream()
-                .map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
+                .map(r -> (CTValidationArtifactReference) ScenarioRuleSetReference.of(r)).toList();
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
                 true).execute(refs, "test");
         final List<CTPreparedRuleSet> ruleSets = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(), "test").ruleSets();
