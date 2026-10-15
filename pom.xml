@@ -26,7 +26,7 @@
 
     <groupId>org.kosit</groupId>
     <artifactId>validator-parent</artifactId>
-    <version>2.0.0-tp3-SNAPSHOT</version>
+    <version>${revision}</version>
 
     <description>KoSIT XML Validator against XSD and Schematron based on defined scenarios.</description>
     <developers>
@@ -69,6 +69,8 @@
     </developers>
     
     <properties>
+        <!-- late replacement target of surefire: Quarkus and jacoco overwrite it, otherwise it stays empty -->
+        <argLine></argLine>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>25</java.version>
 
@@ -76,7 +78,12 @@
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.version>3.38.3</quarkus.platform.version>
        
-        <version.validator>2.0.0-tp3-SNAPSHOT</version.validator>
+        <!-- the single place the version of this build is written, see
+          https://maven.apache.org/guides/mini/guide-maven-ci-friendly.html . "revision" is one of the three property
+          names Maven resolves before the model is built, so it is the only one usable in a parent version. Override a
+          build with -Drevision=x.y.z; the flatten plugin makes sure no published pom keeps the placeholder. -->
+        <revision>2.0.0-tp3-SNAPSHOT</revision>
+        <version.validator>${revision}</version.validator>
        
         <version.assertj>3.27.7</version.assertj>
         <version.commons-io>2.22.0</version.commons-io>
@@ -346,6 +353,11 @@
                     <version>3.12.0</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>1.8.0</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>3.3.1</version>
@@ -375,15 +387,12 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.5.6</version>
                     <configuration>
-                        <!--suppress MavenModelInspection -->
-                        <!--argLine>-Dfile.encoding=UTF-8 ${jacocoSurefire}</argLine-->
-                        <argLine>-Dfile.encoding=UTF-8</argLine>
-                        <systemProperties>
-                            <property>
-                                <name>java.net.useSystemProxies</name>
-                                <value>true</value>
-                            </property>
-                        </systemProperties>
+                        <!-- @{argLine} is where Quarkus and jacoco inject their JVM parameters; without it they warn
+                          and silently do nothing. The property below gives it a value for runs where nobody sets it. -->
+                        <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
+                        <systemPropertyVariables>
+                            <java.net.useSystemProxies>true</java.net.useSystemProxies>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
 
@@ -537,6 +546,33 @@
             </plugin>
 
             <plugin>
+                <!-- without this every published pom would carry the literal ${revision} and no consumer could
+                  resolve it; the flattened pom replaces the original on install and deploy -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
@@ -622,19 +658,9 @@
         </profile>
         <profile>
             <id>release-sign-artifacts</id>
-            <activation>
-                <!-- This property is deprecated according to Maven release plugin
-                  Use
-                    -DreleaseProfiles=release-sign-artifacts
-                  to enable the release profile for the release plugin
-                  
-                  Source: https://maven.apache.org/maven-release/maven-release-plugin/perform-mojo.html
-                -->
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
+            <!-- deliberately without activation: a profile that changes what a build produces is switched on
+              explicitly, with -Prelease-sign-artifacts, or by the release plugin via
+              -DreleaseProfiles=release-sign-artifacts -->
             <build>
                 <plugins>
                     <plugin>
