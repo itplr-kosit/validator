@@ -44,8 +44,9 @@ public interface CTValidationReport {
      *         {@code <report @xml:id>}. For example, a Schematron compilation report may have id "schematron-report-1",
      *         and the execution report can reference it via {@code <schema>#schematron-report-1</schema>}. May be
      *         {@code null} if no cross-referencing is needed. UUID? Mandatory!<br>
-     *         TODO Optionen: 1. UUID + Fortlaufende Nummerierung für Sub-Reports <- Vorläufige Auswahl 2. Jeder Report
-     *         hat eine globale UUID 3. Fortlaufende Nummerierung (Keine globale Uniqueness) Fortlaufende Nummerierung
+     *         TODO Optionen: 1. UUID + Fortlaufende Nummerierung für Sub-Reports &lt;- Vorläufige Auswahl 2. Jeder
+     *         Report hat eine globale UUID 3. Fortlaufende Nummerierung (Keine globale Uniqueness) Fortlaufende
+     *         Nummerierung
      */
     @NonNull
     String getID();
