@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Exercises what validator-named-repositories-referenced-per-artifact decided: repositories are declared with a name,
+  every resource says which one it is resolved in, and one resource deliberately steps outside all of them.
+-->
+<scenarios xmlns="urn:kosit:validator:scenario:3">
+  <name>Beispielkonfiguration mit benannten Repositories</name>
+  <author>KoSIT</author>
+  <lastModificationDate>2026-10-10</lastModificationDate>
+
+  <repositories>
+    <!-- the artifacts of the standard, as the standard's owner ships them -->
+    <repository name="en16931">
+      <location>resources/en16931/1.3.13</location>
+    </repository>
+    <!-- the artifacts of the national specification, a separate delivery -->
+    <repository name="xrechnung">
+      <location>resources/xrechnung/3.0.2</location>
+    </repository>
+  </repositories>
+
+  <scenarioXml>
+    <groupId>de.xeinkauf.xrechnung</groupId>
+    <artifactId>cius-ubl-invoice</artifactId>
+    <version>3.0.2</version>
+    <name>EN16931 XRechnung (UBL Invoice)</name>
+    <namespace prefix="ubl">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace>
+    <match>/ubl:Invoice</match>
+
+    <validateWithXmlSchema>
+      <!-- repository plus a location inside it: the ordinary case -->
+      <resource repository="en16931">
+        <groupId>org.oasis-open.ubl</groupId>
+        <artifactId>ubl-invoice-xsd</artifactId>
+        <version>2.1</version>
+        <name>XML Schema for UBL 2.1 Invoice</name>
+        <location>xsd/maindoc/UBL-Invoice-2.1.xsd</location>
+      </resource>
+    </validateWithXmlSchema>
+
+    <validateWithSchematron compiler="schxslt">
+      <!-- no location: the repository is asked for the coordinate -->
+      <resource repository="en16931">
+        <groupId>eu.cen.en16931</groupId>
+        <artifactId>en16931-ubl-validation</artifactId>
+        <version>1.3.13</version>
+        <classifier>xslt</classifier>
+        <name>Schematron rules for EN16931 (UBL)</name>
+      </resource>
+    </validateWithSchematron>
+
+    <validateWithSchematron compiler="schxslt">
+      <resource repository="xrechnung">
+        <groupId>de.xeinkauf</groupId>
+        <artifactId>xrechnung-schematron-ubl</artifactId>
+        <version>2.5.0</version>
+        <classifier>xslt</classifier>
+        <name>Schematron rules for Invoice - CIUS XRechnung (UBL)</name>
+        <location>xsl/XRechnung-UBL-validation.xsl</location>
+      </resource>
+      <customLevel level="warning">BR-DE-15</customLevel>
+    </validateWithSchematron>
+
+    <validateWithSchematron compiler="schxslt">
+      <!-- outside every repository: the confinement does not apply here, and no repository may be named -->
+      <resource>
+        <groupId>de.kosit.local</groupId>
+        <artifactId>house-rules</artifactId>
+        <version>1.0.0</version>
+        <name>Hausregeln des Betreibers</name>
+        <absoluteLocation>file:///opt/validator/local/house-rules.xsl</absoluteLocation>
+      </resource>
+    </validateWithSchematron>
+  </scenarioXml>
+</scenarios>
