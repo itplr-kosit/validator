@@ -7,12 +7,12 @@ import java.util.List;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
+import org.jspecify.annotations.Nullable;
 import org.kosit.base.string.StringHelper;
 import org.kosit.cvr.model.SeverityOverrides;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.scenario.v2.ResourceType;
-import org.kosit.validator.scenario.v2.ScenarioType;
-import org.kosit.validator.scenario.v2.ValidateWithSchematron;
+import org.kosit.validator.scenario.generic.ScenarioResource;
+import org.kosit.validator.scenario.generic.ScenarioSchematron;
 
 /**
  * Validator implementation of {@link CTScenarioMatch} (conformatron-api steps 3+4): a {@link Scenario} that applies to
@@ -45,7 +45,7 @@ public final class ScenarioMatch implements CTScenarioMatch {
         this.userSelected = userSelected;
         this.artifactReferences = collectArtifactReferences(scenario);
         this.parsedSource = parsedSource;
-        this.severityOverrides = ScenarioSeverityOverrides.fromConfiguration(scenario.getConfiguration());
+        this.severityOverrides = ScenarioSeverityOverrides.fromDeclaration(scenario.getDeclaration());
     }
 
     /**
@@ -104,9 +104,14 @@ public final class ScenarioMatch implements CTScenarioMatch {
         return this.scenario.getDefinitionFile();
     }
 
-    /** The wrapped scenario configuration, for embedding the individual scenario into the report. */
-    public ScenarioType getConfiguration() {
-        return this.scenario.getConfiguration();
+    /** The wrapped scenario declaration, in the version independent model. */
+    public org.kosit.validator.scenario.generic.Scenario getDeclaration() {
+        return this.scenario.getDeclaration();
+    }
+
+    /** The declaration as the configuration wrote it, for embedding the applied scenario into the report. */
+    public byte @Nullable [] getDeclarationXml() {
+        return this.scenario.getDeclarationXml();
     }
 
     /**
@@ -120,23 +125,25 @@ public final class ScenarioMatch implements CTScenarioMatch {
     }
 
     private static List<CTValidationArtifactReference> collectArtifactReferences(final Scenario scenario) {
-        final ScenarioType configuration = scenario.getConfiguration();
+        final org.kosit.validator.scenario.generic.Scenario declaration = scenario.getDeclaration();
         final List<CTValidationArtifactReference> references = new ArrayList<>();
-        if (configuration.getValidateWithXmlSchema() != null) {
-            for (final ResourceType resource : configuration.getValidateWithXmlSchema().getResource()) {
-                references.add(ScenarioRuleSetReference.of(resource.getLocation(), resource.getId(), null,
-                        handedOver(scenario, resource.getLocation())));
-            }
+        for (final ScenarioResource resource : declaration.getXmlSchemas()) {
+            references.add(ScenarioRuleSetReference.of(resource.getLocation(), idOf(resource), null,
+                    handedOver(scenario, resource.getLocation())));
         }
-        for (final ValidateWithSchematron schematron : configuration.getValidateWithSchematron()) {
-            if (schematron.getResource() != null) {
-                // the rule set carries the processor the scenario names for it, step 6 honours it, and the id the
-                // scenario declares for it, steps 5 and 6 report it
-                references.add(ScenarioRuleSetReference.of(schematron.getResource().getLocation(), schematron.getResource().getId(),
-                        schematron.getCompiler(), handedOver(scenario, schematron.getResource().getLocation())));
-            }
+        for (final ScenarioSchematron schematron : declaration.getSchematrons()) {
+            // the rule set carries the processor the scenario names for it, step 6 honours it, and the id the
+            // scenario declares for it, steps 5 and 6 report it
+            final ScenarioResource resource = schematron.getResource();
+            references.add(ScenarioRuleSetReference.of(resource.getLocation(), idOf(resource), schematron.getCompiler(),
+                    handedOver(scenario, resource.getLocation())));
         }
         return List.copyOf(references);
+    }
+
+    /** The coordinate of a resource as one string, the form the report carries, or {@code null} when it has none. */
+    private static @Nullable String idOf(final ScenarioResource resource) {
+        return resource.hasCoordinate() ? resource.getCoordinate().getAsSingleID() : null;
     }
 
     private static org.conformatron.api.model.validation.CTCompiledValidationArtifact<?> handedOver(final Scenario scenario,
@@ -152,8 +159,8 @@ public final class ScenarioMatch implements CTScenarioMatch {
      */
     @Override
     public String getScenarioID() {
-        final String declared = this.scenario.getConfiguration().getId();
-        return StringHelper.isBlank(declared) ? this.scenario.getName() : declared;
+        final String declared = this.scenario.getDeclaredId();
+        return declared == null ? this.scenario.getName() : declared;
     }
 
     @Override
@@ -163,7 +170,7 @@ public final class ScenarioMatch implements CTScenarioMatch {
 
     @Override
     public String getMatchExpression() {
-        return this.userSelected ? null : this.scenario.getConfiguration().getMatch();
+        return this.userSelected ? null : this.scenario.getDeclaration().getMatch();
     }
 
     @Override

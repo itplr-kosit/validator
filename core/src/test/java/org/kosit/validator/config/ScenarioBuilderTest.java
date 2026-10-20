@@ -14,7 +14,7 @@ import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.model.SingleProcessingResult;
-import org.kosit.validator.scenario.v2.NamespaceType;
+import org.kosit.validator.scenario.generic.ScenarioNamespace;
 import org.kosit.validator.scenario.v2.ScenarioType;
 
 import net.sf.saxon.s9api.XPathExecutable;
@@ -30,7 +30,7 @@ public class ScenarioBuilderTest {
     public void simpleValid() {
         final SingleProcessingResult<Scenario, String> result = createScenario().build(TestHelper.createContentRepository());
         assertThat(result.isValid()).isTrue();
-        assertThat(result.getObject().getConfiguration()).isNotNull();
+        assertThat(result.getObject().getDeclaration()).isNotNull();
     }
 
     @Test
@@ -39,7 +39,7 @@ public class ScenarioBuilderTest {
         builder.validate((SchemaBuilder) null);
         final SingleProcessingResult<Scenario, String> result = builder.build(TestHelper.createContentRepository());
         assertThat(result.isValid()).isTrue();
-        assertThat(result.getObject().getConfiguration().getValidateWithXmlSchema()).isNull();
+        assertThat(result.getObject().getDeclaration().getXmlSchemas()).isEmpty();
     }
 
     @Test
@@ -50,7 +50,7 @@ public class ScenarioBuilderTest {
         assertThat(result.isValid()).isTrue();
         assertThat(result.getObject().isUnconditional()).isTrue();
         assertThat(result.getObject().getMatchExecutable()).isNull();
-        assertThat(result.getObject().getConfiguration().getMatch()).isNull();
+        assertThat(result.getObject().getDeclaration().getMatch()).isNull();
     }
 
     @Test
@@ -110,8 +110,8 @@ public class ScenarioBuilderTest {
 
         assertThat(result.isValid()).isTrue();
         final Scenario scenario = result.getObject();
-        final List<NamespaceType> namespaces = scenario.getConfiguration().getNamespace();
-        assertThat(namespaces.stream().map(NamespaceType::getPrefix)).containsExactly("n1", "n2", "n3");
+        final List<ScenarioNamespace> namespaces = scenario.getDeclaration().getNamespaces();
+        assertThat(namespaces.stream().map(ScenarioNamespace::getPrefix)).containsExactly("n1", "n2", "n3");
         assertThat(namespaces).hasSize(3);
     }
 
@@ -127,10 +127,10 @@ public class ScenarioBuilderTest {
         builder.acceptWith(accept);
         final SingleProcessingResult<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();
-        final ScenarioType configuration = result.getObject().getConfiguration();
-        assertThat(configuration.getMatch()).isNotEmpty();
-        assertThat(configuration.getAcceptMatch()).isNotEmpty();
-        assertThat(configuration.getNamespace()).isEmpty();
+        final var declaration = result.getObject().getDeclaration();
+        assertThat(declaration.getMatch()).isNotEmpty();
+        assertThat(declaration.getAcceptMatch()).isNotEmpty();
+        assertThat(declaration.getNamespaces()).isEmpty();
     }
 
     @Test
@@ -145,11 +145,11 @@ public class ScenarioBuilderTest {
         builder.acceptWith(accept);
         final SingleProcessingResult<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();
-        final ScenarioType configuration = result.getObject().getConfiguration();
-        assertThat(configuration.getMatch()).isNotEmpty();
-        assertThat(configuration.getAcceptMatch()).isNotEmpty();
-        assertThat(configuration.getNamespace()).isEmpty();
-        assertThat(configuration.getValidateWithSchematron()).isNotEmpty();
+        final var declaration = result.getObject().getDeclaration();
+        assertThat(declaration.getMatch()).isNotEmpty();
+        assertThat(declaration.getAcceptMatch()).isNotEmpty();
+        assertThat(declaration.getNamespaces()).isEmpty();
+        assertThat(declaration.getSchematrons()).isNotEmpty();
     }
 
     @Test
@@ -160,10 +160,10 @@ public class ScenarioBuilderTest {
         builder.name(random).description(random);
         final SingleProcessingResult<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();
-        final ScenarioType config = result.getObject().getConfiguration();
+        final var config = result.getObject().getDeclaration();
         assertThat(config.getName()).isEqualTo(random);
         assertThat(config.getDescription()).isNotNull();
-        assertThat(config.getDescription().getPOrOlOrUl()).isNotEmpty();
+        assertThat(config.getDescription().getBlocks()).isNotEmpty();
     }
 
     @Test
@@ -173,9 +173,9 @@ public class ScenarioBuilderTest {
         builder.name(null);
         final SingleProcessingResult<Scenario, String> result = builder.build(repository);
         assertThat(result.isValid()).isTrue();
-        final ScenarioType config = result.getObject().getConfiguration();
+        final var config = result.getObject().getDeclaration();
         assertThat(config.getName()).contains("manually");
         assertThat(config.getDescription()).isNotNull();
-        assertThat(config.getDescription().getPOrOlOrUl()).isNotEmpty();
+        assertThat(config.getDescription().getBlocks()).isNotEmpty();
     }
 }

@@ -5,9 +5,9 @@ import java.net.URI;
 import org.jspecify.annotations.Nullable;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.scenario.v2.ResourceType;
-import org.kosit.validator.scenario.v2.ScenarioType;
-import org.kosit.validator.scenario.v2.ValidateWithXmlSchema;
+import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.scenario.generic.EScenarioKind;
+import org.kosit.validator.scenario.generic.ScenarioResource;
 import org.kosit.validator.testdata.TestResources;
 import org.kost.validator.api.saxon.ProcessorProvider;
 
@@ -34,11 +34,10 @@ public class TestScenarioBuilder {
      * @return a scenario validating against {@code simple.xsd} of the shared test repository
      */
     public static Scenario createScenario(final String name, final @Nullable String match) {
-        final ScenarioType t = new ScenarioType();
-        t.setName(name);
-        t.setMatch(match);
-        t.setValidateWithXmlSchema(createSchemaValidation(TestResources.Simple.SCHEMA));
-        return Scenario.of(t, createRepository(), null);
+        final org.kosit.validator.scenario.generic.Scenario declaration = new org.kosit.validator.scenario.generic.Scenario(
+                EScenarioKind.XML, name).setMatch(match);
+        declaration.addXmlSchema(new ScenarioResource("default").setLocation(getRepositoryLocation(TestResources.Simple.SCHEMA)));
+        return Scenario.of(declaration, ScenarioXml.toXmlBytes(declaration), createRepository(), null);
     }
 
     /**
@@ -54,12 +53,4 @@ public class TestScenarioBuilder {
         return uri.substring(uri.lastIndexOf('/') + 1);
     }
 
-    private static ValidateWithXmlSchema createSchemaValidation(final URI schemafile) {
-        final ValidateWithXmlSchema v = new ValidateWithXmlSchema();
-        final ResourceType r = new ResourceType();
-        r.setLocation(getRepositoryLocation(schemafile));
-        r.setName("default");
-        v.getResource().add(r);
-        return v;
-    }
 }

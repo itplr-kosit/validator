@@ -135,8 +135,8 @@ public class DetectScenariosAction implements CTAction {
         // the report names a scenario by its id where the configuration declares one, so a caller may hand back
         // either that id or the scenario name
         final Scenario scenario = this.scenarios.stream()
-                .filter(s -> requestedScenarioId.equals(s.getName()) || requestedScenarioId.equals(s.getConfiguration().getId()))
-                .findFirst().orElse(null);
+                .filter(s -> requestedScenarioId.equals(s.getName()) || requestedScenarioId.equals(s.getDeclaredId())).findFirst()
+                .orElse(null);
         if (scenario == null) {
             final CTDetection detection = Detection.builderError().code(CODE_SCENARIO_UNKNOWN_ID).location(resourceId)
                     .text("Requested scenario '" + requestedScenarioId + "' is not configured").build();

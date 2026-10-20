@@ -15,7 +15,6 @@ import org.kosit.conformatron.detection.DetectionList;
 import org.kosit.conformatron.detection.SubjectDetection;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
-import org.kosit.validator.impl.conformatron.util.ScenarioXml;
 
 /**
  * Step 4 of the canonical pipeline, {@code SELECT_SCENARIO} (see
@@ -103,7 +102,7 @@ public class SelectScenarioAction implements CTAction {
         return scenario instanceof final ScenarioMatch match
                 ? SubjectDetection.about(plain).identifiedBy(SubjectDetection.ATTR_SCENARIO_ID, match.getScenarioID())
                         .locatedByXPath(match.getConfigurationLocation()).inFile(match.getDefinitionFile())
-                        .embedding(match.getConfiguration() == null ? null : ScenarioXml.toXmlBytes(match.getConfiguration())).build()
+                        .embedding(match.getDeclarationXml()).build()
                 : plain;
     }
 }

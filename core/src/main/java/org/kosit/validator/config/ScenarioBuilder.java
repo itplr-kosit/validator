@@ -17,7 +17,10 @@ import org.kosit.validator.scenario.v2.DescriptionType;
 import org.kosit.validator.scenario.v2.NamespaceType;
 import org.kosit.validator.scenario.v2.ObjectFactory;
 import org.kosit.validator.scenario.v2.ResourceType;
+import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.scenario.v2.Scenario2Mapper;
 import org.kosit.validator.scenario.v2.ScenarioType;
+import org.kosit.validator.scenario.v2.Scenarios;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +73,12 @@ public class ScenarioBuilder implements SingleProcessingResultBuilder<Scenario> 
         if (!errors.isEmpty()) {
             return new SingleProcessingResult<>(null, errors);
         }
-        return new SingleProcessingResult<>(new Scenario(type, repository, match, null, precompiled), errors);
+        final Scenarios document = new Scenarios();
+        document.setName(type.getName());
+        document.getScenario().add(type);
+        final org.kosit.validator.scenario.generic.Scenario declaration = Scenario2Mapper.toGeneric(document).getScenarios().get(0);
+        return new SingleProcessingResult<>(new Scenario(declaration, ScenarioXml.toXmlBytes(type), repository, match, null, precompiled),
+                errors);
     }
 
     /**
