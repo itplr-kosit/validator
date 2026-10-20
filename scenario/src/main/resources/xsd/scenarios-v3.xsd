@@ -31,6 +31,15 @@
                     </xs:annotation>
                 </xs:element>
                 <xs:element minOccurs="0" name="description" type="s:DescriptionType" />
+                <xs:element minOccurs="0" name="repositories" type="s:RepositoriesType">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The artifact repositories this configuration resolves its resources in, each under a name
+                            a resource refers to. A configuration that declares exactly one repository may leave the
+                            reference off its resources; with several, every resource says which one it means.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:choice maxOccurs="unbounded">
                     <xs:element name="scenarioXml" type="s:ScenarioXmlType" />
                     <xs:element name="scenarioPdf" type="s:ScenarioPdfType" />
@@ -46,7 +55,44 @@
                 </xs:annotation>
             </xs:attribute>
         </xs:complexType>
+
+        <!-- a repository name is unique within the configuration, and a resource may only refer to one that exists -->
+        <xs:key name="RepositoryName">
+            <xs:selector xpath="s:repositories/s:repository" />
+            <xs:field xpath="@name" />
+        </xs:key>
+        <xs:keyref name="ResourceRepository" refer="s:RepositoryName">
+            <xs:selector xpath=".//s:resource" />
+            <xs:field xpath="@repository" />
+        </xs:keyref>
     </xs:element>
+
+    <xs:complexType name="RepositoriesType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="repository" type="s:RepositoryType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RepositoryType">
+        <xs:annotation>
+            <xs:documentation>
+                One artifact repository: a name the resources refer to, and the place it stands. Resolution of a
+                resource is confined to the repository it names - a location that would resolve outside it is
+                rejected. The only way out of that is an absolute location on the resource itself.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="location" type="xs:anyURI">
+                <xs:annotation>
+                    <xs:documentation>
+                        Where the repository stands: a directory, or an archive reached with a jar: URI. A relative
+                        URI is resolved against the configuration file.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName" use="required" />
+    </xs:complexType>
 
     <xs:simpleType name="CoordinatePartType">
         <xs:annotation>
@@ -206,15 +252,36 @@
             <xs:extension base="s:AbstractCoordinateType">
                 <xs:sequence>
                     <xs:element name="name" type="xs:token" />
-                    <xs:element minOccurs="0" name="location" type="xs:anyURI">
-                        <xs:annotation>
-                            <xs:documentation>
-                                Optional in version 3: if it is absent, the resource is retrieved from the global
-                                repository based on its coordinate.
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
+                    <xs:choice minOccurs="0">
+                        <xs:element name="location" type="xs:anyURI">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Where the resource lies inside its repository. Optional in version 3: without it
+                                    the repository is asked for the coordinate instead.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="absoluteLocation" type="xs:anyURI">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Where the resource lies outside every repository, as an absolute URI. This is the
+                                    one way past the confinement that resolution otherwise enforces, so it is a
+                                    deliberate exception and not a second way of writing a location. A resource with
+                                    an absolute location may not name a repository.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:choice>
                 </xs:sequence>
+                <xs:attribute name="repository" type="xs:NCName" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The repository this resource is resolved in, by the name it is declared under. May be left
+                            off when the configuration declares exactly one repository. Must be left off together with
+                            an absolute location.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
