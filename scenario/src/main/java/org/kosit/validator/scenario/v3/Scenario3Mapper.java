@@ -21,6 +21,7 @@ import org.kosit.validator.scenario.generic.ScenarioCustomErrorLevel;
 import org.kosit.validator.scenario.generic.ScenarioDescription;
 import org.kosit.validator.scenario.generic.ScenarioDescriptionBlock;
 import org.kosit.validator.scenario.generic.ScenarioNamespace;
+import org.kosit.validator.scenario.generic.ScenarioRepository;
 import org.kosit.validator.scenario.generic.ScenarioRequirement;
 import org.kosit.validator.scenario.generic.ScenarioResource;
 import org.kosit.validator.scenario.generic.ScenarioSchematron;
@@ -95,7 +96,8 @@ public final class Scenario3Mapper {
     }
 
     private static @NonNull ScenarioResource _toGeneric(@NonNull final ResourceType src) {
-        return new ScenarioResource(src.getName()).setCoordinate(_toGeneric((AbstractCoordinateType) src)).setLocation(src.getLocation());
+        return new ScenarioResource(src.getName()).setCoordinate(_toGeneric((AbstractCoordinateType) src)).setLocation(src.getLocation())
+                .setAbsoluteLocation(src.getAbsoluteLocation()).setRepository(src.getRepository());
     }
 
     private static @NonNull ScenarioSchematron _toGeneric(@NonNull final ValidateWithSchematronType src) {
@@ -156,6 +158,11 @@ public final class Scenario3Mapper {
         ret.setValidFromDate(JaxbHelper.getAsLocalDate(src.getValidFromDate()));
         ret.setFrameworkVersion(src.getFrameworkVersion());
         ret.setDescription(_toGeneric(src.getDescription()));
+        if (src.getRepositories() != null) {
+            for (final RepositoryType repository : src.getRepositories().getRepository()) {
+                ret.addRepository(ScenarioRepository.of(repository.getName(), repository.getLocation()));
+            }
+        }
         for (final AbstractScenarioType scenario : src.getScenarioXmlOrScenarioPdf()) {
             final Scenario dst = switch (scenario) {
                 case final ScenarioXmlType xml -> _toGeneric(xml);
@@ -226,7 +233,16 @@ public final class Scenario3Mapper {
         final ResourceType ret = new ResourceType();
         _fromGeneric(src.getCoordinate(), ret, "The resource '" + src.getName() + "'", state);
         ret.setName(src.getName());
-        ret.setLocation(src.getLocation());
+        if (src.hasAbsoluteLocation()) {
+            ret.setAbsoluteLocation(src.getAbsoluteLocation());
+            if (src.hasRepository() || src.hasLocation()) {
+                state.error("The resource '" + src.getName()
+                        + "' has an absolute location and may therefore name neither a repository nor a location");
+            }
+        } else {
+            ret.setLocation(src.getLocation());
+            ret.setRepository(src.getRepository());
+        }
         return ret;
     }
 
@@ -329,6 +345,16 @@ public final class Scenario3Mapper {
         ret.setValidFromDate(JaxbHelper.getAsXmlDate(src.getValidFromDate()));
         ret.setFrameworkVersion(src.getFrameworkVersion());
         ret.setDescription(_fromGeneric(src.getDescription()));
+        if (!src.getRepositories().isEmpty()) {
+            final RepositoriesType repositories = new RepositoriesType();
+            for (final ScenarioRepository repository : src.getRepositories()) {
+                final RepositoryType dst = new RepositoryType();
+                dst.setName(repository.getName());
+                dst.setLocation(repository.getLocation());
+                repositories.getRepository().add(dst);
+            }
+            ret.setRepositories(repositories);
+        }
 
         for (final Scenario scenario : src.getScenarios()) {
             final AbstractScenarioType dst = switch (scenario.getKind()) {

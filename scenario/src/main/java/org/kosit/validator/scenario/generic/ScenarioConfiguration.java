@@ -41,6 +41,8 @@ public class ScenarioConfiguration {
 
     private @Nullable ScenarioDescription description;
 
+    private final List<ScenarioRepository> repositories = new ArrayList<>();
+
     private final List<Scenario> scenarios = new ArrayList<>();
 
     /**
@@ -176,6 +178,47 @@ public class ScenarioConfiguration {
     }
 
     /**
+     * The artifact repositories the resources of this configuration are resolved in, each under the name a resource
+     * refers to. A configuration read from version 2 carries exactly one, named
+     * {@link ScenarioRepository#DEFAULT_NAME}, because version 2 has one repository per scenario and no names.
+     *
+     * @return the modifiable list of all declared repositories, in document order. Never <code>null</code>.
+     */
+    public @NonNull List<ScenarioRepository> getRepositories() {
+        return this.repositories;
+    }
+
+    /**
+     * Add a repository.
+     *
+     * @param repository the repository to add. May not be <code>null</code>.
+     * @return this for chaining
+     */
+    public @NonNull ScenarioConfiguration addRepository(@NonNull final ScenarioRepository repository) {
+        ObjectHelper.requireNonNull(repository, "Repository");
+        this.repositories.add(repository);
+        return this;
+    }
+
+    /**
+     * The repository a resource is resolved in: the one it names, or the only declared one when it names none.
+     *
+     * @param resource the resource to look up the repository for. May not be <code>null</code>.
+     * @return the repository, or <code>null</code> when the resource stands outside every repository, names one that is
+     *         not declared, or names none while the configuration declares more than one.
+     */
+    public @Nullable ScenarioRepository findRepository(@NonNull final ScenarioResource resource) {
+        ObjectHelper.requireNonNull(resource, "Resource");
+        if (resource.hasAbsoluteLocation()) {
+            return null;
+        }
+        if (!resource.hasRepository()) {
+            return this.repositories.size() == 1 ? this.repositories.get(0) : null;
+        }
+        return this.repositories.stream().filter(r -> r.getName().equals(resource.getRepository())).findFirst().orElse(null);
+    }
+
+    /**
      * @return the modifiable list of all contained scenarios, in document order. Never <code>null</code>.
      */
     public @NonNull List<Scenario> getScenarios() {
@@ -207,6 +250,6 @@ public class ScenarioConfiguration {
     public String toString() {
         return "ScenarioConfiguration[name=" + this.name + "; author=" + this.author + "; lastModificationDate=" + this.lastModificationDate
                 + "; validFromDate=" + this.validFromDate + "; frameworkVersion=" + this.frameworkVersion + "; description="
-                + this.description + "; scenarios=" + this.scenarios + "]";
+                + this.description + "; repositories=" + this.repositories + "; scenarios=" + this.scenarios + "]";
     }
 }

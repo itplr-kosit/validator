@@ -25,6 +25,8 @@ public class ScenarioMappingTest {
 
     private static final String V3_PLAYGROUND = "/scenario-playground/scenarios-v3.xml";
 
+    private static final String V3_REPOSITORIES = "/scenario-playground/scenarios-v3-repositories.xml";
+
     private final Scenario2Converter converter2 = new Scenario2Converter();
 
     private final Scenario3Converter converter3 = new Scenario3Converter();
@@ -35,6 +37,10 @@ public class ScenarioMappingTest {
 
     private org.kosit.validator.scenario.v3.Scenarios readV3() throws URISyntaxException {
         return this.converter3.readXml(ScenarioMappingTest.class.getResource(V3_PLAYGROUND).toURI());
+    }
+
+    private org.kosit.validator.scenario.v3.Scenarios readV3Repositories() throws URISyntaxException {
+        return this.converter3.readXml(ScenarioMappingTest.class.getResource(V3_REPOSITORIES).toURI());
     }
 
     private static List<String> messagesOf(final List<SimpleError> errors, final CTStandardSeverity severity) {
@@ -131,6 +137,44 @@ public class ScenarioMappingTest {
         assertThat(pdf.getRequirements()).containsExactly(ScenarioRequirement.of("pdf-a3"),
                 ScenarioRequirement.of("attachment-filename-factur-x"));
         assertThat(pdf.getXmlScenarioRef().getAsSingleID()).isEqualTo("org.cefact:cii:d22b");
+    }
+
+    @Test
+    public void version3CarriesNamedRepositoriesIntoTheModel() throws URISyntaxException {
+        final ScenarioConfiguration config = Scenario3Mapper.toGeneric(readV3Repositories());
+        assertThat(config.getRepositories()).extracting(ScenarioRepository::getName).containsExactly("en16931", "xrechnung");
+
+        final Scenario scenario = config.getScenarios().get(0);
+        // repository plus a location inside it: the ordinary case
+        final ScenarioResource schema = scenario.getXmlSchemas().get(0);
+        assertThat(schema.getRepository()).isEqualTo("en16931");
+        assertThat(schema.getLocation()).isEqualTo("xsd/maindoc/UBL-Invoice-2.1.xsd");
+        assertThat(config.findRepository(schema).getLocation()).isEqualTo("resources/en16931/1.3.13");
+
+        // no location: the repository is asked for the coordinate instead
+        final ScenarioResource byCoordinate = scenario.getSchematrons().get(0).getResource();
+        assertThat(byCoordinate.hasLocation()).isFalse();
+        assertThat(config.findRepository(byCoordinate).getName()).isEqualTo("en16931");
+
+        // a second repository, named by the resource that belongs to it
+        assertThat(config.findRepository(scenario.getSchematrons().get(1).getResource()).getLocation())
+                .isEqualTo("resources/xrechnung/3.0.2");
+
+        // outside every repository: no repository may be named, and none is found
+        final ScenarioResource outside = scenario.getSchematrons().get(2).getResource();
+        assertThat(outside.getAbsoluteLocation()).isEqualTo("file:///opt/validator/local/house-rules.xsl");
+        assertThat(outside.hasRepository()).isFalse();
+        assertThat(config.findRepository(outside)).isNull();
+    }
+
+    @Test
+    public void version3RoundTripKeepsTheRepositories() throws URISyntaxException {
+        final var original = readV3Repositories();
+        final var converted = Scenario3Mapper.fromGeneric(Scenario3Mapper.toGeneric(original));
+
+        // writeXml validates against scenarios-v3.xsd, so this also proves the written repositories are schema valid
+        final String xml = this.converter3.writeXml(converted);
+        assertThat(Scenario3Mapper.toGeneric(this.converter3.readXml(xml))).hasToString(Scenario3Mapper.toGeneric(original).toString());
     }
 
     @Test
