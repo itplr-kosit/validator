@@ -15,7 +15,11 @@ import org.kosit.base.string.StringHelper;
  * <li>Scenario configuration version 2 carries the {@link #getCoordinate() coordinate} in its optional {@code id}
  * attribute, as one string, and requires the {@link #getLocation() location}.</li>
  * <li>Scenario configuration version 3 requires the coordinate. The location is optional there - if it is absent, the
- * resource is retrieved from the global repository based on its coordinate.</li>
+ * repository is asked for the coordinate instead - and the resource names the {@link #getRepository() repository} it is
+ * resolved in.</li>
+ * <li>An {@link #getAbsoluteLocation() absolute location} stands outside every repository and is the one way past the
+ * confinement resolution otherwise enforces. Only version 3 can write it, and never together with a repository or a
+ * location.</li>
  * </ul>
  *
  * @author Philip Helger
@@ -27,6 +31,10 @@ public class ScenarioResource {
     private String name;
 
     private @Nullable String location;
+
+    private @Nullable String absoluteLocation;
+
+    private @Nullable String repository;
 
     /**
      * Constructor.
@@ -111,9 +119,65 @@ public class ScenarioResource {
         return this;
     }
 
+    /**
+     * @return the absolute location of this resource, outside every repository. May be <code>null</code>, and is always
+     *         <code>null</code> when a location or a repository is set.
+     */
+    public @Nullable String getAbsoluteLocation() {
+        return this.absoluteLocation;
+    }
+
+    /**
+     * @return <code>true</code> if an absolute location is present, <code>false</code> if not.
+     */
+    public boolean hasAbsoluteLocation() {
+        return StringHelper.isNotEmpty(this.absoluteLocation);
+    }
+
+    /**
+     * Set the absolute location of this resource, which takes it out of every repository.
+     *
+     * @param absoluteLocation the absolute location to use. May be <code>null</code>.
+     * @return this for chaining
+     */
+    public @NonNull ScenarioResource setAbsoluteLocation(final @Nullable String absoluteLocation) {
+        this.absoluteLocation = StringHelper.emptyToNull(absoluteLocation);
+        return this;
+    }
+
+    /**
+     * @return the name of the repository this resource is resolved in, as the configuration declares it. May be
+     *         <code>null</code>: then the configuration has exactly one repository, or the resource stands outside
+     *         every repository.
+     * @see ScenarioConfiguration#getRepositories()
+     */
+    public @Nullable String getRepository() {
+        return this.repository;
+    }
+
+    /**
+     * @return <code>true</code> if a repository is named, <code>false</code> if not.
+     */
+    public boolean hasRepository() {
+        return StringHelper.isNotEmpty(this.repository);
+    }
+
+    /**
+     * Set the repository this resource is resolved in.
+     *
+     * @param repository the name of a repository the configuration declares. May be <code>null</code>.
+     * @return this for chaining
+     */
+    public @NonNull ScenarioResource setRepository(final @Nullable String repository) {
+        this.repository = StringHelper.emptyToNull(repository);
+        return this;
+    }
+
     @Override
     public String toString() {
         return "ScenarioResource[" + (this.coordinate != null ? "coordinate=" + this.coordinate.getAsSingleID() + "; " : "") + "name="
-                + this.name + "; location=" + this.location + "]";
+                + this.name + "; location=" + this.location
+                + (this.absoluteLocation != null ? "; absoluteLocation=" + this.absoluteLocation : "")
+                + (this.repository != null ? "; repository=" + this.repository : "") + "]";
     }
 }
