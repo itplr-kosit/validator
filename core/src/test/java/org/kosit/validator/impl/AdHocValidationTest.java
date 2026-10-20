@@ -46,9 +46,9 @@ public class AdHocValidationTest {
 
         assertThat(scenario.isUnconditional()).isTrue();
         assertThat(scenario.getName()).isEqualTo("simple.sch");
-        assertThat(scenario.getConfiguration().getValidateWithXmlSchema()).isNull();
-        assertThat(scenario.getConfiguration().getValidateWithSchematron()).hasSize(1);
-        assertThat(scenario.getConfiguration().getValidateWithSchematron().get(0).getResource().getLocation()).isEqualTo("simple.sch");
+        assertThat(scenario.getDeclaration().getXmlSchemas()).isEmpty();
+        assertThat(scenario.getDeclaration().getSchematrons()).hasSize(1);
+        assertThat(scenario.getDeclaration().getSchematrons().get(0).getResource().getLocation()).isEqualTo("simple.sch");
         // the directory of the schematron is the repository
         assertThat(scenario.getRepository().getRepository().toString()).endsWith("/repository/");
         assertThat(scenario.getDefinitionFile()).isNull();
@@ -106,9 +106,8 @@ public class AdHocValidationTest {
 
         assertThat(scenario.isUnconditional()).isTrue();
         assertThat(scenario.getName()).isEqualTo("simple.xsd, simple.sch");
-        assertThat(scenario.getConfiguration().getValidateWithXmlSchema().getResource()).extracting("location")
-                .containsExactly("simple.xsd");
-        assertThat(scenario.getConfiguration().getValidateWithSchematron()).hasSize(1);
+        assertThat(scenario.getDeclaration().getXmlSchemas()).extracting("location").containsExactly("simple.xsd");
+        assertThat(scenario.getDeclaration().getSchematrons()).hasSize(1);
         assertThat(scenario.getRepository().getRepository().toString()).endsWith("/repository/");
     }
 

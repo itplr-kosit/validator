@@ -16,13 +16,12 @@ import org.kosit.base.uri.UriHelper;
 import org.kosit.jaxb.adapter.StringTrimAdapter;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
-import org.kosit.validator.scenario.v2.DescriptionType;
-import org.kosit.validator.scenario.v2.NamespaceType;
-import org.kosit.validator.scenario.v2.ObjectFactory;
-import org.kosit.validator.scenario.v2.ResourceType;
-import org.kosit.validator.scenario.v2.ScenarioType;
-import org.kosit.validator.scenario.v2.ValidateWithSchematron;
-import org.kosit.validator.scenario.v2.ValidateWithXmlSchema;
+import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.scenario.generic.EScenarioKind;
+import org.kosit.validator.scenario.generic.ScenarioDescription;
+import org.kosit.validator.scenario.generic.ScenarioNamespace;
+import org.kosit.validator.scenario.generic.ScenarioResource;
+import org.kosit.validator.scenario.generic.ScenarioSchematron;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -52,7 +51,9 @@ import net.sf.saxon.s9api.XdmNode;
  */
 public final class Scenario {
 
-    private final ScenarioType configuration;
+    private final org.kosit.validator.scenario.generic.Scenario declaration;
+
+    private final byte @Nullable [] declarationXml;
 
     private final ContentRepository repository;
 
@@ -63,15 +64,19 @@ public final class Scenario {
     private final Map<URI, CTCompiledValidationArtifact<?>> precompiled;
 
     /**
-     * @param configuration the declaration of the scenario
+     * @param declaration the declaration of the scenario, in the version independent model
+     * @param declarationXml the declaration as the configuration wrote it, embedded into the report by step
+     *            {@code select-scenario}; {@code null} for a scenario no configuration document stands behind
      * @param repository the artifact repository of the scenario: where its artifacts are resolved, compiled and cached
      * @param match the compiled match expression, {@code null} for a scenario that applies unconditionally
      * @param definitionFile where the scenario was read from, for the report; {@code null} if it was assembled in code
      * @param precompiled artifacts handed over compiled, keyed by the reference declared for them; may be empty
      */
-    public Scenario(final ScenarioType configuration, final ContentRepository repository, final @Nullable XPathExecutable match,
-            final @Nullable String definitionFile, final Map<URI, CTCompiledValidationArtifact<?>> precompiled) {
-        this.configuration = Objects.requireNonNull(configuration, "configuration may not be null");
+    public Scenario(final org.kosit.validator.scenario.generic.Scenario declaration, final byte @Nullable [] declarationXml,
+            final ContentRepository repository, final @Nullable XPathExecutable match, final @Nullable String definitionFile,
+            final Map<URI, CTCompiledValidationArtifact<?>> precompiled) {
+        this.declaration = Objects.requireNonNull(declaration, "declaration may not be null");
+        this.declarationXml = declarationXml;
         this.repository = Objects.requireNonNull(repository, "repository may not be null");
         this.match = match;
         this.definitionFile = definitionFile;
@@ -81,16 +86,18 @@ public final class Scenario {
     /**
      * Creates the scenario for a declaration, compiling its match expression if it has one.
      *
-     * @param configuration the declaration of the scenario
+     * @param declaration the declaration of the scenario, in the version independent model
+     * @param declarationXml the declaration as the configuration wrote it; may be {@code null}
      * @param repository the artifact repository of the scenario
      * @param definitionFile where the scenario was read from, for the report; may be {@code null}
      * @return the scenario
      * @throws IllegalStateException if the match expression does not compile
      */
-    public static Scenario of(final ScenarioType configuration, final ContentRepository repository, final @Nullable String definitionFile) {
-        final XPathExecutable match = StringHelper.isBlank(configuration.getMatch()) ? null
-                : repository.createXPath(configuration.getMatch(), namespaces(configuration));
-        return new Scenario(configuration, repository, match, definitionFile, Map.of());
+    public static Scenario of(final org.kosit.validator.scenario.generic.Scenario declaration, final byte @Nullable [] declarationXml,
+            final ContentRepository repository, final @Nullable String definitionFile) {
+        final XPathExecutable match = StringHelper.isBlank(declaration.getMatch()) ? null
+                : repository.createXPath(declaration.getMatch(), namespaces(declaration));
+        return new Scenario(declaration, declarationXml, repository, match, definitionFile, Map.of());
     }
 
     /**
@@ -142,8 +149,9 @@ public final class Scenario {
         }
         final String root = base.toASCIIString().endsWith("/") ? base.toASCIIString() : base.toASCIIString() + "/";
 
-        final ScenarioType type = new ScenarioType();
         final List<String> names = new ArrayList<>();
+        final List<ScenarioResource> schemas = new ArrayList<>();
+        final List<ScenarioResource> ruleSets = new ArrayList<>();
         for (final URI artifact : canonical) {
             if (!artifact.toASCIIString().startsWith(root)) {
                 throw new IllegalArgumentException("The artifact '" + artifact + "' lies outside the repository '" + base + "'");
@@ -151,32 +159,27 @@ public final class Scenario {
             final String reference = artifact.toASCIIString().substring(root.length());
             final String name = reference.substring(reference.lastIndexOf('/') + 1);
             names.add(name);
-            final ResourceType resource = new ResourceType();
-            resource.setName(name);
-            resource.setLocation(reference);
+            final ScenarioResource resource = new ScenarioResource(name).setLocation(reference);
             final String lower = name.toLowerCase(Locale.ROOT);
             if (lower.endsWith(".xsd")) {
-                if (type.getValidateWithXmlSchema() == null) {
-                    type.setValidateWithXmlSchema(new ValidateWithXmlSchema());
-                }
-                type.getValidateWithXmlSchema().getResource().add(resource);
+                schemas.add(resource);
             } else if (lower.endsWith(".sch") || lower.endsWith(".xsl") || lower.endsWith(".xslt")) {
-                final ValidateWithSchematron rules = new ValidateWithSchematron();
-                rules.setResource(resource);
-                type.getValidateWithSchematron().add(rules);
+                ruleSets.add(resource);
             } else {
                 throw new IllegalArgumentException("Unsupported artifact '" + name + "': expected .xsd, .sch, .xsl or .xslt");
             }
         }
-        type.setName(String.join(", ", names));
-        final DescriptionType description = new DescriptionType();
-        description.getPOrOlOrUl().add(new ObjectFactory().createDescriptionTypeP("Ad hoc validation against " + String.join(", ", names)));
-        type.setDescription(description);
+        final String name = String.join(", ", names);
+        final org.kosit.validator.scenario.generic.Scenario declaration = new org.kosit.validator.scenario.generic.Scenario(
+                EScenarioKind.XML, name);
+        declaration.setDescription(ScenarioDescription.ofText("Ad hoc validation against " + name));
+        schemas.forEach(declaration::addXmlSchema);
+        ruleSets.forEach(r -> declaration.addSchematron(new ScenarioSchematron(r)));
 
         // the strategy of ResolvingMode.STRICT_RELATIVE, but with the archive permission of this scenario
         final ContentRepository contentRepository = new ContentRepository(processor, new StrictRelativeResolvingStrategy(resolveInArchive),
                 base);
-        return new Scenario(type, contentRepository, null, null, Map.of());
+        return new Scenario(declaration, ScenarioXml.toXmlBytes(declaration), contentRepository, null, null, Map.of());
     }
 
     /**
@@ -212,18 +215,37 @@ public final class Scenario {
      * @param configuration a scenario declaration
      * @return the namespace bindings it declares for its XPath expressions, prefix to URI
      */
-    public static Map<String, String> namespaces(final ScenarioType configuration) {
-        return configuration.getNamespace().stream()
-                .collect(Collectors.toMap(NamespaceType::getPrefix, ns -> StringTrimAdapter.trim(ns.getValue())));
+    public static Map<String, String> namespaces(final org.kosit.validator.scenario.generic.Scenario declaration) {
+        return declaration.getNamespaces().stream()
+                .collect(Collectors.toMap(ScenarioNamespace::getPrefix, ns -> StringTrimAdapter.trim(ns.getNamespaceURI())));
     }
 
     public String getName() {
-        return this.configuration.getName();
+        return this.declaration.getName();
     }
 
-    /** @return the declaration of the scenario */
-    public ScenarioType getConfiguration() {
-        return this.configuration;
+    /** @return the declaration of the scenario, in the version independent model */
+    public org.kosit.validator.scenario.generic.Scenario getDeclaration() {
+        return this.declaration;
+    }
+
+    /**
+     * The declaration as the configuration wrote it, which step {@code select-scenario} embeds into the report. It is
+     * carried rather than written back from the model, so that the report shows what was applied and not a
+     * normalisation of it.
+     *
+     * @return the declaration as XML, or {@code null} for a scenario no configuration document stands behind
+     */
+    public byte @Nullable [] getDeclarationXml() {
+        return this.declarationXml;
+    }
+
+    /**
+     * @return the coordinate the configuration declares for this scenario, as one string, or {@code null} when it
+     *         declares none. This is what the report identifies the scenario by where it is set.
+     */
+    public @Nullable String getDeclaredId() {
+        return this.declaration.hasCoordinate() ? this.declaration.getCoordinate().getAsSingleID() : null;
     }
 
     /** @return the artifact repository of the scenario */

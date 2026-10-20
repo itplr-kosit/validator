@@ -3,6 +3,7 @@ package org.kosit.validator.config;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.uri.UriHelper;
@@ -15,7 +16,10 @@ import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
+import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.scenario.generic.ScenarioConfiguration;
 import org.kosit.validator.scenario.v2.Scenario2Converter;
+import org.kosit.validator.scenario.v2.Scenario2Mapper;
 import org.kosit.validator.scenario.v2.Scenarios;
 import org.kost.validator.api.xml.CollectingErrorEventHandler;
 import org.slf4j.Logger;
@@ -128,7 +132,12 @@ public class ConfigurationLoader {
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
         final Scenarios def = loadScenarios(processor);
         final String definitionFile = this.scenarioDefinition.toString();
-        final List<Scenario> scenarios = def.getScenario().stream().map(s -> Scenario.of(s, contentRepository, definitionFile)).toList();
+        // the engine reads the version independent model; every scenario keeps the XML it was written as, because
+        // step select-scenario embeds that into the report
+        final ScenarioConfiguration declaration = Scenario2Mapper.toGeneric(def);
+        final List<Scenario> scenarios = IntStream.range(0, def.getScenario().size()).mapToObj(i -> Scenario
+                .of(declaration.getScenarios().get(i), ScenarioXml.toXmlBytes(def.getScenario().get(i)), contentRepository, definitionFile))
+                .toList();
         return new ScenarioSet(def.getName(), def.getAuthor(), def.getDate() == null ? null : def.getDate().toString(), definitionFile,
                 scenarios);
     }

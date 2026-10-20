@@ -21,7 +21,9 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.namespace.QName;
 
 import org.jspecify.annotations.NonNull;
+import org.kosit.validator.scenario.generic.ScenarioConfiguration;
 import org.kosit.validator.scenario.v2.Scenario2Converter;
+import org.kosit.validator.scenario.v2.Scenario2Mapper;
 import org.kosit.validator.scenario.v2.ScenarioType;
 
 import jakarta.xml.bind.JAXBContext;
@@ -55,6 +57,19 @@ public final class ScenarioXml {
 
     private ScenarioXml() {
         // static utility
+    }
+
+    /**
+     * Serializes a scenario of the version independent model, for a scenario that no configuration document stands
+     * behind - one assembled in code or at runtime from a set of artifacts. It is written in version 2, the format
+     * every consumer of a report reads today.
+     *
+     * @param declaration the scenario to serialize
+     * @return the scenario as UTF-8 encoded XML
+     */
+    public static byte @NonNull [] toXmlBytes(final org.kosit.validator.scenario.generic.Scenario declaration) {
+        final ScenarioConfiguration one = new ScenarioConfiguration(declaration.getName()).addScenario(declaration);
+        return toXmlBytes(Scenario2Mapper.fromGeneric(one).getScenario().get(0));
     }
 
     /**

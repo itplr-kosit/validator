@@ -5,10 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.junit.jupiter.api.Test;
 import org.kosit.cvr.model.SeverityOverrides;
-import org.kosit.validator.scenario.v2.CustomErrorLevel;
-import org.kosit.validator.scenario.v2.ErrorLevelType;
-import org.kosit.validator.scenario.v2.ScenarioType;
-import org.kosit.validator.scenario.v2.ValidateWithSchematron;
+import org.kosit.validator.scenario.generic.EScenarioErrorLevel;
+import org.kosit.validator.scenario.generic.EScenarioKind;
+import org.kosit.validator.scenario.generic.Scenario;
+import org.kosit.validator.scenario.generic.ScenarioCustomErrorLevel;
+import org.kosit.validator.scenario.generic.ScenarioResource;
+import org.kosit.validator.scenario.generic.ScenarioSchematron;
 
 /**
  * Tests {@link ScenarioSeverityOverrides}: the customLevel semantics carried over from 1.x (token lists, both
@@ -16,21 +18,18 @@ import org.kosit.validator.scenario.v2.ValidateWithSchematron;
  */
 public class ScenarioSeverityOverridesTest {
 
-    private static ScenarioType configuration(final CustomErrorLevel... levels) {
-        final ValidateWithSchematron schematron = new ValidateWithSchematron();
-        for (final CustomErrorLevel level : levels) {
-            schematron.getCustomLevel().add(level);
+    private static Scenario declaration(final ScenarioCustomErrorLevel... levels) {
+        final ScenarioSchematron schematron = new ScenarioSchematron(new ScenarioResource("rules").setLocation("rules.xsl"));
+        for (final ScenarioCustomErrorLevel level : levels) {
+            schematron.addCustomLevel(level);
         }
-        final ScenarioType scenario = new ScenarioType();
-        scenario.getValidateWithSchematron().add(schematron);
-        return scenario;
+        return new Scenario(EScenarioKind.XML, "scenario").addSchematron(schematron);
     }
 
-    private static CustomErrorLevel level(final ErrorLevelType level, final String... codes) {
-        final CustomErrorLevel custom = new CustomErrorLevel();
-        custom.setLevel(level);
+    private static ScenarioCustomErrorLevel level(final EScenarioErrorLevel level, final String... codes) {
+        final ScenarioCustomErrorLevel custom = new ScenarioCustomErrorLevel(level);
         for (final String code : codes) {
-            custom.getValue().add(code);
+            custom.addRuleID(code);
         }
         return custom;
     }
@@ -53,7 +52,7 @@ public class ScenarioSeverityOverridesTest {
     @Test
     public void testTokenListsExpandToOneOverridePerCode() {
         final SeverityOverrides overrides = ScenarioSeverityOverrides
-                .fromConfiguration(configuration(level(ErrorLevelType.WARNING, "BR-CL-21", "BR-CL-23", "BR-CL-24")));
+                .fromDeclaration(declaration(level(EScenarioErrorLevel.WARNING, "BR-CL-21", "BR-CL-23", "BR-CL-24")));
 
         assertThat(overrides.effectiveFor("BR-CL-21")).isEqualTo(CTStandardSeverity.WARNING);
         assertThat(overrides.effectiveFor("BR-CL-23")).isEqualTo(CTStandardSeverity.WARNING);
@@ -62,12 +61,12 @@ public class ScenarioSeverityOverridesTest {
 
     @Test
     public void testOverridesOfAllRuleSetsAreCollected() {
-        final ScenarioType scenario = configuration(level(ErrorLevelType.WARNING, "BR-CL-23"));
-        final ValidateWithSchematron second = new ValidateWithSchematron();
-        second.getCustomLevel().add(level(ErrorLevelType.ERROR, "UBL-CR-646"));
-        scenario.getValidateWithSchematron().add(second);
+        final Scenario scenario = declaration(level(EScenarioErrorLevel.WARNING, "BR-CL-23"));
+        final ScenarioSchematron second = new ScenarioSchematron(new ScenarioResource("more").setLocation("more.xsl"));
+        second.addCustomLevel(level(EScenarioErrorLevel.ERROR, "UBL-CR-646"));
+        scenario.addSchematron(second);
 
-        final SeverityOverrides overrides = ScenarioSeverityOverrides.fromConfiguration(scenario);
+        final SeverityOverrides overrides = ScenarioSeverityOverrides.fromDeclaration(scenario);
 
         assertThat(overrides.effectiveFor("BR-CL-23")).isEqualTo(CTStandardSeverity.WARNING);
         assertThat(overrides.effectiveFor("UBL-CR-646")).isEqualTo(CTStandardSeverity.ERROR);
@@ -75,14 +74,14 @@ public class ScenarioSeverityOverridesTest {
 
     @Test
     public void testScenarioWithoutOverridesYieldsNone() {
-        assertThat(ScenarioSeverityOverrides.fromConfiguration(new ScenarioType())).isSameAs(SeverityOverrides.NONE);
-        assertThat(ScenarioSeverityOverrides.fromConfiguration(null)).isSameAs(SeverityOverrides.NONE);
+        assertThat(ScenarioSeverityOverrides.fromDeclaration(new Scenario(EScenarioKind.XML, "empty"))).isSameAs(SeverityOverrides.NONE);
+        assertThat(ScenarioSeverityOverrides.fromDeclaration(null)).isSameAs(SeverityOverrides.NONE);
         assertThat(ScenarioSeverityOverrides.of(null)).isSameAs(SeverityOverrides.NONE);
         assertThat(SeverityOverrides.NONE.isEmpty()).isTrue();
     }
 
     private static SeverityOverrides configurationOverrides() {
-        return ScenarioSeverityOverrides.fromConfiguration(configuration(level(ErrorLevelType.INFORMATION, "BR-CL-10"),
-                level(ErrorLevelType.WARNING, "BR-CL-23"), level(ErrorLevelType.ERROR, "UBL-CR-646")));
+        return ScenarioSeverityOverrides.fromDeclaration(declaration(level(EScenarioErrorLevel.INFORMATION, "BR-CL-10"),
+                level(EScenarioErrorLevel.WARNING, "BR-CL-23"), level(EScenarioErrorLevel.ERROR, "UBL-CR-646")));
     }
 }
