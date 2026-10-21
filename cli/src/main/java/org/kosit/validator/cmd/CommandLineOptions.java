@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.kosit.validator.cmd.CommandLineApplication.Level;
-import org.kosit.validator.impl.EngineInformation;
 
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
@@ -143,8 +142,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
         public static final String DEFAULT_ID = DEFAULT + "_1";
     }
 
-    private EngineInformation engineInformation;
-
     @Spec
     private CommandSpec spec;
 
@@ -199,14 +196,6 @@ public class CommandLineOptions implements Callable<ReturnValue> {
 
     public boolean isCliModeEnabled() {
         return getCliOptions() != null;
-    }
-
-    public EngineInformation getEngineInformation() {
-        return this.engineInformation;
-    }
-
-    public void setEngineInformation(final EngineInformation engineInformation) {
-        this.engineInformation = engineInformation;
     }
 
     public CliOptions getCliOptions() {

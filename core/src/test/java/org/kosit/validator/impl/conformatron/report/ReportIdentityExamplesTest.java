@@ -65,8 +65,8 @@ public class ReportIdentityExamplesTest {
         final ScenarioSet configuration = ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
-        final ConformanceValidationResult result = new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(),
-                true, configuration).validate(TestHelper.read(document));
+        final ConformanceValidationResult result = new ConformanceValidation(TestHelper.getTestProcessor(), true, configuration)
+                .withEngineInformation(new TestEngineInformation()).validate(TestHelper.read(document));
         assertThat(result.isCompleted()).isTrue();
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();

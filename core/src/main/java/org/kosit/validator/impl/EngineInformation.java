@@ -1,34 +1,32 @@
 package org.kosit.validator.impl;
 
 /**
- * Holds static information about this validator.
+ * Who validated: the name and version a report states for the engine that produced it.
+ * <p>
+ * The engine knows this about itself - {@link ConformanceValidation} implements this interface and answers for the
+ * validator it is part of, so nobody has to tell it who it is. An application that embeds the engine and wants the
+ * report to name itself instead passes its own implementation to
+ * {@link ConformanceValidation#withEngineInformation(EngineInformation)}.
+ * </p>
  *
  * @author Andreas Penski
  */
 public interface EngineInformation {
 
     /**
-     * Returns the version number of the validator.
-     *
-     * @return the version
-     */
-    String getVersion();
-
-    /**
-     * Returns the name of the engine.
-     *
-     * @return the name
+     * @return the name of the engine, as the report states it
      */
     String getName();
 
     /**
-     * Returns the version number of the framework used. This is relevant to align scenario configuration and validator
-     * versions with each other.
-     *
-     * @return the framework version
+     * @return the version of the engine, as the report states it
      */
-    String getFrameworkVersion();
+    String getVersion();
 
-    String getBuild();
-
+    /**
+     * @return what this validator says about itself, read from the build. Never {@code null}.
+     */
+    static EngineInformation ofThisEngine() {
+        return ThisEngine.INSTANCE;
+    }
 }

@@ -32,8 +32,7 @@ public class AdHocValidationTest {
     }
 
     private static ConformanceValidationResult validate(final URI document, final String schematron) {
-        return ConformanceValidation.adHoc(new TestEngineInformation(), TestHelper.getTestProcessor(), schematron(schematron), true)
-                .validate(TestHelper.read(document));
+        return ConformanceValidation.adHoc(TestHelper.getTestProcessor(), schematron(schematron), true).validate(TestHelper.read(document));
     }
 
     private static List<String> codes(final ConformanceValidationResult result) {
@@ -113,7 +112,7 @@ public class AdHocValidationTest {
 
     @Test
     public void testTheSetAppliesSchemaAndRules() {
-        final ConformanceValidation engine = ConformanceValidation.adHoc(new TestEngineInformation(), TestHelper.getTestProcessor(),
+        final ConformanceValidation engine = ConformanceValidation.adHoc(TestHelper.getTestProcessor(),
                 List.of(schematron("simple.xsd"), schematron("simple.sch")), TestResources.Simple.REPOSITORY_URI, true);
 
         final ConformanceValidationResult valid = engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID));

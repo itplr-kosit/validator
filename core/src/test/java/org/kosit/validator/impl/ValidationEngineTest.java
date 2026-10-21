@@ -32,8 +32,8 @@ public class ValidationEngineTest {
     @Test
     public void testTheEngineOverAConfiguration() {
         // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
-        final ValidationEngine<ConformanceValidationResult> engine = new ConformanceValidation(new TestEngineInformation(),
-                TestHelper.getTestProcessor(), true, simpleConfiguration());
+        final ValidationEngine<ConformanceValidationResult> engine = new ConformanceValidation(TestHelper.getTestProcessor(), true,
+                simpleConfiguration());
 
         final ConformanceValidationResult result = engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
 
@@ -44,8 +44,8 @@ public class ValidationEngineTest {
 
     @Test
     public void testTheEngineOverASingleSchematron() {
-        final ValidationEngine<ConformanceValidationResult> engine = ConformanceValidation.adHoc(new TestEngineInformation(),
-                TestHelper.getTestProcessor(), UriHelper.resolve(TestResources.Simple.REPOSITORY_URI, "simple.sch", true), true);
+        final ValidationEngine<ConformanceValidationResult> engine = ConformanceValidation.adHoc(TestHelper.getTestProcessor(),
+                UriHelper.resolve(TestResources.Simple.REPOSITORY_URI, "simple.sch", true), true);
 
         assertThat(engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID)).isConformant()).isTrue();
         assertThat(engine.validate(TestHelper.read(TestResources.Simple.SCHEMATRON_INVALID)).isConformant()).isFalse();
@@ -59,8 +59,7 @@ public class ValidationEngineTest {
             Files.write(schematron, in.readAllBytes());
         }
 
-        final ConformanceValidationResult result = ConformanceValidation
-                .adHoc(new TestEngineInformation(), TestHelper.getTestProcessor(), schematron.toUri(), false)
+        final ConformanceValidationResult result = ConformanceValidation.adHoc(TestHelper.getTestProcessor(), schematron.toUri(), false)
                 .validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
 
         assertThat(result.isCompleted()).isTrue();

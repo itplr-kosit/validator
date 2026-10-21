@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.0.0 - work in progress
 
+### Changed
+
+- (API) The engine states its own identity in the report: `ConformanceValidation` implements `EngineInformation` and answers with the name and version of this validator, so no caller passes one in any more. Every constructor and both `adHoc(…)` factories lost their first parameter — `new ConformanceValidation(processor, config)` instead of `new ConformanceValidation(engineInformation, processor, config)`. An application that embeds the engine and wants the report to name itself says so with `withEngineInformation(…)`. The report of a CLI run therefore no longer says `validator-cli`, nor a server run `validator-server`: both name the engine that validated
+
+### Removed
+
+- (API) `EngineInformation.getFrameworkVersion()` and `getBuild()`, which no caller ever read. With them go `CliEngineInformation`, `ServerEngineInformation`, the resource `cli-info.properties` and the server configuration property `validator.framework-version`
+
 ### Added
 
 - (CLI) The subcommand `convert` writes a scenario configuration of version 2 as one of version 3: `validator convert -s scenarios.xml -o scenarios-v3.xml`. Version 3 requires a DVR coordinate for every scenario and every artifact, which version 2 was allowed to leave off, so the command proposes the missing ones and stops; `--group-id` says under which group id they are published and `--accept-proposals` writes them in. A coordinate becomes the identity a report names the scenario and its artifacts by, so the conversion does not settle on one by itself. An artifact several scenarios validate with gets one coordinate, not one per scenario

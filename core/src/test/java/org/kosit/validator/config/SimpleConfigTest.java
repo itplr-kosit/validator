@@ -23,8 +23,7 @@ public class SimpleConfigTest {
     public void testSimpleWithApi() {
         final ScenarioSet config = createSimpleConfiguration().build(TestHelper.getTestProcessor());
         // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
-        final ConformanceValidation engine = new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true,
-                config);
+        final ConformanceValidation engine = new ConformanceValidation(TestHelper.getTestProcessor(), true, config);
 
         final ConformanceValidationResult result = engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID));
 

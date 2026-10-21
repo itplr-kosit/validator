@@ -30,8 +30,7 @@ public class ConformanceValidationTest {
         final ScenarioSet configuration = ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
-        return new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true, configuration)
-                .validate(TestHelper.read(document));
+        return new ConformanceValidation(TestHelper.getTestProcessor(), true, configuration).validate(TestHelper.read(document));
     }
 
     /** Every run must produce a report that is a CVR — a cancelled one included (partial CVR, ADR-004). */
@@ -168,8 +167,7 @@ public class ConformanceValidationTest {
     public void testTheCallerCanFixTheScenario() {
         final ScenarioSet configuration = ScenarioSet.load(TestResources.Simple.SCENARIOS_AMBIGUOUS, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
-        final ConformanceValidation engine = new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true,
-                configuration);
+        final ConformanceValidation engine = new ConformanceValidation(TestHelper.getTestProcessor(), true, configuration);
 
         // the same document that is ambiguous when detected completes when the caller names the scenario
         final ConformanceValidationResult result = engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID), "Simple");
@@ -190,14 +188,37 @@ public class ConformanceValidationTest {
     private static ConformanceValidationResult validateWithScenarioId(final URI scenarios, final URI document, final String scenarioId) {
         final ScenarioSet configuration = ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
-        return new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true, configuration)
-                .validate(TestHelper.read(document), scenarioId);
+        return new ConformanceValidation(TestHelper.getTestProcessor(), true, configuration).validate(TestHelper.read(document),
+                scenarioId);
     }
 
     @Test
     public void testTheEngineNeedsAConfiguration() {
-        assertThat(org.assertj.core.api.Assertions
-                .catchThrowable(() -> new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor())))
-                        .isInstanceOf(IllegalArgumentException.class);
+        assertThat(org.assertj.core.api.Assertions.catchThrowable(() -> new ConformanceValidation(TestHelper.getTestProcessor())))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void testTheEngineNamesItselfInTheReportAndTheCallerMayOverrideIt() throws Exception {
+        final ScenarioSet configuration = ScenarioSet.load(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.REPOSITORY_URI)
+                .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
+        final ConformanceValidation engine = new ConformanceValidation(TestHelper.getTestProcessor(), true, configuration);
+
+        // nobody tells the engine who it is: it answers for the validator it is part of
+        assertThat(engine.getName()).isEqualTo(EngineInformation.ofThisEngine().getName()).isEqualTo("KoSIT Validator");
+        assertThat(engine.getVersion()).isNotBlank();
+        assertThat(cvrOf(engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID))))
+                .contains("<validator name=\"KoSIT Validator\"");
+
+        // an application that embeds the engine may state its own identity, and the report then names it
+        engine.withEngineInformation(new TestEngineInformation());
+        assertThat(cvrOf(engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID))))
+                .contains("<validator name=\"TestEngine\" version=\"TestVersion\"");
+    }
+
+    private static String cvrOf(final ConformanceValidationResult result) throws Exception {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        result.writeCvr(out);
+        return out.toString(java.nio.charset.StandardCharsets.UTF_8);
     }
 }

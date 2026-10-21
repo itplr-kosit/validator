@@ -45,9 +45,7 @@ public class CommandLineApplication {
     public static int run(final String... args) {
         AnsiConsole.systemInstall();
 
-        final CommandLineOptions options = new CommandLineOptions();
-        options.setEngineInformation(new CliEngineInformation());
-        final CommandLine commandLine = new CommandLine(options);
+        final CommandLine commandLine = new CommandLine(new CommandLineOptions());
         ReturnValue resultStatus;
         try {
             commandLine.setExecutionExceptionHandler(CommandLineApplication::logExecutionException);

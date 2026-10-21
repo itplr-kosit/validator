@@ -35,7 +35,6 @@ public class ConvertCommandTest {
     public void setup() throws IOException {
         this.testWriter = new TestWriter();
         final CommandLineOptions options = new CommandLineOptions();
-        options.setEngineInformation(new CliEngineInformation());
         this.commandLine = new picocli.CommandLine(options);
         this.commandLine.setOut(new PrintWriter(this.testWriter.getOutWriter(), true));
         this.commandLine.setErr(new PrintWriter(this.testWriter.getErrWriter(), true));
