@@ -20,7 +20,7 @@ import picocli.CommandLine.Spec;
  * @author Andreas Penski
  */
 @Command(description = "Structural and semantic validation of xml files", name = "KoSIT Validator", mixinStandardHelpOptions = false,
-         separator = " ", synopsisHeading = CommandLineOptions.SYNOSIS_HEADING)
+         separator = " ", synopsisHeading = CommandLineOptions.SYNOSIS_HEADING, subcommands = ConvertCommand.class)
 public class CommandLineOptions implements Callable<ReturnValue> {
 
     static final String SYNOSIS_HEADING = "Usage: ";
