@@ -83,6 +83,15 @@ public class ConfigurationLoaderTest {
                 .hasMessageContaining("does not declare");
     }
 
+    @Test
+    public void testAPdfScenarioIsRefusedWhileLoading() {
+        // version 3 can express a PDF scenario, this version validates XML documents. Loading it would not fail
+        // anywhere else: without a match expression it counts as unconditional, so every document would find two
+        // candidates and the run would be cancelled as ambiguous, which says nothing about the cause
+        assertThatThrownBy(() -> load(TestResources.Simple.SCENARIOS_V3_PDF)).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Simple as PDF").hasMessageContaining("validates a PDF document");
+    }
+
     private static ScenarioSet load(final URI scenarios) {
         return ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI).setResolvingStrategy(TestHelper.getTestResolvingStrategy())
                 .build(TestHelper.getTestProcessor());

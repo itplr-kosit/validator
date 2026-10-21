@@ -210,7 +210,12 @@ public class ConfigurationLoader {
     }
 
     /**
-     * Refuses what this version can read but not yet resolve.
+     * Refuses what this version can read but not apply.
+     * <p>
+     * A PDF scenario is out of scope entirely: version 3 can express one, the pipeline validates XML documents. It is
+     * refused here, because nothing downstream would notice - a scenario without a match expression counts as
+     * unconditional, so every run would end as ambiguous without ever naming the reason.
+     * </p>
      * <p>
      * Resolution still runs against the one repository the loader was given: every scenario resolves its artifacts
      * there and nowhere else. A configuration of version 3 may declare several repositories, point a resource at one of
@@ -222,6 +227,13 @@ public class ConfigurationLoader {
      */
     private void rejectWhatCanNotBeResolvedYet(final ScenarioConfiguration declaration) {
         for (final org.kosit.validator.scenario.generic.Scenario scenario : declaration.getScenarios()) {
+            if (scenario.isPdf()) {
+                // a PDF scenario declares no match, so the engine would take it for an unconditional one, find two
+                // candidates for every document and cancel as ambiguous - a verdict that says nothing about the cause
+                throw new IllegalStateException("The scenario '" + scenario.getName() + "' validates a PDF document, which this"
+                        + " version does not support. Remove it from the configuration or validate the embedded XML document"
+                        + " with the scenario it refers to");
+            }
             for (final ScenarioResource resource : resourcesOf(scenario)) {
                 if (resource.hasRepository() && declaration.findRepository(resource) == null) {
                     throw new IllegalStateException("The resource '" + resource.getName() + "' of scenario '" + scenario.getName()

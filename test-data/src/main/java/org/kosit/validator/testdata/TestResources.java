@@ -53,8 +53,11 @@ public final class TestResources {
         /** The same scenario as {@link #SCENARIOS_WRITTEN_FOR_2_0}, written in configuration version 3. */
         public static final URI SCENARIOS_V3 = TestData.file("examples/simple/scenarios-v3-simple.xml");
 
-        /** A version 3 configuration with two repositories, which this version can read but not resolve. */
+        /** A version 3 configuration with two repositories, each resource naming the one it is resolved in. */
         public static final URI SCENARIOS_V3_REPOSITORIES = TestData.file("examples/simple/scenarios-v3-two-repositories.xml");
+
+        /** A version 3 configuration with a PDF scenario, which this version reads but can not apply. */
+        public static final URI SCENARIOS_V3_PDF = TestData.file("examples/simple/scenarios-v3-pdf.xml");
 
         /** {@link #SCENARIOS_WRITTEN_FOR_2_0} without the ids and identical in everything else. */
         public static final URI SCENARIOS_WITHOUT_IDS = TestData.file("examples/simple/scenarios-without-ids.xml");
