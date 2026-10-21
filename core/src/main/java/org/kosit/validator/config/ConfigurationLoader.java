@@ -2,6 +2,7 @@ package org.kosit.validator.config;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -17,8 +18,11 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.scenario.generic.ScenarioResource;
 import org.kosit.validator.scenario.generic.ScenarioConfiguration;
 import org.kosit.validator.scenario.v2.Scenario2Converter;
+import org.kosit.validator.scenario.v3.Scenario3Converter;
+import org.kosit.validator.scenario.v3.Scenario3Mapper;
 import org.kosit.validator.scenario.v2.Scenario2Mapper;
 import org.kosit.validator.scenario.v2.Scenarios;
 import org.kost.validator.api.xml.CollectingErrorEventHandler;
@@ -46,9 +50,9 @@ public class ConfigurationLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationLoader.class);
 
-    private static final String SUPPORTED_MAJOR_VERSION = "2";
+    /** The namespaces of the configuration formats this version reads. */
 
-    private static final String SUPPORTED_MAJOR_VERSION_SCHEMA = Scenario2Converter.NS_URI;
+    private static final List<String> SUPPORTED_SCHEMAS = List.of(Scenario2Converter.NS_URI, Scenario3Converter.NS_URI);
 
     /**
      * URL pointing to the scenario.xml file.
@@ -72,7 +76,7 @@ public class ConfigurationLoader {
             if (result.isSuccess()
                     && !isSupportedDocument(processor.newDocumentBuilder().wrap(result.getParsedSource().getParsedContent()))) {
                 throw new IllegalStateException("Specified scenario configuration " + scenarioDefinition
-                        + " is not supported.\nThis version only supports definitions of '" + SUPPORTED_MAJOR_VERSION_SCHEMA + "'");
+                        + " is not supported.\nThis version supports definitions of " + SUPPORTED_SCHEMAS);
             }
         } catch (final IOException e) {
             throw new IllegalStateException("Error reading definition file", e);
@@ -89,10 +93,16 @@ public class ConfigurationLoader {
     }
 
     private static boolean isSupportedDocument(final XdmNode doc) {
-        final XdmNode root = findRoot(doc);
-        final String frameworkVersion = root.getAttributeValue(new QName("frameworkVersion"));
-        return frameworkVersion != null && frameworkVersion.startsWith(SUPPORTED_MAJOR_VERSION)
-                && root.getNodeName().getNamespace().equals(SUPPORTED_MAJOR_VERSION_SCHEMA);
+        return SUPPORTED_SCHEMAS.contains(findRoot(doc).getNodeName().getNamespace());
+    }
+
+    private String rootNamespace(final Processor processor) {
+        try {
+            final ParseXmlResult result = new ParseXmlAction().execute(ReadResource.inMemory(Resource.of(this.scenarioDefinition.toURL())));
+            return findRoot(processor.newDocumentBuilder().wrap(result.getParsedSource().getParsedContent())).getNodeName().getNamespace();
+        } catch (final IOException e) {
+            throw new IllegalStateException("Error reading definition file", e);
+        }
     }
 
     /**
@@ -130,15 +140,15 @@ public class ConfigurationLoader {
     public ScenarioSet build(final Processor processor) {
         final ResolvingConfigurationStrategy resolving = getResolvingConfigurationStrategy();
         final ContentRepository contentRepository = new ContentRepository(processor, resolving, getScenarioRepository());
-        final Scenarios def = loadScenarios(processor);
+        final LoadedConfiguration loaded = loadScenarios(processor);
         final String definitionFile = this.scenarioDefinition.toString();
-        // the engine reads the version independent model; every scenario keeps the XML it was written as, because
-        // step select-scenario embeds that into the report
-        final ScenarioConfiguration declaration = Scenario2Mapper.toGeneric(def);
-        final List<Scenario> scenarios = IntStream.range(0, def.getScenario().size()).mapToObj(i -> Scenario
-                .of(declaration.getScenarios().get(i), ScenarioXml.toXmlBytes(def.getScenario().get(i)), contentRepository, definitionFile))
+        final ScenarioConfiguration declaration = loaded.declaration();
+        rejectWhatCanNotBeResolvedYet(declaration);
+        final List<Scenario> scenarios = IntStream.range(0, declaration.getScenarios().size()).mapToObj(
+                i -> Scenario.of(declaration.getScenarios().get(i), loaded.declarationXml().get(i), contentRepository, definitionFile))
                 .toList();
-        return new ScenarioSet(def.getName(), def.getAuthor(), def.getDate() == null ? null : def.getDate().toString(), definitionFile,
+        return new ScenarioSet(declaration.getName(), declaration.getAuthor(),
+                declaration.getLastModificationDate() == null ? null : declaration.getLastModificationDate().toString(), definitionFile,
                 scenarios);
     }
 
@@ -151,17 +161,75 @@ public class ConfigurationLoader {
         return this.resolvingMode.getStrategy();
     }
 
-    private Scenarios loadScenarios(final Processor processor) {
+    /**
+     * Reads the configuration into the version independent model, whichever format it is written in, and hands back the
+     * declaration of every scenario as the document wrote it - step {@code select-scenario} embeds that into the
+     * report, so it may not be a normalisation.
+     */
+    private LoadedConfiguration loadScenarios(final Processor processor) {
         checkVersion(this.scenarioDefinition, processor);
         LOGGER.info("Loading scenarios from {}", this.scenarioDefinition);
         final CollectingErrorEventHandler handler = new CollectingErrorEventHandler();
-        final Scenarios scenarios = new Scenario2Converter().withEventHandler(handler).readXml(this.scenarioDefinition);
+        final LoadedConfiguration loaded;
+        if (Scenario3Converter.NS_URI.equals(rootNamespace(processor))) {
+            final org.kosit.validator.scenario.v3.Scenarios document = new Scenario3Converter().withEventHandler(handler)
+                    .readXml(this.scenarioDefinition);
+            loaded = new LoadedConfiguration(Scenario3Mapper.toGeneric(document),
+                    document.getScenarioXmlOrScenarioPdf().stream().map(ScenarioXml::toXmlBytes).toList());
+        } else {
+            final Scenarios document = new Scenario2Converter().withEventHandler(handler).readXml(this.scenarioDefinition);
+            loaded = new LoadedConfiguration(Scenario2Mapper.toGeneric(document),
+                    document.getScenario().stream().map(ScenarioXml::toXmlBytes).toList());
+        }
         if (handler.hasErrors()) {
             throw new IllegalStateException(
                     "Can not load scenarios from " + this.scenarioDefinition + " due to " + handler.getErrorDescription());
         }
         LOGGER.info("Scenario content is resolved from {}", this.getScenarioRepository());
-        return scenarios;
+        return loaded;
+    }
+
+    /**
+     * Refuses what this version can read but not yet resolve.
+     * <p>
+     * Resolution still runs against the one repository the loader was given: every scenario resolves its artifacts
+     * there and nowhere else. A configuration of version 3 may declare several repositories, point a resource at one of
+     * them by name, or take a resource out of every repository with an absolute location - and honouring that needs the
+     * artifact retrieval to resolve per resource, which comes with the configuration API. Until then such a
+     * configuration is refused, because resolving it against the single repository would quietly validate against
+     * artifacts the configuration did not name.
+     * </p>
+     */
+    private void rejectWhatCanNotBeResolvedYet(final ScenarioConfiguration declaration) {
+        if (declaration.getRepositories().size() > 1) {
+            throw new IllegalStateException("The configuration " + this.scenarioDefinition + " declares "
+                    + declaration.getRepositories().size() + " repositories. This version resolves every artifact in the one"
+                    + " repository it is given, so it can not honour that yet");
+        }
+        for (final org.kosit.validator.scenario.generic.Scenario scenario : declaration.getScenarios()) {
+            for (final ScenarioResource resource : resourcesOf(scenario)) {
+                if (resource.hasAbsoluteLocation()) {
+                    throw new IllegalStateException("The resource '" + resource.getName() + "' of scenario '" + scenario.getName()
+                            + "' has an absolute location. This version resolves every artifact inside the repository, so it can"
+                            + " not honour that yet");
+                }
+                if (!resource.hasLocation()) {
+                    throw new IllegalStateException("The resource '" + resource.getName() + "' of scenario '" + scenario.getName()
+                            + "' has no location. Retrieving an artifact by its coordinate alone needs a repository that serves"
+                            + " coordinates, which this version does not have");
+                }
+            }
+        }
+    }
+
+    private static List<ScenarioResource> resourcesOf(final org.kosit.validator.scenario.generic.Scenario scenario) {
+        final List<ScenarioResource> resources = new ArrayList<>(scenario.getXmlSchemas());
+        scenario.getSchematrons().forEach(schematron -> resources.add(schematron.getResource()));
+        return resources;
+    }
+
+    /** A configuration read into the version independent model, with the XML every scenario was written as. */
+    private record LoadedConfiguration(ScenarioConfiguration declaration, List<byte[]> declarationXml) {
     }
 
     /**

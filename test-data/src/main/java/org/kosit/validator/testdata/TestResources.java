@@ -50,6 +50,12 @@ public final class TestResources {
         /** compiler at the rule set, customLevel below validateWithSchematron, no createReport, empty acceptMatch */
         public static final URI SCENARIOS_WRITTEN_FOR_2_0 = TestData.file("examples/simple/scenarios-accept-match-empty.xml");
 
+        /** The same scenario as {@link #SCENARIOS_WRITTEN_FOR_2_0}, written in configuration version 3. */
+        public static final URI SCENARIOS_V3 = TestData.file("examples/simple/scenarios-v3-simple.xml");
+
+        /** A version 3 configuration with two repositories, which this version can read but not resolve. */
+        public static final URI SCENARIOS_V3_REPOSITORIES = TestData.file("examples/simple/scenarios-v3-two-repositories.xml");
+
         /** {@link #SCENARIOS_WRITTEN_FOR_2_0} without the ids and identical in everything else. */
         public static final URI SCENARIOS_WITHOUT_IDS = TestData.file("examples/simple/scenarios-without-ids.xml");
 
