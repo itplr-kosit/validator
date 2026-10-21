@@ -28,7 +28,6 @@ import org.jspecify.annotations.Nullable;
 import org.kosit.base.xml.XmlHelper;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.ConformanceValidation;
-import org.kosit.validator.impl.EngineInformation;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.server.config.ValidationConfig;
@@ -72,14 +71,11 @@ public class ValidationService {
 
     private final ConformanceValidation engine;
 
-    private final EngineInformation engineInformation;
-
     private final ValidationRunStore results;
 
-    public ValidationService(final ValidationConfig cfg, final EngineInformation engineInformation, final ValidationRunStore results) {
-        this.engineInformation = engineInformation;
+    public ValidationService(final ValidationConfig cfg, final ValidationRunStore results) {
         this.configuration = getConfiguration(cfg, this.processor);
-        this.engine = new ConformanceValidation(engineInformation, this.processor, this.configuration.toArray(new ScenarioSet[0]));
+        this.engine = new ConformanceValidation(this.processor, this.configuration.toArray(new ScenarioSet[0]));
         this.results = results;
         LOGGER.info("Validator started");
     }
@@ -159,8 +155,7 @@ public class ValidationService {
                 throw new IllegalArgumentException(
                         "An ad hoc validation needs at least one artifact: a 'resource' part, or a 'repository' with 'artifact' entries");
             }
-            final ConformanceValidation adHoc = ConformanceValidation.adHoc(this.engineInformation, this.processor, artifacts,
-                    directory.toUri(), false);
+            final ConformanceValidation adHoc = ConformanceValidation.adHoc(this.processor, artifacts, directory.toUri(), false);
             return store(input, adHoc.validate(input), t0);
         } catch (final IOException e) {
             throw new UncheckedIOException("Can not write the artifacts of the ad hoc run", e);

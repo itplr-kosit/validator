@@ -67,7 +67,7 @@ public class Validator {
      * @param cmd parsed commandline.
      */
     static ReturnValue mainProgram(final CommandLineOptions cmd) {
-        greeting(cmd.getEngineInformation());
+        greeting(EngineInformation.ofThisEngine());
         final ReturnValue returnValue;
         try {
             if (cmd.isCliModeEnabled() || isPiped()) {
@@ -170,13 +170,13 @@ public class Validator {
                 Printer.writeOut("Using repository  {0}", repository);
             }
             Printer.writeOut("");
-            return ConformanceValidation.adHoc(cmd.getEngineInformation(), processor, artifacts, repository, false);
+            return ConformanceValidation.adHoc(processor, artifacts, repository, false);
         }
         if (!scenarios) {
             throw new IllegalArgumentException("Missing required option: --scenarios=<scenario.xml> or --artifact=<artifact>");
         }
         final List<ScenarioSet> config = getConfiguration(cmd);
-        return new ConformanceValidation(cmd.getEngineInformation(), processor, config.toArray(new ScenarioSet[0]));
+        return new ConformanceValidation(processor, config.toArray(new ScenarioSet[0]));
     }
 
     /**

@@ -80,21 +80,12 @@ public final class XRechnungE2ERunner {
             return "2.0.0-SNAPSHOT";
         }
 
-        @Override
-        public String getFrameworkVersion() {
-            return "2.0.0";
-        }
-
-        @Override
-        public String getBuild() {
-            return "e2e";
-        }
     };
 
     private final ConformanceValidation engine;
 
     private XRechnungE2ERunner(final ScenarioSet configuration, final Processor processor) {
-        this.engine = new ConformanceValidation(ENGINE, processor, configuration);
+        this.engine = new ConformanceValidation(processor, configuration).withEngineInformation(ENGINE);
     }
 
     public static void main(final String[] args) throws IOException {

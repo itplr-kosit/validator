@@ -26,8 +26,7 @@ public class MyValidator {
                         .validate(schematron("my rules").source("myRules.xsl").compiler("schxslt")))
                 .useRepository(Paths.get("/opt/myrepository")).build(ProcessorProvider.getProcessor());
         // the engine: configuration is a construction concern, validate(...) takes nothing but the document
-        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(new TestEngineInformation(),
-                ProcessorProvider.getProcessor(), config);
+        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(ProcessorProvider.getProcessor(), config);
         // .. run your checks
     }
 }

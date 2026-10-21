@@ -70,7 +70,7 @@ import net.sf.saxon.s9api.Processor;
  *
  * @author Andreas Schmitz
  */
-public class ConformanceValidation implements ValidationEngine<ConformanceValidationResult> {
+public class ConformanceValidation implements ValidationEngine<ConformanceValidationResult>, EngineInformation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConformanceValidation.class);
 
@@ -88,61 +88,54 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
 
     private final boolean resolveInArchive;
 
-    private final CvrWriter writer;
+    /**
+     * Who the report says validated. The engine answers for itself, so this is {@link EngineInformation#ofThisEngine()}
+     * unless an embedding application states its own with {@link #withEngineInformation(EngineInformation)}.
+     */
+    private EngineInformation engineInformation = EngineInformation.ofThisEngine();
 
     /**
      * Creates the engine over the given scenarios, resolving artifacts in the file system.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor the scenarios were compiled with
      * @param scenarios the scenarios; at least one
      */
-    public ConformanceValidation(final EngineInformation engineInformation, final Processor saxonProcessor,
-            final List<Scenario> scenarios) {
-        this(engineInformation, saxonProcessor, false, scenarios);
+    public ConformanceValidation(final Processor saxonProcessor, final List<Scenario> scenarios) {
+        this(saxonProcessor, false, scenarios);
     }
 
     /**
      * Creates the engine over the scenarios of the given configurations, resolving artifacts in the file system.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor the scenarios were compiled with
      * @param configurations the scenario configurations; at least one
      */
-    public ConformanceValidation(final EngineInformation engineInformation, final Processor saxonProcessor,
-            final ScenarioSet... configurations) {
-        this(engineInformation, saxonProcessor, false, configurations);
+    public ConformanceValidation(final Processor saxonProcessor, final ScenarioSet... configurations) {
+        this(saxonProcessor, false, configurations);
     }
 
     /**
      * Creates the engine over the scenarios of the given configurations.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor the scenarios were compiled with
      * @param resolveInArchive {@code true} if the artifact repositories live inside an archive
      *            ({@code jar:file:/some.jar!/repository})
      * @param configurations the scenario configurations; at least one
      */
-    public ConformanceValidation(final EngineInformation engineInformation, final Processor saxonProcessor, final boolean resolveInArchive,
-            final ScenarioSet... configurations) {
-        this(engineInformation, saxonProcessor, resolveInArchive, scenariosOf(configurations));
+    public ConformanceValidation(final Processor saxonProcessor, final boolean resolveInArchive, final ScenarioSet... configurations) {
+        this(saxonProcessor, resolveInArchive, scenariosOf(configurations));
     }
 
     /**
      * Creates the engine over the given scenarios.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor the scenarios were compiled with
      * @param resolveInArchive {@code true} if the artifact repositories live inside an archive
      *            ({@code jar:file:/some.jar!/repository}); off by default, and an explicit decision of whoever
      *            assembles the engine
      * @param scenarios the scenarios; at least one
      */
-    public ConformanceValidation(final EngineInformation engineInformation, final Processor saxonProcessor, final boolean resolveInArchive,
-            final List<Scenario> scenarios) {
-        if (engineInformation == null) {
-            throw new IllegalArgumentException("engineInformation may not be null");
-        }
+    public ConformanceValidation(final Processor saxonProcessor, final boolean resolveInArchive, final List<Scenario> scenarios) {
         if (saxonProcessor == null) {
             throw new IllegalArgumentException("processor may not be null");
         }
@@ -155,7 +148,31 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
             this.retrieval.computeIfAbsent(scenario.getRepository().getRepository(),
                     repository -> new RetrieveArtifactsAction(repository, resolveInArchive));
         }
-        this.writer = new CvrWriter(engineInformation.getName(), engineInformation.getVersion());
+    }
+
+    /**
+     * Lets an application that embeds the engine state its own identity, which the report then names instead of the
+     * engine's own. This belongs to assembling the engine: call it before the first run.
+     *
+     * @param information who the report says validated; may not be {@code null}
+     * @return this, for chaining
+     */
+    public ConformanceValidation withEngineInformation(final EngineInformation information) {
+        if (information == null) {
+            throw new IllegalArgumentException("engineInformation may not be null");
+        }
+        this.engineInformation = information;
+        return this;
+    }
+
+    @Override
+    public String getName() {
+        return this.engineInformation.getName();
+    }
+
+    @Override
+    public String getVersion() {
+        return this.engineInformation.getVersion();
     }
 
     /**
@@ -163,23 +180,20 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
      * the rule set ({@link Scenario#adHoc(Processor, URI, boolean)}), applying unconditionally, with the directory of
      * the Schematron as its repository. The same pipeline and the same report as for a configured scenario.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor
      * @param schematron URI of the Schematron ({@code .sch}, or a precompiled {@code .xsl})
      * @param resolveInArchive {@code true} if the Schematron lives inside an archive
      * @return the engine
      * @throws IllegalArgumentException if no repository can be derived from the Schematron URI
      */
-    public static ConformanceValidation adHoc(final EngineInformation engineInformation, final Processor saxonProcessor,
-            final URI schematron, final boolean resolveInArchive) {
-        return adHoc(engineInformation, saxonProcessor, List.of(schematron), null, resolveInArchive);
+    public static ConformanceValidation adHoc(final Processor saxonProcessor, final URI schematron, final boolean resolveInArchive) {
+        return adHoc(saxonProcessor, List.of(schematron), null, resolveInArchive);
     }
 
     /**
      * The engine for an ad hoc validation against a set of artifacts — XML Schemas, Schematrons, precompiled Schematron
      * XSLTs — as one scenario ({@link Scenario#adHoc(Processor, List, URI, boolean)}).
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor
      * @param artifacts URIs of the artifacts, applied in this order; the kind is read from the extension
      * @param repository the artifact repository, or {@code null} for the common parent directory of the artifacts
@@ -187,9 +201,9 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
      * @return the engine
      * @throws IllegalArgumentException if the artifacts do not make a scenario, see {@link Scenario#adHoc}
      */
-    public static ConformanceValidation adHoc(final EngineInformation engineInformation, final Processor saxonProcessor,
-            final List<URI> artifacts, final URI repository, final boolean resolveInArchive) {
-        return new ConformanceValidation(engineInformation, saxonProcessor, resolveInArchive,
+    public static ConformanceValidation adHoc(final Processor saxonProcessor, final List<URI> artifacts, final URI repository,
+            final boolean resolveInArchive) {
+        return new ConformanceValidation(saxonProcessor, resolveInArchive,
                 List.of(Scenario.adHoc(saxonProcessor, artifacts, repository, resolveInArchive)));
     }
 
@@ -228,7 +242,7 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
         LOGGER.info("Checking content of {}", input.getName());
         final PipelineResults run = run(input, requestedScenarioId);
         LOGGER.info("Finished check of {} in {}ms — {}", input.getName(), System.currentTimeMillis() - started, run.decision().decision());
-        return new ConformanceValidationResult(input.getName(), run, this.writer);
+        return new ConformanceValidationResult(input.getName(), run, new CvrWriter(getName(), getVersion()));
     }
 
     /**
