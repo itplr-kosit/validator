@@ -14,7 +14,9 @@ import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTReadResource;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
+import org.jspecify.annotations.Nullable;
 import org.kosit.conformatron.detection.DetectionList;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.api.ValidationEngine;
@@ -32,6 +34,7 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
 import org.kosit.validator.impl.conformatron.report.CvrWriter;
 import org.slf4j.Logger;
@@ -265,11 +268,19 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
         final Map<ScenarioMatch, List<CTResolvedValidationArtifact>> artifactsByScenario = new LinkedHashMap<>();
         boolean retrievedAll = true;
         for (final ScenarioMatch match : applied) {
-            final RetrieveArtifactsAction.RetrieveArtifactsResult result = retrievalFor(match.getScenario()).execute(match);
-            artifacts.addAll(result.artifacts());
-            artifactsByScenario.put(match, result.artifacts());
-            retrieveDetections.addAll(result.detections().getAll());
-            retrievedAll &= result.isSuccess();
+            final List<CTResolvedValidationArtifact> ofScenario = new ArrayList<>();
+            // a resource is resolved in the repository it names, and in no other; grouping keeps every retrieval
+            // confined to one repository, which is what makes the confinement of step 5 a promise
+            for (final Map.Entry<String, List<CTValidationArtifactReference>> group : byRepository(match.getArtifactReferences())
+                    .entrySet()) {
+                final RetrieveArtifactsAction.RetrieveArtifactsResult result = retrievalFor(match.getScenario(), group.getKey())
+                        .execute(group.getValue(), resourceId);
+                artifacts.addAll(result.artifacts());
+                ofScenario.addAll(result.artifacts());
+                retrieveDetections.addAll(result.detections().getAll());
+                retrievedAll &= result.isSuccess();
+            }
+            artifactsByScenario.put(match, ofScenario);
         }
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction.RetrieveArtifactsResult(
                 retrievedAll ? CTStepResult.SUCCESS : CTStepResult.FAILURE, List.copyOf(artifacts), new DetectionList(retrieveDetections));
@@ -283,11 +294,18 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
         final List<CTDetection> prepareDetections = new ArrayList<>();
         boolean preparedAll = true;
         for (final Map.Entry<ScenarioMatch, List<CTResolvedValidationArtifact>> entry : artifactsByScenario.entrySet()) {
-            final PrepareRulesAction.PrepareRulesResult result = new PrepareRulesAction(entry.getKey().getScenario().getRepository())
-                    .execute(entry.getValue(), resourceId);
-            ruleSets.addAll(result.ruleSets());
-            prepareDetections.addAll(result.detections().getAll());
-            preparedAll &= result.isSuccess();
+            final Map<String, List<CTResolvedValidationArtifact>> groups = new LinkedHashMap<>();
+            for (final CTResolvedValidationArtifact artifact : entry.getValue()) {
+                groups.computeIfAbsent(key(ScenarioRuleSetReference.repositoryOf(artifact.getReference())), name -> new ArrayList<>())
+                        .add(artifact);
+            }
+            for (final Map.Entry<String, List<CTResolvedValidationArtifact>> group : groups.entrySet()) {
+                final PrepareRulesAction.PrepareRulesResult result = new PrepareRulesAction(
+                        entry.getKey().getScenario().getRepository(nameOf(group.getKey()))).execute(group.getValue(), resourceId);
+                ruleSets.addAll(result.ruleSets());
+                prepareDetections.addAll(result.detections().getAll());
+                preparedAll &= result.isSuccess();
+            }
         }
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction.PrepareRulesResult(
                 preparedAll ? CTStepResult.SUCCESS : CTStepResult.FAILURE, List.copyOf(ruleSets), new DetectionList(prepareDetections));
@@ -320,8 +338,26 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
         throw new IllegalStateException("The selected scenario did not come from the scenario detection of this engine");
     }
 
-    private RetrieveArtifactsAction retrievalFor(final Scenario scenario) {
-        return this.retrieval.computeIfAbsent(scenario.getRepository().getRepository(),
+    private RetrieveArtifactsAction retrievalFor(final Scenario scenario, final String repositoryKey) {
+        return this.retrieval.computeIfAbsent(scenario.getRepository(nameOf(repositoryKey)).getRepository(),
                 repository -> new RetrieveArtifactsAction(repository, this.resolveInArchive));
+    }
+
+    /** A map key for the repository a reference names, since a reference that names none would key on {@code null}. */
+    private static String key(final @Nullable String repository) {
+        return repository == null ? "" : repository;
+    }
+
+    private static @Nullable String nameOf(final String key) {
+        return key.isEmpty() ? null : key;
+    }
+
+    /** The references of a scenario, grouped by the repository each of them is resolved in, in declaration order. */
+    private static Map<String, List<CTValidationArtifactReference>> byRepository(final List<CTValidationArtifactReference> references) {
+        final Map<String, List<CTValidationArtifactReference>> groups = new LinkedHashMap<>();
+        for (final CTValidationArtifactReference reference : references) {
+            groups.computeIfAbsent(key(ScenarioRuleSetReference.repositoryOf(reference)), name -> new ArrayList<>()).add(reference);
+        }
+        return groups;
     }
 }

@@ -55,6 +55,8 @@ public final class Scenario {
 
     private final byte @Nullable [] declarationXml;
 
+    private final Map<String, ContentRepository> repositories;
+
     private final ContentRepository repository;
 
     private final @Nullable XPathExecutable match;
@@ -75,9 +77,25 @@ public final class Scenario {
     public Scenario(final org.kosit.validator.scenario.generic.Scenario declaration, final byte @Nullable [] declarationXml,
             final ContentRepository repository, final @Nullable XPathExecutable match, final @Nullable String definitionFile,
             final Map<URI, CTCompiledValidationArtifact<?>> precompiled) {
+        this(declaration, declarationXml, repository, Map.of(), match, definitionFile, precompiled);
+    }
+
+    /**
+     * @param declaration the declaration of the scenario, in the version independent model
+     * @param declarationXml the declaration as the configuration wrote it; may be {@code null}
+     * @param repository the repository a resource is resolved in that names none
+     * @param repositories the repositories the configuration declares, by the name its resources refer to
+     * @param match the compiled match expression, {@code null} for a scenario that applies unconditionally
+     * @param definitionFile where the scenario was read from, for the report; may be {@code null}
+     * @param precompiled artifacts handed over compiled, keyed by the reference declared for them; may be empty
+     */
+    public Scenario(final org.kosit.validator.scenario.generic.Scenario declaration, final byte @Nullable [] declarationXml,
+            final ContentRepository repository, final Map<String, ContentRepository> repositories, final @Nullable XPathExecutable match,
+            final @Nullable String definitionFile, final Map<URI, CTCompiledValidationArtifact<?>> precompiled) {
         this.declaration = Objects.requireNonNull(declaration, "declaration may not be null");
         this.declarationXml = declarationXml;
         this.repository = Objects.requireNonNull(repository, "repository may not be null");
+        this.repositories = Map.copyOf(repositories);
         this.match = match;
         this.definitionFile = definitionFile;
         this.precompiled = Map.copyOf(precompiled);
@@ -95,9 +113,25 @@ public final class Scenario {
      */
     public static Scenario of(final org.kosit.validator.scenario.generic.Scenario declaration, final byte @Nullable [] declarationXml,
             final ContentRepository repository, final @Nullable String definitionFile) {
+        return of(declaration, declarationXml, repository, Map.of(), definitionFile);
+    }
+
+    /**
+     * Creates the scenario for a declaration that resolves its resources in named repositories.
+     *
+     * @param declaration the declaration of the scenario, in the version independent model
+     * @param declarationXml the declaration as the configuration wrote it; may be {@code null}
+     * @param repository the repository a resource is resolved in that names none
+     * @param repositories the repositories the configuration declares, by the name its resources refer to
+     * @param definitionFile where the scenario was read from, for the report; may be {@code null}
+     * @return the scenario
+     * @throws IllegalStateException if the match expression does not compile
+     */
+    public static Scenario of(final org.kosit.validator.scenario.generic.Scenario declaration, final byte @Nullable [] declarationXml,
+            final ContentRepository repository, final Map<String, ContentRepository> repositories, final @Nullable String definitionFile) {
         final XPathExecutable match = StringHelper.isBlank(declaration.getMatch()) ? null
                 : repository.createXPath(declaration.getMatch(), namespaces(declaration));
-        return new Scenario(declaration, declarationXml, repository, match, definitionFile, Map.of());
+        return new Scenario(declaration, declarationXml, repository, repositories, match, definitionFile, Map.of());
     }
 
     /**
@@ -248,9 +282,30 @@ public final class Scenario {
         return this.declaration.hasCoordinate() ? this.declaration.getCoordinate().getAsSingleID() : null;
     }
 
-    /** @return the artifact repository of the scenario */
+    /** @return the artifact repository a resource of this scenario is resolved in when it names none */
     public ContentRepository getRepository() {
         return this.repository;
+    }
+
+    /**
+     * The repository a resource is resolved in. Every resource of a configuration resolves in exactly one, and a
+     * resource that names none resolves in the only one the configuration declares.
+     *
+     * @param name the repository name the resource carries, {@code null} when it names none
+     * @return the repository to resolve in; never {@code null}
+     * @throws IllegalStateException if the resource names a repository the configuration does not declare. The loader
+     *             refuses such a configuration, so reaching this means a scenario was assembled in code
+     */
+    public ContentRepository getRepository(final @Nullable String name) {
+        if (name == null) {
+            return this.repository;
+        }
+        final ContentRepository named = this.repositories.get(name);
+        if (named == null) {
+            throw new IllegalStateException("The scenario '" + getName() + "' resolves an artifact in the repository '" + name
+                    + "', which its configuration does not declare");
+        }
+        return named;
     }
 
     /** @return where the scenario was read from, for the report; {@code null} if it was assembled in code */

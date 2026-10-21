@@ -27,10 +27,12 @@ import org.kosit.base.string.StringHelper;
  * @param artifactId the id declared for the artifact, {@code null} when the scenario declares none
  * @param compilerId the declared Schematron processor, {@code null} when the scenario declares none
  * @param compiled the artifact handed over compiled, {@code null} when it is to be resolved from the repository
+ * @param repository the name of the repository the scenario resolves this artifact in, {@code null} for the one the
+ *            configuration declares alone
  * @author Andreas Schmitz
  */
 public record ScenarioRuleSetReference(URI reference, @Nullable String artifactId, @Nullable String compilerId,
-        @Nullable CTCompiledValidationArtifact<?> compiled) implements CTValidationArtifactReference {
+        @Nullable CTCompiledValidationArtifact<?> compiled, @Nullable String repository) implements CTValidationArtifactReference {
 
     public ScenarioRuleSetReference {
         Objects.requireNonNull(reference);
@@ -80,11 +82,32 @@ public record ScenarioRuleSetReference(URI reference, @Nullable String artifactI
      */
     public static ScenarioRuleSetReference of(final String reference, final @Nullable String artifactId, final @Nullable String compilerId,
             final @Nullable CTCompiledValidationArtifact<?> compiled) {
+        return of(reference, artifactId, compilerId, compiled, null);
+    }
+
+    /**
+     * @param reference the artifact reference as declared in the scenario configuration
+     * @param artifactId the id declared for the artifact; blank counts as none
+     * @param compilerId the declared Schematron processor; blank counts as none
+     * @param compiled the artifact handed over compiled, or {@code null}
+     * @param repository the name of the repository to resolve it in; blank counts as the only declared one
+     * @return the carrier for this reference
+     */
+    public static ScenarioRuleSetReference of(final String reference, final @Nullable String artifactId, final @Nullable String compilerId,
+            final @Nullable CTCompiledValidationArtifact<?> compiled, final @Nullable String repository) {
         if (StringHelper.isBlank(reference)) {
             throw new IllegalArgumentException("reference may not be null or blank");
         }
         return new ScenarioRuleSetReference(URI.create(reference), StringHelper.isBlank(artifactId) ? null : artifactId,
-                StringHelper.isBlank(compilerId) ? null : compilerId, compiled);
+                StringHelper.isBlank(compilerId) ? null : compilerId, compiled, StringHelper.isBlank(repository) ? null : repository);
+    }
+
+    /**
+     * @param reference any artifact reference of the pipeline
+     * @return the name of the repository the scenario resolves it in, {@code null} for the only declared one
+     */
+    public static @Nullable String repositoryOf(final CTValidationArtifactReference reference) {
+        return reference instanceof final ScenarioRuleSetReference declared ? declared.repository() : null;
     }
 
     /**
