@@ -53,16 +53,21 @@ public class CommandLineApplication {
             commandLine.setExecutionExceptionHandler(CommandLineApplication::logExecutionException);
 
             final int cmdlineRetVal = commandLine.execute(args);
-            if (commandLine.isUsageHelpRequested() || cmdlineRetVal == CommandLine.ExitCode.USAGE) {
+            // a subcommand keeps its result on its own CommandLine, and it is the one that ran
+            final ParseResult parsed = commandLine.getParseResult();
+            final boolean subcommand = parsed != null && parsed.hasSubcommand();
+            final CommandLine executed = subcommand ? parsed.subcommand().commandSpec().commandLine() : commandLine;
+            if (executed.isUsageHelpRequested() || cmdlineRetVal == CommandLine.ExitCode.USAGE) {
                 resultStatus = ReturnValue.HELP_REQUEST;
             } else {
-                resultStatus = Objects.requireNonNullElse(commandLine.getExecutionResult(), ReturnValue.PARSING_ERROR);
+                resultStatus = Objects.requireNonNullElse(executed.getExecutionResult(), ReturnValue.PARSING_ERROR);
                 if (resultStatus.isError()) {
-                    commandLine.usage(System.out);
+                    executed.usage(System.out);
                 }
             }
 
-            if (!resultStatus.equals(ReturnValue.HELP_REQUEST) && resultStatus.getCode() >= 0) {
+            // the closing banner speaks of a validation, which a subcommand did not perform
+            if (!subcommand && !resultStatus.equals(ReturnValue.HELP_REQUEST) && resultStatus.getCode() >= 0) {
                 sayGoodby(resultStatus);
             }
         } catch (final Exception e) {
