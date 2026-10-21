@@ -213,6 +213,9 @@
             <xs:documentation>
                 A scenario that validates a PDF document. The embedded XML document is validated by the XML scenario
                 referenced via "xmlScenarioRef".
+
+                Not applied by validator 2.0, which validates XML documents: a configuration containing one is
+                refused when it is loaded, instead of being applied in part.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  A configuration with a PDF scenario beside the XML one. Version 3 can express it, this version of the engine can
+  not apply it, so loading has to say so - see ConfigurationLoaderTest.
+-->
+<scenarios xmlns="urn:kosit:validator:scenario:3">
+    <name>Scenario written for 2.0</name>
+    <author>QA</author>
+    <lastModificationDate>2026-09-08</lastModificationDate>
+
+    <scenarioXml>
+        <groupId>org.kosit.validator.test</groupId>
+        <artifactId>simple</artifactId>
+        <version>1.0.0</version>
+        <name>Simple</name>
+        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <match>/test:simple</match>
+        <validateWithXmlSchema>
+            <resource>
+                <groupId>org.kosit.validator.test</groupId>
+                <artifactId>simple-xsd</artifactId>
+                <version>1.0.0</version>
+                <name>Sample Schema</name>
+                <location>simple.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+    </scenarioXml>
+
+    <scenarioPdf>
+        <groupId>org.kosit.validator.test</groupId>
+        <artifactId>simple-pdf</artifactId>
+        <version>1.0.0</version>
+        <name>Simple as PDF</name>
+        <requirements>
+            <requirement id="pdf-a3" />
+        </requirements>
+        <xmlScenarioRef id="org.kosit.validator.test:simple:1.0.0" />
+    </scenarioPdf>
+
+</scenarios>
