@@ -2,7 +2,7 @@
 
 - **Ergebnis**: NON_CONFORMANT
 - **Szenario**: EN16931 XRechnung (CII)
-- **Dokument-Hash**: `SHA-512=036367184abed552e53beac030269e101dda3da70fbf85bb7c2a1c7cb21a5a93bce64d068abb6ef24084b83a216792f68c9b72d509347a382315e54baa1a4a65`
+- **Dokument-Hash**: `SHA-512=fe2d5ac4eb74ca15d6252a476c8e0694ae6126482b1c5b6b5cb4158afadcff3733cc8801ed304c28c4fa28ba6d778be818a64c6be55b8689fcfed6b4eba583fd`
 - **RuleSets**: 3
 - **Conformance je RuleSet**:
   - CrossIndustryInvoice_100pD16B.xsd → CONFORMANT
@@ -13,7 +13,7 @@
 
 | Severity | Code | Meldung |
 |---|---|---|
-| none | `document-parsed` | SHA-512=036367184abed552e53beac030269e101dda3da70fbf85bb7c2a1c7cb21a5a93bce64d068abb6ef24084b83a216792f68c9b72d509347a382315e54baa1a4a65 |
+| none | `document-parsed` | SHA-512=fe2d5ac4eb74ca15d6252a476c8e0694ae6126482b1c5b6b5cb4158afadcff3733cc8801ed304c28c4fa28ba6d778be818a64c6be55b8689fcfed6b4eba583fd |
 | none | `scenario-matched` | Scenario 'EN16931 XRechnung (CII)' matched |
 | none | `scenario-selected` | Scenario 'EN16931 XRechnung (CII)' selected |
 | none | `artifacts-retrieved` | Artifact retrieved |

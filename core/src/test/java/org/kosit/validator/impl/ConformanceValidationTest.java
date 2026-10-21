@@ -88,6 +88,22 @@ public class ConformanceValidationTest {
     }
 
     @Test
+    public void testEachArtifactIsRetrievedFromTheRepositoryItNames() throws Exception {
+        // the schema lies under standard/, the rule set under national/, and neither file exists anywhere else in the
+        // test repository - a run that completes therefore proves both were fetched where the resource says
+        final ConformanceValidationResult result = validate(TestResources.Simple.SCENARIOS_V3_REPOSITORIES,
+                TestResources.Simple.SIMPLE_VALID);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        result.writeCvr(out);
+        final String cvr = out.toString(java.nio.charset.StandardCharsets.UTF_8);
+
+        assertThat(result.isCompleted()).isTrue();
+        assertThat(result.isConformant()).isTrue();
+        assertThat(cvr).contains("<location href=\"standard-schema.xsd\"").contains("<location href=\"national-rules.xsl\"");
+        assertReportIsAValidCvr(result);
+    }
+
+    @Test
     public void testAConformantDocumentIsAccepted() throws Exception {
         final ConformanceValidationResult result = validate(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.SIMPLE_VALID);
 

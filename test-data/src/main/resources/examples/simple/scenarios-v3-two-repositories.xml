@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  A version 3 configuration this version can read but not resolve: it declares two repositories, and resolution still
-  runs against the one repository the loader is given. The loader has to refuse it instead of quietly resolving every
-  artifact in the wrong place.
+  Two repositories, and every resource says which one it is resolved in: the schema lies under standard/, the rule set
+  under national/. Neither is reachable from the other, so a run only succeeds when each resource really is resolved
+  where it says.
 -->
 <scenarios xmlns="urn:kosit:validator:scenario:3">
     <name>Scenario written for 2.0</name>
@@ -15,10 +15,10 @@
 
     <repositories>
         <repository name="standard">
-            <location>resources/standard</location>
+            <location>standard</location>
         </repository>
         <repository name="national">
-            <location>resources/national</location>
+            <location>national</location>
         </repository>
     </repositories>
 
@@ -35,7 +35,7 @@
                 <artifactId>simple-xsd</artifactId>
                 <version>1.0.0</version>
                 <name>Sample Schema</name>
-                <location>simple.xsd</location>
+                <location>standard-schema.xsd</location>
             </resource>
         </validateWithXmlSchema>
         <validateWithSchematron compiler="schxslt">
@@ -45,7 +45,7 @@
                 <version>1.0.0</version>
                 <classifier>compiled</classifier>
                 <name>Sample Schematron</name>
-                <location>simple.xsl</location>
+                <location>national-rules.xsl</location>
             </resource>
             <customLevel level="warning">rejected</customLevel>
         </validateWithSchematron>

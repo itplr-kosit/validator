@@ -199,7 +199,7 @@
 </rsm:CrossIndustryInvoice>
             </message>
             <context>
-                <cvr:hash cvr:algorithm="SHA-512">036367184abed552e53beac030269e101dda3da70fbf85bb7c2a1c7cb21a5a93bce64d068abb6ef24084b83a216792f68c9b72d509347a382315e54baa1a4a65</cvr:hash>
+                <cvr:hash cvr:algorithm="SHA-512">fe2d5ac4eb74ca15d6252a476c8e0694ae6126482b1c5b6b5cb4158afadcff3733cc8801ed304c28c4fa28ba6d778be818a64c6be55b8689fcfed6b4eba583fd</cvr:hash>
             </context>
         </detection>
         <digest valid="true"/>
@@ -212,7 +212,7 @@
         <detection cvr:scenario-id="EN16931 XRechnung (CII)">
             <message>Scenario 'EN16931 XRechnung (CII)' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']" href="e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -266,7 +266,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (CII)']" href="e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
             </context>
         </detection>
         <digest valid="true"/>

@@ -3,6 +3,8 @@ package org.kosit.validator.config;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -18,6 +20,7 @@ import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.scenario.generic.ScenarioRepository;
 import org.kosit.validator.scenario.generic.ScenarioResource;
 import org.kosit.validator.scenario.generic.ScenarioConfiguration;
 import org.kosit.validator.scenario.v2.Scenario2Converter;
@@ -144,12 +147,29 @@ public class ConfigurationLoader {
         final String definitionFile = this.scenarioDefinition.toString();
         final ScenarioConfiguration declaration = loaded.declaration();
         rejectWhatCanNotBeResolvedYet(declaration);
-        final List<Scenario> scenarios = IntStream.range(0, declaration.getScenarios().size()).mapToObj(
-                i -> Scenario.of(declaration.getScenarios().get(i), loaded.declarationXml().get(i), contentRepository, definitionFile))
+        // a resource resolves in the repository it names; one that names none resolves in the repository the loader
+        // was given, which is also what every configuration of version 2 does
+        final Map<String, ContentRepository> repositories = new LinkedHashMap<>();
+        for (final ScenarioRepository repository : declaration.getRepositories()) {
+            repositories.put(repository.getName(), new ContentRepository(processor, resolving, locationOf(repository)));
+        }
+        final List<Scenario> scenarios = IntStream.range(0, declaration.getScenarios().size()).mapToObj(i -> Scenario
+                .of(declaration.getScenarios().get(i), loaded.declarationXml().get(i), contentRepository, repositories, definitionFile))
                 .toList();
         return new ScenarioSet(declaration.getName(), declaration.getAuthor(),
                 declaration.getLastModificationDate() == null ? null : declaration.getLastModificationDate().toString(), definitionFile,
                 scenarios);
+    }
+
+    /**
+     * Where a declared repository stands: its location, resolved against the repository the loader was given. A
+     * repository is a directory, so the URI has to end in a slash - without it resolving an artifact would drop the
+     * last segment and reach beside the repository. {@link UriHelper} is used instead of {@link URI#resolve(String)},
+     * so that a configuration inside an archive resolves its repositories within that archive.
+     */
+    private URI locationOf(final ScenarioRepository repository) {
+        final String location = repository.getLocation().endsWith("/") ? repository.getLocation() : repository.getLocation() + "/";
+        return UriHelper.resolve(getScenarioRepository(), location, true);
     }
 
     private ResolvingConfigurationStrategy getResolvingConfigurationStrategy() {
@@ -201,13 +221,12 @@ public class ConfigurationLoader {
      * </p>
      */
     private void rejectWhatCanNotBeResolvedYet(final ScenarioConfiguration declaration) {
-        if (declaration.getRepositories().size() > 1) {
-            throw new IllegalStateException("The configuration " + this.scenarioDefinition + " declares "
-                    + declaration.getRepositories().size() + " repositories. This version resolves every artifact in the one"
-                    + " repository it is given, so it can not honour that yet");
-        }
         for (final org.kosit.validator.scenario.generic.Scenario scenario : declaration.getScenarios()) {
             for (final ScenarioResource resource : resourcesOf(scenario)) {
+                if (resource.hasRepository() && declaration.findRepository(resource) == null) {
+                    throw new IllegalStateException("The resource '" + resource.getName() + "' of scenario '" + scenario.getName()
+                            + "' names the repository '" + resource.getRepository() + "', which the configuration does not declare");
+                }
                 if (resource.hasAbsoluteLocation()) {
                     throw new IllegalStateException("The resource '" + resource.getName() + "' of scenario '" + scenario.getName()
                             + "' has an absolute location. This version resolves every artifact inside the repository, so it can"

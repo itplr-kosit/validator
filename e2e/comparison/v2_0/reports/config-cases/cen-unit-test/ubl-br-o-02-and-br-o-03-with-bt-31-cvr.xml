@@ -176,7 +176,7 @@
         <detection cvr:scenario-id="EN16931 XRechnung (UBL Invoice)">
             <message>Scenario 'EN16931 XRechnung (UBL Invoice)' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']" href="e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
@@ -226,7 +226,7 @@
                 </scenario>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='EN16931 XRechnung (UBL Invoice)']" href="e2e/comparison/input/scenarios-v2.0-framework2.xml"/>
             </context>
         </detection>
         <digest valid="true"/>

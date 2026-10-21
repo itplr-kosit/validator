@@ -72,10 +72,15 @@ public class ConfigurationLoaderTest {
     }
 
     @Test
-    public void testAVersion3ConfigurationThisVersionCanNotResolveIsRefused() {
-        // several repositories, a resource outside all of them, or one without a location: readable, not resolvable
-        assertThatThrownBy(() -> load(TestResources.Simple.SCENARIOS_V3_REPOSITORIES)).isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("repositories");
+    public void testEveryResourceIsResolvedInTheRepositoryItNames() {
+        final Scenario scenario = load(TestResources.Simple.SCENARIOS_V3_REPOSITORIES).getScenarios().get(0);
+
+        // the two repositories lie beside each other, and neither holds the artifact of the other
+        assertThat(scenario.getRepository("standard").getRepository().toString()).endsWith("/standard/");
+        assertThat(scenario.getRepository("national").getRepository().toString()).endsWith("/national/");
+        // a name the configuration does not declare is an error, not a silent fallback
+        assertThatThrownBy(() -> scenario.getRepository("nowhere")).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("does not declare");
     }
 
     private static ScenarioSet load(final URI scenarios) {

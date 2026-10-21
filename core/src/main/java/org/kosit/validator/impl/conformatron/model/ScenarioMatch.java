@@ -129,14 +129,14 @@ public final class ScenarioMatch implements CTScenarioMatch {
         final List<CTValidationArtifactReference> references = new ArrayList<>();
         for (final ScenarioResource resource : declaration.getXmlSchemas()) {
             references.add(ScenarioRuleSetReference.of(resource.getLocation(), idOf(resource), null,
-                    handedOver(scenario, resource.getLocation())));
+                    handedOver(scenario, resource.getLocation()), resource.getRepository()));
         }
         for (final ScenarioSchematron schematron : declaration.getSchematrons()) {
             // the rule set carries the processor the scenario names for it, step 6 honours it, and the id the
             // scenario declares for it, steps 5 and 6 report it
             final ScenarioResource resource = schematron.getResource();
             references.add(ScenarioRuleSetReference.of(resource.getLocation(), idOf(resource), schematron.getCompiler(),
-                    handedOver(scenario, resource.getLocation())));
+                    handedOver(scenario, resource.getLocation()), resource.getRepository()));
         }
         return List.copyOf(references);
     }
