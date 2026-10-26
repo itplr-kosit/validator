@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  The schema is declared with the pseudo version "latest". A coordinate names the exact version a configuration was
+  written for, and this version of the engine resolves no artifact by its coordinate, so loading has to refuse it.
+-->
+<scenarios xmlns="urn:kosit:validator:scenario:3">
+    <name>Scenario written for 2.0</name>
+    <author>QA</author>
+    <lastModificationDate>2026-09-08</lastModificationDate>
+
+    <scenarioXml>
+        <groupId>org.kosit.validator.test</groupId>
+        <artifactId>simple</artifactId>
+        <version>1.0.0</version>
+        <name>Simple</name>
+        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <match>/test:simple</match>
+        <validateWithXmlSchema>
+            <resource>
+                <groupId>org.kosit.validator.test</groupId>
+                <artifactId>simple-xsd</artifactId>
+                <version>latest</version>
+                <name>Sample Schema</name>
+                <location>simple.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+        <validateWithSchematron compiler="schxslt">
+            <resource>
+                <groupId>org.kosit.validator.test</groupId>
+                <artifactId>simple-rules</artifactId>
+                <version>1.0.0</version>
+                <classifier>compiled</classifier>
+                <name>Sample Schematron</name>
+                <location>simple.xsl</location>
+            </resource>
+        </validateWithSchematron>
+    </scenarioXml>
+</scenarios>

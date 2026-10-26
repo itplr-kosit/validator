@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - (API) The engine states its own identity in the report: `ConformanceValidation` implements `EngineInformation` and answers with the name and version of this validator, so no caller passes one in any more. Every constructor and both `adHoc(…)` factories lost their first parameter — `new ConformanceValidation(processor, config)` instead of `new ConformanceValidation(engineInformation, processor, config)`. An application that embeds the engine and wants the report to name itself says so with `withEngineInformation(…)`. The report of a CLI run therefore no longer says `validator-cli`, nor a server run `validator-server`: both name the engine that validated
 
+- (CONFIG) A coordinate identifies a scenario or an artifact, it does not select one (ADR `validator-coordinates-identify-without-resolving`). Loading therefore refuses, with a message naming the reason, what only makes sense together with selection: a pseudo version such as `latest`, a `validFromDate`, a coordinate declared by two scenarios, and a coordinate declared for two different files. The same file under the same coordinate in several scenarios is one shared artifact and loads. A concrete version that is no DVR version, such as `1.09.2`, is used as written, with a warning
+
 ### Removed
 
 - (API) `EngineInformation.getFrameworkVersion()` and `getBuild()`, which no caller ever read. With them go `CliEngineInformation`, `ServerEngineInformation`, the resource `cli-info.properties` and the server configuration property `validator.framework-version`

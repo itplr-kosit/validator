@@ -92,6 +92,54 @@ public class ConfigurationLoaderTest {
                 .hasMessageContaining("Simple as PDF").hasMessageContaining("validates a PDF document");
     }
 
+    @Test
+    public void testAPseudoVersionIsRefusedWhileLoading() {
+        // "latest" names no version but a rule for choosing one, and this version chooses nothing by coordinate - the
+        // report would carry "latest" as if it were the identity of the artifact
+        assertThatThrownBy(() -> load(TestResources.Simple.SCENARIOS_V3_PSEUDO_VERSION)).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("org.kosit.validator.test:simple-xsd:latest").hasMessageContaining("pseudo version 'latest'");
+    }
+
+    @Test
+    public void testAConcreteVersionThatIsNoDvrVersionIsKeptAsWritten() {
+        // 1.09.2 has a leading zero and so no DVR form, but it is a concrete version and identifies the artifact
+        final Scenario scenario = load(TestResources.Simple.SCENARIOS_V3_NOT_DVR).getScenarios().get(0);
+
+        assertThat(scenario.getDeclaration().getXmlSchemas().get(0).getCoordinate().getAsSingleID())
+                .isEqualTo("org.kosit.validator.test:simple-xsd:1.09.2");
+        assertThat(scenario.getDeclaration().getXmlSchemas().get(0).getCoordinate().hasCoordinate()).isFalse();
+    }
+
+    @Test
+    public void testAValidFromDateIsRefusedWhileLoading() {
+        // applying a configuration that says it is valid from 2027 on, today, would be a wrong verdict, not a missing
+        // feature
+        assertThatThrownBy(() -> load(TestResources.Simple.SCENARIOS_V3_VALID_FROM)).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("is valid from 2027-01-01");
+    }
+
+    @Test
+    public void testOneCoordinateForTwoArtifactsIsRefused() {
+        assertThatThrownBy(() -> load(TestResources.Simple.SCENARIOS_V3_ARTIFACT_CONFLICT)).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("'org.kosit.validator.test:simple-xsd:1.0.0' is declared for both 'simple.xsd' and 'simple.xsl'");
+    }
+
+    @Test
+    public void testOneCoordinateForTwoScenariosIsRefused() {
+        assertThatThrownBy(() -> load(TestResources.Simple.SCENARIOS_V3_SCENARIO_CONFLICT)).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("'Simple' and 'Simple again' both declare the coordinate 'org.kosit.validator.test:simple:1.0.0'");
+    }
+
+    @Test
+    public void testOneArtifactSharedByTwoScenariosLoads() {
+        // the same file under the same coordinate is one artifact used twice - that is what a coordinate is for
+        final ScenarioSet set = load(TestResources.Simple.SCENARIOS_V3_SHARED_ARTIFACT);
+
+        assertThat(set.getScenarios()).hasSize(2);
+        assertThat(set.getScenarios().get(1).getDeclaration().getXmlSchemas().get(0).getCoordinate().getAsSingleID())
+                .isEqualTo(set.getScenarios().get(0).getDeclaration().getXmlSchemas().get(0).getCoordinate().getAsSingleID());
+    }
+
     private static ScenarioSet load(final URI scenarios) {
         return ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI).setResolvingStrategy(TestHelper.getTestResolvingStrategy())
                 .build(TestHelper.getTestProcessor());
