@@ -3,6 +3,7 @@ package org.kosit.validator.config;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.kosit.validator.impl.conformatron.util.ScenarioXml;
 import org.kosit.validator.scenario.generic.ScenarioRepository;
 import org.kosit.validator.scenario.generic.ScenarioResource;
 import org.kosit.validator.scenario.generic.ScenarioConfiguration;
+import org.kosit.validator.scenario.generic.ScenarioCoordinate;
 import org.kosit.validator.scenario.v2.Scenario2Converter;
 import org.kosit.validator.scenario.v3.Scenario3Converter;
 import org.kosit.validator.scenario.v3.Scenario3Mapper;
@@ -146,7 +148,7 @@ public class ConfigurationLoader {
         final LoadedConfiguration loaded = loadScenarios(processor);
         final String definitionFile = this.scenarioDefinition.toString();
         final ScenarioConfiguration declaration = loaded.declaration();
-        rejectWhatCanNotBeResolvedYet(declaration);
+        rejectWhatCanNotBeApplied(declaration);
         // a resource resolves in the repository it names; one that names none resolves in the repository the loader
         // was given, which is also what every configuration of version 2 does
         final Map<String, ContentRepository> repositories = new LinkedHashMap<>();
@@ -210,47 +212,126 @@ public class ConfigurationLoader {
     }
 
     /**
-     * Refuses what this version can read but not apply.
+     * Refuses what this version can read but not apply - loudly, when the configuration is loaded, instead of applying
+     * it differently from what it says.
      * <p>
-     * A PDF scenario is out of scope entirely: version 3 can express one, the pipeline validates XML documents. It is
-     * refused here, because nothing downstream would notice - a scenario without a match expression counts as
-     * unconditional, so every run would end as ambiguous without ever naming the reason.
+     * A PDF scenario is out of scope entirely: version 3 can express one, the pipeline validates XML documents. Nothing
+     * downstream would notice it either - a scenario without a match expression counts as unconditional, so every run
+     * would end as ambiguous without ever naming the reason.
      * </p>
      * <p>
-     * Resolution still runs against the one repository the loader was given: every scenario resolves its artifacts
-     * there and nowhere else. A configuration of version 3 may declare several repositories, point a resource at one of
-     * them by name, or take a resource out of every repository with an absolute location - and honouring that needs the
-     * artifact retrieval to resolve per resource, which comes with the configuration API. Until then such a
-     * configuration is refused, because resolving it against the single repository would quietly validate against
-     * artifacts the configuration did not name.
+     * A resource is resolved by its location in the repository it names. An absolute location, which takes a resource
+     * out of every repository, and a resource without a location, which would have to be retrieved by its coordinate,
+     * both need a resolution this version does not have.
+     * </p>
+     * <p>
+     * A coordinate identifies; in this version it does not select. That rules out what only makes sense together with
+     * selection: a pseudo version such as {@code latest}, which names no version but a rule for choosing one, and a
+     * date from which a configuration is valid. Both would end up in the report as if they had been honoured. And
+     * because the report names scenarios and artifacts by their coordinates, a coordinate has to name exactly one of
+     * them - see {@link #rejectAmbiguousCoordinates(ScenarioConfiguration)}.
      * </p>
      */
-    private void rejectWhatCanNotBeResolvedYet(final ScenarioConfiguration declaration) {
+    private void rejectWhatCanNotBeApplied(final ScenarioConfiguration declaration) {
+        if (declaration.getValidFromDate() != null) {
+            throw new IllegalStateException("The configuration '" + declaration.getName() + "' is valid from "
+                    + declaration.getValidFromDate() + ". This version applies a configuration as soon as it is loaded and does"
+                    + " not choose between configurations by date, so it can not honour that");
+        }
         for (final org.kosit.validator.scenario.generic.Scenario scenario : declaration.getScenarios()) {
             if (scenario.isPdf()) {
-                // a PDF scenario declares no match, so the engine would take it for an unconditional one, find two
-                // candidates for every document and cancel as ambiguous - a verdict that says nothing about the cause
                 throw new IllegalStateException("The scenario '" + scenario.getName() + "' validates a PDF document, which this"
                         + " version does not support. Remove it from the configuration or validate the embedded XML document"
                         + " with the scenario it refers to");
             }
+            checkCoordinate(scenario.getCoordinate(), "The scenario '" + scenario.getName() + "'");
             for (final ScenarioResource resource : resourcesOf(scenario)) {
+                final String what = "The resource '" + resource.getName() + "' of scenario '" + scenario.getName() + "'";
                 if (resource.hasRepository() && declaration.findRepository(resource) == null) {
-                    throw new IllegalStateException("The resource '" + resource.getName() + "' of scenario '" + scenario.getName()
-                            + "' names the repository '" + resource.getRepository() + "', which the configuration does not declare");
+                    throw new IllegalStateException(
+                            what + " names the repository '" + resource.getRepository() + "', which the configuration does not declare");
                 }
                 if (resource.hasAbsoluteLocation()) {
-                    throw new IllegalStateException("The resource '" + resource.getName() + "' of scenario '" + scenario.getName()
-                            + "' has an absolute location. This version resolves every artifact inside the repository, so it can"
-                            + " not honour that yet");
+                    throw new IllegalStateException(what + " has an absolute location. This version resolves every artifact"
+                            + " inside a repository, so it can not honour that yet");
                 }
                 if (!resource.hasLocation()) {
-                    throw new IllegalStateException("The resource '" + resource.getName() + "' of scenario '" + scenario.getName()
-                            + "' has no location. Retrieving an artifact by its coordinate alone needs a repository that serves"
-                            + " coordinates, which this version does not have");
+                    throw new IllegalStateException(what + " has no location. Retrieving an artifact by its coordinate alone needs"
+                            + " a repository that serves coordinates, which this version does not have");
+                }
+                checkCoordinate(resource.getCoordinate(), what);
+            }
+        }
+        rejectAmbiguousCoordinates(declaration);
+    }
+
+    /**
+     * A coordinate is the identity the report names its subject by. A concrete version that is no DVR version - the
+     * Factur-X version {@code 1.09.2} has a leading zero - identifies just as well and is used as written; the warning
+     * says that it can not take part in any comparison. A pseudo version identifies nothing and is refused.
+     *
+     * @param coordinate the declared coordinate; {@code null} for none, which is checked elsewhere
+     * @param what what declares it, for the message
+     */
+    private static void checkCoordinate(final @Nullable ScenarioCoordinate coordinate, final String what) {
+        if (coordinate == null) {
+            return;
+        }
+        if (!coordinate.hasCoordinate()) {
+            LOGGER.warn("{} declares the coordinate '{}', which is used as it is written but is no DVR coordinate: {}", what,
+                    coordinate.getAsSingleID(), coordinate.getCoordinateError());
+            return;
+        }
+        if (coordinate.getCoordinate().getVersionObj().isPseudoVersion()) {
+            throw new IllegalStateException(what + " declares the coordinate '" + coordinate.getAsSingleID() + "' with the pseudo version '"
+                    + coordinate.getVersion() + "'. A coordinate names the exact version the"
+                    + " configuration was written for, and this version retrieves no artifact by its coordinate, so nothing"
+                    + " could turn the pseudo version into one");
+        }
+    }
+
+    /**
+     * Refuses a coordinate that names more than one thing. Two scenarios with one coordinate would be indistinguishable
+     * in the report, and selecting a scenario by its coordinate would pick one of them silently. Two different files
+     * under one coordinate would be reported as the same artifact. The same file under the same coordinate in several
+     * scenarios is one artifact used twice, and fine.
+     *
+     * @param declaration the configuration
+     */
+    private static void rejectAmbiguousCoordinates(final ScenarioConfiguration declaration) {
+        final Map<String, String> scenarioByCoordinate = new HashMap<>();
+        final Map<String, String> artifactByCoordinate = new HashMap<>();
+        for (final org.kosit.validator.scenario.generic.Scenario scenario : declaration.getScenarios()) {
+            if (scenario.hasCoordinate()) {
+                final String coordinate = scenario.getCoordinate().getAsSingleID();
+                final String other = scenarioByCoordinate.putIfAbsent(coordinate, scenario.getName());
+                if (other != null) {
+                    throw new IllegalStateException("The scenarios '" + other + "' and '" + scenario.getName()
+                            + "' both declare the coordinate '" + coordinate + "'. The report names a scenario by its coordinate,"
+                            + " so it could not say which of them was applied");
+                }
+            }
+            for (final ScenarioResource resource : resourcesOf(scenario)) {
+                if (resource.hasCoordinate()) {
+                    final String coordinate = resource.getCoordinate().getAsSingleID();
+                    final String artifact = artifactOf(declaration, resource);
+                    final String other = artifactByCoordinate.putIfAbsent(coordinate, artifact);
+                    if (other != null && !other.equals(artifact)) {
+                        throw new IllegalStateException("The coordinate '" + coordinate + "' is declared for both '" + other + "' and '"
+                                + artifact + "'. A coordinate names one artifact, and the report names the artifact" + " by it");
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * The file a resource resolves to, written the way a message names it: the repository it lies in, then the
+     * location.
+     */
+    private static String artifactOf(final ScenarioConfiguration declaration, final ScenarioResource resource) {
+        final ScenarioRepository repository = declaration.findRepository(resource);
+        return (repository == null ? "" : repository.getName() + ":") + resource.getLocation();
     }
 
     private static List<ScenarioResource> resourcesOf(final org.kosit.validator.scenario.generic.Scenario scenario) {

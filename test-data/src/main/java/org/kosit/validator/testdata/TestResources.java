@@ -59,6 +59,24 @@ public final class TestResources {
         /** A version 3 configuration with a PDF scenario, which this version reads but can not apply. */
         public static final URI SCENARIOS_V3_PDF = TestData.file("examples/simple/scenarios-v3-pdf.xml");
 
+        /** A version 3 configuration declaring an artifact with the pseudo version {@code latest}. */
+        public static final URI SCENARIOS_V3_PSEUDO_VERSION = TestData.file("examples/simple/scenarios-v3-pseudo-version.xml");
+
+        /** A version 3 configuration declaring an artifact with a concrete version that is no DVR version. */
+        public static final URI SCENARIOS_V3_NOT_DVR = TestData.file("examples/simple/scenarios-v3-not-dvr.xml");
+
+        /** A version 3 configuration that is valid from a date in the future. */
+        public static final URI SCENARIOS_V3_VALID_FROM = TestData.file("examples/simple/scenarios-v3-valid-from.xml");
+
+        /** A version 3 configuration declaring one coordinate for two different artifacts. */
+        public static final URI SCENARIOS_V3_ARTIFACT_CONFLICT = TestData.file("examples/simple/scenarios-v3-artifact-conflict.xml");
+
+        /** A version 3 configuration declaring one coordinate for two scenarios. */
+        public static final URI SCENARIOS_V3_SCENARIO_CONFLICT = TestData.file("examples/simple/scenarios-v3-scenario-conflict.xml");
+
+        /** A version 3 configuration in which two scenarios share one artifact, declared alike. */
+        public static final URI SCENARIOS_V3_SHARED_ARTIFACT = TestData.file("examples/simple/scenarios-v3-shared-artifact.xml");
+
         /** {@link #SCENARIOS_WRITTEN_FOR_2_0} without the ids and identical in everything else. */
         public static final URI SCENARIOS_WITHOUT_IDS = TestData.file("examples/simple/scenarios-without-ids.xml");
 

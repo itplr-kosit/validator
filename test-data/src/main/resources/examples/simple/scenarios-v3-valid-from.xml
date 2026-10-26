@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  The configuration says it is valid from 2027 on. This version applies a configuration as soon as it is loaded, so
+  loading has to refuse it instead of applying it early.
+-->
+<scenarios xmlns="urn:kosit:validator:scenario:3">
+    <name>Scenario written for 2.0</name>
+    <author>QA</author>
+    <lastModificationDate>2026-09-08</lastModificationDate>
+    <validFromDate>2027-01-01</validFromDate>
+
+    <scenarioXml>
+        <groupId>org.kosit.validator.test</groupId>
+        <artifactId>simple</artifactId>
+        <version>1.0.0</version>
+        <name>Simple</name>
+        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <match>/test:simple</match>
+        <validateWithXmlSchema>
+            <resource>
+                <groupId>org.kosit.validator.test</groupId>
+                <artifactId>simple-xsd</artifactId>
+                <version>1.0.0</version>
+                <name>Sample Schema</name>
+                <location>simple.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+        <validateWithSchematron compiler="schxslt">
+            <resource>
+                <groupId>org.kosit.validator.test</groupId>
+                <artifactId>simple-rules</artifactId>
+                <version>1.0.0</version>
+                <classifier>compiled</classifier>
+                <name>Sample Schematron</name>
+                <location>simple.xsl</location>
+            </resource>
+        </validateWithSchematron>
+    </scenarioXml>
+</scenarios>

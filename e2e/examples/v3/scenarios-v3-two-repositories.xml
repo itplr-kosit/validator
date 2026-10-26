@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Two repositories, and every resource says which one it is resolved in: the schema lies under standard/, the rule set
+  under national/. Neither is reachable from the other, so a run only succeeds when each resource really is resolved
+  where it says.
+-->
+<scenarios xmlns="urn:kosit:validator:scenario:3">
+    <name>Scenario written for 2.0</name>
+    <author>QA</author>
+    <lastModificationDate>2026-09-08</lastModificationDate>
+    <description>
+        <p>The version 3 twin of scenarios-accept-match-empty.xml.</p>
+    </description>
+
+    <repositories>
+        <repository name="standard">
+            <location>standard</location>
+        </repository>
+        <repository name="national">
+            <location>national</location>
+        </repository>
+    </repositories>
+
+    <scenarioXml>
+        <groupId>org.kosit.validator.test</groupId>
+        <artifactId>simple</artifactId>
+        <version>1.0.0</version>
+        <name>Simple</name>
+        <namespace prefix="test">http://validator.kosit.de/test-sample</namespace>
+        <match>/test:simple</match>
+        <validateWithXmlSchema>
+            <resource repository="standard">
+                <groupId>org.kosit.validator.test</groupId>
+                <artifactId>simple-xsd</artifactId>
+                <version>1.0.0</version>
+                <name>Sample Schema</name>
+                <location>standard-schema.xsd</location>
+            </resource>
+        </validateWithXmlSchema>
+        <validateWithSchematron compiler="schxslt">
+            <resource repository="national">
+                <groupId>org.kosit.validator.test</groupId>
+                <artifactId>simple-rules</artifactId>
+                <version>1.0.0</version>
+                <classifier>compiled</classifier>
+                <name>Sample Schematron</name>
+                <location>national-rules.xsl</location>
+            </resource>
+            <customLevel level="warning">rejected</customLevel>
+        </validateWithSchematron>
+    </scenarioXml>
+
+</scenarios>
