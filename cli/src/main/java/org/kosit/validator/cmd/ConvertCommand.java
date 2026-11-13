@@ -1,26 +1,16 @@
 package org.kosit.validator.cmd;
 
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.kosit.base.error.SimpleError;
 import org.kosit.validator.scenario.convert.CoordinateProposal;
-import org.kosit.validator.scenario.convert.CoordinateProposals;
-import org.kosit.validator.scenario.generic.ScenarioConfiguration;
+import org.kosit.validator.scenario.convert.MigrationResult;
+import org.kosit.validator.scenario.convert.ScenarioMigration;
 import org.kosit.validator.scenario.v2.Scenario2Converter;
-import org.kosit.validator.scenario.v2.Scenario2Mapper;
 import org.kosit.validator.scenario.v3.Scenario3Converter;
-import org.kosit.validator.scenario.v3.Scenario3Mapper;
-import org.kosit.validator.scenario.v3.Scenarios;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -33,15 +23,16 @@ import picocli.CommandLine.Option;
  * command proposes the missing ones and stops: writing them in needs {@code --accept-proposals}, which is the step
  * where somebody takes responsibility for the identities the configuration will carry from then on.
  * </p>
+ * <p>
+ * The migration itself is {@link ScenarioMigration} of the module {@code validator-scenario}, so that it is available
+ * without the command line; this command reads the options, reports and writes the result.
+ * </p>
  *
  * @author Andreas Schmitz
  */
 @Command(name = "convert", description = "Converts a scenario configuration of version 2 into version 3", separator = " ",
          mixinStandardHelpOptions = false)
 public class ConvertCommand implements Callable<ReturnValue> {
-
-    /** The group id the proposals are printed with as long as no real one is given. */
-    private static final String PLACEHOLDER_GROUP_ID = "your-group-id";
 
     @Option(names = { "-s", "--scenarios" }, paramLabel = "scenario.xml", required = true,
             description = "The scenario configuration of version 2 to convert")
@@ -71,37 +62,36 @@ public class ConvertCommand implements Callable<ReturnValue> {
             Printer.writeErrRaw("The configuration " + this.source + " can not be read");
             return ReturnValue.CONFIGURATION_ERROR;
         }
-        final String namespace = rootNamespace(this.source);
-        if (Scenario3Converter.NS_URI.equals(namespace)) {
-            Printer.writeErrRaw("The configuration " + this.source + " is already written in version 3");
-            return ReturnValue.CONFIGURATION_ERROR;
-        }
-        if (!Scenario2Converter.NS_URI.equals(namespace)) {
-            Printer.writeErrRaw("The configuration " + this.source + " is no scenario configuration: its root element is in '" + namespace
-                    + "' instead of '" + Scenario2Converter.NS_URI + "'");
-            return ReturnValue.CONFIGURATION_ERROR;
-        }
-
-        final ScenarioConfiguration configuration = Scenario2Mapper.toGeneric(new Scenario2Converter().readXml(this.source));
-        final List<CoordinateProposal> proposals = CoordinateProposals.propose(configuration,
-                this.groupID == null ? PLACEHOLDER_GROUP_ID : this.groupID, this.artifactVersion);
-        if (!proposals.isEmpty() && !report(proposals)) {
-            return ReturnValue.createFailed(proposals.size());
-        }
-        CoordinateProposals.apply(configuration, this.groupID == null ? PLACEHOLDER_GROUP_ID : this.groupID, this.artifactVersion);
-
-        final List<SimpleError> findings = new ArrayList<>();
-        final Scenarios converted = Scenario3Mapper.fromGeneric(configuration, findings);
-        for (final SimpleError finding : findings) {
-            Printer.writeErrRaw(finding.getSeverity() + ": " + finding.getMessage());
-        }
-        if (findings.stream().anyMatch(f -> f.getSeverity() == CTStandardSeverity.ERROR)) {
-            Printer.writeErrRaw("The configuration was not converted, because version 3 can not express it as it stands");
-            return ReturnValue.createFailed(1);
+        final MigrationResult result = ScenarioMigration.toVersion3(this.source, this.groupID, this.artifactVersion, this.acceptProposals);
+        final List<CoordinateProposal> proposals = result.proposals();
+        switch (result.outcome()) {
+            case ALREADY_VERSION_3:
+                Printer.writeErrRaw("The configuration " + this.source + " is already written in version 3");
+                return ReturnValue.CONFIGURATION_ERROR;
+            case NO_SCENARIO_CONFIGURATION:
+                Printer.writeErrRaw("The configuration " + this.source + " is no scenario configuration: its root element is in '"
+                        + (result.rootNamespace() == null ? "" : result.rootNamespace()) + "' instead of '" + Scenario2Converter.NS_URI
+                        + "'");
+                return ReturnValue.CONFIGURATION_ERROR;
+            case COORDINATES_PROPOSED:
+                report(proposals);
+                return ReturnValue.createFailed(proposals.size());
+            case NOT_EXPRESSIBLE:
+                printFindings(result.findings());
+                Printer.writeErrRaw("The configuration was not converted, because version 3 can not express it as it stands");
+                return ReturnValue.createFailed(1);
+            case CONVERTED:
+            default:
+                break;
         }
 
-        new Scenario3Converter().withFormattedOutput(true).writeXml(converted, this.target);
-        Printer.writeOut("Converted {0} scenario(s) into {1}", String.valueOf(configuration.getScenarios().size()), this.target.toString());
+        if (!proposals.isEmpty()) {
+            report(proposals);
+        }
+        printFindings(result.findings());
+        new Scenario3Converter().withFormattedOutput(true).writeXml(result.converted(), this.target);
+        Printer.writeOut("Converted {0} scenario(s) into {1}", String.valueOf(result.converted().getScenarioXmlOrScenarioPdf().size()),
+                this.target.toString());
         if (!proposals.isEmpty()) {
             Printer.writeOut("{0} proposed coordinate(s) were written in - check them before the configuration is published",
                     String.valueOf(proposals.size()));
@@ -109,14 +99,18 @@ public class ConvertCommand implements Callable<ReturnValue> {
         return ReturnValue.SUCCESS;
     }
 
+    private static void printFindings(final List<SimpleError> findings) {
+        for (final SimpleError finding : findings) {
+            Printer.writeErrRaw(finding.getSeverity() + ": " + finding.getMessage());
+        }
+    }
+
     /**
-     * Prints what the configuration leaves without a coordinate.
+     * Prints what the configuration leaves without a coordinate, and why nothing was written if nothing was.
      *
-     * @param proposals what the conversion would fill in
-     * @return <code>true</code> if the conversion may continue and write the proposals, <code>false</code> if it has to
-     *         stop
+     * @param proposals what the migration fills in, or would fill in
      */
-    private boolean report(final List<CoordinateProposal> proposals) {
+    private void report(final List<CoordinateProposal> proposals) {
         Printer.writeOut("The configuration leaves {0} coordinate(s) off, which version 3 requires:", String.valueOf(proposals.size()));
         for (final CoordinateProposal proposal : proposals) {
             // the proposal goes in as an argument, not as the pattern: MessageFormat would eat its quotes
@@ -126,34 +120,10 @@ public class ConvertCommand implements Callable<ReturnValue> {
             Printer.writeErrRaw("Nothing was written. Pass --group-id to say under which group id these coordinates are published,"
                     + " and --accept-proposals to write them in. A coordinate becomes the identity a report names the scenario"
                     + " and its artifacts by, so it is nothing this command settles on its own");
-            return false;
-        }
-        if (!this.acceptProposals) {
+        } else if (!this.acceptProposals) {
             Printer.writeErrRaw("Nothing was written. Either state these coordinates in the source configuration, or pass"
                     + " --accept-proposals to write the proposals above into the result");
-            return false;
         }
-        return true;
-    }
-
-    /**
-     * @return the namespace URI of the root element, so that the command says what the file is instead of failing on it
-     */
-    private static String rootNamespace(final Path file) throws Exception {
-        final XMLInputFactory factory = XMLInputFactory.newInstance();
-        factory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
-        factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-        try ( InputStream in = Files.newInputStream(file) ) {
-            final XMLStreamReader reader = factory.createXMLStreamReader(in);
-            while (reader.hasNext()) {
-                if (reader.next() == XMLStreamConstants.START_ELEMENT) {
-                    final String ret = reader.getNamespaceURI();
-                    reader.close();
-                    return ret == null ? "" : ret;
-                }
-            }
-            reader.close();
-        }
-        return "";
+        // else: accepted, the proposals are written in
     }
 }

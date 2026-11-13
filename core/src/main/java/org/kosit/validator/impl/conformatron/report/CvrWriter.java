@@ -32,7 +32,6 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.source.CTParsedValidationSourceXML;
 import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.validation.CTValidationStandard;
-import org.kosit.base.xml.SchemaResolver;
 import org.kosit.base.xml.XmlHelper;
 import org.kosit.jaxb.AbstractJaxbConverter;
 import org.kosit.validator.impl.conformatron.PipelineResults;
@@ -180,7 +179,7 @@ public final class CvrWriter {
 
         CvrConverter() {
             super(XvrlConverter.JAXB_CTX, XvrlReportsType.class, new ObjectFactory()::createReports);
-            withSchema(SchemaResolver.createParsedSchema(XvrlConverter.class.getResource(XvrlConverter.XVRL_XSD_PATH)));
+            withSchema(XvrlConverter.getXvrlSchema());
             withNamespacePrefixMap(Map.of(NS_XVRL, "", NS_CVR, "cvr"));
         }
     }
