@@ -18,6 +18,8 @@ The Validator depends on self defined [scenarios](docs/configurations.md) in ord
 
 See [architecture](docs/architecture.md) for more information on the whole validation process.
 
+Coming from 1.6.x? See [migrating from 1.6.x to 2.x](docs/migration.md).
+
 
 ## Validation configurations
 
