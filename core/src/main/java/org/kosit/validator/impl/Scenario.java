@@ -246,7 +246,7 @@ public final class Scenario {
     }
 
     /**
-     * @param configuration a scenario declaration
+     * @param declaration a scenario declaration
      * @return the namespace bindings it declares for its XPath expressions, prefix to URI
      */
     public static Map<String, String> namespaces(final org.kosit.validator.scenario.generic.Scenario declaration) {
