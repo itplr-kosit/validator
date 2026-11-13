@@ -34,6 +34,7 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.validation.CTValidationStandard;
 import org.kosit.base.xml.SchemaResolver;
 import org.kosit.base.xml.XmlHelper;
+import org.kosit.cvr.report.CvrProfile;
 import org.kosit.jaxb.AbstractJaxbConverter;
 import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
@@ -125,8 +126,8 @@ public final class CvrWriter {
     /** XVRL namespace — CVR is a profile of XVRL, the report must validate against it. */
     public static final String NS_XVRL = XvrlConverter.NS_URI;
 
-    /** D1: draft namespace for the CVR extension attributes. */
-    public static final String NS_CVR = "urn:conformatron:cvr:draft";
+    /** D1: draft namespace for the CVR extension attributes, as the profile defines it. */
+    public static final String NS_CVR = CvrProfile.NS_CVR;
 
     /** {@code xml:id} of the message carrying the source document. */
     public static final String ID_DOCUMENT_CONTENT = "parse-document-content";
