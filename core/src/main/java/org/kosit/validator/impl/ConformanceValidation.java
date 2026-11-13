@@ -94,6 +94,9 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
      */
     private EngineInformation engineInformation = EngineInformation.ofThisEngine();
 
+    /** Writes the report of every run; it carries the identity, so it is replaced together with it. */
+    private CvrWriter writer = new CvrWriter(this.engineInformation.getName(), this.engineInformation.getVersion());
+
     /**
      * Creates the engine over the given scenarios, resolving artifacts in the file system.
      *
@@ -162,6 +165,7 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
             throw new IllegalArgumentException("engineInformation may not be null");
         }
         this.engineInformation = information;
+        this.writer = new CvrWriter(information.getName(), information.getVersion());
         return this;
     }
 
@@ -242,7 +246,7 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
         LOGGER.info("Checking content of {}", input.getName());
         final PipelineResults run = run(input, requestedScenarioId);
         LOGGER.info("Finished check of {} in {}ms — {}", input.getName(), System.currentTimeMillis() - started, run.decision().decision());
-        return new ConformanceValidationResult(input.getName(), run, new CvrWriter(getName(), getVersion()));
+        return new ConformanceValidationResult(input.getName(), run, this.writer);
     }
 
     /**

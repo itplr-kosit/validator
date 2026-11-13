@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- (CLI) The subcommand `convert` writes a scenario configuration of version 2 as one of version 3: `validator convert -s scenarios.xml -o scenarios-v3.xml`. Version 3 requires a DVR coordinate for every scenario and every artifact, which version 2 was allowed to leave off, so the command proposes the missing ones and stops; `--group-id` says under which group id they are published and `--accept-proposals` writes them in. A coordinate becomes the identity a report names the scenario and its artifacts by, so the conversion does not settle on one by itself. An artifact several scenarios validate with gets one coordinate, not one per scenario
+- (CLI) The subcommand `convert` writes a scenario configuration of version 2 as one of version 3: `validator convert -s scenarios.xml -o scenarios-v3.xml`. Version 3 requires a DVR coordinate for every scenario and every artifact, which version 2 was allowed to leave off, so the command proposes the missing ones and stops; `--group-id` says under which group id they are published and `--accept-proposals` writes them in. A coordinate becomes the identity a report names the scenario and its artifacts by, so the conversion does not settle on one by itself. An artifact several scenarios validate with gets one coordinate, not one per scenario. The migration itself is `ScenarioMigration` in the module `validator-scenario`, so it is available without the command line
 
 
 ## 2.0.0-tp2

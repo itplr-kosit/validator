@@ -17,11 +17,13 @@ package org.kosit.validator.impl.conformatron.util;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 
 import javax.xml.namespace.QName;
 
 import org.jspecify.annotations.NonNull;
 import org.kosit.validator.scenario.generic.ScenarioConfiguration;
+import org.kosit.validator.scenario.generic.ScenarioDescription;
 import org.kosit.validator.scenario.v2.Scenario2Converter;
 import org.kosit.validator.scenario.v3.AbstractScenarioType;
 import org.kosit.validator.scenario.v3.Scenario3Converter;
@@ -60,6 +62,9 @@ public final class ScenarioXml {
 
     private static final JAXBContext JAXB_CONTEXT_V3 = new Scenario3Converter().getJaxbContext();
 
+    /** Framework version of the configuration that carries a lone scenario through the mapper; never written. */
+    private static final String WRAPPER_FRAMEWORK_VERSION = "2.0.0";
+
     private ScenarioXml() {
         // static utility
     }
@@ -73,7 +78,12 @@ public final class ScenarioXml {
      * @return the scenario as UTF-8 encoded XML
      */
     public static byte @NonNull [] toXmlBytes(final org.kosit.validator.scenario.generic.Scenario declaration) {
-        final ScenarioConfiguration one = new ScenarioConfiguration(declaration.getName()).addScenario(declaration);
+        // the configuration only carries the scenario through the mapper and is never written - only the scenario
+        // element is. What version 2 requires of a configuration is filled in so that the mapper does not report it
+        // missing; what it finds about the scenario itself is still reported
+        final ScenarioConfiguration one = new ScenarioConfiguration(declaration.getName()).setLastModificationDate(LocalDate.EPOCH)
+                .setFrameworkVersion(WRAPPER_FRAMEWORK_VERSION).setDescription(ScenarioDescription.ofText(declaration.getName()))
+                .addScenario(declaration);
         return toXmlBytes(Scenario2Mapper.fromGeneric(one).getScenario().get(0));
     }
 
