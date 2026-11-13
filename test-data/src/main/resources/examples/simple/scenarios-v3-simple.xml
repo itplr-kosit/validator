@@ -38,7 +38,9 @@
                 <name>Sample Schematron</name>
                 <location>simple.xsl</location>
             </resource>
-            <customLevel level="warning">rejected</customLevel>
+            <customLevel level="warning">
+                <rules>rejected</rules>
+            </customLevel>
         </validateWithSchematron>
     </scenarioXml>
 

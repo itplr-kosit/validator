@@ -245,6 +245,10 @@ public final class Scenario2Mapper {
             }
             dst.setCompiler(schematron.getCompiler());
             for (final ScenarioCustomErrorLevel customLevel : schematron.getCustomLevels()) {
+                if (customLevel.hasDescription()) {
+                    state.warn("Dropping the description of a custom level of scenario '" + src.getName()
+                            + "', because only scenario configuration version 3 can express it");
+                }
                 final CustomErrorLevel dstLevel = new CustomErrorLevel();
                 dstLevel.setLevel(ErrorLevelType.fromValue(customLevel.getLevel().getID()));
                 dstLevel.getValue().addAll(customLevel.getRuleIDs());

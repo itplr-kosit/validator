@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reports xmlns="http://www.xproc.org/ns/xvrl" xmlns:cvr="urn:conformatron:cvr:draft" cvr:conformant="true" cvr:status="COMPLETED">
     <metadata>
-        <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+        <timestamp>2026-11-13T13:10:36+01:00</timestamp>
         <validator name="KoSIT Validator" version="2.0.0-tp3-SNAPSHOT"/>
-        <document href="C:\Users\49157\grendor\KoSIT\KoSIT_Architecture\validator_architecture\validator\test-data\src\main\resources\examples\simple\input\simple.xml"/>
+        <document href="C:\Users\49157\grendor\KoSIT\KoSIT_Architecture\validator_architecture\validator-i207\test-data\src\main\resources\examples\simple\input\simple.xml"/>
     </metadata>
     <report>
         <metadata>
-            <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+            <timestamp>2026-11-13T13:10:36+01:00</timestamp>
             <creator name="parse-document"/>
         </metadata>
         <detection>
@@ -34,20 +34,20 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+            <timestamp>2026-11-13T13:10:36+01:00</timestamp>
             <creator name="detect-scenarios"/>
         </metadata>
         <detection cvr:scenario-id="org.kosit.validator.test:simple:1.0.0">
             <message>Scenario 'Simple' matched</message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/src/main/resources/examples/simple/scenarios-v3-two-repositories.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator-i207/e2e/examples/v3/scenarios-v3-two-repositories.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
-            <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+            <timestamp>2026-11-13T13:10:36+01:00</timestamp>
             <creator name="select-scenario"/>
         </metadata>
         <detection cvr:scenario-id="org.kosit.validator.test:simple:1.0.0">
@@ -78,19 +78,22 @@
                             <name>Sample Schematron</name>
                             <location>national-rules.xsl</location>
                         </resource>
-                        <customLevel level="warning">rejected</customLevel>
+                        <customLevel level="warning">
+                            <rules>rejected</rules>
+                            <description>Since 2026-11-13 a warning instead of an error: the sample marks rejected content on purpose.</description>
+                        </customLevel>
                     </validateWithSchematron>
                 </scenarioXml>
             </message>
             <context>
-                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator/test-data/src/main/resources/examples/simple/scenarios-v3-two-repositories.xml"/>
+                <location xpath="/*:scenarios/*:scenario[*:name='Simple']" href="file:///C:/Users/49157/grendor/KoSIT/KoSIT_Architecture/validator_architecture/validator-i207/e2e/examples/v3/scenarios-v3-two-repositories.xml"/>
             </context>
         </detection>
         <digest valid="true"/>
     </report>
     <report>
         <metadata>
-            <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+            <timestamp>2026-11-13T13:10:36+01:00</timestamp>
             <creator name="retrieve-artifacts"/>
         </metadata>
         <detection cvr:artifact-id="org.kosit.validator.test:simple-xsd:1.0.0">
@@ -111,7 +114,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+            <timestamp>2026-11-13T13:10:36+01:00</timestamp>
             <validator name="schxslt"/>
             <validator name="Saxon" version="12.10"/>
             <creator name="prepare-rules"/>
@@ -126,7 +129,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+            <timestamp>2026-11-13T13:10:36+01:00</timestamp>
             <creator name="apply-rules"/>
             <schema href="standard-schema.xsd" schematypens="http://www.w3.org/2001/XMLSchema"/>
         </metadata>
@@ -137,7 +140,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+            <timestamp>2026-11-13T13:10:36+01:00</timestamp>
             <creator name="apply-rules"/>
             <schema href="national-rules.xsl" schematypens="http://purl.oclc.org/dsdl/schematron" cvr:phase="#ALL"/>
         </metadata>
@@ -148,7 +151,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+            <timestamp>2026-11-13T13:10:36+01:00</timestamp>
             <creator name="compute-conformance"/>
         </metadata>
         <detection cvr:conformance="CONFORMANT" cvr:target-id="org.kosit.validator.test:simple:1.0.0">
@@ -167,7 +170,7 @@
     </report>
     <report>
         <metadata>
-            <timestamp>2026-10-21T14:54:50+02:00</timestamp>
+            <timestamp>2026-11-13T13:10:36+01:00</timestamp>
             <creator name="decision-recommendation"/>
         </metadata>
         <detection cvr:decision="ACCEPT">

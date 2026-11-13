@@ -47,7 +47,10 @@
                 <name>Sample Schematron</name>
                 <location>national-rules.xsl</location>
             </resource>
-            <customLevel level="warning">rejected</customLevel>
+            <customLevel level="warning">
+                <rules>rejected</rules>
+                <description>Since 2026-11-13 a warning instead of an error: the sample marks rejected content on purpose.</description>
+            </customLevel>
         </validateWithSchematron>
     </scenarioXml>
 
