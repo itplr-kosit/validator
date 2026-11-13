@@ -106,7 +106,8 @@ public final class Scenario3Mapper {
         for (final CustomErrorLevelType customLevel : src.getCustomLevel()) {
             final ScenarioCustomErrorLevel level = new ScenarioCustomErrorLevel(
                     EScenarioErrorLevel.getFromIDOrNull(customLevel.getLevel().value()));
-            customLevel.getValue().forEach(level::addRuleID);
+            customLevel.getRules().forEach(level::addRuleID);
+            level.setDescription(customLevel.getDescription());
             ret.addCustomLevel(level);
         }
         return ret;
@@ -277,7 +278,8 @@ public final class Scenario3Mapper {
             for (final ScenarioCustomErrorLevel customLevel : schematron.getCustomLevels()) {
                 final CustomErrorLevelType dstLevel = new CustomErrorLevelType();
                 dstLevel.setLevel(ErrorLevelType.fromValue(customLevel.getLevel().getID()));
-                dstLevel.getValue().addAll(customLevel.getRuleIDs());
+                dstLevel.getRules().addAll(customLevel.getRuleIDs());
+                dstLevel.setDescription(customLevel.getDescription());
                 dst.getCustomLevel().add(dstLevel);
             }
             ret.getValidateWithSchematron().add(dst);

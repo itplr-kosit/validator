@@ -58,7 +58,10 @@
         <name>Schematron rules for Invoice - CIUS XRechnung (UBL)</name>
         <location>xsl/XRechnung-UBL-validation.xsl</location>
       </resource>
-      <customLevel level="warning">BR-DE-15</customLevel>
+      <customLevel level="warning">
+          <rules>BR-DE-15</rules>
+          <description>Since 2026-11-13 a warning instead of an error, as agreed for the German CIUS.</description>
+      </customLevel>
     </validateWithSchematron>
 
     <validateWithSchematron compiler="schxslt">

@@ -168,6 +168,24 @@ public class ScenarioMappingTest {
     }
 
     @Test
+    public void version3CarriesTheDescriptionOfACustomLevel() throws URISyntaxException {
+        final ScenarioConfiguration config = Scenario3Mapper.toGeneric(readV3Repositories());
+        final ScenarioCustomErrorLevel level = config.getScenarios().stream().flatMap(s -> s.getSchematrons().stream())
+                .flatMap(s -> s.getCustomLevels().stream()).filter(l -> l.getRuleIDs().contains("BR-DE-15")).findFirst().orElseThrow();
+
+        assertThat(level.getLevel()).isEqualTo(EScenarioErrorLevel.WARNING);
+        assertThat(level.getRuleIDs()).containsExactly("BR-DE-15");
+        assertThat(level.hasDescription()).isTrue();
+        assertThat(level.getDescription()).isEqualTo("Since 2026-11-13 a warning instead of an error, as agreed for the German CIUS.");
+
+        // version 2 writes the rule IDs as the text of the element and has no room for a description: it is dropped,
+        // and the mapper says so
+        final List<SimpleError> errors = new ArrayList<>();
+        Scenario2Mapper.fromGeneric(config, errors);
+        assertThat(messagesOf(errors, CTStandardSeverity.WARNING)).anyMatch(m -> m.contains("Dropping the description of a custom level"));
+    }
+
+    @Test
     public void version3RoundTripKeepsTheRepositories() throws URISyntaxException {
         final var original = readV3Repositories();
         final var converted = Scenario3Mapper.fromGeneric(Scenario3Mapper.toGeneric(original));
@@ -257,9 +275,9 @@ public class ScenarioMappingTest {
         final ScenarioConfiguration config = Scenario2Mapper.toGeneric(readV2());
         addCoordinates(config);
 
-        // Version 3 declares the overrides with the rule set as well
+        // Version 3 declares the overrides with the rule set as well, the rule IDs in an element of their own
         final String xml3 = this.converter3.writeXml(Scenario3Mapper.fromGeneric(config));
-        assertThat(xml3).contains("<customLevel level=\"warning\">BR-01 BR-02</customLevel>");
+        assertThat(xml3).contains("<customLevel level=\"warning\"><rules>BR-01 BR-02</rules></customLevel>");
 
         final ScenarioConfiguration roundTripped = Scenario3Mapper.toGeneric(this.converter3.readXml(xml3));
         assertThat(roundTripped.getScenarios().get(0).getSchematrons()).singleElement()

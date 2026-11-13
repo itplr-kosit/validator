@@ -321,10 +321,29 @@
     </xs:complexType>
 
     <xs:complexType name="CustomErrorLevelType">
-        <xs:simpleContent>
-            <xs:extension base="s:Tokens">
-                <xs:attribute name="level" type="s:ErrorLevelType" use="required" />
-            </xs:extension>
-        </xs:simpleContent>
+        <xs:annotation>
+            <xs:documentation>
+                Overrides the error level of rules of the rule set it belongs to. Unlike version 2, which writes the rule
+                IDs as the text of the element, version 3 gives them an element of their own, so that the override can
+                carry a description next to them.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="rules" type="s:Tokens">
+                <xs:annotation>
+                    <xs:documentation>The IDs of the rules whose error level is overridden, separated by whitespace.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="description" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Why the error level is overridden, and since when - for whoever reads a report and wonders why
+                        a rule has a different severity than in the specification it comes from. The report carries it
+                        with the scenario it embeds.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="level" type="s:ErrorLevelType" use="required" />
     </xs:complexType>
 </xs:schema>

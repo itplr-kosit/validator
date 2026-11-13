@@ -103,6 +103,21 @@ public class ConformanceValidationTest {
     }
 
     @Test
+    public void testTheDescriptionOfASeverityOverrideIsInTheReport() throws Exception {
+        // why and since when a rule has another severity than in its specification is part of the scenario the step
+        // select-scenario embeds, so a reader of the report finds it next to the override
+        final ConformanceValidationResult result = validate(TestResources.Simple.SCENARIOS_V3_REPOSITORIES,
+                TestResources.Simple.SIMPLE_VALID);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        result.writeCvr(out);
+
+        assertThat(out.toString(java.nio.charset.StandardCharsets.UTF_8)).contains(
+                "<description>Since 2026-11-13 a warning instead of an error: the sample marks rejected content on purpose.</description>")
+                .contains("<rules>rejected</rules>");
+        assertReportIsAValidCvr(result);
+    }
+
+    @Test
     public void testAConformantDocumentIsAccepted() throws Exception {
         final ConformanceValidationResult result = validate(TestResources.Simple.SCENARIOS_WITH_SCH, TestResources.Simple.SIMPLE_VALID);
 
