@@ -20,6 +20,9 @@ import javax.xml.transform.Source;
  */
 public interface SchematronCompiler {
 
+    /** The namespace of ISO Schematron, the language every compiler reads. */
+    String NS_SCHEMATRON = "http://purl.oclc.org/dsdl/schematron";
+
     /**
      * Returns the unique identifier of this compiler implementation.
      * <p>

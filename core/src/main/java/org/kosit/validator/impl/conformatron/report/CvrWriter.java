@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.stream.StreamResult;
 
@@ -34,6 +35,7 @@ import org.conformatron.api.model.source.CTReadResource;
 import org.conformatron.api.model.validation.CTValidationStandard;
 import org.kosit.base.xml.XmlHelper;
 import org.kosit.cvr.report.CvrProfile;
+import org.kosit.schematron.compiler.SchematronCompiler;
 import org.kosit.jaxb.AbstractJaxbConverter;
 import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
@@ -145,10 +147,10 @@ public final class CvrWriter {
     private static final String MIME_TYPE_OCTET_STREAM = "application/octet-stream";
 
     /** {@code schematypens} of an XML Schema rule set. */
-    public static final String SCHEMATYPENS_XSD = "http://www.w3.org/2001/XMLSchema";
+    public static final String SCHEMATYPENS_XSD = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
     /** {@code schematypens} of a Schematron rule set (ISO Schematron). */
-    public static final String SCHEMATYPENS_SCHEMATRON = "http://purl.oclc.org/dsdl/schematron";
+    public static final String SCHEMATYPENS_SCHEMATRON = SchematronCompiler.NS_SCHEMATRON;
 
     /** {@code role} of the supplemental carrying a Java stack trace. */
     public static final String ROLE_JAVA_TRACE = "java-trace";
