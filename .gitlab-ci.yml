@@ -11,7 +11,7 @@ before_script:
 
 cache:
 # Change the cache key if major dependencies change
-  key: constant161
+  key: constant200a3
   paths:
     - .m2/repository
 
