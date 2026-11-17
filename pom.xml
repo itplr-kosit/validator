@@ -76,7 +76,7 @@
 
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.38.3</quarkus.platform.version>
+        <quarkus.platform.version>3.40.1.2</quarkus.platform.version>
        
         <!-- the single place the version of this build is written, see
           https://maven.apache.org/guides/mini/guide-maven-ci-friendly.html . "revision" is one of the three property
@@ -88,15 +88,15 @@
         <version.assertj>3.27.7</version.assertj>
         <version.commons-io>2.22.0</version.commons-io>
         <version.commons-lang>3.20.0</version.commons-lang>
-        <version.jacoco>0.8.15</version.jacoco>
+        <version.jacoco>0.8.16</version.jacoco>
         <version.jaxb-api>4.0.5</version.jaxb-api>
         <version.jaxb-impl>4.0.9</version.jaxb-impl>
         <version.junit>6.1.0</version.junit>
-        <version.mockito>5.23.0</version.mockito>
+        <version.mockito>5.24.0</version.mockito>
         <version.owasp-dependency-check>12.1.8</version.owasp-dependency-check>
         <version.rest-assured>6.0.1</version.rest-assured>
         <version.saxon-he>12.10</version.saxon-he>
-        <version.slf4j>2.0.18</version.slf4j>
+        <version.slf4j>2.0.20</version.slf4j>
         <version.jaxb-maven-plugin>4.0.16</version.jaxb-maven-plugin>
         <version.xmlresolver>6.0.23</version.xmlresolver>
         <version.picocli>4.7.7</version.picocli>
