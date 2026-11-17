@@ -23,7 +23,7 @@ import org.conformatron.api.model.validation.CTSyntax;
 import org.jspecify.annotations.NonNull;
 
 /**
- * Validator implementation of {@link CTValidationSource}. Facade over the legacy {@link VInput} abstraction: the
+ * Validator implementation of {@link CTValidationSource}. Facade over the legacy {@code VInput} abstraction: the
  * existing input handling keeps doing the heavy lifting while the pipeline is migrated to the conformatron-api step by
  * step.
  *

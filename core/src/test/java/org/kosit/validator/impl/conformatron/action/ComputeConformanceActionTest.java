@@ -15,7 +15,7 @@ import org.conformatron.api.model.source.CTParsedValidationSource;
 import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.conformatron.rule.ApplyRulesResult;
-import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction.ComputeConformanceActionResult;
@@ -39,7 +39,7 @@ public class ComputeConformanceActionTest {
     private CTApplyRulesResult applyRules(final URI document, final String... references) {
         final CTParsedValidationSource parsed = new ParseXmlAction().execute(TestHelper.read(document)).getParsedSource();
         final List<CTValidationArtifactReference> refs = List.of(references).stream()
-                .map(r -> (CTValidationArtifactReference) ValidationArtifactReference.of(r)).toList();
+                .map(r -> (CTValidationArtifactReference) ScenarioRuleSetReference.of(r)).toList();
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
                 true).execute(refs, "test");
         final List<CTPreparedRuleSet> ruleSets = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(), "test").ruleSets();

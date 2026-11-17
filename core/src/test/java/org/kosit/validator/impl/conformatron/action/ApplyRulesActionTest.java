@@ -23,7 +23,7 @@ import org.kosit.base.io.mock.ResourceHelperExtension;
 import org.kosit.conformatron.detection.Detection;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
-import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.kosit.cvr.model.SeverityOverrides;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.TestHelper;
@@ -56,7 +56,7 @@ public class ApplyRulesActionTest {
 
     private List<CTPreparedRuleSet> prepare(final String... references) {
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
-                true).execute(Arrays.stream(references).map(ValidationArtifactReference::of).toList(), "test");
+                true).execute(Arrays.stream(references).map(ScenarioRuleSetReference::of).toList(), "test");
         assertThat(retrieved.isSuccess()).isTrue();
 
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(this.repository).execute(retrieved.artifacts(),

@@ -50,7 +50,6 @@ public class CommandlineApplicationTest {
     public void setup() throws IOException {
         testWriter = new TestWriter();
         options = new CommandLineOptions();
-        options.setEngineInformation(new CliEngineInformation());
         // Picocli output
         commandLine = new picocli.CommandLine(options);
         commandLine.setOut(new PrintWriter(testWriter.getOutWriter(), true));

@@ -10,6 +10,7 @@ import org.conformatron.api.model.conformance.CTDecision;
 import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
+import org.kosit.base.string.StringHelper;
 import org.kosit.validator.impl.conformatron.report.CvrWriter;
 import org.kosit.xvrl.model.XvrlReports;
 
@@ -31,7 +32,17 @@ public final class ConformanceValidationResult {
 
     private final CvrWriter writer;
 
+    /**
+     * @param documentName the name of the validated resource, as {@link #getDocumentName()} describes it; may neither
+     *            be {@code null} nor blank, because a report that does not name what was validated is worthless as
+     *            evidence
+     * @param run the results of the pipeline, at least the parse step
+     * @param writer the writer that serializes the run as a CVR
+     */
     public ConformanceValidationResult(final String documentName, final PipelineResults run, final CvrWriter writer) {
+        if (StringHelper.isBlank(documentName)) {
+            throw new IllegalArgumentException("documentName may not be null or blank");
+        }
         if (run == null || writer == null) {
             throw new IllegalArgumentException("run and writer may not be null");
         }
@@ -145,7 +156,12 @@ public final class ConformanceValidationResult {
     }
 
     /**
-     * @return the name the document was validated under. Never {@code null}.
+     * The name of the validated resource, taken from {@code CTResource.getName()} of the input. It is not necessarily a
+     * file name: a resource read from a file names its absolute path, one read from a URL its external form, and one
+     * built over bytes or a stream whatever name the caller gave it. The report names the validated document by it
+     * ({@code xvrl:document/@href}), and the detections of the steps are located at it.
+     *
+     * @return the name the document was validated under. Never {@code null} nor blank.
      */
     public String getDocumentName() {
         return this.documentName;

@@ -14,7 +14,9 @@ import org.conformatron.api.model.detection.CTDetection;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.conformatron.api.model.source.CTReadResource;
+import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.conformatron.api.model.validation.CTResolvedValidationArtifact;
+import org.jspecify.annotations.Nullable;
 import org.kosit.conformatron.detection.DetectionList;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.api.ValidationEngine;
@@ -25,12 +27,14 @@ import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.impl.conformatron.model.ConformanceTarget;
 import org.kosit.validator.impl.conformatron.model.ScenarioMatch;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
 import org.kosit.validator.impl.conformatron.report.CvrWriter;
 import org.slf4j.Logger;
@@ -66,7 +70,7 @@ import net.sf.saxon.s9api.Processor;
  *
  * @author Andreas Schmitz
  */
-public class ConformanceValidation implements ValidationEngine<ConformanceValidationResult> {
+public class ConformanceValidation implements ValidationEngine<ConformanceValidationResult>, EngineInformation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConformanceValidation.class);
 
@@ -84,61 +88,57 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
 
     private final boolean resolveInArchive;
 
-    private final CvrWriter writer;
+    /**
+     * Who the report says validated. The engine answers for itself, so this is {@link EngineInformation#ofThisEngine()}
+     * unless an embedding application states its own with {@link #withEngineInformation(EngineInformation)}.
+     */
+    private EngineInformation engineInformation = EngineInformation.ofThisEngine();
+
+    /** Writes the report of every run; it carries the identity, so it is replaced together with it. */
+    private CvrWriter writer = new CvrWriter(this.engineInformation.getName(), this.engineInformation.getVersion());
 
     /**
      * Creates the engine over the given scenarios, resolving artifacts in the file system.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor the scenarios were compiled with
      * @param scenarios the scenarios; at least one
      */
-    public ConformanceValidation(final EngineInformation engineInformation, final Processor saxonProcessor,
-            final List<Scenario> scenarios) {
-        this(engineInformation, saxonProcessor, false, scenarios);
+    public ConformanceValidation(final Processor saxonProcessor, final List<Scenario> scenarios) {
+        this(saxonProcessor, false, scenarios);
     }
 
     /**
      * Creates the engine over the scenarios of the given configurations, resolving artifacts in the file system.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor the scenarios were compiled with
      * @param configurations the scenario configurations; at least one
      */
-    public ConformanceValidation(final EngineInformation engineInformation, final Processor saxonProcessor,
-            final ScenarioSet... configurations) {
-        this(engineInformation, saxonProcessor, false, configurations);
+    public ConformanceValidation(final Processor saxonProcessor, final ScenarioSet... configurations) {
+        this(saxonProcessor, false, configurations);
     }
 
     /**
      * Creates the engine over the scenarios of the given configurations.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor the scenarios were compiled with
      * @param resolveInArchive {@code true} if the artifact repositories live inside an archive
      *            ({@code jar:file:/some.jar!/repository})
      * @param configurations the scenario configurations; at least one
      */
-    public ConformanceValidation(final EngineInformation engineInformation, final Processor saxonProcessor, final boolean resolveInArchive,
-            final ScenarioSet... configurations) {
-        this(engineInformation, saxonProcessor, resolveInArchive, scenariosOf(configurations));
+    public ConformanceValidation(final Processor saxonProcessor, final boolean resolveInArchive, final ScenarioSet... configurations) {
+        this(saxonProcessor, resolveInArchive, scenariosOf(configurations));
     }
 
     /**
      * Creates the engine over the given scenarios.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor the scenarios were compiled with
      * @param resolveInArchive {@code true} if the artifact repositories live inside an archive
      *            ({@code jar:file:/some.jar!/repository}); off by default, and an explicit decision of whoever
      *            assembles the engine
      * @param scenarios the scenarios; at least one
      */
-    public ConformanceValidation(final EngineInformation engineInformation, final Processor saxonProcessor, final boolean resolveInArchive,
-            final List<Scenario> scenarios) {
-        if (engineInformation == null) {
-            throw new IllegalArgumentException("engineInformation may not be null");
-        }
+    public ConformanceValidation(final Processor saxonProcessor, final boolean resolveInArchive, final List<Scenario> scenarios) {
         if (saxonProcessor == null) {
             throw new IllegalArgumentException("processor may not be null");
         }
@@ -151,7 +151,32 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
             this.retrieval.computeIfAbsent(scenario.getRepository().getRepository(),
                     repository -> new RetrieveArtifactsAction(repository, resolveInArchive));
         }
-        this.writer = new CvrWriter(engineInformation.getName(), engineInformation.getVersion());
+    }
+
+    /**
+     * Lets an application that embeds the engine state its own identity, which the report then names instead of the
+     * engine's own. This belongs to assembling the engine: call it before the first run.
+     *
+     * @param information who the report says validated; may not be {@code null}
+     * @return this, for chaining
+     */
+    public ConformanceValidation withEngineInformation(final EngineInformation information) {
+        if (information == null) {
+            throw new IllegalArgumentException("engineInformation may not be null");
+        }
+        this.engineInformation = information;
+        this.writer = new CvrWriter(information.getName(), information.getVersion());
+        return this;
+    }
+
+    @Override
+    public String getName() {
+        return this.engineInformation.getName();
+    }
+
+    @Override
+    public String getVersion() {
+        return this.engineInformation.getVersion();
     }
 
     /**
@@ -159,23 +184,20 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
      * the rule set ({@link Scenario#adHoc(Processor, URI, boolean)}), applying unconditionally, with the directory of
      * the Schematron as its repository. The same pipeline and the same report as for a configured scenario.
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor
      * @param schematron URI of the Schematron ({@code .sch}, or a precompiled {@code .xsl})
      * @param resolveInArchive {@code true} if the Schematron lives inside an archive
      * @return the engine
      * @throws IllegalArgumentException if no repository can be derived from the Schematron URI
      */
-    public static ConformanceValidation adHoc(final EngineInformation engineInformation, final Processor saxonProcessor,
-            final URI schematron, final boolean resolveInArchive) {
-        return adHoc(engineInformation, saxonProcessor, List.of(schematron), null, resolveInArchive);
+    public static ConformanceValidation adHoc(final Processor saxonProcessor, final URI schematron, final boolean resolveInArchive) {
+        return adHoc(saxonProcessor, List.of(schematron), null, resolveInArchive);
     }
 
     /**
      * The engine for an ad hoc validation against a set of artifacts — XML Schemas, Schematrons, precompiled Schematron
      * XSLTs — as one scenario ({@link Scenario#adHoc(Processor, List, URI, boolean)}).
      *
-     * @param engineInformation engine name and version for the report metadata
      * @param saxonProcessor the Saxon processor
      * @param artifacts URIs of the artifacts, applied in this order; the kind is read from the extension
      * @param repository the artifact repository, or {@code null} for the common parent directory of the artifacts
@@ -183,9 +205,9 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
      * @return the engine
      * @throws IllegalArgumentException if the artifacts do not make a scenario, see {@link Scenario#adHoc}
      */
-    public static ConformanceValidation adHoc(final EngineInformation engineInformation, final Processor saxonProcessor,
-            final List<URI> artifacts, final URI repository, final boolean resolveInArchive) {
-        return new ConformanceValidation(engineInformation, saxonProcessor, resolveInArchive,
+    public static ConformanceValidation adHoc(final Processor saxonProcessor, final List<URI> artifacts, final URI repository,
+            final boolean resolveInArchive) {
+        return new ConformanceValidation(saxonProcessor, resolveInArchive,
                 List.of(Scenario.adHoc(saxonProcessor, artifacts, repository, resolveInArchive)));
     }
 
@@ -252,7 +274,7 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
 
         // step 4: SELECT_SCENARIO — one scenario matched by expression, plus every scenario that applies
         // unconditionally
-        final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
+        final SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         if (!selected.isSuccess()) {
             return new PipelineResults(parsed, detected, selected, null, null, null, null);
         }
@@ -264,11 +286,19 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
         final Map<ScenarioMatch, List<CTResolvedValidationArtifact>> artifactsByScenario = new LinkedHashMap<>();
         boolean retrievedAll = true;
         for (final ScenarioMatch match : applied) {
-            final RetrieveArtifactsAction.RetrieveArtifactsResult result = retrievalFor(match.getScenario()).execute(match);
-            artifacts.addAll(result.artifacts());
-            artifactsByScenario.put(match, result.artifacts());
-            retrieveDetections.addAll(result.detections().getAll());
-            retrievedAll &= result.isSuccess();
+            final List<CTResolvedValidationArtifact> ofScenario = new ArrayList<>();
+            // a resource is resolved in the repository it names, and in no other; grouping keeps every retrieval
+            // confined to one repository, which is what makes the confinement of step 5 a promise
+            for (final Map.Entry<String, List<CTValidationArtifactReference>> group : byRepository(match.getArtifactReferences())
+                    .entrySet()) {
+                final RetrieveArtifactsAction.RetrieveArtifactsResult result = retrievalFor(match.getScenario(), group.getKey())
+                        .execute(group.getValue(), resourceId);
+                artifacts.addAll(result.artifacts());
+                ofScenario.addAll(result.artifacts());
+                retrieveDetections.addAll(result.detections().getAll());
+                retrievedAll &= result.isSuccess();
+            }
+            artifactsByScenario.put(match, ofScenario);
         }
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction.RetrieveArtifactsResult(
                 retrievedAll ? CTStepResult.SUCCESS : CTStepResult.FAILURE, List.copyOf(artifacts), new DetectionList(retrieveDetections));
@@ -282,11 +312,18 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
         final List<CTDetection> prepareDetections = new ArrayList<>();
         boolean preparedAll = true;
         for (final Map.Entry<ScenarioMatch, List<CTResolvedValidationArtifact>> entry : artifactsByScenario.entrySet()) {
-            final PrepareRulesAction.PrepareRulesResult result = new PrepareRulesAction(entry.getKey().getScenario().getRepository())
-                    .execute(entry.getValue(), resourceId);
-            ruleSets.addAll(result.ruleSets());
-            prepareDetections.addAll(result.detections().getAll());
-            preparedAll &= result.isSuccess();
+            final Map<String, List<CTResolvedValidationArtifact>> groups = new LinkedHashMap<>();
+            for (final CTResolvedValidationArtifact artifact : entry.getValue()) {
+                groups.computeIfAbsent(key(ScenarioRuleSetReference.repositoryOf(artifact.getReference())), name -> new ArrayList<>())
+                        .add(artifact);
+            }
+            for (final Map.Entry<String, List<CTResolvedValidationArtifact>> group : groups.entrySet()) {
+                final PrepareRulesAction.PrepareRulesResult result = new PrepareRulesAction(
+                        entry.getKey().getScenario().getRepository(nameOf(group.getKey()))).execute(group.getValue(), resourceId);
+                ruleSets.addAll(result.ruleSets());
+                prepareDetections.addAll(result.detections().getAll());
+                preparedAll &= result.isSuccess();
+            }
         }
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction.PrepareRulesResult(
                 preparedAll ? CTStepResult.SUCCESS : CTStepResult.FAILURE, List.copyOf(ruleSets), new DetectionList(prepareDetections));
@@ -319,8 +356,26 @@ public class ConformanceValidation implements ValidationEngine<ConformanceValida
         throw new IllegalStateException("The selected scenario did not come from the scenario detection of this engine");
     }
 
-    private RetrieveArtifactsAction retrievalFor(final Scenario scenario) {
-        return this.retrieval.computeIfAbsent(scenario.getRepository().getRepository(),
+    private RetrieveArtifactsAction retrievalFor(final Scenario scenario, final String repositoryKey) {
+        return this.retrieval.computeIfAbsent(scenario.getRepository(nameOf(repositoryKey)).getRepository(),
                 repository -> new RetrieveArtifactsAction(repository, this.resolveInArchive));
+    }
+
+    /** A map key for the repository a reference names, since a reference that names none would key on {@code null}. */
+    private static String key(final @Nullable String repository) {
+        return repository == null ? "" : repository;
+    }
+
+    private static @Nullable String nameOf(final String key) {
+        return key.isEmpty() ? null : key;
+    }
+
+    /** The references of a scenario, grouped by the repository each of them is resolved in, in declaration order. */
+    private static Map<String, List<CTValidationArtifactReference>> byRepository(final List<CTValidationArtifactReference> references) {
+        final Map<String, List<CTValidationArtifactReference>> groups = new LinkedHashMap<>();
+        for (final CTValidationArtifactReference reference : references) {
+            groups.computeIfAbsent(key(ScenarioRuleSetReference.repositoryOf(reference)), name -> new ArrayList<>()).add(reference);
+        }
+        return groups;
     }
 }

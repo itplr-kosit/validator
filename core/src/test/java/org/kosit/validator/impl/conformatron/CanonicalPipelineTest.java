@@ -24,7 +24,7 @@ import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRu
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
-import org.kosit.validator.impl.conformatron.action.SelectScenarioAction.SelectScenarioResult;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;

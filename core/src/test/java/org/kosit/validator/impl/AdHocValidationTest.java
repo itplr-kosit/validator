@@ -32,8 +32,7 @@ public class AdHocValidationTest {
     }
 
     private static ConformanceValidationResult validate(final URI document, final String schematron) {
-        return ConformanceValidation.adHoc(new TestEngineInformation(), TestHelper.getTestProcessor(), schematron(schematron), true)
-                .validate(TestHelper.read(document));
+        return ConformanceValidation.adHoc(TestHelper.getTestProcessor(), schematron(schematron), true).validate(TestHelper.read(document));
     }
 
     private static List<String> codes(final ConformanceValidationResult result) {
@@ -46,9 +45,9 @@ public class AdHocValidationTest {
 
         assertThat(scenario.isUnconditional()).isTrue();
         assertThat(scenario.getName()).isEqualTo("simple.sch");
-        assertThat(scenario.getConfiguration().getValidateWithXmlSchema()).isNull();
-        assertThat(scenario.getConfiguration().getValidateWithSchematron()).hasSize(1);
-        assertThat(scenario.getConfiguration().getValidateWithSchematron().get(0).getResource().getLocation()).isEqualTo("simple.sch");
+        assertThat(scenario.getDeclaration().getXmlSchemas()).isEmpty();
+        assertThat(scenario.getDeclaration().getSchematrons()).hasSize(1);
+        assertThat(scenario.getDeclaration().getSchematrons().get(0).getResource().getLocation()).isEqualTo("simple.sch");
         // the directory of the schematron is the repository
         assertThat(scenario.getRepository().getRepository().toString()).endsWith("/repository/");
         assertThat(scenario.getDefinitionFile()).isNull();
@@ -106,15 +105,14 @@ public class AdHocValidationTest {
 
         assertThat(scenario.isUnconditional()).isTrue();
         assertThat(scenario.getName()).isEqualTo("simple.xsd, simple.sch");
-        assertThat(scenario.getConfiguration().getValidateWithXmlSchema().getResource()).extracting("location")
-                .containsExactly("simple.xsd");
-        assertThat(scenario.getConfiguration().getValidateWithSchematron()).hasSize(1);
+        assertThat(scenario.getDeclaration().getXmlSchemas()).extracting("location").containsExactly("simple.xsd");
+        assertThat(scenario.getDeclaration().getSchematrons()).hasSize(1);
         assertThat(scenario.getRepository().getRepository().toString()).endsWith("/repository/");
     }
 
     @Test
     public void testTheSetAppliesSchemaAndRules() {
-        final ConformanceValidation engine = ConformanceValidation.adHoc(new TestEngineInformation(), TestHelper.getTestProcessor(),
+        final ConformanceValidation engine = ConformanceValidation.adHoc(TestHelper.getTestProcessor(),
                 List.of(schematron("simple.xsd"), schematron("simple.sch")), TestResources.Simple.REPOSITORY_URI, true);
 
         final ConformanceValidationResult valid = engine.validate(TestHelper.read(TestResources.Simple.SIMPLE_VALID));

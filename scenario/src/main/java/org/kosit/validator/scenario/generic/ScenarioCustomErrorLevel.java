@@ -5,12 +5,16 @@ import java.util.List;
 
 import org.conformatron.api.annotation.Nonempty;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.kosit.base.ObjectHelper;
 import org.kosit.base.string.StringHelper;
 
 /**
  * A custom error level of a {@link ScenarioSchematron}: it overrides the error level of all listed rule IDs of that
  * rule set.
+ * <p>
+ * Version dependent: the {@link #getDescription() description} only exists in scenario configuration version 3.
+ * </p>
  *
  * @author Philip Helger
  */
@@ -19,6 +23,8 @@ public class ScenarioCustomErrorLevel {
     private EScenarioErrorLevel level;
 
     private final List<String> ruleIDs = new ArrayList<>();
+
+    private @Nullable String description;
 
     /**
      * Constructor.
@@ -68,8 +74,33 @@ public class ScenarioCustomErrorLevel {
         return this;
     }
 
+    /**
+     * @return why the error level is overridden, and since when. May be <code>null</code>.
+     */
+    public @Nullable String getDescription() {
+        return this.description;
+    }
+
+    /**
+     * @return <code>true</code> if a description is present, <code>false</code> if not.
+     */
+    public boolean hasDescription() {
+        return StringHelper.isNotEmpty(this.description);
+    }
+
+    /**
+     * Set why the error level is overridden, and since when.
+     *
+     * @param description the description to use. May be <code>null</code>.
+     * @return this for chaining
+     */
+    public @NonNull ScenarioCustomErrorLevel setDescription(final @Nullable String description) {
+        this.description = description;
+        return this;
+    }
+
     @Override
     public String toString() {
-        return "ScenarioCustomErrorLevel[level=" + this.level + "; ruleIDs=" + this.ruleIDs + "]";
+        return "ScenarioCustomErrorLevel[level=" + this.level + "; ruleIDs=" + this.ruleIDs + "; description=" + this.description + "]";
     }
 }

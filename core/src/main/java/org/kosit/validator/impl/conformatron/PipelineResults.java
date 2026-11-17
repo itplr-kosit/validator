@@ -13,6 +13,7 @@ import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 
@@ -38,7 +39,7 @@ import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
  *
  * @author Andreas Schmitz
  */
-public record PipelineResults(ParseXmlResult parse, DetectScenariosResult detect, SelectScenarioAction.SelectScenarioResult select,
+public record PipelineResults(ParseXmlResult parse, DetectScenariosResult detect, SelectScenarioResult select,
         RetrieveArtifactsAction.RetrieveArtifactsResult retrieve, PrepareRulesAction.PrepareRulesResult prepare,
         ApplyRulesAction.ApplyRulesActionResult apply, ComputeConformanceAction.ComputeConformanceActionResult conformance,
         DecisionRecommendationAction.DecisionRecommendationResult decision) {
@@ -47,16 +48,16 @@ public record PipelineResults(ParseXmlResult parse, DetectScenariosResult detect
      * Assembles the run from the results of steps 2–8 and lets step 9 decide it. Step 9 always runs (step-09 spec),
      * also for a cancelled run — so a run without a decision cannot be assembled from step results.
      */
-    public PipelineResults(final ParseXmlResult parse, final DetectScenariosResult detect,
-            final SelectScenarioAction.SelectScenarioResult select, final RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
-            final PrepareRulesAction.PrepareRulesResult prepare, final ApplyRulesAction.ApplyRulesActionResult apply,
+    public PipelineResults(final ParseXmlResult parse, final DetectScenariosResult detect, final SelectScenarioResult select,
+            final RetrieveArtifactsAction.RetrieveArtifactsResult retrieve, final PrepareRulesAction.PrepareRulesResult prepare,
+            final ApplyRulesAction.ApplyRulesActionResult apply,
             final ComputeConformanceAction.ComputeConformanceActionResult conformance) {
         this(parse, detect, select, retrieve, prepare, apply, conformance,
                 decide(parse, detect, select, retrieve, prepare, apply, conformance));
     }
 
     private static DecisionRecommendationAction.DecisionRecommendationResult decide(final ParseXmlResult parse,
-            final DetectScenariosResult detect, final SelectScenarioAction.SelectScenarioResult select,
+            final DetectScenariosResult detect, final SelectScenarioResult select,
             final RetrieveArtifactsAction.RetrieveArtifactsResult retrieve, final PrepareRulesAction.PrepareRulesResult prepare,
             final ApplyRulesAction.ApplyRulesActionResult apply,
             final ComputeConformanceAction.ComputeConformanceActionResult conformance) {
@@ -81,7 +82,7 @@ public record PipelineResults(ParseXmlResult parse, DetectScenariosResult detect
     }
 
     private static CTDetectionList detectionsAt(final CTActionType at, final ParseXmlResult parse, final DetectScenariosResult detect,
-            final SelectScenarioAction.SelectScenarioResult select, final RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
+            final SelectScenarioResult select, final RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
             final PrepareRulesAction.PrepareRulesResult prepare, final ApplyRulesAction.ApplyRulesActionResult apply) {
         return switch (at) {
             case PARSE_DOCUMENT -> parse.getDetectionList();
@@ -108,7 +109,7 @@ public record PipelineResults(ParseXmlResult parse, DetectScenariosResult detect
     }
 
     private static CTActionType cancelledAt(final ParseXmlResult parse, final DetectScenariosResult detect,
-            final SelectScenarioAction.SelectScenarioResult select, final RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
+            final SelectScenarioResult select, final RetrieveArtifactsAction.RetrieveArtifactsResult retrieve,
             final PrepareRulesAction.PrepareRulesResult prepare, final ApplyRulesAction.ApplyRulesActionResult apply,
             final ComputeConformanceAction.ComputeConformanceActionResult conformance) {
         if (conformance != null) {

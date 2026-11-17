@@ -8,10 +8,10 @@ import org.conformatron.api.model.detection.CTStandardSeverity;
 import org.conformatron.api.model.scenario.CTScenarioMatch;
 import org.jspecify.annotations.Nullable;
 import org.kosit.cvr.model.SeverityOverrides;
-import org.kosit.validator.scenario.v2.CustomErrorLevel;
-import org.kosit.validator.scenario.v2.ErrorLevelType;
-import org.kosit.validator.scenario.v2.ScenarioType;
-import org.kosit.validator.scenario.v2.ValidateWithSchematron;
+import org.kosit.validator.scenario.generic.EScenarioErrorLevel;
+import org.kosit.validator.scenario.generic.Scenario;
+import org.kosit.validator.scenario.generic.ScenarioCustomErrorLevel;
+import org.kosit.validator.scenario.generic.ScenarioSchematron;
 
 /**
  * Reads the {@link SeverityOverrides} out of a scenario configuration: the {@code customLevel} elements declared with
@@ -29,7 +29,7 @@ public final class ScenarioSeverityOverrides {
         // static utility
     }
 
-    private static CTStandardSeverity toSeverity(final ErrorLevelType level) {
+    private static CTStandardSeverity toSeverity(final EScenarioErrorLevel level) {
         return switch (level) {
             case ERROR -> CTStandardSeverity.ERROR;
             case WARNING -> CTStandardSeverity.WARNING;
@@ -41,22 +41,22 @@ public final class ScenarioSeverityOverrides {
      * Collects all {@code customLevel} overrides declared by the given scenario configuration (across all rule sets,
      * token lists expanded).
      *
-     * @param configuration the scenario configuration; {@code null} yields {@link SeverityOverrides#NONE}
+     * @param declaration the scenario declaration; {@code null} yields {@link SeverityOverrides#NONE}
      * @return the overrides, {@link SeverityOverrides#NONE} when the scenario declares none
      */
-    public static SeverityOverrides fromConfiguration(final @Nullable ScenarioType configuration) {
-        if (configuration == null) {
+    public static SeverityOverrides fromDeclaration(final @Nullable Scenario declaration) {
+        if (declaration == null) {
             return SeverityOverrides.NONE;
         }
         final Map<String, CTStandardSeverity> map = new LinkedHashMap<>();
-        collect(configuration, map);
+        collect(declaration, map);
         return SeverityOverrides.of(map);
     }
 
-    private static void collect(final ScenarioType configuration, final Map<String, CTStandardSeverity> map) {
-        for (final ValidateWithSchematron schematron : configuration.getValidateWithSchematron()) {
-            for (final CustomErrorLevel level : schematron.getCustomLevel()) {
-                for (final String code : level.getValue()) {
+    private static void collect(final Scenario declaration, final Map<String, CTStandardSeverity> map) {
+        for (final ScenarioSchematron schematron : declaration.getSchematrons()) {
+            for (final ScenarioCustomErrorLevel level : schematron.getCustomLevels()) {
+                for (final String code : level.getRuleIDs()) {
                     map.put(code, toSeverity(level.getLevel()));
                 }
             }
@@ -84,8 +84,8 @@ public final class ScenarioSeverityOverrides {
     public static SeverityOverrides ofAll(final List<? extends CTScenarioMatch> applied) {
         final Map<String, CTStandardSeverity> map = new LinkedHashMap<>();
         for (final CTScenarioMatch match : applied) {
-            if (match instanceof final ScenarioMatch scenarioMatch && scenarioMatch.getConfiguration() != null) {
-                collect(scenarioMatch.getConfiguration(), map);
+            if (match instanceof final ScenarioMatch scenarioMatch && scenarioMatch.getDeclaration() != null) {
+                collect(scenarioMatch.getDeclaration(), map);
             }
         }
         return map.isEmpty() ? SeverityOverrides.NONE : SeverityOverrides.of(map);

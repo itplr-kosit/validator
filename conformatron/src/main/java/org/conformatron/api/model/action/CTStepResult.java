@@ -20,7 +20,7 @@ public enum CTStepResult {
 
     /**
      * The step was skipped because a precondition was not met (e.g. no artifacts retrieved, previous execution in the
-     * loop failed). The skip reason must be recorded in the associated {@link ICTActionReport}.
+     * loop failed). The skip reason must be recorded in the associated {@code CTValidationReport} of the step.
      */
     SKIPPED,
 

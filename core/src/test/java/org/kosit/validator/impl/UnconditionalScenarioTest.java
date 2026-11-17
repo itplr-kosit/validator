@@ -24,8 +24,7 @@ public class UnconditionalScenarioTest {
                 .load(TestResources.Simple.SCENARIOS_WITH_UNCONDITIONAL, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
-        return new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true, configuration)
-                .validate(TestHelper.read(document));
+        return new ConformanceValidation(TestHelper.getTestProcessor(), true, configuration).validate(TestHelper.read(document));
     }
 
     @Test

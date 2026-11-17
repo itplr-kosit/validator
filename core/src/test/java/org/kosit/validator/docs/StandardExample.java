@@ -31,8 +31,7 @@ public class StandardExample {
         // Load the rest of the specific Validator configuration from classpath
         final ScenarioSet config = ScenarioSet.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
         // The engine over that configuration - the canonical pipeline, steps 2 to 9
-        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(new TestEngineInformation(),
-                ProcessorProvider.getProcessor(), config);
+        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(ProcessorProvider.getProcessor(), config);
         // Temporary file helper
         try ( ResourceHelper resHelper = new ResourceHelper() ) {
             // Validate a single document

@@ -35,7 +35,7 @@ import net.sf.saxon.type.Type;
  * <p>
  * The DOM contract (ADR-002) is fulfilled without re-parsing: {@link #getAsDom()} exposes a read-only W3C DOM view over
  * the Saxon tree. The view carries no line numbers (ADR-001). The source bytes are defensively copied on construction
- * and cloned on access; the hash is computed once via the central {@link SourceDigest} helper (ADR-003).
+ * and cloned on access; the hash is computed once via the central {@code SourceDigest} helper (ADR-003).
  * </p>
  *
  * @author Andreas Schmitz

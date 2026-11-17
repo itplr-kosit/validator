@@ -13,13 +13,12 @@ import org.conformatron.api.model.validation.CTValidationArtifactReference;
 import org.junit.jupiter.api.Test;
 import org.kosit.conformatron.rule.PreparedRuleSet;
 import org.kosit.conformatron.validation.ResolvedValidationArtifact;
-import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.compiler.IsoSchematronCompiler;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction.PrepareRulesResult;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
-import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.kosit.validator.testdata.TestResources;
 
 import net.sf.saxon.s9api.XsltExecutable;
@@ -38,7 +37,7 @@ public class PrepareRulesActionTest {
 
     private static List<CTResolvedValidationArtifact> retrieve(final String... references) {
         final RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI, true)
-                .execute(List.of(references).stream().map(ValidationArtifactReference::of).toList(), DOCUMENT);
+                .execute(List.of(references).stream().map(ScenarioRuleSetReference::of).toList(), DOCUMENT);
         assertThat(retrieved.isSuccess()).isTrue();
         return retrieved.artifacts();
     }
@@ -118,8 +117,8 @@ public class PrepareRulesActionTest {
         final PrepareRulesResult prepared = this.action.execute(retrieve("simple.sch"), DOCUMENT);
         final var compiled = prepared.ruleSets().get(0).getCompiledArtifact();
 
-        final CTResolvedValidationArtifact precompiled = ResolvedValidationArtifact
-                .precompiled(ValidationArtifactReference.of("simple.sch"), compiled);
+        final CTResolvedValidationArtifact precompiled = ResolvedValidationArtifact.precompiled(ScenarioRuleSetReference.of("simple.sch"),
+                compiled);
         final PrepareRulesResult result = this.action.execute(List.of(precompiled), DOCUMENT);
 
         assertThat(result.isSuccess()).isTrue();
@@ -129,9 +128,8 @@ public class PrepareRulesActionTest {
 
     @Test
     public void testBrokenSchematronFailsTheStep() {
-        final CTResolvedValidationArtifact broken = ResolvedValidationArtifact.loaded(
-                ValidationArtifactReference.of("does-not-compile.sch"), CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3,
-                "not a schematron".getBytes());
+        final CTResolvedValidationArtifact broken = ResolvedValidationArtifact.loaded(ScenarioRuleSetReference.of("does-not-compile.sch"),
+                CTStandardValidationType.SCHEMATRON_SCHXSLT2_XSLT3, "not a schematron".getBytes());
 
         final PrepareRulesResult result = this.action.execute(List.of(broken), DOCUMENT);
 

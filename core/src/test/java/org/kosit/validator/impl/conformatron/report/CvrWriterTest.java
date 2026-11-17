@@ -27,6 +27,7 @@ import org.kosit.validator.impl.conformatron.action.ComputeConformanceAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
@@ -64,7 +65,7 @@ public class CvrWriterTest {
         }
         final DetectScenariosResult detected = new DetectScenariosAction(this.configuration.getScenarios(), TestHelper.getTestProcessor())
                 .execute(parsed.getParsedSource());
-        final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
+        final SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
                 true).execute(selected.selected());
         final PrepareRulesAction.PrepareRulesResult prepared = new PrepareRulesAction(

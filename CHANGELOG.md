@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.0.0 - work in progress
 
+### Changed
+
+- (API) The engine states its own identity in the report: `ConformanceValidation` implements `EngineInformation` and answers with the name and version of this validator, so no caller passes one in any more. Every constructor and both `adHoc(…)` factories lost their first parameter — `new ConformanceValidation(processor, config)` instead of `new ConformanceValidation(engineInformation, processor, config)`. An application that embeds the engine and wants the report to name itself says so with `withEngineInformation(…)`. The report of a CLI run therefore no longer says `validator-cli`, nor a server run `validator-server`: both name the engine that validated
+
+- (CONFIG) A coordinate identifies a scenario or an artifact, it does not select one (ADR `validator-coordinates-identify-without-resolving`). Loading therefore refuses, with a message naming the reason, what only makes sense together with selection: a pseudo version such as `latest`, a `validFromDate`, a coordinate declared by two scenarios, and a coordinate declared for two different files. The same file under the same coordinate in several scenarios is one shared artifact and loads. A concrete version that is no DVR version, such as `1.09.2`, is used as written, with a warning
+
+- (CONFIG) Version 3: a `customLevel` can say why and since when it overrides the severity of its rules, in an optional element `description` (validator#207). To make room for it, the rule IDs move from the text of `customLevel` into an element `rules`: `<customLevel level="warning"><rules>BR-CL-23</rules><description>…</description></customLevel>`. The report carries the description with the scenario the step `select-scenario` embeds. Version 2 keeps its form and has no description; mapping version 3 to version 2 drops it with a warning
+
+### Removed
+
+- (API) `EngineInformation.getFrameworkVersion()` and `getBuild()`, which no caller ever read. With them go `CliEngineInformation`, `ServerEngineInformation`, the resource `cli-info.properties` and the server configuration property `validator.framework-version`
+
+### Added
+
+- (CLI) The subcommand `convert` writes a scenario configuration of version 2 as one of version 3: `validator convert -s scenarios.xml -o scenarios-v3.xml`. Version 3 requires a DVR coordinate for every scenario and every artifact, which version 2 was allowed to leave off, so the command proposes the missing ones and stops; `--group-id` says under which group id they are published and `--accept-proposals` writes them in. A coordinate becomes the identity a report names the scenario and its artifacts by, so the conversion does not settle on one by itself. An artifact several scenarios validate with gets one coordinate, not one per scenario. The migration itself is `ScenarioMigration` in the module `validator-scenario`, so it is available without the command line
+
 
 ## 2.0.0-tp2
 

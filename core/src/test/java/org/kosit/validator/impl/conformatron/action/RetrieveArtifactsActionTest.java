@@ -13,7 +13,7 @@ import org.conformatron.api.model.action.CTStepResult;
 import org.conformatron.api.model.validation.CTStandardValidationType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.kosit.cvr.util.ArtifactResolver;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.RetrieveArtifactsResult;
 import org.kosit.validator.testdata.TestResources;
@@ -27,8 +27,8 @@ public class RetrieveArtifactsActionTest {
 
     private final RetrieveArtifactsAction action = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI, true);
 
-    private static List<ValidationArtifactReference> refs(final String... references) {
-        return List.of(references).stream().map(ValidationArtifactReference::of).toList();
+    private static List<ScenarioRuleSetReference> refs(final String... references) {
+        return List.of(references).stream().map(ScenarioRuleSetReference::of).toList();
     }
 
     @Test

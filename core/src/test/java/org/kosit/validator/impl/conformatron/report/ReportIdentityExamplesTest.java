@@ -22,6 +22,7 @@ import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.impl.conformatron.FixedTimestamps;
 import org.kosit.validator.impl.conformatron.LocalUris;
+import org.kosit.validator.impl.conformatron.StableStackTraces;
 import org.kosit.validator.testdata.TestResources;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -64,8 +65,8 @@ public class ReportIdentityExamplesTest {
         final ScenarioSet configuration = ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
-        final ConformanceValidationResult result = new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(),
-                true, configuration).validate(TestHelper.read(document));
+        final ConformanceValidationResult result = new ConformanceValidation(TestHelper.getTestProcessor(), true, configuration)
+                .withEngineInformation(new TestEngineInformation()).validate(TestHelper.read(document));
         assertThat(result.isCompleted()).isTrue();
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -89,8 +90,8 @@ public class ReportIdentityExamplesTest {
         }
         Files.createDirectories(examples);
         // the examples are kept in the repository, so their timestamps are fixed and their URLs are local —
-        // see FixedTimestamps and LocalUris
-        Files.write(examples.resolve(name), FixedTimestamps.apply(LocalUris.apply(cvr)));
+        // see FixedTimestamps, LocalUris and StableStackTraces
+        Files.write(examples.resolve(name), FixedTimestamps.apply(LocalUris.apply(StableStackTraces.apply(cvr))));
     }
 
     private static Element report(final Document cvr, final String creator) {

@@ -16,19 +16,21 @@ import org.conformatron.api.model.action.CTActionType;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.uri.UriHelper;
 import org.kosit.base.xml.XmlHelper;
-import org.kosit.conformatron.validation.ValidationArtifactReference;
+import org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.conformatron.FixedTimestamps;
 import org.kosit.validator.impl.conformatron.LocalUris;
+import org.kosit.validator.impl.conformatron.StableStackTraces;
 import org.kosit.validator.impl.conformatron.PipelineResults;
 import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
 import org.kosit.validator.impl.conformatron.action.DecisionRecommendationAction;
 import org.kosit.validator.impl.conformatron.action.PrepareRulesAction;
 import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
 import org.kosit.validator.impl.conformatron.action.SelectScenarioAction;
+import org.kosit.validator.impl.conformatron.action.SelectScenarioResult;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosAction;
 import org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult;
 import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
@@ -67,8 +69,10 @@ public class CvrUnhappyPathTest {
         final ScenarioSet configuration = ScenarioSet.load(scenarios, TestResources.Simple.REPOSITORY_URI)
                 .setResolvingStrategy(TestHelper.getTestResolvingStrategy()).build(TestHelper.getTestProcessor());
         // the shared test repository lives inside an archive, so this engine is allowed to resolve into one
-        return new ConformanceValidation(new TestEngineInformation(), TestHelper.getTestProcessor(), true, configuration)
-                .run(TestHelper.read(document), requestedScenarioId);
+        // the identity is pinned: the expected reports are committed, and the engine's own version changes with
+        // every release
+        return new ConformanceValidation(TestHelper.getTestProcessor(), true, configuration)
+                .withEngineInformation(new TestEngineInformation()).run(TestHelper.read(document), requestedScenarioId);
     }
 
     /**
@@ -95,13 +99,13 @@ public class CvrUnhappyPathTest {
                 .execute(parsed.getParsedSource());
         assertThat(detected.isSuccess()).isTrue();
 
-        final SelectScenarioAction.SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
+        final SelectScenarioResult selected = new SelectScenarioAction().execute(detected.matches());
         assertThat(selected.isSuccess()).isTrue();
 
         // the name of the parsed source, exactly like the pipeline does it: URI.getPath() is null for the opaque
         // "jar:" URIs the test data has when the build packaged it, and a detection without a location does not build
         final RetrieveArtifactsAction.RetrieveArtifactsResult retrieved = new RetrieveArtifactsAction(TestResources.Simple.REPOSITORY_URI,
-                true).execute(Arrays.stream(references).map(ValidationArtifactReference::of).toList(),
+                true).execute(Arrays.stream(references).map(ScenarioRuleSetReference::of).toList(),
                         parsed.getParsedSource().getSource().getName());
         if (!retrieved.isSuccess()) {
             return new PipelineResults(parsed, detected, selected, retrieved, null, null, null);
@@ -151,8 +155,8 @@ public class CvrUnhappyPathTest {
         }
         Files.createDirectories(examples);
         // the examples are kept in the repository, so they carry neither the time nor the paths of this run —
-        // see FixedTimestamps and LocalUris
-        Files.write(examples.resolve(name), FixedTimestamps.apply(LocalUris.apply(cvr)));
+        // see FixedTimestamps, LocalUris and StableStackTraces
+        Files.write(examples.resolve(name), FixedTimestamps.apply(LocalUris.apply(StableStackTraces.apply(cvr))));
     }
 
     private static List<Element> reports(final Document cvr) {

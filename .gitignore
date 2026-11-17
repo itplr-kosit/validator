@@ -56,3 +56,6 @@ server/bruno/
 client/classes/openapi.yml
 
 .claude/
+
+# written by the flatten plugin next to each pom; removed again by mvn clean
+.flattened-pom.xml

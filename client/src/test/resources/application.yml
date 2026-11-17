@@ -1,5 +1,4 @@
 validator:
-  framework-version: 1.0.2
   scenarios:
     - scenarioPath: ../test-data/src/main/resources/examples/simple/scenarios.xml
       repositoryPath: ../test-data/src/main/resources/examples/simple/repository

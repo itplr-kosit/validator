@@ -52,7 +52,6 @@ import org.kosit.conformatron.source.Resource;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.ConformanceValidation;
-import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kost.validator.api.saxon.ProcessorProvider;
 
@@ -68,8 +67,8 @@ public class StandardExample {
         // Load the rest of the specific Validator configuration from classpath
         final ScenarioSet config = ScenarioSet.load(scenarios.toURI()).build(ProcessorProvider.getProcessor());
         // The engine over that configuration - the canonical pipeline, steps 2 to 9
-        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(new TestEngineInformation(),
-                ProcessorProvider.getProcessor(), config);
+        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(ProcessorProvider.getProcessor(),
+                config);
         // Temporary file helper
         try ( ResourceHelper resHelper = new ResourceHelper() ) {
             // Validate a single document
@@ -99,7 +98,11 @@ public class StandardExample {
 }
 ```
 
-`TestEngineInformation` stands for your own implementation of `EngineInformation`: it names the application that ran the validation in the report.
+The report names the engine that produced it, and the engine knows that about itself - there is nothing to pass in. An application that embeds the validator and wants the report to name itself instead states its own `EngineInformation`:
+
+```java
+new ConformanceValidation(ProcessorProvider.getProcessor(), config).withEngineInformation(myApplication);
+```
 
 The `ConformanceValidationResult` has convenience methods to retrieve details about the run:
 
@@ -165,7 +168,6 @@ import java.nio.file.Paths;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.ConformanceValidation;
-import org.kosit.validator.impl.TestEngineInformation;
 import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kost.validator.api.saxon.ProcessorProvider;
 
@@ -181,8 +183,8 @@ public class MyValidator {
                         .validate(schematron("my rules").source("myRules.xsl").compiler("schxslt")))
                 .useRepository(Paths.get("/opt/myrepository")).build(ProcessorProvider.getProcessor());
         // the engine: configuration is a construction concern, validate(...) takes nothing but the document
-        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(new TestEngineInformation(),
-                ProcessorProvider.getProcessor(), config);
+        final ValidationEngine<ConformanceValidationResult> validator = new ConformanceValidation(ProcessorProvider.getProcessor(),
+                config);
         // .. run your checks
     }
 }

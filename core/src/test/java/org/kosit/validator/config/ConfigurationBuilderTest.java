@@ -33,8 +33,8 @@ public class ConfigurationBuilderTest {
         final ConfigurationBuilder builder = createSimpleConfiguration();
         builder.getScenarios().get(0).validate((SchemaBuilder) null);
         final ScenarioSet set = builder.build(TestHelper.getTestProcessor());
-        assertThat(set.getScenarios().get(0).getConfiguration().getValidateWithXmlSchema()).isNull();
-        assertThat(set.getScenarios().get(0).getConfiguration().getValidateWithSchematron()).isNotEmpty();
+        assertThat(set.getScenarios().get(0).getDeclaration().getXmlSchemas()).isEmpty();
+        assertThat(set.getScenarios().get(0).getDeclaration().getSchematrons()).isNotEmpty();
     }
 
     @Test

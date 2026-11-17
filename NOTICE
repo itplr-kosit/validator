@@ -3,3 +3,9 @@ Copyright 2017-2025 Koordinierungsstelle für IT-Standards (KoSIT)
 
 This product includes software developed by
 Koordinierungsstelle für IT-Standards (<https://xeinkauf.de/>).
+
+This product includes software derived from ph-diver
+(https://github.com/phax/ph-diver) by Philip Helger, licensed under the
+Apache License, Version 2.0: the handling of DVR coordinates, versions and
+pseudo versions in the packages org.kosit.base.coord and
+org.kosit.base.coord.version.
