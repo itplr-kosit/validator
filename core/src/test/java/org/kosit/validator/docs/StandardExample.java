@@ -10,14 +10,14 @@ import java.nio.file.Paths;
 
 import org.conformatron.api.model.source.CTReadResource;
 import org.kosit.base.io.ResourceHelper;
+import org.kosit.conformatron.pipeline.ConformanceValidationResult;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.api.ValidationEngine;
 import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.TestEngineInformation;
-import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
-import org.kost.validator.api.saxon.ProcessorProvider;
+import org.kosit.xml.saxon.ProcessorProvider;
 
 /**
  * Example code that is used in the docs/api.md file: load a configuration, build the engine, validate a document, read

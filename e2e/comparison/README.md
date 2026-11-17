@@ -46,7 +46,7 @@ java -jar .../lib/validator-1.6.0-standalone.jar -s input/scenarios-v1.6.xml \
 
 # 2.0:
 mvn -f validator/pom.xml -pl core test-compile org.codehaus.mojo:exec-maven-plugin:3.1.0:java \
-    -Dexec.mainClass=org.kosit.validator.impl.conformatron.XRechnungE2ERunner -Dexec.classpathScope=test \
+    -Dexec.mainClass=org.kosit.validator.impl.pipeline.XRechnungE2ERunner -Dexec.classpathScope=test \
     -De2e.scenarios=.../input/scenarios-v2.0-framework2.xml -De2e.repository=.../input/repository \
     -De2e.instances=.../input/instances -De2e.output=.../v2_0 -De2e.reports=.../v2_0/reports
 
@@ -65,7 +65,7 @@ sich so nachrechnen:
 ```bash
 # derselbe Lauf zweimal, einmal ohne und einmal mit Kennungen
 for cfg in scenarios-v2.0-framework2 scenarios-v2.0-framework2-with-ids; do
-  mvn -f validator/pom.xml -pl core test-compile org.codehaus.mojo:exec-maven-plugin:3.1.0:java       -Dexec.mainClass=org.kosit.validator.impl.conformatron.XRechnungE2ERunner -Dexec.classpathScope=test       -De2e.scenarios=.../input/$cfg.xml -De2e.output=/tmp/$cfg -De2e.reports=/tmp/$cfg/reports
+  mvn -f validator/pom.xml -pl core test-compile org.codehaus.mojo:exec-maven-plugin:3.1.0:java       -Dexec.mainClass=org.kosit.validator.impl.pipeline.XRechnungE2ERunner -Dexec.classpathScope=test       -De2e.scenarios=.../input/$cfg.xml -De2e.output=/tmp/$cfg -De2e.reports=/tmp/$cfg/reports
 done
 diff -r /tmp/scenarios-v2.0-framework2/reports /tmp/scenarios-v2.0-framework2-with-ids/reports
 ```

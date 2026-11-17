@@ -108,10 +108,10 @@
             <message>Artifact could not be prepared: Can not compile xslt executable for uri does-not-compile.sch</message>
             <supplemental role="java-trace">java.lang.IllegalStateException: Can not compile xslt executable for uri does-not-compile.sch&#13;
 	at org.kosit.schematron.ContentRepository.loadSchematronXslt(ContentRepository.java)&#13;
-	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.prepare(PrepareRulesAction.java)&#13;
-	at org.kosit.validator.impl.conformatron.action.PrepareRulesAction.execute(PrepareRulesAction.java)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.runWithReferences(CvrUnhappyPathTest.java)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step6RulesDoNotCompile(CvrUnhappyPathTest.java)&#13;
+	at org.kosit.conformatron.action.PrepareRulesAction.prepare(PrepareRulesAction.java)&#13;
+	at org.kosit.conformatron.action.PrepareRulesAction.execute(PrepareRulesAction.java)&#13;
+	at org.kosit.validator.impl.report.CvrUnhappyPathTest.runWithReferences(CvrUnhappyPathTest.java)&#13;
+	at org.kosit.validator.impl.report.CvrUnhappyPathTest.step6RulesDoNotCompile(CvrUnhappyPathTest.java)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java)&#13;

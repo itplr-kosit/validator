@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- (BUILD) Modules cut by responsibility (validator#233): `validator-conformatron-model` holds the data types of the Conformatron API, `validator-conformatron-impl` the pipeline steps, the result of a run and the writer of the report, and `validator-core` only configuration and engine - loading a scenario configuration, the steps `detect-scenarios` and `select-scenario`, and `ConformanceValidation`. `validator-cvr` is the report format and nothing else. The former `validator-conformatron-impl` is now `validator-conformatron-model`, the former `validator-api` is `validator-xml`; a project that depends on `validator-core` gets all of them as before. See [modules](docs/modules.md)
+
+- (API) Packages moved with the module cut; reports change only where a stack trace names a moved class. Replace in imports:
+
+  | Before | Now |
+  |--------|-----|
+  | `org.kosit.validator.impl.conformatron.action` | `org.kosit.conformatron.action`, except `SelectScenarioAction` and `DetectScenariosAction`: `org.kosit.validator.impl.action` |
+  | `org.kosit.validator.impl.conformatron.action.detectscen.DetectScenariosResult` | `org.kosit.conformatron.action.DetectScenariosResult` |
+  | `org.kosit.validator.impl.conformatron.action.parsedoc` | `org.kosit.conformatron.action.parsedoc` |
+  | `org.kosit.validator.impl.conformatron.PipelineResults`, `ConformanceValidationResult` | `org.kosit.conformatron.pipeline` |
+  | `org.kosit.validator.impl.conformatron.report.CvrWriter` | `org.kosit.conformatron.report.CvrWriter` |
+  | `org.kosit.validator.impl.conformatron.model.ComputeConformanceResult`, `ConformanceStatement`, `ConformanceTarget` | `org.kosit.conformatron.conformance` |
+  | `org.kosit.validator.impl.conformatron.model.ScenarioRuleSetReference` | `org.kosit.conformatron.validation.ScenarioRuleSetReference` |
+  | `org.kosit.validator.impl.conformatron.model.ScenarioMatch`, `ScenarioSeverityOverrides` | `org.kosit.validator.impl.model` |
+  | `org.kosit.validator.impl.conformatron.util.ScenarioXml` | `org.kosit.validator.impl.util.ScenarioXml` |
+  | `org.kosit.cvr.model.SeverityOverrides` | `org.kosit.conformatron.rule.SeverityOverrides` |
+  | `org.kosit.cvr.util.ArtifactResolver` | `org.kosit.conformatron.validation.ArtifactResolver` |
+  | `org.kost.validator.api.xml` | `org.kosit.xml` |
+  | `org.kost.validator.api.saxon` | `org.kosit.xml.saxon` |
+  | `org.kost.validator.api.error` | `org.kosit.xml.error` |
+
 - (API) The engine states its own identity in the report: `ConformanceValidation` implements `EngineInformation` and answers with the name and version of this validator, so no caller passes one in any more. Every constructor and both `adHoc(…)` factories lost their first parameter — `new ConformanceValidation(processor, config)` instead of `new ConformanceValidation(engineInformation, processor, config)`. An application that embeds the engine and wants the report to name itself says so with `withEngineInformation(…)`. The report of a CLI run therefore no longer says `validator-cli`, nor a server run `validator-server`: both name the engine that validated
 
 - (CONFIG) A coordinate identifies a scenario or an artifact, it does not select one (ADR `validator-coordinates-identify-without-resolving`). Loading therefore refuses, with a message naming the reason, what only makes sense together with selection: a pseudo version such as `latest`, a `validFromDate`, a coordinate declared by two scenarios, and a coordinate declared for two different files. The same file under the same coordinate in several scenarios is one shared artifact and loads. A concrete version that is no DVR version, such as `1.09.2`, is used as written, with a warning
@@ -16,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (CONFIG) Version 3: a `customLevel` can say why and since when it overrides the severity of its rules, in an optional element `description` (validator#207). To make room for it, the rule IDs move from the text of `customLevel` into an element `rules`: `<customLevel level="warning"><rules>BR-CL-23</rules><description>…</description></customLevel>`. The report carries the description with the scenario the step `select-scenario` embeds. Version 2 keeps its form and has no description; mapping version 3 to version 2 drops it with a warning
 
 ### Removed
+
+- (API) `SchemaProvider`, whose only method `getXvrlSchema()` is `XvrlConverter.getXvrlSchema()` in `validator-xvrl`, and `SaxonHelper`. Nothing used either of them
 
 - (API) `EngineInformation.getFrameworkVersion()` and `getBuild()`, which no caller ever read. With them go `CliEngineInformation`, `ServerEngineInformation`, the resource `cli-info.properties` and the server configuration property `validator.framework-version`
 

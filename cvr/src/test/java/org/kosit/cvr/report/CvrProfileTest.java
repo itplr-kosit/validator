@@ -11,8 +11,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
+import org.kosit.xml.error.DetailedValidationResult;
 import org.kosit.xvrl.impl.XvrlConverter;
-import org.kost.validator.api.error.DetailedValidationResult;
 
 /**
  * Tests the CVR profile against hand written reports: the two shapes a run can produce (a cancelled and a completed

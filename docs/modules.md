@@ -1,62 +1,89 @@
 # Module Overview
 
-The KoSIT XML Validator is divided into several modules to allow a clear separation of responsibilities.
+The KoSIT XML Validator is divided into modules with one responsibility each. The modules form layers: a module only
+depends on the modules below it, and Maven refuses a build in which a lower module reaches up. The layering is
+therefore not a convention but enforced by the build.
 
 ## Module Structure
 
-- **api**: Contains all public interfaces and model classes.
-- **schematron**: Contains the technical validation engine (XSD and Schematron), without scenario handling and without XVRL generation.
-- **cvr**: Contains the CVR profile - the XSD of the extension vocabulary and the Schematron of the profile constraints.
-- **core**: Contains the core logic of the validation (scenario selection, XVRL generation, acceptance recommendation).
-- **server**: A REST API implementation based on Quarkus.
-- **client**: A lightweight Java client for using the REST API.
-- **cli**: Command Line Interface for using the validator via the console.
+In build order, with the modules each one depends on (compile scope; every artifact ID is `validator-` plus the
+directory name):
 
-## API Module (`validator-api`)
+| Module | Responsibility | Depends on |
+|--------|----------------|------------|
+| `conformatron` | The Conformatron API: interfaces only, `org.conformatron.api` | - |
+| `base` | Generic helpers for objects, strings, errors, URIs and XML; the DVR coordinates | `conformatron` |
+| `conformatron-model` | The data types of the Conformatron API as the validator implements them - detections, resources, rule sets, validation artifacts, conformance statements. No behaviour | `conformatron`, `base` |
+| `xml` | Reading XML: the secured Saxon processor, the parser of the step `parse-document`, the handlers that collect parser and schema errors as detections | `jaxb`, `conformatron-model` |
+| `jaxb` | Generic JAXB read/write helpers and adapters | `base`, `conformatron` |
+| `svrl` | JAXB binding of SVRL, the Schematron Validation Report Language | `jaxb` |
+| `schematron` | The technical validation engine: XML Schema and Schematron, compilers, content repositories and resolving | `svrl`, `xml` |
+| `xvrl` | JAXB binding of XVRL, the XML Validation Report Language | `jaxb` |
+| `cvr` | The CVR profile of XVRL - the format of the report, nothing that writes it | `xvrl`, `schematron` |
+| `conformatron-impl` | The canonical pipeline steps, the result of a run and the writer of the report | `conformatron-model`, `xml`, `schematron`, `svrl`, `xvrl`, `cvr` |
+| `scenario` | The scenario configuration: JAXB bindings of version 2 and 3, the version independent model, the migration | `jaxb` |
+| `core` | Configuration and engine: loads a scenario configuration, detects and selects the scenario, runs the pipeline | `conformatron-impl`, `scenario`, `schematron`, `xml` |
+| `cli` | The command line application | `core` |
+| `server` | The REST service, based on Quarkus | `core` |
+| `client` | A Java client of the REST service | `core`, `xvrl`, `svrl` |
+| `distribution` | The release archive | `cli`, `server` |
 
-The API module provides the interfaces necessary for integrating the validator into your own applications. It is designed to be the only dependency needed for clients.
+`test-data` holds the scenario configurations, schemas and sample instances the tests of all modules share; it is a
+test dependency only.
 
-### Important Interfaces
+### Where a class belongs
 
-- `Check`: Main interface for performing validations.
-- `Configuration`: Configuration of the validator (scenarios, repositories).
-- `Result`: Result of a validation.
-- `Input`: Abstraction of the document to be checked.
+- A type of the Conformatron API without behaviour goes into `conformatron-model`.
+- A pipeline step, the result of a run, and writing the report go into `conformatron-impl`.
+- Whatever needs the scenario configuration - loading it, the steps `detect-scenarios` and `select-scenario`, the
+  engine over a configuration - goes into `core`.
+- A format - a schema, a Schematron, a JAXB binding - is a module of its own: `svrl`, `xvrl`, `cvr`, `scenario`.
 
-### Generated Model Classes
+`conformatron`, `conformatron-model` and `conformatron-impl` together with the format modules know nothing about the
+KoSIT scenario configuration. That is the part another application can reuse to implement the Conformatron API without
+adopting the configuration format of the validator.
 
-The `validator-api` module includes several model classes that are automatically generated from XSD definitions (found in `src/main/model/xsd`) during the build process. These represent the core data structures for validation and reporting:
+### The pipeline steps
 
-- **Scenarios** (`org.kosit.validator.model.scenarios`): Classes representing the validation scenarios (from `scenarios.xsd`).
-- **XVRL** (`org.kosit.validator.model.xvrl`): Full implementation of the XML Validation Report Language (from `xvrl-1.0.xsd`).
-- **SVRL**: Support for Schematron Validation Report Language (from `svrl-kosit.xsd`).
-- **Assertions** (`org.kosit.validator.cmd.assertions`): Model for defining validation assertions (from `assertions.xsd`).
-- **General Models** (`org.kosit.validator.model`): General data structures like XML syntax errors (from `model.xsd`).
+| Step | Class | Module |
+|------|-------|--------|
+| `parse-document` | `org.kosit.conformatron.action.parsedoc.xml.ParseXmlAction` | `conformatron-impl` |
+| `detect-scenarios` | `org.kosit.validator.impl.action.DetectScenariosAction` | `core` |
+| `select-scenario` | `org.kosit.validator.impl.action.SelectScenarioAction` | `core` |
+| `retrieve-artifacts` | `org.kosit.conformatron.action.RetrieveArtifactsAction` | `conformatron-impl` |
+| `prepare-rules` | `org.kosit.conformatron.action.PrepareRulesAction` | `conformatron-impl` |
+| `apply-rules` | `org.kosit.conformatron.action.ApplyRulesAction` | `conformatron-impl` |
+| `compute-conformance` | `org.kosit.conformatron.action.ComputeConformanceAction` | `conformatron-impl` |
+| `decision-recommendation` | `org.kosit.conformatron.action.DecisionRecommendationAction` | `conformatron-impl` |
+
+The results of `detect-scenarios` and `select-scenario` (`DetectScenariosResult`, `SelectScenarioResult`) are in
+`conformatron-impl` all the same: the result of a run is assembled from the results of all steps, and it must not
+depend on where the action that produced one of them lives.
+
+### Package roots
+
+Every package lives in exactly one module, so a package name tells where a class is.
+
+| Module | Packages |
+|--------|----------|
+| `conformatron-model` | `org.kosit.conformatron.detection`, `.source`, `.rule`, `.validation`, `.conformance` |
+| `conformatron-impl` | `org.kosit.conformatron.action` (the steps), `.pipeline` (`PipelineResults`, `ConformanceValidationResult`), `.report` (`CvrWriter`) |
+| `xml` | `org.kosit.xml`, `org.kosit.xml.saxon`, `org.kosit.xml.error` |
+| `schematron` | `org.kosit.schematron` and below |
+| `cvr` | `org.kosit.cvr.report` |
+| `scenario` | `org.kosit.validator.scenario` and below |
+| `core` | `org.kosit.validator.api`, `org.kosit.validator.config`, `org.kosit.validator.impl` and below |
 
 ## Schematron Module (`validator-schematron`)
 
 The schematron module is the technical validation engine. It validates a document against XML Schema and Schematron and
 reports the findings as detections. It knows nothing about scenarios and produces no XVRL - Schematron results are bound
-via SVRL only, so the module depends on `validator-svrl` (and through it on `validator-jaxb`, `validator-base` and
-`validator-conformatron`), Saxon and SchXslt, and on nothing else.
+via SVRL only, so the module depends on `validator-svrl` and `validator-xml`, on Saxon and SchXslt, and on nothing else.
 
-It carries the canonical pipeline steps that need no scenario configuration:
-
-| Step | Action |
-|------|--------|
-| 2 `PARSE_DOCUMENT` | `org.kosit.cvr.action.parsedoc.xml.ParseXmlAction` |
-| 5 `RETRIEVE_ARTIFACTS` | `org.kosit.cvr.action.RetrieveArtifactsAction` |
-| 6 `PREPARE_RULES` | `org.kosit.cvr.action.PrepareRulesAction` |
-| 7 `APPLY_RULES` | `org.kosit.cvr.action.ApplyRulesAction` |
-
-### Package Roots
-
-- `org.kosit.schematron`: the engine itself - `ContentRepository`, the Schematron compilers and the compiler registry,
-  the ad-hoc validation against a single Schematron is the same engine over a scenario assembled at runtime (`ConformanceValidation.adHoc`).
+- `org.kosit.schematron`: `ContentRepository`, the Schematron compilers and the compiler registry.
+- `org.kosit.schematron.compiler`: the compilers themselves.
 - `org.kosit.schematron.resolve`: the resolving strategies and `ResolvingMode`.
-- `org.kosit.schematron.saxon`: `ProcessorProvider`, the secured Saxon processor.
-- `org.kosit.cvr`: the Conformance Validation Report model - the `ValidationEngine` contract plus the `action`,
-  `model`, `source` and `util` packages implementing `org.conformatron.api`.
+- `org.kosit.schematron.util`: turning SVRL into detections.
 
 ## CVR Module (`validator-cvr`)
 
@@ -78,18 +105,18 @@ Those constraints are deliberately not in the XSD: XVRL admits foreign attribute
 schema cannot tighten them, and most of the constraints relate one part of the report to another. `cvr-1.0.xsd` therefore
 types the vocabulary for tooling and for the reader, and `cvr-1.0.sch` is what an actual report is held to.
 
-The module depends on `validator-xvrl` for the XVRL schema and on `validator-schematron` to run its own rules. The
-writer that produces CVR (`CvrWriter`) lives in `validator-core`, because it serializes the results of the full
-pipeline including scenario detection and selection.
+The module is the format and nothing else. The writer that produces CVR, `CvrWriter`, lives in
+`validator-conformatron-impl` next to the steps whose results it serializes, and depends on this module - not the other
+way round.
 
 ## Core Module (`validator-core`)
 
-The core module contains the actual implementation of the validation logic. It handles:
+The core module is the validator over a scenario configuration:
 
-- Selection of matching scenarios.
-- Driving the `validator-schematron` engine for XSD and Schematron validation.
-- Generation of XVRL (XML Validation Report Language) and CVR reports.
-- The acceptance recommendation.
+- loading and checking a scenario configuration of version 2 or 3 (`org.kosit.validator.config`),
+- the steps `detect-scenarios` and `select-scenario` (`org.kosit.validator.impl.action`),
+- the engine `ConformanceValidation`, which runs the pipeline of `validator-conformatron-impl` for the selected
+  scenario, and the identity it states in the report (`EngineInformation`).
 
 ## Server Module (`validator-server`)
 

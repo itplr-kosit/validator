@@ -8,17 +8,48 @@
     </parent>
 
     <artifactId>validator-conformatron-impl</artifactId>
-    <name>Conformatron API implementation</name>
-    <description>The KoSIT Validator implementation of the Conformatron API. Currently empty.</description>
+    <name>Conformatron implementation</name>
+    <description>The canonical pipeline steps of the Conformatron API as the validator implements them, and the writer of the Conformance Validation Report. Knows no scenario configuration: detecting and selecting a scenario is left to validator-core.</description>
 
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>validator-conformatron</artifactId>
+            <artifactId>validator-conformatron-model</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>validator-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-jaxb</artifactId>
+        </dependency>
+        <!-- parse-document -->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-xml</artifactId>
+        </dependency>
+        <!-- prepare-rules and apply-rules -->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-schematron</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-svrl</artifactId>
+        </dependency>
+        <!-- the report: XVRL and its CVR profile -->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-xvrl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-cvr</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
         </dependency>
 
         <dependency>
@@ -36,7 +67,17 @@
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-base</artifactId>
+            <version>${version.validator}</version>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>validator-test-data</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
-
 </project>

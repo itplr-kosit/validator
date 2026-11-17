@@ -12,7 +12,7 @@ import org.kosit.schematron.resolve.ResolvingMode;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.conformatron.model.ScenarioSeverityOverrides;
+import org.kosit.validator.impl.model.ScenarioSeverityOverrides;
 import org.kosit.validator.testdata.TestResources;
 
 /**

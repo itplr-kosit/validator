@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.Scenario;
 import org.kosit.validator.testdata.TestResources;
-import org.kost.validator.api.saxon.ProcessorProvider;
+import org.kosit.xml.saxon.ProcessorProvider;
 
 /**
  * The {@code convert} subcommand: a configuration of version 2 becomes one of version 3, and the coordinates version 3

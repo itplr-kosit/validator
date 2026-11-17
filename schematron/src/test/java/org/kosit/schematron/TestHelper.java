@@ -4,7 +4,7 @@ import org.kosit.schematron.resolve.ResolvingConfigurationStrategy;
 import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
 import org.kosit.validator.testdata.TestData;
 import org.kosit.validator.testdata.TestResources;
-import org.kost.validator.api.saxon.ProcessorProvider;
+import org.kosit.xml.saxon.ProcessorProvider;
 
 import net.sf.saxon.s9api.Processor;
 

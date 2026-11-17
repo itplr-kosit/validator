@@ -26,12 +26,12 @@ import javax.xml.stream.XMLStreamReader;
 import org.conformatron.api.model.source.CTReadResource;
 import org.jspecify.annotations.Nullable;
 import org.kosit.base.xml.XmlHelper;
+import org.kosit.conformatron.pipeline.ConformanceValidationResult;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.impl.ConformanceValidation;
 import org.kosit.validator.impl.Scenario;
-import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.server.config.ValidationConfig;
-import org.kost.validator.api.saxon.ProcessorProvider;
+import org.kosit.xml.saxon.ProcessorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

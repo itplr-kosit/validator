@@ -8,12 +8,12 @@ import java.net.URI;
 import org.conformatron.api.model.action.CTActionType;
 import org.conformatron.api.model.conformance.CTDecision;
 import org.junit.jupiter.api.Test;
+import org.kosit.conformatron.pipeline.ConformanceValidationResult;
 import org.kosit.conformatron.source.ReadResource;
 import org.kosit.conformatron.source.Resource;
 import org.kosit.cvr.report.CvrProfile;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.ScenarioSet;
-import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.testdata.TestResources;
 
 /**

@@ -148,13 +148,13 @@
             <message>Rule set 'simple-runtime-error.sch' could not be applied: Cannot convert string "asldkfj" to an integer</message>
             <supplemental role="java-trace">net.sf.saxon.s9api.SaxonApiException: Cannot convert string "asldkfj" to an integer&#13;
 	at net.sf.saxon.s9api.XsltTransformer.transform(XsltTransformer.java)&#13;
-	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applySchematron(ApplyRulesAction.java)&#13;
-	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java)&#13;
-	at org.kosit.validator.impl.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java)&#13;
+	at org.kosit.conformatron.action.ApplyRulesAction.applySchematron(ApplyRulesAction.java)&#13;
+	at org.kosit.conformatron.action.ApplyRulesAction.applyOne(ApplyRulesAction.java)&#13;
+	at org.kosit.conformatron.action.ApplyRulesAction.execute(ApplyRulesAction.java)&#13;
 	at org.kosit.validator.impl.ConformanceValidation.run(ConformanceValidation.java)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.run(CvrUnhappyPathTest.java)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.serialize(CvrUnhappyPathTest.java)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step7RuleEngineFails(CvrUnhappyPathTest.java)&#13;
+	at org.kosit.validator.impl.report.CvrUnhappyPathTest.run(CvrUnhappyPathTest.java)&#13;
+	at org.kosit.validator.impl.report.CvrUnhappyPathTest.serialize(CvrUnhappyPathTest.java)&#13;
+	at org.kosit.validator.impl.report.CvrUnhappyPathTest.step7RuleEngineFails(CvrUnhappyPathTest.java)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java)&#13;

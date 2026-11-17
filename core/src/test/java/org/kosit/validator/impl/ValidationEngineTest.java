@@ -11,10 +11,10 @@ import org.conformatron.api.model.conformance.CTDecision;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.kosit.base.uri.UriHelper;
+import org.kosit.conformatron.pipeline.ConformanceValidationResult;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.ScenarioSet;
 import org.kosit.validator.api.ValidationEngine;
-import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 import org.kosit.validator.testdata.TestResources;
 
 /**

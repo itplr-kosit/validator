@@ -12,13 +12,13 @@ import org.conformatron.api.model.conformance.CTDecision;
 import org.conformatron.api.model.detection.CTDetection;
 import org.junit.jupiter.api.Test;
 import org.kosit.base.uri.UriHelper;
+import org.kosit.conformatron.action.ApplyRulesAction;
+import org.kosit.conformatron.action.RetrieveArtifactsAction;
+import org.kosit.conformatron.pipeline.ConformanceValidationResult;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
-import org.kosit.validator.impl.conformatron.action.ApplyRulesAction;
-import org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction;
-import org.kosit.validator.impl.conformatron.report.CvrAssert;
+import org.kosit.validator.impl.report.CvrAssert;
 import org.kosit.validator.testdata.TestResources;
-import org.kost.validator.api.xml.XmlDetection;
+import org.kosit.xml.XmlDetection;
 
 /**
  * The ad hoc validation — "run this Schematron against this document" — as a scenario assembled at runtime

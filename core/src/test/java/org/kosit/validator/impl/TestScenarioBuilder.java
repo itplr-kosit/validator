@@ -5,11 +5,11 @@ import java.net.URI;
 import org.jspecify.annotations.Nullable;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.impl.util.ScenarioXml;
 import org.kosit.validator.scenario.generic.EScenarioKind;
 import org.kosit.validator.scenario.generic.ScenarioResource;
 import org.kosit.validator.testdata.TestResources;
-import org.kost.validator.api.saxon.ProcessorProvider;
+import org.kosit.xml.saxon.ProcessorProvider;
 
 /**
  * Scenarios for tests that need one without a scenarios.xml: schema validation against {@code simple.xsd} of the shared

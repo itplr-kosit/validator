@@ -16,7 +16,7 @@ import org.kosit.base.uri.UriHelper;
 import org.kosit.jaxb.adapter.StringTrimAdapter;
 import org.kosit.schematron.ContentRepository;
 import org.kosit.schematron.resolve.StrictRelativeResolvingStrategy;
-import org.kosit.validator.impl.conformatron.util.ScenarioXml;
+import org.kosit.validator.impl.util.ScenarioXml;
 import org.kosit.validator.scenario.generic.EScenarioKind;
 import org.kosit.validator.scenario.generic.ScenarioDescription;
 import org.kosit.validator.scenario.generic.ScenarioNamespace;

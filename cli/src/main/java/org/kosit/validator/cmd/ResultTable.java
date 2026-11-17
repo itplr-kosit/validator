@@ -3,8 +3,8 @@ package org.kosit.validator.cmd;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.conformatron.api.model.detection.CTDetection;
@@ -12,11 +12,11 @@ import org.conformatron.api.model.detection.CTDetectionList;
 import org.conformatron.api.model.rule.CTPreparedRuleSet;
 import org.conformatron.api.model.validation.CTValidationStandard;
 import org.fusesource.jansi.AnsiRenderer.Code;
-import org.kosit.validator.cmd.report.Grid;
+import org.kosit.conformatron.pipeline.ConformanceValidationResult;
 import org.kosit.validator.cmd.report.Grid.ColumnDefinition;
+import org.kosit.validator.cmd.report.Grid;
 import org.kosit.validator.cmd.report.Justify;
 import org.kosit.validator.cmd.report.Line;
-import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
 
 /**
  * The result table the validator writes to the console — one row per checked document, unchanged in shape from the 1.6

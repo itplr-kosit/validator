@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>validator-api</artifactId>
+            <artifactId>validator-xml</artifactId>
         </dependency>
 
         <dependency>

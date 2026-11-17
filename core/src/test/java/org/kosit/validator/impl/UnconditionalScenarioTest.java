@@ -7,10 +7,10 @@ import java.net.URI;
 
 import org.conformatron.api.model.conformance.CTDecision;
 import org.junit.jupiter.api.Test;
+import org.kosit.conformatron.pipeline.ConformanceValidationResult;
 import org.kosit.validator.TestHelper;
 import org.kosit.validator.api.ScenarioSet;
-import org.kosit.validator.impl.conformatron.ConformanceValidationResult;
-import org.kosit.validator.impl.conformatron.report.CvrAssert;
+import org.kosit.validator.impl.report.CvrAssert;
 import org.kosit.validator.testdata.TestResources;
 
 /**

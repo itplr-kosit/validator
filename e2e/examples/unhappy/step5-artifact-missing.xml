@@ -103,11 +103,11 @@
 	at java.base/sun.net.www.protocol.jar.JarURLConnection.connect(JarURLConnection.java)&#13;
 	at java.base/sun.net.www.protocol.jar.JarURLConnection.getInputStream(JarURLConnection.java)&#13;
 	at java.base/java.net.URL.openStream(URL.java)&#13;
-	at org.kosit.cvr.util.ArtifactResolver.read(ArtifactResolver.java)&#13;
-	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java)&#13;
-	at org.kosit.validator.impl.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.runWithReferences(CvrUnhappyPathTest.java)&#13;
-	at org.kosit.validator.impl.conformatron.report.CvrUnhappyPathTest.step5ArtifactIsMissing(CvrUnhappyPathTest.java)&#13;
+	at org.kosit.conformatron.validation.ArtifactResolver.read(ArtifactResolver.java)&#13;
+	at org.kosit.conformatron.action.RetrieveArtifactsAction.retrieve(RetrieveArtifactsAction.java)&#13;
+	at org.kosit.conformatron.action.RetrieveArtifactsAction.execute(RetrieveArtifactsAction.java)&#13;
+	at org.kosit.validator.impl.report.CvrUnhappyPathTest.runWithReferences(CvrUnhappyPathTest.java)&#13;
+	at org.kosit.validator.impl.report.CvrUnhappyPathTest.step5ArtifactIsMissing(CvrUnhappyPathTest.java)&#13;
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java)&#13;
 	at java.base/java.lang.reflect.Method.invoke(Method.java)&#13;
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java)&#13;

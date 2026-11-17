@@ -1,9 +1,9 @@
 package org.kosit.validator.impl;
 
 import org.conformatron.api.model.source.CTReadResource;
+import org.kosit.conformatron.action.parsedoc.xml.ParseXmlAction;
+import org.kosit.conformatron.action.parsedoc.xml.ParseXmlResult;
 import org.kosit.validator.TestHelper;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlAction;
-import org.kosit.validator.impl.conformatron.action.parsedoc.xml.ParseXmlResult;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.XdmNode;

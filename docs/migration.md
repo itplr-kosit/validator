@@ -22,9 +22,10 @@ not evaluated.
 **No fallback scenario.** A document that no scenario applies to is rejected: the run stops at the step
 `detect-scenarios`, and the report says so.
 
-**Modules.** The code is split into modules with a defined purpose - `api`, `schematron`, `scenario`, `cvr`, `core`,
-`cli`, `server`, `client` and supporting ones; see [modules](modules.md). The configuration format and its JAXB
-binding live in `validator-scenario`.
+**Modules.** The code is split into modules with a defined purpose - `conformatron-model`, `conformatron-impl`, `xml`,
+`schematron`, `cvr`, `scenario`, `core`, `cli`, `server`, `client` and supporting ones; see [modules](modules.md). The
+configuration format and its JAXB binding live in `validator-scenario`, the pipeline steps in
+`validator-conformatron-impl`.
 
 **Java 25.** The minimum Java version is 25.
 
