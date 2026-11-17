@@ -66,6 +66,8 @@ deploy-java-25-snapshot:
   extends: java-25
   script:
     - mvn $MAVEN_CLI_OPTS_CENTRAL -P release-snapshot deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 deploy:
   stage: deploy
